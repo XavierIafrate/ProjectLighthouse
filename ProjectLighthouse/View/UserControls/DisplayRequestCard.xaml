@@ -1,0 +1,171 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayRequestCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+             mc:Ignorable="d"
+             d:DesignWidth="330">
+
+    <UserControl.Resources>
+        <converters:DateToDateWithCounter x:Key="dateConverter"/>
+        <vm:RequestViewModel x:Key="vm"/>
+    </UserControl.Resources>
+    <Grid>
+        <Rectangle RadiusX="10" RadiusY="10">
+            <Rectangle.Effect>
+                <DropShadowEffect BlurRadius="15" Direction="220" RenderingBias="Quality" ShadowDepth="5" Color="#FF000000" Opacity="0.7"/>
+            </Rectangle.Effect>
+            <Rectangle.Fill>
+                <SolidColorBrush Color="White"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <StackPanel Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="{Binding Product, FallbackValue='P0XXX.123-456-A2'}"
+                            FontSize="30"
+                            FontWeight="Bold"
+                            Margin="0,0,0,5"/>
+                <TextBlock Text="{Binding QuantityRequired, StringFormat='{}{0} pcs required', FallbackValue='0 pcs required'}"
+                            Grid.Row="1"
+                            x:Name = "requiredQtyTextBlock"
+                            Foreground="{StaticResource colGood}"
+                            FontWeight="Bold"
+                            FontSize="18"/>
+                <TextBlock Text="{Binding DateRequired, StringFormat='{}For {0:dd/MM/yy}', FallbackValue='For 01/01/1970'}"
+                           x:Name = "dateRequiredTextBlock"
+                           Grid.Row="2"
+                           Margin="0,5"
+                           Foreground="{StaticResource colBody}"
+                           FontSize="18"/>
+            </Grid>
+            <Separator Margin="0,5"/>
+            <Grid Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="2"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="{Binding RaisedBy, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}"
+                               FontStyle="Italic"
+                               Foreground="{StaticResource colNeutral}"
+                               FontSize="12"/>
+                <TextBlock Text="{Binding DateRaised, StringFormat='{}{0:dd/MM/yy HH:mm}', FallbackValue='01/01/1970 23:59'}"
+                               FontSize="12"
+                               HorizontalAlignment="Right"
+                               Grid.Column="1"
+                               FontStyle="Italic"
+                               Foreground="{StaticResource colNeutral}"/>
+                <TextBlock Text="{Binding ModifiedBy, StringFormat='{}Updated by {0}', FallbackValue='Updated by Kyle Brovloski'}"
+                               FontStyle="Italic"
+                               Foreground="{StaticResource colNeutral}"
+                               x:Name ="ModifiedByTextBlock"
+                               Grid.Row="2"
+                               FontSize="12"/>
+                <TextBlock Text="{Binding LastModified, StringFormat='{}{0:dd/MM/yy HH:mm}', FallbackValue='01/01/1970 23:59'}"
+                               FontSize="12"
+                               HorizontalAlignment="Right"
+                               x:Name="ModifiedDateTextBox"
+                               Grid.Column="1"
+                               Grid.Row="2"
+                               FontStyle="Italic"
+                               Foreground="{StaticResource colNeutral}"/>
+            </Grid>
+            <Separator Margin="0,5"/>
+            <TextBlock Text="Decision Making:"
+                           FontSize="18"
+                           FontWeight="Bold"/>
+
+            <CheckBox Content="Scheduling Approval"
+                      IsChecked="{Binding isSchedulingApproved}"
+                      Click="CheckBox_Click"
+                      Margin="10,10,0,5" />
+            <CheckBox Content="Production Approval" 
+                      IsChecked="{Binding isProductionApproved}"
+                      Click="CheckBox_Click"
+                      Margin="10,5" />
+
+            <Grid Margin="10"  x:Name="approvalControls">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Rectangle Width="100" RadiusX="12.5" RadiusY="12.5">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush>
+                                <GradientStop Color="#1D976C" Offset="0" />
+                                <GradientStop Color="#93F9B9" Offset="1" />
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Button Content="APPROVE" 
+                            x:Name="ApproveButton"
+                            DataContext="{StaticResource vm}"
+                            Command="{Binding ApproveCommand}"
+                            FontWeight="BOLD" 
+                            Foreground="White"  
+                            HorizontalContentAlignment="Center" 
+                            Width="100" Height="25" 
+                            Background="#00000000" 
+                            BorderThickness="0"/>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Rectangle Width="100" RadiusX="12.5" RadiusY="12.5">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush>
+                                <GradientStop Color="#cb2d3e" Offset="0" />
+                                <GradientStop Color="#ef473a" Offset="1" />
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Button Content="DECLINE"
+                            x:Name="DeclineButton"
+                            FontWeight="BOLD" 
+                            Foreground="White" 
+                            HorizontalContentAlignment="Center" 
+                            Width="100" Height="25" 
+                            Background="#00000000" 
+                            BorderThickness="0"/>
+                </Grid>
+                <TextBlock Text="Reason for declining:" Margin="10,5" FontStyle="Italic" Grid.Row="2"/>
+                <ComboBox Margin="10,0,10,5" 
+                          Grid.Row="3" Grid.ColumnSpan="2" 
+                          x:Name="DeclineComboBox" 
+                          Text="{Binding DeclinedReason}">
+                    <ComboBoxItem Content="Uneconomical"/>
+                    <ComboBoxItem Content="Below MOQ"/>
+                    <ComboBoxItem Content="Cannot deliver on time"/>
+                    <ComboBoxItem Content="Machining not possible"/>
+                </ComboBox>
+            </Grid>
+
+            <Separator Margin="0,10"/>
+            <TextBlock Text="{Binding Status, StringFormat='{}Status: {0}', FallbackValue='Status: Pending input'}"/>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

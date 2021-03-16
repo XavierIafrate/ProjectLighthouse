@@ -1,0 +1,100 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\exit.png" />
+    <None Remove="Resources\Font\Proxima Nova Alt Bold.otf" />
+    <None Remove="Resources\Font\Proxima Nova Alt Light.otf" />
+    <None Remove="Resources\Font\Proxima Nova Alt Thin.otf" />
+    <None Remove="Resources\Font\Proxima Nova Black.otf" />
+    <None Remove="Resources\Font\Proxima Nova Bold.otf" />
+    <None Remove="Resources\Font\Proxima Nova Extrabold.otf" />
+    <None Remove="Resources\Font\Proxima Nova Thin.otf" />
+    <None Remove="Resources\Font\ProximaNova-Regular.otf" />
+    <None Remove="Resources\LighthouseLogo.png" />
+    <None Remove="Resources\Lighthouse_dark.png" />
+    <None Remove="Resources\Logo.png" />
+    <None Remove="Resources\MO-1star.png" />
+    <None Remove="Resources\MO-2star.png" />
+    <None Remove="Resources\MO-3star.png" />
+    <None Remove="Resources\MO-CompleteBadge.png" />
+    <None Remove="Resources\MO-ErrorBadge.png" />
+    <None Remove="Resources\MO-Good.png" />
+    <None Remove="Resources\MO-Notify.png" />
+    <None Remove="Resources\MO-ReadyBadge.png" />
+    <None Remove="Resources\MO-RunningBadge.png" />
+    <None Remove="Resources\MO-SpecialPartWarning.png" />
+    <None Remove="Resources\MO-Stop.png" />
+    <None Remove="Resources\MO-Warn.png" />
+    <None Remove="Resources\MO-WarningBadge.png" />
+    <None Remove="Resources\RequestAccepted.png" />
+    <None Remove="Resources\RequestDeclined.png" />
+    <None Remove="Resources\RequestPending.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="PDFsharp-MigraDoc-WPF" Version="1.50.5147" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\exit.png" />
+    <Resource Include="Resources\Font\Proxima Nova Alt Bold.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Font\Proxima Nova Alt Light.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Font\Proxima Nova Alt Thin.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Font\Proxima Nova Black.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Font\Proxima Nova Bold.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Font\Proxima Nova Extrabold.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Font\Proxima Nova Thin.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Font\ProximaNova-Regular.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\LighthouseLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Lighthouse_dark.png" />
+    <Resource Include="Resources\Logo.png" />
+    <Resource Include="Resources\MO-1star.png" />
+    <Resource Include="Resources\MO-2star.png" />
+    <Resource Include="Resources\MO-3star.png" />
+    <Resource Include="Resources\MO-CompleteBadge.png" />
+    <Resource Include="Resources\MO-ErrorBadge.png" />
+    <Resource Include="Resources\MO-Good.png" />
+    <Resource Include="Resources\MO-Notify.png" />
+    <Resource Include="Resources\MO-ReadyBadge.png" />
+    <Resource Include="Resources\MO-RunningBadge.png" />
+    <Resource Include="Resources\MO-SpecialPartWarning.png" />
+    <Resource Include="Resources\MO-Stop.png" />
+    <Resource Include="Resources\MO-Warn.png" />
+    <Resource Include="Resources\MO-WarningBadge.png" />
+    <Resource Include="Resources\RequestAccepted.png" />
+    <Resource Include="Resources\RequestDeclined.png" />
+    <Resource Include="Resources\RequestPending.png" />
+  </ItemGroup>
+
+</Project>

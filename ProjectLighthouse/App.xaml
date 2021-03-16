@@ -1,0 +1,126 @@
+﻿<Application x:Class="ProjectLighthouse.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ProjectLighthouse"
+             xmlns:views="clr-namespace:ProjectLighthouse.View"
+             xmlns:vms="clr-namespace:ProjectLighthouse.ViewModel"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+
+        <SolidColorBrush x:Key="colCritical" Color="#e76f51"/>
+        <SolidColorBrush x:Key="colWarn" Color="#f4a261"/>
+        <SolidColorBrush x:Key="colAdvise" Color="#e9c46a"/>
+        <SolidColorBrush x:Key="colGood" Color="#2a9d8f"/>
+        <SolidColorBrush x:Key="colNeutral" Color="#264653"/>
+        <SolidColorBrush x:Key="colBody" Color="#353535"/>
+
+        <LinearGradientBrush x:Key="gradGood" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1D976C" Offset="0" />
+            <GradientStop Color="#93F9B9" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="gradBad" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#cb2d3e" Offset="0" />
+            <GradientStop Color="#ef473a" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="gradBlue" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1e3c72" Offset="0" />
+            <GradientStop Color="#2a5298" Offset="1" />
+        </LinearGradientBrush>
+        
+
+        <Style x:Key="ButtonTemplate" TargetType="Button">
+
+            <Setter Property="Background" Value="{StaticResource gradBlue}"/>
+            <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Height="24"
+                                BorderThickness="0"
+                                Padding="20,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#3a7bd5" Offset="0" />
+                                <GradientStop Color="#3a6073" Offset="1" />
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+
+        <Style x:Key="ExitButton" TargetType="Button">
+
+            <Setter Property="Background" Value="{StaticResource gradBad}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="15"
+                                Height="30"
+                                BorderThickness="0"
+                                Padding="20,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#ED213A" Offset="0" />
+                                <GradientStop Color="#93291E" Offset="1" />
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+
+        <DataTemplate DataType="{x:Type vms:RequestViewModel}">
+            <views:RequestView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:NewRequestViewModel}">
+            <views:NewRequestView/>
+        </DataTemplate>
+        
+        
+        <DataTemplate DataType="{x:Type vms:OrderViewModel}">
+            <views:OrderView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:ScheduleViewModel}">
+            <views:ScheduleView/>
+        </DataTemplate>
+
+
+
+        <Style TargetType="{x:Type UserControl}">
+            <Setter Property="FontFamily"
+            Value="Resources/Font/#Proxima Nova" />
+        </Style>
+        
+    </Application.Resources>
+</Application>

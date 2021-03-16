@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayProduct"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+             mc:Ignorable="d"
+             d:DesignWidth="200">
+    <Grid Margin="5,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}"
+                   x:Name="productText"
+                   Foreground="{StaticResource colBody}"
+                   FontSize="15"/>
+        <TextBlock Text="{Binding Material, FallbackValue='A2'}"
+                   FontSize="15"
+                   Grid.Column="2"/>
+        <!--<StackPanel Orientation="Vertical"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Margin="10,0">
+            <Image Source="/Resources/MO-CompleteBadge.png" Height="15"
+                   x:Name="CompleteFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image Source="/Resources/MO-ReadyBadge.png" Height="15"
+                   x:Name="ReadyFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image Source="/Resources/MO-WarningBadge.png" Height="15"
+                   x:Name="WarnFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image Source="/Resources/MO-ErrorBadge.png" Height="15"
+                   x:Name="StopFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image Source="/Resources/MO-RunningBadge.png" Height="15"
+                   x:Name="RunningFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
+        </StackPanel>-->
+    </Grid>
+</UserControl>

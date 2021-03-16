@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayLatheManufactureOrderCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+             mc:Ignorable="d" 
+             d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <converters:boolToHasProgram x:Key="boolToHasProgram"/>
+        <converters:boolToIsReady x:Key="boolToIsReady"/>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Rectangle RadiusX="10" RadiusY="10">
+            <Rectangle.Effect>
+                <DropShadowEffect BlurRadius="15" 
+                                  Direction="220" 
+                                  RenderingBias="Quality" 
+                                  ShadowDepth="5" 
+                                  Color="#FF000000" 
+                                  Opacity="0.7"/>
+            </Rectangle.Effect>
+            <Rectangle.Fill>
+                <SolidColorBrush Color="White"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <StackPanel Margin="10">
+            <StackPanel>
+                <TextBlock Text="{Binding Name, FallbackValue='M00000'}"
+                           FontSize="35"
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="{Binding POReference, FallbackValue='POR123456'}"
+                           FontSize="18"
+                           Foreground="DodgerBlue"/>
+                
+                <Separator Margin="5,10,5,5"/>
+                
+                <TextBlock x:Name ="CreatedTextBlock"
+                           Margin="5,0"
+                           FontSize="12"
+                           FontStyle="Italic">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}Created {0:dd/MM/yy} by {1}">
+                            <Binding Path="CreatedAt" FallbackValue="01/01/1970"/>
+                            <Binding Path="CreatedBy" FallbackValue="Stan Marsh"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+
+                <TextBlock x:Name="ModifiedTextBlock"
+                           Margin="5,0"
+                           FontSize="12"
+                           FontStyle="Italic"
+                           Visibility="{Binding ModifiedVis}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}Modified {0:dd/MM/yy} by {1}">
+                            <Binding Path="ModifiedAt" FallbackValue="01/01/1970"/>
+                            <Binding Path="ModifiedBy" FallbackValue="Kyle Brovloski"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <Separator Margin="5"/>
+            </StackPanel>
+            <TextBlock Margin="0,5,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Assigned to {0}, starting {1:dd/MM/yy}">
+                        <Binding Path="AllocatedMachine" FallbackValue="C00" />
+                        <Binding Path="StartDate" FallbackValue="01/01/1970"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <TextBlock Margin="0,5,0,0">
+                <Run Text="Assigned Setter:"/>
+                <Run Text="{Binding AllocatedSetter, FallbackValue='Eric Cartman'}"/>
+            </TextBlock>
+            
+            <TextBlock Text="{Binding HasProgram, Converter={StaticResource boolToHasProgram}, FallbackValue='Has a program'}"
+                       x:Name="ProgramTextBlock"
+                       Margin="0,5"/>
+            <Grid MinWidth="150" MaxWidth="250" Height="25" Margin="0,20">
+                <Rectangle RadiusX="6" RadiusY="6" x:Name="StatusRectangle">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#1D976C" Offset="0" />
+                            <GradientStop Color="#93F9B9" Offset="1" />
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                    <Rectangle.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
+                    </Rectangle.Effect>
+                </Rectangle>
+                <TextBlock Text="{Binding IsReady, Converter={StaticResource boolToIsReady}, FallbackValue='Ready to go'}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontWeight="Bold"/>
+            </Grid>
+            <Separator Margin="0,5"/>
+            
+            <TextBlock Text="Notes"
+                       Margin="10,5"
+                       FontStyle="Italic"
+                       FontWeight="Bold"/>
+            <Grid Margin="10,0,10,10">
+                <Rectangle Fill="White" Stroke="DodgerBlue" StrokeThickness="2" RadiusX="6" RadiusY="6">
+                    <Rectangle.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
+                    </Rectangle.Effect>
+                </Rectangle>
+                <TextBox Text="{Binding Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
+                         Margin="6"
+                         MinHeight="100"
+                         BorderThickness="0"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>
