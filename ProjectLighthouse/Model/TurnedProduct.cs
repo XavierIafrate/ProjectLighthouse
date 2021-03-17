@@ -14,6 +14,10 @@ namespace ProjectLighthouse.Model
     }
     public class TurnedProduct
     {
+
+        private const double MaxDiameter = (double)20;
+        private const double MaxLength = (double)90;
+
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
         [Indexed]
@@ -48,6 +52,46 @@ namespace ProjectLighthouse.Model
             
 
             return recommendedQuantity;
+        }
+
+        public bool canBeManufactured()
+        {
+            
+
+            if (MajorLength - 2 > MaxLength || MajorDiameter > MaxDiameter)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public string GetReasonCannotBeMade()
+        {
+            string reason = "";
+            if (MajorDiameter > MaxDiameter)
+            {
+                reason = reason + "Diameter too large";
+            }
+            if (MajorLength - 2 > 90)
+            {
+                if (reason == "")
+                {
+                    reason = reason + "Too long";
+                }
+                else
+                {
+                    reason = reason + Environment.NewLine + "Too long";
+                }
+            }
+            return reason;
+        }
+
+        public bool IsScheduleCompatible(TurnedProduct otherProduct)
+        {
+            return (otherProduct.MajorDiameter == MajorDiameter && otherProduct.DriveSize == DriveSize && otherProduct.DriveType == DriveType && otherProduct.ThreadSize == ThreadSize && otherProduct.ProductGroup == ProductGroup);
         }
 
     }

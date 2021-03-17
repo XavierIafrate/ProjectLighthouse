@@ -4,10 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View"
+             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="White">
     <UserControl.Resources>
+        <vm:ScheduleViewModel x:Key="vm"/>
         <Style x:Key="headerTextStyle" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
             <Setter Property="FontSize" Value="20"/>
@@ -17,7 +20,7 @@
     </UserControl.Resources>
     
     
-    <Grid Margin="20">
+    <Grid Margin="20" DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="20"/>
@@ -32,7 +35,13 @@
         </Grid.RowDefinitions>
         
         <TextBlock Text="Unallocated" Grid.Column="0" Grid.Row="0" Style="{StaticResource headerTextStyle}"/>
-        <ListBox Grid.Column="0" Grid.Row="1"></ListBox>
+        <ListBox Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Stretch" ItemsSource="{Binding unallocated}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <uc:DisplayLMOScheduling order="{Binding}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <TextBlock Text="Citizen One" Grid.Column="2" Grid.Row="0" Style="{StaticResource headerTextStyle}"/>
         <ListBox Grid.Column="2" Grid.Row="1"></ListBox>

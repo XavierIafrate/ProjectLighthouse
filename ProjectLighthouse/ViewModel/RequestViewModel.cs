@@ -214,7 +214,6 @@ namespace ProjectLighthouse.ViewModel
 
                 if (creationWindow.wasCancelled)
                 {
-                    MessageBox.Show("Cancelled!");
                     return;
                 }
                 else
@@ -227,20 +226,15 @@ namespace ProjectLighthouse.ViewModel
                 
                 if (DatabaseHelper.Update(selectedRequest))
                 {
-                    MessageBox.Show("You have accepted this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-
                     GetRequests();
                     OnPropertyChanged("SelectedRequest");
                     SelectedRequestChanged?.Invoke(this, new EventArgs());
                     SelectedRequest = Requests.First();
-
                 }
                 else
                 {
                     MessageBox.Show("Failed to update the request.", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-
-                
                 return;
             }
             if (!App.currentUser.CanApproveRequests)

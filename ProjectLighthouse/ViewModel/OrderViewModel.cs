@@ -55,6 +55,7 @@ namespace ProjectLighthouse.ViewModel
 
 
         public ICommand PrintOrderCommand { get; set; }
+        public ICommand EditCommand { get; set; }
 
         public event EventHandler SelectedLatheManufactureOrderChanged;
 
@@ -66,6 +67,7 @@ namespace ProjectLighthouse.ViewModel
             SelectedLatheManufactureOrder = new LatheManufactureOrder();
 
             PrintOrderCommand = new PrintCommand(this);
+            EditCommand = new EditManufactureOrderCommand(this);
 
             GetLatheManufactureOrders();
             GetLatheManufactureOrderItems();
@@ -112,6 +114,11 @@ namespace ProjectLighthouse.ViewModel
 
             PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
 
+        }
+
+        public void EditLMO()
+        {
+            MessageBox.Show("Hello, world");
         }
 
     }

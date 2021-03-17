@@ -91,14 +91,21 @@
                        Margin="0,5"/>
             <TextBox x:Name="quantityBox"
                      TextChanged="quantityBox_TextChanged"/>
+            <Button Content="SUBMIT"
+                    Width="150"
+                    Margin="0,10"
+                    x:Name="submitButton"
+                    Click="submitButton_Click"
+                    Style="{StaticResource ButtonTemplate}"
+                    HorizontalAlignment="Right"/>
         </StackPanel>
+        
         <Grid Grid.Column="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid Margin="20">
+            <Grid Margin="20,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 <Rectangle Fill="White"  RadiusX="20" RadiusY="20">
                     <Rectangle.Effect>
                         <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
@@ -115,6 +122,8 @@
                                Style="{StaticResource insight}"/>
                     <TextBlock Text="{Binding SelectedProduct.QuantitySold, StringFormat='{}{0:#,##0} sold (18mo)'}"
                                Style="{StaticResource insight}"/>
+                    <TextBlock Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}"
+                               Style="{StaticResource insight}"/>
                     <TextBlock Text="Manufacture Data" Style="{StaticResource insightHeading}"/>
                     <Separator Width="150" HorizontalAlignment="Left" Margin="0,5"/>
                     <TextBlock Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} manufactured'}"
@@ -125,14 +134,13 @@
                                Style="{StaticResource insight}"/>
                     <TextBlock Text="{Binding SelectedProduct.DriveSize, StringFormat='{}Drive Size: {0}'}"
                                Style="{StaticResource insight}"/>
+                    <TextBlock Text="Scheduling Algorithm" Style="{StaticResource insightHeading}"/>
+                    <Separator Width="150" HorizontalAlignment="Left" Margin="0,5"/>
+                    <TextBlock Text="{Binding RecommendedStockText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
+                    <TextBlock Text="{Binding PotentialQuantityText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
+                    <TextBlock Text="{Binding LikelinessText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
                 </StackPanel>
             </Grid>
-            <Button Content="Submit Request"
-                    x:Name="submitButton"
-                    Click="submitButton_Click"
-                    Width="100"
-                    Margin="0,10"
-                    Grid.Row="2"/>
         </Grid>
     </Grid>
 </UserControl>

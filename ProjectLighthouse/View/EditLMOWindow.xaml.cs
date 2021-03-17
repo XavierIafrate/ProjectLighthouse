@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,22 +10,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
     /// <summary>
-    /// Interaction logic for ScheduleView.xaml
+    /// Interaction logic for EditLMOWindow.xaml
     /// </summary>
-    public partial class ScheduleView : UserControl
+    public partial class EditLMOWindow : Window
     {
-        ScheduleViewModel viewModel;
-
-        public ScheduleView()
+        public EditLMOWindow()
         {
             InitializeComponent();
-            viewModel = Resources["vm"] as ScheduleViewModel;
+        }
+
+        private void closeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

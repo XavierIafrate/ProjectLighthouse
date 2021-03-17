@@ -16,5 +16,6 @@ namespace ProjectLighthouse.Model
         public string UserRole { get; set; }
         public bool IsBlocked { get; set; }
         public bool CanApproveRequests { get; set; }
+        public bool CanEditLMOs { get; set; }
     }
 }

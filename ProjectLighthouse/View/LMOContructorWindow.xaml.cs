@@ -84,9 +84,9 @@ namespace ProjectLighthouse.View
                 }
             }
 
-            foreach (var product in ProductPool)
+            foreach (var product in ProductPool.ToList())
             {
-                if (product.MajorDiameter > 20 && product.MajorLength > 90 && product.Material != requiredProduct.Material && product.ThreadSize != requiredProduct.ThreadSize && product.DriveSize != requiredProduct.DriveSize && product.DriveType != requiredProduct.DriveType)
+                if (product.MajorDiameter > 20 || product.MajorLength > 90 || product.Material != requiredProduct.Material || product.ThreadSize != requiredProduct.ThreadSize || product.DriveSize != requiredProduct.DriveSize || product.DriveType != requiredProduct.DriveType)
                 {
                     ProductPool.Remove(product);
                 }
@@ -220,6 +220,11 @@ namespace ProjectLighthouse.View
             
             LMOItems.Add(TurnedProductToLMOItem((TurnedProduct)poolListBox.SelectedValue, 0, DateTime.MinValue));
             RefreshView();
+        }
+
+        private void LMOConstructionDisplayProducts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("Hello World");
         }
     }
 }

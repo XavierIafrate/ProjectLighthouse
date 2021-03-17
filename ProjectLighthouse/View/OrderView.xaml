@@ -92,7 +92,7 @@
                                 <TextBlock Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}"
                                FontSize="35"
                                FontWeight="Bold"/>
-                                <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}"/>
+                                <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}" Command="{Binding EditCommand}"/>
                                 <!--<Button Content="Print" x:Name="printButton" Command="{Binding PrintOrderCommand}" Grid.Column="2"/>-->
                             </Grid>
                             

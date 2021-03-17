@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
              mc:Ignorable="d"
              d:DesignWidth="200">
-    <Grid Margin="5,0">
+    <Grid Margin="5,0" Height="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
@@ -16,7 +16,10 @@
                    x:Name="productText"
                    Foreground="{StaticResource colBody}"
                    FontSize="15"/>
+        <Rectangle x:Name="materialBadge" Fill="Black" Grid.Column="2" RadiusX="10" RadiusY="10"/>
         <TextBlock Text="{Binding Material, FallbackValue='A2'}"
+                   Foreground="White"
+                   Padding="10,0"
                    FontSize="15"
                    Grid.Column="2"/>
         <!--<StackPanel Orientation="Vertical"

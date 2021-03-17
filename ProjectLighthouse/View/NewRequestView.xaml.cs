@@ -50,6 +50,7 @@ namespace ProjectLighthouse.View
                 if (j > 0)
                 {
                     viewModel.newRequest.QuantityRequired = j;
+                    viewModel.CalculateInsights();
                 }
                 else
                 {

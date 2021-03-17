@@ -75,7 +75,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Rectangle Grid.RowSpan="4" Opacity="0.7" Fill="Black"/>
-            <Image Source="/Resources/Logo.png"
+            <Image Source="/Resources/LighthouseLogo.png"
                    Width="150"
                    RenderOptions.BitmapScalingMode="HighQuality"/>
 

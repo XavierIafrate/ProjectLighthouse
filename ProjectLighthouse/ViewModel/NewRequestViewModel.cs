@@ -15,6 +15,11 @@ namespace ProjectLighthouse.ViewModel
     {
         public ObservableCollection<TurnedProduct> turnedProducts { get; set; }
         public ObservableCollection<TurnedProduct> filteredList { get; set; }
+        public string PotentialQuantityText { get; set; }
+        public string RecommendedStockText { get; set; }
+        public string LikelinessText { get; set; }
+
+
 
         private TurnedProduct selectedProduct;
 
@@ -25,7 +30,18 @@ namespace ProjectLighthouse.ViewModel
             { 
                 selectedProduct = value;
                 OnPropertyChanged("SelectedProduct");
+                OnPropertyChanged("RecommendedStockText");
+                OnPropertyChanged("PotentialQuantityText");
                 SelectedProductChanged?.Invoke(this, new EventArgs());
+                if (selectedProduct != null)
+                {
+                    if (!selectedProduct.canBeManufactured())
+                    {
+                        MessageBox.Show(selectedProduct.ProductName + " cannot be made on the lathes." + Environment.NewLine
+                             + Environment.NewLine + "Reason:" + Environment.NewLine + selectedProduct.GetReasonCannotBeMade(), "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                    CalculateInsights();
+                }
             }
         }
 
@@ -92,6 +108,11 @@ namespace ProjectLighthouse.ViewModel
                 MessageBox.Show("Please select a product!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
+            else if (!selectedProduct.canBeManufactured())
+            {
+                MessageBox.Show("This product can not be made on our machines!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
 
             newRequest.Status = "Pending approval";
             newRequest.isProductionApproved = false;
@@ -125,6 +146,59 @@ namespace ProjectLighthouse.ViewModel
 
             PopulateComboBox();
             PopulateListBox();
+        }
+
+        public void CalculateInsights()
+        {
+            if( selectedProduct != null)
+            {
+                RecommendedStockText = String.Format("Recommended for stock: {0} pcs", selectedProduct.GetRecommendedQuantity());
+                
+
+                List<int> classQuantities = new List<int>();
+                foreach (var product in filteredList)
+                {
+                    if (product.ProductName != selectedProduct.ProductName && product.IsScheduleCompatible(selectedProduct))
+                    {
+                        classQuantities.Add(product.GetRecommendedQuantity());
+                    }
+                }
+
+                classQuantities.Sort();
+                classQuantities.Reverse();
+                int tmpQuant = (int)0;
+                for (int i = 0; i < Math.Min(classQuantities.Count, 3); i += 1)
+                {
+                    tmpQuant += classQuantities[i];
+                }
+
+                PotentialQuantityText = String.Format("Schedule compatible: {0} pcs", tmpQuant);
+
+                LikelinessText = "";
+                int hypothetical = selectedProduct.GetRecommendedQuantity() + tmpQuant + newRequest.QuantityRequired;
+                if (hypothetical > 5000)
+                {
+                    LikelinessText = "Almost certain";
+                }
+                else if (hypothetical > 2000)
+                {
+                    LikelinessText = "Good chance";
+                }
+                else if (hypothetical > 500)
+                {
+                    LikelinessText = "Workload dependant";
+                }
+                else
+                {
+                    LikelinessText = "Unlikely";
+                }
+
+                LikelinessText = "Likeliness: " + LikelinessText;
+
+                OnPropertyChanged("RecommendedStockText");
+                OnPropertyChanged("LikelinessText");
+                OnPropertyChanged("PotentialQuantityText");
+            }
         }
 
     }

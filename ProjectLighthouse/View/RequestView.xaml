@@ -12,6 +12,68 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
+            <Style x:Key="ApproveButton" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource gradGood}"/>
+                <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="Height" Value="28"/>
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                CornerRadius="14,0,0,14"
+                                Height="28"
+                                BorderThickness="0"
+                                Padding="20,0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource colGood}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="DeclineButton" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource gradBad}"/>
+                <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Height" Value="28"/>
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                CornerRadius="0,14,14,0"
+                                Height="28"
+                                BorderThickness="0"
+                                Padding="20,0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource colCritical}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            
+
             <vm:RequestViewModel x:Key="vm"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -48,7 +110,7 @@
                    Margin="0,5,0,0"
                    Grid.Row="1">
             <TextBlock Text="{Binding Requests.Count, StringFormat='{}{0} request(s)'}"/>
-            <!--<Separator Margin="5,0" Background="LightGray"/>
+            <Separator Margin="5,0" Background="LightGray"/>
             <TextBlock Text="Filter by:" 
                        VerticalAlignment="Center"
                        Margin="0,0,10,0"/>
@@ -57,7 +119,7 @@
                 <ComboBoxItem Content="Pending"/>
                 <ComboBoxItem Content="Accepted"/>
                 <ComboBoxItem Content="Declined"/>
-            </ComboBox>-->
+            </ComboBox>
         </StatusBar>
 
         <StackPanel Grid.Column="2"
@@ -163,7 +225,7 @@
                         <ComboBoxItem Content="Cannot deliver on time"/>
                         <ComboBoxItem Content="Machining not possible"/>
                     </ComboBox>
-                    
+
                     <Grid Margin="10"  x:Name="approvalControls"
                           Visibility="{Binding ApprovalControlsVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <Grid.ColumnDefinitions>
@@ -176,48 +238,19 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <Grid>
-                            <Rectangle Width="100" Height="30"
-                                       HorizontalAlignment="Right"
-                                       Fill="{StaticResource gradGood}">
-                                <Rectangle.Clip>
-                                    <RectangleGeometry Rect="0,0,115,30" RadiusX="15" RadiusY="15"/>
-                                </Rectangle.Clip>
-                            </Rectangle>
-
-                            <Button Content="APPROVE" 
-                                    x:Name="ApproveButton"
-                                    Command="{Binding ApproveCommand}"
-                                    FontWeight="BOLD" 
-                                    Foreground="White"  
-                                    HorizontalAlignment="Right" 
-                                    Width="100" Height="25" 
-                                    Background="#00000000" 
-                                    BorderThickness="0"/>
-                        </Grid>
-                        <Grid Grid.Column="1">
-                            <Rectangle Width="100" Height="30"
-                                       HorizontalAlignment="Left" Fill="{StaticResource gradBad}">
-                                <Rectangle.Clip>
-                                    <RectangleGeometry Rect="-15,0,115,30" RadiusX="15" RadiusY="15"/>
-                                </Rectangle.Clip>
-                            </Rectangle>
-                            <Button Content="DECLINE"
+                        <Button Content="APPROVE" 
+                                x:Name="ApproveButton"
+                                Command="{Binding ApproveCommand}"
+                                Style="{StaticResource ApproveButton}"/>
+                        <Button Content="DECLINE"
+                                Grid.Column="1"
                                     x:Name="DeclineButton"
                                     Command="{Binding DeclineCommand}"
-                                    FontWeight="BOLD" 
-                                    Foreground="White" 
-                                    HorizontalAlignment="Left" 
-                                    Width="100" Height="25" 
-                                    Background="#00000000" 
-                                    BorderThickness="0"/>
-                        </Grid>
-                        
-                    </Grid>
+                                    Style="{StaticResource DeclineButton}"/>
 
+                    </Grid>
                     <Separator Margin="0,10"/>
                     <TextBlock Text="{Binding SelectedRequest.Status, StringFormat='{}Status: {0}', FallbackValue='Status: Pending input'}"/>
-
                 </StackPanel>
             </Grid>
         </StackPanel>

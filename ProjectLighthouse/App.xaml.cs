@@ -22,7 +22,8 @@ namespace ProjectLighthouse
             Password = "123456",
             UserRole = "admin",
             CanApproveRequests = true,
-            IsBlocked = false
+            IsBlocked = false,
+            CanEditLMOs = true
         };
     }
 }

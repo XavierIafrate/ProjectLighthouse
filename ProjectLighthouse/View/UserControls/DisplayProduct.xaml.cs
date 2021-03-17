@@ -37,13 +37,27 @@ namespace ProjectLighthouse.View.UserControls
             if (control != null)
             {
                 control.DataContext = control.TurnedProduct;
-                if(control.TurnedProduct.MajorDiameter > 20)
+                if(!control.TurnedProduct.canBeManufactured())
                 {
                     control.productText.Foreground = Brushes.Red;
                 }
-                if (control.TurnedProduct.MajorLength > 90)
+                switch (control.TurnedProduct.Material)
                 {
-                    control.productText.Foreground = Brushes.Red;
+                    case "A2":
+                        control.materialBadge.Fill = (Brush)Application.Current.Resources["colA2"];
+                        break;
+                    case "A4":
+                        control.materialBadge.Fill = (Brush)Application.Current.Resources["colA4"];
+                        break;
+                    case "Ti":
+                        control.materialBadge.Fill = (Brush)Application.Current.Resources["colTi"];
+                        break;
+                    case "EN1A":
+                        control.materialBadge.Fill = (Brush)Application.Current.Resources["colEN1a"];
+                        break;
+                    default:
+                        control.materialBadge.Fill = Brushes.Black;
+                        break;
                 }
             }
             
