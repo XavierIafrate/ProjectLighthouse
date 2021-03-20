@@ -14,16 +14,6 @@ namespace ProjectLighthouse
     /// </summary>
     public partial class App : Application
     {
-        public static User currentUser = new User
-        {
-            FirstName = "Xavier",
-            LastName = "Iafrate",
-            UserName = "xav",
-            Password = "123456",
-            UserRole = "admin",
-            CanApproveRequests = true,
-            IsBlocked = false,
-            CanEditLMOs = true
-        };
+        public static User currentUser { get; set; }
     }
 }

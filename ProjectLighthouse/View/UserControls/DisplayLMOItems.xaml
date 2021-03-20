@@ -4,43 +4,56 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" d:DesignWidth="400">
+             mc:Ignorable="d" d:DesignWidth="400"
+             Background="Transparent">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
-
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}"
                    x:Name="productText"
-                   VerticalAlignment="Top"
-                   Margin="5"
-                   FontSize="20"
-                   Grid.Column="0"/>
+                   VerticalAlignment="Center"
+                   Margin="10,0"
+                   FontSize="16"/>
+            <Image Source="/Resources/MO-SpecialPartWarning.png"
+                   x:Name="specialFlag"
+                   Height="17"
+                   HorizontalAlignment="Left"
+                   Margin="10,5"
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
+        </StackPanel>
         
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="5">
-            <TextBlock Text="{Binding RequiredQuantity, StringFormat='{}{0} pcs required', FallbackValue='100 pcs required'}"
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs required', FallbackValue='100 pcs required'}"
                        x:Name="qtyrequired"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Right"
                        FontWeight="Bold"
                        FontSize="14"/>
-            <TextBlock Text="{Binding DateRequired, StringFormat='{}for {0:dd/MM/yy}', FallbackValue='for 01/01/1970'}"
+            <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dd/MM/yy}', FallbackValue='01/01/1970'}"
                        x:Name="daterequired"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Right"
                        FontWeight="Bold"
                        FontSize="12"/>
-            <Image Source="/Resources/MO-SpecialPartWarning.png"
-                   x:Name="specialFlag"
-                   Height="17"
-                   HorizontalAlignment="Right"
-                   Margin="0,5"
-                   RenderOptions.BitmapScalingMode="HighQuality"/>
-            <TextBlock Text="{Binding TargetQuantity, StringFormat='{}{0} pcs target', FallbackValue='100 pcs target'}"
+        </StackPanel>
+        
+        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="5">
+            
+            
+            <TextBlock Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs target', FallbackValue='1000 pcs target'}"
                        VerticalAlignment="Center"
-                       HorizontalAlignment="Right"
+                       FontSize="12"/>
+            <TextBlock Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} delivered', FallbackValue='0 delivered'}"
+                       VerticalAlignment="Center"
                        FontSize="12"/>
         </StackPanel>
     </Grid>

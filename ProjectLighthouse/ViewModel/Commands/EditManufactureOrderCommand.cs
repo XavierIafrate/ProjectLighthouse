@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectLighthouse.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,12 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.CanEditLMOs;
+            string status = parameter as string;
+            if (App.currentUser.CanUpdateLMOs && status!="Complete")
+            {
+                return true;
+            }
+            return false;
         }
 
         public void Execute(object parameter)

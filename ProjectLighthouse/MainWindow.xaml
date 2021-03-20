@@ -21,10 +21,10 @@
 
         <ResourceDictionary>
             <Style TargetType="{x:Type Window}">
-                <Setter Property="FontFamily" Value="pack://application:,,,/Resources/Font/#Proxima Nova" />
+                <Setter Property="FontFamily" Value="{StaticResource ProximaNova}" />
                 <Setter Property="FontSize" Value="13" />
             </Style>
-            
+
             <vm:MainViewModel x:Key="vm"/>
             <Style x:Key="menuButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
@@ -43,7 +43,7 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                
+
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Foreground" Value="Black"/>
@@ -109,7 +109,7 @@
                         Style="{StaticResource menuButtonStyle}"
                         Content="Schedule"/>
                 
-                <Button Command="{Binding UpdateViewCommand}" 
+                <!--<Button Command="{Binding UpdateViewCommand}" 
                         CommandParameter="BarStock"
                         Style="{StaticResource menuButtonStyle}"
                         Content="Bar Stock"/>
@@ -125,7 +125,7 @@
                 <Button Command="{Binding UpdateViewCommand}" 
                         CommandParameter="Products"
                         Style="{StaticResource menuButtonStyle}"
-                        Content="View Database"/>
+                        Content="View Database"/>-->
 
                 <!--<TextBlock Text="Users"
                            Style="{StaticResource menuSectionStyle}"/>
@@ -142,6 +142,7 @@
             <Button Content="Exit"
                     HorizontalAlignment="Center"
                     Grid.Row="3"
+                    Width="120"
                     x:Name="exitButton"
                     Click="exitButton_Click"
                     Style="{StaticResource ExitButton}"

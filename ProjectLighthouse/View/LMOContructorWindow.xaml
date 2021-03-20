@@ -46,6 +46,27 @@
                 <StackPanel Margin="10">
                     <TextBlock Text="Insights" Foreground="White" FontSize="18"/>
                     <Separator Background="White" Margin="0,5"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Number of bars:" Foreground="White" Grid.Column="0" Grid.Row="0" Margin="0,0,10,0"/>
+                        <TextBlock Text="50" Foreground="White" Grid.Column="1" Grid.Row="0" x:Name="nBars"/>
+                        <TextBlock Text="Material Cost:" Foreground="White" Grid.Column="0" Grid.Row="1" Margin="0,0,10,0"/>
+                        <TextBlock Text="£100.00" Foreground="White" Grid.Column="1" Grid.Row="1" x:Name="materialCost"/>
+                        <TextBlock Text="Time to required:" Foreground="White" Grid.Column="0" Grid.Row="2" Margin="0,0,10,0"/>
+                        <TextBlock Text="1 day(s)" Foreground="White" Grid.Column="1" Grid.Row="2" x:Name="reqTime"/>
+                        <TextBlock Text="Time to Complete" Foreground="White" Grid.Column="0" Grid.Row="3" Margin="0,0,10,0"/>
+                        <TextBlock Text="5 day(s)" Foreground="White" Grid.Column="1" Grid.Row="3" x:Name="totalTime"/>
+                    </Grid>
+                    
                 </StackPanel>
             </Grid>
 
@@ -98,10 +119,10 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button Content="Remove Item" Grid.Row="2" Style="{StaticResource ButtonTemplate}" Background="{StaticResource gradBad}" Width="200" HorizontalAlignment="Left" x:Name="removeButton" Click="removeButton_Click"/>
+                <Button Content="Remove Item" Grid.Row="2" Style="{StaticResource CancelButtonTemplate}" Width="200" HorizontalAlignment="Left" x:Name="removeButton" Click="removeButton_Click"/>
 
                 <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="Cancel" x:Name="cancelButton" Click="cancelButton_Click" Style="{StaticResource ButtonTemplate}" Background="{StaticResource gradBad}"/>
+                    <Button Content="Cancel" x:Name="cancelButton" Click="cancelButton_Click" Style="{StaticResource CancelButtonTemplate}"/>
                     <Button Content="Confirm" Width="150" x:Name="confirmButton" Click="confirmButton_Click" Style="{StaticResource ButtonTemplate}"/>
                 </StackPanel>
             </Grid>

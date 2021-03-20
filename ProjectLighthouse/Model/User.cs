@@ -17,5 +17,11 @@ namespace ProjectLighthouse.Model
         public bool IsBlocked { get; set; }
         public bool CanApproveRequests { get; set; }
         public bool CanEditLMOs { get; set; }
+        public bool CanUpdateLMOs { get; set; }
+
+        public string GetFullName()
+        {
+            return String.Format("{0} {1}", FirstName, LastName);
+        }
     }
 }

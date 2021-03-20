@@ -123,11 +123,11 @@ namespace ProjectLighthouse.ViewModel
             newRequest.DateRaised = DateTime.Now;
             newRequest.Product = selectedProduct.ProductName;
             newRequest.DeclinedReason = "";
+            newRequest.Likeliness = LikelinessText;
 
             if (DatabaseHelper.Insert(newRequest))
             {
                 MessageBox.Show("Your request has been submitted", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                
             }
             else
             {

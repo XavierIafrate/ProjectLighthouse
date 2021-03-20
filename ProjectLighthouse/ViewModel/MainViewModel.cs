@@ -1,4 +1,7 @@
-﻿using ProjectLighthouse.ViewModel.Commands;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.View;
+using ProjectLighthouse.ViewModel.Commands;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -39,9 +42,22 @@ namespace ProjectLighthouse.ViewModel
 
         public MainViewModel()
         {
-            Debug.WriteLine("MainViewModel Constructor");
             UpdateViewCommand = new UpdateViewCommand(this);
+            if (App.currentUser == null)
+            {
+                LoginWindow login = new LoginWindow();
+                login.ShowDialog();
 
+                if (login.auth_user == null)
+                {
+                    Application.Current.Shutdown();
+                }
+                else
+                {
+                    App.currentUser = login.auth_user;
+                }
+            }
+            
         }
     }
 }

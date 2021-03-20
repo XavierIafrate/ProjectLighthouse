@@ -41,24 +41,23 @@ namespace ProjectLighthouse.View.UserControls
             if (control != null)
             {
                 control.DataContext = control.LatheManufactureOrder;
-
-                //TODO: Converters
-                if (control.LatheManufactureOrder.HasProgram == false)
+                control.BadgeText.Text = control.LatheManufactureOrder.Status.ToUpper();
+                switch (control.LatheManufactureOrder.Status)
                 {
+                    case "Ready":
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["colGood"];
+                        break;
+                    case "Problem":
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["colWarn"];
+                        break;
+                    case "Running":
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["colNeutral"];
+                        break;
+                    case "Complete":
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["colBody"];
+                        break;
 
-                    control.RunningFlag.Visibility = Visibility.Collapsed;
-                    control.ReadyFlag.Visibility = Visibility.Collapsed;
-                    control.CompleteFlag.Visibility = Visibility.Collapsed;
-                    control.WarnFlag.Visibility = Visibility.Visible;
-                    control.StopFlag.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    control.RunningFlag.Visibility = Visibility.Collapsed;
-                    control.ReadyFlag.Visibility = Visibility.Visible;
-                    control.CompleteFlag.Visibility = Visibility.Collapsed;
-                    control.WarnFlag.Visibility = Visibility.Collapsed;
-                    control.StopFlag.Visibility = Visibility.Collapsed;
+
                 }
 
             }

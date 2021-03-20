@@ -41,6 +41,26 @@ namespace ProjectLighthouse.View.UserControls
             if (control != null)
             {
                 control.DataContext = control.order;
+
+                switch (control.order.Status)
+                {
+                    case "Ready":
+                        control.bg.Fill = (Brush)App.Current.Resources["colGood"];
+                        break;
+                    case "Awaiting scheduling":
+                        control.bg.Fill = (Brush)App.Current.Resources["colAdvise"];
+                        break;
+                    case "Running":
+                        control.bg.Fill = (Brush)App.Current.Resources["colNeutral"];
+                        break;
+                    case "Problem":
+                        control.bg.Fill = (Brush)App.Current.Resources["colCritical"];
+                        break;
+                    default:
+                        control.bg.Fill = Brushes.DodgerBlue;
+                        break;
+
+                }
             }
         }
 

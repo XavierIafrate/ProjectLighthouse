@@ -38,7 +38,7 @@
                       BorderThickness="2"
                       HorizontalContentAlignment="Stretch"
                       HorizontalScrollBarVisibility="auto">
-            <ListView ItemsSource="{Binding LatheManufactureOrders}"
+            <ListView ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       SelectedItem="{Binding SelectedLatheManufactureOrder, UpdateSourceTrigger=PropertyChanged}"
                       HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
@@ -52,21 +52,30 @@
                    Background="Transparent"
                    Margin="0,5,0,0"
                    Grid.Row="1">
-            <TextBlock Text="{Binding LatheManufactureOrders.Count, StringFormat='{}{0} order(s)'}"/>
-            <!--<Separator Margin="5,0" Background="LightGray"/>
+            <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}"/>
+            <Separator Margin="5,0" Background="LightGray"/>
             <TextBlock Text="Filter by:" 
                        VerticalAlignment="Center"
                        Margin="0,0,10,0"/>
-            <ComboBox Width="100">
-                <ComboBoxItem Content="All" IsSelected="True"/>
-                <ComboBoxItem Content="Pending"/>
-                <ComboBoxItem Content="Accepted"/>
-                <ComboBoxItem Content="Declined"/>
-            </ComboBox>-->
+            <ComboBox Width="100" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ComboBoxItem Content="All Active" IsSelected="True"/>
+                <ComboBoxItem Content="Not Ready"/>
+                <ComboBoxItem Content="Ready"/>
+                <ComboBoxItem Content="Complete"/>
+            </ComboBox>
         </StatusBar>
+        <TextBlock Grid.Column="2"
+                   Grid.RowSpan="2"
+                   Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"
+                   Text="None found"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   FontSize="30"
+                   Foreground="#dddddd"/>
         <ScrollViewer Grid.Column="2"
-                      Grid.RowSpan="2">
-            <StackPanel Margin="25,10">
+                      Grid.RowSpan="2"
+                      Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
+            <StackPanel Margin="25,10" MaxWidth="600">
                 <Grid>
                     <Rectangle RadiusX="10" RadiusY="10">
                         <Rectangle.Effect>
@@ -92,7 +101,7 @@
                                 <TextBlock Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}"
                                FontSize="35"
                                FontWeight="Bold"/>
-                                <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}" Command="{Binding EditCommand}"/>
+                                <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"/>
                                 <!--<Button Content="Print" x:Name="printButton" Command="{Binding PrintOrderCommand}" Grid.Column="2"/>-->
                             </Grid>
                             
@@ -125,11 +134,11 @@
                             </TextBlock>
                             <Separator Margin="5"/>
                         </StackPanel>
-                        <TextBlock Margin="0,5,0,0">
-                            <Run Text="Assigned to"/>
+                        <TextBlock Margin="0,5,0,0" Text="{Binding RunInfoText, UpdateSourceTrigger=PropertyChanged}">
+                            <!--<Run Text="Assigned to"/>
                             <Run Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine, FallbackValue='C00'}"/>
                             <Run Text="for"/>
-                            <Run Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:dd/MM/yy}'}"/>
+                            <Run Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:dd/MM/yy}'}"/>-->
                         </TextBlock>
                         <TextBlock Margin="0,5,0,0">
                             <Run Text="Assigned Setter:"/>
@@ -153,13 +162,7 @@
                         </ListView>
 
                         <Grid MinWidth="150" MaxWidth="250" Height="25" Margin="0,20">
-                            <Rectangle RadiusX="6" RadiusY="6" x:Name="StatusRectangle">
-                                <Rectangle.Fill>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#1D976C" Offset="0" />
-                                        <GradientStop Color="#93F9B9" Offset="1" />
-                                    </LinearGradientBrush>
-                                </Rectangle.Fill>
+                            <Rectangle RadiusX="6" RadiusY="6" Fill="{Binding StatusBackground, UpdateSourceTrigger=PropertyChanged}">
                                 <Rectangle.Effect>
                                     <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
                                 </Rectangle.Effect>

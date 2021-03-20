@@ -13,16 +13,33 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-
-        //TODO: Add filters
-
-
-
 namespace ProjectLighthouse.ViewModel
 {
     public class RequestViewModel : BaseViewModel
     {
         public ObservableCollection<Request> Requests { get; set; }
+        public ObservableCollection<Request> FilteredRequests { get; set; }
+        private string selectedFilter;
+        public string SelectedFilter
+        {
+            get { return selectedFilter; }
+            set 
+            { 
+                selectedFilter = value;
+                FilterRequests(value);
+                if(FilteredRequests.Count > 0)
+                {
+                    SelectedRequest = FilteredRequests.First();
+                    CardVis = Visibility.Visible;
+                }
+                else
+                {
+                    CardVis = Visibility.Hidden;
+                }
+                
+            }
+        }
+
 
         private Request selectedRequest;
         public Request SelectedRequest
@@ -143,13 +160,32 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        private string selectedFilter;
-        public string SelectedFilter
+        private Visibility cardVis;
+
+        public Visibility CardVis
         {
-            get { return selectedFilter; }
+            get { return cardVis; }
             set 
             { 
-                selectedFilter = value; 
+                cardVis = value;
+                OnPropertyChanged("CardVis");
+                if(value == Visibility.Visible)
+                {
+                    NothingVis = Visibility.Hidden;
+                    return;
+                }
+                NothingVis = Visibility.Visible;                
+            }
+        }
+
+        private Visibility nothingVis;
+        public Visibility NothingVis
+        {
+            get { return nothingVis; }
+            set 
+            { 
+                nothingVis = value;
+                OnPropertyChanged("NothingVis");
             }
         }
 
@@ -162,6 +198,7 @@ namespace ProjectLighthouse.ViewModel
         public RequestViewModel()
         {
             Requests = new ObservableCollection<Request>();
+            FilteredRequests = new ObservableCollection<Request>();
             ApproveCommand = new ApproveRequestCommand(this);
             DeclineCommand = new DeclineRequestCommand(this);
             SelectedRequest = new Request();
@@ -176,9 +213,10 @@ namespace ProjectLighthouse.ViewModel
             }
 
             GetRequests();
-            if (Requests.Count > 0) 
+            FilterRequests("All");
+            if (FilteredRequests.Count > 0) 
             { 
-                SelectedRequest = Requests.First(); 
+                SelectedRequest = FilteredRequests.First(); 
             }
             
         }
@@ -226,7 +264,7 @@ namespace ProjectLighthouse.ViewModel
                 
                 if (DatabaseHelper.Update(selectedRequest))
                 {
-                    GetRequests();
+                    FilterRequests(SelectedFilter);
                     OnPropertyChanged("SelectedRequest");
                     SelectedRequestChanged?.Invoke(this, new EventArgs());
                     SelectedRequest = Requests.First();
@@ -269,7 +307,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                GetRequests();
+                FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");
                 SelectedRequestChanged?.Invoke(this, new EventArgs());
                 SelectedRequest = Requests.First();
@@ -291,6 +329,33 @@ namespace ProjectLighthouse.ViewModel
             {
                 Requests.Add(request);
             }
+
+            Requests = new ObservableCollection<Request>(Requests.OrderByDescending(n => n.DateRaised));
+        }
+
+
+        public void FilterRequests(string filter)
+        {
+            switch (filter)
+            {
+                case "All":
+                    FilteredRequests = new ObservableCollection<Request>(Requests);
+                    break;
+                case "Pending":
+                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => !n.IsAccepted && !n.IsDeclined));
+                    break;
+                case "Accepted":
+                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.IsAccepted));
+                    break;
+                case "Declined":
+                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.IsDeclined));
+                    break;
+            }
+            if (FilteredRequests.Count > 0)
+            {
+                selectedRequest = FilteredRequests.First();
+            }
+            OnPropertyChanged("FilteredRequests");
         }
     }
 }

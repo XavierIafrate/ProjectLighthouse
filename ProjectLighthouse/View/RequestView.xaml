@@ -72,8 +72,6 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            
-
             <vm:RequestViewModel x:Key="vm"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -95,7 +93,7 @@
                       BorderThickness="2"
                       HorizontalScrollBarVisibility="auto"
                       HorizontalContentAlignment="Stretch">
-            <ListView ItemsSource="{Binding Requests, UpdateSourceTrigger=PropertyChanged}"
+            <ListView ItemsSource="{Binding FilteredRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       HorizontalContentAlignment="Stretch"
                       SelectedItem="{Binding SelectedRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
@@ -109,22 +107,22 @@
                    Background="Transparent"
                    Margin="0,5,0,0"
                    Grid.Row="1">
-            <TextBlock Text="{Binding Requests.Count, StringFormat='{}{0} request(s)'}"/>
+            <TextBlock Text="{Binding FilteredRequests.Count, StringFormat='{}{0} request(s)'}"/>
             <Separator Margin="5,0" Background="LightGray"/>
             <TextBlock Text="Filter by:" 
                        VerticalAlignment="Center"
                        Margin="0,0,10,0"/>
-            <ComboBox Width="100">
+            <ComboBox Width="100" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="All" IsSelected="True"/>
                 <ComboBoxItem Content="Pending"/>
                 <ComboBoxItem Content="Accepted"/>
                 <ComboBoxItem Content="Declined"/>
             </ComboBox>
         </StatusBar>
-
+        <TextBlock Text="None found" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Foreground="#dddddd" Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"/>
         <StackPanel Grid.Column="2"
                     Grid.RowSpan="2">
-            <Grid>
+            <Grid Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
                 <Rectangle RadiusX="10" RadiusY="10">
                     <Rectangle.Effect>
                         <DropShadowEffect BlurRadius="15" Direction="220" RenderingBias="Quality" ShadowDepth="5" Color="#FF000000" Opacity="0.3"/>
@@ -141,6 +139,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
@@ -161,6 +160,9 @@
                            Margin="0,5"
                            Foreground="{StaticResource colBody}"
                            FontSize="18"/>
+                        <TextBlock Text="{Binding SelectedRequest.Likeliness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   Grid.Row="3"
+                                   Visibility="{Binding ApprovalControlsVis}"/>
                     </Grid>
                     <Separator Margin="0,5"/>
                     <Grid Margin="5,0">

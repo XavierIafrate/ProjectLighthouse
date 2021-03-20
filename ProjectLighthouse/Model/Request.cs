@@ -26,5 +26,6 @@ namespace ProjectLighthouse.Model
         public string DeclinedReason { get; set; }
         public string ResultingLMO { get; set; }
         public string Status { get; set; }
+        public string Likeliness { get; set; }
     }
 }

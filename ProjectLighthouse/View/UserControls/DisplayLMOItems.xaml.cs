@@ -61,6 +61,24 @@ namespace ProjectLighthouse.View.UserControls
                     control.qtyrequired.Visibility = Visibility.Visible;
                 }
 
+                if(control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.RequiredQuantity)
+                {
+                    control.qtyrequired.Foreground = (Brush)Application.Current.Resources["colGood"];
+                }
+                else
+                {
+                    control.qtyrequired.Foreground = Brushes.Black;
+                }
+
+                if (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity)
+                {
+                    control.productText.Foreground = (Brush)Application.Current.Resources["colGood"];
+                }
+                else
+                {
+                    control.productText.Foreground = Brushes.Black;
+                }
+
             }
         }
 

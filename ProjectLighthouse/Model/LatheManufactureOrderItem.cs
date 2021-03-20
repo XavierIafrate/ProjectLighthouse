@@ -18,9 +18,18 @@ namespace ProjectLighthouse.Model
         public int RequiredQuantity { get; set; }
         [NotNull]
         public int TargetQuantity { get; set; }
+        public int QuantityMade { get; set; }
+        public int QuantityReject { get; set; }
+        public int CycleTime { get; set; }
+        public double MajorLength { get; set; }
+
         public DateTime DateRequired { get; set; }
         public DateTime DateAdded { get; set; }
         public string AddedBy { get; set; }
         public bool IsSpecialPart { get; set; }
+        public string UpdatedBy { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
+
+
 }

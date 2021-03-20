@@ -1,0 +1,30 @@
+﻿<Window x:Class="ProjectLighthouse.View.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectLighthouse.View"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Title="Lighthouse Login" Height="400" Width="300">
+    <Grid>
+        <Rectangle Fill="White" Stroke="{StaticResource gradGood}" StrokeThickness="10" RadiusX="5" RadiusY="5" MouseDown="Rectangle_MouseDown"/>
+        <StackPanel VerticalAlignment="Center"
+                    Margin="50,40">
+            <Image Source="/Resources/Lighthouse_dark.png"
+                   Width="150"
+                   RenderOptions.BitmapScalingMode="HighQuality"
+                   Margin="0,20,0,20"/>
+            <TextBlock Text="Username:" FontSize="16" Margin="0,0,0,5"/>
+            <TextBox x:Name="usernameText"/>
+            <TextBlock Text="Password:" FontSize ="16" Margin="0,20,0,5"/>
+            <PasswordBox Margin="0,0,0,20" x:Name="passwordText"/>
+            <TextBlock x:Name="message" Visibility="Collapsed"/>
+            <Button Style="{StaticResource ButtonTemplate}" Content="Log in" Click="LoginButton_Click"/>
+            <Button Style="{StaticResource CancelButtonTemplate}" Content="Exit" Click="ExitButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

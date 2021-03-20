@@ -7,6 +7,8 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
+        <FontFamily x:Key="ProximaNova">pack://application:,,,/Resources/Font/proximanova.ttf#Proxima Nova</FontFamily>
+        
         <SolidColorBrush x:Key="colCritical" Color="#d90429"/>
         <SolidColorBrush x:Key="colWarn" Color="#f4a261"/>
         <SolidColorBrush x:Key="colAdvise" Color="#e9c46a"/>
@@ -192,7 +194,6 @@
 
 
         <Style x:Key="ButtonTemplate" TargetType="Button">
-
             <Setter Property="Background" Value="{StaticResource gradBlue}"/>
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
             <Setter Property="Foreground" Value="White"/>
@@ -223,8 +224,41 @@
                     </Setter>
                 </Trigger>
             </Style.Triggers>
-
         </Style>
+
+        <Style x:Key="CancelButtonTemplate" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource gradBad}"/>
+            <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Height="24"
+                                BorderThickness="0"
+                                Padding="20,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#F00000" Offset="0" />
+                                <GradientStop Color="#DC281E" Offset="1" />
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
 
         <Style x:Key="ExitButton" TargetType="Button">
 

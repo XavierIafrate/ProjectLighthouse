@@ -12,10 +12,14 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock Text="{Binding ProductName, FallbackValue='P0123.456-789-A2'}" FontSize="20" Margin="10"/>
-        <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dd/MM/yy}', FallbackValue='01/01/1970'}" FontSize="20" Margin="10" Grid.Column="1" x:Name="requiredDate" HorizontalAlignment="Right"/>
-        <TextBlock Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs',FallbackValue='10 pcs'}" FontSize="20" Margin="10" Grid.Column="2" x:Name="requiredQuantity" HorizontalAlignment="Right"/>
-        <TextBlock Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='500 pcs'}" FontSize="20" Margin="10" Grid.Column="3" HorizontalAlignment="Right"/>
+        
+        <TextBlock Text="{Binding CycleTime, StringFormat='{}{0}s', FallbackValue='120s'}" FontSize="20" Margin="10" Grid.Column="1" x:Name="cycleTime" HorizontalAlignment="Right"/>
+        <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dd/MM/yy}', FallbackValue='01/01/1970'}" FontSize="20" Margin="10" Grid.Column="2" x:Name="requiredDate" HorizontalAlignment="Right"/>
+        
+        <TextBlock Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs',FallbackValue='10 pcs'}" FontSize="20" Margin="10" Grid.Column="3" x:Name="requiredQuantity" HorizontalAlignment="Right"/>
+        <TextBlock Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='500 pcs'}" FontSize="20" Margin="10" Grid.Column="4" HorizontalAlignment="Right"/>
     </Grid>
 </UserControl>

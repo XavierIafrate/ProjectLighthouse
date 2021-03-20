@@ -72,7 +72,11 @@ namespace ProjectLighthouse
         {
             if (WindowState == WindowState.Normal)
             {
-                this.DragMove();
+                try
+                {
+                    this.DragMove();
+                }
+                catch { }
             }
             else
             {

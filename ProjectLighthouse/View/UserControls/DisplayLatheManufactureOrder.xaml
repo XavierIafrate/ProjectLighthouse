@@ -26,7 +26,11 @@
                        Foreground="{StaticResource colNeutral}"
                        FontSize="12"/>
         </StackPanel>
-        <StackPanel Orientation="Vertical"
+        <Grid Grid.Column="2" Margin="10,0" VerticalAlignment="Center">
+            <Rectangle x:Name="badgeBackground" Fill="DarkBlue" RadiusX="10" RadiusY="10"/>
+            <TextBlock Text="READY" x:Name="BadgeText" Padding="15,2" Foreground="White" FontWeight="Bold"/>
+        </Grid>
+        <!--<StackPanel Orientation="Vertical"
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     Margin="10,0">
@@ -40,6 +44,6 @@
                    x:Name="StopFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
             <Image Source="/Resources/MO-RunningBadge.png" Height="15"
                    x:Name="RunningFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </UserControl>

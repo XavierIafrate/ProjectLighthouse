@@ -102,9 +102,14 @@ namespace ProjectLighthouse.View
                 ProductName = product.ProductName,
                 RequiredQuantity = requiredQuantity,
                 TargetQuantity = Math.Max(requiredQuantity + product.GetRecommendedQuantity(), MOQ),
-                DateRequired = dateRequired
+                DateRequired = dateRequired,
+                CycleTime = product.CycleTime,
+                MajorLength = product.MajorLength
             };
-
+            if(newItem.CycleTime == 0)
+            {
+                newItem.CycleTime = 120;
+            }
 
             return newItem;
         }
@@ -126,12 +131,46 @@ namespace ProjectLighthouse.View
                 if (!found)
                 {
                     ListboxProducts.Add(product);
+                    constructLMO.BarID = product.BarID;
                 }
             }
 
 
             LMOItemsListBox.ItemsSource = LMOItems.ToList();
             poolListBox.ItemsSource = ListboxProducts;
+
+            CalculateInsights();
+            
+        }
+
+        private void CalculateInsights()
+        {
+            int totaltime = 0;
+            int requiredtime = 0;
+            double bars = 0;
+
+            foreach (var item in LMOItems)
+            {
+                totaltime += item.CycleTime * item.TargetQuantity;
+                bars += (item.TargetQuantity * (item.MajorLength + 2)) / (double)2700;
+                if(item.RequiredQuantity > 0)
+                {
+                    requiredtime += item.RequiredQuantity * item.CycleTime;
+                }
+            }
+
+            bars = Math.Ceiling(bars);
+
+            var barStock = DatabaseHelper.Read<BarStock>().Where(n => n.Id == constructLMO.BarID);
+            int costPerBar = barStock.First().Cost;
+            double dblmaterialCost = Math.Round((Convert.ToDouble(costPerBar) / (double)100) * bars, 2);
+
+
+            nBars.Text = String.Format("{0}", bars);
+            materialCost.Text = String.Format("£{0}", Math.Round(dblmaterialCost, 0));
+            reqTime.Text = String.Format("{0} day(s)", Math.Round(requiredtime / (double)86400, 2) );
+            totalTime.Text = String.Format("{0} day(s)", Math.Round(totaltime / (double)86400, 2) );
+            constructLMO.TimeToComplete = totaltime;
         }
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
@@ -159,8 +198,6 @@ namespace ProjectLighthouse.View
 
         private void confirmButton_Click(object sender, RoutedEventArgs e)
         {
-
-            
             constructLMO.Name = GetNewMOName();
             constructLMO.CreatedAt = DateTime.Now;
             constructLMO.CreatedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
@@ -169,6 +206,7 @@ namespace ProjectLighthouse.View
             constructLMO.IsReady = false;
             constructLMO.IsUrgent = false;
             constructLMO.HasProgram = false;
+            constructLMO.BarID = ListboxProducts.First().BarID;
 
             DatabaseHelper.Insert(constructLMO);
 

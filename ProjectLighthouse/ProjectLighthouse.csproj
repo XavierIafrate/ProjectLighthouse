@@ -17,6 +17,7 @@
     <None Remove="Resources\Font\Proxima Nova Extrabold.otf" />
     <None Remove="Resources\Font\Proxima Nova Thin.otf" />
     <None Remove="Resources\Font\ProximaNova-Regular.otf" />
+    <None Remove="Resources\Font\proximanova.ttf" />
     <None Remove="Resources\LighthouseLogo.png" />
     <None Remove="Resources\Lighthouse_dark.png" />
     <None Remove="Resources\Logo.png" />
@@ -52,27 +53,30 @@
   <ItemGroup>
     <Resource Include="Resources\exit.png" />
     <Resource Include="Resources\Font\Proxima Nova Alt Bold.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Font\Proxima Nova Alt Light.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Font\Proxima Nova Alt Thin.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Font\Proxima Nova Black.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Font\Proxima Nova Bold.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Font\Proxima Nova Extrabold.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Font\Proxima Nova Thin.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Font\ProximaNova-Regular.otf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Font\proximanova.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\LighthouseLogo.png">

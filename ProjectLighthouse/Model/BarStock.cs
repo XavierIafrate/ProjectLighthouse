@@ -13,7 +13,7 @@ namespace ProjectLighthouse.Model
         public string Form { get; set; }
         public int Length { get; set; }
         public int Size { get; set; }
-        public string VendorId { get; set; }
         public double InStock { get; set; }
+        public int Cost { get; set; }
     }
 }

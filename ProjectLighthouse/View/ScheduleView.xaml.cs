@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.ViewModel;
+﻿using ProjectLighthouse.View.UserControls;
+using ProjectLighthouse.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,25 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
             viewModel = Resources["vm"] as ScheduleViewModel;
+        }
+
+        private void DisplayLMOScheduling_MouseClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right && (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin")) 
+            {
+                DisplayLMOScheduling clickedItem = sender as DisplayLMOScheduling;
+                viewModel.updateItem(clickedItem.order);
+            }
+
+        }
+        private void DisplayLMOScheduling_MouseClick_awaiting(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right && (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin"))
+            {
+                DisplayAwaitingScheduling clickedItem = sender as DisplayAwaitingScheduling;
+                viewModel.updateItem(clickedItem.order);
+            }
+
         }
     }
 }

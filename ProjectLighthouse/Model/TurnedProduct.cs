@@ -26,6 +26,8 @@ namespace ProjectLighthouse.Model
         public int CycleTime { get; set; }
         public bool isABitchToMake { get; set; }
         public string Material { get; set; }
+        public string BarID { get; set; }
+
         public double MajorLength { get; set; }
         public double MajorDiameter { get; set; }
         public DateTime lastManufactured { get; set; }
@@ -46,7 +48,7 @@ namespace ProjectLighthouse.Model
             int recommendedQuantity = 0;
             int soldPerMonth = QuantitySold / 18;
             double scaleFactor = Convert.ToDouble(targetMonthsStock) / (double)18;
-            double toMake = QuantitySold * scaleFactor - QuantityInStock;
+            double toMake = Math.Max(QuantitySold * scaleFactor - QuantityInStock, 0);
 
             recommendedQuantity = Convert.ToInt32( Math.Round( toMake / (double)100, 0) * (double)100);
             
@@ -56,9 +58,7 @@ namespace ProjectLighthouse.Model
 
         public bool canBeManufactured()
         {
-            
-
-            if (MajorLength - 2 > MaxLength || MajorDiameter > MaxDiameter)
+            if (MajorLength > MaxLength || MajorDiameter > MaxDiameter)
             {
                 return false;
             }
@@ -75,7 +75,7 @@ namespace ProjectLighthouse.Model
             {
                 reason = reason + "Diameter too large";
             }
-            if (MajorLength - 2 > 90)
+            if (MajorLength > MaxLength)
             {
                 if (reason == "")
                 {
@@ -91,7 +91,7 @@ namespace ProjectLighthouse.Model
 
         public bool IsScheduleCompatible(TurnedProduct otherProduct)
         {
-            return (otherProduct.MajorDiameter == MajorDiameter && otherProduct.DriveSize == DriveSize && otherProduct.DriveType == DriveType && otherProduct.ThreadSize == ThreadSize && otherProduct.ProductGroup == ProductGroup);
+            return (otherProduct.MajorDiameter == MajorDiameter && otherProduct.DriveSize == DriveSize && otherProduct.DriveType == DriveType && otherProduct.ThreadSize == ThreadSize && otherProduct.ProductGroup == ProductGroup && otherProduct.Material == Material);
         }
 
     }

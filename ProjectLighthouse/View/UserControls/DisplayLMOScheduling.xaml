@@ -4,13 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+             xmlns:converters ="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="400">
+             d:DesignHeight="28" d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <converters:intToDays x:Key="inttoday"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" MinWidth="140"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="70"/>
         </Grid.ColumnDefinitions>
-        <Rectangle Fill="DodgerBlue" RadiusX="10" RadiusY="10"/>
-        <TextBlock Text="{Binding Name, FallbackValue='M00001'}" FontSize="22" VerticalAlignment="Center" Foreground="White" Margin="10,5" FontWeight="Bold"/>
+        <Rectangle x:Name="bg" RadiusX="12.5" RadiusY="12.5" Grid.ColumnSpan="6"/>
+        <TextBlock Padding="10,0" Text="{Binding Name, FallbackValue='M00001'}" FontSize="16" VerticalAlignment="Center" Foreground="White" Margin="10,0" FontWeight="Bold"/>
+
+        <TextBlock Text="{Binding Status}" Foreground="White" Grid.Column="2" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding StartDate, StringFormat='{}{0:ddd dd MMM}'}" Foreground="White" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+        <TextBlock Text="{Binding TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}{0} d', FallbackValue='0 d'}" Foreground="White" Grid.Column="4" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding BarID, FallbackValue='00-A2'}" Foreground="White" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0"/>
     </Grid>
 </UserControl>
