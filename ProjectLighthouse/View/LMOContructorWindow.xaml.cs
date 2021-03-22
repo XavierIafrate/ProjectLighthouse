@@ -27,6 +27,7 @@ namespace ProjectLighthouse.View
         public Request ApprovedRequest;
         public LatheManufactureOrder constructLMO;
         public ObservableCollection<LatheManufactureOrderItem> LMOItems;
+        public string OrderBarID;
 
         public ObservableCollection<TurnedProduct> ListboxProducts;
         public ObservableCollection<TurnedProduct> ProductPool;
@@ -34,7 +35,7 @@ namespace ProjectLighthouse.View
         public LMOContructorWindow(Request approvedRequest)
         {
             InitializeComponent();
-
+            OrderBarID = "";
             ApprovedRequest = approvedRequest;
             constructLMO = new LatheManufactureOrder();
             LMOItems = new ObservableCollection<LatheManufactureOrderItem>();
@@ -80,6 +81,7 @@ namespace ProjectLighthouse.View
                 if (product.ProductName == productName)
                 {
                     requiredProduct = product;
+                    constructLMO.BarID = product.BarID;
                     LMOItems.Add(TurnedProductToLMOItem(requiredProduct, request.QuantityRequired, request.DateRequired));
                 }
             }
@@ -101,7 +103,7 @@ namespace ProjectLighthouse.View
             {
                 ProductName = product.ProductName,
                 RequiredQuantity = requiredQuantity,
-                TargetQuantity = Math.Max(requiredQuantity + product.GetRecommendedQuantity(), MOQ),
+                TargetQuantity = Math.Max(requiredQuantity + Math.Max(500, product.GetRecommendedQuantity()), MOQ),
                 DateRequired = dateRequired,
                 CycleTime = product.CycleTime,
                 MajorLength = product.MajorLength
@@ -131,16 +133,13 @@ namespace ProjectLighthouse.View
                 if (!found)
                 {
                     ListboxProducts.Add(product);
-                    constructLMO.BarID = product.BarID;
                 }
             }
-
 
             LMOItemsListBox.ItemsSource = LMOItems.ToList();
             poolListBox.ItemsSource = ListboxProducts;
 
             CalculateInsights();
-            
         }
 
         private void CalculateInsights()
@@ -206,7 +205,7 @@ namespace ProjectLighthouse.View
             constructLMO.IsReady = false;
             constructLMO.IsUrgent = false;
             constructLMO.HasProgram = false;
-            constructLMO.BarID = ListboxProducts.First().BarID;
+            constructLMO.HasStarted = false;
 
             DatabaseHelper.Insert(constructLMO);
 

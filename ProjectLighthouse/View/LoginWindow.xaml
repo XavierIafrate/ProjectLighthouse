@@ -19,9 +19,9 @@
                    RenderOptions.BitmapScalingMode="HighQuality"
                    Margin="0,20,0,20"/>
             <TextBlock Text="Username:" FontSize="16" Margin="0,0,0,5"/>
-            <TextBox x:Name="usernameText"/>
+            <TextBox x:Name="usernameText" Text="xav"/>
             <TextBlock Text="Password:" FontSize ="16" Margin="0,20,0,5"/>
-            <PasswordBox Margin="0,0,0,20" x:Name="passwordText"/>
+            <PasswordBox Margin="0,0,0,20" x:Name="passwordText" Password="123"/>
             <TextBlock x:Name="message" Visibility="Collapsed"/>
             <Button Style="{StaticResource ButtonTemplate}" Content="Log in" Click="LoginButton_Click"/>
             <Button Style="{StaticResource CancelButtonTemplate}" Content="Exit" Click="ExitButton_Click"/>

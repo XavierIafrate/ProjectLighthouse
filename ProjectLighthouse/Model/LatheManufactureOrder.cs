@@ -34,6 +34,7 @@ namespace ProjectLighthouse.Model
 
         public bool IsReady { get; set; }
         public bool HasProgram { get; set; }
+        public bool HasStarted { get; set; }
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
 

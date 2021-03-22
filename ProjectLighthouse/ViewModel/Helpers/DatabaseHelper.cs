@@ -44,12 +44,20 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
-                conn.CreateTable<T>();
-                int rows = conn.Update(item);
-                if (rows > 0)
+                try
                 {
-                    result = true;
+                    conn.CreateTable<T>();
+                    int rows = conn.Update(item);
+                    if (rows > 0)
+                    {
+                        result = true;
+                    }
                 }
+                catch (SQLiteException ex)
+                {
+                    MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                
             }
 
             return result;

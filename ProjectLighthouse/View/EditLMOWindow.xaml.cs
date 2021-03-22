@@ -51,6 +51,51 @@ namespace ProjectLighthouse.View
             //urgent.IsChecked = order.IsUrgent;
             program.IsChecked = order.HasProgram;
             ready.IsChecked = order.IsReady;
+
+            if (order.HasStarted)
+            {
+                program.IsEnabled = false;
+                ready.IsEnabled = false;
+
+                startButton.IsEnabled = false;
+                startTimeText.Text = String.Format("Started {0:dd/MM HH:mm}", order.StartDate);
+
+                if (order.SettingFinished > DateTime.MinValue)
+                {
+                    endButton.IsEnabled = false;
+                    stopTimeText.Text = String.Format("Finished setting {0: dd/MM HH:mm} ({1}h)", order.SettingFinished, Math.Round((order.SettingFinished - order.StartDate).TotalHours));
+                    if (order.IsComplete)
+                    {
+                        completeButton.IsEnabled = false;
+                        double timeElapsed = Math.Max((double)0, ((order.CompletedAt - order.StartDate).TotalSeconds - 3600 * 4));
+                        double efficacy = (double)100 * order.TimeToComplete / timeElapsed;
+                        efficacy = Math.Min((double)100, efficacy);
+                        efficacy = Math.Round(efficacy);
+                        completeText.Text = String.Format("Completed {0: dd/MM HH:mm} ({1}d {2}h, {3}% efficacy)", order.CompletedAt, Math.Round((order.CompletedAt - order.StartDate).TotalDays), Math.Round((double)(order.CompletedAt - order.StartDate).Hours), efficacy);
+                    }
+                    else
+                    {
+                        completeButton.IsEnabled = true;
+                        completeText.Text = "";
+                    }
+                }
+                else
+                {
+                    endButton.IsEnabled = true;
+                    stopTimeText.Text = "";
+                    completeButton.IsEnabled = false;
+                    completeText.Text = "";
+                }
+            }
+            else
+            {
+                startButton.IsEnabled = true;
+                startTimeText.Text = "";
+                endButton.IsEnabled = false;
+                stopTimeText.Text = "";
+                completeButton.IsEnabled = false;
+                completeText.Text = "";
+            }
             
 
             if (!order.HasProgram)
@@ -90,21 +135,14 @@ namespace ProjectLighthouse.View
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             TextRange textRange = new TextRange(notes.Document.ContentStart, notes.Document.ContentEnd);
-            order.Notes = textRange.Text.Substring(0, textRange.Text.Length - 1);
+            order.Notes = textRange.Text.Substring(0, textRange.Text.Length - 2);
             order.POReference = PORef.Text;
             order.AllocatedSetter = setters.Text;
             //order.IsUrgent = urgent.IsChecked ?? false;
             order.HasProgram = program.IsChecked ?? false;
             order.IsReady = ready.IsChecked ?? false;
 
-            if (order.IsReady)
-            {
-                order.Status = "Ready";
-            }
-            else
-            {
-                order.Status = "Problem";
-            }
+            calculateTime();
 
             order.ModifiedBy = App.currentUser.GetFullName();
             order.ModifiedAt = DateTime.Now;
@@ -136,6 +174,67 @@ namespace ProjectLighthouse.View
             editWindow.ShowDialog();
             PopulateControls();
             //RecalculateTime();
+        }
+
+        private void calculateTime()
+        {
+            int estimatedTimeSeconds = 0;
+            foreach (var item in items)
+            {
+                estimatedTimeSeconds += item.CycleTime * item.TargetQuantity;
+            }
+
+            order.TimeToComplete = estimatedTimeSeconds;
+        }
+
+        private void startButton_Click(object sender, RoutedEventArgs e)
+        {
+            order.StartDate = DateTime.Now;
+            order.Status = "Running";
+            order.HasStarted = true;
+            endButton.IsEnabled = true;
+            startButton.IsEnabled = false;
+            completeButton.IsEnabled = false;
+            startTimeText.Text = String.Format("Started {0: dd/MM HH:mm}", order.StartDate);
+        }
+
+        private void endButton_Click(object sender, RoutedEventArgs e)
+        {
+            order.SettingFinished = DateTime.Now;
+            order.SettingTime = (int)((DateTime)order.SettingFinished - (DateTime)order.StartDate).TotalSeconds;
+            order.Status = "Running";
+            endButton.IsEnabled = false;
+            startButton.IsEnabled = false;
+            completeButton.IsEnabled = true;
+            stopTimeText.Text = String.Format("Finished setting {0: dd/MM HH:mm} ({1}h)", order.SettingFinished, Math.Round((order.SettingFinished - order.StartDate).TotalHours));
+        }
+
+        private void completeButton_Click(object sender, RoutedEventArgs e)
+        {
+            order.CompletedAt = DateTime.Now;
+            order.Status = "Complete";
+            order.IsComplete = true;
+            endButton.IsEnabled = false;
+            startButton.IsEnabled = false;
+            completeButton.IsEnabled = false;
+            double timeElapsed = Math.Max((double)0, ((order.CompletedAt - order.StartDate).TotalSeconds - 3600 * 4));
+            double efficacy = (double)100* order.TimeToComplete / timeElapsed;
+            efficacy = Math.Min((double)100, efficacy);
+            efficacy = Math.Round(efficacy);
+            completeText.Text = String.Format("Completed {0: dd/MM HH:mm} ({1}d {2}h, {3}% efficacy)", order.CompletedAt, Math.Round((order.CompletedAt - order.StartDate).TotalDays), Math.Round((double)(order.CompletedAt - order.StartDate).Hours), efficacy);
+        }
+
+        private void ready_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if (checkBox.IsChecked ?? false)
+            {
+                order.Status = "Ready";
+            }
+            else
+            {
+                order.Status = "Problem";
+            }
         }
     }
 }
