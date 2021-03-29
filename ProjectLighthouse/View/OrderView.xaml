@@ -13,8 +13,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            
-
             <vm:OrderViewModel x:Key="vm"/>
             <converters:boolToHasProgram x:Key="boolToHasProgram"/>
             <converters:boolToIsReady x:Key="boolToIsReady"/>
@@ -40,7 +38,8 @@
                       HorizontalScrollBarVisibility="auto">
             <ListView ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       SelectedItem="{Binding SelectedLatheManufactureOrder, UpdateSourceTrigger=PropertyChanged}"
-                      HorizontalContentAlignment="Stretch">
+                      HorizontalContentAlignment="Stretch"
+                      BorderThickness="0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}"/>

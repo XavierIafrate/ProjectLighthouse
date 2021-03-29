@@ -22,17 +22,15 @@ namespace ProjectLighthouse.View.UserControls
     public partial class DisplayLMOScheduling : UserControl
     {
 
-
-
-        public LatheManufactureOrder order
+        public CompleteOrder orderObject
         {
-            get { return (LatheManufactureOrder)GetValue(orderProperty); }
-            set { SetValue(orderProperty, value); }
+            get { return (CompleteOrder)GetValue(orderObjectProperty); }
+            set { SetValue(orderObjectProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for order.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty orderProperty =
-            DependencyProperty.Register("order", typeof(LatheManufactureOrder), typeof(DisplayLMOScheduling), new PropertyMetadata(null, SetValues));
+        public static readonly DependencyProperty orderObjectProperty =
+            DependencyProperty.Register("orderObject", typeof(CompleteOrder), typeof(DisplayLMOScheduling), new PropertyMetadata(null, SetValues));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -40,9 +38,9 @@ namespace ProjectLighthouse.View.UserControls
 
             if (control != null)
             {
-                control.DataContext = control.order;
+                control.DataContext = control.orderObject;
 
-                switch (control.order.Status)
+                switch (control.orderObject.Order.Status)
                 {
                     case "Ready":
                         control.bg.Fill = (Brush)App.Current.Resources["colGood"];
@@ -59,7 +57,6 @@ namespace ProjectLighthouse.View.UserControls
                     default:
                         control.bg.Fill = Brushes.DodgerBlue;
                         break;
-
                 }
             }
         }

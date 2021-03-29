@@ -17,7 +17,7 @@
 
         <Rectangle Fill="White" RadiusX="10" RadiusY="10" Stroke="DodgerBlue" StrokeThickness="3"/>
         <StackPanel>
-            <Calendar DisplayDateStart="{x:Static sys:DateTime.Now}" Margin="15,15,15,5" x:Name="calendar"/>
+            <Calendar Margin="15,15,15,5" x:Name="calendar"/>
             <ComboBox Margin="10,5" x:Name="machine">
                 <ComboBoxItem Content="C01"/>
                 <ComboBoxItem Content="C02"/>

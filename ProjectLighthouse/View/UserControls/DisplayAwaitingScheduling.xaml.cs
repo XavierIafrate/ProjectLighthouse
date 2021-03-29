@@ -40,7 +40,6 @@ namespace ProjectLighthouse.View.UserControls
             if (control != null)
             {
                 control.DataContext = control.order;
-                control.bg.Fill = Brushes.Black;
             }
         }
 

@@ -63,17 +63,20 @@
             <TextBlock Text="Select Part Number:"
                        Style="{StaticResource tipTextStyle}"
                        Grid.Row="3"/>
-            <ScrollViewer Grid.Row="4" BorderBrush="DodgerBlue" BorderThickness="2" Background="Transparent">
+            
                 <ListBox ItemsSource="{Binding filteredList, UpdateSourceTrigger=PropertyChanged}"
                          SelectedValue="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         HorizontalContentAlignment="Stretch">
+                         HorizontalContentAlignment="Stretch"
+                         Grid.Row="4"
+                         ScrollViewer.CanContentScroll="True"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <uc:DisplayProduct TurnedProduct="{Binding}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </ScrollViewer>
+            
         </Grid>
         
         <StackPanel Grid.Column="1"

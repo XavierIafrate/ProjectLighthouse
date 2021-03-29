@@ -8,8 +8,8 @@
     <Application.Resources>
 
         <FontFamily x:Key="ProximaNova">pack://application:,,,/Resources/Font/proximanova.ttf#Proxima Nova</FontFamily>
-        
-        <SolidColorBrush x:Key="colCritical" Color="#d90429"/>
+
+        <SolidColorBrush x:Key="colCritical" Color="#e84118"/>
         <SolidColorBrush x:Key="colWarn" Color="#f4a261"/>
         <SolidColorBrush x:Key="colAdvise" Color="#e9c46a"/>
         <SolidColorBrush x:Key="colGood" Color="#2a9d8f"/>

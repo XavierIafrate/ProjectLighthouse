@@ -47,12 +47,25 @@ namespace ProjectLighthouse.View
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            Login();
+        }
+
+        private void passwordText_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                Login();
+            }
+        }
+
+        private void Login()
+        {
             message.Visibility = Visibility.Collapsed;
             foreach (User user in users)
             {
-                if(user.UserName == usernameText.Text)
+                if (user.UserName == usernameText.Text)
                 {
-                    if(user.Password == passwordText.Password)
+                    if (user.Password == passwordText.Password)
                     {
                         if (user.IsBlocked)
                         {

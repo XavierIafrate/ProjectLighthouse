@@ -114,12 +114,18 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
 
+            if (newRequest.DateRequired <= DateTime.Now)
+            {
+                MessageBox.Show("Please select a date!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+
             newRequest.Status = "Pending approval";
             newRequest.isProductionApproved = false;
             newRequest.isSchedulingApproved = false;
             newRequest.IsAccepted = false;
             newRequest.IsDeclined = false;
-            newRequest.RaisedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
+            newRequest.RaisedBy = App.currentUser.GetFullName();
             newRequest.DateRaised = DateTime.Now;
             newRequest.Product = selectedProduct.ProductName;
             newRequest.DeclinedReason = "";
