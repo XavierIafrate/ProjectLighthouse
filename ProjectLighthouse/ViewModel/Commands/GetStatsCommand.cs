@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.View.UserControls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +7,16 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
-    public class DeclineRequestCommand : ICommand
+    public class GetStatsCommand : ICommand
     {
-        public event EventHandler CanExecuteChanged;
+        private MachineStatsViewModel viewModel;
 
-        private RequestViewModel viewModel { get; set; }
-
-        public DeclineRequestCommand(RequestViewModel vm)
+        public GetStatsCommand(MachineStatsViewModel vm)
         {
             viewModel = vm;
-
         }
+
+        public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
@@ -27,7 +25,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            viewModel.DeclineRequest();
+            viewModel.getStats();
         }
     }
 }

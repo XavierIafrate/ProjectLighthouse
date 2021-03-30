@@ -32,6 +32,16 @@ namespace ProjectLighthouse.View
             foreach (var user in usersList)
             {
                 users.Add(user);
+                if(user.computerUsername == Environment.UserName)
+                {
+                    usernameText.Text = user.UserName;
+                    if(Environment.UserName == "xavier")
+                    {
+                        passwordText.Password = user.Password;
+                    }
+                    passwordText.Focusable = true;
+                    passwordText.Focus();
+                }
             }
         }
 
@@ -73,6 +83,9 @@ namespace ProjectLighthouse.View
                             message.Visibility = Visibility.Visible;
                             return;
                         }
+
+                        user.computerUsername = Environment.UserName;
+                        DatabaseHelper.Update<User>(user);
                         auth_user = user;
                         this.Close();
                         return;

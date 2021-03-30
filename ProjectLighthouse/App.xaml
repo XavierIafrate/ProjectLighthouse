@@ -192,7 +192,6 @@
             <Setter Property="Background" Value="White"/>
         </Style>
 
-
         <Style x:Key="ButtonTemplate" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource gradBlue}"/>
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
@@ -301,8 +300,9 @@
         <DataTemplate DataType="{x:Type vms:NewRequestViewModel}">
             <views:NewRequestView/>
         </DataTemplate>
-        
-        
+        <DataTemplate DataType="{x:Type vms:MachineStatsViewModel}">
+            <views:MachineStatsView/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vms:OrderViewModel}">
             <views:OrderView/>
         </DataTemplate>

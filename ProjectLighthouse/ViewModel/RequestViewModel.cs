@@ -161,7 +161,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility cardVis;
-
         public Visibility CardVis
         {
             get { return cardVis; }
@@ -315,9 +314,7 @@ namespace ProjectLighthouse.ViewModel
             else
             {
                 MessageBox.Show("Failed to update the request.", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            
+            }            
         }
 
         public void GetRequests()

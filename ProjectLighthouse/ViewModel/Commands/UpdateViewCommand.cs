@@ -52,6 +52,11 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new OrderViewModel();
                 viewModel.NavText = "Manufacture Orders";
             }
+            else if (parameter.ToString() == "Machine Stats")
+            {
+                viewModel.SelectedViewModel = new MachineStatsViewModel();
+                viewModel.NavText = "Machine Statistics";
+            }
             else if (parameter.ToString() == "Products")
             {
                 MessageBox.Show("Not implemented yet!");

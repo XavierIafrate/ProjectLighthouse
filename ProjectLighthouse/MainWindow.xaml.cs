@@ -46,14 +46,9 @@ namespace ProjectLighthouse
 
     internal enum WindowCompositionAttribute
     {
-        // ...
         WCA_ACCENT_POLICY = 19
-        // ...
     }
 
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         [DllImport("user32.dll")]

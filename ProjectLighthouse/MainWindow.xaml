@@ -108,6 +108,10 @@
                         CommandParameter="Schedule"
                         Style="{StaticResource menuButtonStyle}"
                         Content="Schedule"/>
+                <Button Command="{Binding UpdateViewCommand}" 
+                        CommandParameter="Machine Stats"
+                        Style="{StaticResource menuButtonStyle}"
+                        Content="Runtime"/>
                 
                 <!--<Button Command="{Binding UpdateViewCommand}" 
                         CommandParameter="BarStock"

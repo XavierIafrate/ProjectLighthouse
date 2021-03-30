@@ -75,10 +75,6 @@
                                         <Run Text="Workload:"/>
                                         <Run Text="{Binding totalTime, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Converter={StaticResource intToDayConverter}}"/>
                                         <Run Text="days"/>
-                                        
-                                        <Run Text="//"/>
-                                        <Run Text="Booked up to:"/>
-                                        <Run Text="{Binding bookedTo, StringFormat='{}{0:dd/MM/yy}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                                     </TextBlock>
                                 </StackPanel>
                             </Grid>
@@ -135,7 +131,7 @@
                                         
                                         <Run Text="//"/>
                                         <Run Text="Booked up to:"/>
-                                        <Run Text="{Binding bookedTo, StringFormat='{}{0:dd/MM/yy}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                                        <Run Text="{Binding bookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                                     </TextBlock>
                                 </StackPanel>
                             </Grid>
@@ -192,7 +188,7 @@
                                         
                                         <Run Text="//"/>
                                         <Run Text="Booked up to:"/>
-                                        <Run Text="{Binding bookedTo, StringFormat='{}{0:dd/MM/yy}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                                        <Run Text="{Binding bookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                                     </TextBlock>
                                 </StackPanel>
                             </Grid>

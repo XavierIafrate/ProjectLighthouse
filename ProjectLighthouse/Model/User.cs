@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace ProjectLighthouse.Model
 {
     public class User
     {
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -18,6 +20,7 @@ namespace ProjectLighthouse.Model
         public bool CanApproveRequests { get; set; }
         public bool CanEditLMOs { get; set; }
         public bool CanUpdateLMOs { get; set; }
+        public string computerUsername { get; set; }
 
         public string GetFullName()
         {
