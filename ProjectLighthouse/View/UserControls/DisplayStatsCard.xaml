@@ -4,6 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="valueText">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="7,1"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style TargetType="Rectangle" x:Key="valBackground">
+            <Setter Property="Fill" Value="Black"/>
+            <Setter Property="RadiusX" Value="7"/>
+            <Setter Property="RadiusY" Value="7"/>
+            <Setter Property="Height" Value="14"/>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Rectangle RadiusX="20" RadiusY="20" x:Name="bg">
             <Rectangle.Fill>
@@ -42,30 +57,46 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Availability" Grid.Column="0" Grid.Row="0"/>
-                <TextBlock Text="{Binding Availability}" 
+                <Rectangle Grid.Row="0"
+                           Grid.Column="2"
+                           x:Name="availableText"
+                           Style="{StaticResource valBackground}"/>
+                <TextBlock Text="{Binding Availability, FallbackValue='AVAILABLE'}" 
+                           Style="{StaticResource valueText}"
                            Grid.Column="2" 
-                           Grid.Row="0"
-                           HorizontalAlignment="Right"/>
+                           Grid.Row="0"/>
 
                 <TextBlock Text="Controller Mode" Grid.Column="0" Grid.Row="1"/>
-                <TextBlock Text="{Binding ControllerMode}" 
+                <Rectangle Grid.Row="1"
+                           Grid.Column="2"
+                           x:Name="controllerText"
+                           Style="{StaticResource valBackground}"/>
+                <TextBlock Text="{Binding ControllerMode, FallbackValue='AUTOMATIC'}"
+                           Style="{StaticResource valueText}"
                            Grid.Column="2" 
-                           Grid.Row="1"
-                           HorizontalAlignment="Right"/>
+                           Grid.Row="1"/>
 
                 <TextBlock Text="Controller Mode Override" Grid.Column="0" Grid.Row="2"/>
-                <TextBlock Text="{Binding ControllerModeOverride}" 
+                <Rectangle Grid.Row="2"
+                           Grid.Column="2"
+                           x:Name="controllerOverrideText"
+                           Style="{StaticResource valBackground}"/>
+                <TextBlock Text="{Binding ControllerModeOverride, FallbackValue='OFF'}"
+                           Style="{StaticResource valueText}"
                            Grid.Column="2" 
-                           Grid.Row="2"
-                           HorizontalAlignment="Right"/>
+                           Grid.Row="2"/>
 
                 <TextBlock Text="Emergency Stop" Grid.Column="0" Grid.Row="3"/>
-                <TextBlock Text="{Binding EmergencyStop}" 
+                <Rectangle Grid.Row="3"
                            Grid.Column="2"
-                           Grid.Row="3"
-                           HorizontalAlignment="Right"/>
+                           x:Name="armedText"
+                           Style="{StaticResource valBackground}"/>
+                <TextBlock Text="{Binding EmergencyStop, FallbackValue='ARMED'}" 
+                           Style="{StaticResource valueText}"
+                           Grid.Column="2"
+                           Grid.Row="3"/>
                 
-                <TextBlock Text="Timings" 
+                <TextBlock Text="Machine Cycle" 
                            FontSize="16" 
                            Margin="0,10,0,0" 
                            Grid.Column="0" 
@@ -73,7 +104,7 @@
                 <Separator Grid.Row="5" 
                            Grid.ColumnSpan="3"/>
 
-                <TextBlock Text="Program" Grid.Column="0" Grid.Row="6"/>
+                <TextBlock Text="Program ID" Grid.Column="0" Grid.Row="6"/>
                 <TextBlock Text="{Binding Program}" 
                            Grid.Column="2"
                            Grid.Row="6"
@@ -102,7 +133,29 @@
                            Grid.Column="2"
                            Grid.Row="10"
                            HorizontalAlignment="Right"/>
+                
+                
             </Grid>
+            <StackPanel>
+                <TextBlock Text="Resources" 
+                           FontSize="16" 
+                           Margin="0,10,0,0" 
+                           Grid.Column="0" 
+                           Grid.Row="4"/>
+                <Separator Grid.Row="5" 
+                           Grid.ColumnSpan="3"/>
+                
+                <TextBlock Text="Estimated time remaining" Margin="0,5"/>
+                <TextBlock Text="6d 12h 59m"
+                           FontSize="20"
+                           x:Name="completionTime" 
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="Estimated completion at" Margin="0,10,0,5"/>
+                <TextBlock Text="16th March"
+                           FontSize="20"
+                           x:Name="completionDate" 
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -40,7 +40,30 @@ namespace ProjectLighthouse.View.UserControls
 
             if(control.stats != null)
             {
+                control.Visibility = Visibility.Visible;
                 control.DataContext = control.stats;
+                control.completionDate.Text = control.stats.EstimateCompletionDate();
+                control.completionTime.Text = control.stats.EstimateCompletionTimeRemaining();
+                if(control.stats.Availability == "AVAILABLE")
+                {
+                    control.availableText.Fill = (Brush)App.Current.Resources["colGood"];
+                }
+                if (control.stats.ControllerMode == "AUTOMATIC")
+                {
+                    control.controllerText.Fill = (Brush)App.Current.Resources["colGood"];
+                }
+                if (control.stats.ControllerModeOverride == "OFF")
+                {
+                    control.controllerOverrideText.Fill = (Brush)App.Current.Resources["colGood"];
+                }
+                if (control.stats.EmergencyStop == "ARMED")
+                {
+                    control.armedText.Fill = (Brush)App.Current.Resources["colGood"];
+                }
+            }
+            else
+            {
+                control.Visibility = Visibility.Collapsed;
             }
         }
 

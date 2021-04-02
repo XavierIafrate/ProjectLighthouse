@@ -133,7 +133,17 @@ namespace ProjectLighthouse.ViewModel
 
             if (DatabaseHelper.Insert(newRequest))
             {
+                string message = String.Format("{0} has submitted a request for {1:#,##0}pcs of {2}. {3} ({4}, {5}). Required for {6:d MMMM}.", 
+                    App.currentUser.GetFullName(), 
+                    newRequest.QuantityRequired, 
+                    newRequest.Product, 
+                    newRequest.Likeliness,
+                    RecommendedStockText,
+                    PotentialQuantityText,
+                    newRequest.DateRequired);
+                //SMSHelper.SendText("+447979606705", message);
                 MessageBox.Show("Your request has been submitted", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                ClearScreen();
             }
             else
             {
@@ -148,10 +158,14 @@ namespace ProjectLighthouse.ViewModel
             newRequest = new Request();
             Families = new List<string>();
             SelectedGroup = "";
-            selectedProduct = new TurnedProduct();
+            SelectedProduct = new TurnedProduct();
 
             PopulateComboBox();
             PopulateListBox();
+            OnPropertyChanged("filteredList");
+            OnPropertyChanged("SelectedGroup");
+            OnPropertyChanged("SelectedProduct");
+
         }
 
         public void CalculateInsights()

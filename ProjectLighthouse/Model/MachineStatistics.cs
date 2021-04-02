@@ -30,6 +30,24 @@ namespace ProjectLighthouse.Model
             return string.Format("{0}d {1:D2}h {2:D2}m ({3:dddd d}{4} {3:MMMM HH:mm})", t.Days, t.Hours, t.Minutes, finishDate, GetDaySuffix(finishDate.Day));
         }
 
+        public string EstimateCompletionDate()
+        {
+            int secondsLeft = CycleTime * PartCountRemaining;
+            TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
+            DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
+
+            return string.Format("{0:dddd d}{1} {0:MMMM HH:mm}",finishDate, GetDaySuffix(finishDate.Day));
+        }
+
+        public string EstimateCompletionTimeRemaining()
+        {
+            int secondsLeft = CycleTime * PartCountRemaining;
+            TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
+            DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
+
+            return string.Format("{0:D2}d {1:D2}h {2:D2}m", t.Days, t.Hours, t.Minutes);
+        }
+
         private string GetDaySuffix(int day)
         {
             switch (day)

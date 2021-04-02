@@ -106,13 +106,13 @@
             <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="20,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Schedule Items" FontSize="22" Margin="0,5"/>
-                <ListBox Grid.Row="1" x:Name="LMOItemsListBox" HorizontalContentAlignment="Stretch" Height="200">
+                <ListBox Grid.Row="1" x:Name="LMOItemsListBox" HorizontalContentAlignment="Stretch" Margin="0,5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <uc:LMOConstructionDisplayLMOItems Item="{Binding}"/>
