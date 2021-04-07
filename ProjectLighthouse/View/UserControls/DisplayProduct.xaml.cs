@@ -41,6 +41,13 @@ namespace ProjectLighthouse.View.UserControls
                 {
                     control.productText.Foreground = Brushes.Red;
                 }
+                if (String.IsNullOrEmpty(control.TurnedProduct.Material))
+                {
+                    control.materialBadge.Visibility = Visibility.Hidden;
+                } else
+                {
+                    control.materialBadge.Visibility = Visibility.Visible;
+                }
                 switch (control.TurnedProduct.Material)
                 {
                     case "A2":

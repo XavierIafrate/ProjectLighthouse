@@ -40,7 +40,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
         private Request selectedRequest;
         public Request SelectedRequest
         {
@@ -74,7 +73,9 @@ namespace ProjectLighthouse.ViewModel
                     ApprovalControlsVis = Visibility.Collapsed;
                 }
 
-                if(selectedRequest.Status == "Pending approval" && (App.currentUser.UserRole == "Production" || App.currentUser.UserRole == "admin"))
+                if(selectedRequest.Status == "Pending approval" && 
+                    (App.currentUser.UserRole == "Production" || 
+                    App.currentUser.UserRole == "admin"))
                 {
                     ProductionCheckboxEnabled = true;
                 }
@@ -83,7 +84,9 @@ namespace ProjectLighthouse.ViewModel
                     ProductionCheckboxEnabled = false;
                 }
 
-                if (selectedRequest.Status == "Pending approval" && (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin"))
+                if (selectedRequest.Status == "Pending approval" && 
+                    (App.currentUser.UserRole == "Scheduling" || 
+                    App.currentUser.UserRole == "admin"))
                 {
                     SchedulingCheckboxEnabled = true;
                 }
@@ -92,7 +95,10 @@ namespace ProjectLighthouse.ViewModel
                     SchedulingCheckboxEnabled = false;
                 }
 
-                if (selectedRequest.Status == "Pending approval" && (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin" || App.currentUser.UserRole == "Production"))
+                if (selectedRequest.Status == "Pending approval" && 
+                    (App.currentUser.UserRole == "Scheduling" || 
+                    App.currentUser.UserRole == "admin" || 
+                    App.currentUser.UserRole == "Production"))
                 {
                     DropboxEnabled = true;
                 }
@@ -136,7 +142,6 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("SchedulingCheckboxEnabled");
             }
         }
-
 
         private Visibility approvalControlsVis;
         public Visibility ApprovalControlsVis
@@ -329,7 +334,6 @@ namespace ProjectLighthouse.ViewModel
 
             Requests = new ObservableCollection<Request>(Requests.OrderByDescending(n => n.DateRaised));
         }
-
 
         public void FilterRequests(string filter)
         {

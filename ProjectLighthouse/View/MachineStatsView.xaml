@@ -16,6 +16,7 @@
     <Grid DataContext="{StaticResource vm}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 

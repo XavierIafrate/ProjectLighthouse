@@ -26,6 +26,14 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
             viewModel = Resources["vm"] as NewRequestViewModel;
+            enableSubmit();
+        }
+
+        private void enableSubmit()
+        {
+            submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate.HasValue &&
+                                     Int32.TryParse(quantityBox.Text, out int j) &&
+                                     productsListBox.SelectedItem != null;
         }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
@@ -36,6 +44,7 @@ namespace ProjectLighthouse.View
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
             viewModel.newRequest.DateRequired = DateRequiredCalendarView.SelectedDate.Value;
+            enableSubmit();
         }
 
         private void quantityBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -61,7 +70,12 @@ namespace ProjectLighthouse.View
             {
                 MessageBox.Show("Invalid Quantity", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            enableSubmit();
+        }
 
+        private void productsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            enableSubmit();
         }
     }
 }

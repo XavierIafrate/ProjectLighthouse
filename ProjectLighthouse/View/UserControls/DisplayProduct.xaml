@@ -16,26 +16,15 @@
                    x:Name="productText"
                    Foreground="{StaticResource colBody}"
                    FontSize="15"/>
-        <Rectangle x:Name="materialBadge" Fill="Black" Grid.Column="2" RadiusX="10" RadiusY="10"/>
+        <Rectangle x:Name="materialBadge" 
+                   Fill="Black" 
+                   Grid.Column="2" 
+                   RadiusX="10" 
+                   RadiusY="10"/>
         <TextBlock Text="{Binding Material, FallbackValue='A2'}"
                    Foreground="White"
                    Padding="10,0"
                    FontSize="15"
                    Grid.Column="2"/>
-        <!--<StackPanel Orientation="Vertical"
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    Margin="10,0">
-            <Image Source="/Resources/MO-CompleteBadge.png" Height="15"
-                   x:Name="CompleteFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/MO-ReadyBadge.png" Height="15"
-                   x:Name="ReadyFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/MO-WarningBadge.png" Height="15"
-                   x:Name="WarnFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/MO-ErrorBadge.png" Height="15"
-                   x:Name="StopFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/MO-RunningBadge.png" Height="15"
-                   x:Name="RunningFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-        </StackPanel>-->
     </Grid>
 </UserControl>

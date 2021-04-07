@@ -42,6 +42,12 @@ namespace ProjectLighthouse.Model
         public string ProductGroup { get; set; }
         public int QuantityManufactured { get; set; }
 
+        public bool isSpecialPart { get; set; }
+        public string CustomerRef { get; set; }
+        public string DrawingFilePath { get; set; }
+        public string AddedBy { get; set; }
+        public DateTime AddedDate { get; set; }
+
         public int GetRecommendedQuantity()
         {
             const int targetMonthsStock = 12;
@@ -91,8 +97,14 @@ namespace ProjectLighthouse.Model
 
         public bool IsScheduleCompatible(TurnedProduct otherProduct)
         {
-            return (otherProduct.MajorDiameter == MajorDiameter && otherProduct.DriveSize == DriveSize && otherProduct.DriveType == DriveType && otherProduct.ThreadSize == ThreadSize && otherProduct.ProductGroup == ProductGroup && otherProduct.Material == Material);
+            return (
+                otherProduct.MajorDiameter == MajorDiameter && 
+                otherProduct.DriveSize == DriveSize &&
+                otherProduct.DriveType == DriveType && 
+                otherProduct.ThreadSize == ThreadSize && 
+                otherProduct.ProductGroup == ProductGroup && 
+                otherProduct.Material == Material
+                );
         }
-
     }
 }

@@ -66,7 +66,9 @@
             
                 <ListBox ItemsSource="{Binding filteredList, UpdateSourceTrigger=PropertyChanged}"
                          SelectedValue="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         SelectionChanged="productsListBox_SelectionChanged"
                          HorizontalContentAlignment="Stretch"
+                         x:Name="productsListBox"
                          Grid.Row="4"
                          ScrollViewer.CanContentScroll="True"
                          ScrollViewer.VerticalScrollBarVisibility="Visible">
@@ -78,10 +80,14 @@
                 </ListBox>
             
         </Grid>
-        
-        <StackPanel Grid.Column="1"
-                    HorizontalAlignment="Center"
-                    Margin="20,0">
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel HorizontalAlignment="Center"
+                        Margin="20,0">
             <TextBlock Text="When do you need them for?"
                        Style="{StaticResource tipTextStyle}"
                        FontSize="16"
@@ -94,15 +100,27 @@
                        Margin="0,5"/>
             <TextBox x:Name="quantityBox"
                      TextChanged="quantityBox_TextChanged"/>
-            <Button Content="SUBMIT"
-                    Width="150"
-                    Margin="0,10"
-                    x:Name="submitButton"
-                    Click="submitButton_Click"
-                    Style="{StaticResource ButtonTemplate}"
-                    HorizontalAlignment="Right"/>
-        </StackPanel>
-        
+                <Button Content="SUBMIT"
+                        Width="150"
+                        Margin="0,10"
+                        x:Name="submitButton"
+                        Click="submitButton_Click"
+                        Style="{StaticResource GreenButtonTemplate}"
+                        HorizontalAlignment="Right"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2">
+                <TextBlock Text="Not a catalogue item?" 
+                           HorizontalAlignment="Center" 
+                           FontStyle="Italic" 
+                           Foreground="DimGray"/>
+                <Button Style="{StaticResource ButtonTemplate}" 
+                        Command="{Binding AddSpecialCommand}" 
+                        Content="+ Add a new special"
+                        Width="150"/>
+            </StackPanel>
+            
+        </Grid>
+
         <Grid Grid.Column="2">
             <Grid Margin="20,0,0,0">
                 <Grid.RowDefinitions>

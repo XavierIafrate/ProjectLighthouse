@@ -1,4 +1,6 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.View;
+using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -19,10 +22,7 @@ namespace ProjectLighthouse.ViewModel
         public string RecommendedStockText { get; set; }
         public string LikelinessText { get; set; }
 
-
-
         private TurnedProduct selectedProduct;
-
         public TurnedProduct SelectedProduct
         {
             get { return selectedProduct; }
@@ -62,12 +62,13 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
+        public ICommand AddSpecialCommand { get; set; }
         public event EventHandler SelectedGroupChanged;
         public event EventHandler SelectedProductChanged;
 
         public NewRequestViewModel()
         {
+            AddSpecialCommand = new NewSpecialPartCommand(this);
             ClearScreen();
         }
 
@@ -80,21 +81,37 @@ namespace ProjectLighthouse.ViewModel
             foreach(var product in products)
             {
                 turnedProducts.Add(product);
-                if(!Families.Any(item => item.ToString() == product.ProductName.Substring(0, 5)))
+                if (product.ProductGroup != "Specials")
                 {
-                    Families.Add(product.ProductName.Substring(0, 5));
+                    if (!Families.Any(item => item.ToString() == product.ProductName.Substring(0, 5)))
+                    {
+                        Families.Add(product.ProductName.Substring(0, 5));
+                    }
                 }
+                
             }
 
             Families = Families.OrderBy(n => n).ToList();
+            Families.Add("Specials");
         }
         
         public void PopulateListBox()
         {
             filteredList.Clear();
+            if(SelectedGroup == "Specials")
+            {
+                foreach (var product in turnedProducts)
+                {
+                    if (product.ProductGroup == "Specials")
+                    {
+                        filteredList.Add(product);
+                    }
+                }
+                return;
+            }
             foreach(var product in turnedProducts)
             {
-                if(product.ProductName.Substring(0,5) == SelectedGroup)
+                if(product.ProductName.Substring(0,Math.Min(5, product.ProductName.Length)) == SelectedGroup)
                 {
                     filteredList.Add(product);
                 }
@@ -221,5 +238,30 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public void AddSpecialRequest()
+        {
+            AddSpecialPartWindow window = new AddSpecialPartWindow();
+            window.ShowDialog();
+            if(!String.IsNullOrWhiteSpace(window.filename) && 
+               !String.IsNullOrWhiteSpace(window.productName) && 
+               !String.IsNullOrWhiteSpace(window.customerName) && 
+               window.submitted)
+            {
+                TurnedProduct newSpecial = new TurnedProduct()
+                {
+                    ProductName = window.productName,
+                    isSpecialPart = true,
+                    CustomerRef = window.customerName,
+                    DrawingFilePath = window.filename,
+                    AddedBy = App.currentUser.UserName,
+                    AddedDate = DateTime.Now,
+                    ProductGroup = "Specials"
+                };
+
+                DatabaseHelper.Insert<TurnedProduct>(newSpecial);
+                ClearScreen();
+                SelectedGroup = "Specials";
+            }
+        }
     }
 }
