@@ -63,8 +63,8 @@
 
             </StackPanel>
 
-            <StackPanel Grid.Column="1" Margin="0,10">
-                <TextBlock Text="{Binding Order.StartDate, StringFormat='{}Start: {0:ddd dd MMM}', FallbackValue='Start: Mon 01 Jan'}" Style="{StaticResource itemTextStyle}"/>
+            <StackPanel Grid.Column="1" Margin="10">
+                <TextBlock Text="{Binding Order.StartDate, StringFormat='{}Start: {0:ddd dd MMM}'}" Style="{StaticResource itemTextStyle}"/>
                 <TextBlock Text="{Binding Order, Converter='{StaticResource startToFinish}', StringFormat='{}Finish: {0:ddd dd MMM}', FallbackValue='Finish: Fri 05 Jan'}" Style="{StaticResource itemTextStyle}"/>
                 <TextBlock Text="{Binding Order.TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}Runtime: {0} days', FallbackValue='Runtime: 5 days'}" Style="{StaticResource itemTextStyle}"/>
                 <TextBlock Foreground="{StaticResource materialOnBackground}" Grid.Column="4" VerticalAlignment="Center">

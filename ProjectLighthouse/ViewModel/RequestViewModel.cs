@@ -261,7 +261,11 @@ namespace ProjectLighthouse.ViewModel
             {
                 LatheManufactureOrder targetOrder = orders.First();
                 targetOrder.POReference = PurchaseRef;
+                SelectedRequest.POReference = PurchaseRef;
                 DatabaseHelper.Update(targetOrder);
+                SelectedRequest.LastModified = DateTime.Now;
+                SelectedRequest.ModifiedBy = App.currentUser.GetFullName();
+                DatabaseHelper.Update(SelectedRequest);
                 MessageBox.Show("Successfully updated " + targetOrder.Name, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
