@@ -50,62 +50,7 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("SelectedRequest");
                 SelectedRequestChanged?.Invoke(this, new EventArgs());
 
-                if(selectedRequest == null)
-                {
-                    return;
-                }
-
-                if (String.IsNullOrEmpty(selectedRequest.ModifiedBy))
-                {
-                    ModifiedVis = Visibility.Collapsed;
-                }
-                else
-                {
-                    ModifiedVis = Visibility.Visible;
-                }
-
-                if(App.currentUser.CanApproveRequests && selectedRequest.Status == "Pending approval")
-                {
-                    ApprovalControlsVis = Visibility.Visible;
-                }
-                else
-                {
-                    ApprovalControlsVis = Visibility.Collapsed;
-                }
-
-                if(selectedRequest.Status == "Pending approval" && 
-                    (App.currentUser.UserRole == "Production" || 
-                    App.currentUser.UserRole == "admin"))
-                {
-                    ProductionCheckboxEnabled = true;
-                }
-                else
-                {
-                    ProductionCheckboxEnabled = false;
-                }
-
-                if (selectedRequest.Status == "Pending approval" && 
-                    (App.currentUser.UserRole == "Scheduling" || 
-                    App.currentUser.UserRole == "admin"))
-                {
-                    SchedulingCheckboxEnabled = true;
-                }
-                else
-                {
-                    SchedulingCheckboxEnabled = false;
-                }
-
-                if (selectedRequest.Status == "Pending approval" && 
-                    (App.currentUser.UserRole == "Scheduling" || 
-                    App.currentUser.UserRole == "admin" || 
-                    App.currentUser.UserRole == "Production"))
-                {
-                    DropboxEnabled = true;
-                }
-                else
-                {
-                    DropboxEnabled = false;
-                }
+                LoadRequestCard(value);
             }
         }
 
@@ -120,6 +65,32 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public bool UpdateButtonEnabled { get; set; }
+
+        private string purchaseRef;
+        public string PurchaseRef
+        {
+            get { return purchaseRef; }
+            set 
+            { 
+                purchaseRef = value;
+                if(value == null)
+                {
+                    return;
+                }
+                if (value.Length > 3)
+                {
+                    UpdateButtonEnabled = value.Substring(0, 3) == "POR";
+                }
+                else
+                {
+                     UpdateButtonEnabled = false;
+                }
+                OnPropertyChanged("UpdateButtonEnabled");
+                OnPropertyChanged("PurchaseRef");
+            }
+        }
+
         private bool dropboxEnabled;
         public bool DropboxEnabled
         {
@@ -130,8 +101,7 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("DropboxEnabled");
             }
         }
-
-
+        
         private bool schedulingCheckboxEnabled;
         public bool SchedulingCheckboxEnabled
         {
@@ -193,9 +163,42 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private Visibility decisionVis;
+        public Visibility DecisionVis
+        {
+            get { return decisionVis; }
+            set 
+            { 
+                decisionVis = value;
+                OnPropertyChanged("DecisionVis");
+            }
+        }
+
+        private Visibility approvedVis;
+        public Visibility ApprovedVis
+        {
+            get { return approvedVis; }
+            set
+            {
+                approvedVis = value;
+                OnPropertyChanged("ApprovedVis");
+            }
+        }
+
+        private Visibility declinedVis;
+        public Visibility DeclinedVis
+        {
+            get { return declinedVis; }
+            set
+            {
+                declinedVis = value;
+                OnPropertyChanged("DeclinedVis");
+            }
+        }
 
         public event EventHandler SelectedRequestChanged;
 
+        public UpdatePORefCommand UpdateOrderCommand { get; set; }
         public ApproveRequestCommand ApproveCommand { get; set; }
         public DeclineRequestCommand DeclineCommand { get; set; }
 
@@ -205,24 +208,67 @@ namespace ProjectLighthouse.ViewModel
             FilteredRequests = new ObservableCollection<Request>();
             ApproveCommand = new ApproveRequestCommand(this);
             DeclineCommand = new DeclineRequestCommand(this);
+            UpdateOrderCommand = new UpdatePORefCommand(this);
             SelectedRequest = new Request();
 
-            if (App.currentUser.CanApproveRequests)
-            {
-                approvalControlsVis = Visibility.Visible;
-            }
-            else
-            {
-                approvalControlsVis = Visibility.Collapsed;
-            }
+            approvalControlsVis = App.currentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
 
             GetRequests();
             FilterRequests("All");
+
             if (FilteredRequests.Count > 0) 
             { 
                 SelectedRequest = FilteredRequests.First(); 
+            }   
+        }
+
+        public void LoadRequestCard(Request request)
+        {
+            if (request == null)
+            {
+                return;
             }
-            
+
+            ModifiedVis = (String.IsNullOrEmpty(request.ModifiedBy)) ? Visibility.Collapsed : Visibility.Visible;
+
+            ApprovalControlsVis = (App.currentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
+            DecisionVis = (request.IsDeclined || request.IsAccepted) ? Visibility.Collapsed : Visibility.Visible;
+            ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
+            DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
+
+
+            ProductionCheckboxEnabled = (request.Status == "Pending approval" &&
+                (App.currentUser.UserRole == "Production" ||
+                App.currentUser.UserRole == "admin"));
+
+            SchedulingCheckboxEnabled = (request.Status == "Pending approval" &&
+                (App.currentUser.UserRole == "Scheduling" ||
+                App.currentUser.UserRole == "admin"));
+
+            DropboxEnabled = (request.Status == "Pending approval" &&
+                (App.currentUser.UserRole == "Scheduling" ||
+                App.currentUser.UserRole == "admin" ||
+                App.currentUser.UserRole == "Production"));
+
+            PurchaseRef = !String.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
+        }
+
+        public void UpdateOrderPurchaseRef()
+        {
+            var orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.Name == SelectedRequest.ResultingLMO).ToList();
+
+            if (orders != null)
+            {
+                LatheManufactureOrder targetOrder = orders.First();
+                targetOrder.POReference = PurchaseRef;
+                DatabaseHelper.Update(targetOrder);
+                MessageBox.Show("Successfully updated " + targetOrder.Name, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Could not find Order in database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         public void UpdateRequest()

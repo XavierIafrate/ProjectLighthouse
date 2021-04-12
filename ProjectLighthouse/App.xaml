@@ -17,11 +17,55 @@
         <SolidColorBrush x:Key="colBody" Color="#353535"/>
 
 
+        <SolidColorBrush x:Key="materialPrimary" Color="#6200EE"/>
+        <SolidColorBrush x:Key="materialPrimaryVar" Color="#3700B3"/>
+        <SolidColorBrush x:Key="materialSecondary" Color="#03DAC6"/>
+        <SolidColorBrush x:Key="materialSecondaryVar" Color="#018786"/>
+        <SolidColorBrush x:Key="materialPrimaryGreen" Color="#009688"/>
+        <SolidColorBrush x:Key="materialPrimaryGreenVar" Color="#00695C"/>
+        <SolidColorBrush x:Key="materialPrimaryBlue" Color="#0277BD"/>
+        <SolidColorBrush x:Key="materialPrimaryBlueVar" Color="#01579B"/>
+        
+        
+        <SolidColorBrush x:Key="materialBackground" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="materialSurface" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="materialError" Color="#B00020"/>
+        
+        <SolidColorBrush x:Key="materialOnPrimary" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="materialOnSecondary" Color="#000000"/>
+        <SolidColorBrush x:Key="materialOnBackground" Color="#000000"/>
+        <SolidColorBrush x:Key="materialOnSurface" Color="#000000"/>
+        <SolidColorBrush x:Key="materialOnError" Color="#FFFFFF"/>
+
+
         <SolidColorBrush x:Key="colA2" Color="#247ba0"/>
         <SolidColorBrush x:Key="colA4" Color="#f25f5c"/>
         <SolidColorBrush x:Key="colTi" Color="#50514f"/>
         <SolidColorBrush x:Key="colEN1a" Color="#70c1b3"/>
 
+        <Style TargetType="TextBlock" x:Key="bodyTextStyle">
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="subtitleTextStyle">
+            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="accentTextStyle">
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
         <LinearGradientBrush x:Key="gradGood" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#1D976C" Offset="0" />
             <GradientStop Color="#93F9B9" Offset="1" />
@@ -49,17 +93,17 @@
                         CornerRadius="2"
                         BorderThickness="1">
                     <Border.BorderBrush>
-                        <SolidColorBrush Color="DodgerBlue"/>
+                        <SolidColorBrush Color="#6200EE"/>
                     </Border.BorderBrush>
                     <Border.Background>
-                        <SolidColorBrush Color="DodgerBlue"/>
+                        <SolidColorBrush Color="#6200EE"/>
                     </Border.Background>
                 </Border>
                 <Border Grid.Column="0"
                         CornerRadius="2,0,0,2"
                         Margin="1" >
                     <Border.Background>
-                        <SolidColorBrush Color="White"/>
+                        <SolidColorBrush Color="#FFFFFF"/>
                     </Border.Background>
                 </Border>
                 <Path x:Name="Arrow"
@@ -68,7 +112,7 @@
                       VerticalAlignment="Center"
                       Data="M 0 0 L 4 4 L 8 0 Z" >
                     <Path.Fill>
-                        <SolidColorBrush Color="White"/>
+                        <SolidColorBrush Color="#FFFFFF"/>
                     </Path.Fill>
                 </Path>
             </Grid>
@@ -239,9 +283,9 @@
         </Style>
 
         <Style x:Key="ButtonTemplate" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource gradBlue}"/>
+            <Setter Property="Background" Value="{StaticResource materialPrimary}"/>
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="10,5"/>
             <Setter Property="Template">
@@ -251,7 +295,7 @@
                                 CornerRadius="12"
                                 Height="24"
                                 BorderThickness="0"
-                                Padding="20,0">
+                                Padding="10,0">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -259,14 +303,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#3a7bd5" Offset="0" />
-                                <GradientStop Color="#3a6073" Offset="1" />
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="Background" Value="{StaticResource materialPrimaryVar}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" Value="LightGray"/>
@@ -275,9 +312,9 @@
         </Style>
 
         <Style x:Key="GreenButtonTemplate" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource colGood}"/>
+            <Setter Property="Background" Value="{StaticResource materialSecondary}"/>
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource materialOnSecondary}"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="10,5"/>
             <Setter Property="Template">
@@ -295,10 +332,11 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource gradGood}"/>
+                    <Setter Property="Background" Value="{StaticResource materialSecondaryVar}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" Value="LightGray"/>
+                    <Setter Property="Foreground" Value="Gray"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -341,7 +379,7 @@
 
         <Style x:Key="ExitButton" TargetType="Button">
 
-            <Setter Property="Background" Value="{StaticResource gradBad}"/>
+            <Setter Property="Background" Value="{StaticResource materialError}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
             <Setter Property="FontSize" Value="20"/>
@@ -392,7 +430,7 @@
 
         <Style TargetType="{x:Type UserControl}">
             <Setter Property="FontFamily"
-            Value="Resources/Font/#Proxima Nova" />
+            Value="Resources/Font/#Proxima Nova"/>
         </Style>
     </Application.Resources>
 </Application>

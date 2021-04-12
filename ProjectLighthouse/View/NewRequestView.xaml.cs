@@ -38,7 +38,10 @@ namespace ProjectLighthouse.View
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.SubmitRequest();
+            if (viewModel.SubmitRequest())
+            {
+                quantityBox.Text = "";
+            }
         }
 
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)

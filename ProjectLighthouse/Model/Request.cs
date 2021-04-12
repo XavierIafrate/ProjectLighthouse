@@ -12,6 +12,7 @@ namespace ProjectLighthouse.Model
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public string Product { get; set; }
+        public string POReference { get; set; }
         public int QuantityRequired { get; set; }
         public DateTime DateRequired { get; set; }
         public DateTime DateRaised { get; set; }

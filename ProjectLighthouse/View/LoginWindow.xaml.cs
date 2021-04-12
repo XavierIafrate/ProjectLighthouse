@@ -102,5 +102,17 @@ namespace ProjectLighthouse.View
             message.Text = "Username not found";
             message.Visibility = Visibility.Visible;
         }
+
+        private void usernameText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            usernameGhost.Visibility = !String.IsNullOrEmpty(textBox.Text) ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        private void passwordText_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            PasswordBox textBox = sender as PasswordBox;
+            passwordGhost.Visibility = !String.IsNullOrEmpty(textBox.Password) ? Visibility.Hidden : Visibility.Visible;
+        }
     }
 }

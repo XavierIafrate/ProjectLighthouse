@@ -48,8 +48,8 @@
 
                         <ListView HorizontalContentAlignment="Stretch" 
                                   ItemsSource="{Binding CompleteOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                  ScrollViewer.CanContentScroll="True" 
-                                  ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                                  ScrollViewer.CanContentScroll="False" 
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
                                   Grid.Row="1"
                                   Margin="0,10"
                                   BorderBrush="DodgerBlue">
@@ -61,22 +61,20 @@
                         </ListView>
                         <StatusBar Background="Transparent" Grid.Row="2">
                             <Grid>
-                                <Rectangle Height="28" Fill="DodgerBlue" RadiusX="14" RadiusY="14">
+                                <Rectangle Height="28" Fill="{StaticResource materialSecondary}" RadiusX="14" RadiusY="14">
                                     <Rectangle.Effect>
                                         <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.3"/>
                                     </Rectangle.Effect>
                                 </Rectangle>
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="30,0">
-                                    <TextBlock Foreground="White" FontSize="16" VerticalAlignment="Center">
+                                <TextBlock Foreground="{StaticResource materialOnSecondary}" FontSize="16" VerticalAlignment="Center"
+                                           Padding="20,3,20,5">
                                         <Run Text="{Binding filteredOrders.Count, Mode=OneWay, StringFormat='{}{0} Orders'}"/>
                                         <Run Text="//"/>
                                         
                                         <Run Text="Workload:"/>
                                         <Run Text="{Binding totalTime, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Converter={StaticResource intToDayConverter}}"/>
                                         <Run Text="days"/>
-                                    </TextBlock>
-                                </StackPanel>
+                                </TextBlock>
                             </Grid>
                         </StatusBar>
                     </Grid>
@@ -86,10 +84,10 @@
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Citizen 1" VerticalAlignment="Center"/>
-                            <Grid Margin="10,1,0,1">
+                            <!--<Grid Margin="10,1,0,1">
                                 <Rectangle Fill="LightSeaGreen" RadiusX="10" RadiusY="10"/>
                                 <TextBlock Text="L20" Padding="10,1" Foreground="White" FontWeight="Bold"/>
-                            </Grid>
+                            </Grid>-->
                         </StackPanel>
                     </TabItem.Header>
                     <Grid Margin="10">
@@ -101,8 +99,8 @@
                         <TextBlock Text="Citizen One Schedule" FontSize="30"/>
                         <ListView HorizontalContentAlignment="Stretch" 
                                   ItemsSource="{Binding CompleteOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                  ScrollViewer.CanContentScroll="True" 
-                                  ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                                  ScrollViewer.CanContentScroll="False" 
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
                                   Grid.Row="1"
                                   Margin="0,10"
                                   BorderBrush="DodgerBlue">
@@ -114,26 +112,26 @@
                         </ListView>
                         <StatusBar Background="Transparent" Grid.Row="2">
                             <Grid>
-                                <Rectangle Height="28" Fill="DodgerBlue" RadiusX="14" RadiusY="14">
+                                <Rectangle Height="28" Fill="{StaticResource materialSecondary}" RadiusX="14" RadiusY="14">
                                     <Rectangle.Effect>
                                         <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.3"/>
                                     </Rectangle.Effect>
                                 </Rectangle>
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="30,0">
-                                    <TextBlock Foreground="White" FontSize="16" VerticalAlignment="Center">
-                                        <Run Text="{Binding filteredOrders.Count, Mode=OneWay, StringFormat='{}{0} Orders'}"/>
-                                        <Run Text="//"/>
+                                <TextBlock Foreground="{StaticResource materialOnSecondary}" 
+                                           FontSize="16" 
+                                           VerticalAlignment="Center"
+                                           Padding="20,3,20,5">
+                                    <Run Text="{Binding filteredOrders.Count, Mode=OneWay, StringFormat='{}{0} Orders'}"/>
+                                    <Run Text="//"/>
                                         
-                                        <Run Text="Workload:"/>
-                                        <Run Text="{Binding totalTime, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Converter={StaticResource intToDayConverter}}"/>
-                                        <Run Text="days"/>
+                                    <Run Text="Workload:"/>
+                                    <Run Text="{Binding totalTime, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Converter={StaticResource intToDayConverter}}"/>
+                                    <Run Text="days"/>
                                         
-                                        <Run Text="//"/>
-                                        <Run Text="Booked up to:"/>
-                                        <Run Text="{Binding bookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
-                                    </TextBlock>
-                                </StackPanel>
+                                    <Run Text="//"/>
+                                    <Run Text="Booked up to:"/>
+                                    <Run Text="{Binding bookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                                </TextBlock>
                             </Grid>
                         </StatusBar>
                     </Grid>
@@ -143,10 +141,10 @@
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Citizen 2" VerticalAlignment="Center"/>
-                            <Grid Margin="10,1,0,1">
+                            <!--<Grid Margin="10,1,0,1">
                                 <Rectangle Fill="LightSeaGreen" RadiusX="10" RadiusY="10"/>
                                 <TextBlock Text="L20" Padding="10,1" Foreground="White" FontWeight="Bold"/>
-                            </Grid>
+                            </Grid>-->
                         </StackPanel>
                     </TabItem.Header>
                     <Grid Margin="10">
@@ -158,8 +156,8 @@
                         <TextBlock Text="Citizen Two Schedule" FontSize="30"/>
                         <ListView HorizontalContentAlignment="Stretch" 
                                   ItemsSource="{Binding CompleteOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                  ScrollViewer.CanContentScroll="True" 
-                                  ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                                  ScrollViewer.CanContentScroll="False" 
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
                                   Grid.Row="1"
                                   Margin="0,10"
                                   BorderBrush="DodgerBlue">
@@ -171,26 +169,27 @@
                         </ListView>
                         <StatusBar Background="Transparent" Grid.Row="2">
                             <Grid>
-                                <Rectangle Height="28" Fill="DodgerBlue" RadiusX="14" RadiusY="14">
+                                <Rectangle Height="28" Fill="{StaticResource materialSecondary}" RadiusX="14" RadiusY="14">
                                     <Rectangle.Effect>
                                         <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.3"/>
                                     </Rectangle.Effect>
                                 </Rectangle>
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="30,0">
-                                    <TextBlock Foreground="White" FontSize="16" VerticalAlignment="Center">
-                                        <Run Text="{Binding filteredOrders.Count, Mode=OneWay, StringFormat='{}{0} Orders'}"/>
-                                        <Run Text="//"/>
+
+                                <TextBlock Foreground="{StaticResource materialOnSecondary}" 
+                                           FontSize="16" 
+                                           VerticalAlignment="Center"
+                                           Padding="20,3,20,5">
+                                    <Run Text="{Binding filteredOrders.Count, Mode=OneWay, StringFormat='{}{0} Orders'}"/>
+                                    <Run Text="//"/>
                                         
-                                        <Run Text="Workload:"/>
-                                        <Run Text="{Binding totalTime, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Converter={StaticResource intToDayConverter}}"/>
-                                        <Run Text="days"/>
+                                    <Run Text="Workload:"/>
+                                    <Run Text="{Binding totalTime, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Converter={StaticResource intToDayConverter}}"/>
+                                    <Run Text="days"/>
                                         
-                                        <Run Text="//"/>
-                                        <Run Text="Booked up to:"/>
-                                        <Run Text="{Binding bookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
-                                    </TextBlock>
-                                </StackPanel>
+                                    <Run Text="//"/>
+                                    <Run Text="Booked up to:"/>
+                                    <Run Text="{Binding bookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                                </TextBlock>
                             </Grid>
                         </StatusBar>
                     </Grid>

@@ -45,6 +45,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public List<MachineInfoSnippet> snippets { get; set; }
 
         public List<string> Families { get; set; }
         public Request newRequest;
@@ -59,6 +60,7 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("SelectedGroup");
                 SelectedGroupChanged?.Invoke(this, new EventArgs());
                 PopulateListBox();
+                OnPropertyChanged("filteredList");
             }
         }
 
@@ -70,6 +72,50 @@ namespace ProjectLighthouse.ViewModel
         {
             AddSpecialCommand = new NewSpecialPartCommand(this);
             ClearScreen();
+            PopulateMachineInsights();
+        }
+
+        private void PopulateMachineInsights()
+        {
+            var lathes = DatabaseHelper.Read<Lathe>().ToList();
+            snippets = new List<MachineInfoSnippet>();
+
+            MachineInfoSnippet tmpSnippet = new MachineInfoSnippet();
+
+            foreach(var lathe in lathes)
+            {
+                tmpSnippet = new MachineInfoSnippet
+                {
+                    MachineID = lathe.Id,
+                    MachineFullName = lathe.FullName,
+                    LeadTime = GetMachineLeadTime(lathe.Id)
+                };
+
+                snippets.Add(tmpSnippet);
+            }
+            OnPropertyChanged("snippets");
+        }
+
+        private TimeSpan GetMachineLeadTime(string MachineID)
+        {
+            int totalTime = (int)0;
+            DateTime earliestStart = DateTime.MaxValue;
+
+            var orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.AllocatedMachine == MachineID && !n.IsComplete).ToList();
+            var items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+
+            foreach(var order in orders)
+            {
+                foreach(var item in items)
+                {
+                    if(order.Name == item.AssignedMO)
+                    {
+                        totalTime += item.CycleTime * item.TargetQuantity;
+                    }
+                }
+            }
+
+            return TimeSpan.FromSeconds(totalTime);
         }
 
         private void PopulateComboBox()
@@ -109,32 +155,38 @@ namespace ProjectLighthouse.ViewModel
                 }
                 return;
             }
-            foreach(var product in turnedProducts)
+            else
             {
-                if(product.ProductName.Substring(0,Math.Min(5, product.ProductName.Length)) == SelectedGroup)
+                foreach (var product in turnedProducts)
                 {
-                    filteredList.Add(product);
+                    if (product.ProductName.Substring(0, Math.Min(5, product.ProductName.Length)) == SelectedGroup && product.ProductGroup != "Specials")
+                    {
+                        filteredList.Add(product);
+                    }
                 }
             }
+            
+            filteredList = new ObservableCollection<TurnedProduct>(filteredList.OrderBy(n => n.Material).ThenBy(n=>n.ProductName));
         }
 
-        public void SubmitRequest()
+        public bool SubmitRequest()
         {
+            bool result = false;
             if (String.IsNullOrEmpty(SelectedProduct.ProductName))
             {
                 MessageBox.Show("Please select a product!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
+                return result;
             }
             else if (!selectedProduct.canBeManufactured())
             {
                 MessageBox.Show("This product can not be made on our machines!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
+                return result;
             }
 
             if (newRequest.DateRequired <= DateTime.Now)
             {
                 MessageBox.Show("Please select a date!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
+                return result;
             }
 
             newRequest.Status = "Pending approval";
@@ -158,13 +210,16 @@ namespace ProjectLighthouse.ViewModel
                     RecommendedStockText,
                     PotentialQuantityText,
                     newRequest.DateRequired);
-                //SMSHelper.SendText("+447979606705", message);
+                SMSHelper.SendText("+447979606705", message);
                 MessageBox.Show("Your request has been submitted", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 ClearScreen();
+                result = true;
+                return result;
             }
             else
             {
                 MessageBox.Show("An error has occurred.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return result;
             }
         }
 
@@ -263,5 +318,14 @@ namespace ProjectLighthouse.ViewModel
                 SelectedGroup = "Specials";
             }
         }
+
+        public class MachineInfoSnippet 
+        { 
+            public string MachineID { get; set; }
+            public string MachineFullName { get; set; }
+            public TimeSpan LeadTime { get; set; }
+        }
+
+
     }
 }

@@ -18,30 +18,23 @@
                     VerticalAlignment="Center">
             <TextBlock Text="{Binding Product, FallbackValue='P0XXX.123-456-A2'}"
                        x:Name="productNameTextBlock"
-                       Foreground="{StaticResource colBody}"
+                       Foreground="{StaticResource materialOnBackground}"
                        FontSize="18"
                     FontWeight="Bold"/>
             <TextBlock x:Name="qtyTextBlock">
                 <Run Text="{Binding QuantityRequired, FallbackValue='0'}"/>
                 <Run Text="pcs required"/>
             </TextBlock>
-            <TextBlock Foreground="{StaticResource colNeutral}"
+            <TextBlock Foreground="{StaticResource materialOnBackground}"
                        FontSize="12">
                 <Run Text="Raised"/>
                 <Run Text="{Binding DateRaised, StringFormat='{}{0:dd/MM/yy}', FallbackValue='01/01/1970'}"/>
             </TextBlock>
 
         </StackPanel>
-        <StackPanel Orientation="Vertical"
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    Margin="10,0">
-            <Image Source="/Resources/RequestAccepted.png" Height="15"
-                   x:Name="acceptedFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/RequestPending.png" Height="15"
-                   x:Name="pendingFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/RequestDeclined.png" Height="15"
-                   x:Name="declinedFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-        </StackPanel>
+        <Grid Grid.Column="2" VerticalAlignment="Center">
+            <Rectangle Fill="{StaticResource materialPrimaryBlue}" RadiusX="5" RadiusY="5" x:Name="statusBadge"/>
+            <TextBlock Text="Pending" Foreground="{StaticResource materialOnPrimary}" Padding="15,0,15,2" x:Name="statusText"/>
+        </Grid>
     </Grid>
 </UserControl>

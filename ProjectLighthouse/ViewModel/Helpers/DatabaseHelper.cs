@@ -10,11 +10,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class DatabaseHelper
     {
-        private static string dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
+        private static string dbFile = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\manufactureDB.db3";
 
         public static bool Insert<T>(T item)
         {
             bool result = false;
+            if (Environment.UserName == "xavier")
+            {
+                dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
+            }
 
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
@@ -41,7 +45,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static bool Update<T>(T item)
         {
             bool result = false;
-
+            if (Environment.UserName == "xavier")
+            {
+                dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
+            }
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 try
@@ -66,7 +73,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static bool Delete<T>(T item)
         {
             bool result = false;
-
+            if (Environment.UserName == "xavier")
+            {
+                dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
+            }
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 conn.CreateTable<T>();
@@ -83,7 +93,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static List<T> Read<T>() where T : new()
         {
             List<T> items;
-
+            if (Environment.UserName == "xavier")
+            {
+                dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
+            }
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 conn.CreateTable<T>();

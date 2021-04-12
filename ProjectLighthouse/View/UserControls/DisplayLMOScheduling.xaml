@@ -4,56 +4,103 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             xmlns:converters ="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
-             mc:Ignorable="d" d:DesignWidth="600">
+             xmlns:converters ="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters">
 
     <UserControl.Resources>
         <converters:intToDays x:Key="inttoday"/>
         <converters:StartDateToEndDate x:Key="startToFinish"/>
         <converters:orderItemToRequirementText x:Key="requirementText"/>
+
+        <Style TargetType="TextBlock" x:Key="itemTextStyle">
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="itemHeaderStyle">
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" MinWidth="130"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Rectangle x:Name="bg" RadiusX="12.5" RadiusY="12.5" Grid.ColumnSpan="6"/>
-        <StackPanel Margin="20,10">
-            <TextBlock Text="{Binding Order.Name, FallbackValue='M00001'}" FontSize="20" Foreground="White" FontWeight="Bold"/>
-            <TextBlock Text="{Binding Order.Status, FallbackValue='Ready'}" Foreground="White"/>
-        </StackPanel>
+        <Rectangle Fill="{StaticResource materialBackground}" Stroke="#f0f0f0" StrokeThickness="1" Grid.ColumnSpan="2">
+            <Rectangle.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.1"/>
+            </Rectangle.Effect>
+        </Rectangle>
+        <Rectangle x:Name="bg" Fill="{StaticResource materialError}"/>
 
-        <StackPanel Grid.Column="1" Margin="0,10">
-            <TextBlock Text="{Binding Order.StartDate, StringFormat='{}Start: {0:ddd dd MMM}', FallbackValue='Start: Mon 01 Jan'}" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBlock Text="{Binding Order, Converter='{StaticResource startToFinish}', StringFormat='{}Finish: {0:ddd dd MMM}', FallbackValue='Finish: Fri 05 Jan'}" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBlock Text="{Binding Order.TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}Runtime: {0} days', FallbackValue='Runtime: 5 days'}" Foreground="White" Grid.Column="4" VerticalAlignment="Center"/>
-            <TextBlock Foreground="White" Grid.Column="4" VerticalAlignment="Center">
+
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" MinWidth="130"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Margin="20,10">
+                <TextBlock Text="{Binding Order.Name, FallbackValue='M00001'}" FontSize="25" Foreground="{StaticResource materialOnBackground}" FontWeight="Bold"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle x:Name="statusBadgeText" Fill="{StaticResource materialError}" RadiusX="2" RadiusY="2"/>
+                    <TextBlock Text="{Binding Order.Status, FallbackValue='Ready'}" Foreground="{StaticResource materialOnPrimary}" Padding="10,0,10,2"/>
+                </Grid>
+
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="0,10">
+                <TextBlock Text="{Binding Order.StartDate, StringFormat='{}Start: {0:ddd dd MMM}', FallbackValue='Start: Mon 01 Jan'}" Style="{StaticResource itemTextStyle}"/>
+                <TextBlock Text="{Binding Order, Converter='{StaticResource startToFinish}', StringFormat='{}Finish: {0:ddd dd MMM}', FallbackValue='Finish: Fri 05 Jan'}" Style="{StaticResource itemTextStyle}"/>
+                <TextBlock Text="{Binding Order.TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}Runtime: {0} days', FallbackValue='Runtime: 5 days'}" Style="{StaticResource itemTextStyle}"/>
+                <TextBlock Foreground="{StaticResource materialOnBackground}" Grid.Column="4" VerticalAlignment="Center">
                 <Run Text="{Binding Order.BarID}"/>
                 <Run Text="{Binding Order.NumberOfBars, StringFormat='{}x {0} bars'}"/>
-            </TextBlock>
-        </StackPanel>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Margin="0,10,20,10">
+                <Grid Margin="0,1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Product" Style="{StaticResource itemHeaderStyle}"/>
+                    <TextBlock Text="Quantity" Style="{StaticResource itemHeaderStyle}" Grid.Column="1" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Requirement" Grid.Column="2" Style="{StaticResource itemHeaderStyle}" HorizontalAlignment="Right"/>
+                </Grid>
 
-        <ListView Grid.Column="2" Background="Transparent" BorderThickness="0" ItemsSource="{Binding OrderItems}" Margin="0,10,20,10">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Focusable" Value="False"/>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="120"/>
-                            <ColumnDefinition Width="150"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Path=ProductName}" Foreground="White"/>
-                        <TextBlock Text="{Binding Path=TargetQuantity, StringFormat='{}{0:#,##0}'}" Foreground="White" Grid.Column="1" HorizontalAlignment="Right" FontWeight="Bold" Padding="10,0"/>
-                        <TextBlock Text="{Binding Converter='{StaticResource requirementText}'}" Grid.Column="2" Foreground="White" HorizontalAlignment="Left" Padding="10,0"/>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <ItemsControl ItemsSource="{Binding OrderItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="150"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Path=ProductName}" Style="{StaticResource itemTextStyle}"/>
+                                <TextBlock Text="{Binding Path=TargetQuantity, StringFormat='{}{0:#,##0}'}" Style="{StaticResource itemTextStyle}" Grid.Column="1" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding Converter='{StaticResource requirementText}'}" Grid.Column="2" Style="{StaticResource itemTextStyle}" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

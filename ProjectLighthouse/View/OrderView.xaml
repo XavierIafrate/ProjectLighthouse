@@ -8,7 +8,6 @@
              xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
              Background="White">
 
     <UserControl.Resources>
@@ -32,21 +31,17 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer BorderBrush="DodgerBlue"
-                      BorderThickness="2"
-                      HorizontalContentAlignment="Stretch"
-                      HorizontalScrollBarVisibility="auto">
-            <ListView ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding SelectedLatheManufactureOrder, UpdateSourceTrigger=PropertyChanged}"
-                      HorizontalContentAlignment="Stretch"
-                      BorderThickness="0">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </ScrollViewer>
+        <ListView ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding SelectedLatheManufactureOrder, UpdateSourceTrigger=PropertyChanged}"
+                    HorizontalContentAlignment="Stretch"
+                    ScrollViewer.CanContentScroll="False">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
         <StatusBar HorizontalAlignment="Stretch"
                    Background="Transparent"
                    Margin="0,5,0,0"
@@ -98,67 +93,95 @@
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}"
-                               FontSize="35"
-                               FontWeight="Bold"/>
+                                           FontSize="35"
+                                           FontWeight="Bold"
+                                           Margin="10,0"/>
                                 <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"/>
                                 <!--<Button Content="Print" x:Name="printButton" Command="{Binding PrintOrderCommand}" Grid.Column="2"/>-->
                             </Grid>
                             
 
                             <TextBlock Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}"
-                               FontSize="18"
-                               Foreground="DodgerBlue"/>
+                                       FontSize="18"
+                                       Foreground="{StaticResource materialPrimary}"
+                                       Margin="10,0"/>
 
                             <Separator Margin="5,10,5,5"/>
+                            <Grid Margin="15,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                            
+                                <TextBlock x:Name ="CreatedTextBlock"
+                                           Style="{StaticResource accentTextStyle}">
+                                    <Run Text="Created by"/>
+                                    <Run Text="{Binding SelectedLatheManufactureOrder.CreatedBy, FallbackValue='Kyle Brovloski'}"/>
+                                </TextBlock>
+                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
+                                           Style="{StaticResource accentTextStyle}"
+                                           Grid.Column="2"
+                                           HorizontalAlignment="Right"/>
 
-                            <TextBlock x:Name ="CreatedTextBlock"
-                               Margin="5,0"
-                               FontSize="12"
-                               FontStyle="Italic">
-                                <Run Text="Created"/>
-                                <Run Text="{Binding SelectedLatheManufactureOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"/>
-                                <Run Text="by"/>
-                                <Run Text="{Binding SelectedLatheManufactureOrder.CreatedBy, FallbackValue='Kyle Brovloski'}"/>
-                            </TextBlock>
-
-                            <TextBlock x:Name="ModifiedTextBlock"
-                               Margin="5,0"
-                               FontSize="12"
-                               FontStyle="Italic"
-                               Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
-                                <Run Text="Modified"/>
-                                <Run Text="{Binding SelectedLatheManufactureOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"/>
-                                <Run Text="by"/>
-                                <Run Text="{Binding SelectedLatheManufactureOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}"/>
-                            </TextBlock>
+                                <TextBlock x:Name="ModifiedTextBlock"
+                                           Style="{StaticResource accentTextStyle}"
+                                           Grid.Column="0"
+                                           Grid.Row="1"
+                                           Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
+                                    <Run Text="Modified by"/>
+                                    <Run Text="{Binding SelectedLatheManufactureOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}"/>
+                                </TextBlock>
+                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
+                                           Style="{StaticResource accentTextStyle}"
+                                           HorizontalAlignment="Right"
+                                           Grid.Column="2"
+                                           Grid.Row="1"/>
+                            </Grid>
                             <Separator Margin="5"/>
                         </StackPanel>
-                        <TextBlock Margin="0,5,0,0" Text="{Binding RunInfoText, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBlock Margin="10,5,0,0" Text="{Binding RunInfoText, UpdateSourceTrigger=PropertyChanged}">
                             <!--<Run Text="Assigned to"/>
                             <Run Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine, FallbackValue='C00'}"/>
                             <Run Text="for"/>
                             <Run Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:dd/MM/yy}'}"/>-->
                         </TextBlock>
-                        <TextBlock Margin="0,5,0,0">
+                        <TextBlock Margin="10,5,0,0">
                             <Run Text="Assigned Setter:"/>
                             <Run Text="{Binding SelectedLatheManufactureOrder.AllocatedSetter, FallbackValue='Eric Cartman'}"/>
                         </TextBlock>
 
                         <TextBlock Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}, FallbackValue='Has a program'}"
                            x:Name="ProgramTextBlock"
-                           Margin="0,5"/>
-                        <TextBlock Text="Items"
-                                   Margin="10,5"
-                                   HorizontalAlignment="Center"
-                                   FontSize="20"/>
-                        <ListView ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  HorizontalContentAlignment="Stretch">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}"/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                           Margin="10,5"/>
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Items"
+                                       HorizontalAlignment="Left"
+                                       FontSize="20"
+                                       Padding="0,0,0,8"/>
+                            <Grid>
+                                <Rectangle Fill="{StaticResource materialBackground}" Stroke="{StaticResource materialPrimary}" RadiusX="5" RadiusY="5">
+                                    <Rectangle.Effect>
+                                        <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.1"/>
+                                    </Rectangle.Effect>
+                                </Rectangle>
+                                <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              Margin="5"
+                                          HorizontalContentAlignment="Stretch">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                            
+
+                        </StackPanel>
 
                         <Grid MinWidth="150" MaxWidth="250" Height="25" Margin="0,20">
                             <Rectangle RadiusX="6" RadiusY="6" Fill="{Binding StatusBackground, UpdateSourceTrigger=PropertyChanged}">
@@ -179,13 +202,15 @@
                            FontStyle="Italic"
                            FontWeight="Bold"/>
                         <Grid Margin="10,0,10,10">
-                            <Rectangle Fill="White" Stroke="DodgerBlue" StrokeThickness="2" RadiusX="6" RadiusY="6">
+                            <Rectangle Fill="White" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" RadiusX="6" RadiusY="6">
                                 <Rectangle.Effect>
                                     <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
                                 </Rectangle.Effect>
                             </Rectangle>
                             <TextBlock Text="{Binding SelectedLatheManufactureOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
-                             Margin="6"/>
+                                       Margin="10,6"
+                                       Padding="0,0,0,2"
+                                       TextWrapping="Wrap"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

@@ -82,10 +82,13 @@ namespace ProjectLighthouse.ViewModel
             totalTime = (int)0;
             bookedTo = DateTime.MinValue;
             DateTime earliestStart = DateTime.MaxValue;
+            int orderTime = new int();
+            double orderBars = new double();
 
             foreach(var order in filteredOrders)
             {
-                totalTime += order.TimeToComplete;
+                orderTime = (int)0;
+                orderBars = (double)0;
 
                 if(order.StartDate < earliestStart)
                 {
@@ -98,9 +101,16 @@ namespace ProjectLighthouse.ViewModel
                     if(item.AssignedMO == order.Name)
                     {
                         tmpItems.Add(item);
+                        totalTime += item.CycleTime * item.TargetQuantity;
+                        orderTime += item.CycleTime * item.TargetQuantity;
+                        orderBars += ((item.MajorLength + 2) * item.TargetQuantity) / (double)2700;
                     }
                 }
 
+                order.TimeToComplete = orderTime;
+                order.NumberOfBars = Math.Ceiling(orderBars);
+                DatabaseHelper.Update(order);
+                
                 CompleteOrder tmpOrder = new CompleteOrder
                 {
                     Order = order,

@@ -41,20 +41,20 @@ namespace ProjectLighthouse.View.UserControls
             if (control != null)
             {
                 control.DataContext = control.LatheManufactureOrder;
-                control.BadgeText.Text = control.LatheManufactureOrder.Status.ToUpper();
+                control.BadgeText.Text = control.LatheManufactureOrder.Status;
                 switch (control.LatheManufactureOrder.Status)
                 {
                     case "Ready":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["colGood"];
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
                         break;
                     case "Problem":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["colWarn"];
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialError"];
                         break;
                     case "Running":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["colNeutral"];
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryBlueVar"];
                         break;
                     case "Complete":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["colBody"];
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialBackground"];
                         break;
 
 

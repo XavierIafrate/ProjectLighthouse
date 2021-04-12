@@ -41,44 +41,12 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.DataContext = control.LatheManufactureOrderItem;
 
-                if ((e.NewValue as LatheManufactureOrderItem).IsSpecialPart)
-                {
-                    control.specialFlag.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    control.specialFlag.Visibility = Visibility.Collapsed;
-                }
+                control.specialFlag.Visibility = (control.LatheManufactureOrderItem.IsSpecialPart) ? Visibility.Visible : Visibility.Collapsed;
 
-                if ( control.LatheManufactureOrderItem.RequiredQuantity == 0)
-                {
-                    control.daterequired.Visibility = Visibility.Collapsed;
-                    control.qtyrequired.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    control.daterequired.Visibility = Visibility.Visible;
-                    control.qtyrequired.Visibility = Visibility.Visible;
-                }
+                control.requirements.Visibility = (control.LatheManufactureOrderItem.RequiredQuantity == 0) ? Visibility.Collapsed : Visibility.Visible;
 
-                if(control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.RequiredQuantity)
-                {
-                    control.qtyrequired.Foreground = (Brush)Application.Current.Resources["colGood"];
-                }
-                else
-                {
-                    control.qtyrequired.Foreground = Brushes.Black;
-                }
-
-                if (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity)
-                {
-                    control.productText.Foreground = (Brush)Application.Current.Resources["colGood"];
-                }
-                else
-                {
-                    control.productText.Foreground = Brushes.Black;
-                }
-
+                control.requirementsBadge.Fill = (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.RequiredQuantity) ? 
+                    (Brush)Application.Current.Resources["materialPrimaryGreen"] : (Brush)Application.Current.Resources["materialError"];
             }
         }
 

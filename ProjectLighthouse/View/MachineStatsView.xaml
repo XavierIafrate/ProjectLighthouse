@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:ProjectLighthouse.View"
              xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             Background="{StaticResource materialBackground}"
+             mc:Ignorable="d" >
     <UserControl.Resources>
         <ResourceDictionary>
             <vm:MachineStatsViewModel x:Key="vm"/>
@@ -16,26 +16,45 @@
     <Grid DataContext="{StaticResource vm}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <ListView ItemsSource="{Binding StatsList}" 
-                  Margin="20" 
-                  BorderThickness="0"
-                  Focusable="False"
-                  FocusVisualStyle="{x:Null}">
-            <ListView.ItemsPanel>
+        <StackPanel Orientation="Horizontal"
+                    Margin="40,10">
+            <Grid Margin="0,0,10,0">
+                <Rectangle Fill="{StaticResource materialError}"
+                           RadiusX="5"
+                           RadiusY="5"/>
+                <TextBlock Text="BETA" 
+                           Foreground="{StaticResource materialOnError}" 
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Padding="15,0,15,1"
+                           FontSize="18"/>
+            </Grid>
+            <TextBlock FontSize="18" 
+                       Text="This feature is still in development" 
+                       Foreground="{StaticResource materialOnBackground}"
+                       FontStyle="Italic"/>
+        </StackPanel>
+        
+        <ItemsControl ItemsSource="{Binding StatsList}"
+                      BorderThickness="0"
+                      Focusable="False"
+                      FocusVisualStyle="{x:Null}"
+                      Grid.Row="1"
+                      Margin="0,0,0,20">
+            <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" Margin="20"/>
                 </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayStatsCard stats="{Binding}"/>
+                    <uc:DisplayStatsCard stats="{Binding}" Margin="20,0"/>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
     
 </UserControl>

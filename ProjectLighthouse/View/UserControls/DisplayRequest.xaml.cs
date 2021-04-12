@@ -43,35 +43,35 @@ namespace ProjectLighthouse.View.UserControls
                 switch (requestControl.Request.QuantityRequired)
                 {
                     case >= 1000:
-                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["colGood"];
+                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialPrimaryGreen"];
                         break;
 
                     case < 100:
-                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["colCritical"];
+                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialError"];
                         break;
 
                     default:
-                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["colNeutral"];
+                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialOnBackground"];
                         break;
                 }
                 #endregion
 
                 #region flags
-                requestControl.acceptedFlag.Visibility = Visibility.Collapsed;
-                requestControl.declinedFlag.Visibility = Visibility.Collapsed;
-                requestControl.pendingFlag.Visibility = Visibility.Visible;
 
                 if (requestControl.Request.IsAccepted)
                 {
-                    requestControl.acceptedFlag.Visibility = Visibility.Visible;
-                    requestControl.declinedFlag.Visibility = Visibility.Collapsed;
-                    requestControl.pendingFlag.Visibility = Visibility.Collapsed;
+                    requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                    requestControl.statusText.Text = "Accepted";
                 }
-                if (requestControl.Request.IsDeclined)
+                else if (requestControl.Request.IsDeclined)
                 {
-                    requestControl.acceptedFlag.Visibility = Visibility.Collapsed;
-                    requestControl.declinedFlag.Visibility = Visibility.Visible;
-                    requestControl.pendingFlag.Visibility = Visibility.Collapsed;
+                    requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialError"];
+                    requestControl.statusText.Text = "Declined";
+                }
+                else
+                {
+                    requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryBlue"];
+                    requestControl.statusText.Text = "Pending";
                 }
                 #endregion
             }
