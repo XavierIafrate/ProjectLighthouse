@@ -139,8 +139,25 @@ namespace ProjectLighthouse.View
             order.POReference = PORef.Text;
             order.AllocatedSetter = setters.Text;
             //order.IsUrgent = urgent.IsChecked ?? false;
-            order.HasProgram = program.IsChecked ?? false;
-            order.IsReady = ready.IsChecked ?? false;
+            order.HasProgram = (bool)program.IsChecked ? true : false;
+            order.IsReady = (bool)ready.IsChecked ? true : false;
+
+            if(order.IsReady && !order.IsComplete)
+            {
+                order.Status = "Ready";
+            }
+            if (order.IsComplete)
+            {
+                order.Status = "Complete";
+            }
+            if(order.HasStarted && !order.IsComplete)
+            {
+                order.Status = "Running";
+            }
+            if (!order.IsReady)
+            {
+                order.Status = "Problem";
+            }
 
             calculateTime();
 

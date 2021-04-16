@@ -39,9 +39,17 @@ namespace ProjectLighthouse.ViewModel
         }
 
         public ICommand UpdateViewCommand { get; set; }
+        public ICommand EditCommand { get; set; }
+
+        public void EditSettings()
+        {
+            EditSettingsWindow window = new EditSettingsWindow();
+            window.ShowDialog();
+         }
 
         public MainViewModel()
         {
+            EditCommand = new EditSettingsCommand(this);
             UpdateViewCommand = new UpdateViewCommand(this);
             if (App.currentUser == null)
             {

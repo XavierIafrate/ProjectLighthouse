@@ -54,7 +54,7 @@ namespace ProjectLighthouse.View.UserControls
                         control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryBlueVar"];
                         break;
                     case "Complete":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialBackground"];
+                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialOnBackground"];
                         break;
 
 

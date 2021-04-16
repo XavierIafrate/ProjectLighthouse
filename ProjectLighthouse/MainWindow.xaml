@@ -10,12 +10,11 @@
         MinHeight="650"
         MinWidth="1100"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None"
+        SizeToContent="Width"
         ResizeMode="CanResizeWithGrip"
-        BorderThickness="3"
-        AllowsTransparency="True"
-        Background="#12000000"
-		Loaded="Window_Loaded">
+        Background="{StaticResource materialBackground}">
+    <!--Background="#12000000"
+		Loaded="Window_Loaded"-->
 
     <Window.Resources>
 
@@ -27,7 +26,7 @@
 
             
             <vm:MainViewModel x:Key="vm"/>
-            <Style x:Key="menuButtonStyle" TargetType="Button">
+            <Style x:Key="menuButtonStyle" TargetType="ToggleButton">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -36,9 +35,9 @@
 
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="Button">
+                        <ControlTemplate TargetType="ToggleButton">
                             <Border Background="{TemplateBinding Background}"
-                                    Padding="10,0,0,6">
+                                    Padding="10,2,0,4">
                                 <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
@@ -47,8 +46,12 @@
 
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Foreground" Value="Black"/>
-                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
+                        <Setter Property="Background" Value="{StaticResource materialPrimary}"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
+                        <Setter Property="Background" Value="{StaticResource materialPrimaryVar}"/>
                     </Trigger>
                 </Style.Triggers>
 
@@ -74,7 +77,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Rectangle Grid.RowSpan="4" Opacity="0.7" Fill="#000000"/>
+            <Rectangle Grid.RowSpan="4" Fill="{StaticResource materialOnBackground}"/>
             <Image Source="/Resources/LighthouseLogo.png"
                    Width="150"
                    RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -86,11 +89,11 @@
                 <TextBlock Text="Requests"
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
-                <Button Command="{Binding UpdateViewCommand}" 
+                <ToggleButton Command="{Binding UpdateViewCommand}" 
                         CommandParameter="NewRequest"
                         Style="{StaticResource menuButtonStyle}"
                         Content="New Request"/>
-                <Button Command="{Binding UpdateViewCommand}" 
+                <ToggleButton Command="{Binding UpdateViewCommand}" 
                         CommandParameter="Requests"
                         Style="{StaticResource menuButtonStyle}"
                         Content="View Requests"/>
@@ -99,20 +102,26 @@
                 <TextBlock Text="Production"
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
-                <Button Command="{Binding UpdateViewCommand}"
+                <ToggleButton Command="{Binding UpdateViewCommand}"
                         CommandParameter="Orders"
                         Style="{StaticResource menuButtonStyle}"
                         Content="Orders"/>
-                
-                <Button Command="{Binding UpdateViewCommand}" 
+
+                <ToggleButton Command="{Binding UpdateViewCommand}" 
                         CommandParameter="Schedule"
                         Style="{StaticResource menuButtonStyle}"
                         Content="Schedule"/>
-                <Button Command="{Binding UpdateViewCommand}" 
+                <ToggleButton Command="{Binding UpdateViewCommand}" 
                         CommandParameter="Machine Stats"
                         Style="{StaticResource menuButtonStyle}"
                         Content="Runtime"/>
-                
+
+                <TextBlock Text="Tools"
+                           Style="{StaticResource menuSectionStyle}"/>
+                <Separator Style="{StaticResource menuSepStyle}"/>
+                <ToggleButton Style="{StaticResource menuButtonStyle}"
+                        Content="Time/Cost Estimate"/>
+
                 <!--<Button Command="{Binding UpdateViewCommand}" 
                         CommandParameter="BarStock"
                         Style="{StaticResource menuButtonStyle}"
@@ -140,17 +149,22 @@
                     <TextBlock Text="View Database"
                                Style="{StaticResource menuButtonTextStyle}"/>
                 </Button>-->
-
             </StackPanel>
+            <Button Style="{StaticResource ButtonTemplate}"
+                    Content="Settings"
+                    Grid.Row="3"
+                    Width="100"
+                    Margin="20"
+                    Command="{Binding EditCommand}"/>
 
-            <Button Content="Exit"
+            <!--<Button Content="Exit"
                     HorizontalAlignment="Center"
                     Grid.Row="3"
                     Width="120"
                     x:Name="exitButton"
                     Click="exitButton_Click"
                     Style="{StaticResource ExitButton}"
-                    Margin="20"/>
+                    Margin="20"/>-->
         </Grid>
 
         <Grid Background="White">

@@ -20,11 +20,12 @@
 
     <Grid Margin="10" DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"
-                              MinWidth="340"/>
-            <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="*"
                               MinWidth="340"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="410"
+                              MinWidth="340"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -42,7 +43,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <StatusBar HorizontalAlignment="Stretch"
+        <StatusBar
                    Background="Transparent"
                    Margin="0,5,0,0"
                    Grid.Row="1">
@@ -59,17 +60,16 @@
             </ComboBox>
         </StatusBar>
         <TextBlock Grid.Column="2"
-                   Grid.RowSpan="2"
                    Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"
                    Text="None found"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left"
                    FontSize="30"
-                   Foreground="#dddddd"/>
+                   Foreground="#dddddd" Margin="154,324,0,0"/>
         <ScrollViewer Grid.Column="2"
                       Grid.RowSpan="2"
-                      Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
-            <StackPanel Margin="25,10" MaxWidth="600">
+                      Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2">
+            <StackPanel Margin="25,10" MaxWidth="600" MinWidth="400">
                 <Grid>
                     <Rectangle RadiusX="10" RadiusY="10">
                         <Rectangle.Effect>
@@ -99,7 +99,7 @@
                                 <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"/>
                                 <!--<Button Content="Print" x:Name="printButton" Command="{Binding PrintOrderCommand}" Grid.Column="2"/>-->
                             </Grid>
-                            
+
 
                             <TextBlock Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}"
                                        FontSize="18"
@@ -117,7 +117,7 @@
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
-                            
+
                                 <TextBlock x:Name ="CreatedTextBlock"
                                            Style="{StaticResource accentTextStyle}">
                                     <Run Text="Created by"/>
@@ -179,7 +179,7 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </Grid>
-                            
+
 
                         </StackPanel>
 

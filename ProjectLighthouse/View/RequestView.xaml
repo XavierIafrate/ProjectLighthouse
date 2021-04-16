@@ -194,12 +194,12 @@
                                    Style="{StaticResource accentTextStyle}"/>
                         <TextBlock Text="{Binding SelectedRequest.DateRaised, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd/MM/yy HH:mm}', FallbackValue='01/01/1970 23:59'}"
                                    Grid.Column="2"
+                                   HorizontalAlignment="Right"
                                    Style="{StaticResource accentTextStyle}"/>
                         
                         <TextBlock Text="{Binding SelectedRequest.ModifiedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Updated by {0}', FallbackValue='Updated by Kyle Brovloski'}"
                                    Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}"
                                    Style="{StaticResource accentTextStyle}"
-                                   HorizontalAlignment="Right"
                                    Grid.Row="1"/>
                         <TextBlock Text="{Binding SelectedRequest.LastModified, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd/MM/yy HH:mm}', FallbackValue='01/01/1970 23:59'}"
                                    Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}"

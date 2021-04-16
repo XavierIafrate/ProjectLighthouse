@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,24 +7,24 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
-    class EditManufactureOrderCommand : ICommand
+    public class EditSettingsCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private OrderViewModel viewModel;
+        private MainViewModel viewModel;
 
-        public EditManufactureOrderCommand(OrderViewModel vm)
+        public EditSettingsCommand(MainViewModel vm)
         {
             viewModel = vm;
         }
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.CanUpdateLMOs;
+            return true;
         }
 
         public void Execute(object parameter)
         {
-            viewModel.EditLMO();
+            viewModel.EditSettings();
         }
     }
 }
