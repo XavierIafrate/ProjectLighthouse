@@ -6,11 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -20,33 +19,7 @@ namespace ProjectLighthouse.ViewModel
         public ObservableCollection<LatheManufactureOrder> FilteredOrders { get; set; }
         public ObservableCollection<LatheManufactureOrderItem> LMOItems { get; set; }
         public ObservableCollection<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
-
-        private string runInfoText;
-        public string RunInfoText
-        {
-            get { return runInfoText; }
-            set { runInfoText = value; }
-        }
-
-        private string selectedFilter;
-        public string SelectedFilter
-        {
-            get { return selectedFilter; }
-            set 
-            { 
-                selectedFilter = value;
-                FilterOrders(value);
-                if (FilteredOrders.Count > 0)
-                {
-                    SelectedLatheManufactureOrder = FilteredOrders.First();
-                    CardVis = Visibility.Visible;
-                }
-                else
-                {
-                    CardVis = Visibility.Hidden;
-                }
-            }
-        }
+        public List<MachineStatistics> machineStatistics { get; set; }
 
         private LinearGradientBrush statusBackground;
         public LinearGradientBrush StatusBackground
@@ -59,13 +32,13 @@ namespace ProjectLighthouse.ViewModel
         public LatheManufactureOrder SelectedLatheManufactureOrder
         {
             get { return selectedLatheManufactureOrder; }
-            set 
-            { 
+            set
+            {
                 selectedLatheManufactureOrder = value;
                 OnPropertyChanged("SelectedLatheManufactureOrder");
                 SelectedLatheManufactureOrderChanged?.Invoke(this, new EventArgs());
                 LoadLMOItems();
-                if(selectedLatheManufactureOrder == null)
+                if (selectedLatheManufactureOrder == null)
                 {
                     CardVis = Visibility.Hidden;
                     return;
@@ -75,14 +48,9 @@ namespace ProjectLighthouse.ViewModel
                     CardVis = Visibility.Visible;
                 }
 
-                if (String.IsNullOrEmpty(selectedLatheManufactureOrder.ModifiedBy))
-                {
-                    ModifiedVis = Visibility.Collapsed;
-                }
-                else
-                {
-                    ModifiedVis = Visibility.Visible;
-                }
+                ModifiedVis = String.IsNullOrEmpty(selectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
+
+                LiveInfoVis = selectedLatheManufactureOrder.Status == "Running" ? Visibility.Visible : Visibility.Collapsed;
 
                 switch (selectedLatheManufactureOrder.Status)
                 {
@@ -101,6 +69,7 @@ namespace ProjectLighthouse.ViewModel
                     case "Running":
                         StatusBackground = (LinearGradientBrush)Application.Current.Resources["gradBlue"];
                         OnPropertyChanged("StatusBackground");
+                        RefreshLiveInfoText();
                         break;
                     default:
                         StatusBackground = (LinearGradientBrush)Application.Current.Resources["gradGood"];
@@ -119,6 +88,47 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("RunInfoText");
             }
         }
+
+        private string displayStats;
+        public string DisplayStats
+        {
+            get { return displayStats; }
+            set 
+            { 
+                displayStats = value;
+                OnPropertyChanged("DisplayStats");
+            }
+        }
+
+
+        private string runInfoText;
+        public string RunInfoText
+        {
+            get { return runInfoText; }
+            set { runInfoText = value; }
+        }
+
+        private string selectedFilter;
+        public string SelectedFilter
+        {
+            get { return selectedFilter; }
+            set
+            {
+                selectedFilter = value;
+                FilterOrders(value);
+                if (FilteredOrders.Count > 0)
+                {
+                    SelectedLatheManufactureOrder = FilteredOrders.First();
+                    CardVis = Visibility.Visible;
+                }
+                else
+                {
+                    CardVis = Visibility.Hidden;
+                }
+            }
+        }
+
+        
 
         private string GetDaySuffix(int day)
         {
@@ -139,15 +149,27 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        #region Visibility variables
+        private Visibility liveInfoVis;
+        public Visibility LiveInfoVis
+        {
+            get { return liveInfoVis; }
+            set
+            { 
+                liveInfoVis = value;
+                OnPropertyChanged("LiveInfoVis");
+            }
+        }
+
         private Visibility cardVis;
         public Visibility CardVis
         {
             get { return cardVis; }
-            set 
-            { 
+            set
+            {
                 cardVis = value;
                 OnPropertyChanged("CardVis");
-                if(value == Visibility.Visible)
+                if (value == Visibility.Visible)
                 {
                     NothingVis = Visibility.Hidden;
                     return;
@@ -160,8 +182,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility NothingVis
         {
             get { return nothingVis; }
-            set 
-            { 
+            set
+            {
                 nothingVis = value;
                 OnPropertyChanged("NothingVis");
             }
@@ -171,8 +193,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility ModifiedVis
         {
             get { return modifiedVis; }
-            set 
-            { 
+            set
+            {
                 modifiedVis = value;
                 OnPropertyChanged("ModifiedVis");
             }
@@ -180,14 +202,21 @@ namespace ProjectLighthouse.ViewModel
 
         public ICommand PrintOrderCommand { get; set; }
         public ICommand EditCommand { get; set; }
+        #endregion
 
         public event EventHandler SelectedLatheManufactureOrderChanged;
 
         public OrderViewModel()
         {
+            // refresh live stats
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = TimeSpan.FromSeconds(60);
+            dispatcherTimer.Start();
+
             LatheManufactureOrders = new ObservableCollection<LatheManufactureOrder>();
             FilteredOrders = new ObservableCollection<LatheManufactureOrder>();
-
+            machineStatistics = new List<MachineStatistics>();
 
             LMOItems = new ObservableCollection<LatheManufactureOrderItem>();
             FilteredLMOItems = new ObservableCollection<LatheManufactureOrderItem>();
@@ -202,8 +231,64 @@ namespace ProjectLighthouse.ViewModel
             {
                 SelectedLatheManufactureOrder = FilteredOrders.First();
             }
-            GetLatheManufactureOrderItems();
             
+            GetLatheManufactureOrderItems();
+            GetLiveStats();
+            RefreshLiveInfoText();
+        }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            GetLiveStats();
+            RefreshLiveInfoText();
+        }
+
+        private void GetLiveStats()
+        {
+            machineStatistics.Clear();
+            machineStatistics = MachineStatsHelper.GetStats();
+        }
+
+        private void RefreshLiveInfoText()
+        {
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
+            string fullname = String.Empty;
+            MachineStatistics target_stats = new MachineStatistics();
+            foreach(var lathe in lathes)
+            {
+                if(lathe.Id == SelectedLatheManufactureOrder.AllocatedMachine)
+                {
+                    fullname = lathe.FullName;
+                    break;
+                }
+            }
+
+            if (!String.IsNullOrWhiteSpace(fullname))
+            {
+                foreach (var stat in machineStatistics)
+                {
+                    if(stat.MachineID == fullname)
+                    {
+                        target_stats = stat;
+                    }
+                }
+
+                if(target_stats != null)
+                {
+                    DisplayStats = String.Format("Part Counter: {0:#,##0} of {1:#,##0}, complete {2}", target_stats.PartCountAll, target_stats.PartCountTarget, target_stats.EstimateCompletionDate());
+                    return;
+                }
+                else
+                {
+                    DisplayStats = String.Empty;
+                    return;
+                }
+            }
+            else
+            {
+                DisplayStats = String.Empty;
+                return;
+            }
         }
 
         private void GetLatheManufactureOrders()
@@ -258,9 +343,9 @@ namespace ProjectLighthouse.ViewModel
             }
             string selectedMO = SelectedLatheManufactureOrder.Name;
             FilteredLMOItems.Clear();
-            foreach(var item in LMOItems)
+            foreach (var item in LMOItems)
             {
-                if(item.AssignedMO == selectedMO)
+                if (item.AssignedMO == selectedMO)
                 {
                     FilteredLMOItems.Add(item);
                 }

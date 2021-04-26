@@ -38,7 +38,7 @@
             </Grid.RowDefinitions>
 
             <Grid Margin="20,10" Grid.Column="1">
-                <Rectangle Fill="{StaticResource colNeutral}" RadiusX="10" RadiusY="10">
+                <Rectangle Fill="{StaticResource materialPrimaryBlue}" RadiusX="10" RadiusY="10">
                     <Rectangle.Effect>
                         <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
                     </Rectangle.Effect>
@@ -71,7 +71,7 @@
             </Grid>
 
             <Grid Margin="10" Grid.Column="2">
-                <Rectangle Fill="{StaticResource colGood}" RadiusX="10" RadiusY="10">
+                <Rectangle Fill="{StaticResource materialPrimary}" RadiusX="10" RadiusY="10">
                     <Rectangle.Effect>
                         <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
                     </Rectangle.Effect>

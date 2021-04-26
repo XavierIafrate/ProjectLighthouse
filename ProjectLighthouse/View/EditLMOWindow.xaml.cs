@@ -5,16 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
@@ -25,7 +19,7 @@ namespace ProjectLighthouse.View
     {
         private LatheManufactureOrder order;
         private ObservableCollection<LatheManufactureOrderItem> items;
-        
+
         public EditLMOWindow(LatheManufactureOrder o)
         {
             InitializeComponent();
@@ -48,55 +42,9 @@ namespace ProjectLighthouse.View
             PORef.Text = order.POReference;
             notes.AppendText(order.Notes);
             notes.Document.LineHeight = 2;
-            //urgent.IsChecked = order.IsUrgent;
+            urgent.IsChecked = order.IsUrgent;
             program.IsChecked = order.HasProgram;
             ready.IsChecked = order.IsReady;
-
-            if (order.HasStarted)
-            {
-                program.IsEnabled = false;
-                ready.IsEnabled = false;
-
-                startButton.IsEnabled = false;
-                startTimeText.Text = String.Format("Started {0:dd/MM HH:mm}", order.StartDate);
-
-                if (order.SettingFinished > DateTime.MinValue)
-                {
-                    endButton.IsEnabled = false;
-                    stopTimeText.Text = String.Format("Finished setting {0: dd/MM HH:mm} ({1}h)", order.SettingFinished, Math.Round((order.SettingFinished - order.StartDate).TotalHours));
-                    if (order.IsComplete)
-                    {
-                        completeButton.IsEnabled = false;
-                        double timeElapsed = Math.Max((double)0, ((order.CompletedAt - order.StartDate).TotalSeconds - 3600 * 4));
-                        double efficacy = (double)100 * order.TimeToComplete / timeElapsed;
-                        efficacy = Math.Min((double)100, efficacy);
-                        efficacy = Math.Round(efficacy);
-                        completeText.Text = String.Format("Completed {0: dd/MM HH:mm} ({1}d {2}h, {3}% efficacy)", order.CompletedAt, Math.Round((order.CompletedAt - order.StartDate).TotalDays), Math.Round((double)(order.CompletedAt - order.StartDate).Hours), efficacy);
-                    }
-                    else
-                    {
-                        completeButton.IsEnabled = true;
-                        completeText.Text = "";
-                    }
-                }
-                else
-                {
-                    endButton.IsEnabled = true;
-                    stopTimeText.Text = "";
-                    completeButton.IsEnabled = false;
-                    completeText.Text = "";
-                }
-            }
-            else
-            {
-                startButton.IsEnabled = true;
-                startTimeText.Text = "";
-                endButton.IsEnabled = false;
-                stopTimeText.Text = "";
-                completeButton.IsEnabled = false;
-                completeText.Text = "";
-            }
-            
 
             if (!order.HasProgram)
             {
@@ -109,9 +57,17 @@ namespace ProjectLighthouse.View
                 setters.IsEnabled = false;
             }
 
+            if (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin")
+            {
+                cancelOrderButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                cancelOrderButton.Visibility = Visibility.Collapsed;
+            }
             var users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
             List<string> setterUsers = new List<string>();
-            
+
             foreach (var user in users)
             {
                 setterUsers.Add(user.GetFullName());
@@ -119,7 +75,7 @@ namespace ProjectLighthouse.View
             setters.ItemsSource = setterUsers.ToList();
             setters.Text = order.AllocatedSetter;
 
-            
+
         }
 
         private void closeButton_Click(object sender, RoutedEventArgs e)
@@ -142,7 +98,7 @@ namespace ProjectLighthouse.View
             order.HasProgram = (bool)program.IsChecked ? true : false;
             order.IsReady = (bool)ready.IsChecked ? true : false;
 
-            if(order.IsReady && !order.IsComplete)
+            if (order.IsReady && !order.IsComplete)
             {
                 order.Status = "Ready";
             }
@@ -150,7 +106,7 @@ namespace ProjectLighthouse.View
             {
                 order.Status = "Complete";
             }
-            if(order.HasStarted && !order.IsComplete)
+            if (order.HasStarted && !order.IsComplete)
             {
                 order.Status = "Running";
             }
@@ -165,14 +121,14 @@ namespace ProjectLighthouse.View
             order.ModifiedAt = DateTime.Now;
 
             DatabaseHelper.Update(order);
-            
+
             this.Close();
         }
 
         private void program_Click(object sender, RoutedEventArgs e)
         {
             CheckBox checkBox = sender as CheckBox;
-            if (checkBox.IsChecked??false)
+            if (checkBox.IsChecked ?? false)
             {
                 ready.IsEnabled = true;
             }
@@ -204,43 +160,6 @@ namespace ProjectLighthouse.View
             order.TimeToComplete = estimatedTimeSeconds;
         }
 
-        private void startButton_Click(object sender, RoutedEventArgs e)
-        {
-            order.StartDate = DateTime.Now;
-            order.Status = "Running";
-            order.HasStarted = true;
-            endButton.IsEnabled = true;
-            startButton.IsEnabled = false;
-            completeButton.IsEnabled = false;
-            startTimeText.Text = String.Format("Started {0: dd/MM HH:mm}", order.StartDate);
-        }
-
-        private void endButton_Click(object sender, RoutedEventArgs e)
-        {
-            order.SettingFinished = DateTime.Now;
-            order.SettingTime = (int)((DateTime)order.SettingFinished - (DateTime)order.StartDate).TotalSeconds;
-            order.Status = "Running";
-            endButton.IsEnabled = false;
-            startButton.IsEnabled = false;
-            completeButton.IsEnabled = true;
-            stopTimeText.Text = String.Format("Finished setting {0: dd/MM HH:mm} ({1}h)", order.SettingFinished, Math.Round((order.SettingFinished - order.StartDate).TotalHours));
-        }
-
-        private void completeButton_Click(object sender, RoutedEventArgs e)
-        {
-            order.CompletedAt = DateTime.Now;
-            order.Status = "Complete";
-            order.IsComplete = true;
-            endButton.IsEnabled = false;
-            startButton.IsEnabled = false;
-            completeButton.IsEnabled = false;
-            double timeElapsed = Math.Max((double)0, ((order.CompletedAt - order.StartDate).TotalSeconds - 3600 * 4));
-            double efficacy = (double)100* order.TimeToComplete / timeElapsed;
-            efficacy = Math.Min((double)100, efficacy);
-            efficacy = Math.Round(efficacy);
-            completeText.Text = String.Format("Completed {0: dd/MM HH:mm} ({1}d {2}h, {3}% efficacy)", order.CompletedAt, Math.Round((order.CompletedAt - order.StartDate).TotalDays), Math.Round((double)(order.CompletedAt - order.StartDate).Hours), efficacy);
-        }
-
         private void ready_Click(object sender, RoutedEventArgs e)
         {
             CheckBox checkBox = sender as CheckBox;
@@ -251,6 +170,14 @@ namespace ProjectLighthouse.View
             else
             {
                 order.Status = "Problem";
+            }
+        }
+
+        private void CancelOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to cancel this order?", "Cancel Order", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
+            {
+                MessageBox.Show("Deleting");
             }
         }
     }

@@ -9,14 +9,6 @@
 
         <FontFamily x:Key="ProximaNova">pack://application:,,,/Resources/Font/proximanova.ttf#Proxima Nova</FontFamily>
 
-        <SolidColorBrush x:Key="colCritical" Color="#e84118"/>
-        <SolidColorBrush x:Key="colWarn" Color="#f4a261"/>
-        <SolidColorBrush x:Key="colAdvise" Color="#e9c46a"/>
-        <SolidColorBrush x:Key="colGood" Color="#2a9d8f"/>
-        <SolidColorBrush x:Key="colNeutral" Color="#264653"/>
-        <SolidColorBrush x:Key="colBody" Color="#353535"/>
-
-
         <SolidColorBrush x:Key="materialPrimary" Color="#6200EE"/>
         <SolidColorBrush x:Key="materialPrimaryVar" Color="#3700B3"/>
         <SolidColorBrush x:Key="materialSecondary" Color="#03DAC6"/>
@@ -25,11 +17,11 @@
         <SolidColorBrush x:Key="materialPrimaryGreenVar" Color="#00695C"/>
         <SolidColorBrush x:Key="materialPrimaryBlue" Color="#0277BD"/>
         <SolidColorBrush x:Key="materialPrimaryBlueVar" Color="#01579B"/>
-        
-        
+
         <SolidColorBrush x:Key="materialBackground" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="materialSurface" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="materialSurface" Color="#fafafa"/>
         <SolidColorBrush x:Key="materialError" Color="#B00020"/>
+        <SolidColorBrush x:Key="materialErrorVar" Color="#e5002a"/>
         
         <SolidColorBrush x:Key="materialOnPrimary" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="materialOnSecondary" Color="#000000"/>
@@ -37,21 +29,32 @@
         <SolidColorBrush x:Key="materialOnSurface" Color="#000000"/>
         <SolidColorBrush x:Key="materialOnError" Color="#FFFFFF"/>
 
+        <SolidColorBrush x:Key="materialYellow" Color="#ffff71"/>
+        <SolidColorBrush x:Key="materialBlue" Color="#96e7f1"/>
+        <SolidColorBrush x:Key="materialGreen" Color="#03DAC6"/>
 
-        <SolidColorBrush x:Key="colA2" Color="#247ba0"/>
-        <SolidColorBrush x:Key="colA4" Color="#f25f5c"/>
-        <SolidColorBrush x:Key="colTi" Color="#50514f"/>
-        <SolidColorBrush x:Key="colEN1a" Color="#70c1b3"/>
-
-        <Style TargetType="TextBlock" x:Key="bodyTextStyle">
+        <Style TargetType="TextBlock" x:Key="heroTextStyle">
             <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource materialSecondary}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style TargetType="TextBlock" x:Key="subtitleTextStyle">
-            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Setter Property="Margin" Value="0,5,30,5"/>
             <Setter Property="FontSize" Value="20"/>
+        </Style>
+        
+        <Style TargetType="TextBlock" x:Key="subsubtitleTextStyle">
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
         </Style>
 
         <Style TargetType="TextBlock" x:Key="accentTextStyle">
@@ -65,7 +68,13 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
+        <Style TargetType="TextBlock" x:Key="bodyTextStyle">
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+
         <LinearGradientBrush x:Key="gradGood" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#1D976C" Offset="0" />
             <GradientStop Color="#93F9B9" Offset="1" />
@@ -116,6 +125,7 @@
                     </Path.Fill>
                 </Path>
             </Grid>
+
         </ControlTemplate>
 
         <ControlTemplate x:Key="ComboBoxTextBox"
@@ -193,9 +203,7 @@
                             </Popup>
                         </Grid>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Background" Value="Red"/>
-                            </Trigger>
+                            
                             <Trigger Property="HasItems" Value="false">
                                 <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
                             </Trigger>
@@ -342,7 +350,7 @@
         </Style>
 
         <Style x:Key="CancelButtonTemplate" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource gradBad}"/>
+            <Setter Property="Background" Value="{StaticResource materialError}"/>
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="12"/>
@@ -362,14 +370,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#F00000" Offset="0" />
-                                <GradientStop Color="#DC281E" Offset="1" />
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="Background" Value="{StaticResource materialErrorVar}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" Value="LightGray"/>

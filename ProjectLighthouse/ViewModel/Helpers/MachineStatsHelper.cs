@@ -1,18 +1,15 @@
 ﻿using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
-    public class MachineStatsHelper
+    class MachineStatsHelper
     {
-        private static string IP_ADDRESS = "http://192.168.100.172:5000/";
+        private static string IP_ADDRESS = "http://192.168.100.172";
 
         public static List<MachineStatistics> GetStats()
         {
@@ -21,7 +18,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             foreach (var lathe in lathes)
             {
-                MachineStatistics stats = new MachineStatistics();
+                MachineStatistics stats = new MachineStatistics()
+                {
+                    SystemMessages = ""
+                };
                 stats.MachineID = lathe.FullName;
                 string url = IP_ADDRESS + lathe.ControllerReference + "/current";
                 using (XmlTextReader reader = new XmlTextReader(url))
@@ -70,8 +70,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                                         case "controller_mode":
                                             stats.ControllerMode = reader.Value;
                                             break;
-                                        case "controller_mode_override_dr":
-                                            stats.ControllerModeOverride = reader.Value;
+                                        case "block_1":
+                                            stats.Block = reader.Value;
+                                            break;
+                                        case "execution_1":
+                                            stats.Execution = reader.Value;
                                             break;
                                         case "emergency_stop":
                                             stats.EmergencyStop = reader.Value;
@@ -100,22 +103,32 @@ namespace ProjectLighthouse.ViewModel.Helpers
                                                 stats.CycleTime = tmpInt;
                                             }
                                             break;
+                                        case "equipment_timer_loaded":
+                                            if (int.TryParse(reader.Value, out tmpInt))
+                                            {
+                                                stats.CuttingTime = tmpInt;
+                                            }
+                                            break;
+                                        case "system":
+                                            stats.SystemMessages = stats.SystemMessages + reader.Value + ";";
+                                            break;
                                     }
                                     break;
                                 case XmlNodeType.EndElement:
                                     break;
                             }
                         }
+
+                        stats.SetStatus(); // Set text to running, setting, breakdown, offline
                         resultList.Add(stats);
+
+
                     }
                     catch (XmlException e)
                     {
                         MessageBox.Show(e.Message);
                     }
                 }
-
-
-                    
             }
             return resultList;
         }

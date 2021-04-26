@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
@@ -14,7 +10,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
         {
             TimeSpan timeSpan = (TimeSpan)value;
             DateTime nextAvailable = DateTime.Now.AddDays(timeSpan.TotalDays + 1);
-            if(nextAvailable.DayOfWeek == DayOfWeek.Sunday) 
+            if (nextAvailable.DayOfWeek == DayOfWeek.Sunday)
             {
                 nextAvailable = nextAvailable.AddDays(1);
             }

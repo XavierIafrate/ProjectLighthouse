@@ -1,10 +1,5 @@
-﻿using ProjectLighthouse.ViewModel;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -30,7 +25,7 @@ namespace ProjectLighthouse.ViewModel.Commands
         public void Execute(object parameter)
         {
 
-            Debug.WriteLine(String.Format("UpdateViewParameter: {0}",parameter.ToString()));
+            Debug.WriteLine(String.Format("UpdateViewParameter: {0}", parameter.ToString()));
 
             if (parameter.ToString() == "Schedule")
             {

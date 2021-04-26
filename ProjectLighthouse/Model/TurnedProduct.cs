@@ -1,9 +1,5 @@
 ﻿using SQLite;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectLighthouse.Model
 {
@@ -56,8 +52,8 @@ namespace ProjectLighthouse.Model
             double scaleFactor = Convert.ToDouble(targetMonthsStock) / (double)18;
             double toMake = Math.Max(QuantitySold * scaleFactor - QuantityInStock, 0);
 
-            recommendedQuantity = Convert.ToInt32( Math.Round( toMake / (double)100, 0) * (double)100);
-            
+            recommendedQuantity = Convert.ToInt32(Math.Round(toMake / (double)100, 0) * (double)100);
+
 
             return recommendedQuantity;
         }
@@ -98,11 +94,11 @@ namespace ProjectLighthouse.Model
         public bool IsScheduleCompatible(TurnedProduct otherProduct)
         {
             return (
-                otherProduct.MajorDiameter == MajorDiameter && 
+                otherProduct.MajorDiameter == MajorDiameter &&
                 otherProduct.DriveSize == DriveSize &&
-                otherProduct.DriveType == DriveType && 
-                otherProduct.ThreadSize == ThreadSize && 
-                otherProduct.ProductGroup == ProductGroup && 
+                otherProduct.DriveType == DriveType &&
+                otherProduct.ThreadSize == ThreadSize &&
+                otherProduct.ProductGroup == ProductGroup &&
                 otherProduct.Material == Material
                 );
         }

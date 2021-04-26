@@ -31,10 +31,10 @@
             </Style>
 
             <Style x:Key="insight" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{StaticResource colBody}"/>
-                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+                <Setter Property="FontSize" Value="12"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="Margin" Value="0,0,0,5"/>
+                <Setter Property="Margin" Value="0,0,0,3"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
@@ -48,33 +48,45 @@
     </UserControl.Resources>
     <Grid Margin="20" DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"
-                              MinWidth="300"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"
+                              MinWidth="300"
+                              MaxWidth="500"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
+        <!--Input Grid-->
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="Part Number" 
-                       Style="{StaticResource tipTextStyle}"
-                       Grid.Row="0"/>
-            <ComboBox ItemsSource="{Binding Families}"
+            <StackPanel>
+                <TextBlock Text="Part Number" 
+                       Style="{StaticResource tipTextStyle}"/>
+                <ComboBox ItemsSource="{Binding Families}"
                       SelectedValue="{Binding SelectedGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      Grid.Row="1"
                       Margin="0,5"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Not a catalogue item?" 
+                           Margin="0,5,0,10"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"
+                           FontStyle="Italic" 
+                           Foreground="DimGray"/>
+                    <Button Style="{StaticResource ButtonTemplate}" 
+                        Command="{Binding AddSpecialCommand}" 
+                        Content="+ New Special Part"
+                        Margin="10,5,0,10"
+                        Width="120"/>
+                </StackPanel>
+            </StackPanel>
+
             <ListBox ItemsSource="{Binding filteredList, UpdateSourceTrigger=PropertyChanged}"
                         SelectedValue="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         SelectionChanged="productsListBox_SelectionChanged"
                         HorizontalContentAlignment="Stretch"
                         x:Name="productsListBox"
-                        Grid.Row="4"
+                        Grid.Row="1"
                         ScrollViewer.CanContentScroll="True"
                         ScrollViewer.VerticalScrollBarVisibility="Visible">
                 <ListBox.ItemTemplate>
@@ -83,57 +95,53 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock Text="Not a catalogue item?" 
-                           Margin="0,5,0,0"
-                           HorizontalAlignment="Center" 
-                           VerticalAlignment="Center"
-                           FontStyle="Italic" 
-                           Foreground="DimGray"/>
-                <Button Style="{StaticResource ButtonTemplate}" 
-                        Command="{Binding AddSpecialCommand}" 
-                        Content="+ New Special Part"
-                        Margin="10,5,0,0"
-                        Width="120"/>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <StackPanel HorizontalAlignment="Center"
-                        Margin="20,0">
-                <TextBlock Text="Date Required"
+
+            <StackPanel Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!--Date Picker-->
+                    <StackPanel Grid.Column="0" Margin="5">
+                        <TextBlock Text="Date Required"
                            Style="{StaticResource tipTextStyle}"
-                           FontSize="16"
                            HorizontalAlignment="Left"/>
-                <Calendar x:Name="DateRequiredCalendarView" 
-                          DisplayDateStart="{x:Static sys:DateTime.Now}"
-                          SelectedDatesChanged="DateRequiredCalendarView_SelectedDatesChanged"/>
-                <TextBlock Text="Quantity Required"
-                           Style="{StaticResource tipTextStyle}"
-                           Margin="0,5"/>
-                <TextBox x:Name="quantityBox"
-                         TextChanged="quantityBox_TextChanged"
-                         Padding="4,2"
-                         BorderBrush="{StaticResource materialPrimary}"
-                         BorderThickness="2"
-                         FontSize="15"/>
+                        <DatePicker x:Name="DateRequiredCalendarView" 
+                                    DisplayDateStart="{x:Static sys:DateTime.Now}"
+                                    SelectedDateChanged="DateRequiredCalendarView_SelectedDatesChanged"
+                                    Padding="4,1"
+                                    BorderBrush="{StaticResource materialPrimary}"
+                                    BorderThickness="2"
+                                    FontSize="15"/>
+                    </StackPanel>
+                    <!--Quantity Input-->
+                    <StackPanel Grid.Column="1" Margin="5">
+                        <TextBlock Text="Quantity Required"
+                           Style="{StaticResource tipTextStyle}"/>
+                        <TextBox x:Name="quantityBox"
+                                 TextChanged="quantityBox_TextChanged"
+                                 Padding="4,2"
+                                 BorderBrush="{StaticResource materialPrimary}"
+                                 BorderThickness="2"
+                                 FontSize="15"/>
+                    </StackPanel>
+                </Grid>
+                
                 <TextBlock Text="Notes"
                            Style="{StaticResource tipTextStyle}"
                            Margin="0,5"/>
                 <Grid>
                     <RichTextBox x:Name="notesTextBox"
                                  MinHeight="100"
-                                 Width="200"
                                  BorderBrush="{StaticResource materialPrimary}"
-                                 BorderThickness="2">
+                                 BorderThickness="2"
+                                 TextChanged="notesTextBox_TextChanged">
                         <FlowDocument LineHeight="2"/>
                     </RichTextBox>
                 </Grid>
-                
+
                 <Button Content="Submit Request"
                         Width="130"
                         Margin="0,10"
@@ -144,108 +152,113 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Column="2" VerticalAlignment="Center">
-            <Grid Margin="20,0,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Rectangle Fill="{StaticResource materialPrimary}" Grid.Row="0">
-                    <Rectangle.Effect>
-                        <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
-                    </Rectangle.Effect>
-                </Rectangle>
-                <Rectangle Fill="{StaticResource materialBackground}" Grid.Row="1">
-                    <Rectangle.Effect>
-                        <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
-                    </Rectangle.Effect>
-                </Rectangle>
-                <TextBlock Text="Insights" 
-                           FontSize="20" 
-                           Foreground="{StaticResource materialOnPrimary}"
-                           Padding="20, 10"/>
-                <StackPanel Margin="20,10" Grid.Row="1">
-                    <TextBlock Text="ERP Data" Style="{StaticResource insightHeading}"/>
-                    <Separator Width="150" HorizontalAlignment="Left" Margin="0,5"/>
-                    <TextBlock Text="{Binding SelectedProduct.ProductName, UpdateSourceTrigger=PropertyChanged, FallbackValue='Product Name'}"
-                               Style="{StaticResource insight}"/>
-                    <TextBlock Text="{Binding SelectedProduct.SellPrice, Converter={StaticResource priceConverter}, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Sell Price: {0}'}"
-                               Style="{StaticResource insight}"/>
-                    <TextBlock Text="{Binding SelectedProduct.QuantitySold, StringFormat='{}{0:#,##0} sold (18mo)'}"
-                               Style="{StaticResource insight}"/>
-                    <TextBlock Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}"
-                               Style="{StaticResource insight}"/>
-                    <TextBlock Text="Manufacture Data" Style="{StaticResource insightHeading}"/>
-                    <Separator Width="150" HorizontalAlignment="Left" Margin="0,5"/>
-                    <TextBlock Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} manufactured'}"
-                               Style="{StaticResource insight}"/>
-                    <TextBlock Text="{Binding SelectedProduct.ThreadSize, StringFormat='{}Thread Size: {0}'}"
-                               Style="{StaticResource insight}"/>
-                    <TextBlock Text="{Binding SelectedProduct.DriveType, StringFormat='{}Drive Type: {0}'}"
-                               Style="{StaticResource insight}"/>
-                    <TextBlock Text="{Binding SelectedProduct.DriveSize, StringFormat='{}Drive Size: {0}'}"
-                               Style="{StaticResource insight}"/>
-                    <TextBlock Text="Scheduling Algorithm" Style="{StaticResource insightHeading}"/>
-                    <Separator Width="150" HorizontalAlignment="Left" Margin="0,5"/>
-                    <TextBlock Text="{Binding RecommendedStockText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
-                    <TextBlock Text="{Binding PotentialQuantityText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
-                    <TextBlock Text="{Binding LikelinessText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
-                </StackPanel>
-
-                <Grid Grid.Row="2"
-                  Margin="0,10,0,0">
+        <ScrollViewer Grid.Column="1" 
+                      VerticalAlignment="Top" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <Grid Margin="20" MaxWidth="700">
+                <Grid >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <Rectangle Fill="{StaticResource materialSecondary}">
+                    <Rectangle Fill="{StaticResource materialPrimary}" Grid.Row="0">
                         <Rectangle.Effect>
-                            <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
+                            <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.3"/>
                         </Rectangle.Effect>
                     </Rectangle>
-                    <TextBlock Text="Machine Workload" 
-                           FontSize="16" 
-                           Foreground="{StaticResource materialOnSecondary}"
-                           Padding="10"/>
-                    <Rectangle Fill="{StaticResource materialBackground}"
-                           Grid.Row="1">
+                    <Rectangle Fill="{StaticResource materialSurface}" Grid.Row="1">
                         <Rectangle.Effect>
-                            <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
                         </Rectangle.Effect>
                     </Rectangle>
-                    <ItemsControl Grid.Row="1"
-                              Margin="10,5"
-                              ItemsSource="{Binding snippets}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Text="{Binding MachineFullName}"
-                                           Style="{StaticResource insight}"/>
-                                    <TextBlock Text="{Binding LeadTime, Converter={StaticResource TimespanToString}}"
-                                           Style="{StaticResource insight}"
-                                           Margin="0"
-                                           Grid.Column="2"/>
-                                    <TextBlock Text="{Binding LeadTime, Converter={StaticResource TimespanToNextAvailable}}"
-                                           Style="{StaticResource insight}"
-                                           Grid.ColumnSpan="3"
-                                           Grid.Row="1"
-                                           HorizontalAlignment="Right"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <TextBlock Text="Insights" 
+                               FontSize="20" 
+                               Foreground="{StaticResource materialOnPrimary}"
+                               Padding="20, 10"/>
+                    <StackPanel Margin="20,10" Grid.Row="1">
+                        <TextBlock Text="ERP Data" Style="{StaticResource insightHeading}"/>
+                        <Separator Width="150" HorizontalAlignment="Left" Margin="0,3"/>
+                        <TextBlock Text="{Binding SelectedProduct.ProductName, UpdateSourceTrigger=PropertyChanged, FallbackValue='Product Name'}"
+                                   Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding SelectedProduct.SellPrice, Converter={StaticResource priceConverter}, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Sell Price: {0}'}"
+                                   Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding SelectedProduct.QuantitySold, StringFormat='{}{0:#,##0} sold (18mo)'}"
+                                   Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}"
+                                   Style="{StaticResource insight}"/>
+                        <TextBlock Text="Manufacture Data" Style="{StaticResource insightHeading}"/>
+                        <Separator Width="150" HorizontalAlignment="Left" Margin="0,3"/>
+                        <TextBlock Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} manufactured'}"
+                                   Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding SelectedProduct.ThreadSize, StringFormat='{}Thread Size: {0}'}"
+                                   Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding SelectedProduct.DriveType, StringFormat='{}Drive Type: {0}'}"
+                                   Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding SelectedProduct.DriveSize, StringFormat='{}Drive Size: {0}'}"
+                                   Style="{StaticResource insight}"/>
+                        <TextBlock Text="Scheduling Algorithm" Style="{StaticResource insightHeading}"/>
+                        <Separator Width="150" HorizontalAlignment="Left" Margin="0,3"/>
+                        <TextBlock Text="{Binding RecommendedStockText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding PotentialQuantityText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding LikelinessText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="2"
+                      Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Rectangle Fill="{StaticResource materialSecondary}">
+                            <Rectangle.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
+                            </Rectangle.Effect>
+                        </Rectangle>
+                        <TextBlock Text="Machine Workload" 
+                               FontSize="16" 
+                               Foreground="{StaticResource materialOnSecondary}"
+                               Padding="10"/>
+                        <Rectangle Fill="{StaticResource materialSurface}"
+                               Grid.Row="1">
+                            <Rectangle.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
+                            </Rectangle.Effect>
+                        </Rectangle>
+                        <ItemsControl Grid.Row="1"
+                                  Margin="10,5"
+                                  ItemsSource="{Binding snippets}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{Binding MachineFullName}"
+                                               Style="{StaticResource insight}"/>
+                                        <TextBlock Text="{Binding LeadTime, Converter={StaticResource TimespanToString}}"
+                                               Style="{StaticResource insight}"
+                                               Margin="0"
+                                               Grid.Column="2"/>
+                                        <TextBlock Text="{Binding LeadTime, Converter={StaticResource TimespanToNextAvailable}}"
+                                               Style="{StaticResource insight}"
+                                               Grid.ColumnSpan="3"
+                                               Grid.Row="1"
+                                               HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

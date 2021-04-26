@@ -1,10 +1,6 @@
 ﻿using ProjectLighthouse.Model;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
@@ -15,7 +11,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
         {
             LatheManufactureOrderItem item = value as LatheManufactureOrderItem;
 
-            if(item.RequiredQuantity > 0)
+            if (item.RequiredQuantity > 0)
             {
                 return String.Format("({0:#,##0} pcs for {1:dd/MM})", item.RequiredQuantity, item.DateRequired);
             }

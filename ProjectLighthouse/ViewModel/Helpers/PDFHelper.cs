@@ -1,15 +1,9 @@
 ﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.Rendering;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
 using ProjectLighthouse.Model;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -31,7 +25,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             paragraph.Format.Font.Color = Color.FromCmyk(100, 30, 20, 50);
             paragraph.AddFormattedText("Hello, World!", TextFormat.Underline);
 
-                FormattedText ft = paragraph.AddFormattedText("Small text", TextFormat.Bold);
+            FormattedText ft = paragraph.AddFormattedText("Small text", TextFormat.Bold);
             ft.Font.Size = 6;
 
             PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(true);
@@ -66,23 +60,23 @@ namespace ProjectLighthouse.ViewModel.Helpers
             //    gfx.DrawString("REFERENCE", font, XBrushes.Black, new XRect(0, 100, page.Width, 140), XStringFormats.Center);
             //    gfx.DrawString(order.Name, font, XBrushes.Black, new XRect(0, 140, page.Width, 180), XStringFormats.Center);
             try
+            {
+                //document.Save(FileName);
+                new Process
                 {
-                    //document.Save(FileName);
-                    new Process
+                    StartInfo = new ProcessStartInfo(FileName)
                     {
-                        StartInfo = new ProcessStartInfo(FileName)
-                        {
-                            UseShellExecute = true
-                        }
-                    }.Start();
-                }
-                catch
-                {
-                    MessageBox.Show("Error, file is probably already open!");
-                }
+                        UseShellExecute = true
+                    }
+                }.Start();
+            }
+            catch
+            {
+                MessageBox.Show("Error, file is probably already open!");
+            }
 
 
-            
+
 
         }
 

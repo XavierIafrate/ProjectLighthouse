@@ -9,8 +9,9 @@
         Title="Project Lighthouse" Height="650" Width="1100"
         MinHeight="650"
         MinWidth="1100"
+        MaxWidth="2000"
         WindowStartupLocation="CenterScreen"
-        SizeToContent="Width"
+       
         ResizeMode="CanResizeWithGrip"
         Background="{StaticResource materialBackground}">
     <!--Background="#12000000"
@@ -70,7 +71,7 @@
     </Window.Resources>
 
     <DockPanel DataContext="{StaticResource vm}">
-        <Grid DockPanel.Dock="Left">
+        <Grid DockPanel.Dock="Left" x:Name="main_menu">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="auto"/>
@@ -90,37 +91,49 @@
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
-                        CommandParameter="NewRequest"
-                        Style="{StaticResource menuButtonStyle}"
-                        Content="New Request"/>
+                              CommandParameter="NewRequest"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="New Request"
+                              x:Name="new_request_button"
+                              Click="ToggleButton_Click"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
-                        CommandParameter="Requests"
-                        Style="{StaticResource menuButtonStyle}"
-                        Content="View Requests"/>
+                              CommandParameter="Requests"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="View Requests"
+                              x:Name="requests_button"
+                              Click="ToggleButton_Click"/>
 
 
                 <TextBlock Text="Production"
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}"
-                        CommandParameter="Orders"
-                        Style="{StaticResource menuButtonStyle}"
-                        Content="Orders"/>
+                               CommandParameter="Orders"
+                               Style="{StaticResource menuButtonStyle}"
+                               Content="Orders"
+                              x:Name="orders_button"
+                              Click="ToggleButton_Click"/>
 
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
-                        CommandParameter="Schedule"
-                        Style="{StaticResource menuButtonStyle}"
-                        Content="Schedule"/>
+                              CommandParameter="Schedule"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="Schedule"
+                              x:Name="schedule_button"
+                              Click="ToggleButton_Click"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
                         CommandParameter="Machine Stats"
                         Style="{StaticResource menuButtonStyle}"
-                        Content="Runtime"/>
+                        Content="Runtime"
+                              x:Name="machine_stats_button"
+                              Click="ToggleButton_Click"/>
 
                 <TextBlock Text="Tools"
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
                 <ToggleButton Style="{StaticResource menuButtonStyle}"
-                        Content="Time/Cost Estimate"/>
+                              Content="Time/Cost Estimate"
+                              x:Name="time_estimate_button"
+                              Click="ToggleButton_Click"/>
 
                 <!--<Button Command="{Binding UpdateViewCommand}" 
                         CommandParameter="BarStock"

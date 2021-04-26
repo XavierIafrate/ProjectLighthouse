@@ -1,18 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
@@ -47,7 +37,7 @@ namespace ProjectLighthouse.View
             openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf";
 
             string openDir = "H:\\Sales Office";
-            if(!Directory.Exists(openDir))
+            if (!Directory.Exists(openDir))
             {
                 openDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
@@ -56,10 +46,11 @@ namespace ProjectLighthouse.View
             if (openFileDialog.ShowDialog() == true)
             {
                 filename = openFileDialog.FileName;
-                if(filename[0] != 'H')
+                if (filename[0] != 'H')
                 {
                     fileWarning.Visibility = Visibility.Visible;
-                } else
+                }
+                else
                 {
                     fileWarning.Visibility = Visibility.Collapsed;
                 }

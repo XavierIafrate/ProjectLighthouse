@@ -12,7 +12,7 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" VerticalAlignment="Center" FontSize="18" Foreground="{StaticResource colNeutral}" FontWeight="Bold"/>
+        <TextBlock Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" VerticalAlignment="Center" FontSize="18" Foreground="{StaticResource materialOnBackground}" FontWeight="Bold"/>
         <Image Source="/Resources/MO-3star.png" Grid.Column="1" Margin="10,0" VerticalAlignment="Center"  HorizontalAlignment="Left" Height="20" x:Name="RatingImage" RenderOptions.BitmapScalingMode="HighQuality"/>
         <TextBlock Text="1,000 pcs" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="18" Grid.Column="3" x:Name="recommendedQtyText"/>
     </Grid>

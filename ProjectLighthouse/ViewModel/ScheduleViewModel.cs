@@ -2,11 +2,8 @@
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -52,7 +49,7 @@ namespace ProjectLighthouse.ViewModel
 
             totalTime = (int)0;
             bookedTo = DateTime.MinValue;
-            
+
             ReadOrders();
         }
 
@@ -71,7 +68,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 allLMOItems.Add(item);
             }
-            
+
         }
 
         private void LoadCompleteOrders()
@@ -85,20 +82,20 @@ namespace ProjectLighthouse.ViewModel
             int orderTime = new int();
             double orderBars = new double();
 
-            foreach(var order in filteredOrders)
+            foreach (var order in filteredOrders)
             {
                 orderTime = (int)0;
                 orderBars = (double)0;
 
-                if(order.StartDate < earliestStart)
+                if (order.StartDate < earliestStart)
                 {
                     earliestStart = order.StartDate;
                 }
                 tmpItems.Clear();
 
-                foreach(var item in allLMOItems)
+                foreach (var item in allLMOItems)
                 {
-                    if(item.AssignedMO == order.Name)
+                    if (item.AssignedMO == order.Name)
                     {
                         tmpItems.Add(item);
                         totalTime += item.CycleTime * item.TargetQuantity;
@@ -110,7 +107,7 @@ namespace ProjectLighthouse.ViewModel
                 order.TimeToComplete = orderTime;
                 order.NumberOfBars = Math.Ceiling(orderBars);
                 DatabaseHelper.Update(order);
-                
+
                 CompleteOrder tmpOrder = new CompleteOrder
                 {
                     Order = order,

@@ -4,20 +4,19 @@ using System.Windows.Data;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
 {
-    public class intToPrice : IValueConverter
+    public class intToMinAndSec : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int iPrice = (int)value;
-            double dPrice = System.Convert.ToDouble(iPrice) / 100;
-            string strPrice = dPrice.ToString("0.##");
-
-            return "£" + strPrice;
+            int seconds = (int)value;
+            TimeSpan cycleTime = TimeSpan.FromSeconds(seconds);
+            return cycleTime;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return 0;
+            TimeSpan timeSpan = (TimeSpan)value;
+            return timeSpan.TotalSeconds;
         }
     }
 }

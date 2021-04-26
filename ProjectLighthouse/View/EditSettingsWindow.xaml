@@ -5,8 +5,44 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectLighthouse.View"
         mc:Ignorable="d"
-        Title="EditSettingsWindow" Height="450" Width="800">
+        SizeToContent="WidthAndHeight"
+        ResizeMode="CanMinimize"
+        MinWidth="250"
+        WindowStartupLocation="CenterScreen"
+        Title="Settings">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="233.438"/>
+            <ColumnDefinition Width="100.103"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="20,20,20,36" Grid.Column="1" Grid.ColumnSpan="2">
+            <TextBlock Text="Settings" FontSize="30" FontWeight="Bold"/>
+            <TextBlock x:Name="nameText" Style="{StaticResource accentTextStyle}"/>
+            <TextBlock Style="{StaticResource accentTextStyle}">
+                <Run Text="User Role:"/>
+                <Run x:Name="userRoleText"/>
+            </TextBlock>
+            <TextBlock Text="Change Password" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBlock Text="Don't use your bank password, this app has no security." TextWrapping="Wrap" Margin="0,0,0,5" Foreground="{StaticResource materialError}"/>
+            <StackPanel Margin="10,0">
+                <TextBlock Text="Current Password" Style="{StaticResource accentTextStyle}"/>
+                <PasswordBox x:Name="current" MaxLength="30"/>
+                <TextBlock Text="New Password" Style="{StaticResource accentTextStyle}"/>
+                <PasswordBox x:Name="newPwd" MaxLength="30"/>
+                <TextBlock Text="Confirm New Password" Style="{StaticResource accentTextStyle}"/>
+                <PasswordBox x:Name="confirmPwd" MaxLength="30"/>
+                <TextBlock Text="Helper Text" x:Name="helperText" Foreground="{StaticResource materialError}" Margin="0,3,0,0"/>
+            </StackPanel>
+
+            <Button Content="Change Password" 
+                    x:Name="ChangePasswordButton"
+                    Click="ChangePasswordButton_Click"
+                    Style="{StaticResource GreenButtonTemplate}"
+                    Margin="0,10,10,0" Width="150"
+                    HorizontalAlignment="Right"/>
+        </StackPanel>
     </Grid>
 </Window>

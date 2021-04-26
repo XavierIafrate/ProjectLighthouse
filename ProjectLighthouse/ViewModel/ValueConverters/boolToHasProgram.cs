@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
@@ -29,7 +25,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
         {
             string hasProgram = (string)value;
 
-            if(hasProgram == "Has a program")
+            if (hasProgram == "Has a program")
             {
                 return true;
             }

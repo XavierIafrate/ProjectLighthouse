@@ -1,18 +1,10 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -22,54 +14,97 @@ namespace ProjectLighthouse.View.UserControls
     public partial class DisplayStatsCard : UserControl
     {
 
-
-
-        public MachineStatistics stats
+        public MachineStatistics statistics
         {
-            get { return (MachineStatistics)GetValue(statsProperty); }
-            set { SetValue(statsProperty, value); }
+            get { return (MachineStatistics)GetValue(statisticsProperty); }
+            set { SetValue(statisticsProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for stats.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty statsProperty =
-            DependencyProperty.Register("stats", typeof(MachineStatistics), typeof(DisplayStatsCard), new PropertyMetadata(null, SetValues));
 
-        private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        // Using a DependencyProperty as the backing store for statistics.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty statisticsProperty =
+            DependencyProperty.Register("statistics", typeof(MachineStatistics), typeof(DisplayStatsCard), new PropertyMetadata(null, setValues));
+
+        private static void setValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             DisplayStatsCard control = d as DisplayStatsCard;
 
-            if(control.stats != null)
+            if (control != null)
             {
-                control.Visibility = Visibility.Visible;
-                control.DataContext = control.stats;
-                control.completionDate.Text = control.stats.EstimateCompletionDate();
-                control.completionTime.Text = control.stats.EstimateCompletionTimeRemaining();
-                if(control.stats.Availability == "AVAILABLE")
+                control.DataContext = control.statistics;
+
+                string latheID = DatabaseHelper.Read<Lathe>().Where(n => n.FullName == control.statistics.MachineID).FirstOrDefault().Id;
+
+                double percent = (double)control.statistics.PartCountAll / (double)control.statistics.PartCountTarget;
+                percent = Math.Round(percent * 100) / 100;
+                if (double.IsNaN(percent))
                 {
-                    control.availableText.Fill = (Brush)App.Current.Resources["colGood"];
+                    percent = 0;
                 }
-                if (control.stats.ControllerMode == "AUTOMATIC")
+                control.progressGrid.ColumnDefinitions[0].Width = new GridLength(percent, GridUnitType.Star);
+                control.progressGrid.ColumnDefinitions[1].Width = new GridLength(1 - percent, GridUnitType.Star);
+                control.progressText.Text = String.Format("{0:0}%", percent * 100);
+
+                if (percent == 0)
                 {
-                    control.controllerText.Fill = (Brush)App.Current.Resources["colGood"];
+                    control.progressBar.Visibility = Visibility.Hidden;
                 }
-                if (control.stats.ControllerModeOverride == "OFF")
+                else
                 {
-                    control.controllerOverrideText.Fill = (Brush)App.Current.Resources["colGood"];
+                    control.progressBar.Visibility = Visibility.Visible;
                 }
-                if (control.stats.EmergencyStop == "ARMED")
+
+                control.completionDateText.Text = control.statistics.EstimateCompletionDate();
+                control.estimatedTimeRemaining.Text = control.statistics.EstimateCompletionTimeRemaining();
+                control.connectionText.Text = control.statistics.Status.ToUpper();
+
+                string statusColour = String.Empty;
+                string accentColour = String.Empty;
+
+                switch (control.statistics.Status)
                 {
-                    control.armedText.Fill = (Brush)App.Current.Resources["colGood"];
+                    case "Running":
+                        statusColour = "materialGreen";
+                        accentColour = "materialPrimary";
+                        control.connectionText.Text = "ONLINE";
+                        break;
+
+                    case "Setting":
+                        statusColour = "materialYellow";
+                        accentColour = "materialPrimary";
+                        control.connectionText.Text = "MANUAL OPERATION";
+                        break;
+
+                    case "Breakdown":
+                        statusColour = "materialError";
+                        accentColour = "materialError";
+                        break;
+
+                    case "Offline":
+                        statusColour = "materialError";
+                        accentColour = "materialError";
+                        break;
+
+                    default:
+                        statusColour = "materialPrimary";
+                        accentColour = "materialWhite";
+                        control.connectionText.Text = "EXCEPTION";
+                        break;
                 }
-            }
-            else
-            {
-                control.Visibility = Visibility.Collapsed;
+
+                control.controlBackground.Stroke = (SolidColorBrush)Application.Current.Resources[statusColour];
+                control.connectionText.Foreground = (SolidColorBrush)Application.Current.Resources[statusColour];
+                control.workProgressSubtitle.Foreground = (SolidColorBrush)Application.Current.Resources[accentColour];
+                control.progressText.Foreground = (SolidColorBrush)Application.Current.Resources[statusColour];
+                control.progressBar.Fill = (SolidColorBrush)Application.Current.Resources[statusColour];
             }
         }
 
         public DisplayStatsCard()
         {
             InitializeComponent();
+
         }
     }
 }
+

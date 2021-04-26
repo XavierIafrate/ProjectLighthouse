@@ -1,20 +1,10 @@
 ﻿using ProjectLighthouse.Model;
-using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
@@ -68,7 +58,7 @@ namespace ProjectLighthouse.View
 
             if (products != null)
             {
-                foreach(var prod in products)
+                foreach (var prod in products)
                 {
                     ProductPool.Add(prod);
                 }
@@ -108,7 +98,7 @@ namespace ProjectLighthouse.View
                 CycleTime = product.CycleTime,
                 MajorLength = product.MajorLength
             };
-            if(newItem.CycleTime == 0)
+            if (newItem.CycleTime == 0)
             {
                 newItem.CycleTime = 120;
             }
@@ -119,12 +109,12 @@ namespace ProjectLighthouse.View
         public void RefreshView()
         {
             ListboxProducts.Clear();
-            foreach(var product in ProductPool)
+            foreach (var product in ProductPool)
             {
                 bool found = false;
-                foreach(var item in LMOItems)
+                foreach (var item in LMOItems)
                 {
-                    if(item.ProductName == product.ProductName)
+                    if (item.ProductName == product.ProductName)
                     {
                         found = true;
                     }
@@ -152,7 +142,7 @@ namespace ProjectLighthouse.View
             {
                 totaltime += item.CycleTime * item.TargetQuantity;
                 bars += (item.TargetQuantity * (item.MajorLength + 2)) / (double)2700;
-                if(item.RequiredQuantity > 0)
+                if (item.RequiredQuantity > 0)
                 {
                     requiredtime += item.RequiredQuantity * item.CycleTime;
                 }
@@ -167,8 +157,8 @@ namespace ProjectLighthouse.View
 
             nBars.Text = String.Format("{0}", bars);
             materialCost.Text = String.Format("£{0}", Math.Round(dblmaterialCost, 0));
-            reqTime.Text = String.Format("{0} day(s)", Math.Round(requiredtime / (double)86400, 2) );
-            totalTime.Text = String.Format("{0} day(s)", Math.Round(totaltime / (double)86400, 2) );
+            reqTime.Text = String.Format("{0} day(s)", Math.Round(requiredtime / (double)86400, 2));
+            totalTime.Text = String.Format("{0} day(s)", Math.Round(totaltime / (double)86400, 2));
             constructLMO.TimeToComplete = totaltime;
         }
 
@@ -192,7 +182,7 @@ namespace ProjectLighthouse.View
 
 
 
-            return blank.Substring(0, 6-orderNumLen) + strOrderNum;
+            return blank.Substring(0, 6 - orderNumLen) + strOrderNum;
         }
 
         private void confirmButton_Click(object sender, RoutedEventArgs e)
@@ -209,7 +199,7 @@ namespace ProjectLighthouse.View
 
             DatabaseHelper.Insert(constructLMO);
 
-            foreach (LatheManufactureOrderItem item in LMOItems) 
+            foreach (LatheManufactureOrderItem item in LMOItems)
             {
                 item.AssignedMO = constructLMO.Name;
                 item.AddedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
@@ -221,7 +211,7 @@ namespace ProjectLighthouse.View
             MessageBox.Show(String.Format("Created {0}", constructLMO.Name), "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             wasCancelled = false;
             this.Close();
-            
+
         }
 
         private void removeButton_Click(object sender, RoutedEventArgs e)
@@ -254,7 +244,7 @@ namespace ProjectLighthouse.View
                 return;
             }
             LatheManufactureOrderItem newItem = TurnedProductToLMOItem(selectedProduct, 0, DateTime.MinValue);
-            
+
             LMOItems.Add(TurnedProductToLMOItem((TurnedProduct)poolListBox.SelectedValue, 0, DateTime.MinValue));
             RefreshView();
         }

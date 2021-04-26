@@ -6,7 +6,8 @@
              xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
              xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              xmlns:local="clr-namespace:ProjectLighthouse.View"
-             Background="White">
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Background="{StaticResource materialBackground}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -35,7 +36,7 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource colGood}"/>
+                        <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}"/>
                         <Setter Property="Foreground" Value="White"/>
                     </Trigger>
                 </Style.Triggers>
@@ -65,7 +66,7 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource colCritical}"/>
+                        <Setter Property="Background" Value="{StaticResource materialError}"/>
                         <Setter Property="Foreground" Value="White"/>
                     </Trigger>
                 </Style.Triggers>
@@ -76,29 +77,30 @@
 
     <Grid Margin="10" DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"
-                              MinWidth="340"/>
-            <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="*"
                               MinWidth="340"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-       
-        
+
+
         <ListView ItemsSource="{Binding FilteredRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    HorizontalContentAlignment="Stretch"
-                    SelectedItem="{Binding SelectedRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    ScrollViewer.CanContentScroll="false">
+                  HorizontalContentAlignment="Stretch"
+                  SelectedItem="{Binding SelectedRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  ScrollViewer.CanContentScroll="false"
+                  x:Name="requests_ListView"
+                  SelectionChanged="requests_ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <uc:DisplayRequest Request="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        
+
         <StatusBar HorizontalAlignment="Stretch"
                    Background="Transparent"
                    Margin="0,5,0,0"
@@ -110,6 +112,7 @@
                        Margin="0,0,10,0"/>
             <ComboBox Width="100" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="All" IsSelected="True"/>
+                <ComboBoxItem Content="My Requests"/>
                 <ComboBoxItem Content="Pending"/>
                 <ComboBoxItem Content="Accepted"/>
                 <ComboBoxItem Content="Declined"/>
@@ -124,14 +127,15 @@
                    Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"/>
 
         <ScrollViewer Grid.Column="2"
-                    Grid.RowSpan="2"
-                      VerticalScrollBarVisibility="Hidden">
+                      Grid.RowSpan="2"
+                      VerticalScrollBarVisibility="Hidden"
+                      MaxWidth="700">
             <Grid Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}" Margin="20,10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                
+
                 <Rectangle RadiusX="10" RadiusY="10">
                     <Rectangle.Effect>
                         <DropShadowEffect BlurRadius="15" Direction="220" RenderingBias="Quality" ShadowDepth="5" Color="#FF000000" Opacity="0.3"/>
@@ -140,7 +144,7 @@
                         <SolidColorBrush Color="White"/>
                     </Rectangle.Fill>
                 </Rectangle>
-                
+
                 <StackPanel Margin="10">
                     <!--Card Header-->
                     <Grid DataContext="{Binding}">
@@ -155,11 +159,9 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="{Binding SelectedRequest.Product, UpdateSourceTrigger=PropertyChanged, FallbackValue='P0XXX.123-456-A2'}"
-                                   FontSize="30"
-                                   Grid.ColumnSpan="2"
-                                   FontWeight="Bold"
-                                   Margin="0,0,0,5"/>
-                        
+                                   Style="{StaticResource heroTextStyle}"
+                                   Grid.ColumnSpan="2"/>
+
                         <Grid Grid.Row="1">
                             <Rectangle Fill="{StaticResource materialPrimary}" RadiusX="5" RadiusY="5"/>
                             <TextBlock Text="{Binding SelectedRequest.QuantityRequired, StringFormat='{}{0:#,##0} pcs required', FallbackValue='0 pcs required'}"
@@ -173,12 +175,10 @@
                                    x:Name = "dateRequiredTextBlock"
                                    Grid.Row="2"
                                    Grid.ColumnSpan="2"
-                                   Margin="0,5"
-                                   Foreground="{StaticResource materialOnBackground}"
-                                   FontSize="18"/>
+                                   Style="{StaticResource subtitleTextStyle}"/>
                     </Grid>
-                    
-                    <!--Dates display grid-->
+
+                    <!--MetaData Dates display grid-->
                     <Separator Margin="0,5"/>
                     <Grid Margin="5,0">
                         <Grid.ColumnDefinitions>
@@ -196,7 +196,7 @@
                                    Grid.Column="2"
                                    HorizontalAlignment="Right"
                                    Style="{StaticResource accentTextStyle}"/>
-                        
+
                         <TextBlock Text="{Binding SelectedRequest.ModifiedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Updated by {0}', FallbackValue='Updated by Kyle Brovloski'}"
                                    Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}"
                                    Style="{StaticResource accentTextStyle}"
@@ -208,22 +208,20 @@
                                    Grid.Column="2"
                                    Grid.Row="1"/>
                     </Grid>
-                    
+
                     <!--Controls area-->
                     <Separator Margin="0,5"/>
                     <TextBlock Text="Decision Making"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               Visibility="{Binding DecisionVis}"
-                               Padding="0,0,0,10"/>
-                    
+                               Style="{StaticResource subtitleTextStyle}"
+                               Visibility="{Binding DecisionVis}"/>
+
                     <StackPanel Margin="10,0"
                                 Visibility="{Binding DecisionVis}">
                         <CheckBox Content="Scheduling Approval"
                                   IsChecked="{Binding SelectedRequest.isSchedulingApproved, UpdateSourceTrigger=PropertyChanged}"
                                   IsEnabled="{Binding SchedulingCheckboxEnabled,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   Click="CheckBox_Click"
-                                  Margin="10,10,0,5" />
+                                  Margin="10,5,0,5" />
                         <CheckBox Content="Production Approval" 
                                   IsChecked="{Binding SelectedRequest.isProductionApproved, UpdateSourceTrigger=PropertyChanged}"
                                   IsEnabled="{Binding ProductionCheckboxEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -242,7 +240,7 @@
                             <ComboBoxItem Content="Machining not possible"/>
                             <ComboBoxItem Content="Duplicate request"/>
                         </ComboBox>
-                
+
                         <Grid x:Name="approvalControls"
                               Visibility="{Binding ApprovalControlsVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <Grid.ColumnDefinitions>
@@ -266,15 +264,24 @@
                                         Style="{StaticResource DeclineButton}"/>
                         </Grid>
                     </StackPanel>
+                    <Grid Margin="10" Visibility="{Binding ApprovedVis, FallbackValue=Collapsed}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Fill="{StaticResource materialPrimaryGreen}"
+                                   RadiusX="5"
+                                   RadiusY="5"/>
+                        <TextBlock Text="APPROVED"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   Foreground="{StaticResource materialOnPrimary}"
+                                   Padding="10,5"/>
+                    </Grid>
                     
-                    <TextBlock Text="Request Approved"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               Visibility="{Binding ApprovedVis}"
-                               Padding="0,0,0,10"/>
                     <StackPanel Margin="10,0"
-                                Visibility="{Binding ApprovedVis}">
-                        <TextBlock Text="This request has been confirmed."
+                                Visibility="{Binding ApprovedVis, FallbackValue=Collapsed}">
+                        <TextBlock Text="This request has been approved for manufacture."
                                    Style="{StaticResource bodyTextStyle}"/>
                         <TextBlock Text="Please enter the Purchase Order reference here:"
                                    Style="{StaticResource bodyTextStyle}"
@@ -288,7 +295,7 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
-                              
+
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -300,24 +307,65 @@
                                     Content="Update Order"
                                     Grid.Column="1"/>
                         </Grid>
-                        
                     </StackPanel>
 
-                    <TextBlock Text="Request Declined"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               Visibility="{Binding DeclinedVis}"
-                               Padding="0,0,0,10"/>
+                    <Grid Margin="10" Visibility="{Binding DeclinedVis, FallbackValue=Collapsed}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Fill="{StaticResource materialError}"
+                                   RadiusX="5"
+                                   RadiusY="5"/>
+                        <TextBlock Text="DECLINED"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   Foreground="{StaticResource materialOnError}"
+                                   Padding="10,5"/>
+                    </Grid>
                     <StackPanel Margin="10,0"
-                                Visibility="{Binding DeclinedVis}">
-                        <TextBlock Text="Unfortunately this request has been declined."
+                                Visibility="{Binding DeclinedVis, FallbackValue=Collapsed}">
+                        <TextBlock Text="Unfortunately this request has been declined, citing the reason below."
                                    Style="{StaticResource bodyTextStyle}"
                                    Foreground="{StaticResource materialError}"/>
                     </StackPanel>
-                    <Separator Margin="0,10"/>
+
+                    <Separator Margin="0,5"/>
+
+                    <StackPanel Grid.Row="2"
+                                Margin="10"
+                                Visibility="{Binding EditControlsVis, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
+                        <TextBlock Text="Edit Request"
+                                   Style="{StaticResource subtitleTextStyle}"/>
+                        <TextBlock Text="Quantity Required"
+                               Style="{StaticResource subsubtitleTextStyle}"/>
+                        <TextBox x:Name="quantityTextbox"
+                                 Text="{Binding SelectedRequest.QuantityRequired, Mode=OneWay}"/>
+
+                        <TextBlock Text="Date Required"
+                               Style="{StaticResource subsubtitleTextStyle}"/>
+                        <DatePicker SelectedDate="{Binding SelectedRequest.DateRequired, Mode=OneWay}" 
+                                    DisplayDateStart="{x:Static sys:DateTime.Now}"/>
+
+                        <TextBlock Text="Notes"
+                               Style="{StaticResource subsubtitleTextStyle}"/>
+                        <RichTextBox x:Name="notesTextBox"
+                                    MinHeight="50"
+                                    BorderBrush="{StaticResource materialPrimary}"
+                                    BorderThickness="2">
+                            <FlowDocument LineHeight="2"/>
+                        </RichTextBox>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Style="{StaticResource ButtonTemplate}"
+                                    Content="Save"
+                                    x:Name="saveChangesButton"/>
+                        </StackPanel>
+                    </StackPanel>
                     <TextBlock Text="{Binding SelectedRequest.Status, StringFormat='{}Status: {0}', FallbackValue='Status: Pending input'}"/>
                 </StackPanel>
+
             </Grid>
+
         </ScrollViewer>
     </Grid>
 </UserControl>

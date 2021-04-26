@@ -1,19 +1,7 @@
-﻿using ProjectLighthouse.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
@@ -23,15 +11,34 @@ namespace ProjectLighthouse.View
     public partial class RequestView : UserControl
     {
         RequestViewModel viewModel;
+
         public RequestView()
         {
             InitializeComponent();
             viewModel = Resources["vm"] as RequestViewModel;
+            updateNotes();
         }
 
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
             viewModel.UpdateRequest();
+        }
+
+        private void updateNotes()
+        {
+            Request request = (Request)requests_ListView.SelectedValue;
+            if (notesTextBox == null)
+            {
+                notesTextBox = new RichTextBox();
+            }
+            notesTextBox.Document.Blocks.Clear();
+            notesTextBox.AppendText(request.Notes);
+        }
+
+
+        private void requests_ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            updateNotes();
         }
     }
 }

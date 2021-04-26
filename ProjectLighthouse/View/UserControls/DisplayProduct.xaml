@@ -14,7 +14,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}"
                    x:Name="productText"
-                   Foreground="{StaticResource colBody}"
+                   Foreground="{StaticResource materialOnBackground}"
                    FontSize="15"/>
         <Rectangle x:Name="materialBadge" 
                    Fill="Black" 

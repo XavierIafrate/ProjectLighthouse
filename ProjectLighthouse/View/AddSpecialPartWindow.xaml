@@ -11,7 +11,7 @@
     
     
     <StackPanel Margin="20" VerticalAlignment="Center">
-        <TextBlock Foreground="{StaticResource colGood}" Text="New Special" FontSize="30" FontWeight="Bold" Margin="0,0,0,10"/>
+        <TextBlock Foreground="{StaticResource materialOnBackground}" Text="New Special" FontSize="30" FontWeight="Bold" Margin="0,0,0,10"/>
         <TextBlock Text="Name of special part"
                    FontSize="13"/>
         <TextBox x:Name="productNameTextBox" 
@@ -29,7 +29,7 @@
         
         <Button Style="{StaticResource ButtonTemplate}" Content="Select Drawing file" x:Name="SelectFile" Click="SelectFile_Click"/>
         <Grid HorizontalAlignment="Center" Margin="0,5" x:Name="fileWarning">
-            <TextBlock Foreground="{StaticResource colCritical}" 
+            <TextBlock Foreground="{StaticResource materialError}" 
                        Text="Make sure the drawing is on the server!"
                        FontStyle="Italic"
                        Margin="12,2"/>

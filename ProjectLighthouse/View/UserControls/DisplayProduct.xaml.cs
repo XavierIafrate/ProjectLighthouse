@@ -1,18 +1,8 @@
 ﻿using ProjectLighthouse.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -37,37 +27,38 @@ namespace ProjectLighthouse.View.UserControls
             if (control != null)
             {
                 control.DataContext = control.TurnedProduct;
-                if(!control.TurnedProduct.canBeManufactured())
+                if (!control.TurnedProduct.canBeManufactured())
                 {
                     control.productText.Foreground = Brushes.Red;
                 }
                 if (String.IsNullOrEmpty(control.TurnedProduct.Material))
                 {
                     control.materialBadge.Visibility = Visibility.Hidden;
-                } else
+                }
+                else
                 {
                     control.materialBadge.Visibility = Visibility.Visible;
                 }
                 switch (control.TurnedProduct.Material)
                 {
                     case "A2":
-                        control.materialBadge.Fill = (Brush)Application.Current.Resources["colA2"];
+                        control.materialBadge.Fill = (Brush)Application.Current.Resources["materialOnBackground"];
                         break;
                     case "A4":
-                        control.materialBadge.Fill = (Brush)Application.Current.Resources["colA4"];
+                        control.materialBadge.Fill = (Brush)Application.Current.Resources["materialPrimary"];
                         break;
                     case "Ti":
-                        control.materialBadge.Fill = (Brush)Application.Current.Resources["colTi"];
+                        control.materialBadge.Fill = (Brush)Application.Current.Resources["materialError"];
                         break;
                     case "EN1A":
-                        control.materialBadge.Fill = (Brush)Application.Current.Resources["colEN1a"];
+                        control.materialBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryGreenVar"];
                         break;
                     default:
                         control.materialBadge.Fill = Brushes.Black;
                         break;
                 }
             }
-            
+
         }
 
         public DisplayProduct()

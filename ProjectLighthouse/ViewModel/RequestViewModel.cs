@@ -3,15 +3,10 @@ using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -23,11 +18,11 @@ namespace ProjectLighthouse.ViewModel
         public string SelectedFilter
         {
             get { return selectedFilter; }
-            set 
-            { 
+            set
+            {
                 selectedFilter = value;
                 FilterRequests(value);
-                if(FilteredRequests.Count > 0)
+                if (FilteredRequests.Count > 0)
                 {
                     SelectedRequest = FilteredRequests.First();
                     CardVis = Visibility.Visible;
@@ -36,7 +31,7 @@ namespace ProjectLighthouse.ViewModel
                 {
                     CardVis = Visibility.Hidden;
                 }
-                
+
             }
         }
 
@@ -44,8 +39,8 @@ namespace ProjectLighthouse.ViewModel
         public Request SelectedRequest
         {
             get { return selectedRequest; }
-            set 
-            { 
+            set
+            {
                 selectedRequest = value;
                 OnPropertyChanged("SelectedRequest");
                 SelectedRequestChanged?.Invoke(this, new EventArgs());
@@ -58,8 +53,8 @@ namespace ProjectLighthouse.ViewModel
         public bool ProductionCheckboxEnabled
         {
             get { return productionCheckboxEnabled; }
-            set 
-            { 
+            set
+            {
                 productionCheckboxEnabled = value;
                 OnPropertyChanged("ProductionCheckboxEnabled");
             }
@@ -71,10 +66,10 @@ namespace ProjectLighthouse.ViewModel
         public string PurchaseRef
         {
             get { return purchaseRef; }
-            set 
-            { 
+            set
+            {
                 purchaseRef = value;
-                if(value == null)
+                if (value == null)
                 {
                     return;
                 }
@@ -84,7 +79,7 @@ namespace ProjectLighthouse.ViewModel
                 }
                 else
                 {
-                     UpdateButtonEnabled = false;
+                    UpdateButtonEnabled = false;
                 }
                 OnPropertyChanged("UpdateButtonEnabled");
                 OnPropertyChanged("PurchaseRef");
@@ -95,19 +90,19 @@ namespace ProjectLighthouse.ViewModel
         public bool DropboxEnabled
         {
             get { return dropboxEnabled; }
-            set 
-            { 
+            set
+            {
                 dropboxEnabled = value;
                 OnPropertyChanged("DropboxEnabled");
             }
         }
-        
+
         private bool schedulingCheckboxEnabled;
         public bool SchedulingCheckboxEnabled
         {
             get { return schedulingCheckboxEnabled; }
-            set 
-            { 
+            set
+            {
                 schedulingCheckboxEnabled = value;
                 OnPropertyChanged("SchedulingCheckboxEnabled");
             }
@@ -117,19 +112,32 @@ namespace ProjectLighthouse.ViewModel
         public Visibility ApprovalControlsVis
         {
             get { return approvalControlsVis; }
-            set 
-            { 
+            set
+            {
                 approvalControlsVis = value;
                 OnPropertyChanged("ApprovalControlsVis");
             }
         }
 
+        private Visibility editcontrolsVis;
+
+        public Visibility EditControlsVis
+        {
+            get { return editcontrolsVis; }
+            set 
+            { 
+                editcontrolsVis = value;
+                OnPropertyChanged("EditControlsVis");
+            }
+        }
+
+
         private Visibility modifiedVis;
         public Visibility ModifiedVis
         {
             get { return modifiedVis; }
-            set 
-            { 
+            set
+            {
                 modifiedVis = value;
                 OnPropertyChanged("ModifiedVis");
             }
@@ -139,16 +147,16 @@ namespace ProjectLighthouse.ViewModel
         public Visibility CardVis
         {
             get { return cardVis; }
-            set 
-            { 
+            set
+            {
                 cardVis = value;
                 OnPropertyChanged("CardVis");
-                if(value == Visibility.Visible)
+                if (value == Visibility.Visible)
                 {
                     NothingVis = Visibility.Hidden;
                     return;
                 }
-                NothingVis = Visibility.Visible;                
+                NothingVis = Visibility.Visible;
             }
         }
 
@@ -156,8 +164,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility NothingVis
         {
             get { return nothingVis; }
-            set 
-            { 
+            set
+            {
                 nothingVis = value;
                 OnPropertyChanged("NothingVis");
             }
@@ -167,8 +175,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility DecisionVis
         {
             get { return decisionVis; }
-            set 
-            { 
+            set
+            {
                 decisionVis = value;
                 OnPropertyChanged("DecisionVis");
             }
@@ -212,14 +220,13 @@ namespace ProjectLighthouse.ViewModel
             SelectedRequest = new Request();
 
             approvalControlsVis = App.currentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
-
             GetRequests();
             FilterRequests("All");
 
-            if (FilteredRequests.Count > 0) 
-            { 
-                SelectedRequest = FilteredRequests.First(); 
-            }   
+            if (FilteredRequests.Count > 0)
+            {
+                SelectedRequest = FilteredRequests.First();
+            }
         }
 
         public void LoadRequestCard(Request request)
@@ -232,6 +239,7 @@ namespace ProjectLighthouse.ViewModel
             ModifiedVis = (String.IsNullOrEmpty(request.ModifiedBy)) ? Visibility.Collapsed : Visibility.Visible;
 
             ApprovalControlsVis = (App.currentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
+            EditControlsVis = (App.currentUser.GetFullName() == request.RaisedBy || App.currentUser.CanApproveRequests) && !request.IsAccepted && !request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
             DecisionVis = (request.IsDeclined || request.IsAccepted) ? Visibility.Collapsed : Visibility.Visible;
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
             DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
@@ -292,13 +300,13 @@ namespace ProjectLighthouse.ViewModel
 
         public void ApproveRequest()
         {
-            if(selectedRequest.isProductionApproved && selectedRequest.isSchedulingApproved && App.currentUser.CanApproveRequests)
+            if (selectedRequest.isProductionApproved && selectedRequest.isSchedulingApproved && App.currentUser.CanApproveRequests)
             {
                 selectedRequest.IsAccepted = true;
                 selectedRequest.IsDeclined = false;
                 selectedRequest.LastModified = DateTime.Now;
                 selectedRequest.ModifiedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
-                
+
 
                 LMOContructorWindow creationWindow = new LMOContructorWindow(SelectedRequest);
                 creationWindow.Owner = Application.Current.MainWindow;
@@ -315,7 +323,7 @@ namespace ProjectLighthouse.ViewModel
                     selectedRequest.Status = String.Format("Accepted by {0} - {1}", selectedRequest.AcceptedBy, selectedRequest.ResultingLMO);
                 }
 
-                
+
                 if (DatabaseHelper.Update(selectedRequest))
                 {
                     FilterRequests(SelectedFilter);
@@ -369,7 +377,7 @@ namespace ProjectLighthouse.ViewModel
             else
             {
                 MessageBox.Show("Failed to update the request.", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
-            }            
+            }
         }
 
         public void GetRequests()
@@ -400,6 +408,9 @@ namespace ProjectLighthouse.ViewModel
                     break;
                 case "Declined":
                     FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.IsDeclined));
+                    break;
+                case "My Requests":
+                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.RaisedBy == App.currentUser.GetFullName()));
                     break;
             }
             if (FilteredRequests.Count > 0)

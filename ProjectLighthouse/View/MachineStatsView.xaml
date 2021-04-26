@@ -33,28 +33,33 @@
                            FontSize="18"/>
             </Grid>
             <TextBlock FontSize="18" 
-                       Text="This feature is still in development" 
+                       Text="Main runtime information is recorded with Watchtower" 
                        Foreground="{StaticResource materialOnBackground}"
                        FontStyle="Italic"/>
         </StackPanel>
-        
-        <ItemsControl ItemsSource="{Binding StatsList}"
-                      BorderThickness="0"
-                      Focusable="False"
-                      FocusVisualStyle="{x:Null}"
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                       Grid.Row="1"
                       Margin="0,0,0,20">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="20"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <uc:DisplayStatsCard stats="{Binding}" Margin="20,0"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            <ItemsControl ItemsSource="{Binding StatsList}"
+                          BorderThickness="0"
+                          Focusable="False"
+                          FocusVisualStyle="{x:Null}"
+                          
+                          >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="20"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <uc:DisplayStatsCard statistics="{Binding}" Margin="20,0"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
+
     
+
 </UserControl>

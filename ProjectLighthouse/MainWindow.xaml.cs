@@ -1,19 +1,12 @@
 ﻿using ProjectLighthouse.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse
 {
@@ -109,6 +102,45 @@ namespace ProjectLighthouse
             SetWindowCompositionAttribute(windowHelper.Handle, ref data);
 
             Marshal.FreeHGlobal(accentPtr);
+        }
+
+        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleButton sender_button = sender as ToggleButton;
+            foreach (ToggleButton button in FindVisualChildren<ToggleButton>(main_menu))
+            {
+
+                button.IsChecked = button == sender_button;
+            }
+
+            //new_request_button.IsChecked = false;
+            //requests_button.IsChecked = false;
+            //orders_button.IsChecked = false;
+            //schedule_button.IsChecked = false;
+            //machine_stats_button.IsChecked = false;
+            //time_estimate_button.IsChecked = false;
+
+            sender_button.IsChecked = true;
+        }
+
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
     }
 }

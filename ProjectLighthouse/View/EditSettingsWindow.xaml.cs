@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel.Helpers;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
@@ -19,9 +9,52 @@ namespace ProjectLighthouse.View
     /// </summary>
     public partial class EditSettingsWindow : Window
     {
+        public User user { get; set; }
         public EditSettingsWindow()
         {
             InitializeComponent();
+            user = App.currentUser;
+            helperText.Visibility = Visibility.Collapsed;
+            LoadText();
+        }
+
+        public void LoadText()
+        {
+            nameText.Text = user.GetFullName();
+            userRoleText.Text = user.UserRole;
+        }
+
+        private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
+        {
+            helperText.Visibility = Visibility.Collapsed;
+
+            if (current.Password != App.currentUser.Password)
+            {
+                helperText.Visibility = Visibility.Visible;
+                helperText.Text = "Invalid Password";
+                return;
+            }
+
+            if (newPwd.Password != confirmPwd.Password)
+            {
+                helperText.Visibility = Visibility.Visible;
+                helperText.Text = "Passwords do not match";
+                return;
+            }
+
+            user.Password = newPwd.Password;
+            if (DatabaseHelper.Update<User>(user))
+            {
+                MessageBox.Show("Password successfully updated", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                newPwd.Password = "";
+                confirmPwd.Password = "";
+                current.Password = "";
+            }
+            else
+            {
+                MessageBox.Show("Failed to update password", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
     }
 }

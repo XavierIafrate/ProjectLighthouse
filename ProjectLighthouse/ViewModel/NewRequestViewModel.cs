@@ -5,10 +5,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -26,8 +23,8 @@ namespace ProjectLighthouse.ViewModel
         public TurnedProduct SelectedProduct
         {
             get { return selectedProduct; }
-            set 
-            { 
+            set
+            {
                 selectedProduct = value;
                 OnPropertyChanged("SelectedProduct");
                 OnPropertyChanged("RecommendedStockText");
@@ -54,8 +51,8 @@ namespace ProjectLighthouse.ViewModel
         public string SelectedGroup
         {
             get { return selectedGroup; }
-            set 
-            { 
+            set
+            {
                 selectedGroup = value;
                 OnPropertyChanged("SelectedGroup");
                 SelectedGroupChanged?.Invoke(this, new EventArgs());
@@ -82,7 +79,7 @@ namespace ProjectLighthouse.ViewModel
 
             MachineInfoSnippet tmpSnippet = new MachineInfoSnippet();
 
-            foreach(var lathe in lathes)
+            foreach (var lathe in lathes)
             {
                 tmpSnippet = new MachineInfoSnippet
                 {
@@ -104,11 +101,11 @@ namespace ProjectLighthouse.ViewModel
             var orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.AllocatedMachine == MachineID && !n.IsComplete).ToList();
             var items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
-            foreach(var order in orders)
+            foreach (var order in orders)
             {
-                foreach(var item in items)
+                foreach (var item in items)
                 {
-                    if(order.Name == item.AssignedMO)
+                    if (order.Name == item.AssignedMO)
                     {
                         totalTime += item.CycleTime * item.TargetQuantity;
                     }
@@ -123,8 +120,8 @@ namespace ProjectLighthouse.ViewModel
             var products = DatabaseHelper.Read<TurnedProduct>().ToList();
             turnedProducts.Clear();
             Families.Clear();
-            
-            foreach(var product in products)
+
+            foreach (var product in products)
             {
                 turnedProducts.Add(product);
                 if (product.ProductGroup != "Specials")
@@ -134,17 +131,17 @@ namespace ProjectLighthouse.ViewModel
                         Families.Add(product.ProductName.Substring(0, 5));
                     }
                 }
-                
+
             }
 
             Families = Families.OrderBy(n => n).ToList();
             Families.Add("Specials");
         }
-        
+
         public void PopulateListBox()
         {
             filteredList.Clear();
-            if(SelectedGroup == "Specials")
+            if (SelectedGroup == "Specials")
             {
                 foreach (var product in turnedProducts)
                 {
@@ -165,8 +162,8 @@ namespace ProjectLighthouse.ViewModel
                     }
                 }
             }
-            
-            filteredList = new ObservableCollection<TurnedProduct>(filteredList.OrderBy(n => n.Material).ThenBy(n=>n.ProductName));
+
+            filteredList = new ObservableCollection<TurnedProduct>(filteredList.OrderBy(n => n.Material).ThenBy(n => n.ProductName));
         }
 
         public bool SubmitRequest()
@@ -202,10 +199,10 @@ namespace ProjectLighthouse.ViewModel
 
             if (DatabaseHelper.Insert(newRequest))
             {
-                string message = String.Format("{0} has submitted a request for {1:#,##0}pcs of {2}. {3} ({4}, {5}). Required for {6:d MMMM}.", 
-                    App.currentUser.GetFullName(), 
-                    newRequest.QuantityRequired, 
-                    newRequest.Product, 
+                string message = String.Format("{0} has submitted a request for {1:#,##0}pcs of {2}. {3} ({4}, {5}). Required for {6:d MMMM}.",
+                    App.currentUser.GetFullName(),
+                    newRequest.QuantityRequired,
+                    newRequest.Product,
                     newRequest.Likeliness,
                     RecommendedStockText,
                     PotentialQuantityText,
@@ -232,6 +229,7 @@ namespace ProjectLighthouse.ViewModel
             SelectedGroup = "";
             SelectedProduct = new TurnedProduct();
 
+
             PopulateComboBox();
             PopulateListBox();
             OnPropertyChanged("filteredList");
@@ -242,10 +240,10 @@ namespace ProjectLighthouse.ViewModel
 
         public void CalculateInsights()
         {
-            if( selectedProduct != null)
+            if (selectedProduct != null)
             {
                 RecommendedStockText = String.Format("Recommended for stock: {0} pcs", selectedProduct.GetRecommendedQuantity());
-                
+
 
                 List<int> classQuantities = new List<int>();
                 foreach (var product in filteredList)
@@ -297,9 +295,9 @@ namespace ProjectLighthouse.ViewModel
         {
             AddSpecialPartWindow window = new AddSpecialPartWindow();
             window.ShowDialog();
-            if(!String.IsNullOrWhiteSpace(window.filename) && 
-               !String.IsNullOrWhiteSpace(window.productName) && 
-               !String.IsNullOrWhiteSpace(window.customerName) && 
+            if (!String.IsNullOrWhiteSpace(window.filename) &&
+               !String.IsNullOrWhiteSpace(window.productName) &&
+               !String.IsNullOrWhiteSpace(window.customerName) &&
                window.submitted)
             {
                 TurnedProduct newSpecial = new TurnedProduct()
@@ -319,8 +317,8 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public class MachineInfoSnippet 
-        { 
+        public class MachineInfoSnippet
+        {
             public string MachineID { get; set; }
             public string MachineFullName { get; set; }
             public TimeSpan LeadTime { get; set; }

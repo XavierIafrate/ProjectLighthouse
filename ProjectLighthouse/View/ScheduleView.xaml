@@ -17,7 +17,7 @@
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="{StaticResource colNeutral}"/>
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
         </Style>
         <converters:intToDays x:Key="intToDayConverter"/>
     </UserControl.Resources>

@@ -1,13 +1,7 @@
-﻿using ProjectLighthouse.Model;
-using ProjectLighthouse.View;
+﻿using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
-using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -20,7 +14,7 @@ namespace ProjectLighthouse.ViewModel
         {
             get { return navText; }
             set
-            { 
+            {
                 navText = value;
                 OnPropertyChanged("NavText");
             }
@@ -30,8 +24,8 @@ namespace ProjectLighthouse.ViewModel
         public BaseViewModel SelectedViewModel
         {
             get { return _selectedViewModel; }
-            set 
-            { 
+            set
+            {
                 _selectedViewModel = value;
                 Debug.WriteLine(String.Format("SelectedViewModel updated to {0}", _selectedViewModel.ToString()));
                 OnPropertyChanged(nameof(SelectedViewModel));
@@ -45,7 +39,7 @@ namespace ProjectLighthouse.ViewModel
         {
             EditSettingsWindow window = new EditSettingsWindow();
             window.ShowDialog();
-         }
+        }
 
         public MainViewModel()
         {
@@ -65,7 +59,7 @@ namespace ProjectLighthouse.ViewModel
                     App.currentUser = login.auth_user;
                 }
             }
-            
+
         }
     }
 }

@@ -6,96 +6,89 @@
         xmlns:local="clr-namespace:ProjectLighthouse.View"
         xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"    
         mc:Ignorable="d"
-        WindowStyle="None"
-        AllowsTransparency="True"
-        Background="Transparent"
         Title="EditLMOWindow"
         SizeToContent="Height"
         Width="600">
-    <Grid>
-        <Rectangle Fill="White" RadiusX="20" RadiusY="20" Stroke="{StaticResource colGood}" StrokeThickness="4"/>
-        <Grid Margin="25">
+    
+    
+    <Grid Margin="25">
+        <!--Header Area-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Rectangle Fill="Transparent" MouseDown="Rectangle_MouseDown"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Rectangle Fill="Transparent" MouseDown="Rectangle_MouseDown"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                
-                <TextBlock Text="M00001" x:Name="nameText" FontSize="50" FontWeight="Bold"/>
-                <Button Content="Close" Style="{StaticResource CancelButtonTemplate}" Grid.Column="2" Click="closeButton_Click"/>
-                <Separator Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,15"/>
-            </Grid>
-            <StackPanel Grid.Row="1">
-                <TextBlock Text="Purchase Order Reference" Margin="0,5"/>
+
+            <TextBlock Text="M00001" x:Name="nameText" FontSize="50" FontWeight="Bold"/>
+            <Button Content="Close" Style="{StaticResource CancelButtonTemplate}" Grid.Column="2" Click="closeButton_Click"/>
+            <Separator Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,15"/>
+        </Grid>
+        <!--Main controls-->
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Administration" Style="{StaticResource subtitleTextStyle}"/>
+            <StackPanel x:Name="AdminControls">
+                <TextBlock Text="Purchase Order Reference" Style="{StaticResource bodyTextStyle}"/>
                 <TextBox x:Name="PORef"/>
-
-                <!--<CheckBox Content="Urgent" x:Name="urgent" Margin="0,10"/>-->
-
-                <TextBlock Text="Allocated Setter" Margin="0,5"/>
+                
+                <TextBlock Text="Allocated Setter" Style="{StaticResource bodyTextStyle}"/>
                 <ComboBox x:Name="setters" Margin="0,0,0,10"/>
 
                 <CheckBox Content="Has Program" x:Name="program" Click="program_Click"/>
                 <CheckBox Content="Ready to Set" x:Name="ready" Click="ready_Click"/>
-                <TextBlock Text="Items" FontSize="18" Margin="0,10,0,5" FontWeight="Bold"/>
-                <ListBox x:Name="ItemsListBox" HorizontalContentAlignment="Stretch" MaxHeight="300" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" MouseDoubleClick="DisplayLMOItems_MouseDoubleClick"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
 
-                <TextBlock Text="Timings" FontSize="18" FontWeight="Bold" Margin="0,10,0,5" x:Name="TimingsHeader"/>
-                <Grid x:Name="TimingsControls">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    
-                    <Button Style="{StaticResource ButtonTemplate}" Grid.Row="0" x:Name="startButton" Content="Start Setting" Click="startButton_Click"/>
-                    <TextBlock x:Name="startTimeText" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-                    <Button Style="{StaticResource CancelButtonTemplate}" Grid.Row="1" x:Name="endButton" Content="End Setting" Click="endButton_Click"/>
-                    <TextBlock x:Name="stopTimeText" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-                    <Button Style="{StaticResource ButtonTemplate}" Grid.Row="2" x:Name="completeButton" Content="Mark Complete" Click="completeButton_Click"/>
-                    <TextBlock x:Name="completeText" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </Grid>
+                <CheckBox Content="Urgent" x:Name="urgent" Margin="0,10"/>
                 
-
-                <TextBlock Text="Notes" FontSize="18" FontWeight="Bold" Margin="0,10,0,5"/>
-                
+                <TextBlock Text="Set Status" Style="{StaticResource bodyTextStyle}"/>
+                <ComboBox>
+                    <ComboBoxItem Content="Ready"/>
+                    <ComboBoxItem Content="Problem"/>
+                    <ComboBoxItem Content="Running"/>
+                    <ComboBoxItem Content="Complete"/>
+                </ComboBox>
+                <Button Style="{StaticResource CancelButtonTemplate}" 
+                        Content="Cancel Order"
+                        x:Name="cancelOrderButton"
+                        Click="CancelOrderButton_Click"/>
             </StackPanel>
-            <Grid Grid.Row="2">
-                <Rectangle RadiusX="10" RadiusY="10" Stroke="DodgerBlue" StrokeThickness="3"/>
-                <RichTextBox MinHeight="100" BorderThickness="0" Margin="10" Background="Transparent" x:Name="notes">
-                </RichTextBox>
-            </Grid>
-            <Button x:Name="saveButton" 
+            
+            <!--Items List-->
+            <TextBlock Text="Items" Style="{StaticResource subtitleTextStyle}"/>
+            <ListBox x:Name="ItemsListBox" HorizontalContentAlignment="Stretch" MaxHeight="300" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" MouseDoubleClick="DisplayLMOItems_MouseDoubleClick"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Notes" Style="{StaticResource subtitleTextStyle}"/>
+            <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" Grid.Row="1"/>
+            <RichTextBox MinHeight="100" BorderThickness="0" Margin="10" Background="Transparent" x:Name="notes" Grid.Row="1">
+            </RichTextBox>
+        </Grid>
+        <Button x:Name="saveButton" 
                     Style="{StaticResource ButtonTemplate}" 
-                    Content="SAVE" Width="100" 
+                    Content="Save and Close" Width="150" 
                     HorizontalAlignment="Right" 
                     Click="saveButton_Click"
                     Grid.Row="3"/>
-        </Grid>
-        
-
     </Grid>
 </Window>

@@ -15,6 +15,33 @@
             <vm:OrderViewModel x:Key="vm"/>
             <converters:boolToHasProgram x:Key="boolToHasProgram"/>
             <converters:boolToIsReady x:Key="boolToIsReady"/>
+            <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                     From="1"
+                     To="0"
+                     AutoReverse="True"
+                     BeginTime="0:0:1"
+                     Duration="0:0:01" />
+                <!--<DoubleAnimation Storyboard.TargetProperty="Opacity"
+                     From="1"
+                     To="1"
+                     AutoReverse="True"
+                     Duration="0:0:1" />-->
+            </Storyboard>
+
+            <Style x:Key="liveCircle" TargetType="Rectangle">
+                <Setter Property="Width" Value="16"/>
+                <Setter Property="Height" Value="16"/>
+                <Setter Property="Fill" Value="{StaticResource materialOnError}"/>
+                <Setter Property="RadiusX" Value="8"/>
+                <Setter Property="RadiusY" Value="8"/>
+                <Setter Property="Margin" Value="10,0,3,0"/>
+                <Style.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard Storyboard="{StaticResource AnimateFlicker}"/>
+                    </EventTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -70,6 +97,31 @@
                       Grid.RowSpan="2"
                       Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2">
             <StackPanel Margin="25,10" MaxWidth="600" MinWidth="400">
+                <Grid Margin="0,0,0,10" Visibility="{Binding LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
+                    <Rectangle Fill="{StaticResource materialError}"
+                               RadiusX="5"
+                               RadiusY="5"/>
+                    <Grid Margin="0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Style="{StaticResource liveCircle}"/>
+                        <TextBlock Text="LIVE" 
+                                   Foreground="{StaticResource materialOnError}"
+                                   FontWeight="SemiBold"
+                                   Grid.Column="1"
+                                   FontSize="15"
+                                   Padding="3,5,0,6"/>
+                        <TextBlock Text="{Binding DisplayStats}" 
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource materialOnError}"
+                                   Grid.Column="3"
+                                   Padding="0,5,10,6"/>
+                    </Grid>
+                </Grid>
                 <Grid>
                     <Rectangle RadiusX="10" RadiusY="10">
                         <Rectangle.Effect>

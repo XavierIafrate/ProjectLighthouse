@@ -4,12 +4,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace ProjectLighthouse.ViewModel
@@ -19,7 +13,7 @@ namespace ProjectLighthouse.ViewModel
         public GetStatsCommand getStatsCommand { get; set; }
         public ObservableCollection<MachineStatistics> StatsList { get; set; }
         public string estimation { get; set; }
-        
+
 
         public MachineStatsViewModel()
         {
@@ -44,30 +38,12 @@ namespace ProjectLighthouse.ViewModel
             List<MachineStatistics> statsList = MachineStatsHelper.GetStats();
 
             StatsList.Clear();
-            foreach(var item in statsList)
+            foreach (var item in statsList)
             {
                 StatsList.Add(item);
             }
-            //if(StatsList.FirstOrDefault().PartCountRemaining == 10)
-            //{
-            //    SendText();
-            //}
             OnPropertyChanged("StatsList");
         }
 
-        public void SendText()
-        {
-
-            MachineStatistics target = StatsList.Where(n => n.MachineID == "Citizen One").FirstOrDefault();
-
-            string MessageBody = String.Format(
-                "Citizen 1 is in {1} mode. Parts counter is on {2} of {3}. Estimated completion in {4}.",
-                App.currentUser.FirstName,
-                target.ControllerMode.ToLower(),
-                target.PartCountAll,
-                target.PartCountTarget,
-                target.EstimateCompletion());
-            SMSHelper.SendText("+447979606705", MessageBody);
-        }
     }
 }
