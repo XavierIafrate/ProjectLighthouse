@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProjectLighthouse.View"
         xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"    
         mc:Ignorable="d"
-        Title="EditLMOWindow"
+        Title="Edit Order"
         SizeToContent="Height"
         Width="600">
     

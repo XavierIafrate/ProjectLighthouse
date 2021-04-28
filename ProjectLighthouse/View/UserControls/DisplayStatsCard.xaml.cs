@@ -64,7 +64,7 @@ namespace ProjectLighthouse.View.UserControls
                 switch (control.statistics.Status)
                 {
                     case "Running":
-                        statusColour = "materialGreen";
+                        statusColour = "materialPrimaryGreen";
                         accentColour = "materialPrimary";
                         control.connectionText.Text = "ONLINE";
                         break;

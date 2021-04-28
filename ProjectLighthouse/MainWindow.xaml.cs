@@ -56,26 +56,26 @@ namespace ProjectLighthouse
             DataContext = new MainViewModel();
         }
 
-        private void dragArea_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (WindowState == WindowState.Normal)
-            {
-                try
-                {
-                    this.DragMove();
-                }
-                catch { }
-            }
-            else
-            {
-                this.WindowState = WindowState.Normal;
-            }
-        }
+        //private void dragArea_MouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (WindowState == WindowState.Normal)
+        //    {
+        //        try
+        //        {
+        //            this.DragMove();
+        //        }
+        //        catch { }
+        //    }
+        //    else
+        //    {
+        //        this.WindowState = WindowState.Normal;
+        //    }
+        //}
 
-        private void exitButton_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Application.Current.Shutdown();
-        }
+        //private void exitButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //   Application.Current.Shutdown();
+        //}
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {

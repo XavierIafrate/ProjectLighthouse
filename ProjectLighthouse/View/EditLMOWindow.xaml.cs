@@ -36,10 +36,12 @@ namespace ProjectLighthouse.View
             {
                 items.Add(product);
             }
+
             ItemsListBox.ItemsSource = items;
 
             nameText.Text = order.Name;
             PORef.Text = order.POReference;
+            notes.Document.Blocks.Clear();
             notes.AppendText(order.Notes);
             notes.Document.LineHeight = 2;
             urgent.IsChecked = order.IsUrgent;

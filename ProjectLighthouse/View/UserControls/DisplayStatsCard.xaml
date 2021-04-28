@@ -56,12 +56,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Rectangle RadiusX="5" RadiusY="5"
+        <Rectangle RadiusX="20" RadiusY="20"
                    Grid.RowSpan="2"
                    x:Name="controlBackground"
-                   StrokeThickness="3"
+                   StrokeThickness="5"
                    Fill="{StaticResource materialSurface}"
-                   Stroke="{StaticResource materialPrimary}"/>
+                   Stroke="{StaticResource materialPrimaryGreen}"/>
         <Grid Margin="20" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -96,12 +96,12 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Rectangle Fill="Black" Grid.ColumnSpan="2"/>
-                    <Rectangle Fill="#03DAC6" x:Name="progressBar"/>
+                    <Rectangle Fill="{StaticResource materialPrimaryGreen}" x:Name="progressBar"/>
                     <TextBlock Grid.Row="1" 
                                x:Name="progressText"
                                Grid.ColumnSpan="2" 
                                Text="50%" 
-                               Foreground="#03DAC6"
+                               Foreground="{StaticResource materialPrimaryGreen}"
                                FontSize="14" 
                                FontStyle="Italic"
                                FontWeight="Bold"

@@ -11,11 +11,8 @@
         MinWidth="1100"
         MaxWidth="2000"
         WindowStartupLocation="CenterScreen"
-       
         ResizeMode="CanResizeWithGrip"
         Background="{StaticResource materialBackground}">
-    <!--Background="#12000000"
-		Loaded="Window_Loaded"-->
 
     <Window.Resources>
 
@@ -108,11 +105,12 @@
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}"
-                               CommandParameter="Orders"
-                               Style="{StaticResource menuButtonStyle}"
-                               Content="Orders"
+                              CommandParameter="Orders"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="Orders"
                               x:Name="orders_button"
-                              Click="ToggleButton_Click"/>
+                              Click="ToggleButton_Click"
+                              IsChecked="True"/>
 
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
                               CommandParameter="Schedule"
@@ -133,7 +131,8 @@
                 <ToggleButton Style="{StaticResource menuButtonStyle}"
                               Content="Time/Cost Estimate"
                               x:Name="time_estimate_button"
-                              Click="ToggleButton_Click"/>
+                              Click="ToggleButton_Click"
+                              IsEnabled="False"/>
 
                 <!--<Button Command="{Binding UpdateViewCommand}" 
                         CommandParameter="BarStock"
@@ -169,15 +168,6 @@
                     Width="100"
                     Margin="20"
                     Command="{Binding EditCommand}"/>
-
-            <!--<Button Content="Exit"
-                    HorizontalAlignment="Center"
-                    Grid.Row="3"
-                    Width="120"
-                    x:Name="exitButton"
-                    Click="exitButton_Click"
-                    Style="{StaticResource ExitButton}"
-                    Margin="20"/>-->
         </Grid>
 
         <Grid Background="White">
@@ -192,11 +182,6 @@
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
                        x:Name="WindowText"/>
-            <Rectangle x:Name="dragArea"
-                       MouseDown="dragArea_MouseDown"
-                       Fill="Transparent"
-                       Height="30"
-                       Grid.Row="0"/>
             <ContentControl Content="{Binding SelectedViewModel}"
                             Grid.Row="1"/>
         </Grid>
