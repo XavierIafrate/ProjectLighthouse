@@ -38,30 +38,37 @@
         <!--Main controls-->
         <StackPanel Grid.Row="1">
             <TextBlock Text="Administration" Style="{StaticResource subtitleTextStyle}"/>
-            <StackPanel x:Name="AdminControls">
-                <TextBlock Text="Purchase Order Reference" Style="{StaticResource bodyTextStyle}"/>
-                <TextBox x:Name="PORef"/>
-                
-                <TextBlock Text="Allocated Setter" Style="{StaticResource bodyTextStyle}"/>
-                <ComboBox x:Name="setters" Margin="0,0,0,10"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel >
+                    <TextBlock Text="Purchase Order Reference" Style="{StaticResource bodyTextStyle}"/>
+                    <TextBox x:Name="PORef"/>
 
-                <CheckBox Content="Has Program" x:Name="program" Click="program_Click"/>
-                <CheckBox Content="Ready to Set" x:Name="ready" Click="ready_Click"/>
+                    <TextBlock Text="Allocated Setter" Style="{StaticResource bodyTextStyle}"/>
+                    <ComboBox x:Name="setters" Margin="0,0,0,10"/>
 
-                <CheckBox Content="Urgent" x:Name="urgent" Margin="0,10"/>
-                
-                <TextBlock Text="Set Status" Style="{StaticResource bodyTextStyle}"/>
-                <ComboBox>
-                    <ComboBoxItem Content="Ready"/>
-                    <ComboBoxItem Content="Problem"/>
-                    <ComboBoxItem Content="Running"/>
-                    <ComboBoxItem Content="Complete"/>
-                </ComboBox>
-                <Button Style="{StaticResource CancelButtonTemplate}" 
+                    <Button Style="{StaticResource CancelButtonTemplate}" 
                         Content="Cancel Order"
                         x:Name="cancelOrderButton"
                         Click="CancelOrderButton_Click"/>
-            </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="30,0">
+                    <CheckBox Content="Has Program" x:Name="program" Click="program_Click"/>
+                    <CheckBox Content="Ready to Set" x:Name="ready" Click="ready_Click"/>
+
+                    <CheckBox Content="Urgent" x:Name="urgent" Margin="0,10" Visibility="Collapsed"/>
+
+                    <TextBlock Text="Set Status" Style="{StaticResource bodyTextStyle}" Margin="0,5,0,3"/>
+
+                    <RadioButton Content="Not Started" x:Name="not_started_radio" Checked="not_started_radio_Checked"/>
+                    <RadioButton Content="Running" x:Name="running_radio" Checked="running_radio_Checked"/>
+                    <RadioButton Content="Complete" x:Name="complete_radio" Checked="complete_radio_Checked"/>
+                </StackPanel>
+            </Grid>
+            
             
             <!--Items List-->
             <TextBlock Text="Items" Style="{StaticResource subtitleTextStyle}"/>

@@ -34,7 +34,7 @@
                     <TextBlock Text="Coming Soon" FontSize="50" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
                 </TabItem>
 
-                <TabItem IsSelected="True" Tag="">
+                <TabItem Tag="">
                     <TabItem.Header>
                         <TextBlock Text="Unallocated"/>
                     </TabItem.Header>
@@ -80,7 +80,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Tag="C01">
+                <TabItem Tag="C01" IsSelected="True">
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Citizen 1" VerticalAlignment="Center"/>

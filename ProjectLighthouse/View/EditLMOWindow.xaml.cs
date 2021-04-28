@@ -53,6 +53,28 @@ namespace ProjectLighthouse.View
                 ready.IsEnabled = false;
             }
 
+            switch (order.Status)
+            {
+                case "Running":
+                    ready.IsEnabled = false;
+                    program.IsEnabled = false;
+                    running_radio.IsChecked = true;
+                    break;
+                case "Complete":
+                    ready.IsEnabled = false;
+                    program.IsEnabled = false;
+                    complete_radio.IsChecked = true;
+                    break;
+                case "Problem":
+                    running_radio.IsEnabled = false;
+                    complete_radio.IsEnabled = false;
+                    not_started_radio.IsChecked = true;
+                    break;
+                default:
+                    not_started_radio.IsChecked = true;
+                    break;
+            }
+
             if (!App.currentUser.CanEditLMOs)
             {
                 PORef.IsEnabled = false;
@@ -93,29 +115,41 @@ namespace ProjectLighthouse.View
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             TextRange textRange = new TextRange(notes.Document.ContentStart, notes.Document.ContentEnd);
-            order.Notes = textRange.Text.Substring(0, textRange.Text.Length - 2);
+            if (textRange.Text.Length > 2) {
+                order.Notes = textRange.Text.Substring(0, textRange.Text.Length - 2);
+            }
+           
             order.POReference = PORef.Text;
             order.AllocatedSetter = setters.Text;
             //order.IsUrgent = urgent.IsChecked ?? false;
-            order.HasProgram = (bool)program.IsChecked ? true : false;
-            order.IsReady = (bool)ready.IsChecked ? true : false;
+            order.HasProgram = (bool)program.IsChecked;
+            order.IsReady = (bool)ready.IsChecked;
 
-            if (order.IsReady && !order.IsComplete)
+            if ((bool)not_started_radio.IsChecked)
             {
-                order.Status = "Ready";
+                order.Status = order.IsReady ? "Ready" : "Problem";
             }
-            if (order.IsComplete)
+            else
             {
-                order.Status = "Complete";
+                order.Status = (bool)running_radio.IsChecked ? "Running" : "Complete";
             }
-            if (order.HasStarted && !order.IsComplete)
-            {
-                order.Status = "Running";
-            }
-            if (!order.IsReady)
-            {
-                order.Status = "Problem";
-            }
+
+            //if (order.IsReady && !order.IsComplete)
+            //{
+            //    order.Status = "Ready";
+            //}
+            //if (order.IsComplete)
+            //{
+            //    order.Status = "Complete";
+            //}
+            //if (order.HasStarted && !order.IsComplete)
+            //{
+            //    order.Status = "Running";
+            //}
+            //if (!order.IsReady)
+            //{
+            //    order.Status = "Problem";
+            //}
 
             calculateTime();
 
@@ -138,6 +172,8 @@ namespace ProjectLighthouse.View
             {
                 ready.IsEnabled = false;
                 ready.IsChecked = false;
+                running_radio.IsEnabled = false;
+                complete_radio.IsEnabled = false;
             }
         }
 
@@ -168,10 +204,14 @@ namespace ProjectLighthouse.View
             if (checkBox.IsChecked ?? false)
             {
                 order.Status = "Ready";
+                running_radio.IsEnabled = true;
+                complete_radio.IsEnabled = true;
             }
             else
             {
                 order.Status = "Problem";
+                running_radio.IsEnabled = false;
+                complete_radio.IsEnabled = false;
             }
         }
 
@@ -181,6 +221,24 @@ namespace ProjectLighthouse.View
             {
                 MessageBox.Show("Deleting");
             }
+        }
+
+        private void not_started_radio_Checked(object sender, RoutedEventArgs e)
+        {
+            ready.IsEnabled = true;
+            program.IsEnabled = true;
+        }
+
+        private void running_radio_Checked(object sender, RoutedEventArgs e)
+        {
+            ready.IsEnabled = false;
+            program.IsEnabled = false;
+        }
+
+        private void complete_radio_Checked(object sender, RoutedEventArgs e)
+        {
+            ready.IsEnabled = false;
+            program.IsEnabled = false;
         }
     }
 }

@@ -24,6 +24,10 @@ namespace ProjectLighthouse.View
 
             QuantityMadeTextbox.Text = item.QuantityMade.ToString();
             QuantityRejectTextbox.Text = item.QuantityReject.ToString();
+            QuantityRequiredTextbox.Text = item.RequiredQuantity.ToString();
+            QuantityTargetTextbox.Text = item.TargetQuantity.ToString();
+            DateRequiredPicker.SelectedDate = item.DateRequired;
+            SchedulingGrid.Visibility = App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
             PopulateCycleTimes();
 
         }
@@ -39,6 +43,17 @@ namespace ProjectLighthouse.View
             if (!Int32.TryParse(CycleTime_Sec.Text, out int sec))
             {
                 MessageBox.Show("Invalid cycle time entered.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (!Int32.TryParse(QuantityRequiredTextbox.Text, out int reqqty))
+            {
+                MessageBox.Show("Invalid Quantity Required entered.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (!Int32.TryParse(QuantityTargetTextbox.Text, out int tarqty))
+            {
+                MessageBox.Show("Invalid Quantity Target entered.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -58,6 +73,9 @@ namespace ProjectLighthouse.View
 
             Item.QuantityMade = qtyMade;
             Item.QuantityReject = qtyReject;
+            Item.RequiredQuantity = reqqty;
+            Item.TargetQuantity = tarqty;
+            Item.DateRequired = (DateTime)DateRequiredPicker.SelectedDate;
             Item.UpdatedAt = DateTime.Now;
             Item.UpdatedBy = App.currentUser.GetFullName();
 

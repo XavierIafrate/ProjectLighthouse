@@ -39,6 +39,7 @@
                              BorderBrush="{StaticResource materialPrimary}"
                              BorderThickness="2"
                              Padding="2,0,0,2"
+                             Focusable="True"
                              FontSize="16"
                              TextChanged="usernameText_TextChanged"/>
                 </Grid>
@@ -53,12 +54,13 @@
                                  Background="Transparent"
                                  BorderBrush="{StaticResource materialPrimary}"
                                  BorderThickness="2"
+                                 Focusable="True"
                                  Padding="2,0,0,2"
                                  FontSize="16"/>
                 </Grid>
                 
             </Grid>
-            <TextBlock x:Name="message" Visibility="Collapsed" Foreground="{StaticResource materialError}"/>
+            <TextBlock x:Name="message" Visibility="Collapsed" Foreground="{StaticResource materialError}" HorizontalAlignment="Center" Padding="5"/>
             <Button Style="{StaticResource ButtonTemplate}" Content="Log in" Click="LoginButton_Click"/>
             <Button Style="{StaticResource CancelButtonTemplate}" Content="Exit" Click="ExitButton_Click"/>
         </StackPanel>
