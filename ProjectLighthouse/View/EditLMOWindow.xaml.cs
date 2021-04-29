@@ -134,6 +134,8 @@ namespace ProjectLighthouse.View
                 order.Status = (bool)running_radio.IsChecked ? "Running" : "Complete";
             }
 
+            order.IsComplete = order.Status == "Complete";
+
             //if (order.IsReady && !order.IsComplete)
             //{
             //    order.Status = "Ready";
