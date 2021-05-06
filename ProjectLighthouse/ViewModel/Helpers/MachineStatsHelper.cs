@@ -147,7 +147,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "HEAD";
             var response = (HttpWebResponse)request.GetResponse();
-            Debug.WriteLine(response.StatusCode);
             return response.StatusCode == HttpStatusCode.OK;
         }
     }

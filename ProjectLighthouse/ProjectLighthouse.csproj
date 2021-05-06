@@ -41,7 +41,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="PdfSharp" Version="1.50.5147" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,7 +78,9 @@
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Lighthouse_dark.png" />
+    <Resource Include="Resources\Lighthouse_dark.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Logo.png" />
     <Resource Include="Resources\MO-1star.png" />
     <Resource Include="Resources\MO-2star.png" />

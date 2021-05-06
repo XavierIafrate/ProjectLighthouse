@@ -354,7 +354,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSelectedOrder()
         {
-           // PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
+            PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
         }
 
         public void EditLMO()

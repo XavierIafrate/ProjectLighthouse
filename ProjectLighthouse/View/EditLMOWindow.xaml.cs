@@ -250,5 +250,22 @@ namespace ProjectLighthouse.View
             using (Stream stm = File.Create(@"M:\test.png"))
                 encoder.Save(stm);
         }
+
+        private void notes_KeyDown(object sender, KeyEventArgs e)
+        {
+            RichTextBox richTextBox = sender as RichTextBox;
+            if (e.Key == Key.F2)
+            {
+                TextRange range = new TextRange(richTextBox.Document.ContentEnd, richTextBox.Document.ContentEnd);
+                range.Text = string.Format("({0:dd/MM/yy HH:mm} - {1}{2}) ", 
+                    DateTime.Now, 
+                    App.currentUser.FirstName[0].ToString().ToUpper(), 
+                    App.currentUser.LastName[0].ToString().ToUpper());
+                Debug.WriteLine(App.currentUser.FirstName);
+                Debug.WriteLine(App.currentUser.FirstName[0].ToString());
+                TextPointer caretPos = richTextBox.CaretPosition;
+                richTextBox.CaretPosition = caretPos.DocumentEnd;
+            }
+        }
     }
 }

@@ -88,7 +88,7 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Notes" Style="{StaticResource subtitleTextStyle}"/>
             <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" Grid.Row="1"/>
-            <RichTextBox MinHeight="100" BorderThickness="0" Margin="10" Background="Transparent" x:Name="notes" Grid.Row="1">
+            <RichTextBox MinHeight="100" BorderThickness="0" Margin="10" Background="Transparent" x:Name="notes" Grid.Row="1" KeyDown="notes_KeyDown">
             </RichTextBox>
         </Grid>
         <Button x:Name="saveButton" 
