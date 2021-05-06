@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -31,6 +32,8 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.DataContext = control.LatheManufactureOrder;
                 control.BadgeText.Text = control.LatheManufactureOrder.Status;
+                control.OldInfo.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddDays(2) < DateTime.Now 
+                    && control.LatheManufactureOrder.Status == "Problem") ? Visibility.Visible : Visibility.Hidden;
                 switch (control.LatheManufactureOrder.Status)
                 {
                     case "Ready":

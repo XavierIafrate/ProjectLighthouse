@@ -100,7 +100,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
         private string runInfoText;
         public string RunInfoText
         {
@@ -127,8 +126,6 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
         }
-
-        
 
         private string GetDaySuffix(int day)
         {
@@ -315,7 +312,7 @@ namespace ProjectLighthouse.ViewModel
                     FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && n.IsReady && n.Status != "Running"));
                     break;
                 case "Complete":
-                    FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.IsComplete));
+                    FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.IsComplete).OrderByDescending(n => n.CreatedAt));
                     break;
             }
             if (FilteredOrders.Count > 0)
@@ -350,11 +347,14 @@ namespace ProjectLighthouse.ViewModel
                     FilteredLMOItems.Add(item);
                 }
             }
+
+            FilteredLMOItems = new ObservableCollection<LatheManufactureOrderItem>(FilteredLMOItems.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName));
+            OnPropertyChanged("FilteredLMOItems");
         }
 
         public void PrintSelectedOrder()
         {
-            PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
+           // PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
         }
 
         public void EditLMO()
@@ -362,13 +362,21 @@ namespace ProjectLighthouse.ViewModel
             EditLMOWindow editWindow = new EditLMOWindow(SelectedLatheManufactureOrder);
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
-
+            string orderName = (string)selectedLatheManufactureOrder.Name;
             GetLatheManufactureOrders();
             FilterOrders(SelectedFilter);
             if (FilteredOrders.Count > 0)
             {
-                SelectedLatheManufactureOrder = FilteredOrders.First();
+                foreach (var order in FilteredOrders)
+                {
+                    if(order.Name == orderName){
+                        selectedLatheManufactureOrder = order;
+                        break;
+                    }
+                    SelectedLatheManufactureOrder = FilteredOrders.First();
+                }
             }
+            
             GetLatheManufactureOrderItems();
 
         }

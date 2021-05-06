@@ -1,7 +1,10 @@
 ﻿using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Windows;
 using System.Xml;
 
@@ -24,6 +27,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 };
                 stats.MachineID = lathe.FullName;
                 string url = IP_ADDRESS + lathe.ControllerReference + "/current";
+
+                if (!IsConnected(url))
+                {
+                    break;
+                }    
+
                 using (XmlTextReader reader = new XmlTextReader(url))
                 {
                     string lastName = "";
@@ -131,6 +140,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
             return resultList;
+        }
+
+        public static bool IsConnected(string url)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "HEAD";
+            var response = (HttpWebResponse)request.GetResponse();
+            Debug.WriteLine(response.StatusCode);
+            return response.StatusCode == HttpStatusCode.OK;
         }
     }
 }

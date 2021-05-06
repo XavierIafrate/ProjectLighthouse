@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -141,6 +142,11 @@ namespace ProjectLighthouse
                     }
                 }
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            EmailHelper.SendEmail("xavieriafrate@gmail.com", "TEST", "This is a test of SMTP integration");
         }
     }
 }

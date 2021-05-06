@@ -1,36 +1,31 @@
-﻿using System.Net;
+﻿using ProjectLighthouse.Model;
+using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class EmailHelper
     {
-        public void SendEmail()
+        public static void SendEmail(string toPerson, string alertSubject, string message)
         {
+            Email mailMan = new Email();
 
-            //Not set up 
-            var fromAddress = new MailAddress("alextodorov01@abv.bg", "From Name");
-            var toAddress = new MailAddress("kozichka01@abv.bg", "To Name");
-            const string fromPassword = "fromPassword";
-            const string subject = "an error ocurred";
+            EmailSendConfigure myConfig = new EmailSendConfigure();
+            myConfig.ClientCredentialUserName = "x.iafrate@wixroydgroup.com";
+            myConfig.ClientCredentialPassword = "Teleport55@@";
+            myConfig.TOs = new string[] { toPerson };
+            myConfig.CCs = new string[] { };
+            myConfig.From = "x.iafrate@wixroydgroup.com";
+            myConfig.FromDisplayName = "Lighthouse Notifications";
+            myConfig.Priority = System.Net.Mail.MailPriority.Normal;
+            myConfig.Subject = alertSubject;
 
-            var smtp = new SmtpClient
-            {
-                Host = "smtp.gmail.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
-            };
-            using (var message = new MailMessage(fromAddress, toAddress)
-            {
-                Subject = subject,
-                Body = "TEST"
-            })
-            {
-                smtp.Send(message);
-            }
+            EmailContent myContent = new EmailContent();
+            myContent.Content = message;
+
+            mailMan.SendMail(myConfig, myContent);
+
         }
     }
 }

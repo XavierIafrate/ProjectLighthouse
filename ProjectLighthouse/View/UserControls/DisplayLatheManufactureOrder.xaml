@@ -10,11 +10,15 @@
              d:DesignWidth="200">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Margin="5"
+        <Rectangle Fill="{StaticResource materialError}"
+                   x:Name="OldInfo"/>
+        <StackPanel Margin="10,5,5,5"
+                    Grid.Column="1"
                     VerticalAlignment="Center">
             <TextBlock Text="{Binding Name, FallbackValue='M00001'}"
                        x:Name="MOTextBlock"
@@ -26,7 +30,7 @@
                        Foreground="{StaticResource materialOnBackground}"
                        FontSize="12"/>
         </StackPanel>
-        <Grid Grid.Column="2" Margin="10,0" VerticalAlignment="Center">
+        <Grid Grid.Column="3" Margin="10,0" VerticalAlignment="Center">
             <Rectangle x:Name="badgeBackground" Fill="{StaticResource materialError}" RadiusX="5" RadiusY="5"/>
             <TextBlock Text="Ready" x:Name="BadgeText" FontSize="14" Padding="15,0,15,2" Foreground="{StaticResource materialOnPrimary}"/>
         </Grid>

@@ -235,7 +235,7 @@
 
                         </StackPanel>
 
-                        <Grid MinWidth="150" MaxWidth="250" Height="25" Margin="0,20">
+                        <!--<Grid MinWidth="150" MaxWidth="250" Height="25" Margin="0,20">
                             <Rectangle RadiusX="6" RadiusY="6" Fill="{Binding StatusBackground, UpdateSourceTrigger=PropertyChanged}">
                                 <Rectangle.Effect>
                                     <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
@@ -246,7 +246,7 @@
                                VerticalAlignment="Center"
                                Foreground="White"
                                FontWeight="Bold"/>
-                        </Grid>
+                        </Grid>-->
                         <Separator Margin="0,5"/>
 
                         <TextBlock Text="Notes"

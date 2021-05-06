@@ -4,11 +4,15 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace ProjectLighthouse.View
 {
@@ -136,23 +140,6 @@ namespace ProjectLighthouse.View
 
             order.IsComplete = order.Status == "Complete";
 
-            //if (order.IsReady && !order.IsComplete)
-            //{
-            //    order.Status = "Ready";
-            //}
-            //if (order.IsComplete)
-            //{
-            //    order.Status = "Complete";
-            //}
-            //if (order.HasStarted && !order.IsComplete)
-            //{
-            //    order.Status = "Running";
-            //}
-            //if (!order.IsReady)
-            //{
-            //    order.Status = "Problem";
-            //}
-
             calculateTime();
 
             order.ModifiedBy = App.currentUser.GetFullName();
@@ -186,7 +173,6 @@ namespace ProjectLighthouse.View
             EditLMOItemWindow editWindow = new EditLMOItemWindow(item);
             editWindow.ShowDialog();
             PopulateControls();
-            //RecalculateTime();
         }
 
         private void calculateTime()
@@ -219,9 +205,11 @@ namespace ProjectLighthouse.View
 
         private void CancelOrderButton_Click(object sender, RoutedEventArgs e)
         {
+
             if (MessageBox.Show("Are you sure you want to cancel this order?", "Cancel Order", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
-                MessageBox.Show("Deleting");
+                MessageBox.Show("rendering");
+                renderAsBitmap();
             }
         }
 
@@ -241,6 +229,26 @@ namespace ProjectLighthouse.View
         {
             ready.IsEnabled = false;
             program.IsEnabled = false;
+        }
+
+        private void renderAsBitmap()
+        {
+            EditLMOWindow control = this;
+            Debug.WriteLine(control.RenderSize);
+            //control.Measure(new Size(300, 300));
+            //control.Arrange(new Rect(new Size(300, 300)));
+
+            //RenderTargetBitmap bmp = new RenderTargetBitmap(300, 300, 96, 96, PixelFormats.Pbgra32);
+            RenderTargetBitmap bmp = new RenderTargetBitmap(Convert.ToInt32(control.RenderSize.Width), Convert.ToInt32(control.RenderSize.Height), 96, 96, PixelFormats.Pbgra32);
+
+            bmp.Render(control);
+
+            var encoder = new PngBitmapEncoder();
+
+            encoder.Frames.Add(BitmapFrame.Create(bmp));
+
+            using (Stream stm = File.Create(@"M:\test.png"))
+                encoder.Save(stm);
         }
     }
 }
