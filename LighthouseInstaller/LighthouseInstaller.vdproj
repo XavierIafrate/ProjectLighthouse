@@ -43,6 +43,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -113,7 +121,7 @@
         {
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B60644CC50BB41ED8C236B100B999903"
             {
-            "SourcePath" = "8:..\\ProjectLighthouse\\lighthouseicon.ico"
+            "SourcePath" = "8:\\\\groupfile01\\Roaming\\x.iafrate\\Desktop\\ProjectLighthouse\\ProjectLighthouse\\ProjectLighthouse\\lighthouseicon.ico"
             "TargetName" = "8:lighthouseicon.ico"
             "Tag" = "8:"
             "Folder" = "8:_4624432144D84D3B905A2434E9F24D4C"
@@ -187,15 +195,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Lighthouse"
-        "ProductCode" = "8:{FFC5EA19-D630-4911-8899-E499FAEAF9CD}"
-        "PackageCode" = "8:{329D7184-A228-4E56-A1CE-46A3ED02C201}"
+        "ProductCode" = "8:{059130C7-D4FD-4519-A5ED-A9A261A3B82C}"
+        "PackageCode" = "8:{1982DE3B-4418-4F0C-AA81-E9AD40D6ABD2}"
         "UpgradeCode" = "8:{09EE16BD-DA8B-4997-A877-9D25F006393C}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.2.1"
+        "ProductVersion" = "8:1.2.2"
         "Manufacturer" = "8:Wixroyd"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -723,7 +731,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_03C1380B84A94F2699F663FC1DC1BA06"
             {
-            "SourcePath" = "8:..\\ProjectLighthouse\\obj\\Release\\net5.0-windows\\apphost.exe"
+            "SourcePath" = "8:\\\\groupfile01\\Roaming\\x.iafrate\\Desktop\\ProjectLighthouse\\ProjectLighthouse\\ProjectLighthouse\\obj\\Release\\net5.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4624432144D84D3B905A2434E9F24D4C"

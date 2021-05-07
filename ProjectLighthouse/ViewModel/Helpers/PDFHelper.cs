@@ -5,6 +5,7 @@ using ProjectLighthouse.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -38,18 +39,18 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 XTextFormatter formatter = new XTextFormatter(gfx);
                 XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
                 #endregion
-
+                
                 #region Title
                 // Logo
-                XImage image = XImage.FromFile(".\\Resources\\Lighthouse_dark.png");
+                XImage logo = XImage.FromFile("H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png");
                 const double dy = 150;
-                double width = image.PixelWidth * 72 / image.HorizontalResolution;
-                double height = image.PixelHeight * 72 / image.HorizontalResolution;
+                double width = logo.PixelWidth * 72 / logo.HorizontalResolution;
+                double height = logo.PixelHeight * 72 / logo.HorizontalResolution;
                 width /= 10;
                 height /= 10;
                 XRect logoRect = new XRect(page.Width / 2 - (width / 2), (dy - height) / 2, width, height);
                 //gfx.DrawRectangle(XPens.Black, brush, logoRect);
-                gfx.DrawImage(image, logoRect);
+                gfx.DrawImage(logo, logoRect);
 
 
                 // Title

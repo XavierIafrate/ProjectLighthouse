@@ -217,9 +217,8 @@
                                Visibility="{Binding DecisionVis}"/>
 
                     <StackPanel Margin="10,0"
-                                Visibility="Visible">
-                        <!--Visibility="{Binding DecisionVis}">-->
-                        
+                                Visibility="{Binding DecisionVis}">
+
                         <CheckBox Content="Scheduling Approval"
                                   IsChecked="{Binding SelectedRequest.isSchedulingApproved, UpdateSourceTrigger=PropertyChanged}"
                                   IsEnabled="{Binding SchedulingCheckboxEnabled,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
