@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -47,6 +48,91 @@ namespace ProjectLighthouse.View
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
+            DeliveryNote deliveryNote = new DeliveryNote()
+            {
+                Id = 1,
+                Name = "D00359",
+                DeliveryDate = DateTime.Now,
+                DeliveredBy = "Xavier Iafrate"
+            };
+
+            List<DeliveryItem> deliveryItems = new List<DeliveryItem>()
+            {
+                new DeliveryItem()
+                {
+                    Id = 1,
+                    AllocatedDeliveryNote = deliveryNote.Name,
+                    PurchaseOrderReference="P0123456",
+                    Product="P0154.050-050-A2",
+                    QuantityThisDelivery=1000,
+                    QuantityToFollow=0
+                }, 
+                new DeliveryItem()
+                {
+                    Id = 2,
+                    AllocatedDeliveryNote = deliveryNote.Name,
+                    PurchaseOrderReference="P0123456",
+                    Product="P0154.050-080-A2",
+                    QuantityThisDelivery=500,
+                    QuantityToFollow=500
+                },
+                new DeliveryItem()
+                {
+                    Id = 1,
+                    AllocatedDeliveryNote = deliveryNote.Name,
+                    PurchaseOrderReference="P0123456",
+                    Product="P0154.050-050-A2",
+                    QuantityThisDelivery=1000,
+                    QuantityToFollow=0
+                },
+                new DeliveryItem()
+                {
+                    Id = 1,
+                    AllocatedDeliveryNote = deliveryNote.Name,
+                    PurchaseOrderReference="P0123456",
+                    Product="P0154.050-050-A2",
+                    QuantityThisDelivery=1000,
+                    QuantityToFollow=0
+                },
+                new DeliveryItem()
+                {
+                    Id = 1,
+                    AllocatedDeliveryNote = deliveryNote.Name,
+                    PurchaseOrderReference="P0123456",
+                    Product="P0154.050-050-A2",
+                    QuantityThisDelivery=1000,
+                    QuantityToFollow=0
+                },
+                new DeliveryItem()
+                {
+                    Id = 1,
+                    AllocatedDeliveryNote = deliveryNote.Name,
+                    PurchaseOrderReference="P0123456",
+                    Product="P0154.050-050-A2",
+                    QuantityThisDelivery=1000,
+                    QuantityToFollow=0
+                },
+                new DeliveryItem()
+                {
+                    Id = 1,
+                    AllocatedDeliveryNote = deliveryNote.Name,
+                    PurchaseOrderReference="P0123456",
+                    Product="P0154.050-050-A2",
+                    QuantityThisDelivery=1000,
+                    QuantityToFollow=0
+                },
+                new DeliveryItem()
+                {
+                    Id = 1,
+                    AllocatedDeliveryNote = deliveryNote.Name,
+                    PurchaseOrderReference="P0123456",
+                    Product="P0154.050-050-A2",
+                    QuantityThisDelivery=1000,
+                    QuantityToFollow=0
+                }
+            };
+
+            PDFHelper.PrintDeliveryNote(deliveryNote, deliveryItems);
             this.Close();
         }
 

@@ -1,12 +1,15 @@
 ﻿using PdfSharp.Drawing;
+using PdfSharp.Drawing.BarCodes;
 using PdfSharp.Drawing.Layout;
 using PdfSharp.Pdf;
 using ProjectLighthouse.Model;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 
@@ -21,6 +24,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         // *****************************************
 
         private static string LMO_PDF_OUTPUTDIR = "H:\\Production\\Documents\\Works Orders";
+
+        private static string Address = "Automotion Components\nAlexia House\nGlenmore Business Park\nChichester, UK\nP019 7BJ";
 
         public static void PrintOrder(LatheManufactureOrder order, ObservableCollection<LatheManufactureOrderItem> items)
         {
@@ -336,9 +341,175 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        public static void PrintDeliveryNote()
+        public static void PrintDeliveryNote(DeliveryNote deliveryNote, List<DeliveryItem> deliveryItems)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+            using (PdfDocument document = new PdfDocument())
+            {
+                #region Init parameters
+                //Debug
+                var brush = new XSolidBrush(XColor.FromArgb(120, 255, 0, 0));
+                var bluebrush = new XSolidBrush(XColor.FromArgb(120, 0, 0, 255));
+
+                // Init
+                PdfPage page = document.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                XTextFormatter formatter = new XTextFormatter(gfx);
+                XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
+                #endregion
+
+                #region Title
+                // Logo
+                string network = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
+                string local = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
+                
+                XImage logo = XImage.FromFile(Directory.Exists(network) ? network : local);
+                const double dy = 150;
+                double width = logo.PixelWidth * 72 / logo.HorizontalResolution;
+                double height = logo.PixelHeight * 72 / logo.HorizontalResolution;
+                width /= 10;
+                height /= 10;
+                XRect logoRect = new XRect(page.Width / 2 - (width / 2), (dy - height) / 2, width, height);
+                gfx.DrawImage(logo, logoRect);
+
+
+                // Title
+                XFont font = new XFont("Tahoma", 35, XFontStyle.Bold, options);
+                XRect titleRect = new XRect(page.Width / 2 - 150, 100, 300, 40);
+                gfx.DrawString(deliveryNote.Name, font, XBrushes.Black, titleRect, XStringFormats.Center);
+
+                //subtitle
+                font = new XFont("Tahoma", 20, XFontStyle.Bold, options);
+                titleRect.Y += titleRect.Height;
+                gfx.DrawString("DELIVERY NOTE", font, XBrushes.Black, titleRect, XStringFormats.Center);
+                #endregion
+
+                #region Metadata
+                // Manufacturer
+                font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
+                gfx.DrawString("MANUFACTURER", 
+                    font, XBrushes.Black, 
+                    new XRect(100, 190, 150, 20), 
+                    XStringFormats.CenterLeft);
+                font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
+                formatter.DrawString(Address, font, XBrushes.Black, new XRect(100, 210, 150, 90));
+
+                // Shipping Information
+                font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
+                gfx.DrawString("SHIPPING", 
+                    font, XBrushes.Black, 
+                    new XRect(page.Width-270, 190, 150, 20), 
+                    XStringFormats.CenterLeft);
+                font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
+                gfx.DrawString(string.Format("Shipped by: {0}", deliveryNote.DeliveredBy), 
+                    font, XBrushes.Black, 
+                    new XRect(page.Width-270, 190+17, 150, 20), 
+                    XStringFormats.CenterLeft);
+                gfx.DrawString(string.Format("Shipped at: {0:dd/MM/yyyy HH:mm}", deliveryNote.DeliveryDate), 
+                    font, XBrushes.Black, 
+                    new XRect(page.Width-270, 190+34, 150, 20), 
+                    XStringFormats.CenterLeft);
+                #endregion
+
+                #region Order Details
+                XRect subtitleRect = new XRect(page.Width / 2 - 150, 290, 300, 25);
+                font = new XFont("Tahoma", 16, XFontStyle.Bold, options);
+                gfx.DrawString("DELIVERY DETAILS", font, XBrushes.Black, subtitleRect, XStringFormats.Center);
+
+                int y = (int)320;
+                font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
+
+                XRect RowNumCol = new XRect(0, y, 30, 20);
+                XRect PurchaseRefCol = new XRect(0, y, 100, 20);
+                XRect ProductCol = new XRect(0, y, 110, 20);
+                XRect ThisDelCol = new XRect(0, y, 120, 20);
+                XRect ToFollowCol = new XRect(0, y, 110, 20);
+
+                double offset = (page.Width - (RowNumCol.Width + PurchaseRefCol.Width + ProductCol.Width + ThisDelCol.Width + ToFollowCol.Width)) / 2;
+
+                RowNumCol.X = offset;
+                PurchaseRefCol.X = RowNumCol.X + RowNumCol.Width;
+                ProductCol.X = PurchaseRefCol.X + PurchaseRefCol.Width;
+                ThisDelCol.X = ProductCol.X + ProductCol.Width;
+                ToFollowCol.X = ThisDelCol.X + ThisDelCol.Width;
+
+                gfx.DrawString("#", font, XBrushes.Black, RowNumCol, XStringFormats.Center);
+                gfx.DrawString("Purchase Order", font, XBrushes.Black, PurchaseRefCol, XStringFormats.CenterLeft);
+                gfx.DrawString("Product", font, XBrushes.Black, ProductCol, XStringFormats.Center);
+                gfx.DrawString("Qty. This Delivery", font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
+                gfx.DrawString("Qty. To Follow", font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
+
+                y += 20;
+
+                font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
+                XPen stroke = new XPen(XColors.Black, 2);
+                gfx.DrawLine(stroke, offset, y, page.Width - offset, y);
+
+                y += 3;
+                int i = 1;
+
+                font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
+
+                // Init barcode
+                BarCode barcode = new Code3of9Standard("EMPTY", new XSize(PurchaseRefCol.Width + ProductCol.Width, ProductCol.Height*0.8));
+                barcode.StartChar = '*';
+                barcode.EndChar = '*';
+                
+                foreach (var deliveryItem in deliveryItems)
+                {
+
+                    if (i % 2 == 0)
+                        gfx.DrawRectangle(XPens.Transparent, new XSolidBrush(XColor.FromArgb(26, 8, 89, 152)), new XRect(offset, y, page.Width - 2*offset, 40));
+                    
+                    RowNumCol.Y = y;
+                    PurchaseRefCol.Y = y;
+                    ProductCol.Y = y;
+                    ThisDelCol.Y = y;
+                    ToFollowCol.Y = y;
+                    
+                    gfx.DrawString(string.Format("{0}.", i), font, XBrushes.Black, RowNumCol, XStringFormats.Center);
+                    gfx.DrawString(deliveryItem.PurchaseOrderReference, font, XBrushes.Black, PurchaseRefCol, XStringFormats.CenterLeft);
+                    gfx.DrawString(deliveryItem.Product, font, XBrushes.Black, ProductCol, XStringFormats.Center);
+                    gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityThisDelivery), font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
+                    gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityToFollow), font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
+
+                    barcode.Text = deliveryItem.Product.ToUpper();
+                    gfx.DrawBarCode(barcode, XBrushes.Black, new XPoint(PurchaseRefCol.X, y+20));
+
+                    i += 1;
+                    y += 40;
+                }
+
+                y += 3;
+                font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
+                gfx.DrawLine(stroke, offset, y, page.Width - offset, y);
+                gfx.DrawString("*** END ***", font, XBrushes.Black, new XRect(offset, y, page.Width - 2 * offset, 15), XStringFormats.BottomCenter);
+                #endregion
+
+                #region Footer
+
+                // Signing area
+                font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
+                stroke = new XPen(XColors.Black, 1);
+                y = (int)page.Height - (int)offset - 20;
+                gfx.DrawLine(stroke, offset, y, page.Width / 2 , y);
+                gfx.DrawString("Received by", font, XBrushes.Black, new XRect(offset, y, 100, 20), XStringFormats.CenterLeft);
+                gfx.DrawLine(stroke, page.Width / 2 + offset, y, page.Width-offset , y);
+                gfx.DrawString("Date received", font, XBrushes.Black, new XRect(page.Width/2+offset, y, 100, 20), XStringFormats.CenterLeft);
+
+                // Print stamp
+                font = new XFont("Tahoma", 8, XFontStyle.Regular, options);
+                XRect footer = new XRect(offset, page.Height - offset, page.Width - 2 * offset, 20);
+                gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", "Xavier Iafrate", DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
+
+                #endregion
+
+
+                string fileName = string.Format("{0}_{1:ddMMyy_HHmm}.pdf", deliveryNote.Name, DateTime.Now);
+                string path = Directory.Exists(LMO_PDF_OUTPUTDIR) ? Path.Join(LMO_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+                SavePDF(document, path, true);
+            }
         }
 
         public static void SavePDF(PdfDocument document, string path, bool open_after)
@@ -355,6 +526,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 MessageBox.Show(e.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region Helper functions
 
         public static void OpenWithDefaultProgram(string path)
         {
@@ -379,5 +552,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             TimeSpan timeSpan = TimeSpan.FromSeconds(cycle_time_seconds);
             return string.Format("{0}m {1}s ({2}s)", timeSpan.Minutes, timeSpan.Seconds, cycle_time_seconds);
         }
+        #endregion
     }
 }
