@@ -205,10 +205,9 @@ namespace ProjectLighthouse.View
 
         private void CancelOrderButton_Click(object sender, RoutedEventArgs e)
         {
-
             if (MessageBox.Show("Are you sure you want to cancel this order?", "Cancel Order", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
-                MessageBox.Show("rendering");
+                MessageBox.Show("rendering NOT CANCELLED");
                 renderAsBitmap();
             }
         }

@@ -7,6 +7,7 @@
              xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              xmlns:local="clr-namespace:ProjectLighthouse.View"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             MaxHeight="1000"
              Background="{StaticResource materialBackground}">
 
     <UserControl.Resources>
@@ -41,10 +42,11 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            
             <Style x:Key="DeclineButton" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource gradBad}"/>
+                <Setter Property="Background" Value="{StaticResource materialError}"/>
                 <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
-                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Foreground" Value="{StaticResource materialOnError}"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Height" Value="28"/>
@@ -66,8 +68,7 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource materialError}"/>
-                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Background" Value="{StaticResource materialErrorVar}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -216,7 +217,9 @@
                                Visibility="{Binding DecisionVis}"/>
 
                     <StackPanel Margin="10,0"
-                                Visibility="{Binding DecisionVis}">
+                                Visibility="Visible">
+                        <!--Visibility="{Binding DecisionVis}">-->
+                        
                         <CheckBox Content="Scheduling Approval"
                                   IsChecked="{Binding SelectedRequest.isSchedulingApproved, UpdateSourceTrigger=PropertyChanged}"
                                   IsEnabled="{Binding SchedulingCheckboxEnabled,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -253,15 +256,16 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
+                            <Button Content="DECLINE"
+                                    x:Name="DeclineButton"
+                                    Command="{Binding DeclineCommand}"
+                                    Style="{StaticResource CancelButtonTemplate}"/>
                             <Button Content="APPROVE" 
+                                    Grid.Column="1"
                                     x:Name="ApproveButton"
                                     Command="{Binding ApproveCommand}"
-                                    Style="{StaticResource ApproveButton}"/>
-                            <Button Content="DECLINE"
-                                    Grid.Column="1"
-                                        x:Name="DeclineButton"
-                                        Command="{Binding DeclineCommand}"
-                                        Style="{StaticResource DeclineButton}"/>
+                                    Style="{StaticResource GreenButtonTemplate}"/>
+                            
                         </Grid>
                     </StackPanel>
                     <Grid Margin="10" Visibility="{Binding ApprovedVis, FallbackValue=Collapsed}">

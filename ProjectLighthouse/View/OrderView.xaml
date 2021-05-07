@@ -150,7 +150,7 @@
                                            FontWeight="Bold"
                                            Margin="10,0"/>
                                 <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"/>
-                                <Button Content="Print" x:Name="printButton" Style="{StaticResource ButtonTemplate}" Command="{Binding PrintOrderCommand}" Grid.Column="3"/>
+                                <Button Content="Generate PDF" x:Name="printButton" Style="{StaticResource ButtonTemplate}" Command="{Binding PrintOrderCommand}" Grid.Column="3"/>
                             </Grid>
 
 

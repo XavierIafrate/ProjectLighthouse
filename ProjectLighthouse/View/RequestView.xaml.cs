@@ -38,7 +38,12 @@ namespace ProjectLighthouse.View
 
         private void requests_ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            updateNotes();
+            ListView listView = sender as ListView;
+            if (listView.SelectedValue != null)
+            {
+                updateNotes();
+            }
+            
         }
     }
 }

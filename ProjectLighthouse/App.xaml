@@ -320,9 +320,9 @@
         </Style>
 
         <Style x:Key="GreenButtonTemplate" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource materialSecondary}"/>
+            <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}"/>
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
-            <Setter Property="Foreground" Value="{StaticResource materialOnSecondary}"/>
+            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="10,5"/>
             <Setter Property="Template">
@@ -340,7 +340,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource materialSecondaryVar}"/>
+                    <Setter Property="Background" Value="{StaticResource materialPrimaryGreenVar}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" Value="LightGray"/>
