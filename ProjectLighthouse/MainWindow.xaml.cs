@@ -114,13 +114,6 @@ namespace ProjectLighthouse
                 button.IsChecked = button == sender_button;
             }
 
-            //new_request_button.IsChecked = false;
-            //requests_button.IsChecked = false;
-            //orders_button.IsChecked = false;
-            //schedule_button.IsChecked = false;
-            //machine_stats_button.IsChecked = false;
-            //time_estimate_button.IsChecked = false;
-
             sender_button.IsChecked = true;
         }
 

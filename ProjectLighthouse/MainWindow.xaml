@@ -119,20 +119,26 @@
                               x:Name="schedule_button"
                               Click="ToggleButton_Click"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
-                        CommandParameter="Machine Stats"
-                        Style="{StaticResource menuButtonStyle}"
-                        Content="Runtime"
+                              CommandParameter="Machine Stats"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="Runtime"
                               x:Name="machine_stats_button"
                               Click="ToggleButton_Click"/>
+                <ToggleButton Command="{Binding UpdateViewCommand}" 
+                              CommandParameter="Deliveries"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="Deliveries"
+                              Click="ToggleButton_Click"/>
 
-                <TextBlock Text="Tools"
+                <!--<TextBlock Text="Tools"
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
                 <ToggleButton Style="{StaticResource menuButtonStyle}"
                               Content="Time/Cost Estimate"
                               x:Name="time_estimate_button"
                               Click="ToggleButton_Click"
-                              IsEnabled="False"/>
+                              IsEnabled="False"/>-->
+                
                 <!--<Button Style="{StaticResource ButtonTemplate}"
                         Content="DEBUG"
                         x:Name="debugButton"
@@ -141,30 +147,8 @@
                 <!--<Button Command="{Binding UpdateViewCommand}" 
                         CommandParameter="BarStock"
                         Style="{StaticResource menuButtonStyle}"
-                        Content="Bar Stock"/>
-                
-                <Button Command="{Binding UpdateViewCommand}" 
-                        CommandParameter="Performance"
-                        Style="{StaticResource menuButtonStyle}"
-                        Content="Performance Monitoring"/>
+                        Content="Bar Stock"/>-->
 
-                <TextBlock Text="Products"
-                           Style="{StaticResource menuSectionStyle}"/>
-                <Separator Style="{StaticResource menuSepStyle}"/>
-                <Button Command="{Binding UpdateViewCommand}" 
-                        CommandParameter="Products"
-                        Style="{StaticResource menuButtonStyle}"
-                        Content="View Database"/>-->
-
-                <!--<TextBlock Text="Users"
-                           Style="{StaticResource menuSectionStyle}"/>
-                <Separator Style="{StaticResource menuSepStyle}"/>
-                <Button Command="{Binding UpdateViewCommand}" 
-                        CommandParameter="Products"
-                        Style="{StaticResource menuButtonStyle}">
-                    <TextBlock Text="View Database"
-                               Style="{StaticResource menuButtonTextStyle}"/>
-                </Button>-->
             </StackPanel>
             <Button Style="{StaticResource ButtonTemplate}"
                     Content="Settings"

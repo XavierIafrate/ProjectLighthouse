@@ -180,8 +180,6 @@ namespace ProjectLighthouse.View
             int orderNumLen = strOrderNum.Length;
             const string blank = "M00000";
 
-
-
             return blank.Substring(0, 6 - orderNumLen) + strOrderNum;
         }
 

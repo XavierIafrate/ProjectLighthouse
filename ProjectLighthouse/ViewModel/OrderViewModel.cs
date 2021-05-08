@@ -15,6 +15,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class OrderViewModel : BaseViewModel
     {
+        #region Variables
         public ObservableCollection<LatheManufactureOrder> LatheManufactureOrders { get; set; }
         public ObservableCollection<LatheManufactureOrder> FilteredOrders { get; set; }
         public ObservableCollection<LatheManufactureOrderItem> LMOItems { get; set; }
@@ -127,25 +128,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        private string GetDaySuffix(int day)
-        {
-            switch (day)
-            {
-                case 1:
-                case 21:
-                case 31:
-                    return "st";
-                case 2:
-                case 22:
-                    return "nd";
-                case 3:
-                case 23:
-                    return "rd";
-                default:
-                    return "th";
-            }
-        }
-
         #region Visibility variables
         private Visibility liveInfoVis;
         public Visibility LiveInfoVis
@@ -200,7 +182,7 @@ namespace ProjectLighthouse.ViewModel
         public ICommand PrintOrderCommand { get; set; }
         public ICommand EditCommand { get; set; }
         #endregion
-
+        #endregion
         public event EventHandler SelectedLatheManufactureOrderChanged;
 
         public OrderViewModel()
@@ -240,10 +222,10 @@ namespace ProjectLighthouse.ViewModel
             RefreshLiveInfoText();
         }
 
-        private void GetLiveStats()
+        private async void GetLiveStats()
         {
             machineStatistics.Clear();
-            machineStatistics = MachineStatsHelper.GetStats();
+            machineStatistics = await MachineStatsHelper.GetStats();
         }
 
         private void RefreshLiveInfoText()
@@ -365,6 +347,7 @@ namespace ProjectLighthouse.ViewModel
             string orderName = (string)selectedLatheManufactureOrder.Name;
             GetLatheManufactureOrders();
             FilterOrders(SelectedFilter);
+
             if (FilteredOrders.Count > 0)
             {
                 foreach (var order in FilteredOrders)
@@ -378,8 +361,25 @@ namespace ProjectLighthouse.ViewModel
             }
             
             GetLatheManufactureOrderItems();
-
         }
 
+        private string GetDaySuffix(int day)
+        {
+            switch (day)
+            {
+                case 1:
+                case 21:
+                case 31:
+                    return "st";
+                case 2:
+                case 22:
+                    return "nd";
+                case 3:
+                case 23:
+                    return "rd";
+                default:
+                    return "th";
+            }
+        }
     }
 }

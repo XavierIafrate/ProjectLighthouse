@@ -33,9 +33,9 @@ namespace ProjectLighthouse.ViewModel
             getStats();
         }
 
-        public void getStats()
+        public async void getStats()
         {
-            List<MachineStatistics> statsList = MachineStatsHelper.GetStats();
+            List<MachineStatistics> statsList = await MachineStatsHelper.GetStats();
 
             StatsList.Clear();
             foreach (var item in statsList)

@@ -16,6 +16,7 @@ namespace ProjectLighthouse.Model
         public bool CanApproveRequests { get; set; }
         public bool CanEditLMOs { get; set; }
         public bool CanUpdateLMOs { get; set; }
+        public bool CanRaiseDelivery { get; set; }
         public string computerUsername { get; set; }
 
         public string GetFullName()

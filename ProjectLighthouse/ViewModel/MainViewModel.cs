@@ -48,7 +48,15 @@ namespace ProjectLighthouse.ViewModel
             if (App.currentUser == null)
             {
                 LoginWindow login = new LoginWindow();
-                login.ShowDialog();
+                try
+                {
+                    login.ShowDialog();
+                }
+                catch(Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                
 
                 if (login.auth_user == null)
                 {

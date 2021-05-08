@@ -255,11 +255,11 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-                            <Button Content="DECLINE"
+                            <Button Content="Decline"
                                     x:Name="DeclineButton"
                                     Command="{Binding DeclineCommand}"
                                     Style="{StaticResource CancelButtonTemplate}"/>
-                            <Button Content="APPROVE" 
+                            <Button Content="Approve" 
                                     Grid.Column="1"
                                     x:Name="ApproveButton"
                                     Command="{Binding ApproveCommand}"
@@ -343,12 +343,14 @@
                         <TextBlock Text="Quantity Required"
                                Style="{StaticResource subsubtitleTextStyle}"/>
                         <TextBox x:Name="quantityTextbox"
-                                 Text="{Binding SelectedRequest.QuantityRequired, Mode=OneWay}"/>
+                                 Text="{Binding SelectedRequest.QuantityRequired, Mode=OneWay}"
+                                 IsEnabled="{Binding CanEditRequirements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Date Required"
                                Style="{StaticResource subsubtitleTextStyle}"/>
                         <DatePicker SelectedDate="{Binding SelectedRequest.DateRequired, Mode=OneWay}" 
-                                    DisplayDateStart="{x:Static sys:DateTime.Now}"/>
+                                    DisplayDateStart="{x:Static sys:DateTime.Now}"
+                                    IsEnabled="{Binding CanEditRequirements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Notes"
                                Style="{StaticResource subsubtitleTextStyle}"/>

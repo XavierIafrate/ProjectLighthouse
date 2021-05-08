@@ -16,6 +16,7 @@ namespace ProjectLighthouse.Model
         public int TargetQuantity { get; set; }
         public int QuantityMade { get; set; }
         public int QuantityReject { get; set; }
+        public int QuantityDelivered { get; set; }
         public int CycleTime { get; set; }
         public double MajorLength { get; set; }
 
@@ -26,6 +27,4 @@ namespace ProjectLighthouse.Model
         public string UpdatedBy { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
-
-
 }

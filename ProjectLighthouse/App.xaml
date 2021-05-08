@@ -8,7 +8,7 @@
     <Application.Resources>
 
         <FontFamily x:Key="ProximaNova">pack://application:,,,/Resources/Font/proximanova.ttf#Proxima Nova</FontFamily>
-
+        
         <SolidColorBrush x:Key="materialPrimary" Color="#6200EE"/>
         <SolidColorBrush x:Key="materialPrimaryVar" Color="#3700B3"/>
         <SolidColorBrush x:Key="materialSecondary" Color="#03DAC6"/>
@@ -427,6 +427,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vms:ScheduleViewModel}">
             <views:ScheduleView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:DeliveriesViewModel}">
+            <views:DeliveriesView/>
         </DataTemplate>
 
         <Style TargetType="{x:Type UserControl}">

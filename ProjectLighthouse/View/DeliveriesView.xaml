@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.DeliveriesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectLighthouse.View"
+             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <vm:DeliveriesViewModel x:Key="vm"/>
+    </UserControl.Resources>
+    <Grid DataContext="{StaticResource vm}">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" MinWidth="300" MaxWidth="400"/>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="newDeliveryButton"
+                        Content="+ New Delivery"
+                        Command="{Binding CreateDeliveryCommand}"
+                        Style="{StaticResource GreenButtonTemplate}" Grid.Column="1"
+                        Margin="0,0,0,5"/>
+            </Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                <ListBox HorizontalContentAlignment="Stretch"
+                         ItemsSource="{Binding deliveryNotes}"
+                         SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <uc:DisplayDeliveryNote deliveryNote="{Binding}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+        </Grid>
+        <GridSplitter Grid.Row="0" Grid.Column="1" Margin="2,0"
+                  Width="3" Background="White"
+                  VerticalAlignment="Stretch" 
+                  HorizontalAlignment="Center" />
+        <Grid Grid.Column="2" Background="{StaticResource materialBackground}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="30,0">
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource heroTextStyle}"
+                               Text="{Binding SelectedDeliveryNote.Name}"/>
+                        <Button Style="{StaticResource ButtonTemplate}"
+                                Content="Generate PDF"
+                                Margin="0"
+                                Grid.Column="2"
+                                Command="{Binding GenerateDeliveryNotePDFCommand}"/>
+                        <TextBlock Style="{StaticResource subsubtitleTextStyle}"
+                                   Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}'}"
+                                   Grid.Row="1"/>
+                        <TextBlock Style="{StaticResource subsubtitleTextStyle}"
+                                   Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{}Delivered by {0}'}"
+                                   Grid.Row="2"/>
+                    </Grid>
+                    <Separator Margin="0,10"/>
+                    <TextBlock Text="Delivery Items"
+                               Style="{StaticResource subtitleTextStyle}"/>
+                    <Grid>
+                        <ItemsControl ItemsSource="{Binding filteredDeliveryItems, Mode=OneWay}" HorizontalContentAlignment="Stretch">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="5" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="75"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="150"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Rectangle Fill="{StaticResource materialBackground}" 
+                                                   RadiusX="5" RadiusY="5" 
+                                                   Stroke="{StaticResource materialPrimaryBlue}"
+                                                   StrokeThickness="2"
+                                                   Grid.ColumnSpan="5">
+                                            <Rectangle.Effect>
+                                                <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.1"/>
+                                            </Rectangle.Effect>
+                                        </Rectangle>
+                                        <TextBlock Text="{Binding Product}" Padding="10" FontSize="16" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding ItemManufactureOrderNumber}" Grid.Column="1" Padding="10" FontSize="16"/>
+                                        <TextBlock Text="{Binding QuantityThisDelivery, StringFormat='{}{0:#,##0} pcs'}" Grid.Column="2" Padding="10" FontSize="16"/>
+                                        <TextBlock Text="{Binding QuantityToFollow, StringFormat='{}{0:#,##0} pcs to follow'}" Grid.Column="3" Padding="10" FontSize="16"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        
+    </Grid>
+</UserControl>

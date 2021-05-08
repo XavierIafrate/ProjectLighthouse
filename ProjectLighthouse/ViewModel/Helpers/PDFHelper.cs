@@ -44,10 +44,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 XTextFormatter formatter = new XTextFormatter(gfx);
                 XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
                 #endregion
-                
+
                 #region Title
                 // Logo
-                XImage logo = XImage.FromFile("H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png");
+                string network = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
+                string local = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
+
+                XImage logo = XImage.FromFile(Directory.Exists(network) ? network : local);
                 const double dy = 150;
                 double width = logo.PixelWidth * 72 / logo.HorizontalResolution;
                 double height = logo.PixelHeight * 72 / logo.HorizontalResolution;
@@ -521,7 +524,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 if (open_after)
                     OpenWithDefaultProgram(path);
             }
-            catch (Exception e)
+            catch (Exception e) // No connection to server with adapters installed
             {
                 MessageBox.Show(e.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }

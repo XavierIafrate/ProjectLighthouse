@@ -12,6 +12,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class RequestViewModel : BaseViewModel
     {
+        #region Variables
         public ObservableCollection<Request> Requests { get; set; }
         public ObservableCollection<Request> FilteredRequests { get; set; }
         private string selectedFilter;
@@ -97,6 +98,17 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private bool canEditRequirements;
+        public bool CanEditRequirements
+        {
+            get { return canEditRequirements; }
+            set 
+            { 
+                canEditRequirements = value;
+                OnPropertyChanged("CanEditRequirements");
+            }
+        }
+
         private bool schedulingCheckboxEnabled;
         public bool SchedulingCheckboxEnabled
         {
@@ -120,7 +132,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility editcontrolsVis;
-
         public Visibility EditControlsVis
         {
             get { return editcontrolsVis; }
@@ -130,7 +141,6 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("EditControlsVis");
             }
         }
-
 
         private Visibility modifiedVis;
         public Visibility ModifiedVis
@@ -210,6 +220,8 @@ namespace ProjectLighthouse.ViewModel
         public ApproveRequestCommand ApproveCommand { get; set; }
         public DeclineRequestCommand DeclineCommand { get; set; }
 
+        #endregion
+
         public RequestViewModel()
         {
             Requests = new ObservableCollection<Request>();
@@ -232,17 +244,17 @@ namespace ProjectLighthouse.ViewModel
         public void LoadRequestCard(Request request)
         {
             if (request == null)
-            {
                 return;
-            }
 
             ModifiedVis = (String.IsNullOrEmpty(request.ModifiedBy)) ? Visibility.Collapsed : Visibility.Visible;
 
             ApprovalControlsVis = (App.currentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
-            EditControlsVis = (App.currentUser.GetFullName() == request.RaisedBy || App.currentUser.CanApproveRequests) && !request.IsAccepted && !request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
+            EditControlsVis = (App.currentUser.GetFullName() == request.RaisedBy || App.currentUser.CanApproveRequests) ? Visibility.Visible : Visibility.Collapsed;
             DecisionVis = (request.IsDeclined || request.IsAccepted) ? Visibility.Collapsed : Visibility.Visible;
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
             DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
+            CanEditRequirements = (!request.IsAccepted && !request.IsDeclined);
+            Debug.WriteLine(CanEditRequirements);
 
 
             ProductionCheckboxEnabled = (request.Status == "Pending approval" &&

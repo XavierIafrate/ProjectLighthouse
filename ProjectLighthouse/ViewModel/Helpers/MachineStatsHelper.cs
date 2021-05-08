@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
 
@@ -14,7 +15,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         private static string IP_ADDRESS = "http://192.168.100.172";
 
-        public static List<MachineStatistics> GetStats()
+        public static async Task<List<MachineStatistics>> GetStats()
         {
             List<MachineStatistics> resultList = new List<MachineStatistics>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
@@ -28,10 +29,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 stats.MachineID = lathe.FullName;
                 string url = IP_ADDRESS + lathe.ControllerReference + "/current";
 
-                if (!IsConnected(url))
-                {
+                bool connected = await IsConnected(url);
+
+                if (!connected)
                     break;
-                }    
 
                 using (XmlTextReader reader = new XmlTextReader(url))
                 {
@@ -142,12 +143,25 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return resultList;
         }
 
-        public static bool IsConnected(string url)
+        public static async Task<bool> IsConnected(string url)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "HEAD";
-            var response = (HttpWebResponse)request.GetResponse();
-            return response.StatusCode == HttpStatusCode.OK;
+            try
+            {
+                var response = (HttpWebResponse)await
+                Task.Factory.FromAsync<WebResponse>(request.BeginGetResponse,
+                                                    request.EndGetResponse,
+                                                    null);
+                return response.StatusCode == HttpStatusCode.OK;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+
+            //request.Method = "HEAD";
+            //var response = (HttpWebResponse)request.GetResponse();
+            //return response.StatusCode == HttpStatusCode.OK;
         }
     }
 }

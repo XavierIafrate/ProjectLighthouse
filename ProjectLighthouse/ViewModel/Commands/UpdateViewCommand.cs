@@ -70,6 +70,12 @@ namespace ProjectLighthouse.ViewModel.Commands
                 //viewModel.SelectedViewModel = new OrderViewModel();
                 //viewModel.NavText = "Manufacture Orders";
             }
+            else if (parameter.ToString() == "Deliveries")
+            {
+                viewModel.SelectedViewModel = new DeliveriesViewModel();
+                viewModel.NavText = "Deliveries";
+            }
+
         }
     }
 }
