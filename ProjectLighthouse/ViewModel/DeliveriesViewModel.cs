@@ -64,7 +64,8 @@ namespace ProjectLighthouse.ViewModel
             }
 
             deliveryNotes = new ObservableCollection<DeliveryNote>(deliveryNotes.OrderByDescending(n => n.DeliveryDate));
-            SelectedDeliveryNote = deliveryNotes.First();
+            if(deliveryNotes.Count != 0)
+                SelectedDeliveryNote = deliveryNotes.First();
         }
 
         private void LoadDeliveryItems()
@@ -89,7 +90,8 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintDeliveryNotePDF()
         {
-            PDFHelper.PrintDeliveryNote(SelectedDeliveryNote, filteredDeliveryItems);
+            if(SelectedDeliveryNote != null && filteredDeliveryItems != null)
+                PDFHelper.PrintDeliveryNote(SelectedDeliveryNote, filteredDeliveryItems);
         }
     }
 }

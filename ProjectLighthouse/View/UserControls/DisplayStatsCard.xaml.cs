@@ -70,7 +70,7 @@ namespace ProjectLighthouse.View.UserControls
                         break;
 
                     case "Setting":
-                        statusColour = "materialYellow";
+                        statusColour = "materialPrimaryBlue";
                         accentColour = "materialPrimary";
                         control.connectionText.Text = "MANUAL OPERATION";
                         break;

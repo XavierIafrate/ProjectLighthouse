@@ -31,11 +31,23 @@ namespace ProjectLighthouse.View.UserControls
                 control.DataContext = control.LatheManufactureOrderItem;
 
                 control.specialFlag.Visibility = (control.LatheManufactureOrderItem.IsSpecialPart) ? Visibility.Visible : Visibility.Collapsed;
-
                 control.requirements.Visibility = (control.LatheManufactureOrderItem.RequiredQuantity == 0) ? Visibility.Collapsed : Visibility.Visible;
 
-                control.requirementsBadge.Fill = (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.RequiredQuantity) ?
+                control.requirementsBadge.Fill = (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
                     (Brush)Application.Current.Resources["materialPrimaryGreen"] : (Brush)Application.Current.Resources["materialError"];
+
+                if (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity) // if done
+                {
+                    control.productText.Foreground = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                    control.bgRect.Stroke = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                    control.bgRect.StrokeThickness = 2;
+                }
+                else
+                {
+                    control.productText.Foreground = (Brush)Application.Current.Resources["materialOnBackground"];
+                    control.bgRect.Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#f0f0f0"));
+                    control.bgRect.StrokeThickness = 1;
+                }
             }
         }
 

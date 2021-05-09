@@ -33,7 +33,7 @@
                            FontSize="18"/>
             </Grid>
             <TextBlock FontSize="18" 
-                       Text="Main runtime information is recorded with Watchtower" 
+                       Text="Main runtime information is recorded with Sentry" 
                        Foreground="{StaticResource materialOnBackground}"
                        FontStyle="Italic"/>
         </StackPanel>
@@ -43,9 +43,7 @@
             <ItemsControl ItemsSource="{Binding StatsList}"
                           BorderThickness="0"
                           Focusable="False"
-                          FocusVisualStyle="{x:Null}"
-                          
-                          >
+                          FocusVisualStyle="{x:Null}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" Margin="20"/>

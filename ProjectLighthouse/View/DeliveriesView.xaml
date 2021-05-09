@@ -85,35 +85,34 @@
                     <Separator Margin="0,10"/>
                     <TextBlock Text="Delivery Items"
                                Style="{StaticResource subtitleTextStyle}"/>
-                    <Grid>
-                        <ItemsControl ItemsSource="{Binding filteredDeliveryItems, Mode=OneWay}" HorizontalContentAlignment="Stretch">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="5" VerticalAlignment="Center">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="160"/>
-                                            <ColumnDefinition Width="75"/>
-                                            <ColumnDefinition Width="80"/>
-                                            <ColumnDefinition Width="150"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Fill="{StaticResource materialBackground}" 
-                                                   RadiusX="5" RadiusY="5" 
-                                                   Stroke="{StaticResource materialPrimaryBlue}"
-                                                   StrokeThickness="2"
-                                                   Grid.ColumnSpan="5">
-                                            <Rectangle.Effect>
-                                                <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.1"/>
-                                            </Rectangle.Effect>
-                                        </Rectangle>
-                                        <TextBlock Text="{Binding Product}" Padding="10" FontSize="16" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding ItemManufactureOrderNumber}" Grid.Column="1" Padding="10" FontSize="16"/>
-                                        <TextBlock Text="{Binding QuantityThisDelivery, StringFormat='{}{0:#,##0} pcs'}" Grid.Column="2" Padding="10" FontSize="16"/>
-                                        <TextBlock Text="{Binding QuantityToFollow, StringFormat='{}{0:#,##0} pcs to follow'}" Grid.Column="3" Padding="10" FontSize="16"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        </Grid>
+
+                    <ItemsControl ItemsSource="{Binding filteredDeliveryItems, Mode=OneWay}" HorizontalContentAlignment="Stretch">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="5,2" VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="75"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Fill="{StaticResource materialBackground}"
+                                                Stroke="{StaticResource materialPrimaryBlue}"
+                                                StrokeThickness="2"
+                                                Grid.ColumnSpan="5">
+                                        <!--<Rectangle.Effect>
+                                            <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.1"/>
+                                        </Rectangle.Effect>-->
+                                    </Rectangle>
+                                    <TextBlock Text="{Binding Product}" Padding="10" FontSize="16" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding ItemManufactureOrderNumber}" Grid.Column="1" Padding="10" FontSize="16"/>
+                                    <TextBlock Text="{Binding QuantityThisDelivery, StringFormat='{}{0:#,##0} pcs'}" Grid.Column="2" Padding="10" FontSize="16"/>
+                                    <TextBlock Text="{Binding QuantityToFollow, StringFormat='{}{0:#,##0} pcs to follow'}" Grid.Column="3" Padding="10" FontSize="16"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                        
                 </StackPanel>
             </ScrollViewer>
         </Grid>

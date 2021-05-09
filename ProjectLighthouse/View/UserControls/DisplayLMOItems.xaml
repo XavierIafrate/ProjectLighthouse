@@ -7,11 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="400"
              Background="Transparent">
     <Grid Margin="0,2">
-        <Rectangle Fill="{StaticResource materialBackground}" RadiusX="5" RadiusY="5" Stroke="#f0f0f0">
-            <!--<Rectangle.Effect>
-                <DropShadowEffect BlurRadius="30" ShadowDepth="5" Direction="220" Color="Black" Opacity="0.2"/>
-            </Rectangle.Effect>-->
-        </Rectangle>
+        <Rectangle Fill="{StaticResource materialBackground}" RadiusX="5" RadiusY="5" Stroke="#f0f0f0" x:Name="bgRect"/>
 
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
@@ -85,7 +81,7 @@
                            FontSize="12"/>
 
                 <TextBlock Text="Delivered" Grid.Row="1"/>
-                <TextBlock Text="{Binding QuantityMade, StringFormat='{}{0:#,##0}', FallbackValue='0 pcs'}"
+                <TextBlock Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}"
                            HorizontalAlignment="Right"
                            Grid.Column="1"
                            Grid.Row="1"
