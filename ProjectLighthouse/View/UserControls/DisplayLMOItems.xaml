@@ -80,7 +80,7 @@
                            HorizontalAlignment="Right"
                            FontSize="12"/>
 
-                <TextBlock Text="Delivered" Grid.Row="1"/>
+                <TextBlock Text="Made" Grid.Row="1"/>
                 <TextBlock Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}"
                            HorizontalAlignment="Right"
                            Grid.Column="1"

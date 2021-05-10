@@ -36,7 +36,6 @@ namespace ProjectLighthouse.View
                     if (Environment.UserName == "xavier")
                     {
                         passwordText.Password = user.Password;
-                        Login();
                     }
                     else // multiple people using the computer
                     {

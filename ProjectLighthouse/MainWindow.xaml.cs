@@ -139,7 +139,8 @@ namespace ProjectLighthouse
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            EmailHelper.SendEmail("xavieriafrate@gmail.com", "TEST", "This is a test of SMTP integration");
+            ReportingHelper.GetReport();
+            //EmailHelper.SendEmail("xavieriafrate@gmail.com", "TEST", "This is a test of SMTP integration");
         }
     }
 }

@@ -47,10 +47,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 #region Title
                 // Logo
-                string network = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
-                string local = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
+                string logo_file = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
+                
+                if(Environment.UserName=="xavie")
+                    logo_file = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
 
-                XImage logo = XImage.FromFile(Directory.Exists(network) ? network : local);
+                XImage logo = XImage.FromFile(logo_file);
                 const double dy = 150;
                 double width = logo.PixelWidth * 72 / logo.HorizontalResolution;
                 double height = logo.PixelHeight * 72 / logo.HorizontalResolution;
@@ -89,8 +91,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString("Purchase Order #", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
                 gfx.DrawString(order.POReference, valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
-                //gfx.DrawRectangle(XPens.Transparent, brush, parameterRect);
-                //gfx.DrawRectangle(XPens.Transparent, bluebrush, valueRect);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;
@@ -98,8 +98,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString("Start Date", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
                 gfx.DrawString(string.Format("{0:ddd dd/MM/yy}", order.StartDate), valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
-                //gfx.DrawRectangle(XPens.Transparent, brush, parameterRect);
-                //gfx.DrawRectangle(XPens.Transparent, bluebrush, valueRect);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;
@@ -107,8 +105,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString("Assigned Machine", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
                 gfx.DrawString(order.AllocatedMachine, valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
-                //gfx.DrawRectangle(XPens.Transparent, brush, parameterRect);
-                //gfx.DrawRectangle(XPens.Transparent, bluebrush, valueRect);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;
@@ -116,8 +112,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString("Assigned Setter", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
                 gfx.DrawString(order.AllocatedSetter, valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
-                //gfx.DrawRectangle(XPens.Transparent, brush, parameterRect);
-                //gfx.DrawRectangle(XPens.Transparent, bluebrush, valueRect);
 
                 //Second Column
                 y = (double)200;
@@ -126,8 +120,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString("Date Created", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
                 gfx.DrawString(string.Format("{0:ddd dd/MM/yy HH:mm}", order.CreatedAt), valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
-                //gfx.DrawRectangle(XPens.Transparent, brush, parameterRect);
-                //gfx.DrawRectangle(XPens.Transparent, bluebrush, valueRect);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;
@@ -135,8 +127,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString("Last Updated", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
                 gfx.DrawString(string.Format("{0:ddd dd/MM/yy HH:mm}", order.ModifiedAt), valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
-                //gfx.DrawRectangle(XPens.Transparent, brush, parameterRect);
-                //gfx.DrawRectangle(XPens.Transparent, bluebrush, valueRect);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;
@@ -144,8 +134,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString("Updated By", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
                 gfx.DrawString(order.ModifiedBy, valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
-                //gfx.DrawRectangle(XPens.Transparent, brush, parameterRect);
-                //gfx.DrawRectangle(XPens.Transparent, bluebrush, valueRect);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;
@@ -153,15 +141,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString("Program Ready?", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
                 gfx.DrawString(order.HasProgram ? "Yes" : "No", valueFont, order.HasProgram ? XBrushes.Black : XBrushes.Red, valueRect, XStringFormats.CenterLeft);
-                //gfx.DrawRectangle(XPens.Transparent, brush, parameterRect);
-                //gfx.DrawRectangle(XPens.Transparent, bluebrush, valueRect);
 
                 #endregion
 
                 #region Order Details
                 XRect subtitleRect = new XRect(page.Width / 2 - 150, 290, 300, 25);
                 font = new XFont("Tahoma", 16, XFontStyle.Bold, options);
-                //gfx.DrawRectangle(XPens.Transparent, brush, subtitleRect);
                 gfx.DrawString("ORDER DETAILS", font, XBrushes.Black, subtitleRect, XStringFormats.Center);
 
                 y = 320;
@@ -362,12 +347,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
                 #endregion
 
+
                 #region Title
                 // Logo
-                string network = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
-                string local = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
-                
-                XImage logo = XImage.FromFile(Directory.Exists(network) ? network : local);
+                string logo_file = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
+
+                if (Environment.UserName == "xavie")
+                    logo_file = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
+
+                XImage logo = XImage.FromFile(logo_file);
                 const double dy = 150;
                 double width = logo.PixelWidth * 72 / logo.HorizontalResolution;
                 double height = logo.PixelHeight * 72 / logo.HorizontalResolution;
@@ -455,7 +443,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
 
                 // Init barcode
-                BarCode barcode = new Code3of9Standard("EMPTY", new XSize(PurchaseRefCol.Width + ProductCol.Width, ProductCol.Height*0.8));
+                BarCode barcode = new Code3of9Standard("EMPTY", new XSize(PurchaseRefCol.Width*1.5, ProductCol.Height*0.8));
                 barcode.StartChar = '*';
                 barcode.EndChar = '*';
                 

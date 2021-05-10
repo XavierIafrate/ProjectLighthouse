@@ -151,10 +151,10 @@ namespace ProjectLighthouse.View
             List<DeliveryNote> deliveryNotes = DatabaseHelper.Read<DeliveryNote>().ToList();
 
             int nOrders = deliveryNotes.Count();
-            string strOrderNum = Convert.ToString(nOrders + 1 + 358); // 358 not in database
+            string strOrderNum = Convert.ToString(nOrders + 1);
             int orderNumLen = strOrderNum.Length;
-            const string blank = "D00000";
-            return blank.Substring(0, 6 - orderNumLen) + strOrderNum;
+            const string blank = "DN00000";
+            return blank.Substring(0, 7 - orderNumLen) + strOrderNum;
 
         }
     }

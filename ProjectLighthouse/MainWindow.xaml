@@ -139,10 +139,10 @@
                               Click="ToggleButton_Click"
                               IsEnabled="False"/>-->
                 
-                <!--<Button Style="{StaticResource ButtonTemplate}"
+                <Button Style="{StaticResource ButtonTemplate}"
                         Content="DEBUG"
                         x:Name="debugButton"
-                        Click="Button_Click"/>-->
+                        Click="Button_Click"/>
 
                 <!--<Button Command="{Binding UpdateViewCommand}" 
                         CommandParameter="BarStock"
