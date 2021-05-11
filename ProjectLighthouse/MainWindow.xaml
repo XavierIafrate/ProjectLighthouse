@@ -67,22 +67,25 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <DockPanel DataContext="{StaticResource vm}">
-        <Grid DockPanel.Dock="Left" x:Name="main_menu">
+    <Grid DataContext="{StaticResource vm}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MaxWidth="350" MinWidth="250"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="main_menu">
             <Grid.RowDefinitions>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Rectangle Grid.RowSpan="4" Fill="{StaticResource materialOnBackground}"/>
-            <Image Source="/Resources/LighthouseLogo.png"
-                   Width="150"
-                   RenderOptions.BitmapScalingMode="HighQuality"/>
-
-            <StackPanel Width="200" Grid.Row="1" Margin="10,0">
-                <Rectangle Fill="Transparent"
-                           Height="25"/>
+            <Viewbox Margin="40">
+                <Image Source="/Resources/LighthouseLogo.png"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+            </Viewbox>
+            <StackPanel Grid.Row="1" Margin="20,0">
 
                 <TextBlock Text="Requests"
                            Style="{StaticResource menuSectionStyle}"/>
@@ -158,20 +161,26 @@
                     Command="{Binding EditCommand}"/>
         </Grid>
 
-        <Grid Background="White">
+        <GridSplitter Grid.Column="1"
+                  Width="3" Background="White"
+                  VerticalAlignment="Stretch" 
+                  HorizontalAlignment="Center" />
+        
+        <Grid Background="White" Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="100"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="{Binding NavText}"
-                       Foreground="{StaticResource materialOnBackground}"
-                       FontSize="35"
-                       Margin="0,0,50,0"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       x:Name="WindowText"/>
+            <Viewbox Margin="50,20" HorizontalAlignment="Right" MaxHeight="70">
+                <TextBlock Text="{Binding NavText}"
+                            Foreground="{StaticResource materialOnBackground}"
+                            
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            x:Name="WindowText"/>
+            </Viewbox>
             <ContentControl Content="{Binding SelectedViewModel}"
                             Grid.Row="1"/>
         </Grid>
-    </DockPanel>
+    </Grid>
 </Window>
