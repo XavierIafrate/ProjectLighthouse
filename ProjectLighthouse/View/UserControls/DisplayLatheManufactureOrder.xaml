@@ -34,20 +34,5 @@
             <Rectangle x:Name="badgeBackground" Fill="{StaticResource materialError}" RadiusX="5" RadiusY="5"/>
             <TextBlock Text="Ready" x:Name="BadgeText" FontSize="14" Padding="15,0,15,2" Foreground="{StaticResource materialOnPrimary}"/>
         </Grid>
-        <!--<StackPanel Orientation="Vertical"
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    Margin="10,0">
-            <Image Source="/Resources/MO-CompleteBadge.png" Height="15"
-                   x:Name="CompleteFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/MO-ReadyBadge.png" Height="15"
-                   x:Name="ReadyFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/MO-WarningBadge.png" Height="15"
-                   x:Name="WarnFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/MO-ErrorBadge.png" Height="15"
-                   x:Name="StopFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image Source="/Resources/MO-RunningBadge.png" Height="15"
-                   x:Name="RunningFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
-        </StackPanel>-->
     </Grid>
 </UserControl>

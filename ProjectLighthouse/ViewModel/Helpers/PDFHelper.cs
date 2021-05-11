@@ -24,8 +24,20 @@ namespace ProjectLighthouse.ViewModel.Helpers
         // *****************************************
 
         private static string LMO_PDF_OUTPUTDIR = "H:\\Production\\Documents\\Works Orders";
-
         private static string Address = "Automotion Components\nAlexia House\nGlenmore Business Park\nChichester, UK\nP019 7BJ";
+
+        #region Debug Formats
+        private static XSolidBrush brush = new XSolidBrush(XColor.FromArgb(120, 255, 0, 0));
+        private static XSolidBrush bluebrush = new XSolidBrush(XColor.FromArgb(120, 0, 0, 255));
+        #endregion
+
+        #region Schedule Formats
+        private static XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
+        private static double gutter = 30;
+        private static double header_height = 40;
+        private static XFont TitleFont = new XFont("Tahoma", 35, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        #endregion
+        // This needs a massive fucking overhaul
 
         public static void PrintOrder(LatheManufactureOrder order, ObservableCollection<LatheManufactureOrderItem> items)
         {
@@ -49,7 +61,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 // Logo
                 string logo_file = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
                 
-                if(Environment.UserName=="xavie")
+                if(Environment.UserName=="xavier")
                     logo_file = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
 
                 XImage logo = XImage.FromFile(logo_file);
@@ -347,12 +359,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
                 #endregion
 
-
                 #region Title
                 // Logo
                 string logo_file = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
 
-                if (Environment.UserName == "xavie")
+                if (Environment.UserName == "xavier")
                     logo_file = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
 
                 XImage logo = XImage.FromFile(logo_file);
@@ -503,6 +514,59 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
+        public static void PrintSchedule()
+        {
+            //List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, List<Lathe> lathes
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            
+
+            using (PdfDocument document = new PdfDocument())
+            {
+                #region Init parameters
+                //Debug
+                
+
+                // Init
+                PdfPage page = document.AddPage();
+                page.Orientation = PdfSharp.PageOrientation.Landscape;
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                XTextFormatter formatter = new XTextFormatter(gfx);
+                
+                #endregion
+
+                //gfx.DrawRectangle(brush, new XRect(gutter, gutter, page.Width - 2 * gutter, page.Height - 2 * gutter));
+
+                #region Title
+                DrawScheduleHeader(page, gfx);
+
+                
+                // Print stamp
+                XFont font = new XFont("Tahoma", 8, XFontStyle.Regular, options);
+                XRect footer = new XRect(10, page.Height - 10, page.Width - 2 * 10, 20);
+                gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", "Xavier Iafrate", DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
+
+                #endregion
+
+                string fileName = string.Format("{0}_{1:ddMMyy_HHmm}.pdf", "schedule", DateTime.Now);
+                string path = Directory.Exists(LMO_PDF_OUTPUTDIR) ? Path.Join(LMO_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+                SavePDF(document, path, true);
+            }
+        }
+
+        private static void DrawScheduleHeader(PdfPage page, XGraphics gfx)
+        {
+            //gfx.DrawRectangle(bluebrush, new XRect(gutter, gutter, page.Width - 2 * gutter, header_height));
+
+            // Logo
+            XImage logo = XImage.FromFile(GetLogoFile());
+            double width = logo.PixelWidth / logo.PixelHeight * header_height * 0.5;
+            XRect logoRect = new XRect(gutter, gutter, width, header_height);
+            gfx.DrawImage(logo, logoRect);
+
+            gfx.DrawString("Schedule", TitleFont, XBrushes.Black, new XRect(gutter + width + 20, gutter+header_height*0.25, page.Width - gutter*2 - width, header_height*0.5), XStringFormats.CenterLeft);
+        }
+
         public static void SavePDF(PdfDocument document, string path, bool open_after)
         {
             try
@@ -519,6 +583,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
         }
 
         #region Helper functions
+
+        public static string GetLogoFile()
+        {
+            return (Environment.UserName == "xavier") ?
+                "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png" :
+                "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
+        }
 
         public static void OpenWithDefaultProgram(string path)
         {

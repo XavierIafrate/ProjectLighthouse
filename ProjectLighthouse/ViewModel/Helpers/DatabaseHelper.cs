@@ -13,10 +13,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
             if (Environment.UserName == "xavier")
-            {
                 dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
-            }
-
+            
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 conn.CreateTable<T>();
@@ -33,9 +31,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     MessageBox.Show(sqle.Message.ToString());
                     result = false;
                 }
-
             }
-
             return result;
         }
 
@@ -43,9 +39,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
             if (Environment.UserName == "xavier")
-            {
                 dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
-            }
+
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 try
@@ -61,9 +56,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 {
                     MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-
             }
-
             return result;
         }
 
@@ -71,9 +64,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
             if (Environment.UserName == "xavier")
-            {
                 dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
-            }
+
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 conn.CreateTable<T>();
@@ -83,7 +75,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     result = true;
                 }
             }
-
             return result;
         }
 
@@ -91,15 +82,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             List<T> items;
             if (Environment.UserName == "xavier")
-            {
                 dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
-            }
+
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 conn.CreateTable<T>();
                 items = conn.Table<T>().ToList();
             }
-
             return items;
         }
     }

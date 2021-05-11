@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ProjectLighthouse.View"
         mc:Ignorable="d"
         ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
         Title="Create New Delivery" Height="450" Width="800">
     <Grid Margin="25,15">
         <Grid.ColumnDefinitions>

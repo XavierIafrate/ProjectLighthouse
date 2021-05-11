@@ -5,20 +5,14 @@ using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DisplayLMOItems.xaml
-    /// </summary>
     public partial class DisplayLMOItems : UserControl
     {
-
-
         public LatheManufactureOrderItem LatheManufactureOrderItem
         {
             get { return (LatheManufactureOrderItem)GetValue(LatheManufactureOrderItemProperty); }
             set { SetValue(LatheManufactureOrderItemProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for LatheManufactureOrderItem.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LatheManufactureOrderItemProperty =
             DependencyProperty.Register("LatheManufactureOrderItem", typeof(LatheManufactureOrderItem), typeof(DisplayLMOItems), new PropertyMetadata(null, SetValues));
 

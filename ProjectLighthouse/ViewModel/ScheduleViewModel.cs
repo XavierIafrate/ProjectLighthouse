@@ -11,6 +11,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class ScheduleViewModel : BaseViewModel
     {
+        #region Variables
         public ObservableCollection<LatheManufactureOrder> allOrders { get; set; }
         public ObservableCollection<LatheManufactureOrder> filteredOrders { get; set; }
 
@@ -36,6 +37,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
         }
+        #endregion
 
         public ScheduleViewModel()
         {
@@ -68,7 +70,6 @@ namespace ProjectLighthouse.ViewModel
             {
                 allLMOItems.Add(item);
             }
-
         }
 
         private void LoadCompleteOrders()
@@ -88,9 +89,7 @@ namespace ProjectLighthouse.ViewModel
                 orderBars = (double)0;
 
                 if (order.StartDate < earliestStart)
-                {
                     earliestStart = order.StartDate;
-                }
                 tmpItems.Clear();
 
                 foreach (var item in allLMOItems)
@@ -148,16 +147,7 @@ namespace ProjectLighthouse.ViewModel
             editWindow.ShowDialog();
 
             if (order.Status == "Awaiting scheduling" && order.AllocatedMachine != "")
-            {
-                if (!order.IsReady)
-                {
-                    order.Status = "Problem";
-                }
-                else
-                {
-                    order.Status = "Ready";
-                }
-            }
+                order.Status = !order.IsReady ? "Problem" : "Ready";
 
             order.StartDate = editWindow.SelectedDate;
             order.AllocatedMachine = editWindow.AllocatedMachine;

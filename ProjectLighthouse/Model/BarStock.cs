@@ -1,7 +1,10 @@
-﻿namespace ProjectLighthouse.Model
+﻿using SQLite;
+
+namespace ProjectLighthouse.Model
 {
-    class BarStock
+    public class BarStock
     {
+        [PrimaryKey]
         public string Id { get; set; }
         public string Material { get; set; }
         public string Form { get; set; }

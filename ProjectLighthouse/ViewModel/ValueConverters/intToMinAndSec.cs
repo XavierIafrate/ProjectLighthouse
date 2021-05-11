@@ -8,9 +8,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int seconds = (int)value;
-            TimeSpan cycleTime = TimeSpan.FromSeconds(seconds);
-            return cycleTime;
+            return TimeSpan.FromSeconds((int)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

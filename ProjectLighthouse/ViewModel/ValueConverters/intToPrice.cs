@@ -8,11 +8,8 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int iPrice = (int)value;
-            double dPrice = System.Convert.ToDouble(iPrice) / 100;
-            string strPrice = dPrice.ToString("0.##");
-
-            return "£" + strPrice;
+            double dPrice = System.Convert.ToDouble((int)value) / 100;
+            return string.Format("£{0:0.##}", dPrice);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

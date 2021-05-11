@@ -6,9 +6,6 @@ using System.Windows.Controls;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for AddSpecialPartWindow.xaml
-    /// </summary>
     public partial class AddSpecialPartWindow : Window
     {
 
@@ -37,24 +34,17 @@ namespace ProjectLighthouse.View
             openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf";
 
             string openDir = "H:\\Sales Office";
+
             if (!Directory.Exists(openDir))
-            {
                 openDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            }
+            
             openFileDialog.InitialDirectory = openDir;
 
             if (openFileDialog.ShowDialog() == true)
             {
                 filename = openFileDialog.FileName;
-                if (filename[0] != 'H')
-                {
-                    fileWarning.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    fileWarning.Visibility = Visibility.Collapsed;
-                }
-                drawingFileText.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
+                fileWarning.Visibility = filename[0] != 'H' ? Visibility.Visible : Visibility.Collapsed;
+                drawingFileText.Text = Path.GetFileName(openFileDialog.FileName);
                 EnableSubmit();
             }
         }

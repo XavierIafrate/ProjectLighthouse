@@ -10,14 +10,12 @@ namespace ProjectLighthouse.View.UserControls
     /// </summary>
     public partial class DisplayLMOScheduling : UserControl
     {
-
         public CompleteOrder orderObject
         {
             get { return (CompleteOrder)GetValue(orderObjectProperty); }
             set { SetValue(orderObjectProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for order.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty orderObjectProperty =
             DependencyProperty.Register("orderObject", typeof(CompleteOrder), typeof(DisplayLMOScheduling), new PropertyMetadata(null, SetValues));
 

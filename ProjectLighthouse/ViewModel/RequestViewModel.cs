@@ -236,9 +236,7 @@ namespace ProjectLighthouse.ViewModel
             FilterRequests("All");
 
             if (FilteredRequests.Count > 0)
-            {
                 SelectedRequest = FilteredRequests.First();
-            }
         }
 
         public void LoadRequestCard(Request request)
@@ -299,6 +297,25 @@ namespace ProjectLighthouse.ViewModel
         {
             SelectedRequest.LastModified = DateTime.Now;
             SelectedRequest.ModifiedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
+            if (DatabaseHelper.Update(SelectedRequest))
+            {
+                OnPropertyChanged("SelectedRequest");
+                ModifiedVis = Visibility.Visible;
+            }
+            else
+            {
+                MessageBox.Show("Failed to update", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public void UpdateRequirements(string notes, int QuantityRequired)
+        {
+            SelectedRequest.LastModified = DateTime.Now;
+            SelectedRequest.ModifiedBy = App.currentUser.GetFullName();
+
+            SelectedRequest.Notes = notes;
+            SelectedRequest.QuantityRequired = QuantityRequired;
+
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 OnPropertyChanged("SelectedRequest");

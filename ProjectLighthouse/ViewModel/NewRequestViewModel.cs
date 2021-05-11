@@ -13,6 +13,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class NewRequestViewModel : BaseViewModel
     {
+        #region Variables
         public ObservableCollection<TurnedProduct> turnedProducts { get; set; }
         public ObservableCollection<TurnedProduct> filteredList { get; set; }
         public string PotentialQuantityText { get; set; }
@@ -46,8 +47,8 @@ namespace ProjectLighthouse.ViewModel
 
         public List<string> Families { get; set; }
         public Request newRequest;
-        private string selectedGroup;
 
+        private string selectedGroup;
         public string SelectedGroup
         {
             get { return selectedGroup; }
@@ -64,6 +65,7 @@ namespace ProjectLighthouse.ViewModel
         public ICommand AddSpecialCommand { get; set; }
         public event EventHandler SelectedGroupChanged;
         public event EventHandler SelectedProductChanged;
+        #endregion
 
         public NewRequestViewModel()
         {
@@ -106,9 +108,7 @@ namespace ProjectLighthouse.ViewModel
                 foreach (var item in items)
                 {
                     if (order.Name == item.AssignedMO)
-                    {
                         totalTime += item.CycleTime * item.TargetQuantity;
-                    }
                 }
             }
 
@@ -125,12 +125,8 @@ namespace ProjectLighthouse.ViewModel
             {
                 turnedProducts.Add(product);
                 if (product.ProductGroup != "Specials")
-                {
                     if (!Families.Any(item => item.ToString() == product.ProductName.Substring(0, 5)))
-                    {
                         Families.Add(product.ProductName.Substring(0, 5));
-                    }
-                }
 
             }
 
@@ -146,9 +142,7 @@ namespace ProjectLighthouse.ViewModel
                 foreach (var product in turnedProducts)
                 {
                     if (product.ProductGroup == "Specials")
-                    {
                         filteredList.Add(product);
-                    }
                 }
                 return;
             }
@@ -157,12 +151,9 @@ namespace ProjectLighthouse.ViewModel
                 foreach (var product in turnedProducts)
                 {
                     if (product.ProductName.Substring(0, Math.Min(5, product.ProductName.Length)) == SelectedGroup && product.ProductGroup != "Specials")
-                    {
                         filteredList.Add(product);
-                    }
                 }
             }
-
             filteredList = new ObservableCollection<TurnedProduct>(filteredList.OrderBy(n => n.Material).ThenBy(n => n.ProductName));
         }
 
@@ -229,13 +220,11 @@ namespace ProjectLighthouse.ViewModel
             SelectedGroup = "";
             SelectedProduct = new TurnedProduct();
 
-
             PopulateComboBox();
             PopulateListBox();
             OnPropertyChanged("filteredList");
             OnPropertyChanged("SelectedGroup");
             OnPropertyChanged("SelectedProduct");
-
         }
 
         public void CalculateInsights()
@@ -244,14 +233,11 @@ namespace ProjectLighthouse.ViewModel
             {
                 RecommendedStockText = String.Format("Recommended for stock: {0} pcs", selectedProduct.GetRecommendedQuantity());
 
-
                 List<int> classQuantities = new List<int>();
                 foreach (var product in filteredList)
                 {
                     if (product.ProductName != selectedProduct.ProductName && product.IsScheduleCompatible(selectedProduct))
-                    {
                         classQuantities.Add(product.GetRecommendedQuantity());
-                    }
                 }
 
                 classQuantities.Sort();
@@ -323,7 +309,5 @@ namespace ProjectLighthouse.ViewModel
             public string MachineFullName { get; set; }
             public TimeSpan LeadTime { get; set; }
         }
-
-
     }
 }

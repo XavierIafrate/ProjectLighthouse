@@ -10,8 +10,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             LatheManufactureOrder order = value as LatheManufactureOrder;
-            DateTime EndTime = order.StartDate.AddSeconds(order.TimeToComplete);
-            return EndTime;
+            return order.StartDate.AddSeconds(order.TimeToComplete);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -3,14 +3,8 @@ using System;
 
 namespace ProjectLighthouse.Model
 {
-
-    public class PostProcess
-    {
-        public string ProcessName { get; set; }
-    }
     public class TurnedProduct
     {
-
         private const double MaxDiameter = (double)20;
         private const double MaxLength = (double)90;
 
@@ -47,27 +41,15 @@ namespace ProjectLighthouse.Model
         public int GetRecommendedQuantity()
         {
             const int targetMonthsStock = 12;
-            int recommendedQuantity = 0;
-            int soldPerMonth = QuantitySold / 18;
             double scaleFactor = Convert.ToDouble(targetMonthsStock) / (double)18;
             double toMake = Math.Max(QuantitySold * scaleFactor - QuantityInStock, 0);
 
-            recommendedQuantity = Convert.ToInt32(Math.Round(toMake / (double)100, 0) * (double)100);
-
-
-            return recommendedQuantity;
+            return Convert.ToInt32(Math.Round(toMake / (double)100, 0) * (double)100);
         }
 
         public bool canBeManufactured()
         {
-            if (MajorLength > MaxLength || MajorDiameter > MaxDiameter)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return (MajorLength <= MaxLength && MajorDiameter <= MaxDiameter);
         }
 
         public string GetReasonCannotBeMade()
@@ -75,17 +57,17 @@ namespace ProjectLighthouse.Model
             string reason = "";
             if (MajorDiameter > MaxDiameter)
             {
-                reason = reason + "Diameter too large";
+                reason += "Diameter too large";
             }
             if (MajorLength > MaxLength)
             {
                 if (reason == "")
                 {
-                    reason = reason + "Too long";
+                    reason += "Too long";
                 }
                 else
                 {
-                    reason = reason + Environment.NewLine + "Too long";
+                    reason += Environment.NewLine + "Too long";
                 }
             }
             return reason;

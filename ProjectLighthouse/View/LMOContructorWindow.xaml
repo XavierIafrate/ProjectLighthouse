@@ -15,29 +15,60 @@
     <Grid DataContext="{Binding}" Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!--#region Title Bar-->
+        <Grid Grid.ColumnSpan="3">
             <StackPanel>
                 <TextBlock Text="New Manufacture Order" FontSize="30" Margin="0,10,0,0"/>
-                <Separator Margin="0,5,0,10" Grid.Row="1"/>
+                <Separator Margin="0,5,0,10"/>
             </StackPanel>
             <Rectangle Fill="Transparent" MouseDown="Rectangle_MouseDown"/>
         </Grid>
+        <!--#endregion-->
+        
+        <!--#region Pool-->
+        <TextBlock Text="Product Pool" FontSize="22" Margin="0,5" Grid.Row="1"/>
+        <ScrollViewer Grid.Row="2" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Hidden">
+            <ListBox x:Name="poolListBox" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <uc:LMOConstructionDisplayProducts Product="{Binding}" MouseDoubleClick="LMOConstructionDisplayProducts_MouseDoubleClick"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        <!--#endregion-->
+        
+        <!--#region Buttons-->
+        <StackPanel Grid.Row="2" 
+                    Grid.Column="1"
+                    VerticalAlignment="Center">
+            <Button Content=">" 
+                    Style="{StaticResource GreenButtonTemplate}" 
+                    x:Name="addButton" 
+                    Click="addButton_Click"/>
+            <Button Content="&lt;" 
+                    Style="{StaticResource CancelButtonTemplate}" 
+                    x:Name="removeButton" 
+                    Click="removeButton_Click"/>
 
-        <Grid Grid.Row="1" Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" MinWidth="400"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <Grid Margin="20,10" Grid.Column="1">
+        </StackPanel>
+        <!--#endregion-->
+        
+        <!--#region Insights & Requirements-->
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2">
+            <Grid Margin="0,10">
                 <Rectangle Fill="{StaticResource materialPrimaryBlue}" RadiusX="10" RadiusY="10">
                     <Rectangle.Effect>
                         <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
@@ -49,6 +80,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -58,19 +90,17 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="Number of bars:" Foreground="White" Grid.Column="0" Grid.Row="0" Margin="0,0,10,0"/>
-                        <TextBlock Text="50" Foreground="White" Grid.Column="1" Grid.Row="0" x:Name="nBars"/>
+                        <TextBlock Text="50" Foreground="White" Grid.Column="2" Grid.Row="0" x:Name="nBars"/>
                         <TextBlock Text="Material Cost:" Foreground="White" Grid.Column="0" Grid.Row="1" Margin="0,0,10,0"/>
-                        <TextBlock Text="£100.00" Foreground="White" Grid.Column="1" Grid.Row="1" x:Name="materialCost"/>
+                        <TextBlock Text="£100.00" Foreground="White" Grid.Column="2" Grid.Row="1" x:Name="materialCost"/>
                         <TextBlock Text="Time to required:" Foreground="White" Grid.Column="0" Grid.Row="2" Margin="0,0,10,0"/>
-                        <TextBlock Text="1 day(s)" Foreground="White" Grid.Column="1" Grid.Row="2" x:Name="reqTime"/>
+                        <TextBlock Text="1 day(s)" Foreground="White" Grid.Column="2" Grid.Row="2" x:Name="reqTime"/>
                         <TextBlock Text="Time to Complete" Foreground="White" Grid.Column="0" Grid.Row="3" Margin="0,0,10,0"/>
-                        <TextBlock Text="5 day(s)" Foreground="White" Grid.Column="1" Grid.Row="3" x:Name="totalTime"/>
+                        <TextBlock Text="5 day(s)" Foreground="White" Grid.Column="2" Grid.Row="3" x:Name="totalTime"/>
                     </Grid>
-                    
                 </StackPanel>
             </Grid>
-
-            <Grid Margin="10" Grid.Column="2">
+            <Grid Margin="10">
                 <Rectangle Fill="{StaticResource materialPrimary}" RadiusX="10" RadiusY="10">
                     <Rectangle.Effect>
                         <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
@@ -84,52 +114,42 @@
                     <TextBlock x:Name="requiredDateTextBlock" Text="Delivery required by 01/01/1970" Foreground="White" FontSize="16"/>
                 </StackPanel>
             </Grid>
-
-            <Grid Grid.RowSpan="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Product Pool" FontSize="22" Margin="0,5"/>
-                <ListBox x:Name="poolListBox" HorizontalContentAlignment="Stretch"
-                         Grid.Row="1">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <uc:LMOConstructionDisplayProducts Product="{Binding}" MouseDoubleClick="LMOConstructionDisplayProducts_MouseDoubleClick"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <Button Grid.Row="2" Content="Add Item" Style="{StaticResource ButtonTemplate}" Width="150" HorizontalAlignment="Right" x:Name="addButton" Click="addButton_Click"/>
-            </Grid>
-            
-            <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="20,0,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Schedule Items" FontSize="22" Margin="0,5"/>
-                <ListBox Grid.Row="1" x:Name="LMOItemsListBox" HorizontalContentAlignment="Stretch" Margin="0,5">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <uc:LMOConstructionDisplayLMOItems Item="{Binding}"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <Button Content="Remove Item" Grid.Row="2" Style="{StaticResource CancelButtonTemplate}" Width="200" HorizontalAlignment="Left" x:Name="removeButton" Click="removeButton_Click"/>
-
-                <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="Cancel" x:Name="cancelButton" Click="cancelButton_Click" Style="{StaticResource CancelButtonTemplate}"/>
-                    <Button Content="Confirm" Width="150" x:Name="confirmButton" Click="confirmButton_Click" Style="{StaticResource ButtonTemplate}"/>
-                </StackPanel>
-            </Grid>
-            
-        </Grid>
-
+        </StackPanel>
+        <!--#endregion-->
         
+        <!--#region New Order-->
+        <TextBlock Text="Schedule Items" 
+                   FontSize="22" 
+                   Margin="0,5"
+                   Grid.Column="2"
+                   Grid.Row="1"/>
+        <ScrollViewer Grid.Row="2" Grid.Column="2" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+            <ListBox x:Name="LMOItemsListBox" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <uc:LMOConstructionDisplayLMOItems Item="{Binding}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        <!--#endregion-->
+        
+        <!--#region Confirm/Cancel Buttons-->
+        <StackPanel Grid.Row="3"
+                    Grid.Column="2"
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+            <Button Content="Cancel" 
+                    x:Name="cancelButton" 
+                    Click="cancelButton_Click" 
+                    Style="{StaticResource CancelButtonTemplate}"/>
+            <Button Content="Confirm" 
+                    Width="150" 
+                    x:Name="confirmButton" 
+                    Click="confirmButton_Click" 
+                    Style="{StaticResource GreenButtonTemplate}"/>
+        </StackPanel>
+        <!--#endregion-->
         
     </Grid>
 </Window>

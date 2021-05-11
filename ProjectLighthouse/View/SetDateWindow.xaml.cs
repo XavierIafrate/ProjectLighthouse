@@ -17,6 +17,7 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
             Order = order;
+
             if (Order.StartDate == DateTime.MinValue)
             {
                 calendar.SelectedDate = DateTime.Today.AddDays(1);
@@ -28,7 +29,6 @@ namespace ProjectLighthouse.View
 
             AllocatedMachine = order.AllocatedMachine;
             machine.Text = AllocatedMachine;
-
         }
 
         private void confirmButton_Click(object sender, RoutedEventArgs e)

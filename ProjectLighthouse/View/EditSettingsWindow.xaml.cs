@@ -4,9 +4,6 @@ using System.Windows;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for EditSettingsWindow.xaml
-    /// </summary>
     public partial class EditSettingsWindow : Window
     {
         public User user { get; set; }

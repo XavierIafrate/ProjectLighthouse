@@ -9,7 +9,6 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             TimeSpan timeSpan = (TimeSpan)value;
-
             return String.Format("{0} days", Math.Ceiling(timeSpan.TotalDays) + 1);
         }
 

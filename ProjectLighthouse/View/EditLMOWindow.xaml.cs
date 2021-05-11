@@ -16,9 +16,6 @@ using System.Windows.Media.Imaging;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for EditLMOWindow.xaml
-    /// </summary>
     public partial class EditLMOWindow : Window
     {
         private LatheManufactureOrder order;
@@ -85,14 +82,9 @@ namespace ProjectLighthouse.View
                 setters.IsEnabled = false;
             }
 
-            if (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin")
-            {
-                cancelOrderButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                cancelOrderButton.Visibility = Visibility.Collapsed;
-            }
+            cancelOrderButton.Visibility = (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin") ? 
+                Visibility.Visible : Visibility.Collapsed;
+            
             var users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
             List<string> setterUsers = new List<string>();
 
@@ -102,8 +94,6 @@ namespace ProjectLighthouse.View
             }
             setters.ItemsSource = setterUsers.ToList();
             setters.Text = order.AllocatedSetter;
-
-
         }
 
         private void closeButton_Click(object sender, RoutedEventArgs e)
@@ -119,9 +109,9 @@ namespace ProjectLighthouse.View
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             TextRange textRange = new TextRange(notes.Document.ContentStart, notes.Document.ContentEnd);
-            if (textRange.Text.Length > 2) {
+
+            if (textRange.Text.Length > 2)
                 order.Notes = textRange.Text.Substring(0, textRange.Text.Length - 2);
-            }
            
             order.POReference = PORef.Text;
             order.AllocatedSetter = setters.Text;
@@ -207,8 +197,7 @@ namespace ProjectLighthouse.View
         {
             if (MessageBox.Show("Are you sure you want to cancel this order?", "Cancel Order", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
-                MessageBox.Show("rendering NOT CANCELLED");
-                renderAsBitmap();
+                MessageBox.Show("Not Implemented!!");
             }
         }
 
@@ -228,26 +217,6 @@ namespace ProjectLighthouse.View
         {
             ready.IsEnabled = false;
             program.IsEnabled = false;
-        }
-
-        private void renderAsBitmap()
-        {
-            EditLMOWindow control = this;
-            Debug.WriteLine(control.RenderSize);
-            //control.Measure(new Size(300, 300));
-            //control.Arrange(new Rect(new Size(300, 300)));
-
-            //RenderTargetBitmap bmp = new RenderTargetBitmap(300, 300, 96, 96, PixelFormats.Pbgra32);
-            RenderTargetBitmap bmp = new RenderTargetBitmap(Convert.ToInt32(control.RenderSize.Width), Convert.ToInt32(control.RenderSize.Height), 96, 96, PixelFormats.Pbgra32);
-
-            bmp.Render(control);
-
-            var encoder = new PngBitmapEncoder();
-
-            encoder.Frames.Add(BitmapFrame.Create(bmp));
-
-            using (Stream stm = File.Create(@"M:\test.png"))
-                encoder.Save(stm);
         }
 
         private void notes_KeyDown(object sender, KeyEventArgs e)

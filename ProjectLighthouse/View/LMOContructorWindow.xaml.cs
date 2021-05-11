@@ -8,9 +8,6 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for LMOContructorWindow.xaml
-    /// </summary>
     public partial class LMOContructorWindow : Window
     {
         public bool wasCancelled;
@@ -37,7 +34,6 @@ namespace ProjectLighthouse.View
             requiredQuantityTextBlock.Text = String.Format("{0} pcs", approvedRequest.QuantityRequired);
             requiredDateTextBlock.Text = String.Format("Delivery required by {0:dd/MM/yy}", approvedRequest.DateRequired);
 
-
             ReadDatabase(approvedRequest);
 
             LatheManufactureOrderItem requiredItem = new LatheManufactureOrderItem()
@@ -47,15 +43,15 @@ namespace ProjectLighthouse.View
             };
 
             RefreshView();
-
         }
 
         public void ReadDatabase(Request request)
         {
             string productName = request.Product;
-
             var products = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductGroup == productName.Substring(0, 9));
+            TurnedProduct requiredProduct = new TurnedProduct();
 
+            // Add products to potential pool
             if (products != null)
             {
                 foreach (var prod in products)
@@ -64,8 +60,7 @@ namespace ProjectLighthouse.View
                 }
             }
 
-            TurnedProduct requiredProduct = new TurnedProduct();
-
+            // Assign required product
             foreach (var product in ProductPool)
             {
                 if (product.ProductName == productName)
@@ -76,14 +71,12 @@ namespace ProjectLighthouse.View
                 }
             }
 
+            // remove incompatible
             foreach (var product in ProductPool.ToList())
             {
-                if (product.MajorDiameter > 20 || product.MajorLength > 90 || product.Material != requiredProduct.Material || product.ThreadSize != requiredProduct.ThreadSize || product.DriveSize != requiredProduct.DriveSize || product.DriveType != requiredProduct.DriveType)
-                {
+                if(!product.IsScheduleCompatible(requiredProduct))
                     ProductPool.Remove(product);
-                }
             }
-
         }
 
         public LatheManufactureOrderItem TurnedProductToLMOItem(TurnedProduct product, int requiredQuantity, DateTime dateRequired)
@@ -99,9 +92,7 @@ namespace ProjectLighthouse.View
                 MajorLength = product.MajorLength
             };
             if (newItem.CycleTime == 0)
-            {
                 newItem.CycleTime = 120;
-            }
 
             return newItem;
         }
@@ -115,17 +106,13 @@ namespace ProjectLighthouse.View
                 foreach (var item in LMOItems)
                 {
                     if (item.ProductName == product.ProductName)
-                    {
                         found = true;
-                    }
                 }
 
                 if (!found)
-                {
                     ListboxProducts.Add(product);
-                }
             }
-
+            
             LMOItemsListBox.ItemsSource = LMOItems.ToList();
             poolListBox.ItemsSource = ListboxProducts;
 
@@ -143,9 +130,7 @@ namespace ProjectLighthouse.View
                 totaltime += item.CycleTime * item.TargetQuantity;
                 bars += (item.TargetQuantity * (item.MajorLength + 2)) / (double)2700;
                 if (item.RequiredQuantity > 0)
-                {
                     requiredtime += item.RequiredQuantity * item.CycleTime;
-                }
             }
 
             bars = Math.Ceiling(bars);
@@ -153,7 +138,6 @@ namespace ProjectLighthouse.View
             var barStock = DatabaseHelper.Read<BarStock>().Where(n => n.Id == constructLMO.BarID);
             int costPerBar = barStock.First().Cost;
             double dblmaterialCost = Math.Round((Convert.ToDouble(costPerBar) / (double)100) * bars, 2);
-
 
             nBars.Text = String.Format("{0}", bars);
             materialCost.Text = String.Format("£{0}", Math.Round(dblmaterialCost, 0));
@@ -195,8 +179,8 @@ namespace ProjectLighthouse.View
             constructLMO.HasProgram = false;
             constructLMO.HasStarted = false;
 
+            // Add order & items to database
             DatabaseHelper.Insert(constructLMO);
-
             foreach (LatheManufactureOrderItem item in LMOItems)
             {
                 item.AssignedMO = constructLMO.Name;
@@ -205,11 +189,9 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Insert(item);
             };
 
-
             MessageBox.Show(String.Format("Created {0}", constructLMO.Name), "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             wasCancelled = false;
             this.Close();
-
         }
 
         private void removeButton_Click(object sender, RoutedEventArgs e)
@@ -229,7 +211,6 @@ namespace ProjectLighthouse.View
 
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
-
             if (LMOItems.Count >= 4)
             {
                 MessageBox.Show("Max Items reached", "Order Full", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -238,18 +219,12 @@ namespace ProjectLighthouse.View
             var selectedProduct = poolListBox.SelectedValue as TurnedProduct;
 
             if (selectedProduct == null)
-            {
                 return;
-            }
+            
             LatheManufactureOrderItem newItem = TurnedProductToLMOItem(selectedProduct, 0, DateTime.MinValue);
 
             LMOItems.Add(TurnedProductToLMOItem((TurnedProduct)poolListBox.SelectedValue, 0, DateTime.MinValue));
             RefreshView();
-        }
-
-        private void LMOConstructionDisplayProducts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            MessageBox.Show("Hello World");
         }
     }
 }

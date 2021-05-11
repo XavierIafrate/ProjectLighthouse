@@ -11,15 +11,18 @@ namespace ProjectLighthouse.Model
         public string POReference { get; set; }
         public int QuantityRequired { get; set; }
         public DateTime DateRequired { get; set; }
+
+        public string RaisedBy { get; set; }
         public DateTime DateRaised { get; set; }
+        public string ModifiedBy { get; set; }
+        public DateTime LastModified { get; set; }
+
         public bool isSchedulingApproved { get; set; }
         public bool isProductionApproved { get; set; }
         public bool IsDeclined { get; set; }
         public bool IsAccepted { get; set; }
         public string AcceptedBy { get; set; }
-        public string RaisedBy { get; set; }
-        public string ModifiedBy { get; set; }
-        public DateTime LastModified { get; set; }
+
         public string DeclinedReason { get; set; }
         public string ResultingLMO { get; set; }
         public string Status { get; set; }

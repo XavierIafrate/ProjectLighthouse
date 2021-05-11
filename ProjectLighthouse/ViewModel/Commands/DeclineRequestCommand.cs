@@ -12,7 +12,6 @@ namespace ProjectLighthouse.ViewModel.Commands
         public DeclineRequestCommand(RequestViewModel vm)
         {
             viewModel = vm;
-
         }
 
         public bool CanExecute(object parameter)

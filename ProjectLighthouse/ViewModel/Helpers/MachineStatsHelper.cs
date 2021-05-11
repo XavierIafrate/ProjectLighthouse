@@ -154,14 +154,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                                                     null);
                 return response.StatusCode == HttpStatusCode.OK;
             }
-            catch(Exception e)
+            catch (Exception)
             {
                 return false;
             }
-
-            //request.Method = "HEAD";
-            //var response = (HttpWebResponse)request.GetResponse();
-            //return response.StatusCode == HttpStatusCode.OK;
         }
     }
 }

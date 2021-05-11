@@ -348,7 +348,7 @@
 
                         <TextBlock Text="Date Required"
                                Style="{StaticResource subsubtitleTextStyle}"/>
-                        <DatePicker SelectedDate="{Binding SelectedRequest.DateRequired, Mode=OneWay}" 
+                        <DatePicker SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}" 
                                     DisplayDateStart="{x:Static sys:DateTime.Now}"
                                     IsEnabled="{Binding CanEditRequirements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -363,7 +363,8 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Style="{StaticResource ButtonTemplate}"
                                     Content="Save"
-                                    x:Name="saveChangesButton"/>
+                                    x:Name="saveChangesButton"
+                                    Click="saveChangesButton_Click"/>
                         </StackPanel>
                     </StackPanel>
                     <TextBlock Text="{Binding SelectedRequest.Status, StringFormat='{}Status: {0}', FallbackValue='Status: Pending input'}"/>

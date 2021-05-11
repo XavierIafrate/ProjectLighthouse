@@ -27,21 +27,21 @@ namespace ProjectLighthouse.View
                 users.Add(user);
                 if (user.computerUsername == Environment.UserName)
                 {
-
                     if (String.IsNullOrEmpty(usernameText.Text))
                     {
                         usernameText.Text = user.UserName;
-                        //passwordText.Focus();
-                    }
-                    if (Environment.UserName == "xavier")
-                    {
-                        passwordText.Password = user.Password;
+                        passwordText.Focus();
                     }
                     else // multiple people using the computer
                     {
                         usernameText.Text = "";
                         passwordText.Password = "";
                     }
+
+                    if (Environment.UserName == "xavier")
+                        passwordText.Password = user.Password;
+                    
+                    
                 }
             }
         }

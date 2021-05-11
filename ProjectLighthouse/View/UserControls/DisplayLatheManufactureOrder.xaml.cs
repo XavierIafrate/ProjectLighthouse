@@ -11,16 +11,12 @@ namespace ProjectLighthouse.View.UserControls
     /// </summary>
     public partial class DisplayLatheManufactureOrder : UserControl
     {
-
-
-
         public LatheManufactureOrder LatheManufactureOrder
         {
             get { return (LatheManufactureOrder)GetValue(LatheManufactureOrderProperty); }
             set { SetValue(LatheManufactureOrderProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for LatheManufactureOrder.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LatheManufactureOrderProperty =
             DependencyProperty.Register("LatheManufactureOrder", typeof(LatheManufactureOrder), typeof(DisplayLatheManufactureOrder), new PropertyMetadata(null, SetValues));
 
@@ -34,6 +30,7 @@ namespace ProjectLighthouse.View.UserControls
                 control.BadgeText.Text = control.LatheManufactureOrder.Status;
                 control.OldInfo.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddDays(2) < DateTime.Now 
                     && control.LatheManufactureOrder.Status == "Problem") ? Visibility.Visible : Visibility.Hidden;
+
                 switch (control.LatheManufactureOrder.Status)
                 {
                     case "Ready":
@@ -48,12 +45,8 @@ namespace ProjectLighthouse.View.UserControls
                     case "Complete":
                         control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialOnBackground"];
                         break;
-
-
                 }
-
             }
-
         }
 
         public DisplayLatheManufactureOrder()

@@ -8,20 +8,12 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool isReady = (bool)value;
-
-            if (isReady)
-                return "Ready to go";
-            return "Not ready";
+            return (bool)value ? "Ready to go" : "Not ready";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string isReady = (string)value;
-
-            if (isReady == "Ready to go")
-                return true;
-            return false;
+            return (string)value == "Ready to go";
         }
     }
 }

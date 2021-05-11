@@ -5,9 +5,6 @@ using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DisplayRequest.xaml
-    /// </summary>
     public partial class DisplayRequest : UserControl
     {
         public Request Request
@@ -16,54 +13,50 @@ namespace ProjectLighthouse.View.UserControls
             set { SetValue(RequestProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RequestProperty =
             DependencyProperty.Register("Request", typeof(Request), typeof(DisplayRequest), new PropertyMetadata(null, SetValues));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             DisplayRequest requestControl = d as DisplayRequest;
+            if (requestControl == null)
+                return;
+            requestControl.DataContext = requestControl.Request;
 
-            if (requestControl != null)
+            #region colourFormatting
+            switch (requestControl.Request.QuantityRequired)
             {
-                requestControl.DataContext = requestControl.Request;
+                case >= 1000:
+                    requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                    break;
 
-                #region colourFormatting
-                switch (requestControl.Request.QuantityRequired)
-                {
-                    case >= 1000:
-                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                        break;
+                case < 100:
+                    requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialError"];
+                    break;
 
-                    case < 100:
-                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialError"];
-                        break;
-
-                    default:
-                        requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialOnBackground"];
-                        break;
-                }
-                #endregion
-
-                #region flags
-
-                if (requestControl.Request.IsAccepted)
-                {
-                    requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                    requestControl.statusText.Text = "Accepted";
-                }
-                else if (requestControl.Request.IsDeclined)
-                {
-                    requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialError"];
-                    requestControl.statusText.Text = "Declined";
-                }
-                else
-                {
-                    requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryBlue"];
-                    requestControl.statusText.Text = "Pending";
-                }
-                #endregion
+                default:
+                    requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialOnBackground"];
+                    break;
             }
+            #endregion
+
+            #region flags
+            if (requestControl.Request.IsAccepted)
+            {
+                requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                requestControl.statusText.Text = "Accepted";
+            }
+            else if (requestControl.Request.IsDeclined)
+            {
+                requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialError"];
+                requestControl.statusText.Text = "Declined";
+            }
+            else
+            {
+                requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryBlue"];
+                requestControl.statusText.Text = "Pending";
+            }
+            #endregion
         }
 
         public DisplayRequest()
