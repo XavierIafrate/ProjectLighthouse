@@ -12,6 +12,7 @@
         MaxWidth="2000"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
+        Loaded="Window_Loaded"
         Background="{StaticResource materialBackground}">
 
     <Window.Resources>

@@ -35,7 +35,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         private static XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
         private static double gutter = 30;
         private static double header_height = 40;
-        private static XFont TitleFont = new XFont("Tahoma", 35, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        private static XFont TitleFont = new XFont("Tahoma", 32, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
         #endregion
         // This needs a massive fucking overhaul
 
@@ -476,8 +476,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityThisDelivery), font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
                     gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityToFollow), font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
 
-                    barcode.Text = deliveryItem.Product.ToUpper();
+                    //PO Ref Barcode
+                    barcode.Text = deliveryItem.PurchaseOrderReference.ToUpper();
                     gfx.DrawBarCode(barcode, XBrushes.Black, new XPoint(PurchaseRefCol.X, y+20));
+
+                    // Product # Barcode
+                    barcode.Text = deliveryItem.Product.ToUpper(); 
+                    gfx.DrawBarCode(barcode, XBrushes.Black, new XPoint(ThisDelCol.X, y + 20));
 
                     i += 1;
                     y += 40;
@@ -514,39 +519,27 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        public static void PrintSchedule()
+        public static void PrintSchedule(List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, List<Lathe> lathes)
         {
-            //List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, List<Lathe> lathes
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            
 
             using (PdfDocument document = new PdfDocument())
             {
-                #region Init parameters
-                //Debug
-                
+                List<LatheManufactureOrderItem> tmpItems = new List<LatheManufactureOrderItem>();
+                List<LatheManufactureOrder> tmpOrders = new List<LatheManufactureOrder>();
 
-                // Init
-                PdfPage page = document.AddPage();
-                page.Orientation = PdfSharp.PageOrientation.Landscape;
-                XGraphics gfx = XGraphics.FromPdfPage(page);
-                XTextFormatter formatter = new XTextFormatter(gfx);
-                
-                #endregion
+                foreach(Lathe lathe in lathes)
+                {
+                    tmpOrders = new List<LatheManufactureOrder>(orders.Where(n => n.AllocatedMachine == lathe.Id));
+                    List<string> assignedOrders = new List<string>();
+                    foreach(LatheManufactureOrder order in tmpOrders)
+                    {
+                        assignedOrders.Add(order.Name);
+                    }
+                    tmpItems = new List<LatheManufactureOrderItem>(items.Where(n => assignedOrders.Contains(n.AssignedMO)));
 
-                //gfx.DrawRectangle(brush, new XRect(gutter, gutter, page.Width - 2 * gutter, page.Height - 2 * gutter));
-
-                #region Title
-                DrawScheduleHeader(page, gfx);
-
-                
-                // Print stamp
-                XFont font = new XFont("Tahoma", 8, XFontStyle.Regular, options);
-                XRect footer = new XRect(10, page.Height - 10, page.Width - 2 * 10, 20);
-                gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", "Xavier Iafrate", DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
-
-                #endregion
+                    PrintSingleMachineSchedule(tmpOrders, tmpItems, lathe, document);
+                }
 
                 string fileName = string.Format("{0}_{1:ddMMyy_HHmm}.pdf", "schedule", DateTime.Now);
                 string path = Directory.Exists(LMO_PDF_OUTPUTDIR) ? Path.Join(LMO_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
@@ -554,17 +547,136 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        private static void DrawScheduleHeader(PdfPage page, XGraphics gfx)
+        public static PdfDocument PrintSingleMachineSchedule(List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, Lathe lathe, PdfDocument doc)
         {
-            //gfx.DrawRectangle(bluebrush, new XRect(gutter, gutter, page.Width - 2 * gutter, header_height));
 
+            items = items.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName).ToList();
+            orders = orders.OrderBy(n => n.StartDate).ToList();
+
+            PdfPage page = doc.AddPage();
+            page.Orientation = PdfSharp.PageOrientation.Landscape;
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XTextFormatter formatter = new XTextFormatter(gfx);
+            
             // Logo
             XImage logo = XImage.FromFile(GetLogoFile());
-            double width = logo.PixelWidth / logo.PixelHeight * header_height * 0.5;
+            double width = logo.PixelWidth / logo.PixelHeight * header_height;
             XRect logoRect = new XRect(gutter, gutter, width, header_height);
             gfx.DrawImage(logo, logoRect);
 
-            gfx.DrawString("Schedule", TitleFont, XBrushes.Black, new XRect(gutter + width + 20, gutter+header_height*0.25, page.Width - gutter*2 - width, header_height*0.5), XStringFormats.CenterLeft);
+            gfx.DrawString(string.Format("Schedule: {0}", lathe.FullName), TitleFont, XBrushes.Black, new XRect(gutter + width + 35, gutter, page.Width - gutter * 2 - width, header_height), XStringFormats.CenterLeft);
+
+
+            double y = gutter + header_height + 40;
+            double rowHeight = 15;
+
+            XRect dateRaisedCol = new XRect(gutter, y, 70, rowHeight);
+            XRect MORefCol = new XRect(dateRaisedCol.X + dateRaisedCol.Width, y, 65, rowHeight);
+            XRect PORefCol = new XRect(MORefCol.X + MORefCol.Width, y, 95, rowHeight);
+            XRect PartNumCol = new XRect(PORefCol.X + PORefCol.Width, y, 125, rowHeight);
+            XRect DateRequiredCol = new XRect(PartNumCol.X + PartNumCol.Width, y, 60, rowHeight);
+            XRect QuantityRequiredCol = new XRect(DateRequiredCol.X + DateRequiredCol.Width, y, 65, rowHeight);
+            XRect TargetQuantityCol = new XRect(QuantityRequiredCol.X + QuantityRequiredCol.Width, y, 65, rowHeight);
+            XRect CycleTimeCol = new XRect(TargetQuantityCol.X + TargetQuantityCol.Width, y, 60, rowHeight);
+            XRect RuntimeCol= new XRect(CycleTimeCol.X + CycleTimeCol.Width, y, 65, rowHeight);
+            XRect StartDateCol = new XRect(RuntimeCol.X + RuntimeCol.Width, y, 80, rowHeight);
+
+            XPen stroke = new XPen(XColors.Black, 1);
+            XFont superFont = new XFont("Tahoma", 12, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
+            XFont bodyFont = new XFont("Tahoma", 12, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
+            XFont headerFont = new XFont("Tahoma", 12, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
+
+            dateRaisedCol.Y = y;
+            MORefCol.Y = y;
+            PORefCol.Y = y;
+            PartNumCol.Y = y;
+            DateRequiredCol.Y = y;
+            QuantityRequiredCol.Y = y;
+            TargetQuantityCol.Y = y;
+            CycleTimeCol.Y = y;
+            RuntimeCol.Y = y;
+            StartDateCol.Y = y;
+            gfx.DrawString("Date", headerFont, XBrushes.Black, dateRaisedCol, XStringFormats.Center);
+            gfx.DrawString("Order", headerFont, XBrushes.Black, MORefCol, XStringFormats.Center);
+            gfx.DrawString("Purchase", headerFont, XBrushes.Black, PORefCol, XStringFormats.Center);
+            gfx.DrawString("Product", headerFont, XBrushes.Black, PartNumCol, XStringFormats.Center);
+            gfx.DrawString("Date", headerFont, XBrushes.Black, DateRequiredCol, XStringFormats.Center);
+            gfx.DrawString("Quantity", headerFont, XBrushes.Black, QuantityRequiredCol, XStringFormats.Center);
+            gfx.DrawString("Target", headerFont, XBrushes.Black, TargetQuantityCol, XStringFormats.Center);
+            gfx.DrawString("Cycle", headerFont, XBrushes.Black, CycleTimeCol, XStringFormats.Center);
+            gfx.DrawString("Runtime", headerFont, XBrushes.Black, RuntimeCol, XStringFormats.Center);
+            gfx.DrawString("Start", headerFont, XBrushes.Black, StartDateCol, XStringFormats.Center);
+            y += rowHeight;
+            dateRaisedCol.Y = y;
+            MORefCol.Y = y;
+            PORefCol.Y = y;
+            PartNumCol.Y = y;
+            DateRequiredCol.Y = y;
+            QuantityRequiredCol.Y = y;
+            TargetQuantityCol.Y = y;
+            CycleTimeCol.Y = y;
+            RuntimeCol.Y = y;
+            StartDateCol.Y = y;
+            gfx.DrawString("Raised", headerFont, XBrushes.Black, dateRaisedCol, XStringFormats.Center);
+            gfx.DrawString("Number", headerFont, XBrushes.Black, MORefCol, XStringFormats.Center);
+            gfx.DrawString("Order", superFont, XBrushes.Black, PORefCol, XStringFormats.Center);
+            gfx.DrawString("Name", headerFont, XBrushes.Black, PartNumCol, XStringFormats.Center);
+            gfx.DrawString("Required", headerFont, XBrushes.Black, DateRequiredCol, XStringFormats.Center);
+            gfx.DrawString("Required", headerFont, XBrushes.Black, QuantityRequiredCol, XStringFormats.Center);
+            gfx.DrawString("Quantity", headerFont, XBrushes.Black, TargetQuantityCol, XStringFormats.Center);
+            gfx.DrawString("Time", headerFont, XBrushes.Black, CycleTimeCol, XStringFormats.Center);
+            gfx.DrawString("Date", headerFont, XBrushes.Black, StartDateCol, XStringFormats.Center);
+            y += rowHeight+4;
+
+            gfx.DrawLine(new XPen(XColors.Black, 2), gutter, y, page.Width - gutter, y);
+            y += 4;
+
+            foreach (LatheManufactureOrder order in orders)
+            {
+                if(order != orders.First())
+                    gfx.DrawLine(stroke, gutter, y, page.Width - gutter, y);
+                dateRaisedCol.Y = y;
+                MORefCol.Y = y;
+                PORefCol.Y = y;
+                StartDateCol.Y = y;
+
+                gfx.DrawString(string.Format("{0:dd/MM/yy}", order.CreatedAt), superFont, XBrushes.Black, dateRaisedCol, XStringFormats.CenterLeft);
+                gfx.DrawString(order.Name, superFont, XBrushes.Black, MORefCol, XStringFormats.CenterLeft);
+                gfx.DrawString(order.POReference, superFont, XBrushes.Black, PORefCol, XStringFormats.CenterLeft);
+                gfx.DrawString(string.Format("{0:ddd d MMM}", order.StartDate), superFont, XBrushes.Black, StartDateCol, XStringFormats.CenterRight);
+
+                foreach(LatheManufactureOrderItem item in items)
+                {
+                    if (item.AssignedMO != order.Name)
+                        continue;
+                    PartNumCol.Y = y;
+                    DateRequiredCol.Y = y;
+                    QuantityRequiredCol.Y = y;
+                    TargetQuantityCol.Y = y;
+                    CycleTimeCol.Y = y;
+                    RuntimeCol.Y = y;
+
+                    gfx.DrawString(item.ProductName, bodyFont, XBrushes.Black, PartNumCol, XStringFormats.CenterLeft);
+                    if(item.DateRequired > DateTime.MinValue)
+                    {
+                        gfx.DrawString(string.Format("{0:dd/MM/yy}", item.DateRequired), bodyFont, XBrushes.DarkRed, DateRequiredCol, XStringFormats.Center);
+                        gfx.DrawString(string.Format("{0:#,##0}", item.RequiredQuantity), bodyFont, XBrushes.DarkRed, QuantityRequiredCol, XStringFormats.CenterRight);
+                    }
+                    
+                    gfx.DrawString(string.Format("{0:#,##0}", item.TargetQuantity), bodyFont, XBrushes.Black, TargetQuantityCol, XStringFormats.CenterRight);
+                    gfx.DrawString(string.Format("{0}m {1}s", Math.Floor((double)item.CycleTime/60), item.CycleTime%60), bodyFont, XBrushes.Black, CycleTimeCol, XStringFormats.CenterRight);
+                    TimeSpan Runtime = TimeSpan.FromSeconds(item.CycleTime * item.TargetQuantity);
+                    gfx.DrawString(string.Format("{0}d {1}h", Runtime.Days, Runtime.Hours), bodyFont, XBrushes.Black, RuntimeCol, XStringFormats.CenterRight);
+                    y += rowHeight;
+                }
+                y += rowHeight;
+            }
+            gfx.DrawLine(new XPen(XColors.Black, 2), gutter, y, page.Width - gutter, y);
+
+            XFont font = new XFont("Tahoma", 8, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
+            XRect footer = new XRect(gutter, page.Height - gutter, page.Width - 2 * gutter, 20);
+            gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", "Xavier Iafrate", DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
+            return doc;
         }
 
         public static void SavePDF(PdfDocument document, string path, bool open_after)

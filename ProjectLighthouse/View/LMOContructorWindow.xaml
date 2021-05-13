@@ -43,7 +43,7 @@
             <ListBox x:Name="poolListBox" HorizontalContentAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <uc:LMOConstructionDisplayProducts Product="{Binding}" MouseDoubleClick="LMOConstructionDisplayProducts_MouseDoubleClick"/>
+                        <uc:LMOConstructionDisplayProducts Product="{Binding}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
