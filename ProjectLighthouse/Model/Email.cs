@@ -11,7 +11,6 @@ namespace ProjectLighthouse.Model
     {
         public Email ()
         {
-            // nada
         }
 
         public void SendMail(EmailSendConfigure emailConfig, EmailContent content)
@@ -61,7 +60,7 @@ namespace ProjectLighthouse.Model
             client.Credentials = new System.Net.NetworkCredential(
                                   emailConfig.ClientCredentialUserName,
                                   emailConfig.ClientCredentialPassword);
-            client.Host = "smtp-mail.outlook.com";
+            client.Host = "wixroydgroup-com.mail.protection.outlook.com";
             client.Port = 25;  // this is critical
             client.EnableSsl = true;  // this is critical
 

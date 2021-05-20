@@ -12,11 +12,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             Email mailMan = new Email();
 
             EmailSendConfigure myConfig = new EmailSendConfigure();
-            myConfig.ClientCredentialUserName = "x.iafrate@wixroydgroup.com";
-            myConfig.ClientCredentialPassword = "Teleport55@@";
+            //myConfig.ClientCredentialUserName = ""; // TODO
+            //myConfig.ClientCredentialPassword = "";
             myConfig.TOs = new string[] { toPerson };
             myConfig.CCs = new string[] { };
-            myConfig.From = "x.iafrate@wixroydgroup.com";
+            myConfig.From = "lighthouse@wixroydgroup.com";
             myConfig.FromDisplayName = "Lighthouse Notifications";
             myConfig.Priority = System.Net.Mail.MailPriority.Normal;
             myConfig.Subject = alertSubject;

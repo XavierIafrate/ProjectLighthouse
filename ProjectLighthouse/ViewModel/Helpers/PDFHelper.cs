@@ -23,7 +23,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
         //
         // *****************************************
 
-        private static string LMO_PDF_OUTPUTDIR = "H:\\Production\\Documents\\Works Orders";
+        private static string LMO_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Manufacture Orders";
+        private static string DEL_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Delivery Notes";
+        private static string SCH_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Schedule Printouts";
         private static string Address = "Automotion Components\nAlexia House\nGlenmore Business Park\nChichester, UK\nP019 7BJ";
 
         #region Debug Formats
@@ -59,7 +61,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 #region Title
                 // Logo
-                string logo_file = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
+                string logo_file = @"H:\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
                 
                 if(Environment.UserName=="xavier")
                     logo_file = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
@@ -361,7 +363,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 #region Title
                 // Logo
-                string logo_file = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
+                string logo_file = @"H:\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
 
                 if (Environment.UserName == "xavier")
                     logo_file = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
@@ -514,7 +516,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
 
                 string fileName = string.Format("{0}_{1:ddMMyy_HHmm}.pdf", deliveryNote.Name, DateTime.Now);
-                string path = Directory.Exists(LMO_PDF_OUTPUTDIR) ? Path.Join(LMO_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+                string path = Directory.Exists(DEL_PDF_OUTPUTDIR) ? Path.Join(DEL_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
                 SavePDF(document, path, true);
             }
         }
@@ -542,7 +544,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
 
                 string fileName = string.Format("{0}_{1:ddMMyy_HHmm}.pdf", "schedule", DateTime.Now);
-                string path = Directory.Exists(LMO_PDF_OUTPUTDIR) ? Path.Join(LMO_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+                string path = Directory.Exists(SCH_PDF_OUTPUTDIR) ? Path.Join(SCH_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
                 SavePDF(document, path, true);
             }
         }
@@ -700,7 +702,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             return (Environment.UserName == "xavier") ?
                 "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png" :
-                "H:\\Production\\Documents\\Works Orders\\Lighthouse\\Lighthouse_dark.png";
+                @"H:\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
         }
 
         public static void OpenWithDefaultProgram(string path)

@@ -1,11 +1,14 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.View;
+using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -37,6 +40,8 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
         }
+
+        public ICommand printScheduleCommand { get; set; }
         #endregion
 
         public ScheduleViewModel()
@@ -48,6 +53,8 @@ namespace ProjectLighthouse.ViewModel
             filteredLMOItems = new ObservableCollection<LatheManufactureOrderItem>();
 
             CompleteOrders = new ObservableCollection<CompleteOrder>();
+
+            printScheduleCommand = new PrintScheduleCommand(this);
 
             totalTime = (int)0;
             bookedTo = DateTime.MinValue;
@@ -155,6 +162,13 @@ namespace ProjectLighthouse.ViewModel
 
             ReadOrders();
             filterOrders(SelectedTab.Tag.ToString());
+        }
+
+        public void PrintSchedule()
+        {
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
+
+            PDFHelper.PrintSchedule(allOrders.ToList(), allLMOItems.ToList(), lathes);
         }
     }
 }

@@ -54,6 +54,12 @@ namespace ProjectLighthouse
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            //return;
+            //EmailHelper.SendEmail("x.iafrate@wixroydgroup.com", "TEST", "This is a test of SMTP integration");
+
+            //return;
+
+
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>();
             List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
@@ -80,7 +86,7 @@ namespace ProjectLighthouse
             PDFHelper.PrintSchedule(activeOrders, activeItems, lathes);
 
             //ReportingHelper.GetReport();
-            //EmailHelper.SendEmail("xavieriafrate@gmail.com", "TEST", "This is a test of SMTP integration");
+            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
