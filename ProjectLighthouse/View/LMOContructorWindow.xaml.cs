@@ -189,6 +189,8 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Insert(item);
             };
 
+            EmailHelper.NotifyNewOrder(constructLMO, LMOItems.ToList());
+
             MessageBox.Show(String.Format("Created {0}", constructLMO.Name), "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             wasCancelled = false;
             this.Close();

@@ -195,6 +195,10 @@
                                     <Run Text="{Binding bookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                                 </TextBlock>
                             </Grid>
+                            <Button Content="Generate PDF" 
+                                    Style="{StaticResource ButtonTemplate}" 
+                                    Command="{Binding printScheduleCommand}" 
+                                    VerticalAlignment="Center"/>
                         </StatusBar>
                     </Grid>
                 </TabItem>
