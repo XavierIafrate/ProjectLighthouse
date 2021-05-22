@@ -3,7 +3,7 @@ using System;
 
 namespace ProjectLighthouse.Model
 {
-    public class LatheManufactureOrder
+    public class LatheManufactureOrder : ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -34,5 +34,34 @@ namespace ProjectLighthouse.Model
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
 
+        public object Clone()
+        {
+            return new LatheManufactureOrder
+            {
+                Id = this.Id,
+                Name = this.Name,
+                POReference = this.POReference,
+                CreatedAt = this.CreatedAt,
+                CreatedBy = this.CreatedBy,
+                ModifiedAt = this.ModifiedAt,
+                ModifiedBy = this.ModifiedBy,
+                TimeToComplete = this.TimeToComplete,
+                IsComplete = this.IsComplete,
+                Status = this.Status,
+                Notes = this.Notes,
+                IsUrgent = this.IsUrgent,
+                SettingTime = this.SettingTime,
+                AllocatedMachine = this.AllocatedMachine,
+                AllocatedSetter = this.AllocatedSetter,
+                StartDate = this.StartDate,
+                SettingFinished = this.SettingFinished,
+                CompletedAt = this.CompletedAt,
+                IsReady = this.IsReady,
+                HasProgram = this.HasProgram,
+                HasStarted = this.HasStarted,
+                BarID = this.BarID,
+                NumberOfBars = this.NumberOfBars
+            };
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace ProjectLighthouse.ViewModel
                 selectedDeliveryNote = value;
                 if (value == null)
                     return;
+
                 filteredDeliveryItems = new List<DeliveryItem>(deliveryItems.Where(n => n.AllocatedDeliveryNote == value.Name));
                 OnPropertyChanged("filteredDeliveryItems");
                 OnPropertyChanged("SelectedDeliveryNote");
@@ -74,9 +75,7 @@ namespace ProjectLighthouse.ViewModel
             List<DeliveryItem> items = DatabaseHelper.Read<DeliveryItem>().ToList();
 
             foreach (var item in items)
-            {
                 deliveryItems.Add(item);
-            }
         }
 
         public void CreateNewDelivery()

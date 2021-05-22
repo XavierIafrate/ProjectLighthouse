@@ -1,143 +1,184 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.View;
+using ProjectLighthouse.View.UserControls;
+using ProjectLighthouse.ViewModel.Commands;
+using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
     public class ScheduleViewModel : BaseViewModel
     {
         #region Variables
-        public ObservableCollection<LatheManufactureOrder> allOrders { get; set; }
-        public ObservableCollection<LatheManufactureOrder> filteredOrders { get; set; }
+        public ObservableCollection<LatheManufactureOrder> Orders { get; set; }
+        public ObservableCollection<LatheManufactureOrderItem> OrderItems { get; set; }
+        public List<CompleteOrder> CompleteOrders { get; set; }
+        public List<TabInfo> WindowTabs { get; set; }
 
-        public ObservableCollection<LatheManufactureOrderItem> allLMOItems { get; set; }
-        public ObservableCollection<LatheManufactureOrderItem> filteredLMOItems { get; set; }
+        private Visibility autoScheduleVis;
+        public Visibility AutoScheduleVis
+        {
+            get { return autoScheduleVis; }
+            set
+            {
+                autoScheduleVis = value;
+                OnPropertyChanged("AutoScheduleVis");
+            }
+        }
 
-        public ObservableCollection<CompleteOrder> CompleteOrders { get; set; }
+        private Visibility printButtonVis;
+        public Visibility PrintButtonVis
+        {
+            get { return printButtonVis; }
+            set
+            {
+                printButtonVis = value;
+                OnPropertyChanged("PrintButtonVis");
+            }
+        }
 
-        public int totalTime { get; set; }
-        public DateTime bookedTo { get; set; }
+        public PrintScheduleCommand printScheduleCommand { get; set; }
+        public AutoScheduleCommand autoScheduleCommand { get; set; }
 
-        private TabItem selectedTab;
-        public TabItem SelectedTab
+        public event EventHandler SelectedTabChanged;
+
+        private TabInfo selectedTab;
+        public TabInfo SelectedTab
         {
             get { return selectedTab; }
             set
             {
                 selectedTab = value;
-                if (value.Tag != null)
-                {
-                    filterOrders(value.Tag.ToString());
-                    LoadCompleteOrders();
-                }
+                selectedTab.Orders = CompleteOrders.Where(n => n.Order.AllocatedMachine == value.LatheID).OrderBy(n=>n.Order.StartDate).ToList();
+                SelectedTab.CalculateTimings();
+                PrintButtonVis = SelectedTab.LatheID == "" ? Visibility.Collapsed : Visibility.Visible;
+                AutoScheduleVis = (App.currentUser.UserRole == "admin" || App.currentUser.UserRole == "Scheduling") && SelectedTab.LatheID != "" 
+                    ? Visibility.Visible : Visibility.Collapsed;
+                SelectedTabChanged?.Invoke(this, new EventArgs());
+                OnPropertyChanged("SelectedTab");
             }
         }
         #endregion
 
         public ScheduleViewModel()
         {
-            allOrders = new ObservableCollection<LatheManufactureOrder>();
-            filteredOrders = new ObservableCollection<LatheManufactureOrder>();
+            Orders = new ObservableCollection<LatheManufactureOrder>();
+            OrderItems = new ObservableCollection<LatheManufactureOrderItem>();
+            CompleteOrders = new List<CompleteOrder>();
+            WindowTabs = new List<TabInfo>();
 
-            allLMOItems = new ObservableCollection<LatheManufactureOrderItem>();
-            filteredLMOItems = new ObservableCollection<LatheManufactureOrderItem>();
-
-            CompleteOrders = new ObservableCollection<CompleteOrder>();
-
-            totalTime = (int)0;
-            bookedTo = DateTime.MinValue;
+            printScheduleCommand = new PrintScheduleCommand(this);
+            autoScheduleCommand = new AutoScheduleCommand(this);
 
             ReadOrders();
+            LoadCompleteOrders();
+            CreateTabs();
+            
+            if (WindowTabs.Count > 1)
+                SelectedTab = WindowTabs[1];
         }
 
         private void ReadOrders()
         {
+            // Get Orders
             var orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList().Where(n => n.IsComplete != true);
-            allOrders.Clear();
+            Orders.Clear();
             foreach (var order in orders)
-            {
-                allOrders.Add(order);
-            }
+                Orders.Add(order);
 
+            // Get Order Items
             var items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
-            allLMOItems.Clear();
+            OrderItems.Clear();
             foreach (var item in items)
-            {
-                allLMOItems.Add(item);
-            }
+                OrderItems.Add(item);
         }
 
         private void LoadCompleteOrders()
         {
             CompleteOrders.Clear();
-            ObservableCollection<LatheManufactureOrderItem> tmpItems = new ObservableCollection<LatheManufactureOrderItem>();
 
-            totalTime = (int)0;
-            bookedTo = DateTime.MinValue;
-            DateTime earliestStart = DateTime.MaxValue;
-            int orderTime = new int();
-            double orderBars = new double();
-
-            foreach (var order in filteredOrders)
+            foreach (LatheManufactureOrder order in Orders)
             {
-                orderTime = (int)0;
-                orderBars = (double)0;
+                if (order.IsComplete)
+                    continue;
 
-                if (order.StartDate < earliestStart)
-                    earliestStart = order.StartDate;
-                tmpItems.Clear();
+                CompleteOrder tmpOrder = new CompleteOrder() { Order = order, OrderItems = new List<LatheManufactureOrderItem>() };
 
-                foreach (var item in allLMOItems)
-                {
+                foreach (LatheManufactureOrderItem item in OrderItems)
                     if (item.AssignedMO == order.Name)
-                    {
-                        tmpItems.Add(item);
-                        totalTime += item.CycleTime * item.TargetQuantity;
-                        orderTime += item.CycleTime * item.TargetQuantity;
-                        orderBars += ((item.MajorLength + 2) * item.TargetQuantity) / (double)2700;
-                    }
-                }
-
-                order.TimeToComplete = orderTime;
-                order.NumberOfBars = Math.Ceiling(orderBars);
-                DatabaseHelper.Update(order);
-
-                CompleteOrder tmpOrder = new CompleteOrder
-                {
-                    Order = order,
-                    OrderItems = new ObservableCollection<LatheManufactureOrderItem>(tmpItems)
-                };
+                        tmpOrder.OrderItems.Add(item);
 
                 CompleteOrders.Add(tmpOrder);
             }
-
-            bookedTo = earliestStart.AddSeconds(totalTime);
-            OnPropertyChanged("bookedTo");
-            OnPropertyChanged("totalTime");
         }
 
-        private void filterOrders(string filter)
+        private void CreateTabs()
         {
-            filteredOrders.Clear();
-            foreach (var order in allOrders)
+            WindowTabs.Clear();
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
+
+            WindowTabs.Add(new TabInfo()
             {
-                if (order.AllocatedMachine == filter)
+                LatheID = "",
+                LatheName = "Unallocated",
+                ViewTitle = "Awaiting Scheduling"
+            });
+
+            foreach (Lathe lathe in lathes)
+            {
+                WindowTabs.Add(new TabInfo()
                 {
-                    filteredOrders.Add(order);
+                    LatheID = lathe.Id,
+                    LatheName = lathe.FullName,
+                    Orders = CompleteOrders.Where(n => n.Order.AllocatedMachine == lathe.Id).ToList(),
+                    ViewTitle = string.Format("{0} Schedule", lathe.FullName)
+                });
+            }
+
+            lathes = null;
+        }
+
+        public class TabInfo
+        {
+            public string LatheID { get; set; }
+            public string LatheName { get; set; }
+            public List<CompleteOrder> Orders { get; set; }
+            public string ViewTitle { get; set; }
+            public int TotalTime { get; set; }
+            public DateTime BookedTo { get; set; }
+
+            public void CalculateTimings()
+            {
+                TotalTime = (int)0;
+                BookedTo = DateTime.MinValue;
+                DateTime firstItemStarts = DateTime.MaxValue;
+
+                if(Orders.Count == 0)
+                {
+                    TotalTime = 0;
+                    BookedTo = DateTime.Now;
+                    return;
                 }
 
-                if (order.AllocatedMachine == null && filter == "")
+                foreach(CompleteOrder order in Orders)
                 {
-                    filteredOrders.Add(order);
+                    if (order.Order.StartDate < firstItemStarts)
+                        firstItemStarts = order.Order.StartDate;
+                    TotalTime += 60 * 60 * 3; // Setting time
+                    foreach (LatheManufactureOrderItem item in order.OrderItems)
+                        TotalTime += item.CycleTime * item.TargetQuantity;
                 }
+
+                BookedTo = firstItemStarts.AddDays(1) + TimeSpan.FromSeconds(TotalTime);
             }
-            filteredOrders = new ObservableCollection<LatheManufactureOrder>(filteredOrders.OrderBy(n => n.StartDate));
-            OnPropertyChanged("filteredOrders");
         }
 
         public void updateItem(LatheManufactureOrder order)
@@ -147,14 +188,30 @@ namespace ProjectLighthouse.ViewModel
             editWindow.ShowDialog();
 
             if (order.Status == "Awaiting scheduling" && order.AllocatedMachine != "")
+            {
                 order.Status = !order.IsReady ? "Problem" : "Ready";
-
+                order.ModifiedAt = DateTime.Now;
+                order.ModifiedBy = App.currentUser.GetFullName();
+            }
+                
             order.StartDate = editWindow.SelectedDate;
             order.AllocatedMachine = editWindow.AllocatedMachine;
+
             DatabaseHelper.Update(order);
 
             ReadOrders();
-            filterOrders(SelectedTab.Tag.ToString());
+            LoadCompleteOrders();
+        }
+
+        public void AutoSchedule()
+        {
+            MessageBox.Show("Not implemented yet", "AutoSchedule");
+        }
+
+
+        public void PrintSchedule()
+        {
+            MessageBox.Show("Not implemented yet", "Printing");
         }
     }
 }

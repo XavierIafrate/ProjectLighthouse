@@ -19,7 +19,6 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Rectangle Fill="Transparent" MouseDown="Rectangle_MouseDown"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>

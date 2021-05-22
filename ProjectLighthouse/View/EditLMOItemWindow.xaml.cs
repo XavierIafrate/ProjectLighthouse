@@ -34,6 +34,7 @@ namespace ProjectLighthouse.View
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            #region Check numerical inputs
             if (!Int32.TryParse(CycleTime_Min.Text, out int min))
             {
                 MessageBox.Show("Invalid cycle time entered.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -70,6 +71,7 @@ namespace ProjectLighthouse.View
                 MessageBox.Show("Invalid entry to Quantity Rejected field", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            #endregion
 
             Item.QuantityMade = qtyMade;
             Item.QuantityReject = qtyReject;

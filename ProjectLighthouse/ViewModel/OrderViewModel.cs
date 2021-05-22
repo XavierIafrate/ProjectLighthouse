@@ -22,13 +22,6 @@ namespace ProjectLighthouse.ViewModel
         public ObservableCollection<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
         public List<MachineStatistics> machineStatistics { get; set; }
 
-        private LinearGradientBrush statusBackground;
-        public LinearGradientBrush StatusBackground
-        {
-            get { return statusBackground; }
-            set { statusBackground = value; }
-        }
-
         private LatheManufactureOrder selectedLatheManufactureOrder;
         public LatheManufactureOrder SelectedLatheManufactureOrder
         {
@@ -36,8 +29,8 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedLatheManufactureOrder = value;
-                OnPropertyChanged("SelectedLatheManufactureOrder");
-                SelectedLatheManufactureOrderChanged?.Invoke(this, new EventArgs());
+                
+                //SelectedLatheManufactureOrderChanged?.Invoke(this, new EventArgs());
                 LoadLMOItems();
                 if (selectedLatheManufactureOrder == null)
                 {
@@ -50,43 +43,17 @@ namespace ProjectLighthouse.ViewModel
                 }
 
                 ModifiedVis = String.IsNullOrEmpty(selectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
-
                 LiveInfoVis = selectedLatheManufactureOrder.Status == "Running" ? Visibility.Visible : Visibility.Collapsed;
 
-                switch (selectedLatheManufactureOrder.Status)
-                {
-                    case "Ready":
-                        StatusBackground = (LinearGradientBrush)Application.Current.Resources["gradGood"];
-                        OnPropertyChanged("StatusBackground");
-                        break;
-                    case "Problem":
-                        StatusBackground = (LinearGradientBrush)Application.Current.Resources["gradBad"];
-                        OnPropertyChanged("StatusBackground");
-                        break;
-                    case "Complete":
-                        StatusBackground = (LinearGradientBrush)Application.Current.Resources["gradGood"];
-                        OnPropertyChanged("StatusBackground");
-                        break;
-                    case "Running":
-                        StatusBackground = (LinearGradientBrush)Application.Current.Resources["gradBlue"];
-                        OnPropertyChanged("StatusBackground");
-                        RefreshLiveInfoText();
-                        break;
-                    default:
-                        StatusBackground = (LinearGradientBrush)Application.Current.Resources["gradGood"];
-                        OnPropertyChanged("StatusBackground");
-                        break;
-                }
-
-                if (!String.IsNullOrEmpty(selectedLatheManufactureOrder.AllocatedMachine))
-                {
-                    RunInfoText = String.Format("Assigned to {0}, starting {1:MMMM d}{2}", selectedLatheManufactureOrder.AllocatedMachine, selectedLatheManufactureOrder.StartDate, GetDaySuffix(selectedLatheManufactureOrder.StartDate.Day));
-                }
-                else
-                {
+                RunInfoText = !String.IsNullOrEmpty(selectedLatheManufactureOrder.AllocatedMachine) ? 
+                    String.Format("Assigned to {0}, starting {1:MMMM d}{2}", 
+                    selectedLatheManufactureOrder.AllocatedMachine, 
+                    selectedLatheManufactureOrder.StartDate, 
+                    GetDaySuffix(selectedLatheManufactureOrder.StartDate.Day)) :
                     RunInfoText = "Not scheduled";
-                }
                 OnPropertyChanged("RunInfoText");
+
+                OnPropertyChanged("SelectedLatheManufactureOrder");
             }
         }
 
@@ -179,11 +146,13 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        #endregion
+
         public ICommand PrintOrderCommand { get; set; }
         public ICommand EditCommand { get; set; }
-        #endregion
-        #endregion
+
         public event EventHandler SelectedLatheManufactureOrderChanged;
+        #endregion
 
         public OrderViewModel()
         {
@@ -207,15 +176,14 @@ namespace ProjectLighthouse.ViewModel
             GetLatheManufactureOrders();
             FilterOrders("All Active");
             if (FilteredOrders.Count > 0)
-            {
                 SelectedLatheManufactureOrder = FilteredOrders.First();
-            }
             
             GetLatheManufactureOrderItems();
             GetLiveStats();
             RefreshLiveInfoText();
         }
 
+        #region MachineStats Display
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             GetLiveStats();
@@ -269,15 +237,15 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
         }
+        #endregion
 
+        #region Loading
         private void GetLatheManufactureOrders()
         {
             var orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             LatheManufactureOrders.Clear();
             foreach (var order in orders)
-            {
                 LatheManufactureOrders.Add(order);
-            }
         }
 
         private void FilterOrders(string filter)
@@ -285,7 +253,7 @@ namespace ProjectLighthouse.ViewModel
             switch (filter)
             {
                 case "All Active":
-                    FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete));
+                    FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete || n.ModifiedAt.AddDays(1) > DateTime.Now));
                     break;
                 case "Not Ready":
                     FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && !n.IsReady));
@@ -297,10 +265,10 @@ namespace ProjectLighthouse.ViewModel
                     FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.IsComplete).OrderByDescending(n => n.CreatedAt));
                     break;
             }
+
             if (FilteredOrders.Count > 0)
-            {
                 SelectedLatheManufactureOrder = FilteredOrders.First();
-            }
+
             OnPropertyChanged("FilteredOrders");
         }
 
@@ -317,22 +285,21 @@ namespace ProjectLighthouse.ViewModel
         private void LoadLMOItems()
         {
             if (SelectedLatheManufactureOrder == null)
-            {
                 return;
-            }
+
             string selectedMO = SelectedLatheManufactureOrder.Name;
             FilteredLMOItems.Clear();
-            foreach (var item in LMOItems)
-            {
-                if (item.AssignedMO == selectedMO)
-                {
-                    FilteredLMOItems.Add(item);
-                }
-            }
 
-            FilteredLMOItems = new ObservableCollection<LatheManufactureOrderItem>(FilteredLMOItems.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName));
+            foreach (var item in LMOItems)
+                if (item.AssignedMO == selectedMO)
+                    FilteredLMOItems.Add(item);
+
+            FilteredLMOItems = new ObservableCollection<LatheManufactureOrderItem>
+                (FilteredLMOItems.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName));
             OnPropertyChanged("FilteredLMOItems");
         }
+
+        #endregion
 
         public void PrintSelectedOrder()
         {
@@ -344,23 +311,24 @@ namespace ProjectLighthouse.ViewModel
             EditLMOWindow editWindow = new EditLMOWindow(SelectedLatheManufactureOrder);
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
-            string orderName = (string)selectedLatheManufactureOrder.Name;
-            GetLatheManufactureOrders();
-            FilterOrders(SelectedFilter);
 
-            if (FilteredOrders.Count > 0)
+            if (editWindow.SaveExit)
             {
-                foreach (var order in FilteredOrders)
+                GetLatheManufactureOrders();
+                FilterOrders(SelectedFilter); // update list on screen
+                foreach (LatheManufactureOrder order in LatheManufactureOrders) // re-select order
                 {
-                    if(order.Name == orderName){
-                        selectedLatheManufactureOrder = order;
+                    if (order.Name == editWindow.order.Name)
+                    {
+                        SelectedLatheManufactureOrder = order;
                         break;
                     }
-                    SelectedLatheManufactureOrder = FilteredOrders.First();
                 }
             }
-            
+            editWindow = null;
+
             GetLatheManufactureOrderItems();
+            LoadLMOItems();
         }
 
         private string GetDaySuffix(int day)

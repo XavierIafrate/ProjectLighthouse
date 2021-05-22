@@ -27,21 +27,5 @@ namespace ProjectLighthouse.View
                 viewModel.updateItem(clickedItem.orderObject.Order);
             }
         }
-
-        private void DisplayLMOScheduling_MouseClick_awaiting(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Right && (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin"))
-            {
-                DisplayAwaitingScheduling clickedItem = sender as DisplayAwaitingScheduling;
-                viewModel.updateItem(clickedItem.order);
-            }
-
-        }
-
-        private void TabControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            TabControl control = sender as TabControl;
-            viewModel.SelectedTab = control.SelectedValue as TabItem;
-        }
     }
 }

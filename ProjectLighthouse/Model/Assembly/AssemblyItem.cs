@@ -12,6 +12,7 @@ namespace ProjectLighthouse.Model
         [PrimaryKey, AutoIncrement]
         public int ID { get; set; }
         public string ProductNumber { get; set; }
-        public string BOM { get; set; }
+        public string BillOfMaterials { get; set; }
+        public string Routing { get; set; }
     }
 }

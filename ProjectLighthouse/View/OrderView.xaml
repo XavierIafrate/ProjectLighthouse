@@ -48,9 +48,9 @@
     <Grid Margin="10" DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"
-                              MinWidth="340"/>
+                              MinWidth="260"/>
             <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="410"
+            <ColumnDefinition Width="340"
                               MinWidth="340"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
@@ -96,7 +96,7 @@
         <ScrollViewer Grid.Column="2"
                       Grid.RowSpan="2"
                       Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2">
-            <StackPanel Margin="25,10" MaxWidth="600" MinWidth="400">
+            <StackPanel Margin="25,10">
                 <Grid Margin="0,0,0,10" Visibility="{Binding LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
                     <Rectangle Fill="{StaticResource materialError}"
                                RadiusX="5"

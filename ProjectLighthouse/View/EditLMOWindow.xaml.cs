@@ -18,41 +18,45 @@ namespace ProjectLighthouse.View
 {
     public partial class EditLMOWindow : Window
     {
-        private LatheManufactureOrder order;
+        public LatheManufactureOrder order;
         private ObservableCollection<LatheManufactureOrderItem> items;
+        public bool SaveExit { get; set; }
 
         public EditLMOWindow(LatheManufactureOrder o)
         {
             InitializeComponent();
-            order = o;
+
+            SaveExit = false;
+
+            order = (LatheManufactureOrder)o.Clone(); // break the reference
+
             items = new ObservableCollection<LatheManufactureOrderItem>();
             PopulateControls();
         }
 
         private void PopulateControls()
         {
+            // inefficient, should be in constructor
             var itemsList = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name).ToList();
             items.Clear();
             foreach (var product in itemsList)
-            {
                 items.Add(product);
-            }
 
             ItemsListBox.ItemsSource = items;
 
             nameText.Text = order.Name;
             PORef.Text = order.POReference;
+
             notes.Document.Blocks.Clear();
             notes.AppendText(order.Notes);
             notes.Document.LineHeight = 2;
+            
             urgent.IsChecked = order.IsUrgent;
             program.IsChecked = order.HasProgram;
             ready.IsChecked = order.IsReady;
 
             if (!order.HasProgram)
-            {
                 ready.IsEnabled = false;
-            }
 
             switch (order.Status)
             {
@@ -85,25 +89,15 @@ namespace ProjectLighthouse.View
             cancelOrderButton.Visibility = (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin") ? 
                 Visibility.Visible : Visibility.Collapsed;
             
-            var users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
+            List<User> users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
             List<string> setterUsers = new List<string>();
 
+            // Add Production team to setters combobox
             foreach (var user in users)
-            {
                 setterUsers.Add(user.GetFullName());
-            }
+
             setters.ItemsSource = setterUsers.ToList();
             setters.Text = order.AllocatedSetter;
-        }
-
-        private void closeButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            this.DragMove();
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
@@ -136,7 +130,7 @@ namespace ProjectLighthouse.View
             order.ModifiedAt = DateTime.Now;
 
             DatabaseHelper.Update(order);
-
+            SaveExit = true;
             this.Close();
         }
 
@@ -169,9 +163,7 @@ namespace ProjectLighthouse.View
         {
             int estimatedTimeSeconds = 0;
             foreach (var item in items)
-            {
                 estimatedTimeSeconds += item.CycleTime * item.TargetQuantity;
-            }
 
             order.TimeToComplete = estimatedTimeSeconds;
         }
@@ -219,6 +211,12 @@ namespace ProjectLighthouse.View
             program.IsEnabled = false;
         }
 
+        private void closeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        // Timestamp and Initials keyb shortcut
         private void notes_KeyDown(object sender, KeyEventArgs e)
         {
             RichTextBox richTextBox = sender as RichTextBox;

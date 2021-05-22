@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:ProjectLighthouse"
         xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
         mc:Ignorable="d"
-        Title="Project Lighthouse" Height="650" Width="1100"
+        Title="Project Lighthouse" Height="650"
         MinHeight="650"
         MinWidth="1100"
         MaxWidth="2000"
+        SizeToContent="Width"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
         Background="{StaticResource materialBackground}">
@@ -81,10 +82,12 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Rectangle Grid.RowSpan="4" Fill="{StaticResource materialOnBackground}"/>
-            <Viewbox Margin="40">
-                <Image Source="/Resources/LighthouseLogo.png"
-                       RenderOptions.BitmapScalingMode="HighQuality"/>
-            </Viewbox>
+
+            <Image Source="/Resources/LighthouseLogo.png"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                   Width="175"
+                   Margin="0,30"/>
+
             <StackPanel Grid.Row="1" Margin="20,0">
 
                 <TextBlock Text="Requests"
@@ -133,15 +136,16 @@
                               Content="Deliveries"
                               Click="ToggleButton_Click"/>
 
-                <!--<TextBlock Text="Tools"
+                <TextBlock Text="Assembly"
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
-                <ToggleButton Style="{StaticResource menuButtonStyle}"
-                              Content="Time/Cost Estimate"
-                              x:Name="time_estimate_button"
-                              Click="ToggleButton_Click"
-                              IsEnabled="False"/>-->
-                
+                <ToggleButton Command="{Binding UpdateViewCommand}"
+                              CommandParameter="AssemblyProducts"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="Manage Products"
+                              x:Name="assembly_button"
+                              Click="ToggleButton_Click"/>
+
                 <Button Style="{StaticResource ButtonTemplate}"
                         Content="DEBUG"
                         x:Name="debugButton"
