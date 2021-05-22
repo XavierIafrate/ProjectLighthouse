@@ -13,6 +13,7 @@
         SizeToContent="Width"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
+        Loaded="Window_Loaded"
         Background="{StaticResource materialBackground}">
 
     <Window.Resources>

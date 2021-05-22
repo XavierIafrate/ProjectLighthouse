@@ -11,7 +11,6 @@ namespace ProjectLighthouse.Model
     {
         public Email ()
         {
-            // nada
         }
 
         public void SendMail(EmailSendConfigure emailConfig, EmailContent content)
@@ -23,7 +22,7 @@ namespace ProjectLighthouse.Model
         // Put the properties of the email including "to", "cc", "from", "subject" and "email body"  
         private MailMessage ConstructEmailMessage(EmailSendConfigure emailConfig, EmailContent content)
         {
-            MailMessage msg = new System.Net.Mail.MailMessage();
+            MailMessage msg = new MailMessage();
             foreach (string to in emailConfig.TOs)
             {
                 if (!string.IsNullOrEmpty(to))
@@ -42,7 +41,7 @@ namespace ProjectLighthouse.Model
 
             msg.From = new MailAddress(emailConfig.From,
                                        emailConfig.FromDisplayName,
-                                       System.Text.Encoding.UTF8);
+                                       Encoding.UTF8);
             msg.IsBodyHtml = content.IsHtml;
             msg.Body = content.Content;
             msg.Priority = emailConfig.Priority;
@@ -61,7 +60,7 @@ namespace ProjectLighthouse.Model
             client.Credentials = new System.Net.NetworkCredential(
                                   emailConfig.ClientCredentialUserName,
                                   emailConfig.ClientCredentialPassword);
-            client.Host = "smtp-mail.outlook.com";
+            client.Host = "wixroydgroup-com.mail.protection.outlook.com";
             client.Port = 25;  // this is critical
             client.EnableSsl = true;  // this is critical
 

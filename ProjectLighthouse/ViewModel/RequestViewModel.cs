@@ -353,8 +353,9 @@ namespace ProjectLighthouse.ViewModel
                 }
 
 
-                if (DatabaseHelper.Update(selectedRequest))
+                if (DatabaseHelper.Update(SelectedRequest))
                 {
+                    EmailHelper.NotifyRequestApproved(SelectedRequest);
                     FilterRequests(SelectedFilter);
                     OnPropertyChanged("SelectedRequest");
                     SelectedRequestChanged?.Invoke(this, new EventArgs());
@@ -394,10 +395,10 @@ namespace ProjectLighthouse.ViewModel
             selectedRequest.LastModified = DateTime.Now;
             selectedRequest.ModifiedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
             selectedRequest.Status = String.Format("Declined - {0}", selectedRequest.DeclinedReason);
-            if (DatabaseHelper.Update(selectedRequest))
+            if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-
+                EmailHelper.NotifyRequestDeclined(SelectedRequest);
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");
                 SelectedRequestChanged?.Invoke(this, new EventArgs());

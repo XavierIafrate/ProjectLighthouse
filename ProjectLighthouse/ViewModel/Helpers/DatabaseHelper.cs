@@ -7,7 +7,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class DatabaseHelper
     {
-        private static string dbFile = "H:\\Production\\Documents\\Works Orders\\Lighthouse\\manufactureDB.db3";
+        private static string dbFile = @"H:\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
 
         public static bool Insert<T>(T item)
         {
