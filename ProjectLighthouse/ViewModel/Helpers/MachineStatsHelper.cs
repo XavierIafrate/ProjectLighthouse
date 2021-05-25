@@ -146,6 +146,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static async Task<bool> IsConnected(string url)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Timeout = 1000; // 1s
+
+            Debug.WriteLine(string.Format("Timeout: {0}", request.Timeout));
+
             try
             {
                 var response = (HttpWebResponse)await

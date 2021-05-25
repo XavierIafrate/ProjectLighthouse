@@ -22,6 +22,8 @@ namespace ProjectLighthouse.ViewModel
         public ObservableCollection<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
         public List<MachineStatistics> machineStatistics { get; set; }
 
+        DispatcherTimer dispatcherTimer { get; set; }
+
         private LatheManufactureOrder selectedLatheManufactureOrder;
         public LatheManufactureOrder SelectedLatheManufactureOrder
         {
@@ -185,7 +187,7 @@ namespace ProjectLighthouse.ViewModel
 
         #region MachineStats Display
         private void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
+       {
             GetLiveStats();
             RefreshLiveInfoText();
         }
@@ -223,6 +225,9 @@ namespace ProjectLighthouse.ViewModel
                 if(target_stats != null)
                 {
                     DisplayStats = String.Format("Part Counter: {0:#,##0} of {1:#,##0}, complete {2}", target_stats.PartCountAll, target_stats.PartCountTarget, target_stats.EstimateCompletionDate());
+                    if (target_stats.PartCountAll == 0 && target_stats.PartCountTarget == 0 && dispatcherTimer != null)
+                        dispatcherTimer.Stop();
+
                     return;
                 }
                 else

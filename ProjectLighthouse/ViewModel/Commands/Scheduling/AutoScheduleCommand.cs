@@ -17,7 +17,7 @@ namespace ProjectLighthouse.ViewModel.Commands
         public bool CanExecute(object parameter)
         {
             var tab = viewModel.SelectedTab;
-            return tab.Orders.Count > 0;
+            return tab.Orders.Count > 1;
         }
 
         public void Execute(object parameter)

@@ -30,9 +30,6 @@ namespace ProjectLighthouse
             // Uncheck toggle buttons
             foreach (ToggleButton button in FindVisualChildren<ToggleButton>(main_menu))
                 button.IsChecked = button == sender_button;
-            
-            // just to be sure
-            sender_button.IsChecked = true;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -123,7 +120,7 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            debugButton.Visibility = App.currentUser.UserRole != "admin" ? Visibility.Collapsed : Visibility.Visible;
+            debugButton.Visibility = Visibility.Collapsed; // App.currentUser.UserRole != "admin" ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

@@ -6,11 +6,10 @@
         xmlns:local="clr-namespace:ProjectLighthouse"
         xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
         mc:Ignorable="d"
-        Title="Project Lighthouse" Height="650"
-        MinHeight="650"
+        Title="Project Lighthouse" Height="700" Width="1100"
+        MinHeight="700"
         MinWidth="1100"
         MaxWidth="2000"
-        SizeToContent="Width"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
         Loaded="Window_Loaded"
@@ -19,10 +18,10 @@
     <Window.Resources>
 
         <ResourceDictionary>
-            <Style TargetType="{x:Type Window}">
+            <!--<Style TargetType="{x:Type Window}">
                 <Setter Property="FontFamily" Value="{StaticResource ProximaNova}" />
                 <Setter Property="FontSize" Value="13" />
-            </Style>
+            </Style>-->
 
             <vm:MainViewModel x:Key="vm"/>
 
@@ -57,7 +56,7 @@
 
             </Style>
             <Style x:Key="menuSepStyle" TargetType="Separator">
-                <Setter Property="Margin" Value="0,10"/>
+                <Setter Property="Margin" Value="0,10,0,5"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Width" Value="175"/>
             </Style>
@@ -66,13 +65,18 @@
                 <Setter Property="FontSize" Value="25"/>
                 <Setter Property="Margin" Value="0,15,0,0"/>
             </Style>
+            <Style x:Key="menuSubSectionStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Margin" Value="0,5,0,0"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
     <Grid DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MaxWidth="350" MinWidth="250"/>
-            <ColumnDefinition Width="10"/>
+            <!--<ColumnDefinition Width="10"/>-->
             <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
         <Grid x:Name="main_menu">
@@ -111,51 +115,64 @@
                 <TextBlock Text="Production"
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
-                <ToggleButton Command="{Binding UpdateViewCommand}"
-                              CommandParameter="Orders"
-                              Style="{StaticResource menuButtonStyle}"
-                              Content="Orders"
-                              x:Name="orders_button"
-                              Click="ToggleButton_Click"
-                              IsChecked="True"/>
+                <TextBlock Text="Turning"
+                           Style="{StaticResource menuSubSectionStyle}"/>
+                <StackPanel Margin="20,0,0,0">
+                    <ToggleButton Command="{Binding UpdateViewCommand}"
+                                  CommandParameter="Orders"
+                                  Style="{StaticResource menuButtonStyle}"
+                                  Content="Orders"
+                                  x:Name="orders_button"
+                                  Click="ToggleButton_Click"
+                                  IsChecked="True"/>
 
-                <ToggleButton Command="{Binding UpdateViewCommand}" 
-                              CommandParameter="Schedule"
-                              Style="{StaticResource menuButtonStyle}"
-                              Content="Schedule"
-                              x:Name="schedule_button"
-                              Click="ToggleButton_Click"/>
-                <ToggleButton Command="{Binding UpdateViewCommand}" 
-                              CommandParameter="Machine Stats"
-                              Style="{StaticResource menuButtonStyle}"
-                              Content="Runtime"
-                              x:Name="machine_stats_button"
-                              Click="ToggleButton_Click"/>
+                    <ToggleButton Command="{Binding UpdateViewCommand}" 
+                                  CommandParameter="Schedule"
+                                  Style="{StaticResource menuButtonStyle}"
+                                  Content="Schedule"
+                                  x:Name="schedule_button"
+                                  Click="ToggleButton_Click"/>
+                    <ToggleButton Command="{Binding UpdateViewCommand}" 
+                                  CommandParameter="Machine Stats"
+                                  Style="{StaticResource menuButtonStyle}"
+                                  Content="Runtime"
+                                  x:Name="machine_stats_button"
+                                  Click="ToggleButton_Click"/>
+                </StackPanel>
+                <TextBlock Text="Assembly"
+                           Style="{StaticResource menuSubSectionStyle}"/>
+                <StackPanel Margin="20,0,0,0">
+                    
+                    <ToggleButton Command="{Binding UpdateViewCommand}"
+                                  CommandParameter="Assembly Orders"
+                                  Style="{StaticResource menuButtonStyle}"
+                                  Content="Assembly Orders"
+                                  x:Name="assemblyOrders_button"
+                                  Click="ToggleButton_Click"/>
+                    <ToggleButton Command="{Binding UpdateViewCommand}"
+                                  CommandParameter="AssemblyProducts"
+                                  Style="{StaticResource menuButtonStyle}"
+                                  Content="Manage Products"
+                                  x:Name="assembly_button"
+                                  Click="ToggleButton_Click"/>
+                    <ToggleButton Command="{Binding UpdateViewCommand}"
+                                  CommandParameter="BOM"
+                                  Style="{StaticResource menuButtonStyle}"
+                                  Content="Bill of Materials"
+                                  x:Name="BOM_button"
+                                  Click="ToggleButton_Click"/>
+                </StackPanel>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
                               CommandParameter="Deliveries"
                               Style="{StaticResource menuButtonStyle}"
                               Content="Deliveries"
                               Click="ToggleButton_Click"/>
 
-                <TextBlock Text="Assembly"
-                           Style="{StaticResource menuSectionStyle}"/>
-                <Separator Style="{StaticResource menuSepStyle}"/>
-                <ToggleButton Command="{Binding UpdateViewCommand}"
-                              CommandParameter="AssemblyProducts"
-                              Style="{StaticResource menuButtonStyle}"
-                              Content="Manage Products"
-                              x:Name="assembly_button"
-                              Click="ToggleButton_Click"/>
-
+                
                 <Button Style="{StaticResource ButtonTemplate}"
                         Content="DEBUG"
                         x:Name="debugButton"
                         Click="Button_Click"/>
-
-                <!--<Button Command="{Binding UpdateViewCommand}" 
-                        CommandParameter="BarStock"
-                        Style="{StaticResource menuButtonStyle}"
-                        Content="Bar Stock"/>-->
 
             </StackPanel>
             <Button Style="{StaticResource ButtonTemplate}"
@@ -166,20 +183,37 @@
                     Command="{Binding EditCommand}"/>
         </Grid>
 
-        <GridSplitter Grid.Column="1"
+        <!--<GridSplitter Grid.Column="1"
                   Width="3" Background="White"
                   VerticalAlignment="Stretch" 
-                  HorizontalAlignment="Center" />
+                  HorizontalAlignment="Center" />-->
         
-        <Grid Background="White" Grid.Column="2">
+        <Grid Background="White" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding BetaWarningVis}">
+                <Grid Margin="10,5">
+                    <Rectangle Fill="{StaticResource materialError}"
+                           RadiusX="5"
+                           RadiusY="5"/>
+                    <TextBlock Text="BETA" 
+                           Foreground="{StaticResource materialOnError}" 
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Padding="15,0,15,1"
+                           FontSize="18"/>
+                </Grid>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="This part of Lighthouse is in Beta testing" FontStyle="Italic" Opacity="0.3"/>
+                    <TextBlock Text="Watch out for bugs!" FontStyle="Italic" Opacity="0.3"/>
+                </StackPanel>
+            </StackPanel>
             <Viewbox Margin="50,20" HorizontalAlignment="Right" MaxHeight="70">
+                
                 <TextBlock Text="{Binding NavText}"
                             Foreground="{StaticResource materialOnBackground}"
-                            
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             x:Name="WindowText"/>

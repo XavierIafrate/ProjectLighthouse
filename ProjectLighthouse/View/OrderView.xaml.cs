@@ -14,6 +14,5 @@ namespace ProjectLighthouse.View
             InitializeComponent();
             viewModel = Resources["vm"] as OrderViewModel;
         }
-
     }
 }

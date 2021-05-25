@@ -20,6 +20,18 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private Visibility betaWarningVis = Visibility.Collapsed;
+        public Visibility BetaWarningVis
+        {
+            get { return betaWarningVis; }
+            set 
+            { 
+                betaWarningVis = value;
+                OnPropertyChanged("BetaWarningVis");
+            }
+        }
+
+
         private BaseViewModel _selectedViewModel = new OrderViewModel();
         public BaseViewModel SelectedViewModel
         {

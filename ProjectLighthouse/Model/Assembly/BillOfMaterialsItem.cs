@@ -11,11 +11,10 @@ namespace ProjectLighthouse.Model.Assembly
     {
         [PrimaryKey, AutoIncrement]
         public int ID { get; set; }
-        public int BOMNumber { get; set; }
+        public string BOMID { get; set; }
         public string ForProduct { get; set; }
         public string ComponentItem { get; set; }
-        public string Quantity { get; set; }
-        public string Description { get; set; }
+        public int Quantity { get; set; }
         public int UnitCost { get; set; }
         public string Units { get; set; }
     }

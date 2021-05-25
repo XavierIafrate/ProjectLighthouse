@@ -5,26 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ProjectLighthouse.ViewModel.Commands
+namespace ProjectLighthouse.ViewModel.Commands.Assembly
 {
-    public class PrintScheduleCommand : ICommand
+    public class NewRoutingCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        public ScheduleViewModel viewModel;
+        AssemblyProductsViewModel viewModel;
 
-        public PrintScheduleCommand(ScheduleViewModel vm)
+        public NewRoutingCommand(AssemblyProductsViewModel vm)
         {
             viewModel = vm;
         }
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return App.currentUser.CanCreateAssemblyProducts;
         }
 
         public void Execute(object parameter)
         {
-            viewModel.PrintSchedule();
+            viewModel.CreateNewRouting();
         }
     }
 }

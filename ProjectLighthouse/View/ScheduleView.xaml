@@ -93,7 +93,7 @@
                     ItemTemplate="{StaticResource CustomHeaderTemplate}"
                     ContentTemplate="{StaticResource CustomItemTemplate}"
                     ItemsSource="{Binding WindowTabs}"
-                    SelectedItem="{Binding SelectedTab}"
+                    SelectedItem="{Binding SelectedTab, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     BorderThickness="0">
             <TabControl.Resources>
                 <Style TargetType="TabItem">

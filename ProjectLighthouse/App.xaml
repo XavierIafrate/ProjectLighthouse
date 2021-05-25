@@ -3,12 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ProjectLighthouse"
              xmlns:views="clr-namespace:ProjectLighthouse.View"
+             xmlns:AssemblyViews="clr-namespace:ProjectLighthouse.View.AssemblyViews"
              xmlns:vms="clr-namespace:ProjectLighthouse.ViewModel"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
         <FontFamily x:Key="ProximaNova">pack://application:,,,/Resources/Font/proximanova.ttf#Proxima Nova</FontFamily>
-        
+        <!--#region Colours-->
         <SolidColorBrush x:Key="materialPrimary" Color="#6200EE"/>
         <SolidColorBrush x:Key="materialPrimaryVar" Color="#3700B3"/>
         <SolidColorBrush x:Key="materialSecondary" Color="#03DAC6"/>
@@ -33,6 +34,24 @@
         <SolidColorBrush x:Key="materialBlue" Color="#96e7f1"/>
         <SolidColorBrush x:Key="materialGreen" Color="#03DAC6"/>
 
+        <LinearGradientBrush x:Key="gradGood" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1D976C" Offset="0" />
+            <GradientStop Color="#93F9B9" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="gradBad" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#cb2d3e" Offset="0" />
+            <GradientStop Color="#ef473a" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="gradBlue" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1e3c72" Offset="0" />
+            <GradientStop Color="#2a5298" Offset="1" />
+
+        </LinearGradientBrush>
+        <!--#endregion-->
+        
+        <!--#region Custom Text Styles-->
         <Style TargetType="TextBlock" x:Key="heroTextStyle">
             <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
             <Setter Property="FontSize" Value="30"/>
@@ -74,22 +93,9 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Margin" Value="0,0,0,2"/>
         </Style>
+        <!--#endregion-->
 
-        <LinearGradientBrush x:Key="gradGood" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#1D976C" Offset="0" />
-            <GradientStop Color="#93F9B9" Offset="1" />
-        </LinearGradientBrush>
-
-        <LinearGradientBrush x:Key="gradBad" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#cb2d3e" Offset="0" />
-            <GradientStop Color="#ef473a" Offset="1" />
-        </LinearGradientBrush>
-
-        <LinearGradientBrush x:Key="gradBlue" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#1e3c72" Offset="0" />
-            <GradientStop Color="#2a5298" Offset="1" />
-        </LinearGradientBrush>
-
+        <!--#region Control style overrides-->
         <ControlTemplate x:Key="ComboBoxToggleButton"
                  TargetType="{x:Type ToggleButton}">
             <Grid>
@@ -412,7 +418,9 @@
             </Style.Triggers>
 
         </Style>
-
+    <!--#endregion-->
+        
+        <!--#region Views-->
         <DataTemplate DataType="{x:Type vms:RequestViewModel}">
             <views:RequestView/>
         </DataTemplate>
@@ -431,10 +439,21 @@
         <DataTemplate DataType="{x:Type vms:DeliveriesViewModel}">
             <views:DeliveriesView/>
         </DataTemplate>
-
+        <DataTemplate DataType="{x:Type vms:AssemblyOrdersViewModel}">
+            <AssemblyViews:AssemblyOrdersView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:AssemblyProductsViewModel}">
+            <AssemblyViews:AssemblyProductsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:BillOfMaterialsViewModel}">
+            <AssemblyViews:BillOfMaterialsView/>
+        </DataTemplate>
+        <!--#endregion-->
+        
         <Style TargetType="{x:Type UserControl}">
             <Setter Property="FontFamily"
             Value="Resources/Font/#Proxima Nova"/>
         </Style>
+        
     </Application.Resources>
 </Application>

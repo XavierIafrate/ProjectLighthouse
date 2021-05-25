@@ -1,0 +1,62 @@
+﻿<Window x:Class="ProjectLighthouse.View.NewAssemblyProductWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectLighthouse.View"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Title="Add New Product" Height="450" Width="800">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <TextBlock Text="New Assembly Product" Style="{StaticResource heroTextStyle}"/>
+            <TextBlock Text="Product Number" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBox x:Name="ProductNumberTextBox"
+                     TextChanged="ProductNumberTextBox_TextChanged"
+                     Background="Transparent"
+                     Padding="7,2" 
+                     FontSize="15"
+                     BorderBrush="{StaticResource materialPrimary}"/>
+            <TextBlock Text="Product Group" Style="{StaticResource subtitleTextStyle}"/>
+            <ComboBox x:Name="ProductGroupComboBox" SelectionChanged="ProductGroupComboBox_SelectionChanged"/>
+            <Grid Margin="0,10,0,0">
+                <TextBlock Text="Create a new group" 
+                           Padding="11,2" 
+                           Opacity="0.4" 
+                           FontStyle="Italic" 
+                           FontSize="15"
+                           x:Name="ProductGroupGhost"/>
+                <TextBox x:Name="ProductGroupTextBox" 
+                         TextChanged="ProductGroupTextBox_TextChanged" 
+                         Background="Transparent"
+                         Padding="7,2" 
+                         FontSize="15"
+                         BorderBrush="{StaticResource materialPrimary}"/>
+            </Grid>
+            
+            <TextBlock Text="Description" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBox x:Name="ProductDescriptionTextBox"
+                     Background="Transparent"
+                     Padding="7,2" 
+                     FontSize="15"
+                     MaxLength="38"
+                     BorderBrush="{StaticResource materialPrimary}"/>
+
+            <Button Content="Cancel" 
+                    Style="{StaticResource CancelButtonTemplate}" 
+                    x:Name="CancelButton" 
+                    Click="CancelButton_Click"/>
+            <Button Content="Create New Product" 
+                    Style="{StaticResource GreenButtonTemplate}" 
+                    x:Name="AddButton" 
+                    Click="AddButton_Click"/>
+
+        </StackPanel>
+    </Grid>
+</Window>
