@@ -383,42 +383,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
-        <Style x:Key="ExitButton" TargetType="Button">
-
-            <Setter Property="Background" Value="{StaticResource materialError}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="Margin" Value="10,5"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="15"
-                                Height="30"
-                                BorderThickness="0"
-                                Padding="20,0">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#ED213A" Offset="0" />
-                                <GradientStop Color="#93291E" Offset="1" />
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-
-        </Style>
-    <!--#endregion-->
+        <!--#endregion-->
         
         <!--#region Views-->
         <DataTemplate DataType="{x:Type vms:RequestViewModel}">

@@ -194,7 +194,7 @@
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding BetaWarningVis}">
-                <Grid Margin="10,5">
+                <Grid Margin="30,5,10,5">
                     <Rectangle Fill="{StaticResource materialError}"
                            RadiusX="5"
                            RadiusY="5"/>
@@ -206,8 +206,8 @@
                            FontSize="18"/>
                 </Grid>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="This part of Lighthouse is in Beta testing" FontStyle="Italic" Opacity="0.3"/>
-                    <TextBlock Text="Watch out for bugs!" FontStyle="Italic" Opacity="0.3"/>
+                    <TextBlock Text="This part of Lighthouse is in Beta testing" FontStyle="Italic" Opacity="0.5" FontSize="15"/>
+                    <TextBlock Text="Watch out for bugs!" FontStyle="Italic" Opacity="0.5" FontSize="15"/>
                 </StackPanel>
             </StackPanel>
             <Viewbox Margin="50,20" HorizontalAlignment="Right" MaxHeight="70">

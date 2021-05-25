@@ -16,8 +16,18 @@ namespace ProjectLighthouse.ViewModel
     public class DeliveriesViewModel : BaseViewModel
     {
         #region Variables
-        public ObservableCollection<DeliveryNote> deliveryNotes { get; set; }
-        public ObservableCollection<DeliveryItem> deliveryItems { get; set; }
+        private List<DeliveryNote> deliveryNotes;
+        public List<DeliveryNote> DeliveryNotes
+        {
+            get { return deliveryNotes; }
+            set 
+            { 
+                deliveryNotes = value;
+                OnPropertyChanged("DeliveryNotes");
+            }
+        }
+
+        public List<DeliveryItem> deliveryItems { get; set; }
 
         public List<DeliveryItem> filteredDeliveryItems { get; set; }
 
@@ -43,8 +53,8 @@ namespace ProjectLighthouse.ViewModel
 
         public DeliveriesViewModel()
         {
-            deliveryNotes = new ObservableCollection<DeliveryNote>();
-            deliveryItems = new ObservableCollection<DeliveryItem>();
+            DeliveryNotes = new List<DeliveryNote>();
+            deliveryItems = new List<DeliveryItem>();
             selectedDeliveryNote = new DeliveryNote();
 
             CreateDeliveryCommand = new NewDeliveryCommand(this);
@@ -56,26 +66,17 @@ namespace ProjectLighthouse.ViewModel
 
         private void LoadDeliveryNotes()
         {
-            deliveryNotes.Clear();
-            List<DeliveryNote> notes = DatabaseHelper.Read<DeliveryNote>().ToList();
-            
-            foreach(var note in notes)
-            {
-                deliveryNotes.Add(note);
-            }
+            DeliveryNotes.Clear();
+            DeliveryNotes = DatabaseHelper.Read<DeliveryNote>().OrderByDescending(n=> n.DeliveryDate).ToList();
 
-            deliveryNotes = new ObservableCollection<DeliveryNote>(deliveryNotes.OrderByDescending(n => n.DeliveryDate));
-            if(deliveryNotes.Count != 0)
-                SelectedDeliveryNote = deliveryNotes.First();
+            if (deliveryNotes.Count != 0)
+                SelectedDeliveryNote = DeliveryNotes.First();
         }
 
         private void LoadDeliveryItems()
         {
             deliveryItems.Clear();
-            List<DeliveryItem> items = DatabaseHelper.Read<DeliveryItem>().ToList();
-
-            foreach (var item in items)
-                deliveryItems.Add(item);
+            deliveryItems = DatabaseHelper.Read<DeliveryItem>().ToList();
         }
 
         public void CreateNewDelivery()
@@ -83,8 +84,8 @@ namespace ProjectLighthouse.ViewModel
             CreateNewDeliveryWindow window = new CreateNewDeliveryWindow();
             window.ShowDialog();
 
-            LoadDeliveryItems();
             LoadDeliveryNotes();
+            LoadDeliveryItems();
         }
 
         public void PrintDeliveryNotePDF()

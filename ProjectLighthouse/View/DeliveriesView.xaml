@@ -41,7 +41,7 @@
             </Grid>
             <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
                 <ListBox HorizontalContentAlignment="Stretch"
-                         ItemsSource="{Binding deliveryNotes}"
+                         ItemsSource="{Binding DeliveryNotes}"
                          SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

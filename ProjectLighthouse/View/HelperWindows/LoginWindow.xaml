@@ -1,0 +1,144 @@
+﻿<Window x:Class="ProjectLighthouse.View.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectLighthouse.View"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Title="Lighthouse Login" 
+        SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="ghostText">
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Padding" Value="7,2,0,0"/>
+        </Style>
+        <Style x:Key="ExitButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource materialError}"/>
+            <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="10,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="12.5"
+                                Height="25"
+                                BorderThickness="0"
+                                Padding="20,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource materialError}"/>
+                    <Setter Property="Foreground" Value="{StaticResource materialOnError}"/>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+        <Style x:Key="RegisterButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlueVar}"/>
+            <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="10,2"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="12.5"
+                                Height="25"
+                                BorderThickness="0"
+                                Padding="20,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource materialPrimaryBlueVar}"/>
+                    <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+        
+        <Rectangle Fill="{StaticResource materialPrimaryGreen}" 
+                   RadiusX="11" RadiusY="11" 
+                   MouseDown="Rectangle_MouseDown"
+                   Grid.RowSpan="2"/>
+        <Image Source="/Resources/Lighthouse_dark.png"
+                   Width="150"
+                   RenderOptions.BitmapScalingMode="HighQuality"
+                   Margin="70,50"/>
+        <Rectangle Fill="{StaticResource materialBackground}" 
+                   Opacity="0.9"
+                   RadiusX="9" RadiusY="9" 
+                   MouseDown="Rectangle_MouseDown"
+                   Grid.Row="1">
+            <Rectangle.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="0" Color="Black" Opacity="0.3"/>
+            </Rectangle.Effect>
+        </Rectangle>
+        <Rectangle Fill="Transparent" MouseDown="Rectangle_MouseDown"/>
+        <StackPanel VerticalAlignment="Center"
+                    Margin="50,30"
+                    Grid.Row="1">
+
+            <TextBlock x:Name="message" Visibility="Hidden" Text="Username Not Found debug" Foreground="{StaticResource materialError}" HorizontalAlignment="Center" Padding="5"/>
+            <Grid Margin="0,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid Margin="5">
+                    <TextBlock Text="username" 
+                               x:Name="usernameGhost"
+                               Style="{StaticResource ghostText}"/>
+                    <TextBox x:Name="usernameText"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="2,0,0,2"
+                             Focusable="True"
+                             FontSize="16"
+                             TextChanged="usernameText_TextChanged"/>
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="5">
+                    <TextBlock Text="password" 
+                               x:Name="passwordGhost"
+                               Style="{StaticResource ghostText}"/>
+                    <PasswordBox x:Name="passwordText" 
+                                 KeyDown="passwordText_KeyDown"
+                                 PasswordChanged="passwordText_PasswordChanged"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Focusable="True"
+                                 Padding="2,0,0,2"
+                                 FontSize="16"/>
+                </Grid>
+            </Grid>
+            <Button Style="{StaticResource GreenButtonTemplate}" Content="log in" Click="LoginButton_Click"/>
+            <Button Style="{StaticResource RegisterButton}" Content="register" Click="LoginButton_Click" Visibility="Collapsed"/>
+            <Button Style="{StaticResource ExitButton}" Content="exit" Click="ExitButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

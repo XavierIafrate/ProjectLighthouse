@@ -39,11 +39,15 @@ namespace ProjectLighthouse.View
                     }
 
                     if (Environment.UserName == "xavier")
+                    {
                         passwordText.Password = user.Password;
-                    
-                    
+                        passwordText.GetType().GetMethod("Select", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(passwordText, new object[] { user.Password.Length, 0 });
+                    }
+
                 }
             }
+            if (string.IsNullOrEmpty(usernameText.Text))
+                usernameText.Focus();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -71,7 +75,7 @@ namespace ProjectLighthouse.View
 
         private void Login()
         {
-            message.Visibility = Visibility.Collapsed;
+            message.Visibility = Visibility.Hidden;
             foreach (User user in users)
             {
                 if (user.UserName == usernameText.Text)

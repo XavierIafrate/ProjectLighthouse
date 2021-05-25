@@ -64,7 +64,7 @@
                   HorizontalAlignment="Center"/>
 
         <ScrollViewer Grid.Column="2" Grid.RowSpan="2" VerticalScrollBarVisibility="Auto">
-            <StackPanel  Margin="30" MaxWidth="800">
+            <StackPanel  Margin="30" MaxWidth="700">
                 <TextBlock Text="{Binding CurrentProduct.product.ProductNumber, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='n/a'}"
                        Style="{StaticResource Title}"/>
                 <TextBlock Text="{Binding CurrentProduct.product.Description}" 
