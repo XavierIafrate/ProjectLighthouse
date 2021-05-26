@@ -31,7 +31,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
         private BaseViewModel _selectedViewModel = new OrderViewModel();
         public BaseViewModel SelectedViewModel
         {

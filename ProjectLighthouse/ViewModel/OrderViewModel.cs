@@ -45,7 +45,8 @@ namespace ProjectLighthouse.ViewModel
                 }
 
                 ModifiedVis = String.IsNullOrEmpty(selectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
-                LiveInfoVis = selectedLatheManufactureOrder.Status == "Running" ? Visibility.Visible : Visibility.Collapsed;
+                machineStatistics = (machineStatistics == null) ? new List<MachineStatistics>() : machineStatistics;
+                LiveInfoVis = selectedLatheManufactureOrder.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
 
                 RunInfoText = !String.IsNullOrEmpty(selectedLatheManufactureOrder.AllocatedMachine) ? 
                     String.Format("Assigned to {0}, starting {1:MMMM d}{2}", 
@@ -53,8 +54,8 @@ namespace ProjectLighthouse.ViewModel
                     selectedLatheManufactureOrder.StartDate, 
                     GetDaySuffix(selectedLatheManufactureOrder.StartDate.Day)) :
                     RunInfoText = "Not scheduled";
-                OnPropertyChanged("RunInfoText");
 
+                OnPropertyChanged("RunInfoText");
                 OnPropertyChanged("SelectedLatheManufactureOrder");
             }
         }
@@ -179,7 +180,7 @@ namespace ProjectLighthouse.ViewModel
             FilterOrders("All Active");
             if (FilteredOrders.Count > 0)
                 SelectedLatheManufactureOrder = FilteredOrders.First();
-            
+
             GetLatheManufactureOrderItems();
             GetLiveStats();
             RefreshLiveInfoText();
@@ -188,7 +189,16 @@ namespace ProjectLighthouse.ViewModel
         #region MachineStats Display
         private void dispatcherTimer_Tick(object sender, EventArgs e)
        {
+            if (machineStatistics == null) // stop the last tick
+                return;
+
             GetLiveStats();
+            if (machineStatistics == null)
+            {
+                dispatcherTimer.Stop();
+                return;
+            }
+                
             RefreshLiveInfoText();
         }
 

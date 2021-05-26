@@ -32,7 +32,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 bool connected = await IsConnected(url);
 
                 if (!connected)
-                    break;
+                    return null;
 
                 using (XmlTextReader reader = new XmlTextReader(url))
                 {

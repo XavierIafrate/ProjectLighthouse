@@ -113,7 +113,7 @@
                                     SelectedDateChanged="DateRequiredCalendarView_SelectedDatesChanged"
                                     Padding="4,1"
                                     BorderBrush="{StaticResource materialPrimary}"
-                                    BorderThickness="2"
+                                    BorderThickness="1"
                                     FontSize="15"/>
                     </StackPanel>
                     <!--Quantity Input-->
@@ -124,7 +124,7 @@
                                  TextChanged="quantityBox_TextChanged"
                                  Padding="4,2"
                                  BorderBrush="{StaticResource materialPrimary}"
-                                 BorderThickness="2"
+                                 BorderThickness="1"
                                  FontSize="15"/>
                     </StackPanel>
                 </Grid>
@@ -136,7 +136,7 @@
                     <RichTextBox x:Name="notesTextBox"
                                  MinHeight="100"
                                  BorderBrush="{StaticResource materialPrimary}"
-                                 BorderThickness="2"
+                                 BorderThickness="1"
                                  TextChanged="notesTextBox_TextChanged">
                         <FlowDocument LineHeight="2"/>
                     </RichTextBox>

@@ -51,7 +51,7 @@
             <ListBox ItemsSource="{Binding BOMs}" SelectedItem="{Binding SelectedBOM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding ID}"/>
+                        <uc:DisplayBillOfMaterial BOM="{Binding}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
