@@ -39,17 +39,17 @@
                         Style="{StaticResource GreenButtonTemplate}" Grid.Column="1"
                         Margin="0,0,0,5"/>
             </Grid>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
-                <ListBox HorizontalContentAlignment="Stretch"
-                         ItemsSource="{Binding DeliveryNotes}"
-                         SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <uc:DisplayDeliveryNote deliveryNote="{Binding}"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </ScrollViewer>
+            <ListBox HorizontalContentAlignment="Stretch"
+                     ItemsSource="{Binding DeliveryNotes}"
+                     SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Grid.Row="1"
+                     ScrollViewer.CanContentScroll="False">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <uc:DisplayDeliveryNote deliveryNote="{Binding}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         </Grid>
         <GridSplitter Grid.Row="0" Grid.Column="1" Margin="2,0"
                   Width="3" Background="White"
@@ -113,10 +113,8 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                        
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        
     </Grid>
 </UserControl>

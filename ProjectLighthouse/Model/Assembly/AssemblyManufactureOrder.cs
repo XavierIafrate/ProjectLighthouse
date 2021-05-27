@@ -21,9 +21,5 @@ namespace ProjectLighthouse.Model
 
         public string Status { get; set; }
         public string Notes { get; set; }
-
-        public string AllocatedMachine { get; set; }
-        public string AllocatedSetter { get; set; }
-        public DateTime StartDate { get; set; }
     }
 }

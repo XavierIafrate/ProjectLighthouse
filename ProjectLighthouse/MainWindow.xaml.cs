@@ -21,15 +21,16 @@ namespace ProjectLighthouse
         {
             InitializeComponent();
             viewModel = Resources["vm"] as MainViewModel;
-            DataContext = new MainViewModel();
+            //DataContext = new MainViewModel();
+            viewModel.window = this;
         }
 
-        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        public void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
             ToggleButton sender_button = sender as ToggleButton;
             // Uncheck toggle buttons
             foreach (ToggleButton button in FindVisualChildren<ToggleButton>(main_menu))
-                button.IsChecked = button == sender_button;
+                button.IsChecked = button.Content == sender_button.Content;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -122,5 +123,6 @@ namespace ProjectLighthouse
         {
             debugButton.Visibility = Visibility.Collapsed; // App.currentUser.UserRole != "admin" ? Visibility.Collapsed : Visibility.Visible;
         }
+
     }
 }

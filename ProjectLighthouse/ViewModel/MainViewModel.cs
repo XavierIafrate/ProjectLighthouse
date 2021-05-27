@@ -3,6 +3,7 @@ using ProjectLighthouse.ViewModel.Commands;
 using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
@@ -46,6 +47,8 @@ namespace ProjectLighthouse.ViewModel
         public ICommand UpdateViewCommand { get; set; }
         public ICommand EditCommand { get; set; }
 
+        public MainWindow window { get; set; }
+
         public void EditSettings()
         {
             EditSettingsWindow window = new EditSettingsWindow();
@@ -76,6 +79,9 @@ namespace ProjectLighthouse.ViewModel
                 else
                 {
                     App.currentUser = login.auth_user;
+                    if(window != null)
+                        window.ToggleButton_Click(new ToggleButton() { Content = App.currentUser.DefaultView ?? "Orders" }, new RoutedEventArgs());
+                    UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
                 }
             }
 

@@ -12,10 +12,12 @@ namespace ProjectLighthouse.Model
         [PrimaryKey, AutoIncrement]
         public int ID { get; set; }
         public string ProductName { get; set; }
+        public string ForOrder { get; set; }
         public int Quantity { get; set; }
         public DateTime Date { get; set; }
         public string ExcelDate { get; set; }
         public bool IsReject { get; set; }
+        public string MaterialBatch { get; set; }
 
         public void SetExcelDateTime()
         {

@@ -61,25 +61,26 @@
                   Width="3" Background="White"
                   VerticalAlignment="Stretch" 
                   HorizontalAlignment="Center"/>
-
-        <StackPanel Grid.Column="2" Grid.RowSpan="2" Margin="30">
-            <TextBlock Style="{StaticResource Title}" Text="{Binding SelectedBOM.ID}"/>
-            <TextBlock Style="{StaticResource SubTitle}" Text="{Binding SelectedBOM.ToMake, StringFormat='{}For {0}'}"/>
-            <Separator Margin="0,5"/>
-            <ItemsControl ItemsSource="{Binding SelectedBOM.Items}" HorizontalContentAlignment="Stretch">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <uc:DisplayBillOfMaterials BillOfMaterials="{Binding}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <TextBlock Text="No items found" 
-                       HorizontalAlignment="Center" 
-                       FontSize="20"
-                       Margin="20" 
-                       Opacity="0.3"
-                       FontStyle="Italic"
-                       Visibility="{Binding NoneFoundVis, UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>
+        <ScrollViewer  Grid.Column="2" Grid.RowSpan="2" Margin="30" VerticalScrollBarVisibility="Auto">
+            <StackPanel MaxWidth="700">
+                <TextBlock Style="{StaticResource Title}" Text="{Binding SelectedBOM.ID}"/>
+                <TextBlock Style="{StaticResource SubTitle}" Text="{Binding SelectedBOM.ToMake, StringFormat='{}For {0}'}"/>
+                <Separator Margin="0,5"/>
+                <ItemsControl ItemsSource="{Binding SelectedBOM.Items}" HorizontalContentAlignment="Stretch">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <uc:DisplayBillOfMaterials BillOfMaterials="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="No items found" 
+                           HorizontalAlignment="Center" 
+                           FontSize="20"
+                           Margin="20" 
+                           Opacity="0.3"
+                           FontStyle="Italic"
+                           Visibility="{Binding NoneFoundVis, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

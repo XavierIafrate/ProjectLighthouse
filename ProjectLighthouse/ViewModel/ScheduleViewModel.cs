@@ -57,7 +57,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedTab = value;
-                selectedTab.Orders = CompleteOrders.Where(n => n.Order.AllocatedMachine == value.LatheID).OrderBy(n=>n.Order.StartDate).ToList();
+                selectedTab.Orders = CompleteOrders.Where(n => (n.Order.AllocatedMachine ?? "") == value.LatheID).OrderBy(n=>n.Order.StartDate).ToList();
                 SelectedTab.CalculateTimings();
                 PrintButtonVis = SelectedTab.LatheID == "" ? Visibility.Collapsed : Visibility.Visible;
                 AutoScheduleVis = (App.currentUser.UserRole == "admin" || App.currentUser.UserRole == "Scheduling") && SelectedTab.LatheID != "" 

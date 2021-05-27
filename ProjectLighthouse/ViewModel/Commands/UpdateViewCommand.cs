@@ -28,13 +28,13 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new ScheduleViewModel();
                 viewModel.NavText = "Schedule";
             }
-            else if (parameter.ToString() == "Requests")
+            else if (parameter.ToString() == "View Requests")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new RequestViewModel();
                 viewModel.NavText = "Requests";
             }
-            else if (parameter.ToString() == "NewRequest")
+            else if (parameter.ToString() == "New Request")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new NewRequestViewModel();
@@ -46,7 +46,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new OrderViewModel();
                 viewModel.NavText = "Manufacture Orders";
             }
-            else if (parameter.ToString() == "Machine Stats")
+            else if (parameter.ToString() == "Runtime")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new MachineStatsViewModel();
@@ -58,13 +58,13 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new DeliveriesViewModel();
                 viewModel.NavText = "Deliveries";
             }
-            else if (parameter.ToString() == "AssemblyProducts")
+            else if (parameter.ToString() == "Manage Products")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new AssemblyProductsViewModel();
                 viewModel.NavText = "Assembly";
             }
-            else if (parameter.ToString() == "BOM")
+            else if (parameter.ToString() == "Bill of Materials")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new BillOfMaterialsViewModel();
@@ -76,7 +76,6 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new AssemblyOrdersViewModel();
                 viewModel.NavText = "Assembly Orders";
             }
-
         }
     }
 }

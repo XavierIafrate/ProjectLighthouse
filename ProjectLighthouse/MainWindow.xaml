@@ -105,7 +105,7 @@
                               x:Name="new_request_button"
                               Click="ToggleButton_Click"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
-                              CommandParameter="Requests"
+                              CommandParameter="View Requests"
                               Style="{StaticResource menuButtonStyle}"
                               Content="View Requests"
                               x:Name="requests_button"
@@ -133,7 +133,7 @@
                                   x:Name="schedule_button"
                                   Click="ToggleButton_Click"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}" 
-                                  CommandParameter="Machine Stats"
+                                  CommandParameter="Runtime"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Runtime"
                                   x:Name="machine_stats_button"
@@ -150,13 +150,13 @@
                                   x:Name="assemblyOrders_button"
                                   Click="ToggleButton_Click"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}"
-                                  CommandParameter="AssemblyProducts"
+                                  CommandParameter="Manage Products"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Manage Products"
                                   x:Name="assembly_button"
                                   Click="ToggleButton_Click"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}"
-                                  CommandParameter="BOM"
+                                  CommandParameter="Bill of Materials"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Bill of Materials"
                                   x:Name="BOM_button"

@@ -22,6 +22,8 @@ namespace ProjectLighthouse.Model
         public bool CanRaiseDelivery { get; set; }
         public bool CanCreateAssemblyProducts { get; set; }
 
+        public string DefaultView { get; set; }
+
         public string GetFullName()
         {
             return String.Format("{0} {1}", FirstName, LastName);
