@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\GIF\0.gif" />
+    <None Remove="Resources\GIF\excited.gif" />
+    <None Remove="Resources\GIF\moderate.gif" />
+    <None Remove="Resources\GIF\no.gif" />
     <None Remove="Resources\LighthouseLogo.png" />
     <None Remove="Resources\Lighthouse_dark.png" />
     <None Remove="Resources\Logo.png" />
@@ -43,9 +47,16 @@
     <PackageReference Include="PdfSharp" Version="1.50.5147" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\0.gif">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\GIF\excited.gif" />
+    <Resource Include="Resources\GIF\moderate.gif" />
+    <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

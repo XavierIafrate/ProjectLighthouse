@@ -32,7 +32,6 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedLatheManufactureOrder = value;
                 
-                //SelectedLatheManufactureOrderChanged?.Invoke(this, new EventArgs());
                 LoadLMOItems();
                 if (selectedLatheManufactureOrder == null)
                 {

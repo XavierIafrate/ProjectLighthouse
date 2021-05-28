@@ -21,5 +21,21 @@ namespace ProjectLighthouse.Model
 
         public string Status { get; set; }
         public string Notes { get; set; }
+    
+        public AssemblyManufactureOrder Clone()
+        {
+            return new AssemblyManufactureOrder()
+            {
+                Id = Id,
+                Name = Name,
+                POReference = POReference,
+                CreatedAt = CreatedAt,
+                CreatedBy = CreatedBy,
+                ModifiedAt = ModifiedAt,
+                ModifiedBy = ModifiedBy,
+                Status = Status,
+                Notes = Notes
+            };
+        }
     }
 }

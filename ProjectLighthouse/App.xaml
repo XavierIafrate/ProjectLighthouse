@@ -52,6 +52,7 @@
         <!--#endregion-->
         
         <!--#region Custom Text Styles-->
+
         <Style TargetType="TextBlock" x:Key="heroTextStyle">
             <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
             <Setter Property="FontSize" Value="30"/>
@@ -131,7 +132,16 @@
                     </Path.Fill>
                 </Path>
             </Grid>
-
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="Border"
+                            Property="BorderBrush"
+                            Value="#aaaaaa"/>
+                    <Setter TargetName="Border"
+                            Property="Background"
+                            Value="#aaaaaa"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
         </ControlTemplate>
 
         <ControlTemplate x:Key="ComboBoxTextBox"

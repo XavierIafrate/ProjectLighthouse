@@ -166,7 +166,5 @@
                 <!--#endregion-->
             </StackPanel>
         </ScrollViewer>
-        
-        
     </Grid>
 </UserControl>

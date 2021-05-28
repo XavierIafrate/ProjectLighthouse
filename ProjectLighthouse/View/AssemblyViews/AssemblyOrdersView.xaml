@@ -4,11 +4,185 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.AssemblyViews"
+             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Grid Background="{StaticResource materialYellow}">
-            <TextBlock FontSize="30" Text="Under construction" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <UserControl.Resources>
+        <vm:AssemblyOrdersViewModel x:Key="vm"/>
+    </UserControl.Resources>
+
+    <Grid Background="White" 
+          DataContext="{StaticResource vm}"
+          Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" MinWidth="300" MaxWidth="400"/>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Button Content="+ New Order"
+                    Style="{StaticResource GreenButtonTemplate}"
+                    Command="{Binding NewOrderCommand}"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Grid.Row="1">
+                <ListBox ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     SelectedItem="{Binding SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <uc:DisplayAssemblyManufactureOrder Order="{Binding}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+            <StatusBar Background="Transparent"
+                       Margin="0,5,0,0"
+                       Grid.Row="2"
+                       HorizontalAlignment="Right">
+                <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}"/>
+                <Separator Margin="5,0" Background="LightGray"/>
+                <TextBlock Text="Filter by:" 
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"/>
+                <ComboBox Width="100" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="All Active" IsSelected="True"/>
+                    <ComboBoxItem Content="Complete"/>
+                </ComboBox>
+            </StatusBar>
         </Grid>
+
+        <GridSplitter Grid.Column="1" Margin="2,0"
+                      Width="3" Background="White"
+                      VerticalAlignment="Stretch" 
+                      HorizontalAlignment="Center"/>
+
+        <ScrollViewer Grid.Column="2" Grid.RowSpan="2" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <TextBlock Text="No orders found"
+                         FontSize="20"
+                         FontStyle="Italic"
+                         Foreground="#888888"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Visibility="{Binding NothingFoundVis}"/>
+                <StackPanel MaxWidth="700" Margin="25,10" Visibility="{Binding OrderVis}">
+                    <Grid>
+                        <Rectangle RadiusX="10" RadiusY="10">
+                            <Rectangle.Effect>
+                                <DropShadowEffect BlurRadius="15" 
+                                          Direction="220" 
+                                          ShadowDepth="5" 
+                                          Color="#FF000000"
+                                          Opacity="0.3"/>
+                            </Rectangle.Effect>
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="White"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <StackPanel Margin="10">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding SelectedOrder.Name, FallbackValue='A00000'}"
+                                               FontSize="35"
+                                               FontWeight="Bold"
+                                               Margin="10,0"/>
+                                    <Button Grid.Column="2" 
+                                            Content="Edit" 
+                                            Style="{StaticResource ButtonTemplate}"
+                                            Command="{Binding EditOrderCommand}"
+                                            CommandParameter="{Binding SelectedOrder}"/>
+                                    <!--<Button Content="Generate PDF" 
+                                            Style="{StaticResource ButtonTemplate}" 
+                                            Grid.Column="3"/>-->
+                                </Grid>
+                                <TextBlock Text="{Binding SelectedOrder.POReference, FallbackValue='POR123456'}"
+                                           FontSize="18"
+                                           Foreground="{StaticResource materialPrimary}"
+                                           Margin="10,0"/>
+                                <Separator Margin="5,10,5,5"/>
+                                <Grid Margin="15,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Style="{StaticResource accentTextStyle}">
+                                        <Run Text="Created by"/>
+                                        <Run Text="{Binding SelectedOrder.CreatedBy, FallbackValue='Kyle Brovloski'}"/>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding SelectedOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
+                                               Style="{StaticResource accentTextStyle}"
+                                               Grid.Column="2"
+                                               HorizontalAlignment="Right"/>
+
+                                    <TextBlock Style="{StaticResource accentTextStyle}"
+                                               Grid.Row="1"
+                                               Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
+                                        <Run Text="Modified by"/>
+                                        <Run Text="{Binding SelectedOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}"/>
+                                    </TextBlock>
+
+                                    <TextBlock Text="{Binding SelectedOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
+                                               Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}"
+                                               Style="{StaticResource accentTextStyle}"
+                                               HorizontalAlignment="Right"
+                                               Grid.Column="2"
+                                               Grid.Row="1"/>
+                                </Grid>
+                                <Separator Margin="5"/>
+                            </StackPanel>
+                            <StackPanel Margin="10">
+                                <TextBlock Text="Drops"
+                                           Style="{StaticResource subtitleTextStyle}"/>
+                                <Grid>
+                                    <Rectangle Fill="{StaticResource materialBackground}" 
+                                               Stroke="{StaticResource materialPrimary}" 
+                                               RadiusX="5" RadiusY="5"/>
+                                    <ItemsControl ItemsSource="{Binding FilteredDrops, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  Margin="5"
+                                                  HorizontalContentAlignment="Stretch">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Product}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </StackPanel>
+                            <Separator Margin="0,5"/>
+                            <StackPanel Margin="10">
+                                <TextBlock Text="Notes"
+                                           Style="{StaticResource subtitleTextStyle}"/>
+                                <Grid>
+                                    <Rectangle Fill="White" Stroke="{StaticResource materialPrimary}" StrokeThickness="1" RadiusX="6" RadiusY="6"/>
+                                    <TextBlock Text="{Binding SelectedOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
+                                                   Margin="10,6"
+                                                   Padding="0,0,0,2"
+                                                   TextWrapping="Wrap"/>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

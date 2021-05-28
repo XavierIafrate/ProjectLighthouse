@@ -46,11 +46,11 @@
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
-                        <Setter Property="Background" Value="{StaticResource materialPrimary}"/>
+                        <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}"/>
                     </Trigger>
                     <Trigger Property="IsChecked" Value="True">
-                        <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
-                        <Setter Property="Background" Value="{StaticResource materialPrimaryVar}"/>
+                        <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+                        <Setter Property="Background" Value="{StaticResource materialBackground}"/>
                     </Trigger>
                 </Style.Triggers>
 
@@ -86,20 +86,21 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Rectangle Grid.RowSpan="4" Fill="{StaticResource materialOnBackground}"/>
-
-            <Image Source="/Resources/LighthouseLogo.png"
+            
+            <Rectangle Grid.RowSpan="4" Fill="Black"/>
+            
+                <Image Source="/Resources/LighthouseLogo.png"
                     RenderOptions.BitmapScalingMode="HighQuality"
-                   Width="175"
+                   Width="150"
                    Margin="0,30"/>
 
-            <StackPanel Grid.Row="1" Margin="20,0">
+            <StackPanel Grid.Row="1" Margin="20,0,0,0">
 
                 <TextBlock Text="Requests"
                            Style="{StaticResource menuSectionStyle}"/>
                 <Separator Style="{StaticResource menuSepStyle}"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
-                              CommandParameter="NewRequest"
+                              CommandParameter="New Request"
                               Style="{StaticResource menuButtonStyle}"
                               Content="New Request"
                               x:Name="new_request_button"
@@ -181,6 +182,15 @@
                     Width="100"
                     Margin="20"
                     Command="{Binding EditCommand}"/>
+            
+            <Grid Grid.RowSpan="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                </Grid.ColumnDefinitions>
+
+                <Rectangle Grid.Column="1"  Width="40" Fill="{StaticResource materialBackground}" RadiusX="10" RadiusY="10"/>
+            </Grid>
         </Grid>
 
         <!--<GridSplitter Grid.Column="1"

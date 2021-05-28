@@ -1,0 +1,76 @@
+﻿<Window x:Class="ProjectLighthouse.View.AssemblyViews.NewAssemblyOrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectLighthouse.View.AssemblyViews"
+        mc:Ignorable="d"
+        Title="NewAssemblyOrderWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <TextBlock Text="New Assembly Order"/>
+            <ListBox ItemsSource="{Binding Products}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding ProductNumber}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+            <TextBlock x:Name="orderTitle"/>
+            <ListBox x:Name="dropsListBox"/>
+
+            <TextBlock Text="Quantity Required"/>
+            <TextBox x:Name="TotalQuantityTextBox"/>
+            <TextBlock Text="Delivery Scheme"/>
+            
+            <RadioButton Content="Single Drop" x:Name="singleRadio"
+                         Checked="Radio_Checked"
+                         GroupName="scheme"/>
+            <RadioButton Content="Call off order" x:Name="multiRadio" 
+                         Checked="Radio_Checked"
+                         GroupName="scheme"/>
+
+
+            <TextBlock Text="Date Required"/>
+            <DatePicker x:Name="FlatRequiredDate"/>
+            <TextBlock Text="Quantity per Drop"/>
+            <TextBox x:Name="CallOffDropQuantity"
+                     KeyDown="CallOffDropQuantity_KeyDown"/>
+            <TextBlock Text="Starting Date"/>
+            <DatePicker x:Name="MultiDropStartingDate"/>
+            <TextBlock Text="Drop interval every n week / month"/>
+            <RadioButton Content="Every nth day" 
+                         x:Name="byDayNumber"
+                         GroupName="intervalType"
+                         Checked="Radio_Checked"/>
+            <RadioButton Content="Every relative date"
+                         x:Name="byInterval"
+                         GroupName="intervalType"
+                         Checked="Radio_Checked"/>
+
+            <TextBlock Text="on the nth day or the "/>
+            <TextBox x:Name="nthDayOfMonthTextBox"/>
+            <TextBlock Text="first, second, third, fourth, last - mon > fri"/>
+            <ComboBox x:Name="nthComboBox" IsEnabled="False">
+                <ComboBoxItem Content="First"/>
+                <ComboBoxItem Content="Second"/>
+                <ComboBoxItem Content="Third"/>
+                <ComboBoxItem Content="Fourth"/>
+                <ComboBoxItem Content="Last"/>
+            </ComboBox>
+            <ComboBox x:Name="DayOfWeekComboBox">
+                <ComboBoxItem Content="Monday"/>
+                <ComboBoxItem Content="Tuesday"/>
+                <ComboBoxItem Content="Wednesday"/>
+                <ComboBoxItem Content="Thursday"/>
+                <ComboBoxItem Content="Friday"/>
+            </ComboBox>
+        </StackPanel>
+    </Grid>
+</Window>
