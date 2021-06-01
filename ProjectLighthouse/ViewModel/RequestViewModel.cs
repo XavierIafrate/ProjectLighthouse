@@ -3,6 +3,7 @@ using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -219,6 +220,7 @@ namespace ProjectLighthouse.ViewModel
         public UpdatePORefCommand UpdateOrderCommand { get; set; }
         public ApproveRequestCommand ApproveCommand { get; set; }
         public DeclineRequestCommand DeclineCommand { get; set; }
+        public RequestsToCSVCommand ExportCommand { get; set; }
 
         #endregion
 
@@ -229,11 +231,12 @@ namespace ProjectLighthouse.ViewModel
             ApproveCommand = new ApproveRequestCommand(this);
             DeclineCommand = new DeclineRequestCommand(this);
             UpdateOrderCommand = new UpdatePORefCommand(this);
+            ExportCommand = new RequestsToCSVCommand(this);
             SelectedRequest = new Request();
 
             approvalControlsVis = App.currentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
             GetRequests();
-            FilterRequests("All");
+            FilterRequests("Last 14 Days");
 
             if (FilteredRequests.Count > 0)
                 SelectedRequest = FilteredRequests.First();
@@ -252,7 +255,6 @@ namespace ProjectLighthouse.ViewModel
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
             DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
             CanEditRequirements = (!request.IsAccepted && !request.IsDeclined);
-            Debug.WriteLine(CanEditRequirements);
 
 
             ProductionCheckboxEnabled = (request.Status == "Pending approval" &&
@@ -290,7 +292,11 @@ namespace ProjectLighthouse.ViewModel
             {
                 MessageBox.Show("Could not find Order in database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
 
+        public void ExportRequestsToCSV()
+        {
+            CSVHelper.WriteListToCSV(FilteredRequests.ToList(), "Lighthouse_Requests");
         }
 
         public void UpdateRequest()
@@ -427,6 +433,9 @@ namespace ProjectLighthouse.ViewModel
         {
             switch (filter)
             {
+                case "Last 14 Days":
+                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.DateRaised.AddDays(14) > DateTime.Now));
+                    break;
                 case "All":
                     FilteredRequests = new ObservableCollection<Request>(Requests);
                     break;

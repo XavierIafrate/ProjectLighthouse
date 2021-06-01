@@ -13,7 +13,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     class MachineStatsHelper
     {
-        private static string IP_ADDRESS = "http://192.168.100.172";
+        private static string IP_ADDRESS = "http://192.168.103.102";
 
         public static async Task<List<MachineStatistics>> GetStats()
         {

@@ -46,7 +46,7 @@
             <vm:NewRequestViewModel x:Key="vm"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="20" DataContext="{StaticResource vm}">
+    <Grid DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"
                               MinWidth="300"
@@ -54,7 +54,7 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <!--Input Grid-->
-        <Grid>
+        <Grid Margin="20,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
@@ -156,8 +156,8 @@
                       VerticalAlignment="Top" 
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
-            <Grid Margin="20" MaxWidth="700">
-                <Grid >
+            <Grid Margin="20" MaxWidth="400">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -165,7 +165,7 @@
                     </Grid.RowDefinitions>
                     <Rectangle Fill="{StaticResource materialPrimary}" Grid.Row="0">
                         <Rectangle.Effect>
-                            <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.3"/>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
                         </Rectangle.Effect>
                     </Rectangle>
                     <Rectangle Fill="{StaticResource materialSurface}" Grid.Row="1">

@@ -19,29 +19,24 @@ namespace ProjectLighthouse.View
     public partial class EditLMOWindow : Window
     {
         public LatheManufactureOrder order;
-        private ObservableCollection<LatheManufactureOrderItem> items;
+        public List<LatheManufactureOrderItem> items;
+        public List<Lot> lots;
         public bool SaveExit { get; set; }
 
-        public EditLMOWindow(LatheManufactureOrder o)
+        public EditLMOWindow(LatheManufactureOrder o, List<LatheManufactureOrderItem> i, List<Lot> l)
         {
             InitializeComponent();
 
             SaveExit = false;
-
+            items = new List<LatheManufactureOrderItem>(i);
+            lots = new List<Lot>(l);
             order = (LatheManufactureOrder)o.Clone(); // break the reference
 
-            items = new ObservableCollection<LatheManufactureOrderItem>();
             PopulateControls();
         }
 
         private void PopulateControls()
         {
-            // inefficient, should be in constructor
-            var itemsList = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name).ToList();
-            items.Clear();
-            foreach (var product in itemsList)
-                items.Add(product);
-
             ItemsListBox.ItemsSource = items;
 
             nameText.Text = order.Name;
@@ -102,11 +97,23 @@ namespace ProjectLighthouse.View
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
+            AssignValues();
+
+            order.ModifiedBy = App.currentUser.GetFullName();
+            order.ModifiedAt = DateTime.Now;
+
+            DatabaseHelper.Update(order);
+            SaveExit = true;
+            this.Close();
+        }
+
+        private void AssignValues()
+        {
             TextRange textRange = new TextRange(notes.Document.ContentStart, notes.Document.ContentEnd);
 
             if (textRange.Text.Length > 2)
                 order.Notes = textRange.Text.Substring(0, textRange.Text.Length - 2);
-           
+
             order.POReference = PORef.Text;
             order.AllocatedSetter = setters.Text;
             //order.IsUrgent = urgent.IsChecked ?? false;
@@ -125,13 +132,6 @@ namespace ProjectLighthouse.View
             order.IsComplete = order.Status == "Complete";
 
             calculateTime();
-
-            order.ModifiedBy = App.currentUser.GetFullName();
-            order.ModifiedAt = DateTime.Now;
-
-            DatabaseHelper.Update(order);
-            SaveExit = true;
-            this.Close();
         }
 
         private void program_Click(object sender, RoutedEventArgs e)
@@ -153,12 +153,23 @@ namespace ProjectLighthouse.View
         private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DisplayLMOItems control = sender as DisplayLMOItems;
-            LatheManufactureOrderItem item = control.LatheManufactureOrderItem;
-            EditLMOItemWindow editWindow = new EditLMOItemWindow(item);
+            EditLMOItemWindow editWindow = new EditLMOItemWindow(control.LatheManufactureOrderItem, 
+                lots.Where(n=> n.ProductName == control.LatheManufactureOrderItem.ProductName).ToList());
+            this.Hide();
             editWindow.ShowDialog();
-            PopulateControls();
+            this.Show();
+            if (editWindow.SaveExit)
+                RefreshItems();        
         }
 
+        public void RefreshItems()
+        {
+            items = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name).OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName).ToList();
+            ItemsListBox.ItemsSource = items;
+        }
+
+
+        #region Helpers
         private void calculateTime()
         {
             int estimatedTimeSeconds = 0;
@@ -233,5 +244,6 @@ namespace ProjectLighthouse.View
                 richTextBox.CaretPosition = caretPos.DocumentEnd;
             }
         }
+        #endregion
     }
 }

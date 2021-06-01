@@ -7,8 +7,7 @@
              xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
              xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
-             mc:Ignorable="d" 
-             Background="White">
+             Background="{StaticResource materialBackground}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -22,11 +21,6 @@
                      AutoReverse="True"
                      BeginTime="0:0:1"
                      Duration="0:0:01" />
-                <!--<DoubleAnimation Storyboard.TargetProperty="Opacity"
-                     From="1"
-                     To="1"
-                     AutoReverse="True"
-                     Duration="0:0:1" />-->
             </Storyboard>
 
             <Style x:Key="liveCircle" TargetType="Rectangle">
@@ -45,14 +39,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="10" DataContext="{StaticResource vm}">
+    <Grid DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"
                               MinWidth="260"/>
-            <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="340"
-                              MinWidth="340"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -70,9 +61,8 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <StatusBar
-                   Background="Transparent"
-                   Margin="0,5,0,0"
+        <StatusBar Background="Transparent"
+                   Margin="0,5"
                    Grid.Row="1">
             <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}"/>
             <Separator Margin="5,0" Background="LightGray"/>
@@ -86,17 +76,19 @@
                 <ComboBoxItem Content="Complete"/>
             </ComboBox>
         </StatusBar>
-        <TextBlock Grid.Column="2"
+        
+        <!--#region Display Order-->
+        <TextBlock Grid.Column="1"
                    Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"
                    Text="None found"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Left"
                    FontSize="30"
                    Foreground="#dddddd" Margin="154,324,0,0"/>
-        <ScrollViewer Grid.Column="2"
+        <ScrollViewer Grid.Column="1"
                       Grid.RowSpan="2"
-                      Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2">
-            <StackPanel Margin="25,10" MaxWidth="700">
+                      Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
+            <StackPanel Margin="25,10">
                 <Grid Margin="0,0,0,10" Visibility="{Binding LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
                     <Rectangle Fill="{StaticResource materialError}"
                                RadiusX="5"
@@ -123,20 +115,8 @@
                     </Grid>
                 </Grid>
                 <Grid>
-                    <Rectangle RadiusX="10" RadiusY="10">
-                        <Rectangle.Effect>
-                            <DropShadowEffect BlurRadius="15" 
-                                      Direction="220" 
-                                      RenderingBias="Quality" 
-                                      ShadowDepth="5" 
-                                      Color="#FF000000" 
-                                      Opacity="0.3"/>
-                        </Rectangle.Effect>
-                        <Rectangle.Fill>
-                            <SolidColorBrush Color="White"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                    <StackPanel Margin="10">
+                    <StackPanel Margin="10" MaxWidth="700">
+                        <!--#region Header Data-->
                         <StackPanel>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -152,7 +132,6 @@
                                 <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"/>
                                 <Button Content="Generate PDF" x:Name="printButton" Style="{StaticResource ButtonTemplate}" Command="{Binding PrintOrderCommand}" Grid.Column="3"/>
                             </Grid>
-
 
                             <TextBlock Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}"
                                        FontSize="18"
@@ -197,31 +176,30 @@
                             </Grid>
                             <Separator Margin="5"/>
                         </StackPanel>
-                        <TextBlock Margin="10,5,0,0" Text="{Binding RunInfoText, UpdateSourceTrigger=PropertyChanged}">
-                            <!--<Run Text="Assigned to"/>
-                            <Run Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine, FallbackValue='C00'}"/>
-                            <Run Text="for"/>
-                            <Run Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:dd/MM/yy}'}"/>-->
-                        </TextBlock>
-                        <TextBlock Margin="10,5,0,0">
-                            <Run Text="Assigned Setter:"/>
-                            <Run Text="{Binding SelectedLatheManufactureOrder.AllocatedSetter, FallbackValue='Eric Cartman'}"/>
-                        </TextBlock>
-
-                        <TextBlock Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}, FallbackValue='Has a program'}"
-                           x:Name="ProgramTextBlock"
-                           Margin="10,5"/>
-                        <StackPanel Margin="10">
+                        <!--#endregion-->
+                        
+                        <!--#region Metadata-->
+                        <StackPanel Margin="15,0">
+                            <TextBlock Text="{Binding RunInfoText, UpdateSourceTrigger=PropertyChanged}"
+                                       Style="{StaticResource bodyTextStyle}">
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource bodyTextStyle}">
+                                <Run Text="Assigned Setter:"/>
+                                <Run Text="{Binding SelectedLatheManufactureOrder.AllocatedSetter, FallbackValue='Eric Cartman'}"/>
+                            </TextBlock>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}, FallbackValue='Has a program'}"
+                                       x:Name="ProgramTextBlock"
+                                       Style="{StaticResource bodyTextStyle}"/>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.BarID, StringFormat='{}Bar ID: {0}'}" Style="{StaticResource bodyTextStyle}"/>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}Estimated number of bars: {0}'}" Style="{StaticResource bodyTextStyle}"/>
+                        </StackPanel>
+                        <StackPanel>
                             <TextBlock Text="Items"
                                        HorizontalAlignment="Left"
                                        FontSize="20"
                                        Padding="0,0,0,8"/>
                             <Grid>
-                                <Rectangle Fill="{StaticResource materialBackground}" Stroke="{StaticResource materialPrimary}" RadiusX="5" RadiusY="5">
-                                    <Rectangle.Effect>
-                                        <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.1"/>
-                                    </Rectangle.Effect>
-                                </Rectangle>
+                                <Rectangle Fill="{StaticResource materialBackground}" Stroke="{StaticResource materialPrimary}" RadiusX="8" RadiusY="8"/>
                                 <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               Margin="5"
                                           HorizontalContentAlignment="Stretch">
@@ -232,43 +210,25 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </Grid>
-
-
                         </StackPanel>
-
-                        <!--<Grid MinWidth="150" MaxWidth="250" Height="25" Margin="0,20">
-                            <Rectangle RadiusX="6" RadiusY="6" Fill="{Binding StatusBackground, UpdateSourceTrigger=PropertyChanged}">
-                                <Rectangle.Effect>
-                                    <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
-                                </Rectangle.Effect>
-                            </Rectangle>
-                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.IsReady, Converter={StaticResource boolToIsReady}, FallbackValue='Ready to go'}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Foreground="White"
-                               FontWeight="Bold"/>
-                        </Grid>-->
-                        <Separator Margin="0,5"/>
-
+                        <!--#endregion-->
+                        <!--#region Notes-->
                         <TextBlock Text="Notes"
-                           Margin="10,5"
-                           FontStyle="Italic"
-                           FontWeight="Bold"/>
-                        <Grid Margin="10,0,10,10">
-                            <Rectangle Fill="White" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" RadiusX="6" RadiusY="6">
-                                <Rectangle.Effect>
-                                    <DropShadowEffect BlurRadius="20" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.3"/>
-                                </Rectangle.Effect>
-                            </Rectangle>
+                                       Style="{StaticResource subtitleTextStyle}"/>
+                        <Grid>
+                            <Rectangle Fill="White" Stroke="{StaticResource materialPrimary}" RadiusX="8" RadiusY="8"/>
                             <TextBlock Text="{Binding SelectedLatheManufactureOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
-                                       Margin="10,6"
-                                       Padding="0,0,0,2"
-                                       TextWrapping="Wrap"/>
+                                           Margin="10,6"
+                                           Padding="0,0,0,2"
+                                           TextWrapping="Wrap"/>
                         </Grid>
+                        <!--#endregion-->
+                        
                     </StackPanel>
                 </Grid>
-
             </StackPanel>
         </ScrollViewer>
+        <!--#endregion-->
+        
     </Grid>
 </UserControl>

@@ -102,7 +102,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <StatusBar HorizontalAlignment="Stretch"
+        <StatusBar HorizontalAlignment="Right"
                    Background="Transparent"
                    Margin="0,5,0,0"
                    Grid.Row="1">
@@ -112,12 +112,14 @@
                        VerticalAlignment="Center"
                        Margin="0,0,10,0"/>
             <ComboBox Width="100" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ComboBoxItem Content="All" IsSelected="True"/>
+                <ComboBoxItem Content="Last 14 Days" IsSelected="True"/>
                 <ComboBoxItem Content="My Requests"/>
                 <ComboBoxItem Content="Pending"/>
                 <ComboBoxItem Content="Accepted"/>
                 <ComboBoxItem Content="Declined"/>
+                <ComboBoxItem Content="All"/>
             </ComboBox>
+            <Button Content="CSV" Command="{Binding ExportCommand}" Style="{StaticResource ButtonTemplate}" Margin="0"/>
         </StatusBar>
         <TextBlock Text="None found" 
                    Grid.Column="2" 

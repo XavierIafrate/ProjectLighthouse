@@ -71,7 +71,6 @@ namespace ProjectLighthouse.Model
             catch (Exception e)
             {
                 Console.WriteLine("Error in Send email: {0}", e.Message);
-                throw;
             }
             message.Dispose();
         }

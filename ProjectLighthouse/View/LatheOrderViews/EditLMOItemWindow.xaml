@@ -4,10 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectLighthouse.View"
-        mc:Ignorable="d"
+        xmlns:mdl="clr-namespace:ProjectLighthouse.Model"
+        xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
         WindowStartupLocation="CenterScreen"
-        SizeToContent="Width"
-        Title="Edit Item" Height="400">
+        ResizeMode="NoResize"
+        Title="Edit Item" 
+        SizeToContent="WidthAndHeight">
+
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -18,14 +22,44 @@
             <TextBlock Text="Update Item" FontSize="30" Margin="0,10"/>
             <Separator/>
 
-            <TextBlock Text="{Binding ProductName, FallbackValue='P0123.456-789-A2'}" FontSize="20"/>
-            <TextBlock Text="{Binding AssignedMO, FallbackValue='M12345'}" FontSize="20" Foreground="DodgerBlue"/>
+            <TextBlock x:Name="ProductNameTextBlock" FontSize="20"/>
+            <TextBlock x:Name="ManufactureOrderTextBlock" FontSize="20" Foreground="DodgerBlue"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
 
-            <TextBlock Text="Quantity Made (does not include rejects)" Margin="0,10,0,5"/>
-            <TextBox Width="150" HorizontalAlignment="Left" x:Name="QuantityMadeTextbox"/>
-            <TextBlock Text="Quantity Rejected" Margin="0,10,0,5"/>
-            <TextBox Width="150" HorizontalAlignment="Left" x:Name="QuantityRejectTextbox"/>
+                <TextBlock Text="Quantity Accepted" Margin="0,10,0,5"/>
+                <TextBlock x:Name="QtyMadeTextBlock" 
+                           Grid.Row="1"
+                           FontSize="18" 
+                           Foreground="{StaticResource materialPrimary}"/>
 
+                <TextBlock Text="Quantity Rejected"
+                           Grid.Column="1"
+                           Margin="0,10,0,5"/>
+                <TextBlock x:Name="QtyRejectTextBlock" 
+                           Grid.Row="1"
+                           Grid.Column="1"
+                           FontSize="18"
+                           Foreground="{StaticResource materialError}"/>
+                
+                <TextBlock Text="Delivered"
+                           Grid.Column="2"
+                           Margin="0,10,0,5"/>
+                <TextBlock x:Name="QtyDeliveredTextBlock" 
+                           Grid.Row="1"
+                           Grid.Column="2"
+                           FontSize="18"
+                           Foreground="{StaticResource materialPrimaryGreen}"/>
+            </Grid>
+            
             <TextBlock Text="Cycle Time" Margin="0,10,0,5"/>
             <StackPanel Orientation="Horizontal">
                 <TextBox Width="30" HorizontalAlignment="Left" 
@@ -38,6 +72,37 @@
                 <TextBlock Text="s" Margin="2,0,8,0"/>
                 <TextBlock Text="(120s)" x:Name="intCycleTimeText"/>
             </StackPanel>
+            <TextBlock Text="Stock Lots" Margin="0,10,0,5"/>
+            <ListBox x:Name="LotsListBox" MinHeight="100" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type mdl:Lot}">
+                        <uc:DisplayLot Lot="{Binding}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <TextBlock Text="New Lot"
+                       Style="{StaticResource subsubtitleTextStyle}" Margin="0,10,0,5"/>
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="2"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Quantity in Lot" Margin="5,2"/>
+                <TextBox x:Name="BatchTextBox" Grid.Column="1"/>
+                <CheckBox Content="Lot is Rejects" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
+
+                <TextBlock Text="Material Batch ID" Grid.Row="2" Margin="5,2"/>
+                <TextBox x:Name="QuantityNewLotTextBox" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
+            </Grid>
 
             <Button Content="Save Changes" 
                     Style="{StaticResource ButtonTemplate}" 
@@ -45,7 +110,7 @@
                     x:Name="SaveButton"
                     Click="SaveButton_Click"/>
         </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20" x:Name="SchedulingGrid">
+        <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="20" x:Name="SchedulingGrid">
             <TextBlock Text="Scheduling" FontSize="30" Margin="0,10"/>
             <Separator/>
             <TextBlock Text="Quantity Required" Margin="0,10,0,5"/>
@@ -54,7 +119,7 @@
             <TextBox Width="150" HorizontalAlignment="Left" x:Name="QuantityTargetTextbox"/>
             <TextBlock Text="Date Required" Margin="0,10,0,5"/>
             <DatePicker Width="150" HorizontalAlignment="Left" x:Name="DateRequiredPicker"/>
-            <Button Style="{StaticResource ButtonTemplate}" Content="Clear Date"/>
+            <Button Style="{StaticResource ButtonTemplate}" Content="Clear Date" x:Name="ClearDateButton" Click="ClearDateButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>

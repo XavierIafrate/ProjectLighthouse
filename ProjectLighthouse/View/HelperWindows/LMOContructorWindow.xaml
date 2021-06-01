@@ -7,10 +7,10 @@
         xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
         xmlns:vm ="clr-namespace:ProjectLighthouse.ViewModel"
         mc:Ignorable="d"
-        WindowStyle="None"
         MinHeight="650" MinWidth="1100"
-        WindowStartupLocation="CenterOwner"
-        Title="Create New Manufacture Order" Height="650" Width="1100">
+        WindowStartupLocation="CenterScreen"
+        Title="Create New Manufacture Order"
+        SizeToContent="Width">
 
     <Grid DataContext="{Binding}" Margin="20">
         <Grid.RowDefinitions>

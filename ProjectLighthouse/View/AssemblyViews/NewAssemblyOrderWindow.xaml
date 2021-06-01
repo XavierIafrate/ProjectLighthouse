@@ -41,7 +41,7 @@
             <DatePicker x:Name="FlatRequiredDate"/>
             <TextBlock Text="Quantity per Drop"/>
             <TextBox x:Name="CallOffDropQuantity"
-                     KeyDown="CallOffDropQuantity_KeyDown"/>
+                     PreviewKeyDown="CallOffDropQuantity_PreviewKeyDown"/>
             <TextBlock Text="Starting Date"/>
             <DatePicker x:Name="MultiDropStartingDate"/>
             <TextBlock Text="Drop interval every n week / month"/>

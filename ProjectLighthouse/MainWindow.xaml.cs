@@ -51,77 +51,15 @@ namespace ProjectLighthouse
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //return;
-            //EmailHelper.SendEmail("x.iafrate@wixroydgroup.com", "Request Approved", "This is a test of SMTP integration");
-            //Request tmpRequst = new Request()
-            //{
-            //    QuantityRequired = 100,
-            //    Product = "TEST",
-            //    RaisedBy = "Xavier Iafrate",
-            //    DeclinedReason="Uneconomical"
-            //};
-
-            //EmailHelper.NotifyRequestDeclined(tmpRequst);
-
-            List<LatheManufactureOrderItem> items = new List<LatheManufactureOrderItem>()
-            {
-                new LatheManufactureOrderItem()
-                {
-                    ProductName="Test1",
-                    TargetQuantity = 1000,
-                    RequiredQuantity = 100,
-                    DateRequired = DateTime.Now
-                },
-                new LatheManufactureOrderItem()
-                {
-                    ProductName="Test2",
-                    TargetQuantity = 1000,
-                    RequiredQuantity = 0,
-                    DateRequired = DateTime.Now
-                }
-            };
-
-            LatheManufactureOrder order = new LatheManufactureOrder()
-            {
-                Name = "TESTORDER"
-            };
-
-            EmailHelper.NotifyNewOrder(order, items);
-            return;
-
-
-            //List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>();
-            //List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>();
-            //List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
-
-            //List<LatheManufactureOrder> activeOrders = new List<LatheManufactureOrder>();
-            //List<LatheManufactureOrderItem> activeItems = new List<LatheManufactureOrderItem>();
-
-            //List<string> active_order_names = new List<string>();
-
-            //foreach(LatheManufactureOrder order in orders)
-            //{
-            //    if (order.Status != "Complete")
-            //    {
-            //        activeOrders.Add(order);
-            //        active_order_names.Add(order.Name);
-            //    }
-            //}
-
-            //foreach(LatheManufactureOrderItem item in items)
-            //{
-            //    if (active_order_names.Contains(item.AssignedMO))
-            //        activeItems.Add(item);
-            //}
-            //PDFHelper.PrintSchedule(activeOrders, activeItems, lathes);
-
-            //ReportingHelper.GetReport();
-            
+            //ReportingHelper.GetReport();    
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             debugButton.Visibility = Visibility.Collapsed; // App.currentUser.UserRole != "admin" ? Visibility.Collapsed : Visibility.Visible;
+            assemblyOrders_button.IsEnabled = App.currentUser.UserRole == "admin";
+            BOM_button.IsEnabled = App.currentUser.UserRole == "admin";
+            assembly_button.IsEnabled = App.currentUser.UserRole == "admin";
         }
 
     }

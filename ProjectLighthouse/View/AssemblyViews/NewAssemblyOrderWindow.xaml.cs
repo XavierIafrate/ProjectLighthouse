@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Assembly;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,21 +87,25 @@ namespace ProjectLighthouse.View.AssemblyViews
 
         //}
 
-        private void CallOffDropQuantity_KeyDown(object sender, KeyEventArgs e)
+        private void CallOffDropQuantity_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            char key = (char)e.Key;
-
-            if (!char.IsControl(key) && !char.IsDigit(key) &&
-            (key != '.'))
+            if (e.Key == Key.Space) // space bar just has to be a precious little princess with it's own function
             {
                 e.Handled = true;
+                return;
             }
 
-            // only allow one decimal point
-            if ((key == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+            string strKey = e.Key.ToString();
+            if ((strKey.Contains("D") && strKey.Length == 2) || strKey.Contains("NumPad"))
             {
-                e.Handled = true;
+                if ("0123456789".Contains(strKey.Substring(strKey.Length - 1, 1)))
+                {
+                    e.Handled = false;
+                    return;
+                }
             }
+            e.Handled = true;
+            return;
         }
     }
 }

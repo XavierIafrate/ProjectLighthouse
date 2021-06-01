@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
         <TextBlock Text="New Delivery"
                    Style="{StaticResource heroTextStyle}"/>
-        <TextBlock Text="Undelivered Items"
+        <TextBlock Text="Undelivered Stock Lots"
                    Grid.Row="1"
                    Style="{StaticResource subtitleTextStyle}"/>
         <ScrollViewer Grid.Row="2">

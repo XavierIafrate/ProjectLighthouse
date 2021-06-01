@@ -36,30 +36,31 @@ namespace ProjectLighthouse.View
 
         private void GetUndelivered()
         {
-            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.QuantityDelivered < n.QuantityMade).ToList();
+            List<Lot> lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && !n.IsReject).ToList();
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
+            //List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
             allUndeliveredItems.Clear();
             filteredUndeliveredItems.Clear();
             itemsOnNewNote.Clear();
 
             string _POref = String.Empty;
-            foreach(var item in items)
+            foreach(var lot in lots)
             {
                 foreach(var order in orders)
                 {
-                    if(order.Name == item.AssignedMO)
+                    if(order.Name == lot.Order)
                     {
                         _POref = order.POReference;
                     }
                 }
                 allUndeliveredItems.Add(new DeliveryItem()
                 {
-                    ItemManufactureOrderNumber = item.AssignedMO,
+                    ItemManufactureOrderNumber = lot.Order,
                     PurchaseOrderReference = _POref,
-                    Product = item.ProductName,
-                    QuantityThisDelivery = item.QuantityMade - item.QuantityDelivered,
-                    QuantityToFollow = Math.Max(item.TargetQuantity - item.QuantityDelivered - item.QuantityMade, (int)0)
+                    Product = lot.ProductName,
+                    QuantityThisDelivery = lot.Quantity,
+                    //QuantityToFollow = Math.Max(item.TargetQuantity - item.QuantityDelivered - item.Quantiy, (int)0)
                 });
             }
 

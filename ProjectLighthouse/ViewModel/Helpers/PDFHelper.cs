@@ -41,7 +41,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         #endregion
         // This needs a massive fucking overhaul
 
-        public static void PrintOrder(LatheManufactureOrder order, ObservableCollection<LatheManufactureOrderItem> items)
+        public static void PrintOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 

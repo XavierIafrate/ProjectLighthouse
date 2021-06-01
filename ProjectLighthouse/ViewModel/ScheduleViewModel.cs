@@ -20,6 +20,7 @@ namespace ProjectLighthouse.ViewModel
         #region Variables
         public ObservableCollection<LatheManufactureOrder> Orders { get; set; }
         public ObservableCollection<LatheManufactureOrderItem> OrderItems { get; set; }
+        public List<Lathe> Lathes { get; set; }
         public List<CompleteOrder> CompleteOrders { get; set; }
         public List<TabInfo> WindowTabs { get; set; }
 
@@ -73,6 +74,7 @@ namespace ProjectLighthouse.ViewModel
             Orders = new ObservableCollection<LatheManufactureOrder>();
             OrderItems = new ObservableCollection<LatheManufactureOrderItem>();
             CompleteOrders = new List<CompleteOrder>();
+            Lathes = new List<Lathe>();
             WindowTabs = new List<TabInfo>();
 
             printScheduleCommand = new PrintScheduleCommand(this);
@@ -123,7 +125,7 @@ namespace ProjectLighthouse.ViewModel
         private void CreateTabs()
         {
             WindowTabs.Clear();
-            List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
+            Lathes = DatabaseHelper.Read<Lathe>().ToList();
 
             WindowTabs.Add(new TabInfo()
             {
@@ -132,7 +134,7 @@ namespace ProjectLighthouse.ViewModel
                 ViewTitle = "Awaiting Scheduling"
             });
 
-            foreach (Lathe lathe in lathes)
+            foreach (Lathe lathe in Lathes)
             {
                 WindowTabs.Add(new TabInfo()
                 {
@@ -142,8 +144,6 @@ namespace ProjectLighthouse.ViewModel
                     ViewTitle = string.Format("{0} Schedule", lathe.FullName)
                 });
             }
-
-            lathes = null;
         }
 
         public class TabInfo
@@ -211,7 +211,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSchedule()
         {
-            MessageBox.Show("Not implemented yet", "Printing");
+            PDFHelper.PrintSchedule(Orders.ToList(), OrderItems.ToList(), Lathes);
         }
     }
 }

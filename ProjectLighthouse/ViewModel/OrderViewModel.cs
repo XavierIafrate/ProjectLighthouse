@@ -16,11 +16,12 @@ namespace ProjectLighthouse.ViewModel
     public class OrderViewModel : BaseViewModel
     {
         #region Variables
-        public ObservableCollection<LatheManufactureOrder> LatheManufactureOrders { get; set; }
-        public ObservableCollection<LatheManufactureOrder> FilteredOrders { get; set; }
-        public ObservableCollection<LatheManufactureOrderItem> LMOItems { get; set; }
-        public ObservableCollection<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
+        public List<LatheManufactureOrder> LatheManufactureOrders { get; set; }
+        public List<LatheManufactureOrder> FilteredOrders { get; set; }
+        public List<LatheManufactureOrderItem> LMOItems { get; set; }
+        public List<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
         public List<MachineStatistics> machineStatistics { get; set; }
+        public List<Lot> Lots { get; set; }
 
         DispatcherTimer dispatcherTimer { get; set; }
 
@@ -46,9 +47,9 @@ namespace ProjectLighthouse.ViewModel
                 ModifiedVis = String.IsNullOrEmpty(selectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
                 machineStatistics = (machineStatistics == null) ? new List<MachineStatistics>() : machineStatistics;
                 LiveInfoVis = selectedLatheManufactureOrder.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
-
+                Lots = DatabaseHelper.Read<Lot>().ToList();
                 RunInfoText = !String.IsNullOrEmpty(selectedLatheManufactureOrder.AllocatedMachine) ? 
-                    String.Format("Assigned to {0}, starting {1:MMMM d}{2}", 
+                    String.Format("Assigned to {0}, starting {1:dddd, MMMM d}{2}", 
                     selectedLatheManufactureOrder.AllocatedMachine, 
                     selectedLatheManufactureOrder.StartDate, 
                     GetDaySuffix(selectedLatheManufactureOrder.StartDate.Day)) :
@@ -164,12 +165,12 @@ namespace ProjectLighthouse.ViewModel
             dispatcherTimer.Interval = TimeSpan.FromSeconds(60);
             dispatcherTimer.Start();
 
-            LatheManufactureOrders = new ObservableCollection<LatheManufactureOrder>();
-            FilteredOrders = new ObservableCollection<LatheManufactureOrder>();
+            LatheManufactureOrders = new List<LatheManufactureOrder>();
+            FilteredOrders = new List<LatheManufactureOrder>();
             machineStatistics = new List<MachineStatistics>();
 
-            LMOItems = new ObservableCollection<LatheManufactureOrderItem>();
-            FilteredLMOItems = new ObservableCollection<LatheManufactureOrderItem>();
+            LMOItems = new List<LatheManufactureOrderItem>();
+            FilteredLMOItems = new List<LatheManufactureOrderItem>();
             SelectedLatheManufactureOrder = new LatheManufactureOrder();
 
             PrintOrderCommand = new PrintCommand(this);
@@ -267,16 +268,16 @@ namespace ProjectLighthouse.ViewModel
             switch (filter)
             {
                 case "All Active":
-                    FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete || n.ModifiedAt.AddDays(1) > DateTime.Now));
+                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete || n.ModifiedAt.AddDays(1) > DateTime.Now));
                     break;
                 case "Not Ready":
-                    FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && !n.IsReady));
+                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && !n.IsReady));
                     break;
                 case "Ready":
-                    FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && n.IsReady && n.Status != "Running"));
+                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && n.IsReady && n.Status != "Running"));
                     break;
                 case "Complete":
-                    FilteredOrders = new ObservableCollection<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.IsComplete).OrderByDescending(n => n.CreatedAt));
+                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.IsComplete).OrderByDescending(n => n.CreatedAt));
                     break;
             }
 
@@ -308,7 +309,7 @@ namespace ProjectLighthouse.ViewModel
                 if (item.AssignedMO == selectedMO)
                     FilteredLMOItems.Add(item);
 
-            FilteredLMOItems = new ObservableCollection<LatheManufactureOrderItem>
+            FilteredLMOItems = new List<LatheManufactureOrderItem>
                 (FilteredLMOItems.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName));
             OnPropertyChanged("FilteredLMOItems");
         }
@@ -322,7 +323,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void EditLMO()
         {
-            EditLMOWindow editWindow = new EditLMOWindow(SelectedLatheManufactureOrder);
+            EditLMOWindow editWindow = new EditLMOWindow((LatheManufactureOrder)SelectedLatheManufactureOrder.Clone(), FilteredLMOItems, Lots.Where(n=>n.Order == SelectedLatheManufactureOrder.Name).ToList());
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
 
@@ -339,6 +340,7 @@ namespace ProjectLighthouse.ViewModel
                     }
                 }
             }
+
             editWindow = null;
 
             GetLatheManufactureOrderItems();

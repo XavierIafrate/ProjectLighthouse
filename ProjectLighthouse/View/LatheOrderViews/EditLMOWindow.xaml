@@ -8,6 +8,8 @@
         mc:Ignorable="d"
         Title="Edit Order"
         SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
         Width="600">
     
     
@@ -42,7 +44,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel >
+                <StackPanel>
                     <TextBlock Text="Purchase Order Reference" Style="{StaticResource bodyTextStyle}"/>
                     <TextBox x:Name="PORef"/>
 
@@ -67,7 +69,6 @@
                     <RadioButton Content="Complete" x:Name="complete_radio" Checked="complete_radio_Checked"/>
                 </StackPanel>
             </Grid>
-            
             
             <!--Items List-->
             <TextBlock Text="Items" Style="{StaticResource subtitleTextStyle}"/>
