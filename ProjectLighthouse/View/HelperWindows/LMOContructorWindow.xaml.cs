@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -48,7 +49,7 @@ namespace ProjectLighthouse.View
         public void ReadDatabase(Request request)
         {
             string productName = request.Product;
-            var products = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductGroup == productName.Substring(0, 9));
+            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductGroup == productName.Substring(0, 9)).ToList();
             TurnedProduct requiredProduct = new TurnedProduct();
 
             // Add products to potential pool

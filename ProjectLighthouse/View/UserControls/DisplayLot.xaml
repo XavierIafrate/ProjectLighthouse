@@ -9,7 +9,10 @@
         <Style x:Key="text" TargetType="TextBlock">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=IsReject}" Value="True">
-                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="Foreground" Value="{StaticResource materialError}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsDelivered}" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreenVar}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>

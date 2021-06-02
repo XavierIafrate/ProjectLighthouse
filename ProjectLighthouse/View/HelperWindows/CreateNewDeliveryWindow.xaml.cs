@@ -24,6 +24,7 @@ namespace ProjectLighthouse.View
         private List<DeliveryItem> allUndeliveredItems { get; set; }
         private List<DeliveryItem> filteredUndeliveredItems { get; set; }
         private List<DeliveryItem> itemsOnNewNote { get; set; }
+        private List<Lot> Lots { get; set; }
 
         public CreateNewDeliveryWindow()
         {
@@ -31,12 +32,13 @@ namespace ProjectLighthouse.View
             allUndeliveredItems = new List<DeliveryItem>();
             filteredUndeliveredItems = new List<DeliveryItem>();
             itemsOnNewNote = new List<DeliveryItem>();
+            Lots = new List<Lot>();
             GetUndelivered();
         }
 
         private void GetUndelivered()
         {
-            List<Lot> lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && !n.IsReject).ToList();
+            Lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && !n.IsReject).ToList();
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             //List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
@@ -45,7 +47,7 @@ namespace ProjectLighthouse.View
             itemsOnNewNote.Clear();
 
             string _POref = String.Empty;
-            foreach(var lot in lots)
+            foreach(var lot in Lots)
             {
                 foreach(var order in orders)
                 {
@@ -60,6 +62,7 @@ namespace ProjectLighthouse.View
                     PurchaseOrderReference = _POref,
                     Product = lot.ProductName,
                     QuantityThisDelivery = lot.Quantity,
+                    LotID = lot.ID
                     //QuantityToFollow = Math.Max(item.TargetQuantity - item.QuantityDelivered - item.Quantiy, (int)0)
                 });
             }
@@ -122,14 +125,32 @@ namespace ProjectLighthouse.View
             {
                 item.AllocatedDeliveryNote = newDeliveryNote.Name;
 
-                foreach(var orderItem in orderItems)
-                {
-                    if(item.Product == orderItem.ProductName && orderItem.AssignedMO == item.ItemManufactureOrderNumber)
-                    {
-                        orderItem.QuantityDelivered = item.QuantityThisDelivery + orderItem.QuantityDelivered;
-                        DatabaseHelper.Update(orderItem);
-                    }
-                }
+                LatheManufactureOrderItem x = orderItems.SingleOrDefault(i => i.ProductName == item.Product
+                                                                            && i.AssignedMO == item.ItemManufactureOrderNumber);
+                x.QuantityDelivered += item.QuantityThisDelivery;
+                DatabaseHelper.Update<LatheManufactureOrderItem>(x);
+
+                //foreach(var orderItem in orderItems)
+                //{
+                //    if(item.Product == orderItem.ProductName && orderItem.AssignedMO == item.ItemManufactureOrderNumber)
+                //    {
+                //        orderItem.QuantityDelivered = item.QuantityThisDelivery + orderItem.QuantityDelivered;
+                //        DatabaseHelper.Update(orderItem);
+                //    }
+                //}
+
+                Lot lot = Lots.SingleOrDefault(l => l.ID == item.LotID);
+                lot.IsDelivered = true;
+                DatabaseHelper.Update<Lot>(lot);
+
+                //foreach(var lot in Lots)
+                //{
+                //    if(lot.ID == item.LotID)
+                //    {
+                //        lot.IsDelivered = true;
+                //        DatabaseHelper.Update<Lot>(lot);
+                //    }
+                //}
 
                 DatabaseHelper.Insert(item);
             }

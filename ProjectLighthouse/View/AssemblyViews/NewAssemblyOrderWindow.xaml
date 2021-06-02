@@ -13,13 +13,16 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <TextBlock Text="New Assembly Order"/>
-            <ListBox ItemsSource="{Binding Products}">
+            
+            <TreeView x:Name="AssemblyTree"/>
+            
+            <!--<ListBox ItemsSource="{Binding Products}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding ProductNumber}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-            </ListBox>
+            </ListBox>-->
         </StackPanel>
         <StackPanel Grid.Column="1">
             <TextBlock x:Name="orderTitle"/>

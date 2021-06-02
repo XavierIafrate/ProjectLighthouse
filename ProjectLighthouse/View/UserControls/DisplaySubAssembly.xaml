@@ -28,7 +28,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding ComponentItem}" Foreground="White"/>
                             <TextBlock Text="{Binding Quantity}" Foreground="White" Grid.Column="2"/>
-                            <TextBlock Text="{Binding Unit}" Foreground="White" Grid.Column="3"/>
+                            <TextBlock Text="{Binding Units}" Foreground="White" Grid.Column="3"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

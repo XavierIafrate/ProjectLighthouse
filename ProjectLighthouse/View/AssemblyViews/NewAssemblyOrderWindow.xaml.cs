@@ -35,6 +35,7 @@ namespace ProjectLighthouse.View.AssemblyViews
         public List<Drop> newDrops { get; set; }
 
         public List<AssemblyItem> Products { get; set; }
+        public List<AssemblyGroup> TreeItems { get; set; }
 
         public NewAssemblyOrderWindow()
         {
@@ -48,6 +49,24 @@ namespace ProjectLighthouse.View.AssemblyViews
         private void LoadData()
         {
             Products = DatabaseHelper.Read<AssemblyItem>().ToList();
+            TreeItems = new List<AssemblyGroup>();
+            List<string> groups = new List<string>();
+            foreach(AssemblyItem product in Products)
+            {
+                if (!groups.Contains(product.ProductGroup))
+                    groups.Add(product.ProductGroup);
+            }
+
+            foreach(string group in groups)
+            {
+                TreeItems.Add(new AssemblyGroup()
+                {
+                    group = group,
+                    items = new List<AssemblyItem>(Products.Where(n=> n.ProductGroup == group))
+                });
+            }
+
+            AssemblyTree.ItemsSource = TreeItems;
         }
 
         private void Radio_Checked(object sender, RoutedEventArgs e)
@@ -89,23 +108,14 @@ namespace ProjectLighthouse.View.AssemblyViews
 
         private void CallOffDropQuantity_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Space) // space bar just has to be a precious little princess with it's own function
-            {
-                e.Handled = true;
-                return;
-            }
-
-            string strKey = e.Key.ToString();
-            if ((strKey.Contains("D") && strKey.Length == 2) || strKey.Contains("NumPad"))
-            {
-                if ("0123456789".Contains(strKey.Substring(strKey.Length - 1, 1)))
-                {
-                    e.Handled = false;
-                    return;
-                }
-            }
-            e.Handled = true;
-            return;
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
+
+        public class AssemblyGroup
+        { 
+            public string group { get; set; }
+            public List<AssemblyItem> items { get; set; }
+        }
+
     }
 }

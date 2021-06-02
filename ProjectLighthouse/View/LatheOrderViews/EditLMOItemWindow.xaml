@@ -22,8 +22,10 @@
             <TextBlock Text="Update Item" FontSize="30" Margin="0,10"/>
             <Separator/>
 
-            <TextBlock x:Name="ProductNameTextBlock" FontSize="20"/>
-            <TextBlock x:Name="ManufactureOrderTextBlock" FontSize="20" Foreground="DodgerBlue"/>
+            <TextBlock x:Name="ProductNameTextBlock" FontSize="20"
+                           Text="n/a"/>
+            <TextBlock x:Name="ManufactureOrderTextBlock" FontSize="20" Foreground="DodgerBlue"
+                           Text="n/a"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -39,6 +41,7 @@
                 <TextBlock x:Name="QtyMadeTextBlock" 
                            Grid.Row="1"
                            FontSize="18" 
+                           Text="n/a"
                            Foreground="{StaticResource materialPrimary}"/>
 
                 <TextBlock Text="Quantity Rejected"
@@ -47,6 +50,7 @@
                 <TextBlock x:Name="QtyRejectTextBlock" 
                            Grid.Row="1"
                            Grid.Column="1"
+                           Text="n/a"
                            FontSize="18"
                            Foreground="{StaticResource materialError}"/>
                 
@@ -56,6 +60,7 @@
                 <TextBlock x:Name="QtyDeliveredTextBlock" 
                            Grid.Row="1"
                            Grid.Column="2"
+                           Text="n/a"
                            FontSize="18"
                            Foreground="{StaticResource materialPrimaryGreen}"/>
             </Grid>
@@ -64,10 +69,12 @@
             <StackPanel Orientation="Horizontal">
                 <TextBox Width="30" HorizontalAlignment="Left" 
                          x:Name="CycleTime_Min"
+                         PreviewKeyDown="Allow_Nums_Only"
                          TextChanged="CycleTime_Min_TextChanged"/>
                 <TextBlock Text="m" Margin="2,0,8,0"/>
                 <TextBox Width="30" HorizontalAlignment="Left"
                          x:Name="CycleTime_Sec"
+                         PreviewKeyDown="Allow_Nums_Only"
                          TextChanged="CycleTime_Sec_TextChanged"/>
                 <TextBlock Text="s" Margin="2,0,8,0"/>
                 <TextBlock Text="(120s)" x:Name="intCycleTimeText"/>
@@ -94,14 +101,18 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="2"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Quantity in Lot" Margin="5,2"/>
-                <TextBox x:Name="BatchTextBox" Grid.Column="1"/>
-                <CheckBox Content="Lot is Rejects" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
+                <TextBox x:Name="QuantityNewLotTextBox" 
+                         Grid.Column="1"
+                         PreviewKeyDown="Allow_Nums_Only"/>
+                <CheckBox Content="Lot is Rejects" Grid.Column="2" VerticalAlignment="Center" Margin="5,0" x:Name="RejectCheckBox"/>
 
                 <TextBlock Text="Material Batch ID" Grid.Row="2" Margin="5,2"/>
-                <TextBox x:Name="QuantityNewLotTextBox" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
+                <TextBox x:Name="BatchTextBox" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
+                <Button Content="+ Add Lot" Style="{StaticResource GreenButtonTemplate}" Grid.Column="2" Grid.Row="3" x:Name="AddLotButton" Click="AddLotButton_Click"/>
             </Grid>
 
             <Button Content="Save Changes" 
@@ -114,9 +125,11 @@
             <TextBlock Text="Scheduling" FontSize="30" Margin="0,10"/>
             <Separator/>
             <TextBlock Text="Quantity Required" Margin="0,10,0,5"/>
-            <TextBox Width="150" HorizontalAlignment="Left" x:Name="QuantityRequiredTextbox"/>
+            <TextBox Width="150" HorizontalAlignment="Left" x:Name="QuantityRequiredTextbox"
+                         PreviewKeyDown="Allow_Nums_Only"/>
             <TextBlock Text="Quantity Target" Margin="0,10,0,5"/>
-            <TextBox Width="150" HorizontalAlignment="Left" x:Name="QuantityTargetTextbox"/>
+            <TextBox Width="150" HorizontalAlignment="Left" x:Name="QuantityTargetTextbox"
+                         PreviewKeyDown="Allow_Nums_Only"/>
             <TextBlock Text="Date Required" Margin="0,10,0,5"/>
             <DatePicker Width="150" HorizontalAlignment="Left" x:Name="DateRequiredPicker"/>
             <Button Style="{StaticResource ButtonTemplate}" Content="Clear Date" x:Name="ClearDateButton" Click="ClearDateButton_Click"/>

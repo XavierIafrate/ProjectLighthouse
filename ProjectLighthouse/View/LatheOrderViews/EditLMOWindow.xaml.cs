@@ -87,7 +87,7 @@ namespace ProjectLighthouse.View
             List<User> users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
             List<string> setterUsers = new List<string>();
 
-            // Add Production team to setters combobox
+            // Add Production team to setters combobox by full name
             foreach (var user in users)
                 setterUsers.Add(user.GetFullName());
 
@@ -157,15 +157,22 @@ namespace ProjectLighthouse.View
                 lots.Where(n=> n.ProductName == control.LatheManufactureOrderItem.ProductName).ToList());
             this.Hide();
             editWindow.ShowDialog();
-            this.Show();
+            
             if (editWindow.SaveExit)
-                RefreshItems();        
+            {
+                SaveExit = true;
+                lots = new List<Lot>(editWindow.Lots);
+                RefreshItems();
+            }
+            this.ShowDialog();
         }
 
         public void RefreshItems()
         {
-            items = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name).OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName).ToList();
-            ItemsListBox.ItemsSource = items;
+            items = new List<LatheManufactureOrderItem>();
+            items = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name).
+                OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName).ToList();
+            ItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
         }
 
 
