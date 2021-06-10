@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -9,12 +10,18 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         private static string dbFile = @"H:\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
 
+
         public static bool Insert<T>(T item)
         {
             bool result = false;
             if (Environment.UserName == "xavier")
                 dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
-            
+
+            //if (Debugger.IsAttached && Environment.UserName == "x.iafrate")
+            //    dbFile = @"\\groupfile01\Roaming\x.iafrate\Desktop\manufactureDB_debug.db3";
+
+            Debug.WriteLine(string.Format("dbFile: {0}", dbFile));
+
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 conn.CreateTable<T>();
@@ -41,6 +48,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             if (Environment.UserName == "xavier")
                 dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
 
+            //if (Debugger.IsAttached && Environment.UserName == "x.iafrate")
+            //    dbFile = @"\\groupfile01\Roaming\x.iafrate\Desktop\manufactureDB_debug.db3";
+
+            Debug.WriteLine(string.Format("dbFile: {0}", dbFile));
+
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 try
@@ -66,6 +78,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             if (Environment.UserName == "xavier")
                 dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
 
+            //if (Debugger.IsAttached && Environment.UserName == "x.iafrate")
+            //    dbFile = @"\\groupfile01\Roaming\x.iafrate\Desktop\manufactureDB_debug.db3";
+
+            Debug.WriteLine(string.Format("dbFile: {0}", dbFile));
+
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 conn.CreateTable<T>();
@@ -84,6 +101,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             if (Environment.UserName == "xavier")
                 dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
 
+            //if (Debugger.IsAttached && Environment.UserName == "x.iafrate")
+            //    dbFile = @"\\groupfile01\Roaming\x.iafrate\Desktop\manufactureDB_debug.db3";
+
+            Debug.WriteLine(string.Format("dbFile: {0}", dbFile));
+            
             using (SQLiteConnection conn = new SQLiteConnection(dbFile))
             {
                 conn.CreateTable<T>();

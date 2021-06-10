@@ -51,16 +51,15 @@ namespace ProjectLighthouse
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //ReportingHelper.GetReport();    
+            MessageBox.Show(string.Format("Debug Mode: {0}", System.Diagnostics.Debugger.IsAttached)); 
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            debugButton.Visibility = Visibility.Collapsed; // App.currentUser.UserRole != "admin" ? Visibility.Collapsed : Visibility.Visible;
+            //debugButton.Visibility = Visibility.Collapsed; // App.currentUser.UserRole != "admin" ? Visibility.Collapsed : Visibility.Visible;
             assemblyOrders_button.IsEnabled = App.currentUser.UserRole == "admin";
             BOM_button.IsEnabled = App.currentUser.UserRole == "admin";
             assembly_button.IsEnabled = App.currentUser.UserRole == "admin";
         }
-
     }
 }

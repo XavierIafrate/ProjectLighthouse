@@ -16,11 +16,13 @@ namespace ProjectLighthouse.View
         public int intQtyMade;
         public int intQtyReject;
         public int intQtyDelivered;
+        private int QuantityAdded;
 
         public bool SaveExit;
 
         public EditLMOItemWindow(LatheManufactureOrderItem item, List<Lot> lots)
         {
+            QuantityAdded = 0;
             SaveExit = false;
             Item = item;
             Lots = (lots == null) ? new List<Lot>() : lots;
@@ -108,8 +110,6 @@ namespace ProjectLighthouse.View
             //}
             #endregion
 
-            //Item.QuantityMade = qtyMade;
-            //Item.QuantityReject = qtyReject;
             Item.RequiredQuantity = reqqty;
             Item.TargetQuantity = tarqty;
             Item.DateRequired = (DateTime)DateRequiredPicker.SelectedDate;
@@ -125,6 +125,12 @@ namespace ProjectLighthouse.View
             {
                 TurnedProduct thisProduct = product.First();
                 thisProduct.CycleTime = cycleTime;
+                if (QuantityAdded != 0) 
+                {
+                    thisProduct.QuantityManufactured += QuantityAdded;
+                    thisProduct.lastManufactured = DateTime.Now;
+                }
+
                 DatabaseHelper.Update(thisProduct);
             }
             else
@@ -189,6 +195,65 @@ namespace ProjectLighthouse.View
         private void ClearDateButton_Click(object sender, RoutedEventArgs e)
         {
             Item.DateRequired = DateTime.MinValue;
+        }
+
+        private void Allow_Nums_Only(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
+        }
+
+        private void AddLotButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(BatchTextBox.Text))
+            {
+                MessageBox.Show("Please enter a material batch reference", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (Int32.TryParse(QuantityNewLotTextBox.Text, out int n))
+            {
+                Lot newLot = new Lot()
+                {
+                    ProductName = Item.ProductName,
+                    Order = Item.AssignedMO,
+                    AddedBy = App.currentUser.UserName,
+                    Quantity = n,
+                    Date = DateTime.Now,
+                    IsReject = (bool)RejectCheckBox.IsChecked,
+                    IsDelivered = false,
+                    MaterialBatch = BatchTextBox.Text.Trim()
+                };
+                newLot.SetExcelDateTime();
+                if (!DatabaseHelper.Insert<Lot>(newLot))
+                {
+                    MessageBox.Show("Failed to add to database", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (newLot.IsReject)
+                {
+                    Item.QuantityReject += n;
+                }
+                else
+                {
+                    Item.QuantityMade += n;
+                }
+                DatabaseHelper.Update<LatheManufactureOrderItem>(Item);
+                Lots.Add(newLot);
+
+                LotsListBox.ItemsSource = new List<Lot>(Lots);
+                QtyMadeTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityMade);
+                QtyRejectTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityReject);
+
+                QuantityNewLotTextBox.Text = "";
+                BatchTextBox.Text = "";
+                RejectCheckBox.IsChecked = false;
+                QuantityAdded += newLot.Quantity;
+            }
+            else
+            {
+                MessageBox.Show("Invalid quantity", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
         }
     }
 }

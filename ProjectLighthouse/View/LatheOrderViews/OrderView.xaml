@@ -14,6 +14,7 @@
             <vm:OrderViewModel x:Key="vm"/>
             <converters:boolToHasProgram x:Key="boolToHasProgram"/>
             <converters:boolToIsReady x:Key="boolToIsReady"/>
+            <converters:intToDays x:Key="intToDays"/>
             <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
                      From="1"
@@ -36,6 +37,13 @@
                     </EventTrigger>
                 </Style.Triggers>
             </Style>
+
+            <Style x:Key="highlightText" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+            </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -179,20 +187,31 @@
                         <!--#endregion-->
                         
                         <!--#region Metadata-->
-                        <StackPanel Margin="15,0">
-                            <TextBlock Text="{Binding RunInfoText, UpdateSourceTrigger=PropertyChanged}"
-                                       Style="{StaticResource bodyTextStyle}">
-                            </TextBlock>
-                            <TextBlock Style="{StaticResource bodyTextStyle}">
-                                <Run Text="Assigned Setter:"/>
-                                <Run Text="{Binding SelectedLatheManufactureOrder.AllocatedSetter, FallbackValue='Eric Cartman'}"/>
-                            </TextBlock>
-                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}, FallbackValue='Has a program'}"
-                                       x:Name="ProgramTextBlock"
-                                       Style="{StaticResource bodyTextStyle}"/>
-                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.BarID, StringFormat='{}Bar ID: {0}'}" Style="{StaticResource bodyTextStyle}"/>
-                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}Estimated number of bars: {0}'}" Style="{StaticResource bodyTextStyle}"/>
-                        </StackPanel>
+                        <Grid Margin="15,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Start Date" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine}" Grid.Row="1" Style="{StaticResource highlightText}"/>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:ddd, dd MMMM}'}" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource accentTextStyle}"/>
+
+                            <TextBlock Text="Timing" Grid.Column="1" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" Grid.Column="1" Grid.Row="1" Style="{StaticResource highlightText}"/>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource accentTextStyle}"/>
+
+                            <TextBlock Text="Material" Grid.Column="2" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.BarID}" Grid.Column="2" Grid.Row="1" Style="{StaticResource highlightText}"/>
+                            <TextBlock Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}{0} bars'}" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource accentTextStyle}"/>
+                            
+                        </Grid>
+                        
                         <StackPanel>
                             <TextBlock Text="Items"
                                        HorizontalAlignment="Left"

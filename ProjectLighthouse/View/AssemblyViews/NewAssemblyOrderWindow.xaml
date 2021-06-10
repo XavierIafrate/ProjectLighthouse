@@ -13,20 +13,33 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <TextBlock Text="New Assembly Order"/>
-            <ListBox ItemsSource="{Binding Products}">
+            <ListBox ItemsSource="{Binding Products}" x:Name="productsListBox">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding ProductNumber}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+
+            <TextBlock Text="Drops"/>
+            <ListBox x:Name="dropsListBox">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Quantity}"/>
+                            <TextBlock Text="{Binding DateRequired}" Margin="10,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
         <StackPanel Grid.Column="1">
             <TextBlock x:Name="orderTitle"/>
-            <ListBox x:Name="dropsListBox"/>
+            
 
             <TextBlock Text="Quantity Required"/>
-            <TextBox x:Name="TotalQuantityTextBox"/>
+            <TextBox x:Name="TotalQuantityTextBox"
+                     PreviewKeyDown="TotalQuantityTextBox_PreviewKeyDown"/>
             <TextBlock Text="Delivery Scheme"/>
             
             <RadioButton Content="Single Drop" x:Name="singleRadio"
@@ -71,6 +84,7 @@
                 <ComboBoxItem Content="Thursday"/>
                 <ComboBoxItem Content="Friday"/>
             </ComboBox>
+            <Button x:Name="refreshDropsButton" Click="refreshDropsButton_Click" Content="Refresh"/>
         </StackPanel>
     </Grid>
 </Window>

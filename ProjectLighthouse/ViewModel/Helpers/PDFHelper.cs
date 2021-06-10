@@ -118,7 +118,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 valueRect.Y = y;
 
                 gfx.DrawString("Assigned Machine", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
-                gfx.DrawString(order.AllocatedMachine, valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
+                gfx.DrawString(order.AllocatedMachine ?? "n/a", valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;

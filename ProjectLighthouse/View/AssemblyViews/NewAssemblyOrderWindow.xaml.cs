@@ -43,6 +43,9 @@ namespace ProjectLighthouse.View.AssemblyViews
             LoadData();
             singleRadio.IsChecked = true;
             byDayNumber.IsChecked = true;
+
+            newDrops = new List<Drop>();
+            QuantityRequired = 0;
         }
 
         private void LoadData()
@@ -62,50 +65,65 @@ namespace ProjectLighthouse.View.AssemblyViews
             DayOfWeekComboBox.IsEnabled = isMulti;
             byDayNumber.IsEnabled = isMulti;
             byInterval.IsEnabled = isMulti;
-
+            bool doByDayNumber = (bool)byDayNumber.IsChecked;
             if (isMulti)
             {
-                bool doByDayNumber = (bool)byDayNumber.IsChecked;
                 nthDayOfMonthTextBox.IsEnabled = doByDayNumber;
                 nthComboBox.IsEnabled = !doByDayNumber;
                 DayOfWeekComboBox.IsEnabled = !doByDayNumber;
             }
 
+
         }
 
-        //private void EnforceNumbers_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    TextBox textBox = sender as TextBox;
-
-        //    if (string.IsNullOrEmpty(textBox.Text))
-        //        return;
-
-        //    if (int.TryParse(textBox.Text, out int i))
-        //    {
-        //        QuantityRequired = i;
-        //    }
-
-        //}
-
-        private void CallOffDropQuantity_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void CalculateDrops(bool multi, bool byDayNumber = false)
         {
-            if (e.Key == Key.Space) // space bar just has to be a precious little princess with it's own function
+            newDrops.Clear();
+
+            if(FlatRequiredDate.SelectedDate== null)
             {
-                e.Handled = true;
+                MessageBox.Show("Please select a due date.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            if (QuantityRequired < 1)
+            {
+                MessageBox.Show("Please enter a quantity.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
 
-            string strKey = e.Key.ToString();
-            if ((strKey.Contains("D") && strKey.Length == 2) || strKey.Contains("NumPad"))
+            if (!multi)
             {
-                if ("0123456789".Contains(strKey.Substring(strKey.Length - 1, 1)))
+                newDrops.Add(new Drop()
                 {
-                    e.Handled = false;
-                    return;
-                }
+                    Quantity = QuantityRequired,
+                    DateRequired = (DateTime)FlatRequiredDate.SelectedDate
+                });
             }
-            e.Handled = true;
-            return;
+
+
+            dropsListBox.ItemsSource = newDrops;
+        }
+
+        private void CallOffDropQuantity_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
+            if(Int32.TryParse(TotalQuantityTextBox.Text, out int j))
+            {
+                QuantityRequired = j;
+            }
+        }
+
+        private void TotalQuantityTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
+        }
+
+        private void refreshDropsButton_Click(object sender, RoutedEventArgs e)
+        {
+            bool isMulti = (bool)multiRadio.IsChecked;
+            bool doByDayNumber = (bool)byDayNumber.IsChecked;
+
+            CalculateDrops(isMulti, doByDayNumber);
         }
     }
 }
