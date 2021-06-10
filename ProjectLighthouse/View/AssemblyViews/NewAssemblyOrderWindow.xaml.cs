@@ -35,6 +35,7 @@ namespace ProjectLighthouse.View.AssemblyViews
         public List<Drop> newDrops { get; set; }
 
         public List<AssemblyItem> Products { get; set; }
+        public List<AssemblyGroup> TreeItems { get; set; }
 
         public NewAssemblyOrderWindow()
         {
@@ -51,6 +52,24 @@ namespace ProjectLighthouse.View.AssemblyViews
         private void LoadData()
         {
             Products = DatabaseHelper.Read<AssemblyItem>().ToList();
+            TreeItems = new List<AssemblyGroup>();
+            List<string> groups = new List<string>();
+            foreach(AssemblyItem product in Products)
+            {
+                if (!groups.Contains(product.ProductGroup))
+                    groups.Add(product.ProductGroup);
+            }
+
+            foreach(string group in groups)
+            {
+                TreeItems.Add(new AssemblyGroup()
+                {
+                    group = group,
+                    items = new List<AssemblyItem>(Products.Where(n=> n.ProductGroup == group))
+                });
+            }
+
+            AssemblyTree.ItemsSource = TreeItems;
         }
 
         private void Radio_Checked(object sender, RoutedEventArgs e)
@@ -125,5 +144,6 @@ namespace ProjectLighthouse.View.AssemblyViews
 
             CalculateDrops(isMulti, doByDayNumber);
         }
+
     }
 }

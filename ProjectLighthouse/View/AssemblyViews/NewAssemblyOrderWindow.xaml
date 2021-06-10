@@ -13,25 +13,16 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <TextBlock Text="New Assembly Order"/>
-            <ListBox ItemsSource="{Binding Products}" x:Name="productsListBox">
+            
+            <TreeView x:Name="AssemblyTree"/>
+            
+            <!--<ListBox ItemsSource="{Binding Products}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding ProductNumber}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-            </ListBox>
-
-            <TextBlock Text="Drops"/>
-            <ListBox x:Name="dropsListBox">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Quantity}"/>
-                            <TextBlock Text="{Binding DateRequired}" Margin="10,0"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            </ListBox>-->
         </StackPanel>
         <StackPanel Grid.Column="1">
             <TextBlock x:Name="orderTitle"/>
