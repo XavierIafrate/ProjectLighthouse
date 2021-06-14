@@ -88,8 +88,10 @@
         </ScrollViewer>
         <StackPanel Orientation="Horizontal"
                     Grid.Row="3"
-                    Grid.Column="2"
+                    Grid.ColumnSpan="3"
                     HorizontalAlignment="Right">
+            <TextBox x:Name="updateQty" PreviewKeyDown="updateQty_PreviewKeyDown" Width="100" Margin="0,5"/>
+            <Button Style="{StaticResource ButtonTemplate}" x:Name="updateButton" Content="Update"/>
             <Button Style="{StaticResource CancelButtonTemplate}"
                     Content="Cancel"
                     x:Name="CancelButton"

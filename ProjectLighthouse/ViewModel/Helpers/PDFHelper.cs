@@ -644,7 +644,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString(string.Format("{0:dd/MM/yy}", order.CreatedAt), superFont, XBrushes.Black, dateRaisedCol, XStringFormats.CenterLeft);
                 gfx.DrawString(order.Name, superFont, XBrushes.Black, MORefCol, XStringFormats.CenterLeft);
-                gfx.DrawString(order.POReference, superFont, XBrushes.Black, PORefCol, XStringFormats.CenterLeft);
+                gfx.DrawString(order.POReference ?? "n/a", superFont, XBrushes.Black, PORefCol, XStringFormats.CenterLeft);
                 gfx.DrawString(string.Format("{0:ddd d MMM}", order.StartDate), superFont, XBrushes.Black, StartDateCol, XStringFormats.CenterRight);
 
                 foreach(LatheManufactureOrderItem item in items)

@@ -145,5 +145,11 @@ namespace ProjectLighthouse.View.AssemblyViews
             CalculateDrops(isMulti, doByDayNumber);
         }
 
+        public class AssemblyGroup
+        {
+            public string group { get; set; }
+            public List<AssemblyItem> items { get; set; }
+        }
+
     }
 }

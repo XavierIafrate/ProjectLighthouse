@@ -15,7 +15,7 @@
             <TextBlock Text="New Assembly Order"/>
             
             <TreeView x:Name="AssemblyTree"/>
-            
+            <ItemsControl x:Name="dropsListBox"/>
             <!--<ListBox ItemsSource="{Binding Products}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

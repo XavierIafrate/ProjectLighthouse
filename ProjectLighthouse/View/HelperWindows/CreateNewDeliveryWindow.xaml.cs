@@ -152,15 +152,6 @@ namespace ProjectLighthouse.View
                 //    }
                 //}
 
-                foreach(var lot in Lots)
-                {
-                    if(lot.ID == item.LotID)
-                    {
-                        lot.IsDelivered = true;
-                        DatabaseHelper.Update<Lot>(lot);
-                    }
-                }
-
                 DatabaseHelper.Insert(item);
             }
             this.Close();
@@ -187,6 +178,11 @@ namespace ProjectLighthouse.View
             const string blank = "DN00000";
             return blank.Substring(0, 7 - orderNumLen) + strOrderNum;
 
+        }
+
+        private void updateQty_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
     }
 }
