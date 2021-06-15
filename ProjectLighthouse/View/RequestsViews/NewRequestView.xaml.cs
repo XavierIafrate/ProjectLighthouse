@@ -22,7 +22,7 @@ namespace ProjectLighthouse.View
         private void enableSubmit()
         {
             submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate.HasValue &&
-                                     Int32.TryParse(quantityBox.Text, out int j) &&
+                                     Int32.TryParse(quantityBox.Text, out _) &&
                                      productsListBox.SelectedItem != null;
         }
 
@@ -77,7 +77,7 @@ namespace ProjectLighthouse.View
             TextRange textRange = new TextRange(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
             if (viewModel != null && textRange.Text.Length >= 2)
             {
-                viewModel.newRequest.Notes = textRange.Text.Substring(0, textRange.Text.Length - 2);
+                viewModel.newRequest.Notes = textRange.Text[0..^2];
             }
         }
     }

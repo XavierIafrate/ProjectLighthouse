@@ -32,13 +32,13 @@ namespace ProjectLighthouse.View.UserControls
 
                 if (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity) // if done
                 {
-                    control.productText.Foreground = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                    control.doneFlag.Visibility = Visibility.Visible;
                     control.bgRect.Stroke = (Brush)Application.Current.Resources["materialPrimaryGreen"];
                     control.bgRect.StrokeThickness = 2;
                 }
                 else
                 {
-                    control.productText.Foreground = (Brush)Application.Current.Resources["materialOnBackground"];
+                    control.doneFlag.Visibility = Visibility.Hidden;
                     control.bgRect.Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#f0f0f0"));
                     control.bgRect.StrokeThickness = 1;
                 }

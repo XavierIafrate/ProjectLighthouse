@@ -1,9 +1,5 @@
 ﻿using SQLite;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectLighthouse.Model
 {
@@ -21,7 +17,7 @@ namespace ProjectLighthouse.Model
 
         public string Status { get; set; }
         public string Notes { get; set; }
-    
+
         public AssemblyManufactureOrder Clone()
         {
             return new AssemblyManufactureOrder()

@@ -81,8 +81,8 @@ namespace ProjectLighthouse.ViewModel
         public CompleteAssemblyProduct CurrentProduct
         {
             get { return currentProduct; }
-            set 
-            { 
+            set
+            {
                 currentProduct = value;
                 OnPropertyChanged("CurrentProduct");
             }
@@ -92,13 +92,13 @@ namespace ProjectLighthouse.ViewModel
         public AssemblyItem SelectedItem
         {
             get { return selecteditem; }
-            set 
-            { 
+            set
+            {
                 selecteditem = value;
                 CurrentProduct = GetCompleteProductFromProduct(value);
                 subAssemblies = GetSubAssembliesFromCompleteProduct(CurrentProduct, true);
                 OnPropertyChanged("subAssemblies");
-                if(CurrentProduct.routings.RoutingItems == null)
+                if (CurrentProduct.routings.RoutingItems == null)
                 {
                     NewRoutingVis = Visibility.Visible;
                 }
@@ -107,7 +107,7 @@ namespace ProjectLighthouse.ViewModel
                     NewRoutingVis = CurrentProduct.routings.RoutingItems.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
                 }
 
-                if(CurrentProduct.materials.Items == null)
+                if (CurrentProduct.materials.Items == null)
                 {
                     NewBOMVis = Visibility.Visible;
                 }
@@ -115,13 +115,13 @@ namespace ProjectLighthouse.ViewModel
                 {
                     NewBOMVis = currentProduct.materials.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
                 }
-               
-                
+
+
                 SubAssembliesVis = subAssemblies.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
                 //NewBOMMenuVis = Visibility.Collapsed;
             }
         }
-        
+
         #endregion
 
         public AssemblyProductsViewModel()
@@ -135,7 +135,7 @@ namespace ProjectLighthouse.ViewModel
                 materials = new BillOfMaterials(),
                 routings = new Routings()
             };
-            
+
             NewProductCommand = new NewAssemblyProductCommand(this);
             //NewBOMCommand = new NewBillOfMaterialsCommand(this);
             NewRoutingCommand = new NewRoutingCommand(this);
@@ -145,7 +145,7 @@ namespace ProjectLighthouse.ViewModel
             NewBOMVis = new Visibility();
             SubAssembliesVis = new Visibility();
             //NewBOMMenuVis = new Visibility();
-            
+
 
             LoadData();
             if (items.Count > 0)
@@ -155,14 +155,13 @@ namespace ProjectLighthouse.ViewModel
         public List<CompleteAssemblyProduct> GetSubAssembliesFromCompleteProduct(CompleteAssemblyProduct product, bool unlimitedDepth) // implement unlimited depth
         {
             List<CompleteAssemblyProduct> assemblies = new List<CompleteAssemblyProduct>();
-            CompleteAssemblyProduct _tmp = new CompleteAssemblyProduct();
             if (product.materials.ID == null)
                 return assemblies;
 
-            foreach(BillOfMaterialsItem item in product.materials.Items)
+            foreach (BillOfMaterialsItem item in product.materials.Items)
             {
-                _tmp = GetCompleteProductFromProduct(GetProductFromBOMItem(item));
-                if(_tmp.materials.Items.Count > 0)
+                CompleteAssemblyProduct _tmp = GetCompleteProductFromProduct(GetProductFromBOMItem(item));
+                if (_tmp.materials.Items.Count > 0)
                     assemblies.Add(_tmp);
             }
 
@@ -174,7 +173,7 @@ namespace ProjectLighthouse.ViewModel
         {
             AssemblyItem assemblyItem = new AssemblyItem();
 
-            foreach(AssemblyItem item in items)
+            foreach (AssemblyItem item in items)
             {
                 if (item.ProductNumber == BOMitem.ComponentItem)
                 {
@@ -326,7 +325,7 @@ namespace ProjectLighthouse.ViewModel
                 routingItems = DatabaseHelper.Read<Routing>().ToList();
                 SelectedItem = SelectedItem; //refresh
             }
-                
+
         }
 
         #endregion
@@ -343,7 +342,7 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged("items");
             if (items.Count > 0)
                 SelectedItem = items.First();
-            
+
         }
 
         public void LoadData()

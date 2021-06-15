@@ -1,13 +1,9 @@
 ﻿using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
@@ -25,7 +21,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static void PrintPerformance(Performace p)
         {
-            foreach(PerformanceByMachine m in p.summary)
+            foreach (PerformanceByMachine m in p.summary)
             {
                 logLine("++++++++++++++++++++++++++++++++++");
                 logLine(string.Format("Machine ID:    {0}", m.MachineID));
@@ -35,7 +31,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 logLine(string.Format("To Time:       {0:dd/MM HH:mm}", m.toDate));
                 logLine("");
 
-                foreach(PerformanceBlob b in m.performance)
+                foreach (PerformanceBlob b in m.performance)
                 {
                     logLine($"{m.MachineID},{b.state},{b.duration},{b.startTime},{b.endTime},{b.StartQuantity},{b.EndQuantity},{b.HasStep},{b.CycleTime}");
                     //logLine(string.Format("State:         {0}", b.state));
@@ -54,35 +50,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 outputFile.WriteLine(line);
             }
-        }
-
-        private static void WriteToExcel(Performace p)
-        {
-        //    Microsoft.Office.Interop.Excel.Application oXL = null;
-        //    Microsoft.Office.Interop.Excel._Workbook oWB = null;
-        //    Microsoft.Office.Interop.Excel._Worksheet oSheet = null;
-
-        //    try
-        //    {
-        //        oXL = new Microsoft.Office.Interop.Excel.Application();
-        //        oWB = oXL.Workbooks.Open("d:\\MyExcel.xlsx");
-        //        oSheet = String.IsNullOrEmpty(sheetName) ? (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet : (Microsoft.Office.Interop.Excel._Worksheet)oWB.Worksheets[sheetName];
-
-        //        oSheet.Cells[row, col] = data;
-
-        //        oWB.Save();
-
-        //        MessageBox.Show("Done!");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.ToString());
-        //    }
-        //    finally
-        //    {
-        //        if (oWB != null)
-        //            oWB.Close();
-        //    }
         }
 
         private static Performace FetchData(DateTime from, DateTime to)
@@ -124,7 +91,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             DateTime lastDateTime = DateTime.MinValue;
             DateTime CounterLastChanged = DateTime.MinValue;
 
-            foreach(MachineStatistics s in stats)
+            foreach (MachineStatistics s in stats)
             {
                 if (s.MachineID != machineID) // Only get records for relevant machine
                     continue;
@@ -144,15 +111,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 // Check for steps
                 // TODO: Check for plateau
-                if(blob.state == "Running") // extremely fuzzy logic
+                if (blob.state == "Running") // extremely fuzzy logic
                 {
                     int calc_parts = (int)(s.DataTime - lastDateTime).TotalSeconds / s.CycleTime;
                     int parts_made = s.PartCountAll - blob.EndQuantity;
                     if (parts_made != 0)
                         CounterLastChanged = s.DataTime;
                     if (parts_made < 0 || parts_made > 1) // If not incrementing by one then check what's going on
-                    { 
-                        if(Math.Abs(parts_made-calc_parts) > 5 || parts_made < 0) // attempt to account for large gap in data (eg if sentry is down) with wiggle room
+                    {
+                        if (Math.Abs(parts_made - calc_parts) > 5 || parts_made < 0) // attempt to account for large gap in data (eg if sentry is down) with wiggle room
                         {
                             blob.HasStep = true;
                             blob.endTime = lastDateTime;
@@ -172,7 +139,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     }
                     else if (parts_made == 0)
                     {
-                        if((int)(s.DataTime - CounterLastChanged).TotalSeconds > 2*s.CycleTime) // plateau
+                        if ((int)(s.DataTime - CounterLastChanged).TotalSeconds > 2 * s.CycleTime) // plateau
                         {
                             blob.HasStep = true;
                             blob.endTime = lastDateTime;
@@ -224,7 +191,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             PerformanceBlob absorber = new PerformanceBlob();
             TimeSpan BounceLimit = TimeSpan.FromMinutes(5);
 
-            foreach(PerformanceBlob b in pbs)
+            foreach (PerformanceBlob b in pbs)
             {
                 if (absorber.state == null)
                 {
@@ -242,7 +209,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     debouncedBlobs.Add(absorber);
                     absorber = b;
                 }
-                
+
             }
 
             return debouncedBlobs;

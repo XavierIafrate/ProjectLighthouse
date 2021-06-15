@@ -13,7 +13,7 @@
         </Style>
         <Style TargetType="TextBlock" x:Key="Subtitle">
             <Setter Property="FontSize" Value="24"/>
-            <Setter Property="Padding" Value="0,10,0,10"/>
+            <Setter Property="Padding" Value="0,0,0,5"/>
             <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
         </Style>
         <Style TargetType="TextBlock" x:Key="ParameterText">
@@ -50,7 +50,7 @@
         <converters:intToMinAndSec x:Key="processTimerConverter"/>
     </UserControl.Resources>
 
-    <Grid TextElement.Foreground="{StaticResource materialOnSurface}" MinWidth="400">
+    <Grid TextElement.Foreground="{StaticResource materialOnSurface}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -62,7 +62,7 @@
                    StrokeThickness="5"
                    Fill="{StaticResource materialSurface}"
                    Stroke="{StaticResource materialPrimaryGreen}"/>
-        <Grid Margin="20" Grid.Row="0">
+        <Grid Margin="20,20,20,0" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -82,7 +82,7 @@
                        VerticalAlignment="Center"
                        FontSize="16"/>
         </Grid>
-        <StackPanel Grid.Row="1" Margin="20,0,20,20">
+        <StackPanel Grid.Row="1" Margin="20,0,20,10">
             <!--Work Progress section-->
             <TextBlock Text="Work Progress" Style="{StaticResource Subtitle}" x:Name="workProgressSubtitle"/>
             <StackPanel>
@@ -121,197 +121,67 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-
-                    <!--Program-->
-                    <TextBlock Text="Program ID"
-                               Grid.Column="0"
-                               Grid.Row="0"
-                               Style="{StaticResource ParameterText}"/>
-                    <TextBlock Text="{Binding Program}"
-                               Grid.Column="2"
-                               Grid.Row="0"
-                               Style="{StaticResource ValueText}"/>
-
-
 
                     <!--Completed-->
                     <TextBlock Text="Quantity Completed"
                                Grid.Column="0"
-                               Grid.Row="1"
                                Style="{StaticResource ParameterText}"/>
                     <TextBlock Text="{Binding PartCountAll, StringFormat='{}{0:#,##0}'}"
                                Grid.Column="2"
-                               Grid.Row="1"
-                               Style="{StaticResource ValueText}"/>
-
-                    <!--Remaining-->
-                    <TextBlock Text="Quantity Remaining"
-                               Grid.Column="0"
-                               Grid.Row="2"
-                               Style="{StaticResource ParameterText}"/>
-                    <TextBlock Text="{Binding PartCountRemaining, StringFormat='{}{0:#,##0}'}"
-                               Grid.Column="2"
-                               Grid.Row="2"
                                Style="{StaticResource ValueText}"/>
 
                     <!--Target-->
                     <TextBlock Text="Target Quantity"
                                Grid.Column="0"
-                               Grid.Row="3"
+                               Grid.Row="1"
                                Style="{StaticResource ParameterText}"/>
                     <TextBlock Text="{Binding PartCountTarget, StringFormat='{}{0:#,##0}'}"
                                Grid.Column="2"
-                               Grid.Row="3"
+                               Grid.Row="1"
                                Style="{StaticResource ValueText}"/>
 
                     <!--Cycle Time-->
                     <TextBlock Text="Cycle Time"
                                Grid.Column="0"
-                               Grid.Row="4"
+                               Grid.Row="2"
                                Style="{StaticResource ParameterText}"/>
                     <TextBlock Text="{Binding CycleTime, Converter={StaticResource processTimerConverter}, StringFormat='{}{0:mm}m {0:ss}s'}"
                                Grid.Column="2"
-                               Grid.Row="4"
+                               Grid.Row="2"
                                Style="{StaticResource ValueText}"/>
 
-                    <!--Cutting Time-->
-                    <TextBlock Text="Cutting Time"
-                               Grid.Column="0"
-                               Grid.Row="5"
-                               Style="{StaticResource ParameterText}"/>
-                    <TextBlock Text="{Binding CuttingTime, Converter={StaticResource processTimerConverter}, StringFormat='{}{0:mm}m {0:ss}s'}"
-                               Grid.Column="2"
-                               Grid.Row="5"
-                               Style="{StaticResource ValueText}"/>
-
-                    <!--Cutting Time-->
+                    <!--Completing-->
                     <TextBlock Text="Scheduled Completion"
                                Grid.Column="0"
-                               Grid.Row="6"
+                               Grid.Row="3"
                                Style="{StaticResource ParameterText}"/>
                     <TextBlock x:Name="completionDateText"
                                Grid.Column="2"
-                               Grid.Row="6"
+                               Grid.Row="3"
                                Style="{StaticResource ValueText}"/>
 
-                    <!--Cutting Time-->
+                    <!--Time Remaining-->
                     <TextBlock Text="Time Remaining"
                                Grid.Column="0"
-                               Grid.Row="7"
+                               Grid.Row="4"
                                Style="{StaticResource ParameterText}"/>
                     <TextBlock x:Name="estimatedTimeRemaining"
                                Grid.Column="2"
-                               Grid.Row="7"
+                               Grid.Row="4"
                                Style="{StaticResource ValueText}"/>
 
                     <!--Controller Mode-->
                     <TextBlock Text="Controller Mode"
                                Grid.Column="0"
-                               Grid.Row="8"
+                               Grid.Row="5"
                                Style="{StaticResource ParameterText}"/>
                     <TextBlock Text="{Binding ControllerMode}"
                                Grid.Column="2"
-                               Grid.Row="8"
+                               Grid.Row="5"
                                Style="{StaticResource ValueText}"/>
                 </Grid>
-
             </StackPanel>
-
-            <!--Order Info--><!--
-            <TextBlock Text="Allocated Order" Style="{StaticResource Subtitle}" x:Name="orderSubtitle"/>
-            <Grid TextBlock.TextAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-
-                --><!--Order Number--><!--
-                <TextBlock Text="Order Number"
-                               Grid.Column="0"
-                               Grid.Row="0"
-                               Style="{StaticResource ParameterText}"/>
-                <TextBlock x:Name="orderNumberText"
-                           Grid.Column="2"
-                           Grid.Row="0"
-                           Style="{StaticResource ValueText}"/>
-            </Grid>-->
-            <!--<TextBlock Text="Order Items"
-                       Style="{StaticResource GridHeaderText}"
-                       x:Name="OrderItemsText"/>
-            <ItemsControl x:Name="orderItemsList"
-                          Margin="10,5">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding ProductNumber}"
-                                       Style="{StaticResource ParameterText}"
-                                       Foreground="{StaticResource materialGreen}"
-                                       Grid.ColumnSpan="3"/>
-                            <Grid Grid.Row="1" Margin="10,5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Text="Target Quantity"
-                                       Style="{StaticResource ParameterText}"
-                                       Grid.Row="0"/>
-                                <TextBlock Text="{Binding QuantityTarget, StringFormat='{}{0:#,##0} pcs'}"
-                                       Grid.Column="2"
-                                       Grid.Row="0"
-                                       Style="{StaticResource ValueText}"/>
-
-                                <TextBlock Text="Customer Requirement"
-                                       Style="{StaticResource ParameterText}"
-                                       Grid.Row="1"/>
-                                <TextBlock Grid.Column="2"
-                                       Grid.Row="1"
-                                       Style="{StaticResource ValueText}">
-                                    <Run Text="{Binding QuantityRequired, StringFormat='{}{0:#,##0}'}"/>
-                                    <Run Text="for"/>
-                                    <Run Text="{Binding DateRequired, StringFormat='{}{0:dd/MM}'}"/>
-                                </TextBlock>
-
-                                <TextBlock Text="Material Cost"
-                                       Style="{StaticResource ParameterText}"
-                                       Grid.Row="2"/>
-                                <TextBlock Text="{Binding MaterialCost, StringFormat='{}£{0:0.000} ea'}"
-                                       Grid.Column="2"
-                                       Grid.Row="2"
-                                       Style="{StaticResource ValueText}"/>
-                            </Grid>
-
-
-                        </Grid>
-
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>-->
         </StackPanel>
     </Grid>
 </UserControl>

@@ -4,13 +4,9 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -21,17 +17,8 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrder> FilteredOrders { get; set; }
         public List<LatheManufactureOrderItem> LMOItems { get; set; }
         public List<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
-        private List<MachineStatistics> _machineStatistics;
-
-        public List<MachineStatistics> machineStatistics
-        {
-            get { return _machineStatistics; }
-            set { _machineStatistics = value; }
-        }
-
+        public List<MachineStatistics> machineStatistics { get; set; }
         public List<Lot> Lots { get; set; }
-
-        DispatcherTimer dispatcherTimer { get; set; }
 
         private LatheManufactureOrder selectedLatheManufactureOrder;
         public LatheManufactureOrder SelectedLatheManufactureOrder
@@ -40,7 +27,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedLatheManufactureOrder = value;
-                
+
                 LoadLMOItems();
                 if (selectedLatheManufactureOrder == null)
                 {
@@ -53,17 +40,16 @@ namespace ProjectLighthouse.ViewModel
                 }
 
                 ModifiedVis = String.IsNullOrEmpty(selectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
-                machineStatistics = (machineStatistics == null) ? new List<MachineStatistics>() : machineStatistics;
                 LiveInfoVis = selectedLatheManufactureOrder.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
 
-                Debug.WriteLine(string.Format("# stats: {0}", machineStatistics.Count));
-                Debug.WriteLine(string.Format("live vis: {0}", LiveInfoVis));
+                if (LiveInfoVis == Visibility.Visible)
+                    GetLatestStats();
 
                 Lots = DatabaseHelper.Read<Lot>().ToList();
-                RunInfoText = !String.IsNullOrEmpty(selectedLatheManufactureOrder.AllocatedMachine) ? 
-                    String.Format("Assigned to {0}, starting {1:dddd, MMMM d}{2}", 
-                    selectedLatheManufactureOrder.AllocatedMachine, 
-                    selectedLatheManufactureOrder.StartDate, 
+                RunInfoText = !String.IsNullOrEmpty(selectedLatheManufactureOrder.AllocatedMachine) ?
+                    String.Format("Assigned to {0}, starting {1:dddd, MMMM d}{2}",
+                    selectedLatheManufactureOrder.AllocatedMachine,
+                    selectedLatheManufactureOrder.StartDate,
                     GetDaySuffix(selectedLatheManufactureOrder.StartDate.Day)) :
                     RunInfoText = "Not scheduled";
 
@@ -72,12 +58,12 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        private string displayStats;
-        public string DisplayStats
+        private MachineStatistics displayStats; // Stats for the machine listed on the order currently selected
+        public MachineStatistics DisplayStats
         {
             get { return displayStats; }
-            set 
-            { 
+            set
+            {
                 displayStats = value;
                 OnPropertyChanged("DisplayStats");
             }
@@ -116,7 +102,7 @@ namespace ProjectLighthouse.ViewModel
         {
             get { return liveInfoVis; }
             set
-            { 
+            {
                 liveInfoVis = value;
                 OnPropertyChanged("LiveInfoVis");
             }
@@ -171,99 +157,37 @@ namespace ProjectLighthouse.ViewModel
 
         public OrderViewModel()
         {
-            // refresh live stats
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = TimeSpan.FromSeconds(60);
-            dispatcherTimer.Start();
-
             LatheManufactureOrders = new List<LatheManufactureOrder>();
             FilteredOrders = new List<LatheManufactureOrder>();
             machineStatistics = new List<MachineStatistics>();
-
             LMOItems = new List<LatheManufactureOrderItem>();
             FilteredLMOItems = new List<LatheManufactureOrderItem>();
             SelectedLatheManufactureOrder = new LatheManufactureOrder();
+            DisplayStats = new MachineStatistics();
 
             PrintOrderCommand = new PrintCommand(this);
             EditCommand = new EditManufactureOrderCommand(this);
 
             GetLatheManufactureOrders();
             FilterOrders("All Active");
-            if (FilteredOrders.Count > 0)
-                SelectedLatheManufactureOrder = FilteredOrders.First();
-
             GetLatheManufactureOrderItems();
-            GetLiveStats();
-            RefreshLiveInfoText();
+            GetLatestStats();
         }
 
         #region MachineStats Display
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-       {
-            if (machineStatistics == null) // stop the last tick
-                return;
 
-            GetLiveStats();
-            if (machineStatistics == null)
-            {
-                dispatcherTimer.Stop();
-                return;
-            }
-                
-            RefreshLiveInfoText();
-        }
-
-        private async void GetLiveStats()
+        private async void GetLatestStats()
         {
-            machineStatistics = new List<MachineStatistics>();
-            machineStatistics = await MachineStatsHelper.GetStats();
-            Debug.WriteLine(string.Format("# stats: {0}", machineStatistics.Count));
-        }
-
-        private void RefreshLiveInfoText()
-        {
+            machineStatistics = null;
+            machineStatistics = new List<MachineStatistics>(await MachineStatsHelper.GetStats());
+            machineStatistics ??= new List<MachineStatistics>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
-            string fullname = String.Empty;
-            MachineStatistics target_stats = new MachineStatistics();
-            foreach(var lathe in lathes)
-            {
-                if(lathe.Id == SelectedLatheManufactureOrder.AllocatedMachine)
-                {
-                    fullname = lathe.FullName;
-                    break;
-                }
-            }
-
-            if (!String.IsNullOrWhiteSpace(fullname))
-            {
-                foreach (var stat in machineStatistics)
-                {
-                    if(stat.MachineID == fullname)
-                    {
-                        target_stats = stat;
-                    }
-                }
-
-                if(target_stats != null)
-                {
-                    DisplayStats = String.Format("Part Counter: {0:#,##0} of {1:#,##0}, complete {2}", target_stats.PartCountAll, target_stats.PartCountTarget, target_stats.EstimateCompletionDate());
-                    if (target_stats.PartCountAll == 0 && target_stats.PartCountTarget == 0 && dispatcherTimer != null)
-                        dispatcherTimer.Stop();
-
-                    return;
-                }
-                else
-                {
-                    DisplayStats = String.Empty;
-                    return;
-                }
-            }
-            else
-            {
-                DisplayStats = String.Empty;
+            if (machineStatistics.Count == 0)
                 return;
-            }
+
+            string latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().FullName;
+
+            DisplayStats = machineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
         }
         #endregion
 
@@ -336,7 +260,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void EditLMO()
         {
-            EditLMOWindow editWindow = new EditLMOWindow((LatheManufactureOrder)SelectedLatheManufactureOrder.Clone(), FilteredLMOItems, Lots.Where(n=>n.Order == SelectedLatheManufactureOrder.Name).ToList());
+            EditLMOWindow editWindow = new EditLMOWindow((LatheManufactureOrder)SelectedLatheManufactureOrder.Clone(), FilteredLMOItems, Lots.Where(n => n.Order == SelectedLatheManufactureOrder.Name).ToList());
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
 
@@ -362,21 +286,13 @@ namespace ProjectLighthouse.ViewModel
 
         private string GetDaySuffix(int day)
         {
-            switch (day)
+            return day switch
             {
-                case 1:
-                case 21:
-                case 31:
-                    return "st";
-                case 2:
-                case 22:
-                    return "nd";
-                case 3:
-                case 23:
-                    return "rd";
-                default:
-                    return "th";
-            }
+                1 or 21 or 31 => "st",
+                2 or 22 => "nd",
+                3 or 23 => "rd",
+                _ => "th",
+            };
         }
     }
 }

@@ -6,35 +6,117 @@
         xmlns:local="clr-namespace:ProjectLighthouse.View"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
-        ResizeMode="CanMinimize"
+        ResizeMode="NoResize"
         MinWidth="250"
         WindowStartupLocation="CenterScreen"
         Title="Settings">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="233.438"/>
-            <ColumnDefinition Width="100.103"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
+    <Window.Resources>
+        <Style TargetType="PasswordBox" x:Key="passwordbox">
+            <Setter Property="BorderBrush" Value="{StaticResource materialPrimary}"/>
+            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="MaxLength" Value="30"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+        <Style x:Key="ghosttext" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#555555"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="12,5,5,6"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20,0">
         <StackPanel Margin="20,20,20,36" Grid.Column="1" Grid.ColumnSpan="2">
             <TextBlock Text="Settings" FontSize="30" FontWeight="Bold"/>
-            <TextBlock x:Name="nameText" Style="{StaticResource accentTextStyle}"/>
+            <TextBlock Style="{StaticResource accentTextStyle}">
+                <Run Text="{Binding FirstName, FallbackValue='Randy'}"/>
+                <Run Text="{Binding LastName, FallbackValue='Marsh'}"/>
+            </TextBlock>
             <TextBlock Style="{StaticResource accentTextStyle}">
                 <Run Text="User Role:"/>
-                <Run x:Name="userRoleText"/>
+                <Run Text="{Binding UserRole, FallbackValue='debug_placeholder'}" x:Name="userRoleText"/>
             </TextBlock>
-            <TextBlock Text="Change Password" Style="{StaticResource subtitleTextStyle}"/>
-            <TextBlock Text="Don't use your bank password, this app has no security." TextWrapping="Wrap" Margin="0,0,0,5" Foreground="{StaticResource materialError}"/>
+            
+            <TextBlock Text="Your Permissions" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBlock Text="An administrator is required to modify these." Style="{StaticResource accentTextStyle}"/>
             <StackPanel Margin="10,0">
-                <TextBlock Text="Current Password" Style="{StaticResource accentTextStyle}"/>
-                <PasswordBox x:Name="current" MaxLength="30"/>
-                <TextBlock Text="New Password" Style="{StaticResource accentTextStyle}"/>
-                <PasswordBox x:Name="newPwd" MaxLength="30"/>
-                <TextBlock Text="Confirm New Password" Style="{StaticResource accentTextStyle}"/>
-                <PasswordBox x:Name="confirmPwd" MaxLength="30"/>
-                <TextBlock Text="Helper Text" x:Name="helperText" Foreground="{StaticResource materialError}" Margin="0,3,0,0"/>
+                <TextBlock>
+                    <Run Text="Approve Requests:"/>
+                    <Run Text="{Binding CanApproveRequests}"/>
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Edit Orders:"/>
+                    <Run Text="{Binding CanEditLMOs}"/>
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Update Orders:"/>
+                    <Run Text="{Binding CanUpdateLMOs}"/>
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Raise Deliveries:"/>
+                    <Run Text="{Binding CanRaiseDelivery}"/>
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Create Assembly Products:"/>
+                    <Run Text="{Binding CanCreateAssemblyProducts}"/>
+                </TextBlock>
+            </StackPanel>
+            
+            <TextBlock Text="Default View" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBlock Style="{StaticResource accentTextStyle}"
+                       Text="This is the view that will be loaded on login."/>
+            <ComboBox x:Name="defaultViewComboBox"
+                      Margin="0,5,0,0"
+                      SelectionChanged="defaultViewComboBox_SelectionChanged">
+                <ComboBoxItem Content="View Requests"/>
+                <ComboBoxItem Content="Orders"/>
+                <ComboBoxItem Content="Schedule"/>
+                <ComboBoxItem Content="Assembly Orders"/>
+            </ComboBox>
+
+            <TextBlock Text="Change Password" Style="{StaticResource subtitleTextStyle}"/>
+            <Grid Margin="10,0,10,5">
+                <Rectangle Fill="{StaticResource materialError}" RadiusX="5" RadiusY="5"/>
+                <TextBlock Text="Please don't use your bank password - &#10;This app has no security." 
+                           Margin="12,6" 
+                           Foreground="{StaticResource materialOnError}" 
+                           FontWeight="SemiBold"/>
+            </Grid>
+            <StackPanel Margin="10,0">
+                <Grid Margin="0,5,0,0">
+                    <TextBlock Text="current password" 
+                               Style="{StaticResource ghosttext}" 
+                               x:Name="current_password_ghost"/>
+                    <PasswordBox x:Name="current" 
+                                 Style="{StaticResource passwordbox}" 
+                                 PasswordChanged="current_PasswordChanged"/>
+                </Grid>
+                <Grid Margin="0,5,0,0">
+                    <TextBlock Text="new password" 
+                               Style="{StaticResource ghosttext}"
+                               x:Name="new_password_ghost"/>
+                    <PasswordBox x:Name="newPwd" 
+                                 Style="{StaticResource passwordbox}" 
+                                 PasswordChanged="newPwd_PasswordChanged"/>
+                </Grid>
+                <Grid Margin="0,5,0,0">
+                    <TextBlock Text="confirm new password" 
+                               Style="{StaticResource ghosttext}"
+                               x:Name="confirm_password_ghost"/>
+                    <PasswordBox x:Name="confirmPwd" 
+                                 Style="{StaticResource passwordbox}" 
+                                 PasswordChanged="confirmPwd_PasswordChanged"/>
+                </Grid>
+                
+                <TextBlock Text="Helper Text" 
+                           x:Name="helperText" 
+                           Foreground="{StaticResource materialError}" 
+                           Margin="0,3,0,0"
+                           FontStyle="Italic"
+                           HorizontalAlignment="Center"/>
             </StackPanel>
 
             <Button Content="Change Password" 

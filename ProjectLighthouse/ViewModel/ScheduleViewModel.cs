@@ -1,21 +1,18 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.View;
-using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class ScheduleViewModel : BaseViewModel
+    public class 
+        ScheduleViewModel : BaseViewModel
     {
         #region Variables
         public ObservableCollection<LatheManufactureOrder> Orders { get; set; }
@@ -58,10 +55,10 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedTab = value;
-                selectedTab.Orders = CompleteOrders.Where(n => (n.Order.AllocatedMachine ?? "") == value.LatheID).OrderBy(n=>n.Order.StartDate).ToList();
+                selectedTab.Orders = CompleteOrders.Where(n => (n.Order.AllocatedMachine ?? "") == value.LatheID).OrderBy(n => n.Order.StartDate).ToList();
                 SelectedTab.CalculateTimings();
                 PrintButtonVis = SelectedTab.LatheID == "" ? Visibility.Collapsed : Visibility.Visible;
-                AutoScheduleVis = (App.currentUser.UserRole == "admin" || App.currentUser.UserRole == "Scheduling") && SelectedTab.LatheID != "" 
+                AutoScheduleVis = (App.currentUser.UserRole == "admin" || App.currentUser.UserRole == "Scheduling") && SelectedTab.LatheID != ""
                     ? Visibility.Visible : Visibility.Collapsed;
                 SelectedTabChanged?.Invoke(this, new EventArgs());
                 OnPropertyChanged("SelectedTab");
@@ -83,7 +80,7 @@ namespace ProjectLighthouse.ViewModel
             ReadOrders();
             LoadCompleteOrders();
             CreateTabs();
-            
+
             if (WindowTabs.Count > 1)
                 SelectedTab = WindowTabs[1];
         }
@@ -161,14 +158,14 @@ namespace ProjectLighthouse.ViewModel
                 BookedTo = DateTime.MinValue;
                 DateTime firstItemStarts = DateTime.MaxValue;
 
-                if(Orders.Count == 0)
+                if (Orders.Count == 0)
                 {
                     TotalTime = 0;
                     BookedTo = DateTime.Now;
                     return;
                 }
 
-                foreach(CompleteOrder order in Orders)
+                foreach (CompleteOrder order in Orders)
                 {
                     if (order.Order.StartDate < firstItemStarts)
                         firstItemStarts = order.Order.StartDate;
@@ -193,7 +190,7 @@ namespace ProjectLighthouse.ViewModel
                 order.ModifiedAt = DateTime.Now;
                 order.ModifiedBy = App.currentUser.GetFullName();
             }
-                
+
             order.StartDate = editWindow.SelectedDate;
             order.AllocatedMachine = editWindow.AllocatedMachine;
 

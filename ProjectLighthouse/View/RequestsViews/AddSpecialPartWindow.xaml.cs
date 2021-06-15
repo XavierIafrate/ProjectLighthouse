@@ -37,7 +37,7 @@ namespace ProjectLighthouse.View
 
             if (!Directory.Exists(openDir))
                 openDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            
+
             openFileDialog.InitialDirectory = openDir;
 
             if (openFileDialog.ShowDialog() == true)

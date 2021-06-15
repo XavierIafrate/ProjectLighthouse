@@ -2,18 +2,7 @@
 using ProjectLighthouse.Model.Assembly;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.AssemblyViews
 {
@@ -27,8 +16,8 @@ namespace ProjectLighthouse.View.AssemblyViews
         public AssemblyItem Product
         {
             get { return product; }
-            set 
-            { 
+            set
+            {
                 product = value;
                 this.Title = string.Format("New Routing: {0}", product.Routing);
             }
@@ -44,11 +33,10 @@ namespace ProjectLighthouse.View.AssemblyViews
 
         private void AssignValues()
         {
-            int j = 0;
             newRouting.RoutingID = product.Routing;
             newRouting.Description = DescriptionTextBox.Text;
             newRouting.Workstation = WorkstationComboBox.Text;
-            if(Int32.TryParse(SetupTimeTextBox.Text, out j))
+            if (Int32.TryParse(SetupTimeTextBox.Text, out int j))
                 newRouting.SetupTime = j;
 
             if (Int32.TryParse(CycleTimeTextBox.Text, out j))
@@ -82,7 +70,7 @@ namespace ProjectLighthouse.View.AssemblyViews
                 MessageBox.Show("Workstation cannot be empty.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (newRouting.SetupTime <=0 )
+            if (newRouting.SetupTime <= 0)
             {
                 MessageBox.Show("Setup Time cannot be <= 0", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;

@@ -16,8 +16,11 @@ namespace ProjectLighthouse.View
 
         public RequestView()
         {
+            viewModel = new RequestViewModel() { window = this};
+            this.DataContext = viewModel;
             InitializeComponent();
-            viewModel = Resources["vm"] as RequestViewModel;
+            //viewModel = Resources["vm"] as RequestViewModel;
+
             updateNotes();
         }
 
@@ -29,14 +32,15 @@ namespace ProjectLighthouse.View
         private void updateNotes()
         {
             Request request = (Request)requests_ListView.SelectedValue;
+            if (request == null)
+                return;
+
             if (notesTextBox == null)
-            {
                 notesTextBox = new RichTextBox();
-            }
+
             notesTextBox.Document.Blocks.Clear();
             notesTextBox.AppendText(request.Notes);
         }
-
 
         private void requests_ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -51,17 +55,14 @@ namespace ProjectLighthouse.View
         {
             // get qty
             TextBox textbox = quantityTextbox as TextBox;
-            int j = 0;
             if (string.IsNullOrEmpty(textbox.Text))
             {
                 return;
             }
-            if (Int32.TryParse(textbox.Text, out j))
+            if (Int32.TryParse(textbox.Text, out int j))
             {
                 if (j < 0)
-                {
                     MessageBox.Show("Invalid Quantity", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
             }
             else
             {
@@ -73,7 +74,7 @@ namespace ProjectLighthouse.View
             string notes = string.Empty;
             if (viewModel != null && textRange.Text.Length >= 2)
             {
-               notes = textRange.Text.Substring(0, textRange.Text.Length - 2);
+                notes = textRange.Text[0..^2];
             }
 
             viewModel.UpdateRequirements(notes, j);

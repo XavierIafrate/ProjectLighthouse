@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -28,7 +25,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static void OpenWithDefaultProgram(string path)
         {
-            Process fileopener = new Process();
+            Process fileopener = new();
             fileopener.StartInfo.FileName = "explorer";
             fileopener.StartInfo.Arguments = "\"" + path + "\"";
             fileopener.Start();

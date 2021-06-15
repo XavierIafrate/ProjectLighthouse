@@ -3,9 +3,10 @@ using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
@@ -14,12 +15,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     class MachineStatsHelper
     {
-        private static string IP_ADDRESS = "http://192.168.103.102";
+        private static readonly string IP_ADDRESS = "http://192.168.103.102";
 
         public static async Task<List<MachineStatistics>> GetStats()
         {
             List<MachineStatistics> resultList = new List<MachineStatistics>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
+
+            if (!IsOnProductionNetwork())
+                return GetStats_Offline();
 
             foreach (var lathe in lathes)
             {
@@ -30,7 +34,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 stats.MachineID = lathe.FullName;
                 string url = IP_ADDRESS + lathe.ControllerReference + "/current";
 
-                bool connected = await IsConnected(url);
+                bool connected = await IsConnected(url); // need to sort this out
 
                 if (!connected)
                 {
@@ -171,7 +175,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             try
             {
-                string text = System.IO.File.ReadAllText(@"H:\Production\Administration\Manufacture Records\Lighthouse\lathes.json");
+                string text = File.ReadAllText(Path.Join(App.ROOT_PATH, "lathes.json"));
                 List<MachineStatistics> stats = JsonConvert.DeserializeObject<List<MachineStatistics>>(text);
                 return stats;
             }
@@ -179,6 +183,24 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 return null;
             }
+        }
+
+        public static bool IsOnProductionNetwork()
+        {
+            return GetLocalIPAddress().StartsWith("192.168.103");
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
     }

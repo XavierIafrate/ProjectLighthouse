@@ -25,32 +25,22 @@ namespace ProjectLighthouse.View.UserControls
             DisplayProduct control = d as DisplayProduct;
             if (control == null)
                 return;
-            
+
             control.DataContext = control.TurnedProduct;
 
             if (!control.TurnedProduct.canBeManufactured())
                 control.productText.Foreground = Brushes.Red;
-                
+
             control.materialBadge.Visibility = String.IsNullOrEmpty(control.TurnedProduct.Material) ? Visibility.Hidden : Visibility.Visible;
 
-            switch (control.TurnedProduct.Material)
+            control.materialBadge.Fill = control.TurnedProduct.Material switch
             {
-                case "A2":
-                    control.materialBadge.Fill = (Brush)Application.Current.Resources["materialOnBackground"];
-                    break;
-                case "A4":
-                    control.materialBadge.Fill = (Brush)Application.Current.Resources["materialPrimary"];
-                    break;
-                case "Ti":
-                    control.materialBadge.Fill = (Brush)Application.Current.Resources["materialError"];
-                    break;
-                case "EN1A":
-                    control.materialBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryGreenVar"];
-                    break;
-                default:
-                    control.materialBadge.Fill = Brushes.Black;
-                    break;
-            }
+                "A2" => (Brush)Application.Current.Resources["materialOnBackground"],
+                "A4" => (Brush)Application.Current.Resources["materialPrimary"],
+                "Ti" => (Brush)Application.Current.Resources["materialError"],
+                "EN1A" => (Brush)Application.Current.Resources["materialPrimaryGreenVar"],
+                _ => Brushes.Black,
+            };
         }
 
         public DisplayProduct()

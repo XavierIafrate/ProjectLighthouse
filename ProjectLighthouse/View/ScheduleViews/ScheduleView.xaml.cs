@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 

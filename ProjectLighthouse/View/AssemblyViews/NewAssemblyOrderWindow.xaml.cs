@@ -1,20 +1,11 @@
 ﻿using ProjectLighthouse.Model;
-using ProjectLighthouse.Model.Assembly;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.AssemblyViews
 {
@@ -33,7 +24,6 @@ namespace ProjectLighthouse.View.AssemblyViews
         private int QuantityRequired { get; set; }
 
         public List<Drop> newDrops { get; set; }
-
         public List<AssemblyItem> Products { get; set; }
         public List<AssemblyGroup> TreeItems { get; set; }
 
@@ -54,18 +44,18 @@ namespace ProjectLighthouse.View.AssemblyViews
             Products = DatabaseHelper.Read<AssemblyItem>().ToList();
             TreeItems = new List<AssemblyGroup>();
             List<string> groups = new List<string>();
-            foreach(AssemblyItem product in Products)
+            foreach (AssemblyItem product in Products)
             {
                 if (!groups.Contains(product.ProductGroup))
                     groups.Add(product.ProductGroup);
             }
 
-            foreach(string group in groups)
+            foreach (string group in groups)
             {
                 TreeItems.Add(new AssemblyGroup()
                 {
                     group = group,
-                    items = new List<AssemblyItem>(Products.Where(n=> n.ProductGroup == group))
+                    items = new List<AssemblyItem>(Products.Where(n => n.ProductGroup == group))
                 });
             }
 
@@ -127,7 +117,7 @@ namespace ProjectLighthouse.View.AssemblyViews
         private void CallOffDropQuantity_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
-            if(Int32.TryParse(TotalQuantityTextBox.Text, out int j))
+            if (Int32.TryParse(TotalQuantityTextBox.Text, out int j))
             {
                 QuantityRequired = j;
             }
@@ -154,7 +144,7 @@ namespace ProjectLighthouse.View.AssemblyViews
 
         private void TotalQuantityTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(Int32.TryParse(TotalQuantityTextBox.Text, out int j))
+            if (Int32.TryParse(TotalQuantityTextBox.Text, out int j))
             {
                 QuantityRequired = j;
             }

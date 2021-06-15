@@ -11,7 +11,7 @@
         MinWidth="1100"
         MaxWidth="2000"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="CanResize"
         Loaded="Window_Loaded"
         Background="{StaticResource materialBackground}">
 
@@ -84,9 +84,10 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             
-            <Rectangle Grid.RowSpan="4" Fill="Black"/>
+            <Rectangle Grid.RowSpan="5" Fill="Black"/>
             
                 <Image Source="/Resources/LighthouseLogo.png"
                     RenderOptions.BitmapScalingMode="HighQuality"
@@ -132,6 +133,7 @@
                                   x:Name="schedule_button"
                                   Click="ToggleButton_Click"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}" 
+                                  Visibility="Collapsed"
                                   CommandParameter="Runtime"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Runtime"
@@ -165,7 +167,8 @@
                               CommandParameter="Deliveries"
                               Style="{StaticResource menuButtonStyle}"
                               Content="Deliveries"
-                              Click="ToggleButton_Click"/>
+                              Click="ToggleButton_Click"
+                              x:Name="deliveries_button"/>
 
                 
                 <Button Style="{StaticResource ButtonTemplate}"
@@ -178,10 +181,13 @@
                     Content="Settings"
                     Grid.Row="3"
                     Width="100"
-                    Margin="20"
+                    Margin="5"
                     Command="{Binding EditCommand}"/>
-            
-            <Grid Grid.RowSpan="4">
+            <StackPanel Grid.Row="4" HorizontalAlignment="Center" Margin="0,5">
+                <TextBlock Text="Copyright Wixroyd Ltd 2021" Foreground="#555555" FontStyle="Italic" HorizontalAlignment="Center"/>
+                <TextBlock Text="Written by Xavier Iafrate" Foreground="#555555" FontStyle="Italic" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <Grid Grid.RowSpan="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="10"/>

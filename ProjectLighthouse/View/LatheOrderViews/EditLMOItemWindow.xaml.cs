@@ -32,9 +32,9 @@ namespace ProjectLighthouse.View
             intQtyReject = 0;
             intQtyDelivered = 0;
 
-            if(Lots.Count > 0)
+            if (Lots.Count > 0)
             {
-                foreach(Lot lot in Lots)
+                foreach (Lot lot in Lots)
                 {
                     if (!lot.IsReject)
                     {
@@ -125,7 +125,7 @@ namespace ProjectLighthouse.View
             {
                 TurnedProduct thisProduct = product.First();
                 thisProduct.CycleTime = cycleTime;
-                if (QuantityAdded != 0) 
+                if (QuantityAdded != 0)
                 {
                     thisProduct.QuantityManufactured += QuantityAdded;
                     thisProduct.lastManufactured = DateTime.Now;

@@ -42,21 +42,22 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Style="{StaticResource heroTextStyle}" Text="{Binding ViewTitle}"/>
                     <StackPanel Grid.Column="2" Orientation="Horizontal" DataContext="{StaticResource vm}">
-                        <Button Content="Auto Schedule"
+                        <!--<Button Content="Auto Schedule"
                                 Style="{StaticResource GreenButtonTemplate}" 
                                 Visibility="{Binding AutoScheduleVis}"
-                                Command="{Binding autoScheduleCommand}"/>
+                                Command="{Binding autoScheduleCommand}"/>-->
                         <Button Content="Generate PDF" 
                                 Style="{StaticResource ButtonTemplate}" 
                                 Visibility="{Binding PrintButtonVis}"
                                 Command="{Binding printScheduleCommand}"/>
                     </StackPanel>
-                    
+
                     <ListView Grid.Row="1"
                              Grid.ColumnSpan="3"
                              ItemsSource="{Binding Orders}" 
                              HorizontalContentAlignment="Stretch"
                              BorderBrush="{StaticResource materialSecondary}"
+                              BorderThickness="2"
                              ScrollViewer.CanContentScroll="False">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -88,7 +89,7 @@
                 </Grid>
             </DataTemplate>
         </Grid.Resources>
-
+        
         <TabControl Margin="10"
                     ItemTemplate="{StaticResource CustomHeaderTemplate}"
                     ContentTemplate="{StaticResource CustomItemTemplate}"

@@ -15,6 +15,7 @@
             <converters:boolToHasProgram x:Key="boolToHasProgram"/>
             <converters:boolToIsReady x:Key="boolToIsReady"/>
             <converters:intToDays x:Key="intToDays"/>
+            <converters:intToStringCycleTime x:Key="intToStringCycleTime"/>
             <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
                      From="1"
@@ -30,7 +31,7 @@
                 <Setter Property="Fill" Value="{StaticResource materialOnError}"/>
                 <Setter Property="RadiusX" Value="8"/>
                 <Setter Property="RadiusY" Value="8"/>
-                <Setter Property="Margin" Value="10,0,3,0"/>
+                <Setter Property="Margin" Value="15,0,3,0"/>
                 <Style.Triggers>
                     <EventTrigger RoutedEvent="Loaded">
                         <BeginStoryboard Storyboard="{StaticResource AnimateFlicker}"/>
@@ -97,7 +98,7 @@
                       Grid.RowSpan="2"
                       Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel Margin="25,10">
-                <Grid Margin="0,0,0,10" Visibility="{Binding LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
+                <Grid Margin="0,0,0,10" Visibility="{Binding LiveInfoVis, UpdateSourceTrigger=PropertyChanged}" MaxWidth="700">
                     <Rectangle Fill="{StaticResource materialError}"
                                RadiusX="5"
                                RadiusY="5"/>
@@ -108,22 +109,50 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <Rectangle Style="{StaticResource liveCircle}"/>
-                        <TextBlock Text="LIVE" 
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Rectangle Style="{StaticResource liveCircle}" Grid.RowSpan="2"/>
+                        <TextBlock Text="{Binding DisplayStats.MachineID, StringFormat='{}LIVE on {0}'}"
                                    Foreground="{StaticResource materialOnError}"
                                    FontWeight="SemiBold"
                                    Grid.Column="1"
-                                   FontSize="15"
-                                   Padding="3,5,0,6"/>
-                        <TextBlock Text="{Binding DisplayStats}" 
                                    VerticalAlignment="Center"
+                                   Grid.RowSpan="2"
+                                   FontSize="18"
+                                   Padding="8,5,0,6"/>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
                                    Foreground="{StaticResource materialOnError}"
                                    Grid.Column="3"
-                                   Padding="0,5,10,6"/>
+                                   Padding="0,3,10,4">
+                            <Run Text="Part counter:"/>
+                            <Run Text="{Binding DisplayStats.PartCountAll, StringFormat='{}{0:#,##0}'}"
+                                 FontWeight="Bold"/>
+                            <Run Text="of target"/>
+                            <Run Text="{Binding DisplayStats.PartCountTarget, StringFormat='{}{0:#,##0}'}"
+                                 FontWeight="Bold"/>
+                            <Run Text="pcs"/>
+                        </TextBlock>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   Foreground="{StaticResource materialOnError}"
+                                   Grid.Column="3"
+                                   Grid.Row="1"
+                                   Padding="0,3,10,4">
+                            <Run Text="Execution"/>
+                            <Run Text="{Binding DisplayStats.Execution}"
+                                 FontWeight="Bold"/>
+                            <Run Text="- Cycle time"/>
+                            <Run Text="{Binding DisplayStats.CycleTime, Converter='{StaticResource intToStringCycleTime}', StringFormat='{}{0:mm}'}"
+                                 FontWeight="Bold"/>
+                        </TextBlock>
                     </Grid>
                 </Grid>
-                <Grid>
-                    <StackPanel Margin="10" MaxWidth="700">
+                <Grid MaxWidth="700">
+                    <Rectangle Stroke="Black" StrokeThickness="3" RadiusX="5" RadiusY="5"/>
+                    <StackPanel Margin="20">
                         <!--#region Header Data-->
                         <StackPanel>
                             <Grid>
@@ -198,7 +227,7 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="Start Date" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Setting" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine}" Grid.Row="1" Style="{StaticResource highlightText}"/>
                             <TextBlock Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:ddd, dd MMMM}'}" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource accentTextStyle}"/>
 
@@ -213,12 +242,12 @@
                         </Grid>
                         
                         <StackPanel>
-                            <TextBlock Text="Items"
+                            <TextBlock Text="{Binding FilteredLMOItems.Count, StringFormat='{}Items ({0})'}"
                                        HorizontalAlignment="Left"
                                        FontSize="20"
                                        Padding="0,0,0,8"/>
                             <Grid>
-                                <Rectangle Fill="{StaticResource materialBackground}" Stroke="{StaticResource materialPrimary}" RadiusX="8" RadiusY="8"/>
+                                <Rectangle Fill="{StaticResource materialBackground}" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" RenderOptions.BitmapScalingMode="HighQuality" RadiusX="8" RadiusY="8"/>
                                 <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               Margin="5"
                                           HorizontalContentAlignment="Stretch">
@@ -235,7 +264,7 @@
                         <TextBlock Text="Notes"
                                        Style="{StaticResource subtitleTextStyle}"/>
                         <Grid>
-                            <Rectangle Fill="White" Stroke="{StaticResource materialPrimary}" RadiusX="8" RadiusY="8"/>
+                            <Rectangle Fill="White" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" RenderOptions.BitmapScalingMode="HighQuality" RadiusX="5" RadiusY="5"/>
                             <TextBlock Text="{Binding SelectedLatheManufactureOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
                                            Margin="10,6"
                                            Padding="0,0,0,2"

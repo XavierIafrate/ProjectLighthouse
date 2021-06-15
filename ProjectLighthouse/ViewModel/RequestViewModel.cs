@@ -8,14 +8,17 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ProjectLighthouse.ViewModel
 {
     public class RequestViewModel : BaseViewModel
     {
         #region Variables
-        public ObservableCollection<Request> Requests { get; set; }
+        public List<Request> Requests { get; set; }
         public ObservableCollection<Request> FilteredRequests { get; set; }
+        public RequestView window { get; set; }
+
         private string selectedFilter;
         public string SelectedFilter
         {
@@ -24,6 +27,8 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedFilter = value;
                 FilterRequests(value);
+                //if(window != null && window.filterComboBox.Text != value)
+                //    window.filterComboBox.Text = value;
                 if (FilteredRequests.Count > 0)
                 {
                     SelectedRequest = FilteredRequests.First();
@@ -33,7 +38,6 @@ namespace ProjectLighthouse.ViewModel
                 {
                     CardVis = Visibility.Hidden;
                 }
-
             }
         }
 
@@ -103,8 +107,8 @@ namespace ProjectLighthouse.ViewModel
         public bool CanEditRequirements
         {
             get { return canEditRequirements; }
-            set 
-            { 
+            set
+            {
                 canEditRequirements = value;
                 OnPropertyChanged("CanEditRequirements");
             }
@@ -136,8 +140,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility EditControlsVis
         {
             get { return editcontrolsVis; }
-            set 
-            { 
+            set
+            {
                 editcontrolsVis = value;
                 OnPropertyChanged("EditControlsVis");
             }
@@ -226,7 +230,7 @@ namespace ProjectLighthouse.ViewModel
 
         public RequestViewModel()
         {
-            Requests = new ObservableCollection<Request>();
+            Requests = new List<Request>();
             FilteredRequests = new ObservableCollection<Request>();
             ApproveCommand = new ApproveRequestCommand(this);
             DeclineCommand = new DeclineRequestCommand(this);
@@ -236,10 +240,10 @@ namespace ProjectLighthouse.ViewModel
 
             approvalControlsVis = App.currentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
             GetRequests();
-            FilterRequests("Last 14 Days");
+            //SelectedFilter = "Last 14 Days";
 
-            if (FilteredRequests.Count > 0)
-                SelectedRequest = FilteredRequests.First();
+            //if (FilteredRequests.Count < 1)
+            //    SelectedFilter = "My Requests";
         }
 
         public void LoadRequestCard(Request request)
@@ -391,16 +395,16 @@ namespace ProjectLighthouse.ViewModel
                 MessageBox.Show("You do not have permission to decline requests.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            if (String.IsNullOrEmpty(selectedRequest.DeclinedReason))
+            if (String.IsNullOrEmpty(SelectedRequest.DeclinedReason))
             {
                 MessageBox.Show("You must enter a reason for declining the request.", "Information required", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            selectedRequest.IsAccepted = false;
-            selectedRequest.IsDeclined = true;
-            selectedRequest.LastModified = DateTime.Now;
-            selectedRequest.ModifiedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
-            selectedRequest.Status = String.Format("Declined - {0}", selectedRequest.DeclinedReason);
+            SelectedRequest.IsAccepted = false;
+            SelectedRequest.IsDeclined = true;
+            SelectedRequest.LastModified = DateTime.Now;
+            SelectedRequest.ModifiedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
+            selectedRequest.Status = String.Format("Declined - {0}", SelectedRequest.DeclinedReason);
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -418,15 +422,8 @@ namespace ProjectLighthouse.ViewModel
 
         public void GetRequests()
         {
-            var requests = DatabaseHelper.Read<Request>().ToList();
             Requests.Clear();
-
-            foreach (var request in requests)
-            {
-                Requests.Add(request);
-            }
-
-            Requests = new ObservableCollection<Request>(Requests.OrderByDescending(n => n.DateRaised));
+            Requests = DatabaseHelper.Read<Request>().OrderByDescending(n => n.DateRaised).ToList();
         }
 
         public void FilterRequests(string filter)
@@ -454,9 +451,10 @@ namespace ProjectLighthouse.ViewModel
             }
             if (FilteredRequests.Count > 0)
             {
-                selectedRequest = FilteredRequests.First();
+                SelectedRequest = FilteredRequests.First();
             }
             OnPropertyChanged("FilteredRequests");
+            OnPropertyChanged("SelectedFilter");
         }
     }
 }

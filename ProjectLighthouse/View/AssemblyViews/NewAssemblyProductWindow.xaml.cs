@@ -1,18 +1,9 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
@@ -38,7 +29,7 @@ namespace ProjectLighthouse.View
         {
             List<string> groups = new List<string>();
             items = DatabaseHelper.Read<AssemblyItem>().ToList();
-            foreach(AssemblyItem item in items)
+            foreach (AssemblyItem item in items)
             {
                 if (!groups.Contains(item.ProductGroup))
                     groups.Add(item.ProductGroup);
@@ -80,14 +71,14 @@ namespace ProjectLighthouse.View
         {
             int numProducts = DatabaseHelper.Read<AssemblyItem>().Count;
             numProducts += 1;
-            tmpItem.BillOfMaterials = string.Format("{0}{1}", "BOM00000".Substring(0, 8-numProducts.ToString().Length), numProducts);
-            tmpItem.Routing = string.Format("{0}{1}", "R00000".Substring(0, 6-numProducts.ToString().Length), numProducts);
+            tmpItem.BillOfMaterials = string.Format("{0}{1}", "BOM00000".Substring(0, 8 - numProducts.ToString().Length), numProducts);
+            tmpItem.Routing = string.Format("{0}{1}", "R00000".Substring(0, 6 - numProducts.ToString().Length), numProducts);
         }
 
         private void AssignValues()
         {
             tmpItem.ProductNumber = ProductNumberTextBox.Text;
-            if(ProductGroupComboBox.SelectedValue == null)
+            if (ProductGroupComboBox.SelectedValue == null)
             {
                 tmpItem.ProductGroup = ProductGroupTextBox.Text;
             }

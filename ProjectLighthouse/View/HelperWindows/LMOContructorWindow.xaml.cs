@@ -2,7 +2,6 @@
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -66,7 +65,7 @@ namespace ProjectLighthouse.View
             // remove incompatible
             foreach (var product in ProductPool.ToList())
             {
-                if(!product.IsScheduleCompatible(requiredProduct) || !product.canBeManufactured())
+                if (!product.IsScheduleCompatible(requiredProduct) || !product.canBeManufactured())
                     ProductPool.Remove(product);
             }
         }
@@ -104,7 +103,7 @@ namespace ProjectLighthouse.View
                 if (!found)
                     ListboxProducts.Add(product);
             }
-            
+
             LMOItemsListBox.ItemsSource = LMOItems.ToList();
             poolListBox.ItemsSource = ListboxProducts;
 
@@ -214,7 +213,7 @@ namespace ProjectLighthouse.View
 
             if (selectedProduct == null)
                 return;
-            
+
             LatheManufactureOrderItem newItem = TurnedProductToLMOItem(selectedProduct, 0, DateTime.MinValue);
 
             LMOItems.Add(TurnedProductToLMOItem((TurnedProduct)poolListBox.SelectedValue, 0, DateTime.MinValue));
@@ -237,9 +236,9 @@ namespace ProjectLighthouse.View
 
             LatheManufactureOrderItem selected = (LatheManufactureOrderItem)LMOItemsListBox.SelectedValue;
 
-            foreach(LatheManufactureOrderItem i in items)
+            foreach (LatheManufactureOrderItem i in items)
             {
-                if(i.ProductName == i.ProductName)
+                if (i.ProductName == selected.ProductName)
                 {
                     i.TargetQuantity = j;
                 }

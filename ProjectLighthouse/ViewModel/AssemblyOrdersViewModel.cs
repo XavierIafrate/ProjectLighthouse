@@ -5,8 +5,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -19,14 +17,14 @@ namespace ProjectLighthouse.ViewModel
         public AssemblyManufactureOrder SelectedOrder
         {
             get { return selectedOrder; }
-            set 
-            { 
+            set
+            {
                 selectedOrder = value;
                 GetDrops();
-                if(selectedOrder != null)
+                if (selectedOrder != null)
                     ModifiedVis = string.IsNullOrEmpty(selectedOrder.ModifiedBy) ?
                         Visibility.Collapsed : Visibility.Visible;
-                
+
                 OnPropertyChanged("SelectedOrder");
             }
         }
@@ -42,8 +40,8 @@ namespace ProjectLighthouse.ViewModel
         public List<AssemblyManufactureOrder> FilteredOrders
         {
             get { return filteredOrders; }
-            set 
-            { 
+            set
+            {
                 filteredOrders = value;
                 OnPropertyChanged("FilteredOrders");
             }
@@ -71,8 +69,8 @@ namespace ProjectLighthouse.ViewModel
         public string SelectedFilter
         {
             get { return selectedFilter; }
-            set 
-            { 
+            set
+            {
                 selectedFilter = value;
                 FilterOrders();
                 NothingFoundVis = FilteredOrders.Count > 0 ?
@@ -86,8 +84,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility ModifiedVis
         {
             get { return modifiedVis; }
-            set 
-            { 
+            set
+            {
                 modifiedVis = value;
                 OnPropertyChanged("ModifiedVis");
             }
@@ -97,8 +95,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility OrderVis
         {
             get { return orderVis; }
-            set 
-            { 
+            set
+            {
                 orderVis = value;
                 OnPropertyChanged("OrderVis");
             }
@@ -108,8 +106,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility NothingFoundVis
         {
             get { return nothingFoundVis; }
-            set 
-            { 
+            set
+            {
                 nothingFoundVis = value;
                 OnPropertyChanged("NothingFoundVis");
             }
@@ -148,7 +146,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 FilteredOrders = Orders.Where(n => n.Status == "Complete").ToList();
             }
-            if(Orders.Count > 0)
+            if (Orders.Count > 0)
                 SelectedOrder = Orders.First();
         }
 
@@ -156,7 +154,7 @@ namespace ProjectLighthouse.ViewModel
         {
             if (selectedOrder == null)
                 return;
-            FilteredDrops = Drops.Where(n => n.ForOrder == selectedOrder.Name).OrderBy(m=>m.DateRequired).ToList();
+            FilteredDrops = Drops.Where(n => n.ForOrder == selectedOrder.Name).OrderBy(m => m.DateRequired).ToList();
         }
 
         private void LoadData()
@@ -183,7 +181,6 @@ namespace ProjectLighthouse.ViewModel
         {
             NewAssemblyOrderWindow window = new NewAssemblyOrderWindow();
             window.ShowDialog();
-            window = null;
         }
     }
 }

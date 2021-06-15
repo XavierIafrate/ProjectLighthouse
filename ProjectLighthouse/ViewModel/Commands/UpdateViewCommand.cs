@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -76,6 +75,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new AssemblyOrdersViewModel();
                 viewModel.NavText = "Assembly Orders";
             }
+            viewModel.window.SelectButton(parameter.ToString());
         }
     }
 }

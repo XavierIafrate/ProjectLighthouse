@@ -2,13 +2,8 @@
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
@@ -20,8 +15,8 @@ namespace ProjectLighthouse.ViewModel
         public List<DeliveryNote> DeliveryNotes
         {
             get { return deliveryNotes; }
-            set 
-            { 
+            set
+            {
                 deliveryNotes = value;
                 OnPropertyChanged("DeliveryNotes");
             }
@@ -35,7 +30,7 @@ namespace ProjectLighthouse.ViewModel
         public DeliveryNote SelectedDeliveryNote
         {
             get { return selectedDeliveryNote; }
-            set 
+            set
             {
                 selectedDeliveryNote = value;
                 if (value == null)
@@ -67,7 +62,7 @@ namespace ProjectLighthouse.ViewModel
         private void LoadDeliveryNotes()
         {
             DeliveryNotes.Clear();
-            DeliveryNotes = DatabaseHelper.Read<DeliveryNote>().OrderByDescending(n=> n.DeliveryDate).ToList();
+            DeliveryNotes = DatabaseHelper.Read<DeliveryNote>().OrderByDescending(n => n.DeliveryDate).ToList();
 
             if (deliveryNotes.Count != 0)
                 SelectedDeliveryNote = DeliveryNotes.First();
@@ -90,7 +85,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintDeliveryNotePDF()
         {
-            if(SelectedDeliveryNote != null && filteredDeliveryItems != null)
+            if (SelectedDeliveryNote != null && filteredDeliveryItems != null)
                 PDFHelper.PrintDeliveryNote(SelectedDeliveryNote, filteredDeliveryItems);
         }
     }

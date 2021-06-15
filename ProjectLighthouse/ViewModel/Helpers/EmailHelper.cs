@@ -1,9 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Mail;
-using System.Net.Mime;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
@@ -36,9 +34,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             List<User> users = DatabaseHelper.Read<User>();
             User PersonWhoRaisedRequest = new User();
-            foreach(User user in users)
+            foreach (User user in users)
             {
-                if(user.GetFullName() == approvedRequest.RaisedBy)
+                if (user.GetFullName() == approvedRequest.RaisedBy)
                 {
                     PersonWhoRaisedRequest = user;
                     break;
@@ -143,7 +141,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
 
             foreach (LatheManufactureOrderItem item in items)
-                if(item.RequiredQuantity > 0)
+                if (item.RequiredQuantity > 0)
                 {
                     message += string.Format("<p><b>Customer requirement:</b> {0} - {1:#,##0}pcs for {2:dddd d MMMM}. Target quantity: {3:#,##0}pcs</p>",
                         item.ProductName, item.RequiredQuantity, item.DateRequired, item.TargetQuantity);
@@ -153,7 +151,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     message += string.Format("<p>{0} - {1:#,##0}pcs</p>",
                        item.ProductName, item.TargetQuantity);
                 }
-                    
+
             message += "</font></html>";
 
             myContent.IsHtml = true;

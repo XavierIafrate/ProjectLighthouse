@@ -72,11 +72,13 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <vm:RequestViewModel x:Key="vm"/>
+            <!--<vm:RequestViewModel x:Key="vm"/>-->
         </ResourceDictionary>
     </UserControl.Resources>
-
-    <Grid Margin="10" DataContext="{StaticResource vm}">
+    <!--DataContext="{StaticResource vm}"-->
+    
+    
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"
                               MinWidth="340"/>
@@ -111,7 +113,7 @@
             <TextBlock Text="Filter by:" 
                        VerticalAlignment="Center"
                        Margin="0,0,10,0"/>
-            <ComboBox Width="100" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox Width="100" x:Name="filterComboBox" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="Last 14 Days" IsSelected="True"/>
                 <ComboBoxItem Content="My Requests"/>
                 <ComboBoxItem Content="Pending"/>
@@ -121,14 +123,22 @@
             </ComboBox>
             <Button Content="CSV" Command="{Binding ExportCommand}" Style="{StaticResource ButtonTemplate}" Margin="0"/>
         </StatusBar>
-        <TextBlock Text="None found" 
-                   Grid.Column="2" 
-                   HorizontalAlignment="Center" 
-                   VerticalAlignment="Center" 
-                   FontSize="30" 
-                   Foreground="#dddddd" 
-                   Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"/>
-
+        <StackPanel Grid.Column="2"
+                    VerticalAlignment="Center">
+            <TextBlock Text="none found :(" 
+                       Grid.Column="2" 
+                       HorizontalAlignment="Center" 
+                       FontSize="30" 
+                       Foreground="#dddddd" 
+                       Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="try changing the filter" 
+                       Grid.Column="2" 
+                       HorizontalAlignment="Center" 
+                       FontSize="20"
+                       FontStyle="Italic"
+                       Foreground="#dddddd" 
+                       Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
         <ScrollViewer Grid.Column="2"
                       Grid.RowSpan="2"
                       VerticalScrollBarVisibility="Hidden"

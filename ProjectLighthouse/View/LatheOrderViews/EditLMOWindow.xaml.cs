@@ -3,16 +3,12 @@ using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace ProjectLighthouse.View
 {
@@ -45,7 +41,7 @@ namespace ProjectLighthouse.View
             notes.Document.Blocks.Clear();
             notes.AppendText(order.Notes);
             notes.Document.LineHeight = 2;
-            
+
             urgent.IsChecked = order.IsUrgent;
             program.IsChecked = order.HasProgram;
             ready.IsChecked = order.IsReady;
@@ -81,9 +77,9 @@ namespace ProjectLighthouse.View
                 setters.IsEnabled = false;
             }
 
-            cancelOrderButton.Visibility = (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin") ? 
+            cancelOrderButton.Visibility = (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin") ?
                 Visibility.Visible : Visibility.Collapsed;
-            
+
             List<User> users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
             List<string> setterUsers = new List<string>();
 
@@ -112,7 +108,7 @@ namespace ProjectLighthouse.View
             TextRange textRange = new TextRange(notes.Document.ContentStart, notes.Document.ContentEnd);
 
             if (textRange.Text.Length > 2)
-                order.Notes = textRange.Text.Substring(0, textRange.Text.Length - 2);
+                order.Notes = textRange.Text[0..^2];
 
             order.POReference = PORef.Text;
             order.AllocatedSetter = setters.Text;
@@ -153,11 +149,11 @@ namespace ProjectLighthouse.View
         private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DisplayLMOItems control = sender as DisplayLMOItems;
-            EditLMOItemWindow editWindow = new EditLMOItemWindow(control.LatheManufactureOrderItem, 
-                lots.Where(n=> n.ProductName == control.LatheManufactureOrderItem.ProductName).ToList());
+            EditLMOItemWindow editWindow = new EditLMOItemWindow(control.LatheManufactureOrderItem,
+                lots.Where(n => n.ProductName == control.LatheManufactureOrderItem.ProductName).ToList());
             this.Hide();
             editWindow.ShowDialog();
-            
+
             if (editWindow.SaveExit)
             {
                 SaveExit = true;
@@ -241,9 +237,9 @@ namespace ProjectLighthouse.View
             if (e.Key == Key.F2)
             {
                 TextRange range = new TextRange(richTextBox.Document.ContentEnd, richTextBox.Document.ContentEnd);
-                range.Text = string.Format("({0:dd/MM/yy HH:mm} - {1}{2}) ", 
-                    DateTime.Now, 
-                    App.currentUser.FirstName[0].ToString().ToUpper(), 
+                range.Text = string.Format("({0:dd/MM/yy HH:mm} - {1}{2}) ",
+                    DateTime.Now,
+                    App.currentUser.FirstName[0].ToString().ToUpper(),
                     App.currentUser.LastName[0].ToString().ToUpper());
                 Debug.WriteLine(App.currentUser.FirstName);
                 Debug.WriteLine(App.currentUser.FirstName[0].ToString());

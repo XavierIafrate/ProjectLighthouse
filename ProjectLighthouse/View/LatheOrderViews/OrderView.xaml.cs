@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.ViewModel;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace ProjectLighthouse.View
 {
@@ -8,11 +7,9 @@ namespace ProjectLighthouse.View
     /// </summary>
     public partial class OrderView : UserControl
     {
-        OrderViewModel viewModel;
         public OrderView()
         {
             InitializeComponent();
-            viewModel = Resources["vm"] as OrderViewModel;
         }
     }
 }

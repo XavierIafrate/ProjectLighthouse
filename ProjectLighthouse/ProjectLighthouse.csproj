@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\done.png" />
     <None Remove="Resources\GIF\0.gif" />
     <None Remove="Resources\GIF\excited.gif" />
     <None Remove="Resources\GIF\moderate.gif" />
@@ -18,7 +19,6 @@
     <None Remove="Resources\MO-1star.png" />
     <None Remove="Resources\MO-2star.png" />
     <None Remove="Resources\MO-3star.png" />
-    <None Remove="Resources\MO-Good.png" />
     <None Remove="Resources\MO-Notify.png" />
     <None Remove="Resources\MO-SpecialPartWarning.png" />
     <None Remove="Resources\MO-Stop.png" />
@@ -71,7 +71,7 @@
     <Resource Include="Resources\MO-1star.png" />
     <Resource Include="Resources\MO-2star.png" />
     <Resource Include="Resources\MO-3star.png" />
-    <Resource Include="Resources\MO-Good.png" />
+    <Resource Include="Resources\done.png" />
     <Resource Include="Resources\MO-Notify.png" />
     <Resource Include="Resources\MO-SpecialPartWarning.png" />
     <Resource Include="Resources\MO-Stop.png" />

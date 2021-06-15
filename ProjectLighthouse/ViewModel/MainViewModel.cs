@@ -25,8 +25,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility BetaWarningVis
         {
             get { return betaWarningVis; }
-            set 
-            { 
+            set
+            {
                 betaWarningVis = value;
                 OnPropertyChanged("BetaWarningVis");
             }
@@ -66,11 +66,11 @@ namespace ProjectLighthouse.ViewModel
                 {
                     login.ShowDialog();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.WriteLine(e.Message);
                 }
-                
+
 
                 if (login.auth_user == null)
                 {
@@ -79,9 +79,8 @@ namespace ProjectLighthouse.ViewModel
                 else
                 {
                     App.currentUser = login.auth_user;
-                    if(window != null)
+                    if (window != null)
                         window.ToggleButton_Click(new ToggleButton() { Content = App.currentUser.DefaultView ?? "Orders" }, new RoutedEventArgs());
-                    UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
                 }
             }
 

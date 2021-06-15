@@ -16,6 +16,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto" MinWidth="130"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -39,7 +40,7 @@
             </StackPanel>
 
 
-            <StackPanel Grid.Column="2" VerticalAlignment="Center" x:Name="requirements">
+            <StackPanel Grid.Column="2" VerticalAlignment="Center" x:Name="requirements" Orientation="Horizontal">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -59,9 +60,8 @@
                                HorizontalAlignment="Right"
                                FontSize="12"/>
                     </StackPanel>
-
                 </Grid>
-
+                <Image Source="/Resources/done.png" Grid.Column="5" Height="20" Margin="5" x:Name="doneFlag" RenderOptions.BitmapScalingMode="HighQuality"/>
             </StackPanel>
 
             <Grid Grid.Column="4" VerticalAlignment="Center" Margin="5">
@@ -87,6 +87,7 @@
                            Grid.Row="1"
                            FontSize="12"/>
             </Grid>
+            
         </Grid>
     </Grid>
 </UserControl>

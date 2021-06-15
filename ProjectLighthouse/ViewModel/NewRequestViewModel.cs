@@ -79,11 +79,9 @@ namespace ProjectLighthouse.ViewModel
             var lathes = DatabaseHelper.Read<Lathe>().ToList();
             snippets = new List<MachineInfoSnippet>();
 
-            MachineInfoSnippet tmpSnippet = new MachineInfoSnippet();
-
             foreach (var lathe in lathes)
             {
-                tmpSnippet = new MachineInfoSnippet
+                MachineInfoSnippet tmpSnippet = new MachineInfoSnippet
                 {
                     MachineID = lathe.Id,
                     MachineFullName = lathe.FullName,

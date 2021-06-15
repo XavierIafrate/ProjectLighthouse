@@ -32,7 +32,7 @@ namespace ProjectLighthouse.View.UserControls
             percent = Math.Round(percent * 100) / 100;
             if (double.IsNaN(percent))
                 percent = 0;
-                
+
             control.progressGrid.ColumnDefinitions[0].Width = new GridLength(percent, GridUnitType.Star);
             control.progressGrid.ColumnDefinitions[1].Width = new GridLength(1 - percent, GridUnitType.Star);
             control.progressText.Text = String.Format("{0:0}%", percent * 100);
@@ -63,6 +63,10 @@ namespace ProjectLighthouse.View.UserControls
                     accentColour = "materialError";
                     break;
                 case "Offline":
+                    statusColour = "materialError";
+                    accentColour = "materialError";
+                    break;
+                case "Idle":
                     statusColour = "materialError";
                     accentColour = "materialError";
                     break;

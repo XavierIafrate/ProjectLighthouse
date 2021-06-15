@@ -1,6 +1,8 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ProjectLighthouse.View
 {
@@ -10,15 +12,32 @@ namespace ProjectLighthouse.View
         public EditSettingsWindow()
         {
             InitializeComponent();
-            user = App.currentUser;
+            user = App.currentUser ?? new User()
+            {
+                FirstName = "Randy",
+                LastName = "Marsh",
+                UserName = "randy",
+                UserRole = "debug_placeholder",
+                CanApproveRequests = true,
+                CanEditLMOs = true,
+                CanCreateAssemblyProducts = true,
+                CanRaiseDelivery = true,
+                CanUpdateLMOs = true,
+                DefaultView = "Schedule"
+            };
             helperText.Visibility = Visibility.Collapsed;
-            LoadText();
-        }
-
-        public void LoadText()
-        {
-            nameText.Text = user.GetFullName();
-            userRoleText.Text = user.UserRole;
+            this.DataContext = App.currentUser;
+            foreach (ComboBoxItem item in defaultViewComboBox.Items)
+            {
+                Debug.WriteLine($"{item.Content} - {user.DefaultView}");
+                if ((string)item.Content == user.DefaultView)
+                {
+                    defaultViewComboBox.SelectedItem = item;
+                    break;
+                } 
+            }
+                
+            
         }
 
         private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
@@ -51,7 +70,29 @@ namespace ProjectLighthouse.View
             {
                 MessageBox.Show("Failed to update password", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
 
+        private void defaultViewComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            ComboBoxItem item = (ComboBoxItem)comboBox.SelectedValue;
+            user.DefaultView = item.Content.ToString();
+            DatabaseHelper.Update<User>(user);
+        }
+
+        private void confirmPwd_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            confirm_password_ghost.Visibility = confirmPwd.Password.Length > 0 ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        private void current_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            current_password_ghost.Visibility = current.Password.Length > 0 ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        private void newPwd_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            new_password_ghost.Visibility = newPwd.Password.Length > 0 ? Visibility.Hidden : Visibility.Visible;
         }
     }
 }

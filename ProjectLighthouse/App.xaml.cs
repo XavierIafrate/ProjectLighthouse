@@ -9,5 +9,6 @@ namespace ProjectLighthouse
     public partial class App : Application
     {
         public static User currentUser { get; set; }
+        public static string ROOT_PATH { get; set; }
     }
 }

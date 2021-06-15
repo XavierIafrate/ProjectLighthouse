@@ -2,27 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class DatabaseHelper
     {
-        private static string dbFile = @"H:\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
-
+        private static readonly string dbFile = @"manufactureDB.db3";
 
         public static bool Insert<T>(T item)
         {
             bool result = false;
-            if (Environment.UserName == "xavier")
-                dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
 
-            //if (Debugger.IsAttached && Environment.UserName == "x.iafrate")
-            //    dbFile = @"\\groupfile01\Roaming\x.iafrate\Desktop\manufactureDB_debug.db3";
+            Debug.WriteLine(string.Format("dbFile: {0}", Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)));
 
-            Debug.WriteLine(string.Format("dbFile: {0}", dbFile));
-
-            using (SQLiteConnection conn = new SQLiteConnection(dbFile))
+            using (SQLiteConnection conn = new SQLiteConnection(Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)))
             {
                 conn.CreateTable<T>();
                 try
@@ -45,15 +40,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static bool Update<T>(T item)
         {
             bool result = false;
-            if (Environment.UserName == "xavier")
-                dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
 
-            //if (Debugger.IsAttached && Environment.UserName == "x.iafrate")
-            //    dbFile = @"\\groupfile01\Roaming\x.iafrate\Desktop\manufactureDB_debug.db3";
+            Debug.WriteLine(string.Format("dbFile: {0}", Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)));
 
-            Debug.WriteLine(string.Format("dbFile: {0}", dbFile));
-
-            using (SQLiteConnection conn = new SQLiteConnection(dbFile))
+            using (SQLiteConnection conn = new SQLiteConnection(Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)))
             {
                 try
                 {
@@ -75,15 +65,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static bool Delete<T>(T item)
         {
             bool result = false;
-            if (Environment.UserName == "xavier")
-                dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
 
-            //if (Debugger.IsAttached && Environment.UserName == "x.iafrate")
-            //    dbFile = @"\\groupfile01\Roaming\x.iafrate\Desktop\manufactureDB_debug.db3";
+            Debug.WriteLine(string.Format("dbFile: {0}", Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)));
 
-            Debug.WriteLine(string.Format("dbFile: {0}", dbFile));
-
-            using (SQLiteConnection conn = new SQLiteConnection(dbFile))
+            using (SQLiteConnection conn = new SQLiteConnection(Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)))
             {
                 conn.CreateTable<T>();
                 int rows = conn.Delete(item);
@@ -98,15 +83,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static List<T> Read<T>() where T : new()
         {
             List<T> items;
-            if (Environment.UserName == "xavier")
-                dbFile = "C:\\Users\\xavie\\Desktop\\manufactureDB.db3";
 
-            //if (Debugger.IsAttached && Environment.UserName == "x.iafrate")
-            //    dbFile = @"\\groupfile01\Roaming\x.iafrate\Desktop\manufactureDB_debug.db3";
+            Debug.WriteLine(string.Format("dbFile: {0}", Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)));
 
-            Debug.WriteLine(string.Format("dbFile: {0}", dbFile));
-            
-            using (SQLiteConnection conn = new SQLiteConnection(dbFile))
+            using (SQLiteConnection conn = new(Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)))
             {
                 conn.CreateTable<T>();
                 items = conn.Table<T>().ToList();

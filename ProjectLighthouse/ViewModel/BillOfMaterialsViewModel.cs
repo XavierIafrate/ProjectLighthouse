@@ -1,11 +1,8 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Assembly;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
@@ -17,8 +14,8 @@ namespace ProjectLighthouse.ViewModel
         public BillOfMaterials SelectedBOM
         {
             get { return selectedBOM; }
-            set 
-            { 
+            set
+            {
                 selectedBOM = value;
                 NoneFoundVis = selectedBOM.Items.Count > 0 ? Visibility.Collapsed : Visibility.Visible;
                 OnPropertyChanged("SelectedBOM");
@@ -30,7 +27,7 @@ namespace ProjectLighthouse.ViewModel
         public Visibility NoneFoundVis
         {
             get { return noneFoundVis; }
-            set 
+            set
             {
                 noneFoundVis = value;
                 OnPropertyChanged("NoneFoundVis");
@@ -51,14 +48,14 @@ namespace ProjectLighthouse.ViewModel
             List<BillOfMaterialsItem> materialItems = DatabaseHelper.Read<BillOfMaterialsItem>().ToList();
             List<AssemblyItem> products = DatabaseHelper.Read<AssemblyItem>().ToList();
 
-            foreach(AssemblyItem product in products)
+            foreach (AssemblyItem product in products)
             {
                 if (string.IsNullOrEmpty(product.BillOfMaterials))
                     continue;
                 BOMs.Add(new BillOfMaterials()
                 {
                     ID = product.BillOfMaterials,
-                    ToMake = product.ProductNumber, 
+                    ToMake = product.ProductNumber,
                     Items = materialItems.Where(n => n.BOMID == product.BillOfMaterials).ToList()
                 });
             }

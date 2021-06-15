@@ -3,16 +3,8 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
@@ -47,11 +39,11 @@ namespace ProjectLighthouse.View
             itemsOnNewNote.Clear();
 
             string _POref = String.Empty;
-            foreach(var lot in Lots)
+            foreach (var lot in Lots)
             {
-                foreach(var order in orders)
+                foreach (var order in orders)
                 {
-                    if(order.Name == lot.Order)
+                    if (order.Name == lot.Order)
                     {
                         _POref = order.POReference;
                     }
@@ -67,7 +59,7 @@ namespace ProjectLighthouse.View
                 });
             }
 
-            filteredUndeliveredItems = new List<DeliveryItem>(allUndeliveredItems.OrderBy(n=>n.Product));
+            filteredUndeliveredItems = new List<DeliveryItem>(allUndeliveredItems.OrderBy(n => n.Product));
             undeliveredList.ItemsSource = filteredUndeliveredItems;
             deliveryList.ItemsSource = itemsOnNewNote;
         }
@@ -84,7 +76,7 @@ namespace ProjectLighthouse.View
 
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
-            if(itemsOnNewNote.Count == 8)
+            if (itemsOnNewNote.Count == 8)
             {
                 MessageBox.Show("Max 8 items on a delivery", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -121,7 +113,7 @@ namespace ProjectLighthouse.View
 
             List<LatheManufactureOrderItem> orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
-            foreach(var item in itemsOnNewNote)
+            foreach (var item in itemsOnNewNote)
             {
                 item.AllocatedDeliveryNote = newDeliveryNote.Name;
 

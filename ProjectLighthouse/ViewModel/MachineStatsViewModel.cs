@@ -41,7 +41,7 @@ namespace ProjectLighthouse.ViewModel
         public async void getStats()
         {
             List<MachineStatistics> statsList = await MachineStatsHelper.GetStats();
-            if(statsList == null)
+            if (statsList == null)
             {
                 dispatcherTimer.Stop();
                 NoConnectionVis = Visibility.Visible;

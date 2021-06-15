@@ -61,15 +61,14 @@ namespace ProjectLighthouse.Model
             return Status == "Breakdown";
         }
 
-        public string GetError()
+        public static string GetError()
         {
             return "debug_err";
         }
 
         private List<string> getErrors()
         {
-
-            List<string> results = new List<string>();
+            List<string> results = new();
 
             if (SystemMessages != "")
             {
@@ -154,7 +153,6 @@ namespace ProjectLighthouse.Model
             {
                 return "-";
             }
-            TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
             DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
 
             return string.Format("{0:ddd d}{1} {0:MMM HH:mm}", finishDate, GetDaySuffix(finishDate.Day));
@@ -168,33 +166,24 @@ namespace ProjectLighthouse.Model
                 return "-";
             }
             TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
-            DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
 
             return string.Format("{0:D2}d {1:D2}h {2:D2}m", t.Days, t.Hours, t.Minutes);
         }
 
-        private string GetDaySuffix(int day)
+        private static string GetDaySuffix(int day)
         {
-            switch (day)
+            return day switch
             {
-                case 1:
-                case 21:
-                case 31:
-                    return "st";
-                case 2:
-                case 22:
-                    return "nd";
-                case 3:
-                case 23:
-                    return "rd";
-                default:
-                    return "th";
-            }
+                1 or 21 or 31 => "st",
+                2 or 22 => "nd",
+                3 or 23 => "rd",
+                _ => "th",
+            };
         }
 
         public List<Variables> GetListOfStatistics()
         {
-            List<Variables> variables = new List<Variables>();
+            List<Variables> variables = new();
 
             variables.Add(new Variables
             {
