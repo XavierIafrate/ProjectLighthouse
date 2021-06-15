@@ -179,5 +179,10 @@ namespace ProjectLighthouse.View
             return blank.Substring(0, 7 - orderNumLen) + strOrderNum;
 
         }
+
+        private void updateQty_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
+        }
     }
 }

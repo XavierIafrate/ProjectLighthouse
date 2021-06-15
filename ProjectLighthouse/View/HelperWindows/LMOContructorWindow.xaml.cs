@@ -14,11 +14,11 @@ namespace ProjectLighthouse.View
         public bool wasCancelled;
         public Request ApprovedRequest;
         public LatheManufactureOrder constructLMO;
-        public ObservableCollection<LatheManufactureOrderItem> LMOItems;
+        public List<LatheManufactureOrderItem> LMOItems;
         public string OrderBarID;
 
-        public ObservableCollection<TurnedProduct> ListboxProducts;
-        public ObservableCollection<TurnedProduct> ProductPool;
+        public List<TurnedProduct> ListboxProducts;
+        public List<TurnedProduct> ProductPool;
 
         public LMOContructorWindow(Request approvedRequest)
         {
@@ -26,9 +26,9 @@ namespace ProjectLighthouse.View
             OrderBarID = "";
             ApprovedRequest = approvedRequest;
             constructLMO = new LatheManufactureOrder();
-            LMOItems = new ObservableCollection<LatheManufactureOrderItem>();
-            ListboxProducts = new ObservableCollection<TurnedProduct>();
-            ProductPool = new ObservableCollection<TurnedProduct>();
+            LMOItems = new List<LatheManufactureOrderItem>();
+            ListboxProducts = new List<TurnedProduct>();
+            ProductPool = new List<TurnedProduct>();
             wasCancelled = true;
 
             requiredProductTextBlock.Text = approvedRequest.Product;
@@ -49,17 +49,8 @@ namespace ProjectLighthouse.View
         public void ReadDatabase(Request request)
         {
             string productName = request.Product;
-            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductGroup == productName.Substring(0, 9)).ToList();
+            ProductPool = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductGroup == productName.Substring(0, 9)).ToList();
             TurnedProduct requiredProduct = new TurnedProduct();
-
-            // Add products to potential pool
-            if (products != null)
-            {
-                foreach (var prod in products)
-                {
-                    ProductPool.Add(prod);
-                }
-            }
 
             // Assign required product
             foreach (var product in ProductPool)
@@ -75,7 +66,7 @@ namespace ProjectLighthouse.View
             // remove incompatible
             foreach (var product in ProductPool.ToList())
             {
-                if(!product.IsScheduleCompatible(requiredProduct))
+                if(!product.IsScheduleCompatible(requiredProduct) || !product.canBeManufactured())
                     ProductPool.Remove(product);
             }
         }
@@ -228,6 +219,34 @@ namespace ProjectLighthouse.View
 
             LMOItems.Add(TurnedProductToLMOItem((TurnedProduct)poolListBox.SelectedValue, 0, DateTime.MinValue));
             RefreshView();
+        }
+
+        private void updateQty_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
+        }
+
+        private void updateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Int32.TryParse(updateQty.Text, out int j))
+            {
+                return;
+            }
+
+            List<LatheManufactureOrderItem> items = (List<LatheManufactureOrderItem>)LMOItemsListBox.ItemsSource;
+
+            LatheManufactureOrderItem selected = (LatheManufactureOrderItem)LMOItemsListBox.SelectedValue;
+
+            foreach(LatheManufactureOrderItem i in items)
+            {
+                if(i.ProductName == i.ProductName)
+                {
+                    i.TargetQuantity = j;
+                }
+            }
+
+            LMOItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
+            CalculateInsights();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace ProjectLighthouse.View
             QuantityAdded = 0;
             SaveExit = false;
             Item = item;
-            Lots = (lots == null) ? new List<Lot>() : lots;
+            Lots = lots ?? new List<Lot>();
             InitializeComponent();
 
             intQtyMade = 0;

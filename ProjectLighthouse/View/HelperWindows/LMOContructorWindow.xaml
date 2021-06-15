@@ -139,6 +139,9 @@
                     Grid.Column="2"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right">
+            <TextBox x:Name="updateQty" PreviewKeyDown="updateQty_PreviewKeyDown" Width="100" Height="25" Margin="0,5"/>
+            <Button Style="{StaticResource ButtonTemplate}" x:Name="updateButton" Content="Update" Click="updateButton_Click"/>
+
             <Button Content="Cancel" 
                     x:Name="cancelButton" 
                     Click="cancelButton_Click" 

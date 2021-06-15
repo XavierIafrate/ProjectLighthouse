@@ -5,6 +5,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -20,7 +21,14 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrder> FilteredOrders { get; set; }
         public List<LatheManufactureOrderItem> LMOItems { get; set; }
         public List<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
-        public List<MachineStatistics> machineStatistics { get; set; }
+        private List<MachineStatistics> _machineStatistics;
+
+        public List<MachineStatistics> machineStatistics
+        {
+            get { return _machineStatistics; }
+            set { _machineStatistics = value; }
+        }
+
         public List<Lot> Lots { get; set; }
 
         DispatcherTimer dispatcherTimer { get; set; }
@@ -47,6 +55,10 @@ namespace ProjectLighthouse.ViewModel
                 ModifiedVis = String.IsNullOrEmpty(selectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
                 machineStatistics = (machineStatistics == null) ? new List<MachineStatistics>() : machineStatistics;
                 LiveInfoVis = selectedLatheManufactureOrder.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
+
+                Debug.WriteLine(string.Format("# stats: {0}", machineStatistics.Count));
+                Debug.WriteLine(string.Format("live vis: {0}", LiveInfoVis));
+
                 Lots = DatabaseHelper.Read<Lot>().ToList();
                 RunInfoText = !String.IsNullOrEmpty(selectedLatheManufactureOrder.AllocatedMachine) ? 
                     String.Format("Assigned to {0}, starting {1:dddd, MMMM d}{2}", 
@@ -204,8 +216,9 @@ namespace ProjectLighthouse.ViewModel
 
         private async void GetLiveStats()
         {
-            machineStatistics.Clear();
+            machineStatistics = new List<MachineStatistics>();
             machineStatistics = await MachineStatsHelper.GetStats();
+            Debug.WriteLine(string.Format("# stats: {0}", machineStatistics.Count));
         }
 
         private void RefreshLiveInfoText()

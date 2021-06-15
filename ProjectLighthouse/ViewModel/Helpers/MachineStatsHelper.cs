@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model;
+﻿using Newtonsoft.Json;
+using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,7 +33,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 bool connected = await IsConnected(url);
 
                 if (!connected)
-                    return null;
+                {
+                    return GetStats_Offline();
+                }
 
                 using (XmlTextReader reader = new XmlTextReader(url))
                 {
@@ -163,5 +166,20 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 return false;
             }
         }
+
+        private static List<MachineStatistics> GetStats_Offline()
+        {
+            try
+            {
+                string text = System.IO.File.ReadAllText(@"H:\Production\Administration\Manufacture Records\Lighthouse\lathes.json");
+                List<MachineStatistics> stats = JsonConvert.DeserializeObject<List<MachineStatistics>>(text);
+                return stats;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
     }
 }
