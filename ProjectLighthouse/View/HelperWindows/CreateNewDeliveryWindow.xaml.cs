@@ -152,15 +152,6 @@ namespace ProjectLighthouse.View
                 //    }
                 //}
 
-                foreach(var lot in Lots)
-                {
-                    if(lot.ID == item.LotID)
-                    {
-                        lot.IsDelivered = true;
-                        DatabaseHelper.Update<Lot>(lot);
-                    }
-                }
-
                 DatabaseHelper.Insert(item);
             }
             this.Close();

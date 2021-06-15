@@ -98,8 +98,9 @@ namespace ProjectLighthouse.View.AssemblyViews
         private void CalculateDrops(bool multi, bool byDayNumber = false)
         {
             newDrops.Clear();
+            //dropsItemsControl.ItemsSource = newDrops;
 
-            if(FlatRequiredDate.SelectedDate== null)
+            if (FlatRequiredDate.SelectedDate == null)
             {
                 MessageBox.Show("Please select a due date.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
@@ -120,7 +121,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             }
 
 
-            dropsListBox.ItemsSource = newDrops;
+            dropsItemsControl.ItemsSource = newDrops;
         }
 
         private void CallOffDropQuantity_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -132,7 +133,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             }
         }
 
-        private void TotalQuantityTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Validate_NumsOnly(object sender, KeyEventArgs e)
         {
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
@@ -145,5 +146,18 @@ namespace ProjectLighthouse.View.AssemblyViews
             CalculateDrops(isMulti, doByDayNumber);
         }
 
+        public class AssemblyGroup
+        {
+            public string group { get; set; }
+            public List<AssemblyItem> items { get; set; }
+        }
+
+        private void TotalQuantityTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(Int32.TryParse(TotalQuantityTextBox.Text, out int j))
+            {
+                QuantityRequired = j;
+            }
+        }
     }
 }

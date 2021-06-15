@@ -15,7 +15,14 @@
             <TextBlock Text="New Assembly Order"/>
             
             <TreeView x:Name="AssemblyTree"/>
-            
+            <ItemsControl x:Name="dropsItemsControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Quantity}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
             <!--<ListBox ItemsSource="{Binding Products}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -29,8 +36,9 @@
             
 
             <TextBlock Text="Quantity Required"/>
-            <TextBox x:Name="TotalQuantityTextBox"
-                     PreviewKeyDown="TotalQuantityTextBox_PreviewKeyDown"/>
+            <TextBox x:Name="TotalQuantityTextBox" 
+                     TextChanged="TotalQuantityTextBox_TextChanged"
+                     PreviewKeyDown="Validate_NumsOnly"/>
             <TextBlock Text="Delivery Scheme"/>
             
             <RadioButton Content="Single Drop" x:Name="singleRadio"
