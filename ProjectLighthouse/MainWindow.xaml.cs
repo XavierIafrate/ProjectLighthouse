@@ -1,7 +1,9 @@
 ﻿using ProjectLighthouse.ViewModel;
+using Squirrel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -16,12 +18,33 @@ namespace ProjectLighthouse
         {
             App.ROOT_PATH = Environment.UserName == "xavier" ? @"C:\Users\xavie\Desktop\" : @"H:\Production\Administration\Manufacture Records\Lighthouse\";
             InitializeComponent();
+
+
+
             if (App.currentUser == null)
                 return;
             viewModel = Resources["vm"] as MainViewModel;
-            //DataContext = new MainViewModel();
             viewModel.window = this;
             viewModel.UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
+            //Squirrel --releasify Lighthouse.1.0.0.nupkg
+            AddVersionNumber();
+            CheckForUpdates();
+        }
+
+        private void AddVersionNumber()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            this.Title += $" v.{versionInfo.FileVersion}";
+        }
+
+        private async Task CheckForUpdates()
+        {
+            using (var manager = new UpdateManager(@"C:\temp\Releases"))
+            {
+                await manager.UpdateApp();
+            };
         }
 
         public void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -65,6 +88,7 @@ namespace ProjectLighthouse
             assemblyOrders_button.IsEnabled = App.currentUser.UserRole == "admin";
             BOM_button.IsEnabled = App.currentUser.UserRole == "admin";
             assembly_button.IsEnabled = App.currentUser.UserRole == "admin";
+
         }
     }
 }

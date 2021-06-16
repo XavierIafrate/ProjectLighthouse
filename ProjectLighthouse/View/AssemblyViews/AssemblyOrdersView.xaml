@@ -26,11 +26,18 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
             <Button Content="+ New Order"
+                    Grid.Column="1"
                     Style="{StaticResource GreenButtonTemplate}"
+                    Margin="0,5"
                     Command="{Binding NewOrderCommand}"/>
             <ScrollViewer VerticalScrollBarVisibility="Auto"
-                          Grid.Row="1">
+                          Grid.Row="1"
+                          Grid.ColumnSpan="2">
                 <ListBox ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                      SelectedItem="{Binding SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      HorizontalContentAlignment="Stretch">
@@ -43,6 +50,7 @@
             </ScrollViewer>
             <StatusBar Background="Transparent"
                        Margin="0,5,0,0"
+                       Grid.ColumnSpan="2"
                        Grid.Row="2"
                        HorizontalAlignment="Right">
                 <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}"/>
@@ -149,7 +157,26 @@
                                 <Separator Margin="5"/>
                             </StackPanel>
                             <StackPanel Margin="10">
-                                <TextBlock Text="Drops"
+
+                                <ItemsControl ItemsSource="{Binding FilteredOrderItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  Margin="5"
+                                                  HorizontalContentAlignment="Stretch">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="10,3">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding ProductName}"/>
+                                                <TextBlock Text="{Binding QuantityRequired,StringFormat='{}{0:#,##0} pcs'}" Grid.Column="2"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <TextBlock Text="{Binding FilteredDrops.Count,StringFormat='{}Drops ({0})'}"
                                            Style="{StaticResource subtitleTextStyle}"/>
                                 <Grid>
                                     <Rectangle Fill="{StaticResource materialBackground}" 
@@ -160,7 +187,15 @@
                                                   HorizontalContentAlignment="Stretch">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Product}"/>
+                                                <Grid Margin="10,3">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding Quantity,StringFormat='{}{0:#,##0} pcs'}"/>
+                                                    <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dddd, dd/MM/yy}'}" Grid.Column="2"/>
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>

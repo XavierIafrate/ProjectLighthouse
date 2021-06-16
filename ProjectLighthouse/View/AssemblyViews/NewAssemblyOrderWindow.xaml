@@ -5,87 +5,140 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectLighthouse.View.AssemblyViews"
         mc:Ignorable="d"
-        Title="NewAssemblyOrderWindow" Height="450" Width="800">
+        WindowStartupLocation="CenterScreen"
+        Title="New Order" 
+        SizeToContent="WidthAndHeight"
+        MinHeight="450" MinWidth="800"
+        MaxWidth="1200"
+        MaxHeight="700">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel>
-            <TextBlock Text="New Assembly Order"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Create a new Assembly Order"
+                   Margin="20,20,20,10"
+                   Grid.ColumnSpan="3"
+                   Style="{StaticResource heroTextStyle}"/>
+        <Grid Margin="20" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" MinHeight="50"/>
+            </Grid.RowDefinitions>
             
-            <TreeView x:Name="AssemblyTree"/>
-            
-            
-            <ItemsControl x:Name="dropsItemsControl">
+            <TextBlock Text="Select Product"
+                       Grid.Row="0"/>
+                <TreeView x:Name="AssemblyTree" 
+                          Grid.Row="1" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          SelectedItemChanged="AssemblyTree_SelectedItemChanged"/>
+
+            <TextBlock Text="Drops" Grid.Row="2"/>
+            <ItemsControl x:Name="dropsItemsControl"
+                          BorderThickness="0.5"
+                          Grid.Row="3"
+                          BorderBrush="Black"
+                          MinHeight="100">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Quantity}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Quantity,StringFormat='{}{0} pcs'}"
+                                               Margin="10,3"/>
+                            <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dd MMM yyyy}'}"
+                                           Margin="10,3"
+                                           Grid.Column="2"/>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+        </Grid>
+        <StackPanel Grid.Column="1"
+                    Grid.Row="1"
+                    Margin="20">
 
-            <!--<ListBox ItemsSource="{Binding Products}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding ProductNumber}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>-->
-        </StackPanel>
-        <StackPanel Grid.Column="1">
-            <TextBlock x:Name="orderTitle"/>
-            
-
-            <TextBlock Text="Quantity Required"/>
+            <TextBlock Text="Total Quantity Required"/>
             <TextBox x:Name="TotalQuantityTextBox" 
                      TextChanged="TotalQuantityTextBox_TextChanged"
                      PreviewKeyDown="Validate_NumsOnly"/>
-            <TextBlock Text="Delivery Scheme"/>
+            <TextBlock Text="Delivery Scheme" Style="{StaticResource subsubtitleTextStyle}"/>
+            <StackPanel Margin="15,0,0,5">
+                <RadioButton Content="Single Drop" x:Name="singleRadio"
+                             IsChecked="True"
+                             Checked="Radio_Checked"
+                             GroupName="scheme"/>
+                <RadioButton Content="Call off order" x:Name="multiRadio" 
+                             Checked="Radio_Checked"
+                             IsChecked="False"
+                             GroupName="scheme"/>
+                <TextBlock Text="Date Required (single drop)"/>
+                <DatePicker x:Name="FlatRequiredDate"/>
+            </StackPanel>
             
-            <RadioButton Content="Single Drop" x:Name="singleRadio"
-                         Checked="Radio_Checked"
-                         GroupName="scheme"/>
-            <RadioButton Content="Call off order" x:Name="multiRadio" 
-                         Checked="Radio_Checked"
-                         GroupName="scheme"/>
-
-
-            <TextBlock Text="Date Required"/>
-            <DatePicker x:Name="FlatRequiredDate"/>
-            <TextBlock Text="Quantity per Drop"/>
-            <TextBox x:Name="CallOffDropQuantity"
-                     PreviewKeyDown="CallOffDropQuantity_PreviewKeyDown"/>
-            <TextBlock Text="Starting Date"/>
-            <DatePicker x:Name="MultiDropStartingDate"/>
-            <TextBlock Text="Drop interval every n week / month"/>
-            <RadioButton Content="Every nth day" 
-                         x:Name="byDayNumber"
-                         GroupName="intervalType"
-                         Checked="Radio_Checked"/>
-            <RadioButton Content="Every relative date"
-                         x:Name="byInterval"
-                         GroupName="intervalType"
-                         Checked="Radio_Checked"/>
-
-            <TextBlock Text="on the nth day or the "/>
-            <TextBox x:Name="nthDayOfMonthTextBox"/>
-            <TextBlock Text="first, second, third, fourth, last - mon > fri"/>
-            <ComboBox x:Name="nthComboBox" IsEnabled="False">
-                <ComboBoxItem Content="First"/>
-                <ComboBoxItem Content="Second"/>
-                <ComboBoxItem Content="Third"/>
-                <ComboBoxItem Content="Fourth"/>
-                <ComboBoxItem Content="Last"/>
-            </ComboBox>
-            <ComboBox x:Name="DayOfWeekComboBox">
-                <ComboBoxItem Content="Monday"/>
-                <ComboBoxItem Content="Tuesday"/>
-                <ComboBoxItem Content="Wednesday"/>
-                <ComboBoxItem Content="Thursday"/>
-                <ComboBoxItem Content="Friday"/>
-            </ComboBox>
-            <Button x:Name="refreshDropsButton" Click="refreshDropsButton_Click" Content="Refresh"/>
+            <TextBlock Text="Call off configuration" Style="{StaticResource subsubtitleTextStyle}"/>
+            <StackPanel Margin="15,0,15,5">
+                <TextBlock Text="Quantity per Drop"/>
+                <TextBox x:Name="CallOffDropQuantity"
+                         IsEnabled="False"
+                         PreviewKeyDown="CallOffDropQuantity_PreviewKeyDown"/>
+                <TextBlock Text="Starting Date"/>
+                <DatePicker x:Name="MultiDropStartingDate" IsEnabled="False"/>
+            </StackPanel>
+            <TextBlock Text="Select call off method" Style="{StaticResource subsubtitleTextStyle}"/>
+            <StackPanel Margin="15,0,15,5">
+                <RadioButton Content="Interval (every n weeks)" 
+                             x:Name="interval_radio"
+                             GroupName="intervalType"
+                             IsEnabled="False"
+                             Checked="Radio_Checked_CallOff"/>
+            
+                <TextBlock Text="Configure by interval:"/>
+                <TextBox x:Name="interval_textbox" IsEnabled="False"
+                         PreviewKeyDown="Validate_NumsOnly"/>
+                <Separator Margin="0,5"/>
+                <RadioButton Content="Cardinal (every xth weekday of the month)"
+                             x:Name="cardinal_radio"
+                             GroupName="intervalType"
+                             IsEnabled="False"
+                             Checked="Radio_Checked_CallOff"/>
+                <TextBlock Text="Configure by cardinal:"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cardinal_combobox" IsEnabled="False">
+                        <ComboBoxItem Content="First" Tag="1"/>
+                        <ComboBoxItem Content="Second" Tag="2"/>
+                        <ComboBoxItem Content="Third" Tag="3"/>
+                        <ComboBoxItem Content="Fourth" Tag="4"/>
+                        <ComboBoxItem Content="Last" Tag="5"/>
+                    </ComboBox>
+                    <ComboBox x:Name="DayOfWeekComboBox" IsEnabled="False" Grid.Column="2">
+                        <ComboBoxItem Content="Monday" Tag="1"/>
+                        <ComboBoxItem Content="Tuesday" Tag="2"/>
+                        <ComboBoxItem Content="Wednesday" Tag="3"/>
+                        <ComboBoxItem Content="Thursday" Tag="4"/>
+                        <ComboBoxItem Content="Friday" Tag="5"/>
+                    </ComboBox>
+                
+                </Grid>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="refreshDropsButton" Click="refreshDropsButton_Click" Content="Generate Drops" Style="{StaticResource ButtonTemplate}"/>
+                <Button x:Name="createOrderButton" Click="createOrderButton_Click"  Content="Create Order" Style="{StaticResource GreenButtonTemplate}" IsEnabled="False"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

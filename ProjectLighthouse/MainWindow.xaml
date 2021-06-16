@@ -183,7 +183,7 @@
                     Width="100"
                     Margin="5"
                     Command="{Binding EditCommand}"/>
-            <StackPanel Grid.Row="4" HorizontalAlignment="Center" Margin="0,5">
+            <StackPanel Grid.Row="4" HorizontalAlignment="Center" Margin="0,5,0,10">
                 <TextBlock Text="Copyright Wixroyd Ltd 2021" Foreground="#555555" FontStyle="Italic" HorizontalAlignment="Center"/>
                 <TextBlock Text="Written by Xavier Iafrate" Foreground="#555555" FontStyle="Italic" HorizontalAlignment="Center"/>
             </StackPanel>

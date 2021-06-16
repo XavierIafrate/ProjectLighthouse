@@ -20,14 +20,19 @@
             <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
         </Style>
         <converters:intToDays x:Key="intToDayConverter"/>
+        <LinearGradientBrush x:Key="gradFade" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#eeeeee" Offset="0"  />
+            <GradientStop Color="#ffffffff" Offset="0.02" />
+        </LinearGradientBrush>
     </UserControl.Resources>
 
     <Grid DataContext="{StaticResource vm}">
+        
         <Grid.Resources>
             <DataTemplate x:Key="CustomHeaderTemplate">
                 <Label Content="{Binding LatheName}" FontSize="16"/>
             </DataTemplate>
-
+        
             <DataTemplate x:Key="CustomItemTemplate">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
@@ -89,13 +94,15 @@
                 </Grid>
             </DataTemplate>
         </Grid.Resources>
-        
+
         <TabControl Margin="10"
                     ItemTemplate="{StaticResource CustomHeaderTemplate}"
                     ContentTemplate="{StaticResource CustomItemTemplate}"
                     ItemsSource="{Binding WindowTabs}"
                     SelectedItem="{Binding SelectedTab, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    BorderThickness="0">
+                    BorderThickness="0"
+                    Background="{StaticResource gradFade}">
+
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -119,7 +126,7 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                    </Style>
+                </Style>
             </TabControl.Resources>
         </TabControl>
     </Grid>

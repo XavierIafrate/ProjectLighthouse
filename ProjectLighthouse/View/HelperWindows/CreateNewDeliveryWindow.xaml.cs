@@ -122,27 +122,9 @@ namespace ProjectLighthouse.View
                 x.QuantityDelivered += item.QuantityThisDelivery;
                 DatabaseHelper.Update<LatheManufactureOrderItem>(x);
 
-                //foreach(var orderItem in orderItems)
-                //{
-                //    if(item.Product == orderItem.ProductName && orderItem.AssignedMO == item.ItemManufactureOrderNumber)
-                //    {
-                //        orderItem.QuantityDelivered = item.QuantityThisDelivery + orderItem.QuantityDelivered;
-                //        DatabaseHelper.Update(orderItem);
-                //    }
-                //}
-
                 Lot lot = Lots.SingleOrDefault(l => l.ID == item.LotID);
                 lot.IsDelivered = true;
                 DatabaseHelper.Update<Lot>(lot);
-
-                //foreach(var lot in Lots)
-                //{
-                //    if(lot.ID == item.LotID)
-                //    {
-                //        lot.IsDelivered = true;
-                //        DatabaseHelper.Update<Lot>(lot);
-                //    }
-                //}
 
                 DatabaseHelper.Insert(item);
             }

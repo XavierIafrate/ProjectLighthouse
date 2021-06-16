@@ -12,13 +12,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             Email mailMan = new Email();
 
             EmailSendConfigure myConfig = new EmailSendConfigure();
-            //myConfig.ClientCredentialUserName = ""; // TODO
-            //myConfig.ClientCredentialPassword = "";
             myConfig.TOs = new string[] { toPerson };
             myConfig.CCs = new string[] { };
             myConfig.From = "lighthouse@wixroydgroup.com";
             myConfig.FromDisplayName = "Lighthouse Notifications";
-            myConfig.Priority = System.Net.Mail.MailPriority.Normal;
+            myConfig.Priority = MailPriority.Normal;
             myConfig.Subject = alertSubject;
 
             EmailContent myContent = new EmailContent();
@@ -109,28 +107,27 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static void NotifyNewOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
         {
-            Email mailMan = new Email();
-            EmailSendConfigure myConfig = new EmailSendConfigure();
+            Email mailMan = new();
+            EmailSendConfigure emailConfig = new EmailSendConfigure();
             List<User> users = DatabaseHelper.Read<User>();
-            List<User> send_to = new List<User>();
-            List<string> emails = new List<string>();
+            List<User> send_to = new();
+            List<string> emails = new();
             foreach (User user in users)
             {
                 if (user.UserRole == "Production" && !string.IsNullOrEmpty(user.EmailAddress))
                 {
                     send_to.Add(user);
                     emails.Add(user.EmailAddress);
-
                 }
             }
 
-            myConfig.TOs = emails.ToArray();
+            emailConfig.TOs = emails.ToArray();
             //myConfig.TOs = new string[] { "x.iafrate@wixroydgroup.com" };
-            myConfig.CCs = new string[] { "x.iafrate@wixroydgroup.com" };
-            myConfig.From = "lighthouse@wixroydgroup.com";
-            myConfig.FromDisplayName = "Lighthouse Notifications";
-            myConfig.Priority = MailPriority.Normal;
-            myConfig.Subject = $"New Manufacture Order - {order.Name}";
+            emailConfig.CCs = new string[] { "x.iafrate@wixroydgroup.com" };
+            emailConfig.From = "lighthouse@wixroydgroup.com";
+            emailConfig.FromDisplayName = "Lighthouse Notifications";
+            emailConfig.Priority = MailPriority.Normal;
+            emailConfig.Subject = $"New Manufacture Order - {order.Name}";
 
             EmailContent myContent = new EmailContent();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
@@ -157,7 +154,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             myContent.IsHtml = true;
             myContent.Content = message;
 
-            mailMan.SendMail(myConfig, myContent);
+            mailMan.SendMail(emailConfig, myContent);
         }
 
     }
