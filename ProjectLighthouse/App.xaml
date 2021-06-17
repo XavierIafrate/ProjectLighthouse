@@ -502,6 +502,12 @@
         <DataTemplate DataType="{x:Type vms:BillOfMaterialsViewModel}">
             <AssemblyViews:BillOfMaterialsView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:AnalyticsViewModel}">
+            <views:AnalyticsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:ManageUsersViewModel}">
+            <views:ManageUsersView/>
+        </DataTemplate>
         <!--#endregion-->
         
         <Style TargetType="{x:Type UserControl}">

@@ -14,6 +14,7 @@ namespace ProjectLighthouse.Model
         public string Password { get; set; }
         public string UserRole { get; set; }
         public string computerUsername { get; set; }
+        public DateTime LastLogin { get; set; }
 
         public bool IsBlocked { get; set; }
         public bool CanApproveRequests { get; set; }
@@ -21,6 +22,8 @@ namespace ProjectLighthouse.Model
         public bool CanUpdateLMOs { get; set; }
         public bool CanRaiseDelivery { get; set; }
         public bool CanCreateAssemblyProducts { get; set; }
+        public bool CanRaiseRequest { get; set; }
+        public bool CanCreateSpecial { get; set; }
 
         public string DefaultView { get; set; }
 

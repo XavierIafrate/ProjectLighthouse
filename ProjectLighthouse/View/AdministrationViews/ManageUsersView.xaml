@@ -1,0 +1,279 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.ManageUsersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectLighthouse.View"
+             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+             xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+             mc:Ignorable="d" 
+             Background="White"
+             d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <vm:ManageUsersViewModel x:Key="vm"/>
+        <converters:boolToYesNo x:Key="boolConverter"/>
+
+    </UserControl.Resources>
+    
+    
+    <Grid DataContext="{StaticResource vm}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="200"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!--<Image Source="/Resources/Lighthouse_dark.png"
+               Height="40"
+               Margin="0,10"/>
+        <TextBlock Text="ManageUsersView: Under Construction"
+                   FontSize="40"
+                   FontStyle="Italic"
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center"/>-->
+        <ListBox ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                 SelectedValue="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                 BorderThickness="0"
+                 Grid.RowSpan="2"
+                 ScrollViewer.CanContentScroll="False">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock FontSize="16" FontWeight="SemiBold">
+                            <Run Text="{Binding FirstName}"/>
+                            <Run Text="{Binding LastName}"/>
+                        </TextBlock>
+                        <TextBlock Text="{Binding UserRole}"
+                                   Grid.Row="1"
+                                   Style="{StaticResource accentTextStyle}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Grid.Column="1" Margin="50,10" MaxWidth="700">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid VerticalAlignment="Center" Visibility="{Binding EditControlsVis}">
+                    <Rectangle Fill="{StaticResource gradBlue}" RadiusX="5" RadiusY="5"/>
+                    <TextBlock Text="editing" HorizontalAlignment="Center" Padding="20,5,20,6" Foreground="{StaticResource materialOnPrimary}" FontSize="20" FontStyle="Italic"/>
+                </Grid>
+                <StackPanel Grid.Column="2">
+                    <TextBlock FontSize="30" Style="{StaticResource heroTextStyle}"
+                               
+                           HorizontalAlignment="Right">
+                        <Run Text="{Binding SelectedUser.FirstName, FallbackValue='Randy'}"/>
+                        <Run Text="{Binding SelectedUser.LastName, FallbackValue='Marsh'}"/>
+                    </TextBlock>
+                    <TextBlock FontSize="22" FontStyle="Italic"
+                           HorizontalAlignment="Right"
+                           Foreground="{StaticResource materialPrimary}"
+                           Text="{Binding SelectedUser.UserRole, FallbackValue='debug_placeholder'}"/>
+                </StackPanel>
+            </Grid>
+
+            <Separator Margin="0,20,0,0"/>
+        </StackPanel>
+        <ScrollViewer Grid.Column="1" Grid.Row="1">
+            <StackPanel Margin="50,20" MaxWidth="700">
+
+                <TextBlock Text="Last Login" />
+                <TextBlock Text="Default View"/>
+                <TextBlock Text="email"/>
+                <TextBlock Text="Reset Password"/>
+                <TextBlock Text="Set Role"/>
+
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Set User Role" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0"/>
+                    <TextBlock Text="{Binding SelectedUser.UserRole, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Grid.Column="3" FontSize="16" FontWeight="Bold" Visibility="{Binding ReadControlsVis}"/>
+                    <ComboBox SelectedItem="{Binding SelectedRole, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                              Grid.Column="3"
+                              ItemsSource="{Binding roles, Mode=OneTime}"/>
+                </Grid>
+
+                <TextBlock Text="Permissions" Style="{StaticResource subtitleTextStyle}"/>
+                <Separator Margin="0,5,0,10"/>
+
+                <Grid>
+                    <!--Raise Request-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanRaiseRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Raise Production Request" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0"/>
+                    <TextBlock Text="{Binding SelectedUser.CanRaiseRequest, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                </Grid>
+
+                <Grid>
+                    <!--Approve Request-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanApproveRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Approve Production Requests" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0"/>
+                    <TextBlock Text="{Binding SelectedUser.CanApproveRequests, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                </Grid>
+
+                <Grid>
+                    <!--Update Orders-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanUpdateLMOs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Update Manufacture Orders" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0"/>
+                    <TextBlock Text="{Binding SelectedUser.CanUpdateLMOs, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                </Grid>
+
+                <Grid>
+                    <!--Edit Orders-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanEditLMOs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Edit Manufacture Orders" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0"/>
+                    <TextBlock Text="{Binding SelectedUser.CanEditLMOs, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                </Grid>
+
+
+
+                <Grid>
+                    <!--Raise Delivery-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanRaiseDelivery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Raise Deliveries" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0"/>
+                    <TextBlock Text="{Binding SelectedUser.CanRaiseDelivery, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                </Grid>
+
+                <Grid>
+                    <!--Create Assembly Products-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanCreateAssemblyProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Create Assembly Products" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0"/>
+                    <TextBlock Text="{Binding SelectedUser.CanCreateAssemblyProducts, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                </Grid>
+
+                <Grid>
+                    <!--Create Special-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanCreateSpecial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Create Special Items" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0"/>
+                    <TextBlock Text="{Binding SelectedUser.CanCreateSpecial, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                </Grid>
+
+                <Grid Margin="0,20,0,5">
+                    <Rectangle Fill="{StaticResource materialError}" Grid.ColumnSpan="4" Grid.RowSpan="2" RadiusX="10" RadiusY="10"/>
+                    <Grid Margin="20,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
+                        <TextBlock Text="Block Sign In" Grid.Column="1" Style="{StaticResource subsubtitleTextStyle}" Margin="0" FontWeight="Bold" Foreground="{StaticResource materialOnError}"/>
+                        <TextBlock Text="{Binding SelectedUser.IsBlocked, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" Foreground="{StaticResource materialOnError}" FontSize="16"/>
+                        <TextBlock Text="This user will not be able to sign in with their username." Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialOnError}"/>
+                    </Grid>
+                </Grid>
+
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,20">
+                    <Button Content="Edit User" Style="{StaticResource ButtonTemplate}" 
+                        Width="150" 
+                        Visibility="{Binding ReadControlsVis}"
+                        Command="{Binding editCommand}"/>
+                    <Button Content="Save" Style="{StaticResource GreenButtonTemplate}" 
+                        Width="150" 
+                        Visibility="{Binding EditControlsVis, FallbackValue='Collapsed'}"
+                        Command="{Binding saveCommand}"/>
+                    <Button Content="Delete User" Style="{StaticResource CancelButtonTemplate}" Width="150" Command="{Binding deleteUserCommand}" Visibility="{Binding EditControlsVis}"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

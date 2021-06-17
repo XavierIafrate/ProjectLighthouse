@@ -78,6 +78,7 @@
             <!--<ColumnDefinition Width="10"/>-->
             <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
+        <ScrollViewer>
         <Grid x:Name="main_menu">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -170,10 +171,28 @@
                               Click="ToggleButton_Click"
                               x:Name="deliveries_button"/>
 
-                
+
+                <TextBlock Text="Administration"
+                           Style="{StaticResource menuSectionStyle}"/>
+                <Separator Style="{StaticResource menuSepStyle}"/>
+                <ToggleButton Command="{Binding UpdateViewCommand}" 
+                              CommandParameter="Analytics"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="Analytics"
+                              Click="ToggleButton_Click"
+                              x:Name="analytics_button"/>
+                <ToggleButton Command="{Binding UpdateViewCommand}" 
+                              CommandParameter="Manage Users"
+                              Style="{StaticResource menuButtonStyle}"
+                              Content="Manage Users"
+                              Click="ToggleButton_Click"
+                              x:Name="manage_users_button"/>
+
+
                 <Button Style="{StaticResource ButtonTemplate}"
                         Content="DEBUG"
                         x:Name="debugButton"
+                        Visibility="Collapsed"
                         Click="Button_Click"/>
 
             </StackPanel>
@@ -196,7 +215,7 @@
                 <Rectangle Grid.Column="1"  Width="40" Fill="{StaticResource materialBackground}" RadiusX="10" RadiusY="10"/>
             </Grid>
         </Grid>
-
+        </ScrollViewer>
         <!--<GridSplitter Grid.Column="1"
                   Width="3" Background="White"
                   VerticalAlignment="Stretch" 

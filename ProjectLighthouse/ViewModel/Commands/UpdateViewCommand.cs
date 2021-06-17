@@ -75,6 +75,18 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new AssemblyOrdersViewModel();
                 viewModel.NavText = "Assembly Orders";
             }
+            else if (parameter.ToString() == "Manage Users")
+            {
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.SelectedViewModel = new ManageUsersViewModel();
+                viewModel.NavText = "Manage Users";
+            }
+            else if (parameter.ToString() == "Analytics")
+            {
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.SelectedViewModel = new AnalyticsViewModel();
+                viewModel.NavText = "Analytics";
+            }
             viewModel.window.SelectButton(parameter.ToString());
         }
     }
