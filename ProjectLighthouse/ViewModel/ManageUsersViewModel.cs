@@ -17,20 +17,20 @@ namespace ProjectLighthouse.ViewModel
 
         public List<string> roles { get; set; }
 
-        private string selectedRole;
-        public string SelectedRole
-        {
-            get { return selectedRole; }
-            set 
-            { 
-                selectedRole = value;
-                if (SelectedUser == null)
-                    return;
-                if (SelectedUser.UserRole != value.Content)
-                    SelectedUser.UserRole = value.Content.ToString();
-                OnPropertyChanged("SelectedRole");
-            }
-        }
+        //private string selectedRole;
+        //public string SelectedRole
+        //{
+        //    get { return selectedRole; }
+        //    set 
+        //    { 
+        //        selectedRole = value;
+        //        if (SelectedUser == null)
+        //            return;
+        //        if (SelectedUser.UserRole != value.Content)
+        //            SelectedUser.UserRole = value.Content.ToString();
+        //        OnPropertyChanged("SelectedRole");
+        //    }
+        //}
 
 
         private List<User> users;
@@ -51,8 +51,8 @@ namespace ProjectLighthouse.ViewModel
             set 
             { 
                 selectedUser = value;
-                if (roles != null && value.UserRole != null)
-                    SelectedRole = roles.Where(n => n.ToString() == value.UserRole).Single();
+                //if (roles != null && value.UserRole != null)
+                    //SelectedRole = roles.Where(n => n.ToString() == value.UserRole).Single();
                 OnPropertyChanged("SelectedUser");
             }
         }
@@ -93,7 +93,7 @@ namespace ProjectLighthouse.ViewModel
             roles.Add("Production");
             roles.Add("Viewer");
 
-            SelectedRole = new();
+            //SelectedRole = new();
             Users = new();
             SelectedUser = new();
 
