@@ -62,6 +62,7 @@
         <ListView ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding SelectedLatheManufactureOrder, UpdateSourceTrigger=PropertyChanged}"
                     HorizontalContentAlignment="Stretch"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                     ScrollViewer.CanContentScroll="False">
             <ListView.ItemTemplate>
                 <DataTemplate>

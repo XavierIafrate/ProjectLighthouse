@@ -36,8 +36,6 @@ namespace ProjectLighthouse.View
                     break;
                 } 
             }
-                
-            
         }
 
         private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
@@ -55,6 +53,13 @@ namespace ProjectLighthouse.View
             {
                 helperText.Visibility = Visibility.Visible;
                 helperText.Text = "Passwords do not match";
+                return;
+            }
+
+            if (newPwd.Password.Length < 5)
+            {
+                helperText.Visibility = Visibility.Visible;
+                helperText.Text = "Password is not long enough";
                 return;
             }
 

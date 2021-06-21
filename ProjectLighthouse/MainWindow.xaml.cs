@@ -54,10 +54,7 @@ namespace ProjectLighthouse
 
         public void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            //ToggleButton sender_button = sender as ToggleButton;
-            //// Uncheck toggle buttons
-            //foreach (ToggleButton button in FindVisualChildren<ToggleButton>(main_menu))
-            //    button.IsChecked = button.Content == sender_button.Content;
+            
         }
 
         

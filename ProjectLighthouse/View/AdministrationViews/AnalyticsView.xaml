@@ -3,19 +3,113 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              xmlns:local="clr-namespace:ProjectLighthouse.View"
+             xmlns:lcs="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
-             Background="{StaticResource materialYellow}"
+             Background="{StaticResource materialBackground}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-        <Image Source="/Resources/Lighthouse_dark.png"
+    
+    <UserControl.DataContext>
+        <vm:AnalyticsViewModel/>
+    </UserControl.DataContext>
+    
+    <StackPanel HorizontalAlignment="Center">
+        <Grid>
+            <Rectangle Fill="{StaticResource materialYellow}" RadiusX="10" RadiusY="10"
+                       Stroke="{StaticResource materialError}" StrokeThickness="2"/>
+            <StackPanel Orientation="Horizontal" Margin="20,10">
+                <Image Source="/Resources/Lighthouse_dark.png"
                Height="40"
-               Margin="0,10"/>
-        <TextBlock Text="AnalyticsView: Under Construction"
-                   FontSize="40"
+               Margin="0,10"
+               RenderOptions.BitmapScalingMode="Fant"/>
+                <TextBlock Text="AnalyticsView: Under Construction"
+                           VerticalAlignment="Center"
+                           Padding="20,0,0,0"
+                   FontSize="30"
                    FontStyle="Italic"
                    FontWeight="SemiBold"
                    HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+        
+        
+        <Grid HorizontalAlignment="Center">
+            <Grid.Resources>
+                <Style x:Key="dataHero" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="40"/>
+                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="FontStyle" Value="Italic"/>
+                    <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreen}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource gradGood}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style x:Key="statName" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="30"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="FontStyle" Value="Italic"/>
+                    <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlue}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="{Binding Stats.totalPartsMade, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
+                       Style="{StaticResource dataHero}"/>
+            <TextBlock Text="total items delivered (all time)"
+                       Grid.Column="2"
+                       Style="{StaticResource statName}"/>
+
+            <TextBlock Text="{Binding Stats.totalPartsMade, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
+                       Grid.Row="1"
+                       Style="{StaticResource dataHero}"/>
+            <TextBlock Text="total items delivered (this year)"
+                       Grid.Row="1"
+                       Grid.Column="2"
+                       Style="{StaticResource statName}"/>
+
+            <TextBlock Text="{Binding Stats.totalOrders, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
+                       Grid.Row="2"
+                       Style="{StaticResource dataHero}"/>
+            <TextBlock Text="orders"
+                       Grid.Row="2"
+                       Grid.Column="2"
+                       Style="{StaticResource statName}"/>
+        </Grid>
+
+        <lcs:CartesianChart Height="300">
+            <lcs:CartesianChart.Series>
+                <lcs:LineSeries Values="{Binding Stats.c_sum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Title="Total Parts Made"
+                                PointGeometrySize="0"/>
+            </lcs:CartesianChart.Series>
+            <lcs:CartesianChart.AxisX>
+                <lcs:DateAxis Title="Time" Labels="{Binding Stats.time}" LabelFormatter="{Binding Stats.TimeFormatter}">
+                    <lcs:Axis.Separator>
+                        <lcs:Separator/>
+                    </lcs:Axis.Separator>
+                </lcs:DateAxis>
+            </lcs:CartesianChart.AxisX>
+            <lcs:CartesianChart.AxisY>
+                <lcs:Axis Title="Total Parts Made" LabelFormatter="{Binding Stats.ThousandsFormatter}" MinValue="0"/>
+            </lcs:CartesianChart.AxisY>
+        </lcs:CartesianChart>
     </StackPanel>
 </UserControl>
