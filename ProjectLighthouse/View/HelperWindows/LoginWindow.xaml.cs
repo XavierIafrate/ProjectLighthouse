@@ -87,7 +87,7 @@ namespace ProjectLighthouse.View
                             message.Visibility = Visibility.Visible;
                             return;
                         }
-
+                        user.LastLogin = DateTime.Now;
                         user.computerUsername = Environment.UserName;
                         DatabaseHelper.Update<User>(user);
                         auth_user = user;

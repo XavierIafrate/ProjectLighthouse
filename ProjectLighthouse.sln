@@ -33,7 +33,6 @@ Global
 		{48B12035-C5A9-461D-ADF0-FA6648EC71E1}.Release|Any CPU.ActiveCfg = Release
 		{48B12035-C5A9-461D-ADF0-FA6648EC71E1}.Release|Any CPU.Build.0 = Release
 		{48B12035-C5A9-461D-ADF0-FA6648EC71E1}.Release|x86.ActiveCfg = Release
-		{48B12035-C5A9-461D-ADF0-FA6648EC71E1}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

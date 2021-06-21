@@ -3,10 +3,12 @@ using Squirrel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace ProjectLighthouse
 {
@@ -19,16 +21,18 @@ namespace ProjectLighthouse
             App.ROOT_PATH = Environment.UserName == "xavier" ? @"C:\Users\xavie\Desktop\" : @"H:\Production\Administration\Manufacture Records\Lighthouse\";
             InitializeComponent();
 
-
-
             if (App.currentUser == null)
                 return;
+            
             viewModel = Resources["vm"] as MainViewModel;
             viewModel.window = this;
             viewModel.UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
+
             //Squirrel --releasify Lighthouse.1.0.0.nupkg
             AddVersionNumber();
+            #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             CheckForUpdates();
+            #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         private void AddVersionNumber()
@@ -37,11 +41,12 @@ namespace ProjectLighthouse
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
             this.Title += $" v.{versionInfo.FileVersion}";
+            File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.currentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
         }
 
         private async Task CheckForUpdates()
         {
-            using (var manager = new UpdateManager(@"C:\temp\Releases"))
+            using (var manager = new UpdateManager(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
             {
                 await manager.UpdateApp();
             };
@@ -54,6 +59,8 @@ namespace ProjectLighthouse
             //foreach (ToggleButton button in FindVisualChildren<ToggleButton>(main_menu))
             //    button.IsChecked = button.Content == sender_button.Content;
         }
+
+        
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
