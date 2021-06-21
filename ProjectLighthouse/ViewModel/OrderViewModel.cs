@@ -179,7 +179,7 @@ namespace ProjectLighthouse.ViewModel
         private async void GetLatestStats()
         {
             machineStatistics = null;
-            machineStatistics = new List<MachineStatistics>(await MachineStatsHelper.GetStats());
+            machineStatistics = await MachineStatsHelper.GetStats();
             machineStatistics ??= new List<MachineStatistics>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
             if (machineStatistics.Count == 0)

@@ -23,6 +23,20 @@ namespace ProjectLighthouse.ViewModel
         private List<TurnedProduct> TurnedProducts { get; set; }
 
 
+        public Func<double, string> YFormatter { get; set; }
+        public SeriesCollection SeriesCollection { get; set; }
+        
+        private string[] _labels;
+        public string[] Labels
+        {
+            get { return _labels; }
+            set
+            {
+                _labels = value;
+                OnPropertyChanged("Labels");
+            }
+        }
+
         private DashboardStats stats;
         public DashboardStats Stats
         {
@@ -48,6 +62,10 @@ namespace ProjectLighthouse.ViewModel
             await Task.Run(function: () => GetData());
 
             Debug.WriteLine($"Data loaded at time {(DateTime.Now - start).TotalMilliseconds:N0} ms");
+
+            YFormatter = value => value.ToString("#,##0");
+            SeriesCollection = new();
+
 
             Stats = new();
             Stats = ComputeDashboard();
@@ -76,24 +94,52 @@ namespace ProjectLighthouse.ViewModel
 
             newStats.time = new();
             newStats.c_sum = new();
-            newStats.TimeFormatter = value => new System.DateTime((long)(value * TimeSpan.FromHours(1).Ticks)).ToString("MMMM yy");
+            newStats.TimeFormatter = this.DateLabelFormatter;
             newStats.ThousandsFormatter = value => new string($"{value:#,##0}");
 
+            Labels = Array.Empty<string>();
 
-            foreach (Lot l in Lots)
+            LineSeries TotalPartsOverTime = new();
+            TotalPartsOverTime.Title = "Number of parts made over time";
+            ChartValues<double> values = new();
+
+
+            for(int i = 0; i<=20; i++)
             {
-                if(l.IsDelivered)
-                {
-                    newStats.totalPartsMade += l.Quantity;
-                    if (l.Date.Year == DateTime.Now.Year)
-                        newStats.totalPartsMadeThisYear += l.Quantity;
+                newStats.totalPartsMade += 10;
+                newStats.c_sum.Add(newStats.totalPartsMade);
 
-                    newStats.time.Add(l.Date);
-                    newStats.c_sum.Add(newStats.totalPartsMade);
-                }
-                    
+                values.Add(newStats.totalPartsMade);
+                //newStats.time.Add(DateTime.Now.AddDays(-1*i));
+                Labels.Append(DateTime.Now.AddDays(-1 * i).ToString("MMMM yy"));
             }
+
+            TotalPartsOverTime.Values = values;
+
+            SeriesCollection.Add(TotalPartsOverTime);
+
+
+            //foreach (Lot l in Lots)
+            //{
+            //    if(l.IsDelivered)
+            //    {
+            //        newStats.totalPartsMade += l.Quantity;
+            //        if (l.Date.Year == DateTime.Now.Year)
+            //            newStats.totalPartsMadeThisYear += l.Quantity;
+
+            //        newStats.time.Add(l.Date);
+            //        Debug.WriteLine($"date: {l.Date}");
+            //        newStats.c_sum.Add(newStats.totalPartsMade);
+            //    }
+                    
+            //}
             return newStats;
+        }
+
+        private string DateLabelFormatter(double value)
+        {
+            DateTime dateTime = new DateTime((long)(value * TimeSpan.FromSeconds(1).Ticks));
+            return dateTime.ToString("dd/MM/yy");
         }
 
         public class DashboardStats
@@ -109,6 +155,7 @@ namespace ProjectLighthouse.ViewModel
 
             public ChartValues<DateTime> time { get; set; }
             public ChartValues<int> c_sum { get; set; }
+            public string[] timeLabels { get; set; }
         }
     }
 }

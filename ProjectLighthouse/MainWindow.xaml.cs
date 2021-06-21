@@ -19,6 +19,7 @@ namespace ProjectLighthouse
         public MainWindow()
         {
             App.ROOT_PATH = Environment.UserName == "xavier" ? @"C:\Users\xavie\Desktop\" : @"H:\Production\Administration\Manufacture Records\Lighthouse\";
+
             InitializeComponent();
 
             if (App.currentUser == null)

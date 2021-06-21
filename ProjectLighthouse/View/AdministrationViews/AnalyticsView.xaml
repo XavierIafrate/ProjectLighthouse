@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              xmlns:local="clr-namespace:ProjectLighthouse.View"
-             xmlns:lcs="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
              Background="{StaticResource materialBackground}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -95,21 +95,13 @@
                        Style="{StaticResource statName}"/>
         </Grid>
 
-        <lcs:CartesianChart Height="300">
-            <lcs:CartesianChart.Series>
-                <lcs:LineSeries Values="{Binding Stats.c_sum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Title="Total Parts Made"
-                                PointGeometrySize="0"/>
-            </lcs:CartesianChart.Series>
-            <lcs:CartesianChart.AxisX>
-                <lcs:DateAxis Title="Time" Labels="{Binding Stats.time}" LabelFormatter="{Binding Stats.TimeFormatter}">
-                    <lcs:Axis.Separator>
-                        <lcs:Separator/>
-                    </lcs:Axis.Separator>
-                </lcs:DateAxis>
-            </lcs:CartesianChart.AxisX>
-            <lcs:CartesianChart.AxisY>
-                <lcs:Axis Title="Total Parts Made" LabelFormatter="{Binding Stats.ThousandsFormatter}" MinValue="0"/>
-            </lcs:CartesianChart.AxisY>
-        </lcs:CartesianChart>
+        <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="300">
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Parts Made" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+            </lvc:CartesianChart.AxisY>
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+        </lvc:CartesianChart>
     </StackPanel>
 </UserControl>

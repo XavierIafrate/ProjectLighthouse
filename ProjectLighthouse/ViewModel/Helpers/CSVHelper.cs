@@ -30,5 +30,18 @@ namespace ProjectLighthouse.ViewModel.Helpers
             fileopener.StartInfo.Arguments = "\"" + path + "\"";
             fileopener.Start();
         }
+
+        public static List<T> GetDataFromCSV<T>(string path) where T : new()
+        {
+            List<T> items;
+
+            using (var reader = new StreamReader(path))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                items = (List<T>)csv.GetRecords<T>();
+            }
+
+            return items;
+        }
     }
 }

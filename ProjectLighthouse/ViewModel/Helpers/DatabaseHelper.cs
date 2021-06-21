@@ -11,13 +11,16 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         private static readonly string dbFile = @"manufactureDB.db3";
 
+        private static string GetDatabaseFile()
+        {
+           return Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile);
+        }
+
         public static bool Insert<T>(T item)
         {
             bool result = false;
 
-            Debug.WriteLine(string.Format("dbFile: {0}", Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)));
-
-            using (SQLiteConnection conn = new SQLiteConnection(Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)))
+            using (SQLiteConnection conn = new SQLiteConnection(GetDatabaseFile()))
             {
                 conn.CreateTable<T>();
                 try
@@ -41,9 +44,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
 
-            Debug.WriteLine(string.Format("dbFile: {0}", Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)));
-
-            using (SQLiteConnection conn = new SQLiteConnection(Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)))
+            using (SQLiteConnection conn = new SQLiteConnection(GetDatabaseFile()))
             {
                 try
                 {
@@ -66,9 +67,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
 
-            Debug.WriteLine(string.Format("dbFile: {0}", Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)));
-
-            using (SQLiteConnection conn = new SQLiteConnection(Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)))
+            using (SQLiteConnection conn = new SQLiteConnection(GetDatabaseFile()))
             {
                 conn.CreateTable<T>();
                 int rows = conn.Delete(item);
@@ -84,9 +83,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             List<T> items;
 
-            Debug.WriteLine(string.Format("dbFile: {0}", Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)));
-
-            using (SQLiteConnection conn = new(Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile)))
+            using (SQLiteConnection conn = new(GetDatabaseFile()))
             {
                 conn.CreateTable<T>();
                 items = conn.Table<T>().ToList();
