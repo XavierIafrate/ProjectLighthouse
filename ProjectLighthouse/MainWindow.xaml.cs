@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.ViewModel;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel;
+using ProjectLighthouse.ViewModel.Helpers;
 using Squirrel;
 using System;
 using System.Collections.Generic;
@@ -84,16 +86,19 @@ namespace ProjectLighthouse
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(string.Format("Debug Mode: {0}", Debugger.IsAttached));
+            //List<Lot> debug = CSVHelper.GetLotsFromCSV(@"C:\Users\xavie\Desktop\Lot_curr.csv");
+            //foreach(Lot l in debug)
+            //{
+            //    DatabaseHelper.Insert<Lot>(l);
+            //}
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            debugButton.Visibility = Visibility.Collapsed; // App.currentUser.UserRole != "admin" ? Visibility.Collapsed : Visibility.Visible;
+            debugButton.Visibility = App.currentUser.UserName=="xav" ? Visibility.Visible : Visibility.Collapsed;
             assemblyOrders_button.IsEnabled = App.currentUser.UserRole == "admin";
             BOM_button.IsEnabled = App.currentUser.UserRole == "admin";
             assembly_button.IsEnabled = App.currentUser.UserRole == "admin";
-
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,17 +32,53 @@ namespace ProjectLighthouse.ViewModel.Helpers
             fileopener.Start();
         }
 
-        public static List<T> GetDataFromCSV<T>(string path) where T : new()
+        public static List<Lot> GetLotsFromCSV(string path)
         {
-            List<T> items;
+            List<Lot> Lots = new();
 
-            using (var reader = new StreamReader(path))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            try
+            {     
+                using (var reader = new StreamReader(path))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    csv.Read();
+                    csv.ReadHeader();
+                    while (csv.Read())
+                    {
+                        Lot record = new()
+                        {
+                            ProductName = csv.GetField("ProductName"),
+                            Order = csv.GetField("Order"),
+                            AddedBy = csv.GetField("AddedBy"),
+                            Quantity = csv.GetField<int>("Quantity"),
+                            ExcelDate = csv.GetField("ExcelDate"),
+                            IsReject = csv.GetField<bool>("IsReject"),
+                            IsDelivered = csv.GetField<bool>("IsDelivered"),
+                            MaterialBatch = csv.GetField("MaterialBatch"),
+                        };
+
+                        if (DateTime.TryParse(record.ExcelDate, out DateTime _date))
+                        {
+                            record.Date = _date;
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"Could not parse datetime: {record.ExcelDate}");
+                        }
+
+                        Lots.Add(record);
+                    }
+                }
+            }
+            catch (IOException e)
             {
-                items = (List<T>)csv.GetRecords<T>();
+                MessageBox.Show(e.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            return items;
+            return Lots;
         }
+
+
+
     }
 }

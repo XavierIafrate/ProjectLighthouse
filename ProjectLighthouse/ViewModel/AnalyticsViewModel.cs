@@ -1,4 +1,5 @@
 ﻿using LiveCharts;
+using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -22,20 +23,20 @@ namespace ProjectLighthouse.ViewModel
         private List<DeliveryItem> DeliveryItems { get; set; }
         private List<TurnedProduct> TurnedProducts { get; set; }
 
-
-        public Func<double, string> YFormatter { get; set; }
-        public SeriesCollection SeriesCollection { get; set; }
-        
-        private string[] _labels;
-        public string[] Labels
-        {
-            get { return _labels; }
+        public DateTime InitialDateTime { get; set; }
+        public Func<double, string> TimeFormatter { get; set; }
+        public Func<double, string> QuantityFormatter { get; set; }
+        private SeriesCollection seriesCollection;
+        public SeriesCollection SeriesCollection 
+        { 
+            get { return seriesCollection; }
             set
             {
-                _labels = value;
-                OnPropertyChanged("Labels");
+                seriesCollection = value;
+                OnPropertyChanged("SeriesCollection");
             }
         }
+
 
         private DashboardStats stats;
         public DashboardStats Stats
@@ -61,15 +62,10 @@ namespace ProjectLighthouse.ViewModel
             DateTime start = DateTime.Now;
             await Task.Run(function: () => GetData());
 
-            Debug.WriteLine($"Data loaded at time {(DateTime.Now - start).TotalMilliseconds:N0} ms");
-
-            YFormatter = value => value.ToString("#,##0");
-            SeriesCollection = new();
-
-
             Stats = new();
             Stats = ComputeDashboard();
 
+            OnPropertyChanged("SeriesCollection");
             Debug.WriteLine($"Data computed at time {(DateTime.Now - start).TotalMilliseconds:N0} ms");
         }
 
@@ -86,59 +82,81 @@ namespace ProjectLighthouse.ViewModel
         public DashboardStats ComputeDashboard()
         {
             DashboardStats newStats = new();
-            newStats.totalPartsMade = 100;
 
             newStats.totalOrders = LatheOrders.Count;
             newStats.totalLots = Lots.Count;
             newStats.deliveredLots = Lots.Where(n => n.IsDelivered).ToList().Count;
 
-            newStats.time = new();
-            newStats.c_sum = new();
-            newStats.TimeFormatter = this.DateLabelFormatter;
-            newStats.ThousandsFormatter = value => new string($"{value:#,##0}");
-
-            Labels = Array.Empty<string>();
-
-            LineSeries TotalPartsOverTime = new();
-            TotalPartsOverTime.Title = "Number of parts made over time";
-            ChartValues<double> values = new();
+            var dayConfig = Mappers.Xy<ChartModel>()
+                           .X(dayModel => dayModel.DateTime.Ticks)
+                           .Y(dayModel => dayModel.Value);
 
 
-            for(int i = 0; i<=20; i++)
+            DateTime now = DateTime.Now;
+
+            SeriesCollection = new SeriesCollection(dayConfig)
             {
-                newStats.totalPartsMade += 10;
-                newStats.c_sum.Add(newStats.totalPartsMade);
+                new LineSeries()
+                {
+                    Title="Sum of Parts Made",
+                    Values = new ChartValues<ChartModel>(),
+                    LineSmoothness=0,
+                    PointGeometrySize=0
+                }
+            };
+        
 
-                values.Add(newStats.totalPartsMade);
-                //newStats.time.Add(DateTime.Now.AddDays(-1*i));
-                Labels.Append(DateTime.Now.AddDays(-1 * i).ToString("MMMM yy"));
+            TimeFormatter = value => new DateTime((long)value).ToString("dd MMMM yyyy");
+            QuantityFormatter = value => string.Format($"{value:#,##0}");
+
+            Lots = Lots.OrderBy(n => n.Date).ToList();
+            DateTime _date = Lots.First().Date;
+            ChartModel _data_point;
+
+            foreach (Lot l in Lots)
+            {
+                if (l.IsDelivered)
+                {
+                    newStats.totalPartsMade += l.Quantity;
+                    if (l.Date.Year == DateTime.Now.Year)
+                        newStats.totalPartsMadeThisYear += l.Quantity;
+
+                    List<TurnedProduct> deliveredProduct = TurnedProducts.Where(n => n.ProductName == l.ProductName).ToList();
+
+                    if(deliveredProduct.Count == 0)
+                    {
+                        newStats.totalValue += l.Quantity * 2;
+                    }
+                    else
+                    {
+                        double price = deliveredProduct.First().SellPrice == 0 ? 200 : deliveredProduct.First().SellPrice;
+                        newStats.totalValue += l.Quantity * price / 100;
+                    }
+
+
+                    DateTime _lotDate = new DateTime(l.Date.Year, l.Date.Month, l.Date.Day);
+                    if (_lotDate > _date)
+                    {
+                        _data_point = new(_date, newStats.totalPartsMade);
+                        SeriesCollection[0].Values.Add(_data_point);
+                        _date = _lotDate;
+                    }
+
+                }
             }
 
-            TotalPartsOverTime.Values = values;
+            _data_point = new(_date, newStats.totalPartsMade);
+            SeriesCollection[0].Values.Add(_data_point);
 
-            SeriesCollection.Add(TotalPartsOverTime);
 
-
-            //foreach (Lot l in Lots)
-            //{
-            //    if(l.IsDelivered)
-            //    {
-            //        newStats.totalPartsMade += l.Quantity;
-            //        if (l.Date.Year == DateTime.Now.Year)
-            //            newStats.totalPartsMadeThisYear += l.Quantity;
-
-            //        newStats.time.Add(l.Date);
-            //        Debug.WriteLine($"date: {l.Date}");
-            //        newStats.c_sum.Add(newStats.totalPartsMade);
-            //    }
-                    
-            //}
+            //SeriesCollection.Add(cumulativePartsMade);
             return newStats;
         }
 
         private string DateLabelFormatter(double value)
         {
-            DateTime dateTime = new DateTime((long)(value * TimeSpan.FromSeconds(1).Ticks));
+            // * TimeSpan.FromSeconds(1).Ticks
+            DateTime dateTime = new DateTime((long)(value));
             return dateTime.ToString("dd/MM/yy");
         }
 
@@ -149,13 +167,19 @@ namespace ProjectLighthouse.ViewModel
             public int totalOrders { get; set; }
             public int totalLots { get; set; }
             public int deliveredLots { get; set; }
+            public double totalValue { get; set; }
+        }
 
-            public Func<double, string> TimeFormatter { get; set; }
-            public Func<double, string> ThousandsFormatter { get; set; }
+        public class ChartModel
+        {
+            public DateTime DateTime { get; set; }
+            public int Value { get; set; }
 
-            public ChartValues<DateTime> time { get; set; }
-            public ChartValues<int> c_sum { get; set; }
-            public string[] timeLabels { get; set; }
+            public ChartModel(DateTime dateTime, int value)
+            {
+                this.DateTime = dateTime;
+                this.Value = value;
+            }
         }
     }
 }
