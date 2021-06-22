@@ -134,7 +134,6 @@
                                   x:Name="schedule_button"
                                   Click="ToggleButton_Click"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}" 
-                                  Visibility="Collapsed"
                                   CommandParameter="Runtime"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Runtime"

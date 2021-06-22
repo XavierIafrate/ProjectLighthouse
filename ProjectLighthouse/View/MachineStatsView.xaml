@@ -14,11 +14,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid DataContext="{StaticResource vm}">
-        <Grid.RowDefinitions>
-            <!--<RowDefinition Height="auto"/>-->
+        <!--<Grid.RowDefinitions>
+            --><!--<RowDefinition Height="auto"/>--><!--
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions>-->
         <!--<StackPanel Orientation="Horizontal"
                     Margin="40,10">
             <Grid Margin="0,0,10,0">
@@ -38,22 +38,22 @@
                        FontStyle="Italic"/>
         </StackPanel>-->
 
-        <StackPanel Grid.Row="1" Visibility="{Binding NoConnectionVis}" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <StackPanel Visibility="{Binding NoConnectionVis}" VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock Text="Could not connect to server." FontSize="20" FontStyle="Italic" Opacity="0.5" HorizontalAlignment="Center"/>
             <TextBlock Text="Machine Live information is unavailable." FontSize="20" FontStyle="Italic" Opacity="0.5"/>
         </StackPanel>
 
-        <ScrollViewer Visibility="{Binding StatsVis}">
-            <ItemsControl ItemsSource="{Binding StatsList}"
+        <ScrollViewer Visibility="{Binding StatsVis}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <ItemsControl ItemsSource="{Binding CardInfo}"
                           BorderThickness="0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Margin="20"/>
+                        <StackPanel Margin="20" Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayStatsCard statistics="{Binding}" Margin="0,10"/>
+                        <uc:DisplayMachineLiveChart dataSet="{Binding}" Margin="0,10" MinHeight="500" MinWidth="350"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -1,9 +1,13 @@
-﻿using ProjectLighthouse.Model;
+﻿using LiveCharts;
+using LiveCharts.Configurations;
+using LiveCharts.Wpf;
+using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -11,52 +15,93 @@ namespace ProjectLighthouse.ViewModel
 {
     public class MachineStatsViewModel : BaseViewModel
     {
-        public GetStatsCommand getStatsCommand { get; set; }
-        public ObservableCollection<MachineStatistics> StatsList { get; set; }
-        public string estimation { get; set; }
-        private DispatcherTimer dispatcherTimer { get; set; }
         public Visibility NoConnectionVis { get; set; }
         public Visibility StatsVis { get; set; }
+        private List<MachineLiveChartModel> cardInfo;
+
+        public List<MachineLiveChartModel> CardInfo
+        {
+            get
+            {
+                return cardInfo;
+            }
+            set
+            {
+                cardInfo = value;
+                OnPropertyChanged("CardInfo");
+            }
+        }
 
         public MachineStatsViewModel()
         {
             NoConnectionVis = Visibility.Hidden;
             StatsVis = Visibility.Visible;
-            getStatsCommand = new GetStatsCommand(this);
-            estimation = "";
-            StatsList = new ObservableCollection<MachineStatistics>();
-            getStats();
-
-            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
-            dispatcherTimer.Start();
+            CardInfo = new();
+            _ = LoadDataAsync();
         }
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        public async System.Threading.Tasks.Task LoadDataAsync()
         {
-            getStats();
+            CardInfo = getStats();
         }
 
-        public async void getStats()
+        public static List<MachineLiveChartModel> getStats()
         {
-            List<MachineStatistics> statsList = await MachineStatsHelper.GetStats();
-            if (statsList == null)
+
+            List<MachineLiveChartModel> results = new();
+            var dayConfig = Mappers.Xy<ChartModel>()
+                           .X(dayModel => dayModel.DateTime.Ticks)
+                           .Y(dayModel => dayModel.Value);
+
+            List<MachineStatistics> statsList = DatabaseHelper.Read<MachineStatistics>().Where(n=>n.DataTime > DateTime.Now.AddDays(-2)).ToList();
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
+            
+            ChartModel _dataPoint;
+            foreach (Lathe lathe in lathes)
             {
-                dispatcherTimer.Stop();
-                NoConnectionVis = Visibility.Visible;
-                StatsVis = Visibility.Collapsed;
-                OnPropertyChanged("NoConnectionVis");
-                OnPropertyChanged("StatsVis");
-                return;
+                MachineLiveChartModel machineStatsModel = new();
+                List<MachineStatistics> relevantStats = statsList.Where(n => n.MachineID == lathe.FullName).OrderBy(m=>m.DataTime).ToList();
+                if (relevantStats.Count == 0)
+                    continue;
+
+
+                machineStatsModel.series = new(dayConfig)
+                {
+                    new LineSeries()
+                    {
+                        Title=lathe.FullName,
+                        Values = new ChartValues<ChartModel>(),
+                        LineSmoothness=0,
+                        PointGeometrySize=0
+                    }
+                };
+
+                foreach(MachineStatistics stat in relevantStats) 
+                {
+                    _dataPoint = new(stat.DataTime, stat.PartCountAll);
+                    machineStatsModel.series[0].Values.Add(_dataPoint);
+                }
+
+                machineStatsModel.partCounterAll = relevantStats.Last().PartCountAll;
+                machineStatsModel.partCounterTarget = relevantStats.Last().PartCountTarget;
+                machineStatsModel.dataReadAt = relevantStats.Last().DataTime;
+                machineStatsModel.title = lathe.FullName;
+
+                results.Add(machineStatsModel);
             }
-            StatsList.Clear();
-            foreach (var item in statsList)
-            {
-                StatsList.Add(item);
-            }
-            OnPropertyChanged("StatsList");
+            return results;
         }
 
+        public class ChartModel
+        {
+            public DateTime DateTime { get; set; }
+            public int Value { get; set; }
+
+            public ChartModel(DateTime dateTime, int value)
+            {
+                this.DateTime = dateTime;
+                this.Value = value;
+            }
+        }
     }
 }
