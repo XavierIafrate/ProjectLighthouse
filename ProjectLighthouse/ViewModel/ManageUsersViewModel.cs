@@ -145,7 +145,6 @@ namespace ProjectLighthouse.ViewModel
                 SelectedUser = Users.FirstOrDefault();
         }
 
-
         private void LoadData()
         {
             Users = DatabaseHelper.Read<User>().OrderBy(n => n.UserName).ToList();

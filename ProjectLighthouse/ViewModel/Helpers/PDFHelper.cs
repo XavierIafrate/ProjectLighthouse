@@ -123,7 +123,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 valueRect.Y = y;
 
                 gfx.DrawString("Assigned Setter", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
-                gfx.DrawString(order.AllocatedSetter, valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
+                gfx.DrawString(order.AllocatedSetter ?? "n/a", valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
 
                 //Second Column
                 y = (double)200;

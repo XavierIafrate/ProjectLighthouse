@@ -86,11 +86,11 @@ namespace ProjectLighthouse
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //List<Lot> debug = CSVHelper.GetLotsFromCSV(@"C:\Users\xavie\Desktop\Lot_curr.csv");
-            //foreach(Lot l in debug)
-            //{
-            //    DatabaseHelper.Insert<Lot>(l);
-            //}
+            List<Lot> debug = CSVHelper.GetLotsFromCSV(@"\\groupfile01\Roaming\x.iafrate\Desktop\lighthouse_import_lot.csv");
+            foreach (Lot l in debug)
+            {
+                DatabaseHelper.Insert<Lot>(l);
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -99,6 +99,7 @@ namespace ProjectLighthouse
             assemblyOrders_button.IsEnabled = App.currentUser.UserRole == "admin";
             BOM_button.IsEnabled = App.currentUser.UserRole == "admin";
             assembly_button.IsEnabled = App.currentUser.UserRole == "admin";
+            manage_users_button.Visibility = App.currentUser.UserName == "xav" ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

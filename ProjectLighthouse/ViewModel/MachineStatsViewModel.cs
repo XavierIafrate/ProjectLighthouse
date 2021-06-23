@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -40,7 +41,7 @@ namespace ProjectLighthouse.ViewModel
             _ = LoadDataAsync();
         }
 
-        public async System.Threading.Tasks.Task LoadDataAsync()
+        public async Task LoadDataAsync()
         {
             CardInfo = getStats();
         }

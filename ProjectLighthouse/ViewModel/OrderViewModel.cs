@@ -28,8 +28,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedLatheManufactureOrder = value;
 
-                LoadLMOItems();
-                if (selectedLatheManufactureOrder == null)
+                if (value == null)
                 {
                     CardVis = Visibility.Hidden;
                     return;
@@ -39,18 +38,20 @@ namespace ProjectLighthouse.ViewModel
                     CardVis = Visibility.Visible;
                 }
 
-                ModifiedVis = String.IsNullOrEmpty(selectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
-                LiveInfoVis = selectedLatheManufactureOrder.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
+                LoadLMOItems();
+                ModifiedVis = string.IsNullOrEmpty(value.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
+                LiveInfoVis = value.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
 
                 if (LiveInfoVis == Visibility.Visible)
                     GetLatestStats();
 
                 Lots = DatabaseHelper.Read<Lot>().ToList();
-                RunInfoText = !String.IsNullOrEmpty(selectedLatheManufactureOrder.AllocatedMachine) ?
-                    String.Format("Assigned to {0}, starting {1:dddd, MMMM d}{2}",
+
+                RunInfoText = !string.IsNullOrEmpty(value.AllocatedMachine) ?
+                    string.Format("Assigned to {0}, starting {1:dddd, MMMM d}{2}",
                     selectedLatheManufactureOrder.AllocatedMachine,
                     selectedLatheManufactureOrder.StartDate,
-                    GetDaySuffix(selectedLatheManufactureOrder.StartDate.Day)) :
+                    GetDaySuffix(value.StartDate.Day)) :
                     RunInfoText = "Not scheduled";
 
                 OnPropertyChanged("RunInfoText");

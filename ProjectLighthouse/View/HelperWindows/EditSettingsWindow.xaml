@@ -74,7 +74,7 @@
                 <ComboBoxItem Content="View Requests"/>
                 <ComboBoxItem Content="Orders"/>
                 <ComboBoxItem Content="Schedule"/>
-                <ComboBoxItem Content="Assembly Orders"/>
+                <!--<ComboBoxItem Content="Assembly Orders"/>-->
             </ComboBox>
 
             <TextBlock Text="Change Password" Style="{StaticResource subtitleTextStyle}"/>
