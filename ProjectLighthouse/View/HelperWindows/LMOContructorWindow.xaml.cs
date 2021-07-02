@@ -82,6 +82,7 @@ namespace ProjectLighthouse.View
                 CycleTime = product.CycleTime,
                 MajorLength = product.MajorLength
             };
+
             if (newItem.CycleTime == 0)
                 newItem.CycleTime = 120;
 
@@ -95,10 +96,8 @@ namespace ProjectLighthouse.View
             {
                 bool found = false;
                 foreach (var item in LMOItems)
-                {
                     if (item.ProductName == product.ProductName)
                         found = true;
-                }
 
                 if (!found)
                     ListboxProducts.Add(product);
@@ -209,6 +208,7 @@ namespace ProjectLighthouse.View
                 MessageBox.Show("Max Items reached", "Order Full", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
+
             var selectedProduct = poolListBox.SelectedValue as TurnedProduct;
 
             if (selectedProduct == null)
@@ -228,21 +228,16 @@ namespace ProjectLighthouse.View
         private void updateButton_Click(object sender, RoutedEventArgs e)
         {
             if (!Int32.TryParse(updateQty.Text, out int j))
-            {
                 return;
-            }
 
             List<LatheManufactureOrderItem> items = (List<LatheManufactureOrderItem>)LMOItemsListBox.ItemsSource;
 
             LatheManufactureOrderItem selected = (LatheManufactureOrderItem)LMOItemsListBox.SelectedValue;
 
             foreach (LatheManufactureOrderItem i in items)
-            {
                 if (i.ProductName == selected.ProductName)
-                {
                     i.TargetQuantity = j;
-                }
-            }
+
 
             LMOItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
             CalculateInsights();
