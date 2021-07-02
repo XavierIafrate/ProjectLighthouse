@@ -11,23 +11,6 @@
         WindowStartupLocation="CenterScreen"
         Title="Settings">
 
-    <Window.Resources>
-        <Style TargetType="PasswordBox" x:Key="passwordbox">
-            <Setter Property="BorderBrush" Value="{StaticResource materialPrimary}"/>
-            <Setter Property="BorderThickness" Value="3"/>
-            <Setter Property="MaxLength" Value="30"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="5"/>
-        </Style>
-        <Style x:Key="ghosttext" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#555555"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="12,5,5,6"/>
-            <Setter Property="FontSize" Value="14"/>
-        </Style>
-    </Window.Resources>
-
     <Grid Margin="20,0">
         <StackPanel Margin="20,20,20,36" Grid.Column="1" Grid.ColumnSpan="2">
             <TextBlock Text="Settings" FontSize="30" FontWeight="Bold"/>
@@ -42,7 +25,7 @@
             
             <TextBlock Text="Your Permissions" Style="{StaticResource subtitleTextStyle}"/>
             <TextBlock Text="An administrator is required to modify these." Style="{StaticResource accentTextStyle}"/>
-            <StackPanel Margin="10,0">
+            <StackPanel Margin="30,0">
                 <TextBlock>
                     <Run Text="Approve Requests:"/>
                     <Run Text="{Binding CanApproveRequests}"/>
@@ -88,26 +71,23 @@
             <StackPanel Margin="10,0">
                 <Grid Margin="0,5,0,0">
                     <TextBlock Text="current password" 
-                               Style="{StaticResource ghosttext}" 
+                               Style="{StaticResource ghostTextStyle}" 
                                x:Name="current_password_ghost"/>
                     <PasswordBox x:Name="current" 
-                                 Style="{StaticResource passwordbox}" 
                                  PasswordChanged="current_PasswordChanged"/>
                 </Grid>
                 <Grid Margin="0,5,0,0">
                     <TextBlock Text="new password" 
-                               Style="{StaticResource ghosttext}"
+                               Style="{StaticResource ghostTextStyle}"
                                x:Name="new_password_ghost"/>
                     <PasswordBox x:Name="newPwd" 
-                                 Style="{StaticResource passwordbox}" 
                                  PasswordChanged="newPwd_PasswordChanged"/>
                 </Grid>
                 <Grid Margin="0,5,0,0">
                     <TextBlock Text="confirm new password" 
-                               Style="{StaticResource ghosttext}"
+                               Style="{StaticResource ghostTextStyle}"
                                x:Name="confirm_password_ghost"/>
-                    <PasswordBox x:Name="confirmPwd" 
-                                 Style="{StaticResource passwordbox}" 
+                    <PasswordBox x:Name="confirmPwd"
                                  PasswordChanged="confirmPwd_PasswordChanged"/>
                 </Grid>
                 

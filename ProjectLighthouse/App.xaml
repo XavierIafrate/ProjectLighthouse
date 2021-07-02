@@ -34,6 +34,8 @@
         <SolidColorBrush x:Key="materialBlue" Color="#96e7f1"/>
         <SolidColorBrush x:Key="materialGreen" Color="#03DAC6"/>
 
+        <SolidColorBrush x:Key="disabledGray" Color="#aaaaaa"/>
+
         <LinearGradientBrush x:Key="gradGood" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#1D976C" Offset="0" />
             <GradientStop Color="#93F9B9" Offset="1" />
@@ -47,7 +49,6 @@
         <LinearGradientBrush x:Key="gradBlue" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#1e3c72" Offset="0" />
             <GradientStop Color="#2a5298" Offset="1" />
-
         </LinearGradientBrush>
         <!--#endregion-->
         
@@ -94,6 +95,21 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Margin" Value="0,0,0,2"/>
         </Style>
+
+        <Style TargetType="TextBlock" x:Key="windowTitleTextStyle">
+            <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
+            <Setter Property="FontSize" Value="35"/>
+            <Setter Property="Margin" Value="0,0,20,25"/>
+        </Style>
+        
+        <Style TargetType="TextBlock" x:Key="ghostTextStyle">
+            <Setter Property="Foreground" Value="{StaticResource disabledGray}"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
         <!--#endregion-->
 
         <!--#region Control style overrides-->
@@ -229,6 +245,88 @@
                 </Trigger>
             </Style.Triggers>-->
         </Style>
+
+        <Style TargetType="{x:Type PasswordBox}">
+            <!--<Setter Property="BorderBrush" Value="{StaticResource materialPrimary}"/>
+            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="MaxLength" Value="30"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5"/>-->
+            <Setter Property="Padding" Value="4,2"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{StaticResource materialPrimary}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type PasswordBox}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource disabledGray}"/>
+                                <Setter Property="Foreground" Value="{StaticResource disabledGray}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource materialPrimaryVar}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource materialSecondary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style TargetType="{x:Type TextBox}"
+               x:Key="{x:Type TextBox}">
+            <Setter Property="Padding" Value="4,2"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{StaticResource materialPrimary}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource disabledGray}"/>
+                                <Setter Property="Foreground" Value="{StaticResource disabledGray}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource materialPrimaryVar}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource materialSecondary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--<Style x:Key="DatePickerCalendarStyle"
+       TargetType="{x:Type Calendar}"
+       BasedOn="{StaticResource {x:Type Calendar}}" />-->
+
+
+        <Style TargetType="{x:Type DatePicker}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="{x:Type DatePickerTextBox}">
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="4,2"/>
+        </Style>
+
 
         <Style x:Key="{x:Type ComboBox}"
        TargetType="{x:Type ComboBox}">
@@ -410,6 +508,39 @@
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="ModernGreenButtonTemplate" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreen}"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="15"
+                                Height="30"
+                                BorderThickness="0"
+                                Padding="15,2,15,3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}"/>
+                    <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource materialPrimaryGreenVar}"/>
+                    <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{StaticResource disabledGray}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>

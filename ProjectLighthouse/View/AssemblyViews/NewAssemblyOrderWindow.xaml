@@ -34,9 +34,10 @@
             
             <TextBlock Text="Select Product"
                        Grid.Row="0"/>
-                <TreeView x:Name="AssemblyTree" 
+            <TreeView x:Name="AssemblyTree" 
                           Grid.Row="1" 
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      
                           SelectedItemChanged="AssemblyTree_SelectedItemChanged"/>
 
             <TextBlock Text="Drops" Grid.Row="2"/>

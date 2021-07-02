@@ -8,36 +8,31 @@
         WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
-        Title="Add New Product" Height="450" Width="800">
-    <Grid Margin="20">
+        Title="Add New Product">
+    <Grid Margin="40">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <TextBlock Text="New Assembly Product" Style="{StaticResource heroTextStyle}"/>
-            <TextBlock Text="Product Number" Style="{StaticResource subtitleTextStyle}"/>
-            <TextBox x:Name="ProductNumberTextBox"
-                     TextChanged="ProductNumberTextBox_TextChanged"
-                     Background="Transparent"
-                     Padding="7,2" 
-                     FontSize="15"
-                     BorderBrush="{StaticResource materialPrimary}"/>
+            <TextBlock Text="New Assembly Product" Style="{StaticResource windowTitleTextStyle}"/>
+            <Grid>
+                <TextBlock Text="Product Number" Style="{StaticResource ghostTextStyle}"
+                           x:Name="productNumberGhost"/>
+                <TextBox x:Name="ProductNumberTextBox"
+                         MaxLength="20"
+                     TextChanged="ProductNumberTextBox_TextChanged"/>
+            </Grid>
+            
             <TextBlock Text="Product Group" Style="{StaticResource subtitleTextStyle}"/>
             <ComboBox x:Name="ProductGroupComboBox" SelectionChanged="ProductGroupComboBox_SelectionChanged"/>
             <Grid Margin="0,10,0,0">
                 <TextBlock Text="Create a new group" 
-                           Padding="11,2" 
-                           Opacity="0.4" 
-                           FontStyle="Italic" 
-                           FontSize="15"
+                           Style="{StaticResource ghostTextStyle}"
                            x:Name="ProductGroupGhost"/>
                 <TextBox x:Name="ProductGroupTextBox" 
-                         TextChanged="ProductGroupTextBox_TextChanged" 
-                         Background="Transparent"
-                         Padding="7,2" 
-                         FontSize="15"
-                         BorderBrush="{StaticResource materialPrimary}"/>
+                         MaxLength="20"
+                         TextChanged="ProductGroupTextBox_TextChanged"/>
             </Grid>
             
             <TextBlock Text="Description" Style="{StaticResource subtitleTextStyle}"/>
@@ -47,15 +42,28 @@
                      FontSize="15"
                      MaxLength="38"
                      BorderBrush="{StaticResource materialPrimary}"/>
-
-            <Button Content="Cancel" 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Button Content="Cancel" 
                     Style="{StaticResource CancelButtonTemplate}" 
                     x:Name="CancelButton" 
+                        Grid.Column="1"
                     Click="CancelButton_Click"/>
-            <Button Content="Create New Product" 
+                <Button Content="Create New Product" 
                     Style="{StaticResource GreenButtonTemplate}" 
                     x:Name="AddButton" 
+                        Grid.Row="1"
+                        Grid.Column="1"
                     Click="AddButton_Click"/>
+            </Grid>
+                
 
         </StackPanel>
     </Grid>

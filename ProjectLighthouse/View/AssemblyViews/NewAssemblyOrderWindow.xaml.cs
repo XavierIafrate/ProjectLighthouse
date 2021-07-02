@@ -66,6 +66,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             {
                 TreeViewItem ParentItem = new TreeViewItem();
                 ParentItem.Header = group.group;
+                ParentItem.Focusable = false;
                 foreach (AssemblyItem item in group.items)
                     ParentItem.Items.Add(new TreeViewItem { Header = item.ProductNumber });
                 AssemblyTree.Items.Add(ParentItem);
@@ -212,12 +213,12 @@ namespace ProjectLighthouse.View.AssemblyViews
 
                     foreach(Drop d in newDrops)
                     {
-                        DateTime first_day_of_seed_month = new DateTime(starting_date.Year, starting_date.Month + i, 1);
+                        DateTime first_day_of_seed_month = new DateTime(starting_date.Year, starting_date.Month, 1).AddMonths(i);
                         DateTime drop_due_date = GetNthDayOfMonth(week_num, (DayOfWeek)day_of_week, first_day_of_seed_month);
                         if (drop_due_date < starting_date)
                         {
                             i++;
-                            first_day_of_seed_month = new DateTime(starting_date.Year, starting_date.Month + i, 1);
+                            first_day_of_seed_month = new DateTime(starting_date.Year, starting_date.Month, 1).AddMonths(i);
                             drop_due_date = GetNthDayOfMonth(week_num, (DayOfWeek)day_of_week, first_day_of_seed_month);
                         }
 
@@ -304,6 +305,7 @@ namespace ProjectLighthouse.View.AssemblyViews
 
         private void AssemblyTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            // don't allow parents (difficult)
             EnableNewOrder();
         }
 
@@ -317,7 +319,7 @@ namespace ProjectLighthouse.View.AssemblyViews
 
             if (Result == MessageBoxResult.Yes)
             {
-                AssemblyManufactureOrder newOrder = new() { Name = GetNewAssemblyOrderName(), CreatedAt=DateTime.Now, CreatedBy=App.currentUser.GetFullName(), Status="Problem", ModifiedAt=DateTime.Now};
+                AssemblyManufactureOrder newOrder = new() { Name = GetNewAssemblyOrderName(), CreatedAt=DateTime.Now, CreatedBy=App.currentUser.GetFullName(), Status="Problem", ModifiedAt=DateTime.Now, RequiredProduct=selectedProduct};
                 DatabaseHelper.Insert<AssemblyManufactureOrder>(newOrder);
 
                 List<AssemblyItemExpansion> newOrderItems = new();

@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,7 +51,7 @@ namespace ProjectLighthouse.View
             }
             if (Int32.TryParse(textbox.Text, out int j))
             {
-                if (j > 0)
+                if (j > 0 && j <= 100000)
                 {
                     viewModel.newRequest.QuantityRequired = j;
                     viewModel.CalculateInsights();
@@ -80,5 +81,11 @@ namespace ProjectLighthouse.View
                 viewModel.newRequest.Notes = textRange.Text[0..^2];
             }
         }
+
+        private void quantityBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
+        }
+
     }
 }

@@ -65,6 +65,9 @@ namespace ProjectLighthouse.View
             SchedulingGrid.Visibility = App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
             LotsListBox.ItemsSource = Lots;
 
+            if (Lots.Count > 0)
+                BatchTextBox.Text = Lots.Last().MaterialBatch;
+
             PopulateCycleTimes();
 
         }
@@ -192,10 +195,10 @@ namespace ProjectLighthouse.View
             CalculateCycleTime();
         }
 
-        private void ClearDateButton_Click(object sender, RoutedEventArgs e)
-        {
-            Item.DateRequired = DateTime.MinValue;
-        }
+        //private void ClearDateButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Item.DateRequired = DateTime.MinValue;
+        //}
 
         private void Allow_Nums_Only(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -237,15 +240,18 @@ namespace ProjectLighthouse.View
                 {
                     Item.QuantityMade += n;
                 }
+
                 DatabaseHelper.Update<LatheManufactureOrderItem>(Item);
+
                 Lots.Add(newLot);
+                SaveExit = true;
 
                 LotsListBox.ItemsSource = new List<Lot>(Lots);
                 QtyMadeTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityMade);
                 QtyRejectTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityReject);
 
                 QuantityNewLotTextBox.Text = "";
-                BatchTextBox.Text = "";
+                //BatchTextBox.Text = "";
                 RejectCheckBox.IsChecked = false;
                 QuantityAdded += newLot.Quantity;
             }

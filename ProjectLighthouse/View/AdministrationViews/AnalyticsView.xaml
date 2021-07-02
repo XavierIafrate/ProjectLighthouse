@@ -98,7 +98,7 @@
                 <TextBlock Text="{Binding Stats.totalValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}£{0:#,##0}'}"
                            Grid.Row="3"
                            Style="{StaticResource dataHero}"/>
-                <TextBlock Text="total value*"
+                <TextBlock Text="total sales value*"
                            Grid.Row="3"
                            Grid.Column="2"
                            Style="{StaticResource statName}"/>

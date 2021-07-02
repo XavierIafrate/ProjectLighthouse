@@ -44,19 +44,15 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel>
-                    <TextBlock Text="Purchase Order Reference" Style="{StaticResource bodyTextStyle}"/>
-                    <TextBox x:Name="PORef"/>
-
-                    <TextBlock Text="Allocated Setter" Style="{StaticResource bodyTextStyle}"/>
-                    <ComboBox x:Name="setters" Margin="0,0,0,10"/>
-
-                    <Button Style="{StaticResource CancelButtonTemplate}" 
-                        Content="Cancel Order"
-                        x:Name="cancelOrderButton"
-                        Click="CancelOrderButton_Click"/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Margin="30,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <TextBlock Text="Enter Purchase Reference" Style="{StaticResource ghostTextStyle}" x:Name="poRefGhostText"/>
+                    <TextBox x:Name="PORef" TextChanged="PORef_TextChanged"/>
+                </Grid>
+                <StackPanel Grid.Column="1" Margin="30,0" Grid.RowSpan="2">
                     <CheckBox Content="Has Program" x:Name="program" Click="program_Click"/>
                     <CheckBox Content="Ready to Set" x:Name="ready" Click="ready_Click"/>
 
@@ -68,6 +64,13 @@
                     <RadioButton Content="Running" x:Name="running_radio" Checked="running_radio_Checked"/>
                     <RadioButton Content="Complete" x:Name="complete_radio" Checked="complete_radio_Checked"/>
                 </StackPanel>
+                <!--<TextBlock Text="Allocated Setter" Style="{StaticResource bodyTextStyle}"/>
+                    <ComboBox x:Name="setters" Margin="0,0,0,10"/>
+
+                    <Button Style="{StaticResource CancelButtonTemplate}" 
+                        Content="Cancel Order"
+                        x:Name="cancelOrderButton"
+                        Click="CancelOrderButton_Click"/>-->
             </Grid>
             
             <!--Items List-->

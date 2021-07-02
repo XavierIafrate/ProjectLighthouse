@@ -111,10 +111,11 @@
                         <DatePicker x:Name="DateRequiredCalendarView" 
                                     DisplayDateStart="{x:Static sys:DateTime.Now}"
                                     SelectedDateChanged="DateRequiredCalendarView_SelectedDatesChanged"
-                                    Padding="4,1"
+                                    />
+                        <!--Padding="4,1"
                                     BorderBrush="{StaticResource materialPrimary}"
                                     BorderThickness="1"
-                                    FontSize="15"/>
+                                    FontSize="15"-->
                     </StackPanel>
                     <!--Quantity Input-->
                     <StackPanel Grid.Column="1" Margin="5">
@@ -122,10 +123,11 @@
                            Style="{StaticResource tipTextStyle}"/>
                         <TextBox x:Name="quantityBox"
                                  TextChanged="quantityBox_TextChanged"
-                                 Padding="4,2"
+                                 PreviewKeyDown="quantityBox_PreviewKeyDown"/>
+                        <!--Padding="4,2"
                                  BorderBrush="{StaticResource materialPrimary}"
                                  BorderThickness="1"
-                                 FontSize="15"/>
+                                 FontSize="15"-->
                     </StackPanel>
                 </Grid>
                 

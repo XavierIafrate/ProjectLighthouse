@@ -74,11 +74,11 @@ namespace ProjectLighthouse.View
             if (!App.currentUser.CanEditLMOs)
             {
                 PORef.IsEnabled = false;
-                setters.IsEnabled = false;
+                //setters.IsEnabled = false;
             }
 
-            cancelOrderButton.Visibility = (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin") ?
-                Visibility.Visible : Visibility.Collapsed;
+            //cancelOrderButton.Visibility = (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin") ?
+            //    Visibility.Visible : Visibility.Collapsed;
 
             List<User> users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
             List<string> setterUsers = new List<string>();
@@ -87,8 +87,8 @@ namespace ProjectLighthouse.View
             foreach (var user in users)
                 setterUsers.Add(user.GetFullName());
 
-            setters.ItemsSource = setterUsers.ToList();
-            setters.Text = order.AllocatedSetter;
+            //setters.ItemsSource = setterUsers.ToList();
+            //setters.Text = order.AllocatedSetter;
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
@@ -111,7 +111,7 @@ namespace ProjectLighthouse.View
                 order.Notes = textRange.Text[0..^2];
 
             order.POReference = PORef.Text;
-            order.AllocatedSetter = setters.Text;
+            //order.AllocatedSetter = setters.Text;
             //order.IsUrgent = urgent.IsChecked ?? false;
             order.HasProgram = (bool)program.IsChecked;
             order.IsReady = (bool)ready.IsChecked;
@@ -248,5 +248,11 @@ namespace ProjectLighthouse.View
             }
         }
         #endregion
+
+        private void PORef_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            poRefGhostText.Visibility = string.IsNullOrEmpty(textBox.Text) ? Visibility.Visible : Visibility.Hidden;
+        }
     }
 }

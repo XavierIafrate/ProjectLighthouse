@@ -32,7 +32,7 @@
             </Grid.ColumnDefinitions>
             <Button Content="+ New Order"
                     Grid.Column="1"
-                    Style="{StaticResource GreenButtonTemplate}"
+                    Style="{StaticResource ModernGreenButtonTemplate}"
                     Margin="0,5"
                     Command="{Binding NewOrderCommand}"/>
             <ScrollViewer VerticalScrollBarVisibility="Auto"

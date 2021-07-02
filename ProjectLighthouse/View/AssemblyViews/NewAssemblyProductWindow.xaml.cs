@@ -95,6 +95,8 @@ namespace ProjectLighthouse.View
 
         private void ProductNumberTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            TextBox textBox = sender as TextBox;
+            productNumberGhost.Visibility = string.IsNullOrEmpty(textBox.Text) ? Visibility.Visible : Visibility.Hidden;
             EnableAddButton();
         }
 

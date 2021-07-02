@@ -15,6 +15,7 @@ namespace ProjectLighthouse.Model
         public DateTime ModifiedAt { get; set; }
         public string ModifiedBy { get; set; }
 
+        public string RequiredProduct { get; set; }
         public string Status { get; set; }
         public string Notes { get; set; }
 
