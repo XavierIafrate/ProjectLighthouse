@@ -15,7 +15,7 @@
     </UserControl.DataContext>
     <ScrollViewer>
         <StackPanel HorizontalAlignment="Center">
-            <Grid>
+            <!--<Grid>
                 <Rectangle Fill="{StaticResource materialYellow}" RadiusX="10" RadiusY="10"
                            Stroke="{StaticResource materialError}" StrokeThickness="2"/>
                 <StackPanel Orientation="Horizontal" Margin="20,10">
@@ -31,7 +31,7 @@
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"/>
                 </StackPanel>
-            </Grid>
+            </Grid>-->
 
 
             <Grid HorizontalAlignment="Center">
@@ -95,13 +95,13 @@
                            Grid.Column="2"
                            Style="{StaticResource statName}"/>
 
-                <TextBlock Text="{Binding Stats.totalValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}£{0:#,##0}'}"
+                <!--<TextBlock Text="{Binding Stats.totalValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}£{0:#,##0}'}"
                            Grid.Row="3"
                            Style="{StaticResource dataHero}"/>
                 <TextBlock Text="total sales value*"
                            Grid.Row="3"
                            Grid.Column="2"
-                           Style="{StaticResource statName}"/>
+                           Style="{StaticResource statName}"/>-->
             </Grid>
 
             <!--MinValue="{Binding InitialDateTime.Ticks}"-->
@@ -120,11 +120,11 @@
                 </lvc:CartesianChart.AxisY>
             </lvc:CartesianChart>
 
-            <TextBlock Text="*as calculated by a non-accountant. Probably accurate to +-50%. Maybe."
+            <!--<TextBlock Text="*as calculated by a non-accountant. Probably accurate to +-50%. Maybe."
                        FontSize="10"
                        FontStyle="Italic"
                        HorizontalAlignment="Right"
-                       Margin="0,10"/>
+                       Margin="0,10"/>-->
 
         </StackPanel>
     </ScrollViewer>

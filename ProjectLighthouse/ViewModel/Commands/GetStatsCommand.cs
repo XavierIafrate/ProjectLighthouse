@@ -21,7 +21,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            viewModel.getStats();
+            viewModel.LoadDataAsync();
         }
     }
 }

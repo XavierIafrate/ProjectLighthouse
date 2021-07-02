@@ -128,6 +128,7 @@ namespace ProjectLighthouse.View
             order.IsComplete = order.Status == "Complete";
 
             calculateTime();
+            CalculateBarRequirements();
         }
 
         private void program_Click(object sender, RoutedEventArgs e)
@@ -180,6 +181,21 @@ namespace ProjectLighthouse.View
                 estimatedTimeSeconds += item.CycleTime * item.TargetQuantity;
 
             order.TimeToComplete = estimatedTimeSeconds;
+        }
+
+        private void CalculateBarRequirements()
+        {
+            List<BarStock> barStock = DatabaseHelper.Read<BarStock>();
+            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>();
+            double totalLengthRequired = 0;
+
+            foreach(LatheManufactureOrderItem item in items)
+            {
+                TurnedProduct _p = products.Where(n => n.ProductName == item.ProductName).Single();
+                totalLengthRequired += (_p.MajorLength + 2) * item.TargetQuantity;
+            }
+
+            order.NumberOfBars = Math.Ceiling(totalLengthRequired / 2700);
         }
 
         private void ready_Click(object sender, RoutedEventArgs e)

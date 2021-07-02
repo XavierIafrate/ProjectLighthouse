@@ -33,55 +33,55 @@ namespace ProjectLighthouse.View.UserControls
             if (double.IsNaN(percent))
                 percent = 0;
 
-            control.progressGrid.ColumnDefinitions[0].Width = new GridLength(percent, GridUnitType.Star);
-            control.progressGrid.ColumnDefinitions[1].Width = new GridLength(1 - percent, GridUnitType.Star);
-            control.progressText.Text = String.Format("{0:0}%", percent * 100);
+            //control.progressGrid.ColumnDefinitions[0].Width = new GridLength(percent, GridUnitType.Star);
+            //control.progressGrid.ColumnDefinitions[1].Width = new GridLength(1 - percent, GridUnitType.Star);
+            //control.progressText.Text = String.Format("{0:0}%", percent * 100);
 
-            control.progressBar.Visibility = percent == 0 ? Visibility.Hidden : Visibility.Visible;
+            //control.progressBar.Visibility = percent == 0 ? Visibility.Hidden : Visibility.Visible;
 
-            control.completionDateText.Text = control.statistics.EstimateCompletionDate();
-            control.estimatedTimeRemaining.Text = control.statistics.EstimateCompletionTimeRemaining();
-            control.connectionText.Text = control.statistics.Status.ToUpper();
+            //control.completionDateText.Text = control.statistics.EstimateCompletionDate();
+            //control.estimatedTimeRemaining.Text = control.statistics.EstimateCompletionTimeRemaining();
+            //control.connectionText.Text = control.statistics.Status.ToUpper();
 
-            string statusColour = String.Empty;
-            string accentColour = String.Empty;
+            //string statusColour = String.Empty;
+            //string accentColour = String.Empty;
 
-            switch (control.statistics.Status)
-            {
-                case "Running":
-                    statusColour = "materialPrimaryGreen";
-                    accentColour = "materialPrimary";
-                    control.connectionText.Text = "ONLINE";
-                    break;
-                case "Setting":
-                    statusColour = "materialPrimaryBlue";
-                    accentColour = "materialPrimary";
-                    control.connectionText.Text = "MANUAL OPERATION";
-                    break;
-                case "Breakdown":
-                    statusColour = "materialError";
-                    accentColour = "materialError";
-                    break;
-                case "Offline":
-                    statusColour = "materialError";
-                    accentColour = "materialError";
-                    break;
-                case "Idle":
-                    statusColour = "materialError";
-                    accentColour = "materialError";
-                    break;
-                default:
-                    statusColour = "materialPrimary";
-                    accentColour = "materialWhite";
-                    control.connectionText.Text = "EXCEPTION";
-                    break;
-            }
+            //switch (control.statistics.Status)
+            //{
+            //    case "Running":
+            //        statusColour = "materialPrimaryGreen";
+            //        accentColour = "materialPrimary";
+            //        control.connectionText.Text = "ONLINE";
+            //        break;
+            //    case "Setting":
+            //        statusColour = "materialPrimaryBlue";
+            //        accentColour = "materialPrimary";
+            //        control.connectionText.Text = "MANUAL OPERATION";
+            //        break;
+            //    case "Breakdown":
+            //        statusColour = "materialError";
+            //        accentColour = "materialError";
+            //        break;
+            //    case "Offline":
+            //        statusColour = "materialError";
+            //        accentColour = "materialError";
+            //        break;
+            //    case "Idle":
+            //        statusColour = "materialError";
+            //        accentColour = "materialError";
+            //        break;
+            //    default:
+            //        statusColour = "materialPrimary";
+            //        accentColour = "materialWhite";
+            //        control.connectionText.Text = "EXCEPTION";
+            //        break;
+            //}
 
-            control.controlBackground.Stroke = (SolidColorBrush)Application.Current.Resources[statusColour];
-            control.connectionText.Foreground = (SolidColorBrush)Application.Current.Resources[statusColour];
-            control.workProgressSubtitle.Foreground = (SolidColorBrush)Application.Current.Resources[accentColour];
-            control.progressText.Foreground = (SolidColorBrush)Application.Current.Resources[statusColour];
-            control.progressBar.Fill = (SolidColorBrush)Application.Current.Resources[statusColour];
+            //control.controlBackground.Stroke = (SolidColorBrush)Application.Current.Resources[statusColour];
+            //control.connectionText.Foreground = (SolidColorBrush)Application.Current.Resources[statusColour];
+            //control.workProgressSubtitle.Foreground = (SolidColorBrush)Application.Current.Resources[accentColour];
+            //control.progressText.Foreground = (SolidColorBrush)Application.Current.Resources[statusColour];
+            //control.progressBar.Fill = (SolidColorBrush)Application.Current.Resources[statusColour];
         }
 
         public DisplayStatsCard()
