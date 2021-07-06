@@ -186,9 +186,12 @@ namespace ProjectLighthouse.ViewModel
             if (machineStatistics.Count == 0)
                 return;
 
-            string latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().FullName;
+            string latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
 
             DisplayStats = machineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
+
+            if(DisplayStats.DataTime.AddHours(1) < DateTime.Now)
+                LiveInfoVis = Visibility.Collapsed;
         }
         #endregion
 

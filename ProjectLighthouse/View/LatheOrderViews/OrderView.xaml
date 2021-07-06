@@ -115,14 +115,21 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Rectangle Style="{StaticResource liveCircle}" Grid.RowSpan="2"/>
-                        <TextBlock Text="{Binding DisplayStats.MachineID, StringFormat='{}LIVE on {0}'}"
+                        <StackPanel Grid.Column ="1" VerticalAlignment="Center" Grid.RowSpan="2">
+                            <TextBlock Text="{Binding DisplayStats.MachineName, StringFormat='{}LIVE on {0}'}"
                                    Foreground="{StaticResource materialOnError}"
                                    FontWeight="SemiBold"
-                                   Grid.Column="1"
                                    VerticalAlignment="Center"
-                                   Grid.RowSpan="2"
                                    FontSize="18"
-                                   Padding="8,5,0,6"/>
+                                   Padding="8,5,0,1"/>
+                            <TextBlock Text="{Binding DisplayStats.DataTime, StringFormat='{}at {0:HH:mm:ss}'}"
+                                   Foreground="{StaticResource materialOnError}"
+                                   FontStyle="Italic"
+                                   Grid.RowSpan="2"
+                                       Padding="8,0,0,4"
+                                   FontSize="12"/>
+                        </StackPanel>
+                        
                         <TextBlock VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                    Foreground="{StaticResource materialOnError}"

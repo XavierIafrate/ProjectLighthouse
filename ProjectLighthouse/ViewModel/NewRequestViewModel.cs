@@ -63,12 +63,14 @@ namespace ProjectLighthouse.ViewModel
         }
 
         public ICommand AddSpecialCommand { get; set; }
+        public NewRequestCommand SubmitRequestCommand { get; set; }
         public event EventHandler SelectedGroupChanged;
         public event EventHandler SelectedProductChanged;
         #endregion
 
         public NewRequestViewModel()
         {
+            SubmitRequestCommand = new NewRequestCommand(this);
             AddSpecialCommand = new NewSpecialPartCommand(this);
             ClearScreen();
             PopulateMachineInsights();

@@ -61,7 +61,7 @@ namespace ProjectLighthouse.ViewModel
             foreach (Lathe lathe in lathes)
             {
                 MachineLiveChartModel machineStatsModel = new();
-                List<MachineStatistics> relevantStats = statsList.Where(n => n.MachineID == lathe.FullName).OrderBy(m=>m.DataTime).ToList();
+                List<MachineStatistics> relevantStats = statsList.Where(n => n.MachineID == lathe.Id).OrderBy(m=>m.DataTime).ToList();
                 if (relevantStats.Count == 0)
                     continue;
 

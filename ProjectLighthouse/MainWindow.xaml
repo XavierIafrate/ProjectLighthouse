@@ -10,6 +10,7 @@
         MinHeight="700"
         MinWidth="1100"
         MaxWidth="2000"
+        WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         Loaded="Window_Loaded"
@@ -135,7 +136,6 @@
                                   Click="ToggleButton_Click"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}" 
                                   CommandParameter="Runtime"
-                                  Visibility="Collapsed"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Runtime"
                                   x:Name="machine_stats_button"

@@ -7,6 +7,7 @@ namespace ProjectLighthouse.Model
     public class MachineStatistics
     {
         public string MachineID { get; set; }
+        public string MachineName { get; set; }
 
         private DateTime dataTime;
         public DateTime DataTime

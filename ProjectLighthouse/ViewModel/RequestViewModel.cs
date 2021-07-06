@@ -263,7 +263,8 @@ namespace ProjectLighthouse.ViewModel
 
             ProductionCheckboxEnabled = (request.Status == "Pending approval" &&
                 (App.currentUser.UserRole == "Production" ||
-                App.currentUser.UserRole == "admin"));
+                App.currentUser.UserRole == "admin")
+                && App.currentUser.CanApproveRequests);
 
             SchedulingCheckboxEnabled = (request.Status == "Pending approval" &&
                 (App.currentUser.UserRole == "Scheduling" ||
@@ -272,7 +273,8 @@ namespace ProjectLighthouse.ViewModel
             DropboxEnabled = (request.Status == "Pending approval" &&
                 (App.currentUser.UserRole == "Scheduling" ||
                 App.currentUser.UserRole == "admin" ||
-                App.currentUser.UserRole == "Production"));
+                App.currentUser.UserRole == "Production")
+                && App.currentUser.CanApproveRequests);
 
             PurchaseRef = !String.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
         }

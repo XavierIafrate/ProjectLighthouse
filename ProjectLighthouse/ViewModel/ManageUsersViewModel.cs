@@ -159,7 +159,7 @@ namespace ProjectLighthouse.ViewModel
         public void SaveEdit()
         {
 
-            if (!IsValidEmail(SelectedUser.EmailAddress) && string.IsNullOrEmpty(SelectedUser.EmailAddress))
+            if (!IsValidEmail(SelectedUser.EmailAddress) && !string.IsNullOrEmpty(SelectedUser.EmailAddress))
             {
                 Console.WriteLine($"email invalid: '{SelectedUser.EmailAddress}'");
                 MessageBox.Show("Invalid email address", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
