@@ -7,6 +7,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -77,13 +78,26 @@ namespace ProjectLighthouse.ViewModel
                     }
                 };
 
-                foreach(MachineStatistics stat in relevantStats) 
+                DateTime start = DateTime.Now;
+
+
+                var temporalValues = new ChartModel[relevantStats.Count];
+                int i = 0;
+
+                foreach (MachineStatistics stat in relevantStats) 
                 {
                     _dataPoint = new(stat.DataTime, stat.PartCountAll);
-                    machineStatsModel.series[0].Values.Add(_dataPoint);
+                    //machineStatsModel.series[0].Values.Add(_dataPoint); // saved 2ms!
+                    temporalValues[i] = _dataPoint;
+                    i++;
                 }
 
+                machineStatsModel.series[0].Values.AddRange(temporalValues);
+
+                Debug.WriteLine($"Finished in {(DateTime.Now - start).TotalMilliseconds}ms");
+
                 machineStatsModel.partCounterAll = relevantStats.Last().PartCountAll;
+                machineStatsModel.tick2 = temporalValues[1].DateTime;
                 machineStatsModel.partCounterTarget = relevantStats.Last().PartCountTarget;
                 machineStatsModel.dataReadAt = relevantStats.Last().DataTime;
                 machineStatsModel.title = lathe.FullName;

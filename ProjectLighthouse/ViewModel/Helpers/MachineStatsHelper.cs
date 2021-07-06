@@ -15,7 +15,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     class MachineStatsHelper
     {
-        private static readonly string IP_ADDRESS = "http://192.168.103.102";
+        //private static readonly string IP_ADDRESS = "http://192.168.103.102";
 
         public static async Task<List<MachineStatistics>> GetStats()
         {

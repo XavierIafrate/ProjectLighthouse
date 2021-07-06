@@ -6,6 +6,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,16 +17,19 @@ namespace ProjectLighthouse.ViewModel
 {
     public class AnalyticsViewModel : BaseViewModel
     {
+        #region Vars
         private List<Lot> Lots { get; set; }
         private List<LatheManufactureOrder> LatheOrders { get; set; }
         private List<LatheManufactureOrderItem> LatheOrderItems { get; set; }
         private List<DeliveryNote> DeliveryNotes { get; set; }
         private List<DeliveryItem> DeliveryItems { get; set; }
         private List<TurnedProduct> TurnedProducts { get; set; }
+        private List<Lathe> Lathes { get; set; }
 
-        public DateTime InitialDateTime { get; set; }
+        //public DateTime InitialDateTime { get; set; }
         public Func<double, string> TimeFormatter { get; set; }
         public Func<double, string> QuantityFormatter { get; set; }
+        public Func<double, string> ThousandPoundFormatter { get; set; }
         private SeriesCollection seriesCollection;
         public SeriesCollection SeriesCollection 
         { 
@@ -34,6 +38,18 @@ namespace ProjectLighthouse.ViewModel
             {
                 seriesCollection = value;
                 OnPropertyChanged("SeriesCollection");
+            }
+        }
+
+        public string[] WeekLabels { get; set; }
+        private SeriesCollection fiveWeekValueCollection;
+        public SeriesCollection FiveWeekValueCollection
+        {
+            get { return fiveWeekValueCollection; }
+            set
+            {
+                fiveWeekValueCollection = value;
+                OnPropertyChanged("FiveWeekValueCollection");
             }
         }
 
@@ -50,7 +66,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
+#endregion
         public AnalyticsViewModel()
         {
             LoadData();
@@ -77,6 +93,7 @@ namespace ProjectLighthouse.ViewModel
             DeliveryNotes = DatabaseHelper.Read<DeliveryNote>().ToList();
             Lots = DatabaseHelper.Read<Lot>().ToList();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
+            Lathes = DatabaseHelper.Read<Lathe>().ToList();
         }
 
         public DashboardStats ComputeDashboard()
@@ -104,60 +121,123 @@ namespace ProjectLighthouse.ViewModel
                     PointGeometrySize=0
                 }
             };
-        
 
             TimeFormatter = value => new DateTime((long)value).ToString("dd MMMM yyyy");
             QuantityFormatter = value => string.Format($"{value:#,##0}");
+            ThousandPoundFormatter = value => string.Format($"£{value:#,##0}");
 
             Lots = Lots.OrderBy(n => n.Date).ToList();
             DateTime _date = Lots.First().Date;
             ChartModel _data_point;
 
+            // Last 5 weeks
+            WeekLabels = new string[6];
+            for (int i = 0; i < 6; i++) // labels
+            {
+                WeekLabels[i] = GetIso8601WeekOfYear(DateTime.Now.AddDays((6-i) * 7 * -1)).ToString();
+                Debug.WriteLine($"Week Num: {WeekLabels[i]}");
+            }
+
+            List<Lot> recentLots = Lots.Where(n => n.Date.AddDays(7 * 7) > DateTime.Now).ToList();
+            List<ValueByWeekNumber> assortedValues = new();
+            foreach (Lot l in recentLots)
+            {
+                if (l.IsReject || !l.IsDelivered)
+                    continue;
+                List<LatheManufactureOrder> matchedOrders = LatheOrders.Where(n => n.Name == l.Order).ToList();
+                if (matchedOrders.Count == 0)
+                    continue;
+
+                List<TurnedProduct> matchedProducts = TurnedProducts.Where(n => n.ProductName == l.ProductName).ToList();
+                if (matchedProducts.Count == 0)
+                    continue;
+
+                LatheManufactureOrder order = matchedOrders.First();
+                TurnedProduct product = matchedProducts.First();
+
+                if (product.SellPrice <= 0)
+                    product.SellPrice = 200; //pennies
+
+
+                int weekNum = GetIso8601WeekOfYear(l.Date);
+                if (WeekLabels.Contains(weekNum.ToString()))
+                {
+                    double value = product.SellPrice * l.Quantity / 100;
+                    ValueByWeekNumber tmp = new(value, order.AllocatedMachine, weekNum);
+                    assortedValues.Add(tmp);
+                }
+            }
+
+            FiveWeekValueCollection = new();
+
+            foreach (Lathe lathe in Lathes)
+            {
+                List<ValueByWeekNumber> latheDataSet = assortedValues.Where(n => n.MachineID == lathe.Id).OrderBy(x=>x.Week).ToList();
+                if (latheDataSet.Count == 0)
+                    continue;
+
+                ColumnSeries tmpSeries = new()
+                {
+                    Title = lathe.FullName,
+                    Values = new ChartValues<double> { },
+                    ColumnPadding=16
+                };
+
+                foreach(string week in WeekLabels)
+                {
+                    tmpSeries.Values.Add(latheDataSet.Where(l => l.Week.ToString() == week).Sum(m => m.Value));
+                }
+                FiveWeekValueCollection.Add(tmpSeries);
+            }
+
+            //Total Lots, parts, Value
             foreach (Lot l in Lots)
             {
-                if (l.IsDelivered)
+                if (!l.IsDelivered)
+                    continue;
+                newStats.totalPartsMade += l.Quantity;
+                if (l.Date.Year == DateTime.Now.Year)
+                    newStats.totalPartsMadeThisYear += l.Quantity;
+
+                List<TurnedProduct> deliveredProduct = TurnedProducts.Where(n => n.ProductName == l.ProductName).ToList();
+                List<LatheManufactureOrder> assignedOrder = LatheOrders.Where(n => n.Name== l.ProductName).ToList();
+                double price;
+                if (deliveredProduct.Count == 0)
                 {
-                    newStats.totalPartsMade += l.Quantity;
-                    if (l.Date.Year == DateTime.Now.Year)
-                        newStats.totalPartsMadeThisYear += l.Quantity;
+                    newStats.totalValue += l.Quantity * 2;
+                }
+                else
+                {
+                    price = deliveredProduct.First().SellPrice == 0 ? 200 : deliveredProduct.First().SellPrice;
+                    newStats.totalValue += l.Quantity * price / 100;
+                }
 
-                    List<TurnedProduct> deliveredProduct = TurnedProducts.Where(n => n.ProductName == l.ProductName).ToList();
-
-                    if(deliveredProduct.Count == 0)
-                    {
-                        newStats.totalValue += l.Quantity * 2;
-                    }
-                    else
-                    {
-                        double price = deliveredProduct.First().SellPrice == 0 ? 200 : deliveredProduct.First().SellPrice;
-                        newStats.totalValue += l.Quantity * price / 100;
-                    }
-
-
-                    DateTime _lotDate = new DateTime(l.Date.Year, l.Date.Month, l.Date.Day);
-                    if (_lotDate > _date)
-                    {
-                        _data_point = new(_date, newStats.totalPartsMade);
-                        SeriesCollection[0].Values.Add(_data_point);
-                        _date = _lotDate;
-                    }
-
+                DateTime _lotDate = new DateTime(l.Date.Year, l.Date.Month, l.Date.Day);
+                if (_lotDate > _date)
+                {
+                    _data_point = new(_date, newStats.totalPartsMade);
+                    SeriesCollection[0].Values.Add(_data_point);
+                    _date = _lotDate;
                 }
             }
 
             _data_point = new(_date, newStats.totalPartsMade);
             SeriesCollection[0].Values.Add(_data_point);
 
-
             //SeriesCollection.Add(cumulativePartsMade);
             return newStats;
         }
 
-        private string DateLabelFormatter(double value)
+ 
+
+        public static int GetIso8601WeekOfYear(DateTime time) // shamelessly stolen
         {
-            // * TimeSpan.FromSeconds(1).Ticks
-            DateTime dateTime = new DateTime((long)(value));
-            return dateTime.ToString("dd/MM/yy");
+            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+                time = time.AddDays(3);
+
+            // Return the week of our adjusted day
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
 
         public class DashboardStats
@@ -181,5 +261,20 @@ namespace ProjectLighthouse.ViewModel
                 this.Value = value;
             }
         }
+
+        public class ValueByWeekNumber
+        {
+            public double Value { get; set; }
+            public string MachineID { get; set; }
+            public int Week { get; set; }
+
+            public ValueByWeekNumber(double value, string machine, int week)
+            {
+                this.Value = value;
+                this.MachineID = machine;
+                this.Week = week;
+            }
+        }
+
     }
 }

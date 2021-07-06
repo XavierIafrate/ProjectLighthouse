@@ -120,6 +120,33 @@
                 </lvc:CartesianChart.AxisY>
             </lvc:CartesianChart>
 
+            <TextBlock Text="Parts made, last 6 weeks"
+                       FontSize="18"
+                       Margin="0,20,0,10"
+                       HorizontalAlignment="Center"/>
+            <lvc:CartesianChart Series="{Binding FiveWeekValueCollection}" LegendLocation="Left"
+                                Height="400"
+                                Margin="0,0,0,30">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Title="Week" Labels="{Binding WeekLabels}"/>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="Value Produced" LabelFormatter="{Binding ThousandPoundFormatter}"/>
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+
+            <!--<lvc:CartesianChart Series="{Binding OperatingByMachineSeriesCollection}" LegendLocation="Top">
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="Browser" Labels="{Binding Labels}" />
+                </lvc:CartesianChart.AxisY>
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis LabelFormatter="{Binding Formatter}" />
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.DataTooltip>
+                    <lvc:DefaultTooltip SelectionMode="SharedYValues"></lvc:DefaultTooltip>
+                </lvc:CartesianChart.DataTooltip>
+            </lvc:CartesianChart>-->
+
             <!--<TextBlock Text="*as calculated by a non-accountant. Probably accurate to +-50%. Maybe."
                        FontSize="10"
                        FontStyle="Italic"
