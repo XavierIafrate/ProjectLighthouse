@@ -54,20 +54,20 @@
                         <Button Content="Generate PDF" 
                                 Style="{StaticResource ButtonTemplate}" 
                                 Visibility="{Binding PrintButtonVis}"
-                                Command="{Binding printScheduleCommand}"/>
+                                Command="{Binding PrintScheduleCommand}"/>
                     </StackPanel>
 
                     <ListView Grid.Row="1"
-                             Grid.ColumnSpan="3"
-                             ItemsSource="{Binding Orders}" 
-                             HorizontalContentAlignment="Stretch"
-                             BorderBrush="{StaticResource materialSecondary}"
+                              Grid.ColumnSpan="3"
+                              ItemsSource="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" 
+                              HorizontalContentAlignment="Stretch"
+                              BorderBrush="{StaticResource materialSecondary}"
                               BorderThickness="2"
-                             ScrollViewer.CanContentScroll="False">
+                              ScrollViewer.CanContentScroll="False"
+                              SelectedValue="{Binding SelectedOrder}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <uc:DisplayLMOScheduling orderObject="{Binding}"
-                                                         MouseDown="DisplayLMOScheduling_MouseClick"/>
+                                <uc:DisplayLMOScheduling orderObject="{Binding}"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>

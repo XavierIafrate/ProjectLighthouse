@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.View;
+using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -20,6 +21,7 @@ namespace ProjectLighthouse.ViewModel
         public List<Lathe> Lathes { get; set; }
         public List<CompleteOrder> CompleteOrders { get; set; }
         public List<TabInfo> WindowTabs { get; set; }
+        public DisplayLMOScheduling SelectedOrder { get; set; }
 
         private Visibility autoScheduleVis;
         public Visibility AutoScheduleVis
@@ -43,9 +45,9 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public PrintScheduleCommand printScheduleCommand { get; set; }
-        public AutoScheduleCommand autoScheduleCommand { get; set; }
-
+        public PrintScheduleCommand PrintScheduleCommand { get; set; }
+        public AutoScheduleCommand AutoScheduleCommand { get; set; }
+        public UpdateItemOnScheduleCommand UpdateItemCommand { get; set; }
         public event EventHandler SelectedTabChanged;
 
         private TabInfo selectedTab;
@@ -55,15 +57,13 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedTab = value;
-                selectedTab.Orders = CompleteOrders.Where(n => (n.Order.AllocatedMachine ?? "") == value.LatheID).OrderBy(n => n.Order.StartDate).ToList();
-                SelectedTab.CalculateTimings();
-                PrintButtonVis = SelectedTab.LatheID == "" ? Visibility.Collapsed : Visibility.Visible;
-                AutoScheduleVis = (App.currentUser.UserRole == "admin" || App.currentUser.UserRole == "Scheduling") && SelectedTab.LatheID != ""
-                    ? Visibility.Visible : Visibility.Collapsed;
-                SelectedTabChanged?.Invoke(this, new EventArgs());
+                LoadTabOrders();
+                //SelectedTabChanged?.Invoke(this, new EventArgs());
                 OnPropertyChanged("SelectedTab");
             }
         }
+
+        
         #endregion
 
         public ScheduleViewModel()
@@ -73,9 +73,11 @@ namespace ProjectLighthouse.ViewModel
             CompleteOrders = new List<CompleteOrder>();
             Lathes = new List<Lathe>();
             WindowTabs = new List<TabInfo>();
+            SelectedOrder = new();
 
-            printScheduleCommand = new PrintScheduleCommand(this);
-            autoScheduleCommand = new AutoScheduleCommand(this);
+            PrintScheduleCommand = new(this);
+            AutoScheduleCommand = new(this);
+            UpdateItemCommand = new(this);
 
             ReadOrders();
             LoadCompleteOrders();
@@ -100,6 +102,16 @@ namespace ProjectLighthouse.ViewModel
                 OrderItems.Add(item);
         }
 
+        private void LoadTabOrders()
+        {
+            SelectedTab.Orders = null;
+            SelectedTab.Orders = CompleteOrders.Where(n => (n.Order.AllocatedMachine ?? "") == SelectedTab.LatheID).OrderBy(n => n.Order.StartDate).ToList();
+            SelectedTab.CalculateTimings();
+            PrintButtonVis = SelectedTab.LatheID == "" ? Visibility.Collapsed : Visibility.Visible;
+            AutoScheduleVis = (App.currentUser.UserRole == "admin" || App.currentUser.UserRole == "Scheduling") && SelectedTab.LatheID != ""
+                ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         private void LoadCompleteOrders()
         {
             CompleteOrders.Clear();
@@ -109,7 +121,7 @@ namespace ProjectLighthouse.ViewModel
                 if (order.IsComplete)
                     continue;
 
-                CompleteOrder tmpOrder = new CompleteOrder() { Order = order, OrderItems = new List<LatheManufactureOrderItem>() };
+                CompleteOrder tmpOrder = new() { Order = order, OrderItems = new List<LatheManufactureOrderItem>(), UpdateCommand=UpdateItemCommand };
 
                 foreach (LatheManufactureOrderItem item in OrderItems)
                     if (item.AssignedMO == order.Name)
@@ -178,11 +190,14 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public void updateItem(LatheManufactureOrder order)
+        public void UpdateOrder(LatheManufactureOrder order)
         {
-            SetDateWindow editWindow = new SetDateWindow(order);
+            SetDateWindow editWindow = new(order);
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
+
+            if (!editWindow.SaveExit)
+                return;
 
             if (order.Status == "Awaiting scheduling" && order.AllocatedMachine != "")
             {
@@ -198,12 +213,13 @@ namespace ProjectLighthouse.ViewModel
 
             ReadOrders();
             LoadCompleteOrders();
+            LoadTabOrders();
         }
 
-        public void AutoSchedule()
-        {
-            MessageBox.Show("Not implemented yet", "AutoSchedule");
-        }
+        //public void AutoSchedule()
+        //{
+        //    MessageBox.Show("Not implemented yet", "AutoSchedule");
+        //}
 
 
         public void PrintSchedule()

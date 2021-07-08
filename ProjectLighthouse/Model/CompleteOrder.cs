@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ProjectLighthouse.ViewModel.Commands;
+using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model
 {
@@ -6,5 +7,6 @@ namespace ProjectLighthouse.Model
     {
         public LatheManufactureOrder Order { get; set; }
         public List<LatheManufactureOrderItem> OrderItems { get; set; }
+        public UpdateItemOnScheduleCommand UpdateCommand { get; set; }
     }
 }

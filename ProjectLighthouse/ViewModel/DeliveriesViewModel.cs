@@ -24,6 +24,7 @@ namespace ProjectLighthouse.ViewModel
 
         public List<DeliveryItem> deliveryItems { get; set; }
 
+
         public List<DeliveryItem> filteredDeliveryItems { get; set; }
 
         private DeliveryNote selectedDeliveryNote;
@@ -78,9 +79,11 @@ namespace ProjectLighthouse.ViewModel
         {
             CreateNewDeliveryWindow window = new CreateNewDeliveryWindow();
             window.ShowDialog();
-
+            if (!window.SaveExit)
+                return;
             LoadDeliveryNotes();
             LoadDeliveryItems();
+            SelectedDeliveryNote = DeliveryNotes.First();
         }
 
         public void PrintDeliveryNotePDF()

@@ -16,6 +16,10 @@
     <PackageReleaseNotes>Bug fixes &amp; added Runtime information for lathes</PackageReleaseNotes>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;NU1701</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Resources\done.png" />
     <None Remove="Resources\GIF\0.gif" />

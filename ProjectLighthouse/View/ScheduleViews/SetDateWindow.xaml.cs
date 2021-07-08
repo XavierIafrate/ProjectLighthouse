@@ -12,11 +12,13 @@ namespace ProjectLighthouse.View
         private LatheManufactureOrder Order { get; set; }
         public DateTime SelectedDate;
         public string AllocatedMachine;
+        public bool SaveExit = false;
 
         public SetDateWindow(LatheManufactureOrder order)
         {
             InitializeComponent();
             Order = order;
+            TitleText.Text = string.Format($"Editing: {order.Name}");
 
             if (Order.StartDate == DateTime.MinValue)
             {
@@ -36,6 +38,7 @@ namespace ProjectLighthouse.View
             SelectedDate = calendar.SelectedDate ?? DateTime.Today;
             SelectedDate.AddHours(8);
             AllocatedMachine = machine.Text;
+            SaveExit = true;
             this.Close();
         }
     }

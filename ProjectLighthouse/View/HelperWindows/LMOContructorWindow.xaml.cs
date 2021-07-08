@@ -80,7 +80,8 @@ namespace ProjectLighthouse.View
                 TargetQuantity = Math.Max(requiredQuantity + Math.Max(500, product.GetRecommendedQuantity()), MOQ),
                 DateRequired = dateRequired,
                 CycleTime = product.CycleTime,
-                MajorLength = product.MajorLength
+                MajorLength = product.MajorLength,
+                IsSpecialPart = product.isSpecialPart,
             };
 
             if (newItem.CycleTime == 0)

@@ -341,9 +341,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        public static void PrintDeliveryNote(DeliveryNote deliveryNote, List<DeliveryItem> deliveryItems)
+        public static void PrintDeliveryNote(DeliveryNote deliveryNote, List<DeliveryItem> inputDeliveryItems)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            List<DeliveryItem> deliveryItems = DeDuplicatedDeliveryItems(inputDeliveryItems);
 
             using (PdfDocument document = new PdfDocument())
             {
@@ -422,25 +423,25 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 int y = (int)320;
                 font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
 
-                XRect RowNumCol = new XRect(0, y, 30, 20);
-                XRect PurchaseRefCol = new XRect(0, y, 100, 20);
-                XRect ProductCol = new XRect(0, y, 110, 20);
-                XRect ThisDelCol = new XRect(0, y, 120, 20);
-                XRect ToFollowCol = new XRect(0, y, 110, 20);
+                XRect RowNumCol = new XRect(0, y, 40, 20);
+                XRect PurchaseRefCol = new XRect(0, y, 130, 20);
+                XRect ProductCol = new XRect(0, y, 140, 20);
+                XRect ThisDelCol = new XRect(0, y, 140, 20);
+                //XRect ToFollowCol = new XRect(0, y, 110, 20);
 
-                double offset = (page.Width - (RowNumCol.Width + PurchaseRefCol.Width + ProductCol.Width + ThisDelCol.Width + ToFollowCol.Width)) / 2;
+                double offset = (page.Width - (RowNumCol.Width + PurchaseRefCol.Width + ProductCol.Width + ThisDelCol.Width)) / 2; // + ToFollowCol.Width
 
                 RowNumCol.X = offset;
                 PurchaseRefCol.X = RowNumCol.X + RowNumCol.Width;
                 ProductCol.X = PurchaseRefCol.X + PurchaseRefCol.Width;
                 ThisDelCol.X = ProductCol.X + ProductCol.Width;
-                ToFollowCol.X = ThisDelCol.X + ThisDelCol.Width;
+                //ToFollowCol.X = ThisDelCol.X + ThisDelCol.Width;
 
                 gfx.DrawString("#", font, XBrushes.Black, RowNumCol, XStringFormats.Center);
                 gfx.DrawString("Purchase Order", font, XBrushes.Black, PurchaseRefCol, XStringFormats.CenterLeft);
-                gfx.DrawString("Product", font, XBrushes.Black, ProductCol, XStringFormats.Center);
-                gfx.DrawString("Qty. This Delivery", font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
-                gfx.DrawString("Qty. To Follow", font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
+                gfx.DrawString("Product", font, XBrushes.Black, ProductCol, XStringFormats.CenterLeft);
+                gfx.DrawString("Quantity", font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
+                //gfx.DrawString("Qty. To Follow", font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
 
                 y += 20;
 
@@ -453,7 +454,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
 
                 // Init barcode
-                BarCode barcode = new Code3of9Standard("EMPTY", new XSize(PurchaseRefCol.Width * 1.5, ProductCol.Height * 0.8));
+                BarCode barcode = new Code3of9Standard("EMPTY", new XSize(PurchaseRefCol.Width, ProductCol.Height * 0.8));
                 barcode.StartChar = '*';
                 barcode.EndChar = '*';
 
@@ -467,13 +468,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     PurchaseRefCol.Y = y;
                     ProductCol.Y = y;
                     ThisDelCol.Y = y;
-                    ToFollowCol.Y = y;
+                    //ToFollowCol.Y = y;
 
                     gfx.DrawString(string.Format("{0}.", i), font, XBrushes.Black, RowNumCol, XStringFormats.Center);
                     gfx.DrawString(deliveryItem.PurchaseOrderReference, font, XBrushes.Black, PurchaseRefCol, XStringFormats.CenterLeft);
-                    gfx.DrawString(deliveryItem.Product, font, XBrushes.Black, ProductCol, XStringFormats.Center);
+                    gfx.DrawString(deliveryItem.Product, font, XBrushes.Black, ProductCol, XStringFormats.CenterLeft);
                     gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityThisDelivery), font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
-                    gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityToFollow), font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
+                    //gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityToFollow), font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
 
                     //PO Ref Barcode
                     barcode.Text = deliveryItem.PurchaseOrderReference.ToUpper();
@@ -516,6 +517,29 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 string path = Directory.Exists(DEL_PDF_OUTPUTDIR) ? Path.Join(DEL_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
                 SavePDF(document, path, true);
             }
+        }
+
+        private static List<DeliveryItem> DeDuplicatedDeliveryItems(List<DeliveryItem> inputDeliveryItems)
+        {
+            List<DeliveryItem> result = new();
+
+            foreach(DeliveryItem i in inputDeliveryItems)
+            {
+                if (result.Where(n => n.ItemManufactureOrderNumber == i.ItemManufactureOrderNumber && n.Product == i.Product).ToList().Count == 0)
+                {
+                    result.Add(i);
+                }
+                else
+                {
+                    foreach(DeliveryItem deliveryItem in result)
+                    {
+                        if (deliveryItem.ItemManufactureOrderNumber == i.ItemManufactureOrderNumber && deliveryItem.Product == i.Product)
+                            deliveryItem.QuantityThisDelivery += i.QuantityThisDelivery;
+                    }
+                }
+            }
+
+            return result;
         }
 
         public static void PrintSchedule(List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, List<Lathe> lathes)
@@ -674,7 +698,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             XFont font = new XFont("Tahoma", 8, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
             XRect footer = new XRect(gutter, page.Height - gutter, page.Width - 2 * gutter, 20);
-            gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", "Xavier Iafrate", DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
+            gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", App.currentUser.GetFullName(), DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
             return doc;
         }
 

@@ -141,7 +141,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 foreach (var product in turnedProducts)
                 {
-                    if (product.ProductGroup == "Specials")
+                    if (product.isSpecialPart)
                         filteredList.Add(product);
                 }
                 return;
@@ -150,7 +150,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 foreach (var product in turnedProducts)
                 {
-                    if (product.ProductName.Substring(0, Math.Min(5, product.ProductName.Length)) == SelectedGroup && product.ProductGroup != "Specials")
+                    if (product.ProductName.Substring(0, Math.Min(5, product.ProductName.Length)) == SelectedGroup && !product.isSpecialPart)
                         filteredList.Add(product);
                 }
             }

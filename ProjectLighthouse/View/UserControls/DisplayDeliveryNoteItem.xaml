@@ -26,8 +26,8 @@
                 <TextBlock Text="{Binding PurchaseOrderReference}" Foreground="DodgerBlue" FontSize="14"/>
             </StackPanel>
             
-            <TextBlock Text="{Binding QuantityThisDelivery, StringFormat='{}{0:#,##0} pcs this delivery'}" Grid.Column="2" FontSize="14"/>
-            <TextBlock Text="{Binding QuantityToFollow, StringFormat='{}{0:#,##0} pcs to follow'}" Grid.Column="2" Grid.Row="1" FontSize="14"/>
+            <TextBlock Text="{Binding QuantityThisDelivery, StringFormat='{}{0:#,##0} pcs'}" Grid.Column="2" FontSize="18" Grid.RowSpan="2" VerticalAlignment="Center" Padding="0,0,10,0"/>
+            <!--<TextBlock Text="{Binding QuantityToFollow, StringFormat='{}{0:#,##0} pcs to follow'}" Grid.Column="2" Grid.Row="1" FontSize="14"/>-->
             
         </Grid>
     </Grid>

@@ -6,23 +6,27 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:ProjectLighthouse.View"
         mc:Ignorable="d"
-        WindowStyle="None"
-        AllowsTransparency="True"
-        Width="210"
-        Height="270"
-        Background="Transparent"
+        WindowStyle="SingleBorderWindow"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Title="SetDateWindow">
-    <Grid Height="auto" VerticalAlignment="Center">
-
-        <Rectangle Fill="White" RadiusX="10" RadiusY="10" Stroke="DodgerBlue" StrokeThickness="3"/>
+        Title="Edit Timings">
+    <Grid Height="auto" VerticalAlignment="Center" Margin="20,0">
         <StackPanel>
-            <Calendar Margin="15,15,15,5" x:Name="calendar"/>
+            <TextBlock x:Name="TitleText" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBlock Text="Set Start Date" Style="{StaticResource subsubtitleTextStyle}"/>
+            <Calendar Margin="15,0,15,5" x:Name="calendar"/>
+            <TextBlock Text="Assign Machine" Style="{StaticResource subsubtitleTextStyle}"/>
             <ComboBox Margin="10,5" x:Name="machine">
                 <ComboBoxItem Content="C01"/>
                 <ComboBoxItem Content="C02"/>
+                <ComboBoxItem Content="C03"/>
+                <ComboBoxItem Content="C04"/>
             </ComboBox>
-            <Button Content="Confirm" Style="{StaticResource ButtonTemplate}" Margin="10" x:Name="confirmButton" Click="confirmButton_Click"/>
+            <Grid HorizontalAlignment="Right">
+                <Button Content="Save" Style="{StaticResource GreenButtonTemplate}" Margin="10" x:Name="confirmButton" Click="confirmButton_Click"/>
+            </Grid>
+            
         </StackPanel>
     </Grid>
 </Window>

@@ -17,6 +17,8 @@ namespace ProjectLighthouse.ViewModel
 {
     public class MachineStatsViewModel : BaseViewModel
     {
+        public List<MachineStatistics> StatsList { get; set; }
+        public List<Lathe> Lathes { get; set; }
         public Visibility NoConnectionVis { get; set; }
         public Visibility StatsVis { get; set; }
         private List<MachineLiveChartModel> cardInfo;
@@ -39,30 +41,35 @@ namespace ProjectLighthouse.ViewModel
             NoConnectionVis = Visibility.Hidden;
             StatsVis = Visibility.Visible;
             CardInfo = new();
-            _ = LoadDataAsync();
+            LoadDataAsync();
         }
-
-        public async Task LoadDataAsync()
+        
+        public async void LoadDataAsync()
         {
-            CardInfo = await getStats();
+            await Task.Run(function: () => GetData());
+            GetStats();
+            //CardInfo = await GetStats();
         }
 
-        public static async Task<List<MachineLiveChartModel>> getStats()
+        public async Task GetData()
+        {
+            StatsList = DatabaseHelper.Read<MachineStatistics>().Where(n => n.DataTime > DateTime.Now.AddDays(-2)).ToList();
+            Lathes = DatabaseHelper.Read<Lathe>();
+        }
+
+        public void GetStats()
         {
 
             List<MachineLiveChartModel> results = new();
             var dayConfig = Mappers.Xy<ChartModel>()
                            .X(dayModel => dayModel.DateTime.Ticks)
                            .Y(dayModel => dayModel.Value);
-
-            List<MachineStatistics> statsList = DatabaseHelper.Read<MachineStatistics>().Where(n=>n.DataTime > DateTime.Now.AddDays(-2)).ToList();
-            List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
             
             ChartModel _dataPoint;
-            foreach (Lathe lathe in lathes)
+            foreach (Lathe lathe in Lathes)
             {
                 MachineLiveChartModel machineStatsModel = new();
-                List<MachineStatistics> relevantStats = statsList.Where(n => n.MachineID == lathe.Id).OrderBy(m=>m.DataTime).ToList();
+                List<MachineStatistics> relevantStats = StatsList.Where(n => n.MachineID == lathe.Id).OrderBy(m=>m.DataTime).ToList();
                 if (relevantStats.Count == 0)
                     continue;
 
@@ -104,7 +111,7 @@ namespace ProjectLighthouse.ViewModel
 
                 results.Add(machineStatsModel);
             }
-            return results;
+            CardInfo = results;
         }
 
         public class ChartModel

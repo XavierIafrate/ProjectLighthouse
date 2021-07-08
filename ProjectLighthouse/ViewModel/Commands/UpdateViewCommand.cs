@@ -53,7 +53,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Deliveries")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DeliveriesViewModel();
                 viewModel.NavText = "Deliveries";
             }

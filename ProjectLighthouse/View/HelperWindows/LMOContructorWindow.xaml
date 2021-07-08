@@ -10,7 +10,7 @@
         MinHeight="650" MinWidth="1100"
         WindowStartupLocation="CenterScreen"
         Title="Create New Manufacture Order"
-        SizeToContent="Width">
+        SizeToContent="WidthAndHeight">
 
     <Grid DataContext="{Binding}" Margin="20">
         <Grid.RowDefinitions>

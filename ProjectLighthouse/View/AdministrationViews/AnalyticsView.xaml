@@ -73,13 +73,13 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="{Binding Stats.totalPartsMade, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
+                <TextBlock Text="{Binding Stats.TotalPartsMade, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
                            Style="{StaticResource dataHero}"/>
                 <TextBlock Text="total items delivered (all time)"
                            Grid.Column="2"
                            Style="{StaticResource statName}"/>
 
-                <TextBlock Text="{Binding Stats.totalPartsMadeThisYear, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
+                <TextBlock Text="{Binding Stats.TotalPartsMadeThisYear, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
                            Grid.Row="1"
                            Style="{StaticResource dataHero}"/>
                 <TextBlock Text="total items delivered (this year)"
@@ -87,7 +87,7 @@
                            Grid.Column="2"
                            Style="{StaticResource statName}"/>
 
-                <TextBlock Text="{Binding Stats.totalOrders, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
+                <TextBlock Text="{Binding Stats.TotalOrders, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
                            Grid.Row="2"
                            Style="{StaticResource dataHero}"/>
                 <TextBlock Text="orders"

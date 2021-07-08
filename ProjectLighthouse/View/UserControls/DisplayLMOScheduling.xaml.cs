@@ -50,6 +50,7 @@ namespace ProjectLighthouse.View.UserControls
                         break;
                 }
             }
+            control.editButton.Visibility = App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public DisplayLMOScheduling()

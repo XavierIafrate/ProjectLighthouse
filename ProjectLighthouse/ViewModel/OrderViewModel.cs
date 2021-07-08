@@ -180,7 +180,7 @@ namespace ProjectLighthouse.ViewModel
         private async void GetLatestStats()
         {
             machineStatistics = null;
-            machineStatistics = await MachineStatsHelper.GetStats();
+            machineStatistics = MachineStatsHelper.GetStats();
             machineStatistics ??= new List<MachineStatistics>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
             if (machineStatistics.Count == 0)
@@ -264,7 +264,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void EditLMO()
         {
-            EditLMOWindow editWindow = new EditLMOWindow((LatheManufactureOrder)SelectedLatheManufactureOrder.Clone(), FilteredLMOItems, Lots.Where(n => n.Order == SelectedLatheManufactureOrder.Name).ToList());
+            EditLMOWindow editWindow = new((LatheManufactureOrder)SelectedLatheManufactureOrder.Clone(), FilteredLMOItems, Lots.Where(n => n.Order == SelectedLatheManufactureOrder.Name).ToList());
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
 
@@ -288,7 +288,7 @@ namespace ProjectLighthouse.ViewModel
             LoadLMOItems();
         }
 
-        private string GetDaySuffix(int day)
+        private static string GetDaySuffix(int day)
         {
             return day switch
             {

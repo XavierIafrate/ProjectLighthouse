@@ -20,9 +20,9 @@ namespace ProjectLighthouse.ViewModel
         #region Vars
         private List<Lot> Lots { get; set; }
         private List<LatheManufactureOrder> LatheOrders { get; set; }
-        private List<LatheManufactureOrderItem> LatheOrderItems { get; set; }
-        private List<DeliveryNote> DeliveryNotes { get; set; }
-        private List<DeliveryItem> DeliveryItems { get; set; }
+        //private List<LatheManufactureOrderItem> LatheOrderItems { get; set; }
+        //private List<DeliveryNote> DeliveryNotes { get; set; }
+        //private List<DeliveryItem> DeliveryItems { get; set; }
         private List<TurnedProduct> TurnedProducts { get; set; }
         private List<Lathe> Lathes { get; set; }
 
@@ -61,7 +61,7 @@ namespace ProjectLighthouse.ViewModel
             set 
             { 
                 stats = value;
-                Debug.WriteLine($"Stats total parts: {value.totalPartsMade}");
+                Debug.WriteLine($"Stats total parts: {value.TotalPartsMade}");
                 OnPropertyChanged("Stats");
             }
         }
@@ -88,9 +88,9 @@ namespace ProjectLighthouse.ViewModel
         public async Task GetData()
         {
             LatheOrders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
-            LatheOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
-            DeliveryItems = DatabaseHelper.Read<DeliveryItem>().ToList();
-            DeliveryNotes = DatabaseHelper.Read<DeliveryNote>().ToList();
+            //LatheOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            //DeliveryItems = DatabaseHelper.Read<DeliveryItem>().ToList();
+            //DeliveryNotes = DatabaseHelper.Read<DeliveryNote>().ToList();
             Lots = DatabaseHelper.Read<Lot>().ToList();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
@@ -100,9 +100,9 @@ namespace ProjectLighthouse.ViewModel
         {
             DashboardStats newStats = new();
 
-            newStats.totalOrders = LatheOrders.Count;
-            newStats.totalLots = Lots.Count;
-            newStats.deliveredLots = Lots.Where(n => n.IsDelivered).ToList().Count;
+            newStats.TotalOrders = LatheOrders.Count;
+            newStats.TotalLots = Lots.Count;
+            newStats.DeliveredLots = Lots.Where(n => n.IsDelivered).ToList().Count;
 
             var dayConfig = Mappers.Xy<ChartModel>()
                            .X(dayModel => dayModel.DateTime.Ticks)
@@ -195,33 +195,33 @@ namespace ProjectLighthouse.ViewModel
             {
                 if (!l.IsDelivered)
                     continue;
-                newStats.totalPartsMade += l.Quantity;
+                newStats.TotalPartsMade += l.Quantity;
                 if (l.Date.Year == DateTime.Now.Year)
-                    newStats.totalPartsMadeThisYear += l.Quantity;
+                    newStats.TotalPartsMadeThisYear += l.Quantity;
 
                 List<TurnedProduct> deliveredProduct = TurnedProducts.Where(n => n.ProductName == l.ProductName).ToList();
                 List<LatheManufactureOrder> assignedOrder = LatheOrders.Where(n => n.Name== l.ProductName).ToList();
                 double price;
                 if (deliveredProduct.Count == 0)
                 {
-                    newStats.totalValue += l.Quantity * 2;
+                    newStats.TotalValue += l.Quantity * 2;
                 }
                 else
                 {
                     price = deliveredProduct.First().SellPrice == 0 ? 200 : deliveredProduct.First().SellPrice;
-                    newStats.totalValue += l.Quantity * price / 100;
+                    newStats.TotalValue += l.Quantity * price / 100;
                 }
 
-                DateTime _lotDate = new DateTime(l.Date.Year, l.Date.Month, l.Date.Day);
+                DateTime _lotDate = new(l.Date.Year, l.Date.Month, l.Date.Day);
                 if (_lotDate > _date)
                 {
-                    _data_point = new(_date, newStats.totalPartsMade);
+                    _data_point = new(_date, newStats.TotalPartsMade);
                     SeriesCollection[0].Values.Add(_data_point);
                     _date = _lotDate;
                 }
             }
 
-            _data_point = new(_date, newStats.totalPartsMade);
+            _data_point = new(_date, newStats.TotalPartsMade);
             SeriesCollection[0].Values.Add(_data_point);
 
             //SeriesCollection.Add(cumulativePartsMade);
@@ -242,12 +242,12 @@ namespace ProjectLighthouse.ViewModel
 
         public class DashboardStats
         {
-            public int totalPartsMade { get; set; }
-            public int totalPartsMadeThisYear { get; set; }
-            public int totalOrders { get; set; }
-            public int totalLots { get; set; }
-            public int deliveredLots { get; set; }
-            public double totalValue { get; set; }
+            public int TotalPartsMade { get; set; }
+            public int TotalPartsMadeThisYear { get; set; }
+            public int TotalOrders { get; set; }
+            public int TotalLots { get; set; }
+            public int DeliveredLots { get; set; }
+            public double TotalValue { get; set; }
         }
 
         public class ChartModel

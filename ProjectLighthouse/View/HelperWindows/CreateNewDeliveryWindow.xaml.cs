@@ -17,6 +17,7 @@ namespace ProjectLighthouse.View
         private List<DeliveryItem> filteredUndeliveredItems { get; set; }
         private List<DeliveryItem> itemsOnNewNote { get; set; }
         private List<Lot> Lots { get; set; }
+        public bool SaveExit = false;
 
         public CreateNewDeliveryWindow()
         {
@@ -128,6 +129,7 @@ namespace ProjectLighthouse.View
 
                 DatabaseHelper.Insert(item);
             }
+            SaveExit = true;
             this.Close();
         }
 
