@@ -526,7 +526,7 @@
                                 Height="18"
                                 BorderThickness="0"
                                 Padding="10,0">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,1"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -537,7 +537,7 @@
                     <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="LightGray"/>
+                    <Setter Property="Foreground" Value="LightGray"/>
                 </Trigger>
             </Style.Triggers>
         </Style>

@@ -1,7 +1,6 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
@@ -13,7 +12,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static string GetDatabaseFile()
         {
-           return Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile);
+            return Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile);
         }
 
         public static bool Insert<T>(T item)

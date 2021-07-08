@@ -29,7 +29,7 @@ namespace ProjectLighthouse.ViewModel
 
                     FilteredOrderItems = OrderItems.Where(n => n.OrderReference == selectedOrder.Name).ToList();
                 }
-                    
+
 
                 OnPropertyChanged("SelectedOrder");
             }
@@ -85,8 +85,8 @@ namespace ProjectLighthouse.ViewModel
         public List<AssemblyOrderItem> FilteredOrderItems
         {
             get { return filteredOrderItems; }
-            set 
-            { 
+            set
+            {
                 filteredOrderItems = value;
                 OnPropertyChanged("FilteredOrderItems");
             }
@@ -172,7 +172,7 @@ namespace ProjectLighthouse.ViewModel
             }
             else
             {
-                FilteredOrders = Orders.Where(n => n.Status == "Complete").ToList(); 
+                FilteredOrders = Orders.Where(n => n.Status == "Complete").ToList();
             }
             if (Orders.Count > 0)
                 SelectedOrder = Orders.First();

@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.Model;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using ProjectLighthouse.Model;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -66,12 +68,26 @@ namespace ProjectLighthouse.ViewModel
         public NewRequestCommand SubmitRequestCommand { get; set; }
         public event EventHandler SelectedGroupChanged;
         public event EventHandler SelectedProductChanged;
+
+
+        //Graph stiff
+        public string[] XAxisLabels { get; set; }
+        public SeriesCollection SeriesCollection { get; set; }
+        public Func<double, string> ThousandsSeparator { get; set; }
+        public string GraphTitle { get; set; }
+        public Visibility NotEnoughDataVis { get; set; }
+        public Visibility GraphVis { get; set; }
+
         #endregion
 
         public NewRequestViewModel()
         {
             SubmitRequestCommand = new NewRequestCommand(this);
             AddSpecialCommand = new NewSpecialPartCommand(this);
+
+            NotEnoughDataVis = Visibility.Visible;
+            GraphVis = Visibility.Hidden;
+
             ClearScreen();
             PopulateMachineInsights();
         }
@@ -124,7 +140,7 @@ namespace ProjectLighthouse.ViewModel
             foreach (var product in products)
             {
                 turnedProducts.Add(product);
-                if (product.ProductGroup != "Specials")
+                if (!product.isSpecialPart)
                     if (!Families.Any(item => item.ToString() == product.ProductName.Substring(0, 5)))
                         Families.Add(product.ProductName.Substring(0, 5));
 
@@ -155,6 +171,72 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
             filteredList = new ObservableCollection<TurnedProduct>(filteredList.OrderBy(n => n.Material).ThenBy(n => n.ProductName));
+            LoadGraph();
+        }
+
+        private void LoadGraph()
+        {
+            List<string> labels = new();
+            ThousandsSeparator = value => string.Format($"{value:#,##0}");
+
+            if (filteredList.Count == 0)
+            {
+                GraphTitle = "Select a product group to view analytics";
+                GraphVis = Visibility.Hidden;
+                NotEnoughDataVis = Visibility.Visible;
+            }
+
+            for (int i = 0; i < filteredList.Count; i++) // labels
+            {
+                TurnedProduct turnedProduct = filteredList[i];
+                if (!labels.Contains(turnedProduct.ProductGroup))
+                    labels.Add(turnedProduct.ProductGroup);
+            }
+
+            XAxisLabels = labels.OrderBy(q => q).ToArray();
+            SeriesCollection = new();
+            var converter = new System.Windows.Media.BrushConverter();
+
+            LineSeries _series = new()
+            {
+                Title = "Units Sold",
+                Values = new ChartValues<double> { },
+                PointGeometrySize = 10,
+                LineSmoothness = 0,
+                Foreground = (System.Windows.Media.Brush)converter.ConvertFromString("#6B303030")
+            };
+
+            int totalSold = 0;
+
+            foreach (string label in XAxisLabels)
+            {
+                int sumSold = filteredList.Where(n => n.ProductGroup == label && !n.isSpecialPart).ToList().Sum(p=>p.QuantitySold);
+                _series.Values.Add(Convert.ToDouble(sumSold));
+                totalSold += sumSold;
+            }
+
+
+            SeriesCollection.Add(_series);
+
+            if(_series.Values.Count < 4 || totalSold < 10000)
+            {
+                GraphTitle = "Lighthouse Analytics Not Available";
+                GraphVis = Visibility.Hidden;
+                NotEnoughDataVis = Visibility.Visible;
+            }
+            else
+            {
+                GraphTitle = string.Format($"At a Glance: {SelectedGroup}");
+                GraphVis = Visibility.Visible;
+                NotEnoughDataVis = Visibility.Hidden;
+            }
+
+            OnPropertyChanged("XAxisLabels");
+            OnPropertyChanged("GraphTitle");
+            OnPropertyChanged("GraphVis");
+            OnPropertyChanged("NotEnoughDataVis");
+            OnPropertyChanged("SeriesCollection");
+            OnPropertyChanged("ThousandsSeparator");
         }
 
         public bool SubmitRequest()
@@ -309,5 +391,17 @@ namespace ProjectLighthouse.ViewModel
             public string MachineFullName { get; set; }
             public TimeSpan LeadTime { get; set; }
         }
+
+        //public class ValueByGroup
+        //{
+        //    public string Group { get; set; }
+        //    public double Value { get; set; }
+
+        //    public ValueByGroup(string group, double value)
+        //    {
+        //        this.Value = value;
+        //        this.Group = group;
+        //    }
+        //}
     }
 }

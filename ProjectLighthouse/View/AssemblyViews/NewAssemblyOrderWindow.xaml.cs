@@ -62,7 +62,7 @@ namespace ProjectLighthouse.View.AssemblyViews
                 });
             }
 
-            foreach(AssemblyGroup group in TreeItems)
+            foreach (AssemblyGroup group in TreeItems)
             {
                 TreeViewItem ParentItem = new TreeViewItem();
                 ParentItem.Header = group.group;
@@ -146,7 +146,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             else
             {
                 // arrange quantity drops
-                if(!Int32.TryParse(CallOffDropQuantity.Text, out int drop_quantity))
+                if (!Int32.TryParse(CallOffDropQuantity.Text, out int drop_quantity))
                 {
                     MessageBox.Show("Please enter a drop quantity.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
@@ -157,23 +157,23 @@ namespace ProjectLighthouse.View.AssemblyViews
                 //Debug.WriteLine($"Number of Drops: {num_solid_drops}");
                 //Debug.WriteLine($"Trailing Quantity: {trailing_quantity}");
 
-                for(int i = 0; i < num_solid_drops; i++)
+                for (int i = 0; i < num_solid_drops; i++)
                 {
-                    newDrops.Add(new Drop(){ Quantity = drop_quantity });
+                    newDrops.Add(new Drop() { Quantity = drop_quantity });
                 }
 
-                if(trailing_quantity != 0)
+                if (trailing_quantity != 0)
                     newDrops.Add(new Drop() { Quantity = trailing_quantity });
-                
-                
+
+
                 // arrange dates
-                
+
                 if (!MultiDropStartingDate.SelectedDate.HasValue)
                 {
                     MessageBox.Show("Please select a starting date for the drops.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
-                
+
                 if (byInterval)
                 {
                     if (!Int32.TryParse(interval_textbox.Text, out int interval))
@@ -182,7 +182,7 @@ namespace ProjectLighthouse.View.AssemblyViews
                         return;
                     }
                     int j = 0;
-                    foreach(Drop drop in newDrops)
+                    foreach (Drop drop in newDrops)
                     {
                         drop.DateRequired = MultiDropStartingDate.SelectedDate.Value.AddDays(7 * j * interval);
                         j++;
@@ -211,7 +211,7 @@ namespace ProjectLighthouse.View.AssemblyViews
 
                     int i = 0;
 
-                    foreach(Drop d in newDrops)
+                    foreach (Drop d in newDrops)
                     {
                         DateTime first_day_of_seed_month = new DateTime(starting_date.Year, starting_date.Month, 1).AddMonths(i);
                         DateTime drop_due_date = GetNthDayOfMonth(week_num, (DayOfWeek)day_of_week, first_day_of_seed_month);
@@ -244,13 +244,13 @@ namespace ProjectLighthouse.View.AssemblyViews
             DateTime result = new();
             int found = 0;
 
-            while(i.Month == firstDayOfMonth.Month)
+            while (i.Month == firstDayOfMonth.Month)
             {
-                if(i.DayOfWeek == dayOfWeek)
+                if (i.DayOfWeek == dayOfWeek)
                 {
                     result = i;
                     found += 1;
-                    if(found == occurrance)
+                    if (found == occurrance)
                     {
                         break;
                     }
@@ -319,7 +319,7 @@ namespace ProjectLighthouse.View.AssemblyViews
 
             if (Result == MessageBoxResult.Yes)
             {
-                AssemblyManufactureOrder newOrder = new() { Name = GetNewAssemblyOrderName(), CreatedAt=DateTime.Now, CreatedBy=App.currentUser.GetFullName(), Status="Problem", ModifiedAt=DateTime.Now, RequiredProduct=selectedProduct};
+                AssemblyManufactureOrder newOrder = new() { Name = GetNewAssemblyOrderName(), CreatedAt = DateTime.Now, CreatedBy = App.currentUser.GetFullName(), Status = "Problem", ModifiedAt = DateTime.Now, RequiredProduct = selectedProduct };
                 DatabaseHelper.Insert<AssemblyManufactureOrder>(newOrder);
 
                 List<AssemblyItemExpansion> newOrderItems = new();
@@ -332,7 +332,7 @@ namespace ProjectLighthouse.View.AssemblyViews
                 while (!complete)
                 {
                     List<AssemblyItemExpansion> tmpItems = new();
-                    foreach(AssemblyItemExpansion x in newOrderItems)
+                    foreach (AssemblyItemExpansion x in newOrderItems)
                     {
                         complete = true;
                         if (!x.Checked)
@@ -346,7 +346,7 @@ namespace ProjectLighthouse.View.AssemblyViews
                     newOrderItems.AddRange(tmpItems);
                 }
 
-                foreach(AssemblyItemExpansion x in newOrderItems)
+                foreach (AssemblyItemExpansion x in newOrderItems)
                 {
                     DatabaseHelper.Insert<AssemblyOrderItem>(new()
                     {
@@ -354,11 +354,11 @@ namespace ProjectLighthouse.View.AssemblyViews
                         ProductName = x.Item.ProductNumber,
                         QuantityRequired = x.Quantity,
                         QuantityReady = 0,
-                        ChildOf=x.Parent
+                        ChildOf = x.Parent
                     });
                 }
 
-                foreach(Drop d in newDrops)
+                foreach (Drop d in newDrops)
                 {
                     d.ForOrder = newOrder.Name;
                     d.Product = selectedProduct;
@@ -375,11 +375,11 @@ namespace ProjectLighthouse.View.AssemblyViews
         {
             List<BillOfMaterialsItem> items = BOMItems.Where(n => n.BOMID == parent.BillOfMaterials).ToList();
             List<AssemblyItemExpansion> result = new();
-            if(items.Count > 0)
+            if (items.Count > 0)
             {
-                foreach(BillOfMaterialsItem i in items)
+                foreach (BillOfMaterialsItem i in items)
                 {
-                    result.Add(new() { Checked = false, Item = Products.SingleOrDefault(n => n.ProductNumber == i.ComponentItem), Quantity=i.Quantity*parent_quantity, Parent=parent.ProductNumber });
+                    result.Add(new() { Checked = false, Item = Products.SingleOrDefault(n => n.ProductNumber == i.ComponentItem), Quantity = i.Quantity * parent_quantity, Parent = parent.ProductNumber });
                     if (result.Last().Item == null)
                         Debug.WriteLine($"{i.ComponentItem} not found");
                 }
@@ -396,8 +396,8 @@ namespace ProjectLighthouse.View.AssemblyViews
             return blank.Substring(0, 7 - strOrderNumber.Length) + strOrderNumber;
         }
 
-        private class AssemblyItemExpansion 
-        { 
+        private class AssemblyItemExpansion
+        {
             public AssemblyItem Item { get; set; }
             public string Parent { get; set; }
             public int Quantity { get; set; }

@@ -34,7 +34,7 @@ namespace ProjectLighthouse.View
                 {
                     defaultViewComboBox.SelectedItem = item;
                     break;
-                } 
+                }
             }
         }
 

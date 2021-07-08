@@ -18,15 +18,19 @@
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Margin="20" VerticalAlignment="Center" Width="360">
+        <StackPanel Margin="20" VerticalAlignment="Center" Width="500">
             <TextBlock Text="Update Item" FontSize="30" Margin="0,10"/>
             <Separator/>
-
-            <TextBlock x:Name="ProductNameTextBlock" FontSize="20"
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="ProductNameTextBlock" FontSize="20"
                            Text="n/a"/>
-            <TextBlock x:Name="ManufactureOrderTextBlock" FontSize="20" Foreground="DodgerBlue"
+                <TextBlock Text=" • " FontSize="20"/>
+                <TextBlock x:Name="ManufactureOrderTextBlock" FontSize="20" Foreground="DodgerBlue"
                            Text="n/a"/>
-            <Grid>
+            </StackPanel>
+            
+            
+            <Grid HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -37,33 +41,44 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Accepted" Margin="0,10,0,5" Style="{StaticResource subsubtitleTextStyle}"/>
+                <TextBlock Text="Accepted" 
+                           Margin="0,10,0,5" 
+                           Style="{StaticResource subsubtitleTextStyle}"
+                           HorizontalAlignment="Center" 
+                           FontWeight="SemiBold"/>
                 <TextBlock x:Name="QtyMadeTextBlock" 
                            Grid.Row="1"
                            FontSize="18" 
                            Text="n/a"
-                           Foreground="{StaticResource materialPrimary}"/>
+                           Foreground="{StaticResource materialPrimary}"
+                           HorizontalAlignment="Center"/>
 
                 <TextBlock Text="Rejected"
                            Grid.Column="1"
+                           FontWeight="SemiBold"
                            Margin="0,10,0,5"
+                           HorizontalAlignment="Center"
                             Style="{StaticResource subsubtitleTextStyle}"/>
                 <TextBlock x:Name="QtyRejectTextBlock" 
                            Grid.Row="1"
                            Grid.Column="1"
                            Text="n/a"
                            FontSize="18"
+                           HorizontalAlignment="Center"
                            Foreground="{StaticResource materialError}"/>
                 
                 <TextBlock Text="Delivered"
                            Grid.Column="2"
                            Margin="0,10,0,5"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
                             Style="{StaticResource subsubtitleTextStyle}"/>
                 <TextBlock x:Name="QtyDeliveredTextBlock" 
                            Grid.Row="1"
                            Grid.Column="2"
                            Text="n/a"
                            FontSize="18"
+                           HorizontalAlignment="Center"
                            Foreground="{StaticResource materialPrimaryGreen}"/>
             </Grid>
             
@@ -81,8 +96,23 @@
                 <TextBlock Text="s" Margin="2,0,8,0" VerticalAlignment="Bottom" FontSize="15"/>
                 <TextBlock Text="(120s)" x:Name="intCycleTimeText" Margin="2,0,8,0" VerticalAlignment="Bottom" FontSize="15" Foreground="Gray" FontStyle="Italic"/>
             </StackPanel>
-            <TextBlock Text="Stock Lots" Margin="0,10,0,5" Style="{StaticResource subsubtitleTextStyle}"/>
-            <ListBox x:Name="LotsListBox" MinHeight="100" HorizontalContentAlignment="Stretch">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Stock Lots" Margin="0,10,0,5" Style="{StaticResource subsubtitleTextStyle}"/>
+                <Button Content="edit" 
+                        Grid.Column="2" 
+                        Style="{StaticResource SubtleButtonTemplate}" 
+                        VerticalAlignment="Bottom"
+                        x:Name="EditLotButton"
+                        Click="EditLotButton_Click"/>
+            </Grid>
+            
+            <ListBox x:Name="LotsListBox" MinHeight="100" HorizontalContentAlignment="Stretch"
+                     SelectionChanged="LotsListBox_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type mdl:Lot}">
                         <uc:DisplayLot Lot="{Binding}"/>
@@ -113,7 +143,7 @@
                 <CheckBox Content="Lot is Rejects" Grid.Column="2" VerticalAlignment="Center" Margin="5,0" x:Name="RejectCheckBox"/>
 
                 <TextBlock Text="Material Batch ID" Grid.Row="2" Margin="5,2" VerticalAlignment="Bottom" FontSize="14"/>
-                <TextBox x:Name="BatchTextBox" FontSize="14" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
+                <TextBox x:Name="BatchTextBox" FontSize="14" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" TextWrapping="Wrap" MaxLength="256"/>
                 <Button Content="+ Add Lot" Style="{StaticResource GreenButtonTemplate}" Grid.Column="2" Grid.Row="3" x:Name="AddLotButton" Click="AddLotButton_Click"/>
             </Grid>
 

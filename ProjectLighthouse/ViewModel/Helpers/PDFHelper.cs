@@ -102,7 +102,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 XRect valueRect = new XRect(col_1_x_value, y, col_2_x_parameter - col_1_x_value, 18);
 
                 gfx.DrawString("Purchase Order #", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
-                gfx.DrawString(order.POReference, valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
+                gfx.DrawString(order.POReference ?? "TBC", valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;
@@ -145,7 +145,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 valueRect.Y = y;
 
                 gfx.DrawString("Updated By", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
-                gfx.DrawString(order.ModifiedBy, valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
+                gfx.DrawString(order.ModifiedBy ?? "n/a", valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
 
                 y += valueRect.Height;
                 parameterRect.Y = y;
@@ -523,7 +523,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             List<DeliveryItem> result = new();
 
-            foreach(DeliveryItem i in inputDeliveryItems)
+            foreach (DeliveryItem i in inputDeliveryItems)
             {
                 if (result.Where(n => n.ItemManufactureOrderNumber == i.ItemManufactureOrderNumber && n.Product == i.Product).ToList().Count == 0)
                 {
@@ -531,7 +531,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
                 else
                 {
-                    foreach(DeliveryItem deliveryItem in result)
+                    foreach (DeliveryItem deliveryItem in result)
                     {
                         if (deliveryItem.ItemManufactureOrderNumber == i.ItemManufactureOrderNumber && deliveryItem.Product == i.Product)
                             deliveryItem.QuantityThisDelivery += i.QuantityThisDelivery;
