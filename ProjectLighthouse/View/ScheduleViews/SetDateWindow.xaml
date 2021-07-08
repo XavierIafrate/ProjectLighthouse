@@ -21,6 +21,8 @@
             <ComboBox Margin="10,5" x:Name="machine">
                 <ComboBoxItem Content="C01"/>
                 <ComboBoxItem Content="C02"/>
+                <ComboBoxItem Content="C03"/>
+                <ComboBoxItem Content="C04"/>
             </ComboBox>
             <Button Content="Confirm" Style="{StaticResource ButtonTemplate}" Margin="10" x:Name="confirmButton" Click="confirmButton_Click"/>
         </StackPanel>
