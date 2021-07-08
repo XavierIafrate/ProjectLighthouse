@@ -237,7 +237,7 @@ namespace ProjectLighthouse.ViewModel
                 time = time.AddDays(3);
 
             // Return the week of our adjusted day
-            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Tuesday);
         }
 
         public class DashboardStats

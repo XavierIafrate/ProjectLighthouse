@@ -44,10 +44,10 @@ namespace ProjectLighthouse.ViewModel
 
         public async Task LoadDataAsync()
         {
-            CardInfo = getStats();
+            CardInfo = await getStats();
         }
 
-        public static List<MachineLiveChartModel> getStats()
+        public static async Task<List<MachineLiveChartModel>> getStats()
         {
 
             List<MachineLiveChartModel> results = new();
