@@ -8,7 +8,9 @@
              xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
              xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             Background="White">
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             SizeChanged="UserControl_SizeChanged"
+             Background="White" mc:Ignorable="d" d:DesignWidth="1179.077" d:DesignHeight="758.58">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -46,14 +48,19 @@
             <vm:NewRequestViewModel x:Key="vm"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid DataContext="{StaticResource vm}">
+    
+    
+    <Grid DataContext="{StaticResource vm}" x:Name="mainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"
                               MinWidth="300"
-                              MaxWidth="500"/>
-            <ColumnDefinition Width="2*"/>
+                              MaxWidth="400"/>
+            <ColumnDefinition Width="auto" MinWidth="350"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <!--Input Grid-->
+        
+        <!--#region Input, col 0-->
+        
         <Grid Margin="20,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -66,7 +73,7 @@
                 <ComboBox ItemsSource="{Binding Families}"
                       SelectedValue="{Binding SelectedGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Margin="0,5"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Collapsed">
                     <TextBlock Text="Not a catalogue item?" 
                            Margin="0,5,0,10"
                            HorizontalAlignment="Center" 
@@ -154,8 +161,11 @@
             </StackPanel>
         </Grid>
 
+        <!--#endregion-->
+        
+        <!--#region Insights Grid, col 1-->
         <ScrollViewer Grid.Column="1" 
-                      VerticalAlignment="Top" 
+                      VerticalAlignment="Center" 
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
             <Grid Margin="20" MaxWidth="400">
@@ -202,8 +212,8 @@
                                    Style="{StaticResource insight}"/>
                         <TextBlock Text="Scheduling Algorithm" Style="{StaticResource insightHeading}"/>
                         <Separator Width="150" HorizontalAlignment="Left" Margin="0,3"/>
-                        <TextBlock Text="{Binding RecommendedStockText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
-                        <TextBlock Text="{Binding PotentialQuantityText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding RecommendedStockText, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" Style="{StaticResource insight}"/>
+                        <TextBlock Text="{Binding PotentialQuantityText, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" Style="{StaticResource insight}"/>
                         <TextBlock Text="{Binding LikelinessText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource insight}"/>
                     </StackPanel>
 
@@ -234,27 +244,36 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="auto"/>
-                                            <RowDefinition Height="auto"/>
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Text="{Binding MachineFullName}"
-                                               Style="{StaticResource insight}"/>
-                                        <TextBlock Text="{Binding LeadTime, Converter={StaticResource TimespanToString}}"
+                                        <!--<Rectangle Fill="White"/>-->
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding MachineFullName}"
+                                                   Style="{StaticResource insight}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Grid.RowSpan="2"
+                                                   VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding LeadTime, Converter={StaticResource TimespanToString}, StringFormat='{}approximately {0}'}"
                                                Style="{StaticResource insight}"
                                                Margin="0"
                                                Grid.Column="2"/>
-                                        <TextBlock Text="{Binding LeadTime, Converter={StaticResource TimespanToNextAvailable}}"
+                                            <TextBlock Text="{Binding LeadTime, Converter={StaticResource TimespanToNextAvailable}, StringFormat='{}({0})'}"
                                                Style="{StaticResource insight}"
+                                                       FontStyle="Italic"
                                                Grid.ColumnSpan="3"
                                                Grid.Row="1"
                                                HorizontalAlignment="Right"/>
+                                        </Grid>
                                     </Grid>
+                                    
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -262,5 +281,64 @@
                 </Grid>
             </Grid>
         </ScrollViewer>
+
+        <!--#endregion-->
+        
+        <!--#region Graph, col 2-->
+        
+        <Grid Grid.Column="2" Margin="20,100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="graphGrid">
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Rectangle Fill="{StaticResource materialPrimaryBlueVar}"
+                           Grid.RowSpan="2"
+                           RadiusX="20"
+                           RadiusY="20">
+                </Rectangle>
+                <Border Grid.ColumnSpan="2"></Border>
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="25, 10">
+                    <StackPanel Margin="10, 0">
+                        <TextBlock FontSize="22" Foreground="White" Text="{Binding GraphTitle}"/>
+                        <TextBlock FontSize="14" Foreground="#7CFFFFFF">18 Month Units Sold</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+                <lvc:CartesianChart Name="Chart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="20" Series="{Binding SeriesCollection}" Visibility="{Binding GraphVis}">
+                    <!--<lvc:CartesianChart.Series>
+                        <lvc:LineSeries LineSmoothness="1" StrokeThickness="10" 
+                                DataLabels="True" FontSize="20" Foreground="#6B303030"
+                                Stroke="White" Fill="Transparent" PointGeometrySize="0"/>
+                    </lvc:CartesianChart.Series>-->
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis IsEnabled="False" ShowLabels="True" Labels="{Binding XAxisLabels, UpdateSourceTrigger=PropertyChanged}">
+                            <lvc:Axis.Separator>
+                                <lvc:Separator StrokeThickness="0"/>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Foreground="White" FontSize="14" MinValue="0" LabelFormatter="{Binding ThousandsSeparator}">
+                            <!--<lvc:Axis.Separator>
+                                <lvc:Separator StrokeThickness="1" Stroke="#8EFFFFFF" StrokeDashArray="8" Step="100" />
+                            </lvc:Axis.Separator>-->
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+                <TextBlock Text="Not enough data." 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           Foreground="White"
+                           Grid.ColumnSpan="2" 
+                           Grid.Row="2"
+                           FontSize="25"
+                           Visibility="{Binding NotEnoughDataVis}"
+                           Opacity="0.2"/>
+            </Grid>
+        </Grid>
+
+        <!--#endregion-->
+        
     </Grid>
 </UserControl>

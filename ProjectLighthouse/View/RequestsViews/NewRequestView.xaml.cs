@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -88,5 +89,27 @@ namespace ProjectLighthouse.View
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
 
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(graphGrid.Visibility == Visibility.Visible)
+            {
+                if (mainGrid.ColumnDefinitions[2].ActualWidth < 380)
+                {
+                    graphGrid.Visibility = Visibility.Collapsed;
+                    mainGrid.ColumnDefinitions[2].Width = new(0);
+                    mainGrid.ColumnDefinitions[1].Width = new(1, GridUnitType.Star);
+
+                }
+            }
+            else
+            {
+                if(mainGrid.ColumnDefinitions[1].ActualWidth > (380 + 350))
+                {
+                    graphGrid.Visibility = Visibility.Visible;
+                    mainGrid.ColumnDefinitions[2].Width = new(1, GridUnitType.Star);
+                    mainGrid.ColumnDefinitions[1].Width = GridLength.Auto;
+                }
+            }
+        }
     }
 }

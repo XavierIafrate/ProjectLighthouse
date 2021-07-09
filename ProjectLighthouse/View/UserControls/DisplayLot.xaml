@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" >
+             Background="Transparent" >
     <UserControl.Resources>
         <Style x:Key="text" TargetType="TextBlock">
             <Style.Triggers>
@@ -17,33 +17,50 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Grid Margin="5,0" x:Name="controlGrid">
+    
+    
+    <Grid x:Name="controlGrid">
+        <Rectangle Fill="White" RadiusX="6" RadiusY="6">
+            <Rectangle.Effect>
+                <DropShadowEffect BlurRadius="7" ShadowDepth="2" Direction="220" Color="Black" Opacity="0.3"/>
+            </Rectangle.Effect>
+        </Rectangle>
+        <Grid Margin="8,2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" MaxWidth="350"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
         
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="130"/>
-            <ColumnDefinition Width="90"/>
-            <ColumnDefinition Width="90"/>
-        </Grid.ColumnDefinitions>
-        
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        
-        <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yy HH:mm}'}"/>
-        <TextBlock Text="{Binding Quantity, StringFormat='{}{0:#,##0} pcs'}"
-                   Style="{StaticResource text}"
-                   Grid.Column="1"/>
-        <TextBlock x:Name="HelperText"
-                   Style="{StaticResource text}"
-                   Grid.Column="2"/>
-        
-        <TextBlock Text="{Binding AddedBy, StringFormat='{}{0}'}" Grid.Row="1"/>
-        <TextBlock Text="{Binding MaterialBatch}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
-                   ToolTipService.InitialShowDelay="2000" 
-                   ToolTipService.ShowDuration="10000" 
-                   ToolTipService.BetweenShowDelay="1000" 
-                   ToolTip="{Binding MaterialBatch}"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
 
+            <TextBlock FontSize="14">
+                <Run Text="{Binding Date, StringFormat='{}Recorded at {0:dd/MM/yy HH:mm}'}"/>
+                <Run Text="{Binding AddedBy, StringFormat='{}by {0}'}"/>
+            </TextBlock>
+            <TextBlock Text="{Binding Quantity, StringFormat='{}{0:#,##0} pcs'}"
+                       Style="{StaticResource text}"
+                       Grid.Column="2"
+                       FontSize="16" 
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                       FontWeight="SemiBold"/>
+            <TextBlock x:Name="HelperText"
+                       Style="{StaticResource text}"
+                       Grid.Column="2"
+                       HorizontalAlignment="Right"
+                       Grid.Row="1"/>
+        
+            <TextBlock Text="{Binding MaterialBatch}" Grid.Row="2" Grid.ColumnSpan="1"
+                       Foreground="{StaticResource materialPrimaryBlue}"
+                       FontStyle="Italic"
+                       ToolTipService.InitialShowDelay="2000" 
+                       ToolTipService.ShowDuration="10000" 
+                       ToolTipService.BetweenShowDelay="1000" 
+                       ToolTip="{Binding MaterialBatch}"/>
+        </Grid>
     </Grid>
 </UserControl>

@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class 
+    public class
         ScheduleViewModel : BaseViewModel
     {
         #region Variables
@@ -63,7 +63,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        
+
         #endregion
 
         public ScheduleViewModel()
@@ -121,7 +121,7 @@ namespace ProjectLighthouse.ViewModel
                 if (order.IsComplete)
                     continue;
 
-                CompleteOrder tmpOrder = new() { Order = order, OrderItems = new List<LatheManufactureOrderItem>(), UpdateCommand=UpdateItemCommand };
+                CompleteOrder tmpOrder = new() { Order = order, OrderItems = new List<LatheManufactureOrderItem>(), UpdateCommand = UpdateItemCommand };
 
                 foreach (LatheManufactureOrderItem item in OrderItems)
                     if (item.AssignedMO == order.Name)

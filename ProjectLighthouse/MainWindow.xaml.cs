@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace ProjectLighthouse
 {
@@ -26,16 +25,16 @@ namespace ProjectLighthouse
 
             if (App.currentUser == null)
                 return;
-            
+
             viewModel = Resources["vm"] as MainViewModel;
             viewModel.window = this;
             viewModel.UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
 
             //Squirrel --releasify Lighthouse.1.0.0.nupkg
             AddVersionNumber();
-            #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             CheckForUpdates();
-            #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         private void AddVersionNumber()
@@ -57,10 +56,10 @@ namespace ProjectLighthouse
 
         public void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
-        
+
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
@@ -95,7 +94,7 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            debugButton.Visibility = App.currentUser.UserName=="xav" ? Visibility.Visible : Visibility.Collapsed;
+            debugButton.Visibility = App.currentUser.UserName == "xav" ? Visibility.Visible : Visibility.Collapsed;
             assemblyOrders_button.IsEnabled = App.currentUser.UserRole == "admin";
             BOM_button.IsEnabled = App.currentUser.UserRole == "admin";
             assembly_button.IsEnabled = App.currentUser.UserRole == "admin";

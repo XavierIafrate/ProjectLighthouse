@@ -2,16 +2,13 @@
 using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using ProjectLighthouse.Model;
-using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -64,12 +61,12 @@ namespace ProjectLighthouse.ViewModel
             var dayConfig = Mappers.Xy<ChartModel>()
                            .X(dayModel => dayModel.DateTime.Ticks)
                            .Y(dayModel => dayModel.Value);
-            
+
             ChartModel _dataPoint;
             foreach (Lathe lathe in Lathes)
             {
                 MachineLiveChartModel machineStatsModel = new();
-                List<MachineStatistics> relevantStats = StatsList.Where(n => n.MachineID == lathe.Id).OrderBy(m=>m.DataTime).ToList();
+                List<MachineStatistics> relevantStats = StatsList.Where(n => n.MachineID == lathe.Id).OrderBy(m => m.DataTime).ToList();
                 if (relevantStats.Count == 0)
                     continue;
 
@@ -78,10 +75,10 @@ namespace ProjectLighthouse.ViewModel
                 {
                     new LineSeries()
                     {
-                        Title=lathe.FullName,
+                        Title = lathe.FullName,
                         Values = new ChartValues<ChartModel>(),
-                        LineSmoothness=0,
-                        PointGeometrySize=0
+                        LineSmoothness = 0,
+                        PointGeometrySize = 0
                     }
                 };
 
@@ -91,7 +88,7 @@ namespace ProjectLighthouse.ViewModel
                 var temporalValues = new ChartModel[relevantStats.Count];
                 int i = 0;
 
-                foreach (MachineStatistics stat in relevantStats) 
+                foreach (MachineStatistics stat in relevantStats)
                 {
                     _dataPoint = new(stat.DataTime, stat.PartCountAll);
                     //machineStatsModel.series[0].Values.Add(_dataPoint); // saved 2ms!

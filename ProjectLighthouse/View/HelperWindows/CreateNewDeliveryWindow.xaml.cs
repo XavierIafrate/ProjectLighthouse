@@ -31,7 +31,7 @@ namespace ProjectLighthouse.View
 
         private void GetUndelivered()
         {
-            Lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && !n.IsReject).ToList();
+            Lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && !n.IsReject && n.Quantity > 0).ToList();
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             //List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 

@@ -1,15 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ProjectLighthouse.Model;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Xml;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {

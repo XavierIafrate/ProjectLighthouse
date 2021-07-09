@@ -190,7 +190,7 @@ namespace ProjectLighthouse.ViewModel
 
             DisplayStats = machineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
 
-            if(DisplayStats.DataTime.AddHours(1) < DateTime.Now)
+            if (DisplayStats.DataTime.AddHours(1) < DateTime.Now)
                 LiveInfoVis = Visibility.Collapsed;
         }
         #endregion

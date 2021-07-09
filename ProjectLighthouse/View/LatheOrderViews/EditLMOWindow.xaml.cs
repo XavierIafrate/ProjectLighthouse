@@ -189,7 +189,7 @@ namespace ProjectLighthouse.View
             List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>();
             double totalLengthRequired = 0;
 
-            foreach(LatheManufactureOrderItem item in items)
+            foreach (LatheManufactureOrderItem item in items)
             {
                 TurnedProduct _p = products.Where(n => n.ProductName == item.ProductName).Single();
                 totalLengthRequired += (_p.MajorLength + 2) * item.TargetQuantity;

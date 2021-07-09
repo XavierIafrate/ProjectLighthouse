@@ -37,7 +37,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             List<Lot> Lots = new();
 
             try
-            {     
+            {
                 using (var reader = new StreamReader(path))
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {

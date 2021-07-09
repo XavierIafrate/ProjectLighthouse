@@ -28,6 +28,14 @@ namespace ProjectLighthouse.View
             Lots = lots ?? new List<Lot>();
             InitializeComponent();
 
+            LoadUI();
+
+            
+
+        }
+
+        private void LoadUI()
+        {
             intQtyMade = 0;
             intQtyReject = 0;
             intQtyDelivered = 0;
@@ -63,13 +71,13 @@ namespace ProjectLighthouse.View
             ProductNameTextBlock.Text = Item.ProductName;
             ManufactureOrderTextBlock.Text = Item.AssignedMO;
             SchedulingGrid.Visibility = App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
+            LotsListBox.ItemsSource = null;
             LotsListBox.ItemsSource = Lots;
 
             if (Lots.Count > 0)
                 BatchTextBox.Text = Lots.Last().MaterialBatch;
 
             PopulateCycleTimes();
-
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -260,6 +268,34 @@ namespace ProjectLighthouse.View
                 MessageBox.Show("Invalid quantity", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+        }
+
+        private void EditLotButton_Click(object sender, RoutedEventArgs e)
+        {
+            Lot SelectedLot = LotsListBox.SelectedValue as Lot;
+            EditLotWindow window = new(SelectedLot);
+            window.Owner = Application.Current.MainWindow;
+            window.ShowDialog();
+
+            if (window.SaveExit)
+            {
+                Lots = null;
+                Lots = DatabaseHelper.Read<Lot>().Where(n => n.Order == Item.AssignedMO && n.ProductName == Item.ProductName).ToList();
+                LoadUI();
+            }
+
+        }
+
+        private void LotsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LotsListBox.SelectedValue == null)
+                EditLotButton.IsEnabled = false;
+            else
+            {
+                Lot l = (Lot)LotsListBox.SelectedValue;
+                EditLotButton.IsEnabled = (!l.IsDelivered && l.Date.AddDays(14) > DateTime.Now) || App.currentUser.UserRole == "admin";
+            }
+
         }
     }
 }

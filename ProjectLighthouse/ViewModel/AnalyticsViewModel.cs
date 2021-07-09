@@ -8,10 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -31,8 +28,8 @@ namespace ProjectLighthouse.ViewModel
         public Func<double, string> QuantityFormatter { get; set; }
         public Func<double, string> ThousandPoundFormatter { get; set; }
         private SeriesCollection seriesCollection;
-        public SeriesCollection SeriesCollection 
-        { 
+        public SeriesCollection SeriesCollection
+        {
             get { return seriesCollection; }
             set
             {
@@ -58,15 +55,15 @@ namespace ProjectLighthouse.ViewModel
         public DashboardStats Stats
         {
             get { return stats; }
-            set 
-            { 
+            set
+            {
                 stats = value;
                 Debug.WriteLine($"Stats total parts: {value.TotalPartsMade}");
                 OnPropertyChanged("Stats");
             }
         }
 
-#endregion
+        #endregion
         public AnalyticsViewModel()
         {
             LoadData();
@@ -134,8 +131,8 @@ namespace ProjectLighthouse.ViewModel
             WeekLabels = new string[6];
             for (int i = 0; i < 6; i++) // labels
             {
-                WeekLabels[i] = GetIso8601WeekOfYear(DateTime.Now.AddDays((6-i) * 7 * -1)).ToString();
-                Debug.WriteLine($"Week Num: {WeekLabels[i]}");
+                WeekLabels[i] = GetIso8601WeekOfYear(DateTime.Now.AddDays((6 - i) * 7 * -1)).ToString();
+                //Debug.WriteLine($"Week Num: {WeekLabels[i]}");
             }
 
             List<Lot> recentLots = Lots.Where(n => n.Date.AddDays(7 * 7) > DateTime.Now).ToList();
@@ -172,7 +169,7 @@ namespace ProjectLighthouse.ViewModel
 
             foreach (Lathe lathe in Lathes)
             {
-                List<ValueByWeekNumber> latheDataSet = assortedValues.Where(n => n.MachineID == lathe.Id).OrderBy(x=>x.Week).ToList();
+                List<ValueByWeekNumber> latheDataSet = assortedValues.Where(n => n.MachineID == lathe.Id).OrderBy(x => x.Week).ToList();
                 if (latheDataSet.Count == 0)
                     continue;
 
@@ -180,10 +177,10 @@ namespace ProjectLighthouse.ViewModel
                 {
                     Title = lathe.FullName,
                     Values = new ChartValues<double> { },
-                    ColumnPadding=16
+                    ColumnPadding = 16
                 };
 
-                foreach(string week in WeekLabels)
+                foreach (string week in WeekLabels)
                 {
                     tmpSeries.Values.Add(latheDataSet.Where(l => l.Week.ToString() == week).Sum(m => m.Value));
                 }
@@ -200,7 +197,7 @@ namespace ProjectLighthouse.ViewModel
                     newStats.TotalPartsMadeThisYear += l.Quantity;
 
                 List<TurnedProduct> deliveredProduct = TurnedProducts.Where(n => n.ProductName == l.ProductName).ToList();
-                List<LatheManufactureOrder> assignedOrder = LatheOrders.Where(n => n.Name== l.ProductName).ToList();
+                List<LatheManufactureOrder> assignedOrder = LatheOrders.Where(n => n.Name == l.ProductName).ToList();
                 double price;
                 if (deliveredProduct.Count == 0)
                 {
@@ -228,7 +225,7 @@ namespace ProjectLighthouse.ViewModel
             return newStats;
         }
 
- 
+
 
         public static int GetIso8601WeekOfYear(DateTime time) // shamelessly stolen
         {

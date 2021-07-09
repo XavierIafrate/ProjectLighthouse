@@ -1,7 +1,4 @@
-﻿using ProjectLighthouse.View.UserControls;
-using ProjectLighthouse.ViewModel;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Controls;
 
 namespace ProjectLighthouse.View
 {

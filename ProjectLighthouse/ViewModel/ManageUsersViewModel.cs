@@ -5,12 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -24,8 +20,8 @@ namespace ProjectLighthouse.ViewModel
         public string SelectedRole
         {
             get { return selectedRole; }
-            set 
-            { 
+            set
+            {
                 selectedRole = value;
                 if (SelectedUser == null)
                     return;
@@ -54,8 +50,8 @@ namespace ProjectLighthouse.ViewModel
         public List<User> Users
         {
             get { return users; }
-            set 
-            { 
+            set
+            {
                 users = value;
                 OnPropertyChanged("Users");
             }
@@ -65,17 +61,17 @@ namespace ProjectLighthouse.ViewModel
         public User SelectedUser
         {
             get { return selectedUser; }
-            set 
-            {                     
+            set
+            {
                 selectedUser = value;
-                if(value != null)
+                if (value != null)
                 {
                     if (roles != null && value.UserRole != null)
                         SelectedRole = roles.Where(n => n.ToString() == value.UserRole).Single();
                     if (views != null && value.DefaultView != null)
                         SelectedView = views.Where(n => n.ToString() == (string.IsNullOrEmpty(value.DefaultView) ? "Orders" : value.DefaultView)).Single();
                 }
-                
+
                 OnPropertyChanged("SelectedUser");
             }
         }
@@ -86,8 +82,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility EditControlsVis
         {
             get { return editControlsVis; }
-            set 
-            { 
+            set
+            {
                 editControlsVis = value;
                 editMode = value == Visibility.Visible;
                 OnPropertyChanged("EditControlsVis");
@@ -197,7 +193,7 @@ namespace ProjectLighthouse.ViewModel
             Random rand = new();
             string newPassword = string.Empty;
             for (int i = 0; i <= 4; i++)
-                newPassword += $"{rand.Next(0,9):N0}";
+                newPassword += $"{rand.Next(0, 9):N0}";
 
             SelectedUser.Password = newPassword;
             SaveEdit();
