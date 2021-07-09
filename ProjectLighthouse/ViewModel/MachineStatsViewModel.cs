@@ -43,7 +43,7 @@ namespace ProjectLighthouse.ViewModel
             CardInfo = new();
             LoadDataAsync();
         }
-        
+
         public async void LoadDataAsync()
         {
             await Task.Run(function: () => GetData());
