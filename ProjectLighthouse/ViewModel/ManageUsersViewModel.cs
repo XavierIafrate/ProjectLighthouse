@@ -3,6 +3,7 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,7 +13,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class ManageUsersViewModel : BaseViewModel
     {
-
+        #region Vars
         public List<string> roles { get; set; }
         public List<string> views { get; set; }
 
@@ -106,22 +107,23 @@ namespace ProjectLighthouse.ViewModel
         public SaveUserEditCommand saveCommand { get; set; }
         public deleteUserCommand deleteUserCommand { get; set; }
         public ResetUserPasswordCommand resetPasswordCommand { get; set; }
-
+        #endregion
         public ManageUsersViewModel()
         {
+            Debug.WriteLine("Init: ManageUsersViewModel");
 
-            roles = new();
-            roles.Add("admin");
-            roles.Add("Purchasing");
-            roles.Add("Scheduling");
-            roles.Add("Production");
-            roles.Add("Viewer");
+            roles = new() { "admin", "Purchasing", "Scheduling", "Production", "Viewer" };
+            //roles.Add("admin");
+            //roles.Add("Purchasing");
+            //roles.Add("Scheduling");
+            //roles.Add("Production");
+            //roles.Add("Viewer");
 
-            views = new();
-            views.Add("View Requests");
-            views.Add("Orders");
-            views.Add("Schedule");
-            views.Add("Assembly Orders");
+            views = new() { "View Requests", "Orders", "Schedule", "Assembly Orders" };
+            //views.Add("View Requests");
+            //views.Add("Orders");
+            //views.Add("Schedule");
+            //views.Add("Assembly Orders");
 
             SelectedRole = string.Empty;
             Users = new();

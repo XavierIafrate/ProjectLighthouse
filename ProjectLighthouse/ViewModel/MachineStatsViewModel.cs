@@ -14,6 +14,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class MachineStatsViewModel : BaseViewModel
     {
+        #region Vars
         public List<MachineStatistics> StatsList { get; set; }
         public List<Lathe> Lathes { get; set; }
         public Visibility NoConnectionVis { get; set; }
@@ -32,9 +33,11 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("CardInfo");
             }
         }
+        #endregion
 
         public MachineStatsViewModel()
         {
+            Debug.WriteLine("Init: MachineStatsViewModel");
             NoConnectionVis = Visibility.Hidden;
             StatsVis = Visibility.Visible;
             CardInfo = new();

@@ -15,7 +15,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Assembly
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.CanCreateAssemblyProducts;
+            return App.CurrentUser.CanCreateAssemblyProducts;
         }
 
         public void Execute(object parameter)

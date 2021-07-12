@@ -1,26 +1,27 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel;
+using System.Diagnostics;
 using System.Windows;
 
 namespace ProjectLighthouse
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        public static User currentUser { get; set; }
+        public static User CurrentUser { get; set; }
         public static string ROOT_PATH { get; set; }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            MainWindow Window = new();
+            MainViewModel VM = new() { MainWindow = Window };
+
+            Window.DataContext = VM;
+            Window.viewModel = VM;
+
+            VM.LoginRoutine();
+            Window.Show();
+        }
     }
-
-    //public void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
-    //{
-    //    //log.Fatal("An unexpected application exception occurred", args.Exception);
-
-    //    MessageBox.Show($"An unexpected exception has occurred. {args.Exception}");
-
-    //    // Prevent default unhandled exception processing
-    //    args.Handled = true;
-
-    //    Environment.Exit(0);
-    //}
 }

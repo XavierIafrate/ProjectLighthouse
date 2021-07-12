@@ -16,7 +16,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Assembly
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.CanEditLMOs;
+            return App.CurrentUser.CanEditLMOs;
         }
 
         public void Execute(object parameter)

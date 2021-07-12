@@ -5,6 +5,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
@@ -228,6 +229,7 @@ namespace ProjectLighthouse.ViewModel
 
         public RequestViewModel()
         {
+            Debug.WriteLine("Init: RequestsViewModel");
             Requests = new List<Request>();
             FilteredRequests = new ObservableCollection<Request>();
             ApproveCommand = new ApproveRequestCommand(this);
@@ -236,7 +238,7 @@ namespace ProjectLighthouse.ViewModel
             ExportCommand = new RequestsToCSVCommand(this);
             SelectedRequest = new Request();
 
-            approvalControlsVis = App.currentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
+            approvalControlsVis = App.CurrentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
             GetRequests();
             //SelectedFilter = "Last 14 Days";
 
@@ -251,8 +253,8 @@ namespace ProjectLighthouse.ViewModel
 
             ModifiedVis = (String.IsNullOrEmpty(request.ModifiedBy)) ? Visibility.Collapsed : Visibility.Visible;
 
-            ApprovalControlsVis = (App.currentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
-            EditControlsVis = (App.currentUser.GetFullName() == request.RaisedBy || App.currentUser.CanApproveRequests) ? Visibility.Visible : Visibility.Collapsed;
+            ApprovalControlsVis = (App.CurrentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
+            EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy || App.CurrentUser.CanApproveRequests) ? Visibility.Visible : Visibility.Collapsed;
             DecisionVis = (request.IsDeclined || request.IsAccepted) ? Visibility.Collapsed : Visibility.Visible;
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
             DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
@@ -260,19 +262,19 @@ namespace ProjectLighthouse.ViewModel
 
 
             ProductionCheckboxEnabled = (request.Status == "Pending approval" &&
-                (App.currentUser.UserRole == "Production" ||
-                App.currentUser.UserRole == "admin")
-                && App.currentUser.CanApproveRequests);
+                (App.CurrentUser.UserRole == "Production" ||
+                App.CurrentUser.UserRole == "admin")
+                && App.CurrentUser.CanApproveRequests);
 
             SchedulingCheckboxEnabled = (request.Status == "Pending approval" &&
-                (App.currentUser.UserRole == "Scheduling" ||
-                App.currentUser.UserRole == "admin"));
+                (App.CurrentUser.UserRole == "Scheduling" ||
+                App.CurrentUser.UserRole == "admin"));
 
             DropboxEnabled = (request.Status == "Pending approval" &&
-                (App.currentUser.UserRole == "Scheduling" ||
-                App.currentUser.UserRole == "admin" ||
-                App.currentUser.UserRole == "Production")
-                && App.currentUser.CanApproveRequests);
+                (App.CurrentUser.UserRole == "Scheduling" ||
+                App.CurrentUser.UserRole == "admin" ||
+                App.CurrentUser.UserRole == "Production")
+                && App.CurrentUser.CanApproveRequests);
 
             PurchaseRef = !String.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
         }
@@ -288,7 +290,7 @@ namespace ProjectLighthouse.ViewModel
                 SelectedRequest.POReference = PurchaseRef;
                 DatabaseHelper.Update(targetOrder);
                 SelectedRequest.LastModified = DateTime.Now;
-                SelectedRequest.ModifiedBy = App.currentUser.GetFullName();
+                SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
                 DatabaseHelper.Update(SelectedRequest);
                 MessageBox.Show("Successfully updated " + targetOrder.Name, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -306,7 +308,7 @@ namespace ProjectLighthouse.ViewModel
         public void UpdateRequest()
         {
             SelectedRequest.LastModified = DateTime.Now;
-            SelectedRequest.ModifiedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
+            SelectedRequest.ModifiedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 OnPropertyChanged("SelectedRequest");
@@ -321,7 +323,7 @@ namespace ProjectLighthouse.ViewModel
         public void UpdateRequirements(string notes, int QuantityRequired)
         {
             SelectedRequest.LastModified = DateTime.Now;
-            SelectedRequest.ModifiedBy = App.currentUser.GetFullName();
+            SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
 
             SelectedRequest.Notes = notes;
             SelectedRequest.QuantityRequired = QuantityRequired;
@@ -339,12 +341,12 @@ namespace ProjectLighthouse.ViewModel
 
         public void ApproveRequest()
         {
-            if (selectedRequest.isProductionApproved && selectedRequest.isSchedulingApproved && App.currentUser.CanApproveRequests)
+            if (selectedRequest.isProductionApproved && selectedRequest.isSchedulingApproved && App.CurrentUser.CanApproveRequests)
             {
                 selectedRequest.IsAccepted = true;
                 selectedRequest.IsDeclined = false;
                 selectedRequest.LastModified = DateTime.Now;
-                selectedRequest.ModifiedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
+                selectedRequest.ModifiedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
 
 
                 LMOContructorWindow creationWindow = new LMOContructorWindow(SelectedRequest);
@@ -357,7 +359,7 @@ namespace ProjectLighthouse.ViewModel
                 }
                 else
                 {
-                    selectedRequest.AcceptedBy = App.currentUser.FirstName;
+                    selectedRequest.AcceptedBy = App.CurrentUser.FirstName;
                     selectedRequest.ResultingLMO = creationWindow.constructLMO.Name;
                     selectedRequest.Status = String.Format("Accepted by {0} - {1}", selectedRequest.AcceptedBy, selectedRequest.ResultingLMO);
                 }
@@ -377,7 +379,7 @@ namespace ProjectLighthouse.ViewModel
                 }
                 return;
             }
-            if (!App.currentUser.CanApproveRequests)
+            if (!App.CurrentUser.CanApproveRequests)
             {
                 MessageBox.Show("You do not have permission to authorise requests.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -390,7 +392,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void DeclineRequest()
         {
-            if (!App.currentUser.CanApproveRequests)
+            if (!App.CurrentUser.CanApproveRequests)
             {
                 MessageBox.Show("You do not have permission to decline requests.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
@@ -403,7 +405,7 @@ namespace ProjectLighthouse.ViewModel
             SelectedRequest.IsAccepted = false;
             SelectedRequest.IsDeclined = true;
             SelectedRequest.LastModified = DateTime.Now;
-            SelectedRequest.ModifiedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
+            SelectedRequest.ModifiedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
             selectedRequest.Status = String.Format("Declined - {0}", SelectedRequest.DeclinedReason);
             if (DatabaseHelper.Update(SelectedRequest))
             {
@@ -446,7 +448,7 @@ namespace ProjectLighthouse.ViewModel
                     FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.IsDeclined));
                     break;
                 case "My Requests":
-                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.RaisedBy == App.currentUser.GetFullName()));
+                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.RaisedBy == App.CurrentUser.GetFullName()));
                     break;
             }
             if (FilteredRequests.Count > 0)

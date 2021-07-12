@@ -14,7 +14,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.CanRaiseDelivery;
+            return App.CurrentUser.CanRaiseDelivery;
         }
 
         public event EventHandler CanExecuteChanged;

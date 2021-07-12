@@ -331,7 +331,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 XRect footer = new XRect(offset, page.Height - offset, page.Width - 2 * offset, 20);
                 font = new XFont("Tahoma", 8, XFontStyle.Regular, options);
-                gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", App.currentUser.GetFullName(), DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
+                gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", App.CurrentUser.GetFullName(), DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
                 #endregion
 
 
@@ -698,7 +698,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             XFont font = new XFont("Tahoma", 8, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
             XRect footer = new XRect(gutter, page.Height - gutter, page.Width - 2 * gutter, 20);
-            gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", App.currentUser.GetFullName(), DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
+            gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", App.CurrentUser.GetFullName(), DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
             return doc;
         }
 

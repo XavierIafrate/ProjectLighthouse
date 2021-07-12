@@ -4,6 +4,7 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -17,6 +18,10 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrder> FilteredOrders { get; set; }
         public List<LatheManufactureOrderItem> LMOItems { get; set; }
         public List<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
+        public List<TurnedProduct> Products { get; set; }
+        public List<TurnedProduct> SelectedProducts { get; set; }
+        public List<ProductGroup> ProductGroups { get; set; }
+        public ProductGroup SelectedProductGroup { get; set; }
         public List<MachineStatistics> machineStatistics { get; set; }
         public List<Lot> Lots { get; set; }
 
@@ -27,34 +32,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedLatheManufactureOrder = value;
-
-                if (value == null)
-                {
-                    CardVis = Visibility.Hidden;
-                    return;
-                }
-                else
-                {
-                    CardVis = Visibility.Visible;
-                }
-
-                LoadLMOItems();
-                ModifiedVis = string.IsNullOrEmpty(value.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
-                LiveInfoVis = value.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
-
-                if (LiveInfoVis == Visibility.Visible)
-                    GetLatestStats();
-
-                Lots = DatabaseHelper.Read<Lot>().ToList();
-
-                RunInfoText = !string.IsNullOrEmpty(value.AllocatedMachine) ?
-                    string.Format("Assigned to {0}, starting {1:dddd, MMMM d}{2}",
-                    selectedLatheManufactureOrder.AllocatedMachine,
-                    selectedLatheManufactureOrder.StartDate,
-                    GetDaySuffix(value.StartDate.Day)) :
-                    RunInfoText = "Not scheduled";
-
-                OnPropertyChanged("RunInfoText");
+                LoadOrderCard();
                 OnPropertyChanged("SelectedLatheManufactureOrder");
             }
         }
@@ -74,7 +52,11 @@ namespace ProjectLighthouse.ViewModel
         public string RunInfoText
         {
             get { return runInfoText; }
-            set { runInfoText = value; }
+            set 
+            { 
+                runInfoText = value;
+                OnPropertyChanged("RunInfoText");
+            }
         }
 
         private string selectedFilter;
@@ -158,16 +140,23 @@ namespace ProjectLighthouse.ViewModel
 
         public OrderViewModel()
         {
-            LatheManufactureOrders = new List<LatheManufactureOrder>();
-            FilteredOrders = new List<LatheManufactureOrder>();
-            machineStatistics = new List<MachineStatistics>();
-            LMOItems = new List<LatheManufactureOrderItem>();
-            FilteredLMOItems = new List<LatheManufactureOrderItem>();
-            SelectedLatheManufactureOrder = new LatheManufactureOrder();
-            DisplayStats = new MachineStatistics();
+            Debug.WriteLine("Init: OrderViewModel");
+
+            LatheManufactureOrders = new();
+            FilteredOrders = new();
+            machineStatistics = new();
+            LMOItems = new();
+            FilteredLMOItems = new();
+            SelectedLatheManufactureOrder = new();
+            DisplayStats = new();
+            ProductGroups = new();
+            SelectedProductGroup = new();
+            SelectedProducts = new();
 
             PrintOrderCommand = new PrintCommand(this);
             EditCommand = new EditManufactureOrderCommand(this);
+            ProductGroups = DatabaseHelper.Read<ProductGroup>();
+            Products = DatabaseHelper.Read<TurnedProduct>();
 
             GetLatheManufactureOrders();
             FilterOrders("All Active");
@@ -256,6 +245,55 @@ namespace ProjectLighthouse.ViewModel
         }
 
         #endregion
+
+        private void LoadOrderCard()
+        {
+            if (SelectedLatheManufactureOrder == null)
+            {
+                CardVis = Visibility.Hidden;
+                return;
+            }
+            else
+            {
+                CardVis = Visibility.Visible;
+            }
+
+            LoadLMOItems();
+
+            ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
+            LiveInfoVis = SelectedLatheManufactureOrder.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
+
+            if (LiveInfoVis == Visibility.Visible)
+                GetLatestStats();
+
+            Lots = DatabaseHelper.Read<Lot>().ToList();
+
+            RunInfoText = !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine) ?
+                string.Format($"Assigned to {selectedLatheManufactureOrder.AllocatedMachine}, starting {SelectedLatheManufactureOrder.StartDate:dddd, MMMM d}{GetDaySuffix(SelectedLatheManufactureOrder.StartDate.Day)}") : "Not scheduled";
+
+            LoadProductInfoCard();
+        }
+
+        private void LoadProductInfoCard()
+        {
+            SelectedProducts = new();
+            foreach(LatheManufactureOrderItem item in FilteredLMOItems)
+            {
+                List<TurnedProduct> tmp = Products.Where(n => n.ProductName == item.ProductName).ToList();
+                if (tmp.Count > 0)
+                    SelectedProducts.Add(tmp.First());
+            }
+
+            if(SelectedProducts.Count != 0)
+            {
+                TurnedProduct tmp = SelectedProducts.First();
+                List<ProductGroup> matches = ProductGroups.Where(x=>x.ID == tmp.ProductName.Substring(0, 5) && x.MaterialCode == tmp.Material).ToList();
+                SelectedProductGroup = matches.Count != 0 ? matches.First() : new();
+            }
+
+            OnPropertyChanged("SelectedProductGroup");
+            OnPropertyChanged("SelectedProduct");
+        }
 
         public void PrintSelectedOrder()
         {

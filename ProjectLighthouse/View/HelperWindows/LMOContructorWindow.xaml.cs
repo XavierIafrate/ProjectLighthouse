@@ -162,7 +162,7 @@ namespace ProjectLighthouse.View
         {
             constructLMO.Name = GetNewMOName();
             constructLMO.CreatedAt = DateTime.Now;
-            constructLMO.CreatedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
+            constructLMO.CreatedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
             constructLMO.IsComplete = false;
             constructLMO.Status = "Awaiting scheduling";
             constructLMO.IsReady = false;
@@ -175,7 +175,7 @@ namespace ProjectLighthouse.View
             foreach (LatheManufactureOrderItem item in LMOItems)
             {
                 item.AssignedMO = constructLMO.Name;
-                item.AddedBy = String.Format("{0} {1}", App.currentUser.FirstName, App.currentUser.LastName);
+                item.AddedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
                 item.DateAdded = DateTime.Now;
                 DatabaseHelper.Insert(item);
             };

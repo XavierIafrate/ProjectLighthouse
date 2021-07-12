@@ -10,6 +10,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
+        #region Vars
         private string navText = "Manufacture Orders";
         public string NavText
         {
@@ -32,7 +33,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        private BaseViewModel _selectedViewModel = new OrderViewModel();
+        private BaseViewModel _selectedViewModel;
         public BaseViewModel SelectedViewModel
         {
             get { return _selectedViewModel; }
@@ -40,14 +41,17 @@ namespace ProjectLighthouse.ViewModel
             {
                 _selectedViewModel = value;
                 Debug.WriteLine(String.Format("SelectedViewModel updated to {0}", _selectedViewModel.ToString()));
-                OnPropertyChanged(nameof(SelectedViewModel));
+                OnPropertyChanged("SelectedViewModel");
+                //OnPropertyChanged(nameof(SelectedViewModel));
             }
         }
 
         public ICommand UpdateViewCommand { get; set; }
         public ICommand EditCommand { get; set; }
 
-        public MainWindow window { get; set; }
+        public MainWindow MainWindow { get; set; }
+
+        #endregion
 
         public void EditSettings()
         {
@@ -57,11 +61,17 @@ namespace ProjectLighthouse.ViewModel
 
         public MainViewModel()
         {
+            Debug.WriteLine("Init: MainViewModel");
+
             EditCommand = new EditSettingsCommand(this);
             UpdateViewCommand = new UpdateViewCommand(this);
-            if (App.currentUser == null)
+        }
+
+        public void LoginRoutine()
+        {
+            if (App.CurrentUser == null)
             {
-                LoginWindow login = new LoginWindow();
+                LoginWindow login = new();
                 try
                 {
                     login.ShowDialog();
@@ -78,12 +88,12 @@ namespace ProjectLighthouse.ViewModel
                 }
                 else
                 {
-                    App.currentUser = login.auth_user;
-                    if (window != null)
-                        window.ToggleButton_Click(new ToggleButton() { Content = App.currentUser.DefaultView ?? "Orders" }, new RoutedEventArgs());
+                    App.CurrentUser = login.auth_user;
+                    if (MainWindow != null)
+                        UpdateViewCommand.Execute(App.CurrentUser.DefaultView ?? "Orders");
+                    //MainWindow.ToggleButton_Click(new ToggleButton() { Content =  }, new RoutedEventArgs());
                 }
             }
-
         }
     }
 }

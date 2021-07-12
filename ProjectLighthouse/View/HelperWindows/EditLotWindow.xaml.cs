@@ -44,7 +44,7 @@ namespace ProjectLighthouse.View
             }
 
             EditLot.ModifiedAt = DateTime.Now;
-            EditLot.ModifiedBy = App.currentUser.GetFullName();
+            EditLot.ModifiedBy = App.CurrentUser.GetFullName();
 
             DatabaseHelper.Update<Lot>(EditLot);
 

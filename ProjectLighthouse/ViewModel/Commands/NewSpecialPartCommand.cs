@@ -15,7 +15,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.CanCreateSpecial;
+            return App.CurrentUser.CanCreateSpecial;
         }
 
         public void Execute(object parameter)

@@ -107,7 +107,7 @@ namespace ProjectLighthouse.View
             {
                 Name = GetDeliveryNum(),
                 DeliveryDate = DateTime.Now,
-                DeliveredBy = App.currentUser.GetFullName(),
+                DeliveredBy = App.CurrentUser.GetFullName(),
             };
 
             DatabaseHelper.Insert(newDeliveryNote);

@@ -12,7 +12,7 @@ namespace ProjectLighthouse.View
         public EditSettingsWindow()
         {
             InitializeComponent();
-            user = App.currentUser ?? new User()
+            user = App.CurrentUser ?? new User()
             {
                 FirstName = "Randy",
                 LastName = "Marsh",
@@ -26,7 +26,7 @@ namespace ProjectLighthouse.View
                 DefaultView = "Schedule"
             };
             helperText.Visibility = Visibility.Collapsed;
-            this.DataContext = App.currentUser;
+            this.DataContext = App.CurrentUser;
             foreach (ComboBoxItem item in defaultViewComboBox.Items)
             {
                 Debug.WriteLine($"{item.Content} - {user.DefaultView}");
@@ -42,7 +42,7 @@ namespace ProjectLighthouse.View
         {
             helperText.Visibility = Visibility.Collapsed;
 
-            if (current.Password != App.currentUser.Password)
+            if (current.Password != App.CurrentUser.Password)
             {
                 helperText.Visibility = Visibility.Visible;
                 helperText.Text = "Invalid Password";

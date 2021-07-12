@@ -7,6 +7,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -21,6 +22,7 @@ namespace ProjectLighthouse.ViewModel
         public string PotentialQuantityText { get; set; }
         public string RecommendedStockText { get; set; }
         public string LikelinessText { get; set; }
+        public string RequiredQtyPrefill { get; set; }
 
         private TurnedProduct selectedProduct;
         public TurnedProduct SelectedProduct
@@ -35,6 +37,12 @@ namespace ProjectLighthouse.ViewModel
                 SelectedProductChanged?.Invoke(this, new EventArgs());
                 if (selectedProduct != null)
                 {
+                    //int deficit = SelectedProduct.QuantityInStock - SelectedProduct.QuantityOnSO + SelectedProduct.QuantityOnPO;
+                    //RequiredQtyPrefill = $"{Math.Abs(deficit)}";
+
+                    OnPropertyChanged("RequiredQtyPrefill");
+
+
                     if (!selectedProduct.canBeManufactured())
                     {
                         MessageBox.Show(selectedProduct.ProductName + " cannot be made on the lathes." + Environment.NewLine
@@ -82,6 +90,8 @@ namespace ProjectLighthouse.ViewModel
 
         public NewRequestViewModel()
         {
+            Debug.WriteLine("Init: NewRequestViewModel");
+
             SubmitRequestCommand = new NewRequestCommand(this);
             AddSpecialCommand = new NewSpecialPartCommand(this);
 
@@ -264,7 +274,7 @@ namespace ProjectLighthouse.ViewModel
             newRequest.isSchedulingApproved = false;
             newRequest.IsAccepted = false;
             newRequest.IsDeclined = false;
-            newRequest.RaisedBy = App.currentUser.GetFullName();
+            newRequest.RaisedBy = App.CurrentUser.GetFullName();
             newRequest.DateRaised = DateTime.Now;
             newRequest.Product = selectedProduct.ProductName;
             newRequest.DeclinedReason = "";
@@ -273,7 +283,7 @@ namespace ProjectLighthouse.ViewModel
             if (DatabaseHelper.Insert(newRequest))
             {
                 string message = String.Format("{0} has submitted a request for {1:#,##0}pcs of {2}. {3} ({4}, {5}). Required for {6:d MMMM}.",
-                    App.currentUser.GetFullName(),
+                    App.CurrentUser.GetFullName(),
                     newRequest.QuantityRequired,
                     newRequest.Product,
                     newRequest.Likeliness,
@@ -374,7 +384,7 @@ namespace ProjectLighthouse.ViewModel
                     isSpecialPart = true,
                     CustomerRef = window.customerName,
                     DrawingFilePath = window.filename,
-                    AddedBy = App.currentUser.UserName,
+                    AddedBy = App.CurrentUser.UserName,
                     AddedDate = DateTime.Now,
                     ProductGroup = "Specials"
                 };

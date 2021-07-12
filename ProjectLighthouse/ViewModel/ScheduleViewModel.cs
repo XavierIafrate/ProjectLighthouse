@@ -7,6 +7,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
@@ -68,6 +69,7 @@ namespace ProjectLighthouse.ViewModel
 
         public ScheduleViewModel()
         {
+            Debug.WriteLine("Init: ScheduleViewModel");
             Orders = new ObservableCollection<LatheManufactureOrder>();
             OrderItems = new ObservableCollection<LatheManufactureOrderItem>();
             CompleteOrders = new List<CompleteOrder>();
@@ -108,7 +110,7 @@ namespace ProjectLighthouse.ViewModel
             SelectedTab.Orders = CompleteOrders.Where(n => (n.Order.AllocatedMachine ?? "") == SelectedTab.LatheID).OrderBy(n => n.Order.StartDate).ToList();
             SelectedTab.CalculateTimings();
             PrintButtonVis = SelectedTab.LatheID == "" ? Visibility.Collapsed : Visibility.Visible;
-            AutoScheduleVis = (App.currentUser.UserRole == "admin" || App.currentUser.UserRole == "Scheduling") && SelectedTab.LatheID != ""
+            AutoScheduleVis = (App.CurrentUser.UserRole == "admin" || App.CurrentUser.UserRole == "Scheduling") && SelectedTab.LatheID != ""
                 ? Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -203,7 +205,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 order.Status = !order.IsReady ? "Problem" : "Ready";
                 order.ModifiedAt = DateTime.Now;
-                order.ModifiedBy = App.currentUser.GetFullName();
+                order.ModifiedBy = App.CurrentUser.GetFullName();
             }
 
             order.StartDate = editWindow.SelectedDate;

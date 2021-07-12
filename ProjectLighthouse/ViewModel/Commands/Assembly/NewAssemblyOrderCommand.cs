@@ -15,7 +15,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Assembly
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.CanApproveRequests;
+            return App.CurrentUser.CanApproveRequests;
         }
 
         public void Execute(object parameter)

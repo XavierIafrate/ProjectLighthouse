@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayProductRangeSnippet"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:model="clr-namespace:ProjectLighthouse.Model"
+             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+             mc:Ignorable="d" 
+             d:DesignWidth="800">
+    <Grid>
+        <Rectangle Fill="{StaticResource materialPrimaryBlue}" RadiusX="20" RadiusY="20"/>
+        <Grid Margin="30,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="ProductGroupName" 
+                       Text="[GroupID]"
+                       Foreground="{StaticResource materialOnPrimary}"
+                       FontSize="30"
+                       FontFamily="Tahoma"
+                       FontWeight="SemiBold"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                <TextBlock x:Name="ProductTitle" 
+                           Foreground="{StaticResource materialOnPrimary}"
+                           Text="[Title]"
+                           FontSize="20"
+                           FontFamily="Tahoma"/>
+                <TextBlock x:Name="ProductSubTitle" 
+                           Text=" - [SubTitle]"
+                           Foreground="{StaticResource materialOnPrimary}"
+                           FontSize="20"
+                           FontFamily="Tahoma"/>
+            </StackPanel>
+            <TextBlock x:Name="Breadcrumb" 
+                       Text="[Breadcrumb]"
+                       Foreground="{StaticResource materialOnPrimary}"
+                       FontSize="14"
+                       Grid.ColumnSpan="2"
+                       Grid.Row="2"
+                       FontFamily="Tahoma"
+                       TextWrapping="Wrap"
+                       Padding="0,5,0,0"/>
+
+            <Border Canvas.Left="55"
+                    Canvas.Top="30"
+                    Width="auto"
+                    Height="auto"
+                    Margin="0,10"
+                    VerticalAlignment="Top"
+                    Grid.ColumnSpan="2"
+                    CornerRadius="18"
+                    Grid.Row="3">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.2"/>
+                </Border.Effect>
+                <Border Name="ReceiverColor"
+                        CornerRadius="15">
+                    <Grid>
+                        <Border Name="Mask"
+                                Background="{StaticResource materialPrimaryBlue}"
+                                CornerRadius="20">
+                        </Border>
+                        <StackPanel x:Name="image">
+                            <Image Name="Receiver"
+                                   Source="C:\Users\xavie\Desktop\drawings\P0130.gif"
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <StackPanel.OpacityMask>
+                                <VisualBrush Visual="{Binding ElementName=Mask}" />
+                            </StackPanel.OpacityMask>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Border>
+            <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
+                <ItemsControl x:Name="ProductDisplay" Grid.Row="4">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type model:TurnedProduct}">
+                            <TextBlock Text="{Binding ProductName}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

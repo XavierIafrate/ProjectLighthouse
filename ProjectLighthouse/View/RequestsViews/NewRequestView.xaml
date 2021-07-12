@@ -129,6 +129,7 @@
                         <TextBlock Text="Quantity Required"
                            Style="{StaticResource tipTextStyle}"/>
                         <TextBox x:Name="quantityBox"
+                                 Text="{Binding RequiredQtyPrefill, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                  TextChanged="quantityBox_TextChanged"
                                  PreviewKeyDown="quantityBox_PreviewKeyDown"/>
                         <!--Padding="4,2"

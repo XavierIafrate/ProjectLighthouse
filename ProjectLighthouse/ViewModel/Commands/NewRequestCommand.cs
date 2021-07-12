@@ -16,7 +16,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.CanRaiseRequest;
+            return App.CurrentUser.CanRaiseRequest;
         }
 
         public void Execute(object parameter)

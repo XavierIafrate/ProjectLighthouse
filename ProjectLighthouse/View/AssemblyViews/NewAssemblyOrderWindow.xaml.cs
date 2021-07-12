@@ -319,7 +319,7 @@ namespace ProjectLighthouse.View.AssemblyViews
 
             if (Result == MessageBoxResult.Yes)
             {
-                AssemblyManufactureOrder newOrder = new() { Name = GetNewAssemblyOrderName(), CreatedAt = DateTime.Now, CreatedBy = App.currentUser.GetFullName(), Status = "Problem", ModifiedAt = DateTime.Now, RequiredProduct = selectedProduct };
+                AssemblyManufactureOrder newOrder = new() { Name = GetNewAssemblyOrderName(), CreatedAt = DateTime.Now, CreatedBy = App.CurrentUser.GetFullName(), Status = "Problem", ModifiedAt = DateTime.Now, RequiredProduct = selectedProduct };
                 DatabaseHelper.Insert<AssemblyManufactureOrder>(newOrder);
 
                 List<AssemblyItemExpansion> newOrderItems = new();

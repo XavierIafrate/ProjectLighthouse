@@ -71,7 +71,7 @@ namespace ProjectLighthouse.View
                     break;
             }
 
-            if (!App.currentUser.CanEditLMOs)
+            if (!App.CurrentUser.CanEditLMOs)
             {
                 PORef.IsEnabled = false;
                 //setters.IsEnabled = false;
@@ -95,7 +95,7 @@ namespace ProjectLighthouse.View
         {
             AssignValues();
 
-            order.ModifiedBy = App.currentUser.GetFullName();
+            order.ModifiedBy = App.CurrentUser.GetFullName();
             order.ModifiedAt = DateTime.Now;
 
             DatabaseHelper.Update(order);
@@ -150,8 +150,7 @@ namespace ProjectLighthouse.View
         private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DisplayLMOItems control = sender as DisplayLMOItems;
-            EditLMOItemWindow editWindow = new EditLMOItemWindow(control.LatheManufactureOrderItem,
-                lots.Where(n => n.ProductName == control.LatheManufactureOrderItem.ProductName).ToList());
+            EditLMOItemWindow editWindow = new(control.LatheManufactureOrderItem, lots);
             this.Hide();
             editWindow.ShowDialog();
 
@@ -255,10 +254,10 @@ namespace ProjectLighthouse.View
                 TextRange range = new TextRange(richTextBox.Document.ContentEnd, richTextBox.Document.ContentEnd);
                 range.Text = string.Format("({0:dd/MM/yy HH:mm} - {1}{2}) ",
                     DateTime.Now,
-                    App.currentUser.FirstName[0].ToString().ToUpper(),
-                    App.currentUser.LastName[0].ToString().ToUpper());
-                Debug.WriteLine(App.currentUser.FirstName);
-                Debug.WriteLine(App.currentUser.FirstName[0].ToString());
+                    App.CurrentUser.FirstName[0].ToString().ToUpper(),
+                    App.CurrentUser.LastName[0].ToString().ToUpper());
+                Debug.WriteLine(App.CurrentUser.FirstName);
+                Debug.WriteLine(App.CurrentUser.FirstName[0].ToString());
                 TextPointer caretPos = richTextBox.CaretPosition;
                 richTextBox.CaretPosition = caretPos.DocumentEnd;
             }

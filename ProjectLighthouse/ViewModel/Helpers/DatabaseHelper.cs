@@ -12,7 +12,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static string GetDatabaseFile()
         {
-            return Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile);
+            
+            return Environment.UserName=="xavier" ? @"C:\Users\xavie\Desktop\manufactureDB.db3" : Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile);
         }
 
         public static bool Insert<T>(T item)

@@ -25,13 +25,10 @@ namespace ProjectLighthouse.View
             QuantityAdded = 0;
             SaveExit = false;
             Item = item;
-            Lots = lots ?? new List<Lot>();
+            Lots = lots;
             InitializeComponent();
 
             LoadUI();
-
-            
-
         }
 
         private void LoadUI()
@@ -44,7 +41,7 @@ namespace ProjectLighthouse.View
             {
                 foreach (Lot lot in Lots)
                 {
-                    if (!lot.IsReject)
+                    if (!lot.IsReject && lot.ProductName == Item.ProductName)
                     {
                         intQtyMade += lot.Quantity;
                         if (lot.IsDelivered)
@@ -70,9 +67,9 @@ namespace ProjectLighthouse.View
             DateRequiredPicker.SelectedDate = Item.DateRequired;
             ProductNameTextBlock.Text = Item.ProductName;
             ManufactureOrderTextBlock.Text = Item.AssignedMO;
-            SchedulingGrid.Visibility = App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
+            SchedulingGrid.Visibility = App.CurrentUser.UserRole == "Scheduling" || App.CurrentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
             LotsListBox.ItemsSource = null;
-            LotsListBox.ItemsSource = Lots;
+            LotsListBox.ItemsSource = Lots.Where(n=>n.ProductName == Item.ProductName).ToList();
 
             if (Lots.Count > 0)
                 BatchTextBox.Text = Lots.Last().MaterialBatch;
@@ -108,24 +105,13 @@ namespace ProjectLighthouse.View
 
             int cycleTime = min * 60 + sec;
             Item.CycleTime = cycleTime;
-
-            //if (!Int32.TryParse(QuantityMadeTextbox.Text, out int qtyMade))
-            //{
-            //    MessageBox.Show("Invalid entry to Quantity Made field.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
-            //if (!Int32.TryParse(QuantityRejectTextbox.Text, out int qtyReject))
-            //{
-            //    MessageBox.Show("Invalid entry to Quantity Rejected field", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
             #endregion
 
             Item.RequiredQuantity = reqqty;
             Item.TargetQuantity = tarqty;
             Item.DateRequired = (DateTime)DateRequiredPicker.SelectedDate;
             Item.UpdatedAt = DateTime.Now;
-            Item.UpdatedBy = App.currentUser.GetFullName();
+            Item.UpdatedBy = App.CurrentUser.GetFullName();
 
             DatabaseHelper.Update(Item);
 
@@ -227,7 +213,7 @@ namespace ProjectLighthouse.View
                 {
                     ProductName = Item.ProductName,
                     Order = Item.AssignedMO,
-                    AddedBy = App.currentUser.UserName,
+                    AddedBy = App.CurrentUser.UserName,
                     Quantity = n,
                     Date = DateTime.Now,
                     IsReject = (bool)RejectCheckBox.IsChecked,
@@ -293,7 +279,7 @@ namespace ProjectLighthouse.View
             else
             {
                 Lot l = (Lot)LotsListBox.SelectedValue;
-                EditLotButton.IsEnabled = (!l.IsDelivered && l.Date.AddDays(14) > DateTime.Now) || App.currentUser.UserRole == "admin";
+                EditLotButton.IsEnabled = (!l.IsDelivered && l.Date.AddDays(14) > DateTime.Now) || App.CurrentUser.UserRole == "admin";
             }
 
         }
