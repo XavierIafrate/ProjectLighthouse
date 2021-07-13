@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -188,9 +187,9 @@ namespace ProjectLighthouse.ViewModel
         #region Loading
         private void GetLatheManufactureOrders()
         {
-            var orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
+            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             LatheManufactureOrders.Clear();
-            foreach (var order in orders)
+            foreach (LatheManufactureOrder order in orders)
                 LatheManufactureOrders.Add(order);
         }
 
@@ -220,9 +219,9 @@ namespace ProjectLighthouse.ViewModel
 
         private void GetLatheManufactureOrderItems()
         {
-            var items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
             LMOItems.Clear();
-            foreach (var item in items)
+            foreach (LatheManufactureOrderItem item in items)
             {
                 LMOItems.Add(item);
             }
@@ -236,7 +235,7 @@ namespace ProjectLighthouse.ViewModel
             string selectedMO = SelectedLatheManufactureOrder.Name;
             FilteredLMOItems.Clear();
 
-            foreach (var item in LMOItems)
+            foreach (LatheManufactureOrderItem item in LMOItems)
                 if (item.AssignedMO == selectedMO)
                     FilteredLMOItems.Add(item);
 

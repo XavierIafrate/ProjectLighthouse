@@ -28,16 +28,18 @@ namespace ProjectLighthouse
 
         public void AddVersionNumber()
         {
+            if (App.CurrentUser == null)
+                return;
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-            this.Title += $" v.{versionInfo.FileVersion}";
+            Title += $" v.{versionInfo.FileVersion}";
             File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.CurrentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
         }
 
         public async Task CheckForUpdates()
         {
-            using (var manager = new UpdateManager(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
+            using (UpdateManager manager = new UpdateManager(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
             {
                 await manager.UpdateApp();
             };

@@ -39,7 +39,7 @@ namespace ProjectLighthouse.View
                 originalLot.IsReject == EditLot.IsReject)
             {
                 MessageBox.Show("nothing happened");
-                this.Close();
+                Close();
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace ProjectLighthouse.View
             DatabaseHelper.Update<Lot>(EditLot);
 
             SaveExit = true;
-            this.Close();
+            Close();
         }
 
         private void QuantityTextBox_PreviewKeyDown(object sender, KeyEventArgs e)

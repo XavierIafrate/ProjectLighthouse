@@ -13,7 +13,7 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
             viewModel = Resources["vm"] as DeliveriesViewModel;
-            this.DataContext = viewModel;
+            DataContext = viewModel;
         }
     }
 }

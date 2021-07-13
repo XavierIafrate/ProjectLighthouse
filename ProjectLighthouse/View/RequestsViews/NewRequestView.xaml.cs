@@ -23,7 +23,7 @@ namespace ProjectLighthouse.View
         private void enableSubmit()
         {
             submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate.HasValue &&
-                                     Int32.TryParse(quantityBox.Text, out _) &&
+                                     int.TryParse(quantityBox.Text, out _) &&
                                      productsListBox.SelectedItem != null &&
                                      App.CurrentUser.CanRaiseRequest;
         }

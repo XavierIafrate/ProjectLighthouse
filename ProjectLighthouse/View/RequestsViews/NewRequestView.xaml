@@ -369,16 +369,55 @@
                             MinValue="0" />
                     </lvc:CartesianChart.AxisY>
                 </lvc:CartesianChart>
-                <TextBlock
+                <StackPanel
                     Grid.Row="2"
                     Grid.ColumnSpan="2"
+                    Margin="50"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    FontSize="25"
-                    Foreground="White"
-                    Opacity="0.2"
-                    Text="Not enough data."
-                    Visibility="{Binding NotEnoughDataVis}" />
+                    Visibility="{Binding NotEnoughDataVis}">
+                    <Border Canvas.Left="55"
+                    Canvas.Top="30"
+                    Width="auto"
+                    Height="auto"
+                    Margin="0,10"
+                    VerticalAlignment="Top"
+                    Grid.ColumnSpan="2"
+                    CornerRadius="18"
+                    Grid.Row="3">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.2"/>
+                        </Border.Effect>
+                        <Border Name="ReceiverColor"
+                        CornerRadius="15">
+                            <Grid>
+                                <Border Name="Mask"
+                                Background="{StaticResource materialPrimaryBlue}"
+                                CornerRadius="20">
+                                </Border>
+                                <StackPanel x:Name="image">
+                                    <Image Name="Receiver"
+                                   MaxWidth="400"
+                        gif:ImageBehavior.AnimateInDesignMode="True"
+                        gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
+                        gif:ImageBehavior.RepeatBehavior="3"
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <StackPanel.OpacityMask>
+                                        <VisualBrush Visual="{Binding ElementName=Mask}" />
+                                    </StackPanel.OpacityMask>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="25"
+                        Foreground="White"
+                        Opacity="0.2"
+                        Text="Not enough data." />
+                </StackPanel>
+
             </Grid>
         </Grid>
         <!--#endregion-->

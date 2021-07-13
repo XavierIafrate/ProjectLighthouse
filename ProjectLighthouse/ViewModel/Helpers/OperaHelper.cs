@@ -36,7 +36,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             List<OperaFields> results = new();
 
-            using (var dbfTable = new DbfTable(dbFile, Encoding.UTF8))
+            using (DbfTable dbfTable = new DbfTable(dbFile, Encoding.UTF8))
             {
                 DbfHeader header = dbfTable.Header;
                 Debug.WriteLine($"{header.RecordCount} in Automotion CNAME table.");
@@ -47,7 +47,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_ONORDER").Single());
                 int iSell = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_SELL").Single());
 
-                var dbfRecord = new DbfRecord(dbfTable);
+                DbfRecord dbfRecord = new DbfRecord(dbfTable);
 
                 while (dbfTable.Read(dbfRecord))
                 {

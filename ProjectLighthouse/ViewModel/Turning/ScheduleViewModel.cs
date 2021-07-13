@@ -92,15 +92,15 @@ namespace ProjectLighthouse.ViewModel
         private void ReadOrders()
         {
             // Get Orders
-            var orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList().Where(n => n.IsComplete != true);
+            IEnumerable<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList().Where(n => n.IsComplete != true);
             Orders.Clear();
-            foreach (var order in orders)
+            foreach (LatheManufactureOrder order in orders)
                 Orders.Add(order);
 
             // Get Order Items
-            var items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
             OrderItems.Clear();
-            foreach (var item in items)
+            foreach (LatheManufactureOrderItem item in items)
                 OrderItems.Add(item);
         }
 
@@ -168,7 +168,7 @@ namespace ProjectLighthouse.ViewModel
 
             public void CalculateTimings()
             {
-                TotalTime = (int)0;
+                TotalTime = 0;
                 BookedTo = DateTime.MinValue;
                 DateTime firstItemStarts = DateTime.MaxValue;
 

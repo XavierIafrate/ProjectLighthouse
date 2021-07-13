@@ -6,10 +6,9 @@
     xmlns:local="clr-namespace:ProjectLighthouse"
     xmlns:views="clr-namespace:ProjectLighthouse.View"
     xmlns:vms="clr-namespace:ProjectLighthouse.ViewModel">
-    <!--  StartupUri="MainWindow.xaml"  -->
+
     <Application.Resources>
 
-        <FontFamily x:Key="ProximaNova">pack://application:,,,/Resources/Font/proximanova.ttf#Proxima Nova</FontFamily>
         <!--#region Colours-->
         <SolidColorBrush x:Key="materialPrimary" Color="#6200EE" />
         <SolidColorBrush x:Key="materialPrimaryVar" Color="#3700B3" />
@@ -99,8 +98,9 @@
 
         <Style x:Key="windowTitleTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource materialOnBackground}" />
-            <Setter Property="FontSize" Value="35" />
-            <Setter Property="Margin" Value="0,0,20,25" />
+            <Setter Property="FontSize" Value="25" />
+            <Setter Property="Margin" Value="0,0,0,20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
         <Style x:Key="ghostTextStyle" TargetType="TextBlock">
@@ -223,41 +223,9 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <!--<Style.Triggers>
-                <Trigger Property="Orientation" Value="Horizontal">
-
-            -->
-            <!--  Rotate the ScrollBar from Vertical to Horizontal  -->
-            <!--
-                    <Setter Property="LayoutTransform" TargetName="ScrollBarThumb">
-                        <Setter.Value>
-                            <RotateTransform Angle="90"/>
-                        </Setter.Value>
-                    </Setter>
-
-            -->
-            <!--  Change Track Orientation back to Vertical  -->
-            <!--<Setter TargetName="PART_Track" Property="Orientation" Value="Vertical"/>
-                    <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="false"/>-->
-
-            <!--  Change the commands to do Horizontal commands  -->
-            <!--<Setter Property="Command" Value="ScrollBar.LineRightCommand" TargetName="DecreaseRepeat"/>
-                    <Setter Property="Command" Value="ScrollBar.LineLeftCommand" TargetName="IncreaseRepeat"/>
-                    <Setter Property="Command" Value="ScrollBar.PageLeftCommand" TargetName="PageDown"/>
-                    <Setter Property="Command" Value="ScrollBar.PageRightCommand" TargetName="PageUp"/>-->
-            <!--
-
-                </Trigger>
-            </Style.Triggers>-->
         </Style>
 
         <Style TargetType="{x:Type PasswordBox}">
-            <!--<Setter Property="BorderBrush" Value="{StaticResource materialPrimary}"/>
-            <Setter Property="BorderThickness" Value="3"/>
-            <Setter Property="MaxLength" Value="30"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="5"/>-->
             <Setter Property="Padding" Value="4,2" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="{StaticResource materialPrimary}" />
@@ -333,11 +301,6 @@
             </Setter>
         </Style>
 
-        <!--<Style x:Key="DatePickerCalendarStyle"
-       TargetType="{x:Type Calendar}"
-       BasedOn="{StaticResource {x:Type Calendar}}" />-->
-
-
         <Style TargetType="{x:Type DatePicker}">
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="FontSize" Value="14" />
@@ -348,7 +311,6 @@
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Margin" Value="4,2" />
         </Style>
-
 
         <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">
             <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -568,6 +530,40 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="{StaticResource materialPrimaryBlue}" />
+                    <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="LightGray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SubtleGreenButtonTemplate" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreen}" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontStyle" Value="Italic" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Height="18"
+                            Padding="10,0"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="9">
+                            <ContentPresenter
+                                Margin="0,0,0,1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}" />
                     <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">

@@ -119,7 +119,7 @@ namespace ProjectLighthouse.ViewModel
             newStats.TotalLots = Lots.Count;
             newStats.DeliveredLots = Lots.Where(n => n.IsDelivered).ToList().Count;
 
-            var dayConfig = Mappers.Xy<ChartModel>()
+            CartesianMapper<ChartModel> dayConfig = Mappers.Xy<ChartModel>()
                            .X(dayModel => dayModel.DateTime.Ticks)
                            .Y(dayModel => dayModel.Value);
 
@@ -317,7 +317,7 @@ namespace ProjectLighthouse.ViewModel
 
                 OverallTime += (sRunning + sSetting + sBreakdown + sIdle + sOffline);
 
-                var converter = new BrushConverter();
+                BrushConverter converter = new BrushConverter();
                 foreach (StackedRowSeries state in temporal)
                 {
 
@@ -387,8 +387,8 @@ namespace ProjectLighthouse.ViewModel
 
             public ChartModel(DateTime dateTime, int value)
             {
-                this.DateTime = dateTime;
-                this.Value = value;
+                DateTime = dateTime;
+                Value = value;
             }
         }
 
@@ -400,9 +400,9 @@ namespace ProjectLighthouse.ViewModel
 
             public ValueByWeekNumber(double value, string machine, int week)
             {
-                this.Value = value;
-                this.MachineID = machine;
-                this.Week = week;
+                Value = value;
+                MachineID = machine;
+                Week = week;
             }
         }
         #endregion

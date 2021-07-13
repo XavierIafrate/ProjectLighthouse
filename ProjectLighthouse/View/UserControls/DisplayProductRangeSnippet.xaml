@@ -61,7 +61,7 @@
                     CornerRadius="18"
                     Grid.Row="3">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.2"/>
+                    <DropShadowEffect BlurRadius="50" ShadowDepth="10" Direction="220" Color="Black" Opacity="0.2"/>
                 </Border.Effect>
                 <Border Name="ReceiverColor"
                         CornerRadius="15">

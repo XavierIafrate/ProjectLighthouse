@@ -47,8 +47,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 #region Init parameters
                 //Debug
-                var brush = new XSolidBrush(XColor.FromArgb(120, 255, 0, 0));
-                var bluebrush = new XSolidBrush(XColor.FromArgb(120, 0, 0, 255));
+                XSolidBrush brush = new XSolidBrush(XColor.FromArgb(120, 255, 0, 0));
+                XSolidBrush bluebrush = new XSolidBrush(XColor.FromArgb(120, 0, 0, 255));
 
                 // Init
                 PdfPage page = document.AddPage();
@@ -89,11 +89,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 #endregion
 
                 #region Metadata
-                double y = (double)200; // for iterating down the page
-                double col_1_x_parameter = page.Width.Value * ((double)1 / (double)10); // two col arrangement
-                double col_1_x_value = page.Width.Value * ((double)3 / (double)10);
-                double col_2_x_parameter = page.Width.Value * ((double)5 / (double)10);
-                double col_2_x_value = page.Width.Value * ((double)7 / (double)10);
+                double y = 200; // for iterating down the page
+                double col_1_x_parameter = page.Width.Value * (1 / (double)10); // two col arrangement
+                double col_1_x_value = page.Width.Value * (3 / (double)10);
+                double col_2_x_parameter = page.Width.Value * (5 / (double)10);
+                double col_2_x_value = page.Width.Value * (7 / (double)10);
 
                 XFont parameterFont = new XFont("Tahoma", 10, XFontStyle.Bold, options);
                 XFont valueFont = new XFont("Tahoma", 10, XFontStyle.Regular, options);
@@ -126,7 +126,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 gfx.DrawString(order.AllocatedSetter ?? "n/a", valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
 
                 //Second Column
-                y = (double)200;
+                y = 200;
                 parameterRect = new XRect(col_2_x_parameter, y, col_2_x_value - col_2_x_parameter, 18);
                 valueRect = new XRect(col_2_x_value, y, page.Width.Value * 0.9 - col_2_x_value, 18);
 
@@ -162,7 +162,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 gfx.DrawString("ORDER DETAILS", font, XBrushes.Black, subtitleRect, XStringFormats.Center);
 
                 y = 320;
-                int i = (int)1;
+                int i = 1;
                 font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
 
                 XRect RowNumCol = new XRect(0, y, 30, 20);
@@ -202,7 +202,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
 
-                foreach (var item in items)
+                foreach (LatheManufactureOrderItem item in items)
                 {
                     RowNumCol.Y = y;
                     ProductNameCol.Y = y;
@@ -350,8 +350,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 #region Init parameters
                 //Debug
-                var brush = new XSolidBrush(XColor.FromArgb(120, 255, 0, 0));
-                var bluebrush = new XSolidBrush(XColor.FromArgb(120, 0, 0, 255));
+                XSolidBrush brush = new XSolidBrush(XColor.FromArgb(120, 255, 0, 0));
+                XSolidBrush bluebrush = new XSolidBrush(XColor.FromArgb(120, 0, 0, 255));
 
                 // Init
                 PdfPage page = document.AddPage();
@@ -420,7 +420,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 font = new XFont("Tahoma", 16, XFontStyle.Bold, options);
                 gfx.DrawString("DELIVERY DETAILS", font, XBrushes.Black, subtitleRect, XStringFormats.Center);
 
-                int y = (int)320;
+                int y = 320;
                 font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
 
                 XRect RowNumCol = new XRect(0, y, 40, 20);
@@ -458,7 +458,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 barcode.StartChar = '*';
                 barcode.EndChar = '*';
 
-                foreach (var deliveryItem in deliveryItems)
+                foreach (DeliveryItem deliveryItem in deliveryItems)
                 {
 
                     if (i % 2 == 0)

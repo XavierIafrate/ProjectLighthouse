@@ -6,11 +6,9 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -21,18 +19,18 @@ namespace ProjectLighthouse.ViewModel
         public Request NewRequest
         {
             get { return newRequest; }
-            set 
-            { 
+            set
+            {
                 newRequest = value;
                 OnPropertyChanged("NewRequest");
             }
         }
 
-//        var image = new BitmapImage();
-//        image.BeginInit();
-//image.UriSource = new Uri(fileName);
-//        image.EndInit();
-//ImageBehavior.SetAnimatedSource(img, image);
+        //        var image = new BitmapImage();
+        //        image.BeginInit();
+        //image.UriSource = new Uri(fileName);
+        //        image.EndInit();
+        //ImageBehavior.SetAnimatedSource(img, image);
 
 
         public List<TurnedProduct> TurnedProducts { get; set; }
@@ -124,7 +122,7 @@ namespace ProjectLighthouse.ViewModel
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
             Snippets = new List<MachineInfoSnippet>();
 
-            foreach (var lathe in lathes)
+            foreach (Lathe lathe in lathes)
             {
                 MachineInfoSnippet tmpSnippet = new()
                 {
@@ -140,15 +138,15 @@ namespace ProjectLighthouse.ViewModel
 
         private static TimeSpan GetMachineLeadTime(string MachineID)
         {
-            int totalTime = (int)0;
+            int totalTime = 0;
             DateTime earliestStart = DateTime.MaxValue;
 
-            var orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.AllocatedMachine == MachineID && !n.IsComplete).ToList();
-            var items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.AllocatedMachine == MachineID && !n.IsComplete).ToList();
+            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
-            foreach (var order in orders)
+            foreach (LatheManufactureOrder order in orders)
             {
-                foreach (var item in items)
+                foreach (LatheManufactureOrderItem item in items)
                 {
                     if (order.Name == item.AssignedMO)
                         totalTime += item.CycleTime * item.TargetQuantity;
@@ -160,11 +158,11 @@ namespace ProjectLighthouse.ViewModel
 
         private void PopulateComboBox()
         {
-            var products = DatabaseHelper.Read<TurnedProduct>().ToList();
+            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().ToList();
             TurnedProducts.Clear();
             Families.Clear();
 
-            foreach (var product in products)
+            foreach (TurnedProduct product in products)
             {
                 TurnedProducts.Add(product);
                 if (!product.isSpecialPart)
@@ -222,7 +220,7 @@ namespace ProjectLighthouse.ViewModel
 
             XAxisLabels = labels.OrderBy(q => q).ToArray();
             SeriesCollection = new();
-            var converter = new System.Windows.Media.BrushConverter();
+            System.Windows.Media.BrushConverter converter = new System.Windows.Media.BrushConverter();
 
             LineSeries _series = new()
             {
@@ -298,7 +296,7 @@ namespace ProjectLighthouse.ViewModel
                     string message = $"{App.CurrentUser.GetFullName()} has submitted a request for {newRequest.QuantityRequired:#,##0}pcs of {newRequest.Product}. {newRequest.Likeliness} ({RecommendedStockText}, {PotentialQuantityText}). Required for {newRequest.DateRequired:d MMMM}.";
                     SMSHelper.SendText("+447979606705", message);
                 }
-                
+
                 MessageBox.Show("Your request has been submitted", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 ClearScreen();
                 result = true;

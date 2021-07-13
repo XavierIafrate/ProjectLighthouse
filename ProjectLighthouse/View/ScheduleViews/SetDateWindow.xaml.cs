@@ -39,7 +39,7 @@ namespace ProjectLighthouse.View
             SelectedDate.AddHours(8);
             AllocatedMachine = machine.Text;
             SaveExit = true;
-            this.Close();
+            Close();
         }
     }
 }

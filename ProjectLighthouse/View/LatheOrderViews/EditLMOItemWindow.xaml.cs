@@ -116,7 +116,7 @@ namespace ProjectLighthouse.View
             DatabaseHelper.Update(Item);
 
             //Update master cycle time record
-            var product = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductName == Item.ProductName).ToList();
+            List<TurnedProduct> product = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductName == Item.ProductName).ToList();
             //should return only one!
             if (product != null)
             {
@@ -135,7 +135,7 @@ namespace ProjectLighthouse.View
                 MessageBox.Show("Failed to update product record.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             SaveExit = true;
-            this.Close();
+            Close();
         }
 
         private void PopulateCycleTimes()
@@ -150,7 +150,7 @@ namespace ProjectLighthouse.View
 
         private void CalculateCycleTime()
         {
-            var bc = new BrushConverter();
+            BrushConverter bc = new BrushConverter();
 
             if (Int32.TryParse(CycleTime_Min.Text, out int min))
             {

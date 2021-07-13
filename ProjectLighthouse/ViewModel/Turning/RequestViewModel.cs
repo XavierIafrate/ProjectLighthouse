@@ -281,7 +281,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void UpdateOrderPurchaseRef()
         {
-            var orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.Name == SelectedRequest.ResultingLMO).ToList();
+            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.Name == SelectedRequest.ResultingLMO).ToList();
 
             if (orders != null)
             {

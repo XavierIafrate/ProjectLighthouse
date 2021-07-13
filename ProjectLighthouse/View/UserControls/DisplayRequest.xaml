@@ -22,7 +22,7 @@
                        FontSize="18"
                     FontWeight="Bold"/>
             <TextBlock x:Name="qtyTextBlock">
-                <Run Text="{Binding QuantityRequired, FallbackValue='0'}"/>
+                <Run Text="{Binding QuantityRequired, FallbackValue='0', StringFormat='{}{0:#,##0}'}"/>
                 <Run Text="pcs required"/>
             </TextBlock>
             <TextBlock Foreground="{StaticResource materialOnBackground}"

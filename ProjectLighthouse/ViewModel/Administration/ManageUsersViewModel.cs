@@ -105,7 +105,7 @@ namespace ProjectLighthouse.ViewModel
 
         public EditUserCommand editCommand { get; set; }
         public SaveUserEditCommand saveCommand { get; set; }
-        public deleteUserCommand deleteUserCommand { get; set; }
+        public DeleteUserCommand deleteUserCommand { get; set; }
         public ResetUserPasswordCommand resetPasswordCommand { get; set; }
         #endregion
         public ManageUsersViewModel()
@@ -113,17 +113,7 @@ namespace ProjectLighthouse.ViewModel
             Debug.WriteLine("Init: ManageUsersViewModel");
 
             roles = new() { "admin", "Purchasing", "Scheduling", "Production", "Viewer" };
-            //roles.Add("admin");
-            //roles.Add("Purchasing");
-            //roles.Add("Scheduling");
-            //roles.Add("Production");
-            //roles.Add("Viewer");
-
             views = new() { "View Requests", "Orders", "Schedule", "Assembly Orders" };
-            //views.Add("View Requests");
-            //views.Add("Orders");
-            //views.Add("Schedule");
-            //views.Add("Assembly Orders");
 
             SelectedRole = string.Empty;
             Users = new();
@@ -191,7 +181,6 @@ namespace ProjectLighthouse.ViewModel
 
         public void ResetPassword()
         {
-            //string newPassword = new Random().Next()
             Random rand = new();
             string newPassword = string.Empty;
             for (int i = 0; i <= 4; i++)
@@ -223,7 +212,7 @@ namespace ProjectLighthouse.ViewModel
                 static string DomainMapper(Match match)
                 {
                     // Use IdnMapping class to convert Unicode domain names.
-                    var idn = new IdnMapping();
+                    IdnMapping idn = new();
 
                     // Pull out and process domain name (throws ArgumentException on invalid)
                     string domainName = idn.GetAscii(match.Groups[2].Value);
