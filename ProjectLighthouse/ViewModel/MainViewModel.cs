@@ -3,7 +3,6 @@ using ProjectLighthouse.ViewModel.Commands;
 using System;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
@@ -53,9 +52,9 @@ namespace ProjectLighthouse.ViewModel
 
         #endregion
 
-        public void EditSettings()
+        public static void EditSettings()
         {
-            EditSettingsWindow window = new EditSettingsWindow();
+            EditSettingsWindow window = new();
             window.ShowDialog();
         }
 

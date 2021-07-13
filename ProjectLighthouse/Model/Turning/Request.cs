@@ -17,15 +17,15 @@ namespace ProjectLighthouse.Model
         public string ModifiedBy { get; set; }
         public DateTime LastModified { get; set; }
 
-        public bool isSchedulingApproved { get; set; }
-        public bool isProductionApproved { get; set; }
-        public bool IsDeclined { get; set; }
-        public bool IsAccepted { get; set; }
+        public bool isSchedulingApproved { get; set; } = false;
+        public bool isProductionApproved { get; set; } = false;
+        public bool IsDeclined { get; set; } = false;
+        public bool IsAccepted { get; set; } = false;
         public string AcceptedBy { get; set; }
 
-        public string DeclinedReason { get; set; }
+        public string DeclinedReason { get; set; } = "";
         public string ResultingLMO { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = "Pending approval";
         public string Likeliness { get; set; }
         public string Notes { get; set; }
     }

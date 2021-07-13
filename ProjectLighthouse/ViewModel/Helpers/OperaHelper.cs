@@ -59,10 +59,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     if (!nameLookup.Contains(name))
                         continue;
 
-                    int.TryParse(dbfRecord.Values[iSalesOrder].ToString(), out int SalesOrder);
-                    int.TryParse(dbfRecord.Values[iStockQuantity].ToString(), out int Stock);
-                    int.TryParse(dbfRecord.Values[iPurchaseOrder].ToString(), out int OnOrder);
-                    int.TryParse(dbfRecord.Values[iSell].ToString(), out int Sell);
+                    _ = int.TryParse(dbfRecord.Values[iSalesOrder].ToString(), out int SalesOrder);
+                    _ = int.TryParse(dbfRecord.Values[iStockQuantity].ToString(), out int Stock);
+                    _ = int.TryParse(dbfRecord.Values[iPurchaseOrder].ToString(), out int OnOrder);
+                    _ = int.TryParse(dbfRecord.Values[iSell].ToString(), out int Sell);
 
                     SalesOrder /= 100;
                     Stock /= 100;
@@ -83,7 +83,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
 
-            foreach(OperaFields r in results)
+            foreach (OperaFields r in results)
             {
                 TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
                 if (productRecord == null)

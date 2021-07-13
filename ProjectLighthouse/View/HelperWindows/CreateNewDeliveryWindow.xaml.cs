@@ -39,16 +39,20 @@ namespace ProjectLighthouse.View
             filteredUndeliveredItems.Clear();
             itemsOnNewNote.Clear();
 
-            string _POref = String.Empty;
-            foreach (var lot in Lots)
+            string _POref = string.Empty;
+            foreach (Lot lot in Lots)
             {
-                foreach (var order in orders)
+                foreach (LatheManufactureOrder order in orders)
                 {
                     if (order.Name == lot.Order)
                     {
                         _POref = order.POReference;
                     }
                 }
+
+                //if (string.IsNullOrWhiteSpace(_POref))
+                //    continue;
+
                 allUndeliveredItems.Add(new DeliveryItem()
                 {
                     ItemManufactureOrderNumber = lot.Order,
@@ -67,8 +71,7 @@ namespace ProjectLighthouse.View
 
         private void remButton_Click(object sender, RoutedEventArgs e)
         {
-            DeliveryItem move_item = deliveryList.SelectedValue as DeliveryItem;
-            if (move_item == null)
+            if (deliveryList.SelectedValue is not DeliveryItem move_item)
                 return;
             itemsOnNewNote.Remove(move_item);
             filteredUndeliveredItems.Add(move_item);
@@ -83,9 +86,15 @@ namespace ProjectLighthouse.View
                 return;
             }
 
-            DeliveryItem move_item = undeliveredList.SelectedValue as DeliveryItem;
-            if (move_item == null)
+
+            if (undeliveredList.SelectedValue is not DeliveryItem move_item)
                 return;
+
+            if (string.IsNullOrWhiteSpace(move_item.PurchaseOrderReference))
+            {
+                MessageBox.Show("The associated order requires a Purchase Order reference to proceed.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             itemsOnNewNote.Add(move_item);
             filteredUndeliveredItems.Remove(move_item);
             RefreshLists();
@@ -93,7 +102,7 @@ namespace ProjectLighthouse.View
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -103,7 +112,7 @@ namespace ProjectLighthouse.View
                 MessageBox.Show("No items on delivery!", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            DeliveryNote newDeliveryNote = new DeliveryNote()
+            DeliveryNote newDeliveryNote = new()
             {
                 Name = GetDeliveryNum(),
                 DeliveryDate = DateTime.Now,
@@ -114,7 +123,7 @@ namespace ProjectLighthouse.View
 
             List<LatheManufactureOrderItem> orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
-            foreach (var item in itemsOnNewNote)
+            foreach (DeliveryItem item in itemsOnNewNote)
             {
                 item.AllocatedDeliveryNote = newDeliveryNote.Name;
 
@@ -130,7 +139,7 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Insert(item);
             }
             SaveExit = true;
-            this.Close();
+            Close();
         }
 
         private void RefreshLists() // bodge
@@ -144,11 +153,11 @@ namespace ProjectLighthouse.View
             deliveryList.ItemsSource = itemsOnNewNote;
         }
 
-        private string GetDeliveryNum()
+        private static string GetDeliveryNum()
         {
             List<DeliveryNote> deliveryNotes = DatabaseHelper.Read<DeliveryNote>().ToList();
 
-            int nOrders = deliveryNotes.Count();
+            int nOrders = deliveryNotes.Count;
             string strOrderNum = Convert.ToString(nOrders + 1);
             int orderNumLen = strOrderNum.Length;
             const string blank = "DN00000";

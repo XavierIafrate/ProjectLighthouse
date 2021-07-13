@@ -19,9 +19,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            LMOConstructionDisplayProducts control = d as LMOConstructionDisplayProducts;
-
-            if (control == null)
+            if (d is not LMOConstructionDisplayProducts control)
                 return;
 
             control.DataContext = control.Product;

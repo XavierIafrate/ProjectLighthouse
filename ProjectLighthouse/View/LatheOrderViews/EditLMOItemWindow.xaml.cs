@@ -69,7 +69,7 @@ namespace ProjectLighthouse.View
             ManufactureOrderTextBlock.Text = Item.AssignedMO;
             SchedulingGrid.Visibility = App.CurrentUser.UserRole == "Scheduling" || App.CurrentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
             LotsListBox.ItemsSource = null;
-            LotsListBox.ItemsSource = Lots.Where(n=>n.ProductName == Item.ProductName).ToList();
+            LotsListBox.ItemsSource = Lots.Where(n => n.ProductName == Item.ProductName).ToList();
 
             if (Lots.Count > 0)
                 BatchTextBox.Text = Lots.Last().MaterialBatch;
@@ -209,7 +209,7 @@ namespace ProjectLighthouse.View
 
             if (Int32.TryParse(QuantityNewLotTextBox.Text, out int n))
             {
-                Lot newLot = new Lot()
+                Lot newLot = new()
                 {
                     ProductName = Item.ProductName,
                     Order = Item.AssignedMO,

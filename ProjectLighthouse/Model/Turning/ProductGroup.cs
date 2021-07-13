@@ -5,7 +5,7 @@ namespace ProjectLighthouse.Model
     public class ProductGroup
     {
         [PrimaryKey]
-        public string ID { get; set; }        
+        public string ID { get; set; }
         public string MaterialCode { get; set; }
 
         // User facing

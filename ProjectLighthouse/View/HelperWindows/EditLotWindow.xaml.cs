@@ -34,7 +34,7 @@ namespace ProjectLighthouse.View
         {
             EditLot.IsReject = (bool)RejectCheckBox.IsChecked;
 
-            if(originalLot.Quantity == EditLot.Quantity && 
+            if (originalLot.Quantity == EditLot.Quantity &&
                 originalLot.MaterialBatch == EditLot.MaterialBatch &&
                 originalLot.IsReject == EditLot.IsReject)
             {

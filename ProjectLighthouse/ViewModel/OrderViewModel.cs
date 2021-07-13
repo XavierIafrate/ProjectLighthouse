@@ -52,8 +52,8 @@ namespace ProjectLighthouse.ViewModel
         public string RunInfoText
         {
             get { return runInfoText; }
-            set 
-            { 
+            set
+            {
                 runInfoText = value;
                 OnPropertyChanged("RunInfoText");
             }
@@ -277,17 +277,17 @@ namespace ProjectLighthouse.ViewModel
         private void LoadProductInfoCard()
         {
             SelectedProducts = new();
-            foreach(LatheManufactureOrderItem item in FilteredLMOItems)
+            foreach (LatheManufactureOrderItem item in FilteredLMOItems)
             {
                 List<TurnedProduct> tmp = Products.Where(n => n.ProductName == item.ProductName).ToList();
                 if (tmp.Count > 0)
                     SelectedProducts.Add(tmp.First());
             }
 
-            if(SelectedProducts.Count != 0)
+            if (SelectedProducts.Count != 0)
             {
                 TurnedProduct tmp = SelectedProducts.First();
-                List<ProductGroup> matches = ProductGroups.Where(x=>x.ID == tmp.ProductName.Substring(0, 5) && x.MaterialCode == tmp.Material).ToList();
+                List<ProductGroup> matches = ProductGroups.Where(x => x.ID == tmp.ProductName.Substring(0, 5) && x.MaterialCode == tmp.Material).ToList();
                 SelectedProductGroup = matches.Count != 0 ? matches.First() : new();
             }
 
