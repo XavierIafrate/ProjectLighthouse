@@ -4,8 +4,8 @@
              xmlns:local="clr-namespace:ProjectLighthouse"
              xmlns:views="clr-namespace:ProjectLighthouse.View"
              xmlns:AssemblyViews="clr-namespace:ProjectLighthouse.View.AssemblyViews"
-             xmlns:vms="clr-namespace:ProjectLighthouse.ViewModel"
-             StartupUri="MainWindow.xaml">
+             xmlns:vms="clr-namespace:ProjectLighthouse.ViewModel">
+    <!--StartupUri="MainWindow.xaml"-->
     <Application.Resources>
 
         <FontFamily x:Key="ProximaNova">pack://application:,,,/Resources/Font/proximanova.ttf#Proxima Nova</FontFamily>

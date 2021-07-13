@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProjectLighthouse"
         xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
         mc:Ignorable="d"
-        Title="Project Lighthouse" Height="700" Width="1100"
+        Title="Project Lighthouse" Height="849" Width="1100"
         MinHeight="700"
         MinWidth="1100"
         MaxWidth="2000"
@@ -14,13 +14,12 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         Loaded="Window_Loaded"
+        KeyDown="Window_KeyDown"
         Background="{StaticResource materialBackground}">
 
     <Window.Resources>
-
         <ResourceDictionary>
             <vm:MainViewModel x:Key="vm"/>
-
             <Style x:Key="menuButtonStyle" TargetType="ToggleButton">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -73,7 +72,11 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid DataContext="{StaticResource vm}">
+    <!--<Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>-->
+
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MaxWidth="350" MinWidth="250"/>
             <!--<ColumnDefinition Width="10"/>-->
@@ -105,14 +108,12 @@
                               CommandParameter="New Request"
                               Style="{StaticResource menuButtonStyle}"
                               Content="New Request"
-                              x:Name="new_request_button"
-                              Click="ToggleButton_Click"/>
+                              x:Name="new_request_button"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
                               CommandParameter="View Requests"
                               Style="{StaticResource menuButtonStyle}"
                               Content="View Requests"
-                              x:Name="requests_button"
-                              Click="ToggleButton_Click"/>
+                              x:Name="requests_button"/>
 
                 <TextBlock Text="Production"
                            Style="{StaticResource menuSectionStyle}"/>
@@ -125,21 +126,18 @@
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Orders"
                                   x:Name="orders_button"
-                                  Click="ToggleButton_Click"
                                   IsChecked="True"/>
 
                     <ToggleButton Command="{Binding UpdateViewCommand}" 
                                   CommandParameter="Schedule"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Schedule"
-                                  x:Name="schedule_button"
-                                  Click="ToggleButton_Click"/>
+                                  x:Name="schedule_button"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}" 
                                   CommandParameter="Runtime"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Runtime"
-                                  x:Name="machine_stats_button"
-                                  Click="ToggleButton_Click"/>
+                                  x:Name="machine_stats_button"/>
                 </StackPanel>
                 <TextBlock Text="Assembly"
                            Style="{StaticResource menuSubSectionStyle}"/>
@@ -149,26 +147,22 @@
                                   CommandParameter="Assembly Orders"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Assembly Orders"
-                                  x:Name="assemblyOrders_button"
-                                  Click="ToggleButton_Click"/>
+                                  x:Name="assemblyOrders_button"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}"
                                   CommandParameter="Manage Products"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Manage Products"
-                                  x:Name="assembly_button"
-                                  Click="ToggleButton_Click"/>
+                                  x:Name="assembly_button"/>
                     <ToggleButton Command="{Binding UpdateViewCommand}"
                                   CommandParameter="Bill of Materials"
                                   Style="{StaticResource menuButtonStyle}"
                                   Content="Bill of Materials"
-                                  x:Name="BOM_button"
-                                  Click="ToggleButton_Click"/>
+                                  x:Name="BOM_button"/>
                 </StackPanel>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
                               CommandParameter="Deliveries"
                               Style="{StaticResource menuButtonStyle}"
                               Content="Deliveries"
-                              Click="ToggleButton_Click"
                               x:Name="deliveries_button"/>
 
 
@@ -179,23 +173,14 @@
                               CommandParameter="Analytics"
                               Style="{StaticResource menuButtonStyle}"
                               Content="Analytics"
-                              Click="ToggleButton_Click"
                               x:Name="analytics_button"/>
                 <ToggleButton Command="{Binding UpdateViewCommand}" 
                               CommandParameter="Manage Users"
                               Style="{StaticResource menuButtonStyle}"
                               Content="Manage Users"
-                              Click="ToggleButton_Click"
                               x:Name="manage_users_button"/>
 
-
-                <Button Style="{StaticResource ButtonTemplate}"
-                        Content="DEBUG"
-                        x:Name="debugButton"
-                        Visibility="Collapsed"
-                        Click="Button_Click"/>
-
-            </StackPanel>
+                </StackPanel>
             <Button Style="{StaticResource ButtonTemplate}"
                     Content="Settings"
                     Grid.Row="3"
@@ -252,7 +237,7 @@
                             x:Name="WindowText"/>
             </Viewbox>
             <ContentControl Content="{Binding SelectedViewModel}"
-                            Grid.Row="1"/>
+                              Grid.Row="1"/>
         </Grid>
     </Grid>
 </Window>

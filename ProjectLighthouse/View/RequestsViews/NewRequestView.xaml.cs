@@ -26,7 +26,7 @@ namespace ProjectLighthouse.View
             submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate.HasValue &&
                                      Int32.TryParse(quantityBox.Text, out _) &&
                                      productsListBox.SelectedItem != null &&
-                                     App.currentUser.CanRaiseRequest;
+                                     App.CurrentUser.CanRaiseRequest;
         }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)

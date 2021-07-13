@@ -15,7 +15,7 @@ namespace ProjectLighthouse
 {
     public partial class MainWindow : Window
     {
-        MainViewModel viewModel;
+        public MainViewModel viewModel;
 
         public MainWindow()
         {
@@ -23,12 +23,16 @@ namespace ProjectLighthouse
             //App.ROOT_PATH = @"\\groupfile01\Roaming\x.iafrate\Desktop\";
             InitializeComponent();
 
-            if (App.currentUser == null)
+            if (App.CurrentUser == null)
                 return;
 
-            viewModel = Resources["vm"] as MainViewModel;
-            viewModel.window = this;
-            viewModel.UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
+            //viewModel = new();
+            //viewModel.window = this;
+
+
+            //viewModel = Resources["vm"] as MainViewModel;
+            //viewModel.window = this;
+            //viewModel.UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
 
             //Squirrel --releasify Lighthouse.1.0.0.nupkg
             AddVersionNumber();
@@ -43,7 +47,7 @@ namespace ProjectLighthouse
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
             this.Title += $" v.{versionInfo.FileVersion}";
-            File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.currentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
+            File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.CurrentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
         }
 
         private async Task CheckForUpdates()
@@ -53,13 +57,6 @@ namespace ProjectLighthouse
                 await manager.UpdateApp();
             };
         }
-
-        public void ToggleButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
@@ -83,22 +80,26 @@ namespace ProjectLighthouse
                 button.IsChecked = (string)button.CommandParameter == buttonName;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            List<Lot> debug = CSVHelper.GetLotsFromCSV(@"\\groupfile01\Roaming\x.iafrate\Desktop\lighthouse_import_lot.csv");
-            foreach (Lot l in debug)
-            {
-                DatabaseHelper.Insert<Lot>(l);
-            }
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            debugButton.Visibility = Visibility.Collapsed; //App.currentUser.UserName == "xav" ? Visibility.Visible : 
-            assemblyOrders_button.IsEnabled = App.currentUser.UserRole == "admin";
-            BOM_button.IsEnabled = App.currentUser.UserRole == "admin";
-            assembly_button.IsEnabled = App.currentUser.UserRole == "admin";
-            manage_users_button.Visibility = App.currentUser.UserName == "xav" ? Visibility.Visible : Visibility.Collapsed;
+            assemblyOrders_button.IsEnabled = App.CurrentUser.UserRole == "admin";
+            BOM_button.IsEnabled = App.CurrentUser.UserRole == "admin";
+            assembly_button.IsEnabled = App.CurrentUser.UserRole == "admin";
+            manage_users_button.Visibility = App.CurrentUser.UserName == "xav" ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private async void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            Debug.WriteLine($"Key Pressed: {e.Key}");
+            if(e.Key.ToString() == "F8")
+            {
+                if(MessageBox.Show("Are you sure you want to update stock levels?", "Lighthouse Opera Sync", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    
+                    await OperaHelper.UpdateStockLevelsAsync();
+                    MessageBox.Show("Complete");
+                }
+            }
         }
     }
 }

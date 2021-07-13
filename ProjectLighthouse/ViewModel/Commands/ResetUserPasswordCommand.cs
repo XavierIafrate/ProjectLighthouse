@@ -16,7 +16,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            return App.currentUser.UserRole == "admin";
+            return App.CurrentUser.UserRole == "admin";
         }
 
         public void Execute(object parameter)
