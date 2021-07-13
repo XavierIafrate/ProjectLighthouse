@@ -94,7 +94,7 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            debugButton.Visibility = App.currentUser.UserName == "xav" ? Visibility.Visible : Visibility.Collapsed;
+            debugButton.Visibility = Visibility.Collapsed; //App.currentUser.UserName == "xav" ? Visibility.Visible : 
             assemblyOrders_button.IsEnabled = App.currentUser.UserRole == "admin";
             BOM_button.IsEnabled = App.currentUser.UserRole == "admin";
             assembly_button.IsEnabled = App.currentUser.UserRole == "admin";
