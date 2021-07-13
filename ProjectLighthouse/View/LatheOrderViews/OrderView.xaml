@@ -1,268 +1,340 @@
-﻿<UserControl x:Class="ProjectLighthouse.View.OrderView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ProjectLighthouse.View"
-             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-             xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
-             Background="{StaticResource materialBackground}">
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.OrderView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    Background="{StaticResource materialBackground}">
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <vm:OrderViewModel x:Key="vm"/>
-            <converters:boolToHasProgram x:Key="boolToHasProgram"/>
-            <converters:boolToIsReady x:Key="boolToIsReady"/>
-            <converters:intToDays x:Key="intToDays"/>
-            <converters:intToStringCycleTime x:Key="intToStringCycleTime"/>
+            <vm:OrderViewModel x:Key="vm" />
+            <converters:boolToHasProgram x:Key="boolToHasProgram" />
+            <converters:boolToIsReady x:Key="boolToIsReady" />
+            <converters:intToDays x:Key="intToDays" />
+            <converters:intToStringCycleTime x:Key="intToStringCycleTime" />
             <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
-                <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                     From="1"
-                     To="0"
-                     AutoReverse="True"
-                     BeginTime="0:0:1"
-                     Duration="0:0:01" />
+                <DoubleAnimation
+                    AutoReverse="True"
+                    BeginTime="0:0:1"
+                    Storyboard.TargetProperty="Opacity"
+                    From="1"
+                    To="0"
+                    Duration="0:0:01" />
             </Storyboard>
 
             <Style x:Key="liveCircle" TargetType="Rectangle">
-                <Setter Property="Width" Value="16"/>
-                <Setter Property="Height" Value="16"/>
-                <Setter Property="Fill" Value="{StaticResource materialOnError}"/>
-                <Setter Property="RadiusX" Value="8"/>
-                <Setter Property="RadiusY" Value="8"/>
-                <Setter Property="Margin" Value="15,0,3,0"/>
+                <Setter Property="Width" Value="16" />
+                <Setter Property="Height" Value="16" />
+                <Setter Property="Fill" Value="{StaticResource materialOnError}" />
+                <Setter Property="RadiusX" Value="8" />
+                <Setter Property="RadiusY" Value="8" />
+                <Setter Property="Margin" Value="15,0,3,0" />
                 <Style.Triggers>
                     <EventTrigger RoutedEvent="Loaded">
-                        <BeginStoryboard Storyboard="{StaticResource AnimateFlicker}"/>
+                        <BeginStoryboard Storyboard="{StaticResource AnimateFlicker}" />
                     </EventTrigger>
                 </Style.Triggers>
             </Style>
 
             <Style x:Key="highlightText" TargetType="TextBlock">
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="FontSize" Value="22"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="22" />
+                <Setter Property="FontWeight" Value="SemiBold" />
             </Style>
-            
+
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"
-                              MinWidth="260"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*" MinWidth="260" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <ListView ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding SelectedLatheManufactureOrder, UpdateSourceTrigger=PropertyChanged}"
-                    HorizontalContentAlignment="Stretch"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                    ScrollViewer.CanContentScroll="False">
+        <ListView
+            HorizontalContentAlignment="Stretch"
+            ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ScrollViewer.CanContentScroll="False"
+            ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+            SelectedItem="{Binding SelectedLatheManufactureOrder, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}"/>
+                    <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
-        <StatusBar Background="Transparent"
-                   Margin="0,5"
-                   Grid.Row="1">
-            <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}"/>
-            <Separator Margin="5,0" Background="LightGray"/>
-            <TextBlock Text="Filter by:" 
-                       VerticalAlignment="Center"
-                       Margin="0,0,10,0"/>
+        <StatusBar
+            Grid.Row="1"
+            Margin="0,5"
+            Background="Transparent">
+            <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
+            <Separator Margin="5,0" Background="LightGray" />
+            <TextBlock
+                Margin="0,0,10,0"
+                VerticalAlignment="Center"
+                Text="Filter by:" />
             <ComboBox Width="100" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ComboBoxItem Content="All Active" IsSelected="True"/>
-                <ComboBoxItem Content="Not Ready"/>
-                <ComboBoxItem Content="Ready"/>
-                <ComboBoxItem Content="Complete"/>
+                <ComboBoxItem Content="All Active" IsSelected="True" />
+                <ComboBoxItem Content="Not Ready" />
+                <ComboBoxItem Content="Ready" />
+                <ComboBoxItem Content="Complete" />
             </ComboBox>
         </StatusBar>
-        
+
         <!--#region Display Order-->
-        <TextBlock Grid.Column="1"
-                   Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}"
-                   Text="None found"
-                   VerticalAlignment="Top"
-                   HorizontalAlignment="Left"
-                   FontSize="30"
-                   Foreground="#dddddd" Margin="154,324,0,0"/>
-        <ScrollViewer Grid.Column="1"
-                      Grid.RowSpan="2"
-                      Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
+        <TextBlock
+            Grid.Column="1"
+            Margin="154,324,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontSize="30"
+            Foreground="#dddddd"
+            Text="None found"
+            Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}" />
+        <ScrollViewer
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel>
                 <StackPanel Margin="25,10">
-                    <Grid Margin="0,0,0,10" Visibility="{Binding LiveInfoVis, UpdateSourceTrigger=PropertyChanged}" MaxWidth="700">
-                        <Rectangle Fill="{StaticResource materialError}"
-                                   RadiusX="5"
-                                   RadiusY="5"/>
+                    <Grid
+                        MaxWidth="700"
+                        Margin="0,0,0,10"
+                        Visibility="{Binding LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
+                        <Rectangle
+                            Fill="{StaticResource materialError}"
+                            RadiusX="5"
+                            RadiusY="5" />
                         <Grid Margin="0,5">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
-                            <Rectangle Style="{StaticResource liveCircle}" Grid.RowSpan="2"/>
-                            <StackPanel Grid.Column ="1" VerticalAlignment="Center" Grid.RowSpan="2">
-                                <TextBlock Text="{Binding DisplayStats.MachineName, StringFormat='{}LIVE on {0}'}"
-                                       Foreground="{StaticResource materialOnError}"
-                                       FontWeight="SemiBold"
-                                       VerticalAlignment="Center"
-                                       FontSize="18"
-                                       Padding="8,5,0,1"/>
-                                <TextBlock Text="{Binding DisplayStats.DataTime, StringFormat='{}at {0:HH:mm:ss}'}"
-                                       Foreground="{StaticResource materialOnError}"
-                                       FontStyle="Italic"
-                                       Grid.RowSpan="2"
-                                           Padding="8,0,0,4"
-                                       FontSize="12"/>
+                            <Rectangle Grid.RowSpan="2" Style="{StaticResource liveCircle}" />
+                            <StackPanel
+                                Grid.RowSpan="2"
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                <TextBlock
+                                    Padding="8,5,0,1"
+                                    VerticalAlignment="Center"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource materialOnError}"
+                                    Text="{Binding DisplayStats.MachineName, StringFormat='{}LIVE on {0}'}" />
+                                <TextBlock
+                                    Grid.RowSpan="2"
+                                    Padding="8,0,0,4"
+                                    FontSize="12"
+                                    FontStyle="Italic"
+                                    Foreground="{StaticResource materialOnError}"
+                                    Text="{Binding DisplayStats.DataTime, StringFormat='{}at {0:HH:mm:ss}'}" />
                             </StackPanel>
 
-                            <TextBlock VerticalAlignment="Center"
-                                       HorizontalAlignment="Right"
-                                       Foreground="{StaticResource materialOnError}"
-                                       Grid.Column="3"
-                                       Padding="0,3,10,4">
-                                <Run Text="Part counter:"/>
-                                <Run Text="{Binding DisplayStats.PartCountAll, StringFormat='{}{0:#,##0}'}"
-                                     FontWeight="Bold"/>
-                                <Run Text="of target"/>
-                                <Run Text="{Binding DisplayStats.PartCountTarget, StringFormat='{}{0:#,##0}'}"
-                                     FontWeight="Bold"/>
-                                <Run Text="pcs"/>
+                            <TextBlock
+                                Grid.Column="3"
+                                Padding="0,3,10,4"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource materialOnError}">
+                                <Run Text="Part counter:" />
+                                <Run FontWeight="Bold" Text="{Binding DisplayStats.PartCountAll, StringFormat='{}{0:#,##0}'}" />
+                                <Run Text="of target" />
+                                <Run FontWeight="Bold" Text="{Binding DisplayStats.PartCountTarget, StringFormat='{}{0:#,##0}'}" />
+                                <Run Text="pcs" />
                             </TextBlock>
-                            <TextBlock VerticalAlignment="Center"
-                                       HorizontalAlignment="Right"
-                                       Foreground="{StaticResource materialOnError}"
-                                       Grid.Column="3"
-                                       Grid.Row="1"
-                                       Padding="0,3,10,4">
-                                <Run Text="Execution"/>
-                                <Run Text="{Binding DisplayStats.Execution}"
-                                     FontWeight="Bold"/>
-                                <Run Text="- Cycle time"/>
-                                <Run Text="{Binding DisplayStats.CycleTime, Converter='{StaticResource intToStringCycleTime}', StringFormat='{}{0:mm}'}"
-                                     FontWeight="Bold"/>
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Padding="0,3,10,4"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource materialOnError}">
+                                <Run Text="Execution" />
+                                <Run FontWeight="Bold" Text="{Binding DisplayStats.Execution}" />
+                                <Run Text="- Cycle time" />
+                                <Run FontWeight="Bold" Text="{Binding DisplayStats.CycleTime, Converter='{StaticResource intToStringCycleTime}', StringFormat='{}{0:mm}'}" />
                             </TextBlock>
                         </Grid>
                     </Grid>
-                    <Grid MaxWidth="700" x:Name="OrderCardGrid">
-                        <Rectangle Stroke="Black" StrokeThickness="3" RadiusX="5" RadiusY="5"/>
+                    <Grid x:Name="OrderCardGrid" MaxWidth="700">
+                        <Rectangle
+                            RadiusX="5"
+                            RadiusY="5"
+                            Stroke="Black"
+                            StrokeThickness="3" />
                         <StackPanel Margin="20">
                             <!--#region Header Data-->
                             <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}"
-                                               FontSize="35"
-                                               FontWeight="Bold"
-                                               Margin="10,0"/>
-                                    <Button Grid.Column="2" Content="Edit" Style="{StaticResource ButtonTemplate}" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"/>
-                                    <Button Content="Generate PDF" x:Name="printButton" Style="{StaticResource ButtonTemplate}" Command="{Binding PrintOrderCommand}" Grid.Column="3"/>
+                                    <TextBlock
+                                        Margin="10,0"
+                                        FontSize="35"
+                                        FontWeight="Bold"
+                                        Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}" />
+                                    <Button
+                                        Grid.Column="2"
+                                        Command="{Binding EditCommand}"
+                                        CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"
+                                        Content="Edit"
+                                        Style="{StaticResource ButtonTemplate}" />
+                                    <Button
+                                        x:Name="printButton"
+                                        Grid.Column="3"
+                                        Command="{Binding PrintOrderCommand}"
+                                        Content="Generate PDF"
+                                        Style="{StaticResource ButtonTemplate}" />
                                 </Grid>
 
-                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}"
-                                           FontSize="18"
-                                           Foreground="{StaticResource materialPrimary}"
-                                           Margin="10,0"/>
+                                <TextBlock
+                                    Margin="10,0"
+                                    FontSize="18"
+                                    Foreground="{StaticResource materialPrimary}"
+                                    Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}" />
 
-                                <Separator Margin="5,10,5,5"/>
+                                <Separator Margin="5,10,5,5" />
                                 <Grid Margin="15,0">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock x:Name ="CreatedTextBlock"
-                                               Style="{StaticResource accentTextStyle}">
-                                        <Run Text="Created by"/>
-                                        <Run Text="{Binding SelectedLatheManufactureOrder.CreatedBy, FallbackValue='Kyle Brovloski'}"/>
+                                    <TextBlock x:Name="CreatedTextBlock" Style="{StaticResource accentTextStyle}">
+                                        <Run Text="Created by" />
+                                        <Run Text="{Binding SelectedLatheManufactureOrder.CreatedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
-                                    <TextBlock Text="{Binding SelectedLatheManufactureOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
-                                               Style="{StaticResource accentTextStyle}"
-                                               Grid.Column="2"
-                                               HorizontalAlignment="Right"/>
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        Style="{StaticResource accentTextStyle}"
+                                        Text="{Binding SelectedLatheManufactureOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
 
-                                    <TextBlock x:Name="ModifiedTextBlock"
-                                               Style="{StaticResource accentTextStyle}"
-                                               Grid.Column="0"
-                                               Grid.Row="1"
-                                               Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
-                                        <Run Text="Modified by"/>
-                                        <Run Text="{Binding SelectedLatheManufactureOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}"/>
+                                    <TextBlock
+                                        x:Name="ModifiedTextBlock"
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Style="{StaticResource accentTextStyle}"
+                                        Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
+                                        <Run Text="Modified by" />
+                                        <Run Text="{Binding SelectedLatheManufactureOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
-                                    <TextBlock Text="{Binding SelectedLatheManufactureOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
-                                               Style="{StaticResource accentTextStyle}"
-                                               HorizontalAlignment="Right"
-                                               Grid.Column="2"
-                                               Grid.Row="1"/>
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        Style="{StaticResource accentTextStyle}"
+                                        Text="{Binding SelectedLatheManufactureOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
                                 </Grid>
-                                <Separator Margin="5"/>
+                                <Separator Margin="5" />
                             </StackPanel>
                             <!--#endregion-->
 
                             <!--#region Metadata-->
                             <Grid Margin="15,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="Setting" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine}" Grid.Row="1" Style="{StaticResource highlightText}"/>
-                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:ddd, dd MMMM}'}" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource accentTextStyle}"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Setting" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Style="{StaticResource highlightText}"
+                                    Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine}" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    HorizontalAlignment="Center"
+                                    Style="{StaticResource accentTextStyle}"
+                                    Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:ddd, dd MMMM}'}" />
 
-                                <TextBlock Text="Timing" Grid.Column="1" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" Grid.Column="1" Grid.Row="1" Style="{StaticResource highlightText}"/>
-                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource accentTextStyle}"/>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Center"
+                                    Text="Timing" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Style="{StaticResource highlightText}"
+                                    Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Center"
+                                    Style="{StaticResource accentTextStyle}"
+                                    Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}}" />
 
-                                <TextBlock Text="Material" Grid.Column="2" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.BarID}" Grid.Column="2" Grid.Row="1" Style="{StaticResource highlightText}"/>
-                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}{0} bars'}" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource accentTextStyle}"/>
+                                <TextBlock
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Center"
+                                    Text="Material" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Style="{StaticResource highlightText}"
+                                    Text="{Binding SelectedLatheManufactureOrder.BarID}" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Center"
+                                    Style="{StaticResource accentTextStyle}"
+                                    Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}{0} bars'}" />
 
                             </Grid>
 
                             <StackPanel>
-                                <TextBlock Text="{Binding FilteredLMOItems.Count, StringFormat='{}Items ({0})'}"
-                                           HorizontalAlignment="Left"
-                                           FontSize="20"
-                                           Padding="0,0,0,8"/>
+                                <TextBlock
+                                    Padding="0,0,0,8"
+                                    HorizontalAlignment="Left"
+                                    FontSize="20"
+                                    Text="{Binding FilteredLMOItems.Count, StringFormat='{}Items ({0})'}" />
                                 <Grid>
-                                    <Rectangle Fill="{StaticResource materialBackground}" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" RenderOptions.BitmapScalingMode="HighQuality" RadiusX="8" RadiusY="8"/>
-                                    <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                  Margin="5"
-                                              HorizontalContentAlignment="Stretch">
+                                    <Rectangle
+                                        Fill="{StaticResource materialBackground}"
+                                        RadiusX="8"
+                                        RadiusY="8"
+                                        RenderOptions.BitmapScalingMode="HighQuality"
+                                        Stroke="{StaticResource materialPrimary}"
+                                        StrokeThickness="2" />
+                                    <ItemsControl
+                                        Margin="5"
+                                        HorizontalContentAlignment="Stretch"
+                                        ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}"/>
+                                                <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" />
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -270,28 +342,34 @@
                             </StackPanel>
                             <!--#endregion-->
                             <!--#region Notes-->
-                            <TextBlock Text="Notes"
-                                           Style="{StaticResource subtitleTextStyle}"/>
+                            <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Notes" />
                             <Grid>
-                                <Rectangle Fill="White" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" RenderOptions.BitmapScalingMode="HighQuality" RadiusX="5" RadiusY="5"/>
-                                <TextBlock Text="{Binding SelectedLatheManufactureOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
-                                               Margin="10,6"
-                                               Padding="0,0,0,2"
-                                               TextWrapping="Wrap"/>
+                                <Rectangle
+                                    Fill="White"
+                                    RadiusX="5"
+                                    RadiusY="5"
+                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                    Stroke="{StaticResource materialPrimary}"
+                                    StrokeThickness="2" />
+                                <TextBlock
+                                    Margin="10,6"
+                                    Padding="0,0,0,2"
+                                    Text="{Binding SelectedLatheManufactureOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
+                                    TextWrapping="Wrap" />
                             </Grid>
                             <!--#endregion-->
-
                         </StackPanel>
                     </Grid>
                 </StackPanel>
-                <uc:DisplayProductRangeSnippet Items="{Binding SelectedProducts}" 
-                                               Info="{Binding SelectedProductGroup}"
-                                               Width="{Binding ActualWidth, ElementName=OrderCardGrid}"
-                                               MaxWidth="700"/>
-                <Grid Height="100"/>
+                <uc:DisplayProductRangeSnippet
+                    Width="{Binding ActualWidth, ElementName=OrderCardGrid}"
+                    MaxWidth="700"
+                    Info="{Binding SelectedProductGroup}"
+                    Items="{Binding SelectedProducts}" />
+                <Grid Height="100" />
             </StackPanel>
         </ScrollViewer>
         <!--#endregion-->
-        
+
     </Grid>
 </UserControl>

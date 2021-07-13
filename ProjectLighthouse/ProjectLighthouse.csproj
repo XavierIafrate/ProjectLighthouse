@@ -32,10 +32,6 @@
     <None Remove="Resources\MO-1star.png" />
     <None Remove="Resources\MO-2star.png" />
     <None Remove="Resources\MO-3star.png" />
-    <None Remove="Resources\MO-Notify.png" />
-    <None Remove="Resources\MO-SpecialPartWarning.png" />
-    <None Remove="Resources\MO-Stop.png" />
-    <None Remove="Resources\MO-Warn.png" />
   </ItemGroup>
     
 	<!--
@@ -89,10 +85,6 @@
     <Resource Include="Resources\MO-2star.png" />
     <Resource Include="Resources\MO-3star.png" />
     <Resource Include="Resources\done.png" />
-    <Resource Include="Resources\MO-Notify.png" />
-    <Resource Include="Resources\MO-SpecialPartWarning.png" />
-    <Resource Include="Resources\MO-Stop.png" />
-    <Resource Include="Resources\MO-Warn.png" />
   </ItemGroup>
 
   <ItemGroup>

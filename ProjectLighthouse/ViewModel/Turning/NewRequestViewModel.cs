@@ -28,6 +28,12 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+//        var image = new BitmapImage();
+//        image.BeginInit();
+//image.UriSource = new Uri(fileName);
+//        image.EndInit();
+//ImageBehavior.SetAnimatedSource(img, image);
+
 
         public List<TurnedProduct> TurnedProducts { get; set; }
         public List<TurnedProduct> FilteredList { get; set; }

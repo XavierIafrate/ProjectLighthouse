@@ -24,21 +24,6 @@ namespace ProjectLighthouse
 
             if (App.CurrentUser == null)
                 return;
-
-            //viewModel = new();
-            //viewModel.window = this;
-
-
-            //viewModel = Resources["vm"] as MainViewModel;
-            //viewModel.window = this;
-            //viewModel.UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
-
-            //Squirrel --releasify Lighthouse.1.0.0.nupkg
-            AddVersionNumber();
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            CheckForUpdates();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            
         }
 
         public void AddVersionNumber()

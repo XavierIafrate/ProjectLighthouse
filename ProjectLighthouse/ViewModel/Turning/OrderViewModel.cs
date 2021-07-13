@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -166,7 +167,7 @@ namespace ProjectLighthouse.ViewModel
 
         #region MachineStats Display
 
-        private async void GetLatestStats()
+        private void GetLatestStats()
         {
             machineStatistics = null;
             machineStatistics = MachineStatsHelper.GetStats();

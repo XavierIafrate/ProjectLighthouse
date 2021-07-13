@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -181,7 +182,9 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
+
                     <Rectangle Grid.Row="0" Fill="{StaticResource materialPrimary}">
                         <Rectangle.Effect>
                             <DropShadowEffect
@@ -207,9 +210,9 @@
                         FontSize="20"
                         Foreground="{StaticResource materialOnPrimary}"
                         Text="Insights" />
-                    
+
                     <StackPanel Grid.Row="1" Margin="20,10">
-                        <TextBlock Style="{StaticResource insightHeading}" Text="ERP Data" />
+                        <TextBlock Style="{StaticResource insightHeading}" Text="Lighthouse Data" />
                         <Separator
                             Width="150"
                             Margin="0,3"
@@ -218,15 +221,7 @@
                         <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.SellPrice, Converter={StaticResource priceConverter}, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Sell Price: {0}'}" />
                         <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.QuantitySold, StringFormat='{}{0:#,##0} sold (18mo)'}" />
                         <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}" />
-                        <TextBlock Style="{StaticResource insightHeading}" Text="Manufacture Data" />
-                        <Separator
-                            Width="150"
-                            Margin="0,3"
-                            HorizontalAlignment="Left" />
                         <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} manufactured'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.ThreadSize, StringFormat='{}Thread Size: {0}'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.DriveType, StringFormat='{}Drive Type: {0}'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.DriveSize, StringFormat='{}Drive Size: {0}'}" />
                         <TextBlock Style="{StaticResource insightHeading}" Text="Scheduling Algorithm" />
                         <Separator
                             Width="150"
@@ -270,10 +265,10 @@
                         <ItemsControl
                             Grid.Row="1"
                             Margin="10,5"
-                            ItemsSource="{Binding snippets}">
+                            ItemsSource="{Binding Snippets}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Margin="0,5">
+                                    <Grid Margin="0,3">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto" />
                                             <ColumnDefinition Width="*" />
@@ -292,7 +287,6 @@
                                             Text="{Binding MachineFullName}" />
                                         <TextBlock
                                             Grid.Column="2"
-                                            Margin="0"
                                             Style="{StaticResource insight}"
                                             Text="{Binding LeadTime, Converter={StaticResource TimespanToString}, StringFormat='{}approximately {0}'}" />
                                         <TextBlock
@@ -307,6 +301,12 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </Grid>
+
+                    <!--<Image gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/no.gif"
+                           gif:ImageBehavior.RepeatBehavior="3"
+                                   gif:ImageBehavior.AnimateInDesignMode="True"
+                                   MaxHeight="300" Grid.Row="3"
+                           Margin="10"/>-->
                 </Grid>
             </Grid>
         </ScrollViewer>

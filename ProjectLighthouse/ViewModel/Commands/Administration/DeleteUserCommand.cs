@@ -3,13 +3,13 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
-    public class deleteUserCommand : ICommand
+    public class DeleteUserCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
         private ManageUsersViewModel viewModel;
 
-        public deleteUserCommand(ManageUsersViewModel vm)
+        public DeleteUserCommand(ManageUsersViewModel vm)
         {
             viewModel = vm;
         }
