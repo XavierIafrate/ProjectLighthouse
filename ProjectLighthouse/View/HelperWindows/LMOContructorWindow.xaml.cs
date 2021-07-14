@@ -65,7 +65,7 @@ namespace ProjectLighthouse.View
             // remove incompatible
             foreach (TurnedProduct product in ProductPool.ToList())
             {
-                if (!product.IsScheduleCompatible(requiredProduct) || !product.canBeManufactured())
+                if (!product.IsScheduleCompatible(requiredProduct) || !product.CanBeManufactured())
                     ProductPool.Remove(product);
             }
         }

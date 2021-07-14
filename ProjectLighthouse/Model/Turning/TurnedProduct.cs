@@ -5,7 +5,7 @@ namespace ProjectLighthouse.Model
 {
     public class TurnedProduct
     {
-        private const double MaxDiameter = 25;
+        private const double MaxDiameter = 20;
         private const double MaxLength = 90;
 
         [AutoIncrement, PrimaryKey]
@@ -49,7 +49,7 @@ namespace ProjectLighthouse.Model
             return Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
         }
 
-        public bool canBeManufactured()
+        public bool CanBeManufactured()
         {
             return (MajorLength <= MaxLength && MajorDiameter <= MaxDiameter);
         }

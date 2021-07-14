@@ -48,6 +48,32 @@
                 <Setter Property="FontWeight" Value="SemiBold" />
             </Style>
 
+            <Style x:Key="clearbutton" TargetType="Button">
+                <Setter Property="Margin" Value="5,0,0,0" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                CornerRadius="9">
+                                <ContentPresenter
+                                    Margin="0,0,0,1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+            </Style>
+
+            <Style x:Key="icon" TargetType="Path">
+                <Setter Property="Fill" Value="{StaticResource materialPrimary}" />
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -57,11 +83,36 @@
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                x:Name="SearchGhost"
+                Style="{StaticResource ghostTextStyle}"
+                Text="Search..." />
+            <TextBox
+                x:Name="SearchBox"
+                Text="{Binding SearchTerm, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                TextChanged="SearchBox_TextChanged" />
+            <Button
+                x:Name="ClearButton"
+                Grid.Column="1"
+                Click="ClearButton_Click"
+                Style="{StaticResource clearbutton}"
+                Visibility="Hidden">
+                <Path Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" Style="{StaticResource icon}" />
+            </Button>
+        </Grid>
+
         <ListView
+            Grid.Row="1"
             HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             ScrollViewer.CanContentScroll="False"
@@ -75,7 +126,7 @@
         </ListView>
 
         <StatusBar
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="0,5"
             Background="Transparent">
             <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
@@ -93,17 +144,59 @@
         </StatusBar>
 
         <!--#region Display Order-->
-        <TextBlock
+        <StackPanel
+            Grid.Row="1"
             Grid.Column="1"
-            Margin="154,324,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            FontSize="30"
-            Foreground="#dddddd"
-            Text="None found"
-            Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}" />
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}">
+            <Border
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Canvas.Left="55"
+                Canvas.Top="30"
+                Width="auto"
+                Height="auto"
+                Margin="0,10"
+                VerticalAlignment="Top"
+                CornerRadius="18">
+                <Border.Effect>
+                    <DropShadowEffect
+                        BlurRadius="20"
+                        Direction="220"
+                        Opacity="0.2"
+                        ShadowDepth="20"
+                        Color="Black" />
+                </Border.Effect>
+                <Border Name="ReceiverColor" CornerRadius="15">
+                    <Grid>
+                        <Border
+                            Name="Mask"
+                            Background="{StaticResource materialPrimaryBlue}"
+                            CornerRadius="20" />
+                        <StackPanel x:Name="image">
+                            <Image
+                                Name="Receiver"
+                                MaxWidth="400"
+                                gif:ImageBehavior.AnimateInDesignMode="True"
+                                gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
+                                gif:ImageBehavior.RepeatBehavior="3"
+                                RenderOptions.BitmapScalingMode="HighQuality" />
+                            <StackPanel.OpacityMask>
+                                <VisualBrush Visual="{Binding ElementName=Mask}" />
+                            </StackPanel.OpacityMask>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Border>
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="30"
+                Foreground="{StaticResource disabledGray}"
+                Text="None found" />
+        </StackPanel>
         <ScrollViewer
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             Grid.Column="1"
             Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel>

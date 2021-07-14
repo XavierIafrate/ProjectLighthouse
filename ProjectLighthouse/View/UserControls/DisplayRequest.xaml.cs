@@ -18,9 +18,9 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayRequest requestControl = d as DisplayRequest;
-            if (requestControl == null)
+            if (d is not DisplayRequest requestControl)
                 return;
+
             requestControl.DataContext = requestControl.Request;
 
             #region colourFormatting

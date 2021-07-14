@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-    d:DesignHeight="450"
+    d:DesignHeight="590.975"
+    d:DesignWidth="1123.47"
     Background="{StaticResource materialBackground}"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -20,7 +21,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
-                Width="300"
+                Width="400"
                 MinWidth="300"
                 MaxWidth="400" />
             <ColumnDefinition Width="auto" />
@@ -68,45 +69,80 @@
             Background="White" />
         <Grid Grid.Column="2" Background="{StaticResource materialBackground}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel MaxWidth="500" Margin="30,0">
-                    <Grid VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource heroTextStyle}" Text="{Binding SelectedDeliveryNote.Name}" />
-                        <Button
-                            Grid.Column="2"
-                            Margin="0"
-                            Command="{Binding GenerateDeliveryNotePDFCommand}"
-                            Content="Generate PDF"
-                            Style="{StaticResource ButtonTemplate}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Style="{StaticResource subsubtitleTextStyle}"
-                            Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}'}" />
-                        <TextBlock
-                            Grid.Row="2"
-                            Style="{StaticResource subsubtitleTextStyle}"
-                            Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{}Delivered by {0}'}" />
-                    </Grid>
-                    <Separator Margin="0,10" />
-                    <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Delivery Items" />
+                <Grid
+                    MaxWidth="600"
+                    Margin="30"
+                    VerticalAlignment="Top">
+                    <Rectangle
+                        Fill="{StaticResource materialBackground}"
+                        RadiusX="20"
+                        RadiusY="20">
+                        <Rectangle.Effect>
+                            <DropShadowEffect
+                                BlurRadius="40"
+                                Direction="220"
+                                Opacity="0.3"
+                                ShadowDepth="15"
+                                Color="Black" />
+                        </Rectangle.Effect>
+                    </Rectangle>
+                    <Grid Margin="30">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Style="{StaticResource heroTextStyle}" Text="{Binding SelectedDeliveryNote.Name}" />
+                                <Button
+                                    Grid.Column="2"
+                                    Margin="0"
+                                    Command="{Binding GenerateDeliveryNotePDFCommand}"
+                                    Style="{StaticResource ButtonTemplate}">
 
-                    <ItemsControl HorizontalContentAlignment="Stretch" ItemsSource="{Binding filteredDeliveryItems, Mode=OneWay}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <uc:DisplayDeliveryNoteItem Item="{Binding}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="8"
+                                                Height="8"
+                                                Margin="0,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Data="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"
+                                                Fill="{StaticResource materialOnPrimary}"
+                                                Stretch="Fill" />
+                                            <TextBlock VerticalAlignment="Center" Text="PDF" />
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Style="{StaticResource subsubtitleTextStyle}"
+                                    Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}'}" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Style="{StaticResource subsubtitleTextStyle}"
+                                    Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{}Delivered by {0}'}" />
+                            </Grid>
+                            <Separator Margin="0,10" />
+                            <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Delivery Items" />
+
+                            <ItemsControl HorizontalContentAlignment="Stretch" ItemsSource="{Binding filteredDeliveryItems, Mode=OneWay}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <uc:DisplayDeliveryNoteItem Item="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
             </ScrollViewer>
         </Grid>
     </Grid>

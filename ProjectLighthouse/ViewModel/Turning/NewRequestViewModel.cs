@@ -59,7 +59,7 @@ namespace ProjectLighthouse.ViewModel
                     OnPropertyChanged("RequiredQtyPrefill");
 
 
-                    if (!selectedProduct.canBeManufactured())
+                    if (!selectedProduct.CanBeManufactured())
                     {
                         MessageBox.Show(selectedProduct.ProductName + " cannot be made on the lathes." + Environment.NewLine
                              + Environment.NewLine + "Reason:" + Environment.NewLine + selectedProduct.GetReasonCannotBeMade(), "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -114,6 +114,7 @@ namespace ProjectLighthouse.ViewModel
             GraphVis = Visibility.Hidden;
 
             ClearScreen();
+            SelectedGroup = "P0130";
             PopulateMachineInsights();
         }
 
@@ -220,7 +221,7 @@ namespace ProjectLighthouse.ViewModel
 
             XAxisLabels = labels.OrderBy(q => q).ToArray();
             SeriesCollection = new();
-            System.Windows.Media.BrushConverter converter = new System.Windows.Media.BrushConverter();
+            System.Windows.Media.BrushConverter converter = new();
 
             LineSeries _series = new()
             {
@@ -272,7 +273,7 @@ namespace ProjectLighthouse.ViewModel
                 MessageBox.Show("Please select a product!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return result;
             }
-            else if (!selectedProduct.canBeManufactured())
+            else if (!selectedProduct.CanBeManufactured())
             {
                 MessageBox.Show("This product can not be made on our machines!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return result;

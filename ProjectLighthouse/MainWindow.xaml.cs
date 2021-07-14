@@ -39,7 +39,7 @@ namespace ProjectLighthouse
 
         public async Task CheckForUpdates()
         {
-            using (UpdateManager manager = new UpdateManager(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
+            using (UpdateManager manager = new(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
             {
                 await manager.UpdateApp();
             };
