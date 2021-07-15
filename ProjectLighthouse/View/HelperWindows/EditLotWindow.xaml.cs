@@ -34,12 +34,12 @@ namespace ProjectLighthouse.View
         {
             EditLot.IsReject = (bool)RejectCheckBox.IsChecked;
 
-            if(originalLot.Quantity == EditLot.Quantity && 
+            if (originalLot.Quantity == EditLot.Quantity &&
                 originalLot.MaterialBatch == EditLot.MaterialBatch &&
                 originalLot.IsReject == EditLot.IsReject)
             {
                 MessageBox.Show("nothing happened");
-                this.Close();
+                Close();
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace ProjectLighthouse.View
             DatabaseHelper.Update<Lot>(EditLot);
 
             SaveExit = true;
-            this.Close();
+            Close();
         }
 
         private void QuantityTextBox_PreviewKeyDown(object sender, KeyEventArgs e)

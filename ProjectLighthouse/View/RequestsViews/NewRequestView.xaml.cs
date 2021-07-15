@@ -1,7 +1,6 @@
 ﻿using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -24,7 +23,7 @@ namespace ProjectLighthouse.View
         private void enableSubmit()
         {
             submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate.HasValue &&
-                                     Int32.TryParse(quantityBox.Text, out _) &&
+                                     int.TryParse(quantityBox.Text, out _) &&
                                      productsListBox.SelectedItem != null &&
                                      App.CurrentUser.CanRaiseRequest;
         }
@@ -40,7 +39,7 @@ namespace ProjectLighthouse.View
 
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            viewModel.newRequest.DateRequired = DateRequiredCalendarView.SelectedDate.Value;
+            viewModel.NewRequest.DateRequired = DateRequiredCalendarView.SelectedDate.Value;
             enableSubmit();
         }
 
@@ -55,7 +54,7 @@ namespace ProjectLighthouse.View
             {
                 if (j > 0 && j <= 100000)
                 {
-                    viewModel.newRequest.QuantityRequired = j;
+                    viewModel.NewRequest.QuantityRequired = j;
                     viewModel.CalculateInsights();
                 }
                 else
@@ -77,10 +76,10 @@ namespace ProjectLighthouse.View
 
         private void notesTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextRange textRange = new TextRange(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
+            TextRange textRange = new(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
             if (viewModel != null && textRange.Text.Length >= 2)
             {
-                viewModel.newRequest.Notes = textRange.Text[0..^2];
+                viewModel.NewRequest.Notes = textRange.Text[0..^2];
             }
         }
 
@@ -91,7 +90,7 @@ namespace ProjectLighthouse.View
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(graphGrid.Visibility == Visibility.Visible)
+            if (graphGrid.Visibility == Visibility.Visible)
             {
                 if (mainGrid.ColumnDefinitions[2].ActualWidth < 380)
                 {
@@ -103,7 +102,7 @@ namespace ProjectLighthouse.View
             }
             else
             {
-                if(mainGrid.ColumnDefinitions[1].ActualWidth > (380 + 350))
+                if (mainGrid.ColumnDefinitions[1].ActualWidth > (380 + 350))
                 {
                     graphGrid.Visibility = Visibility.Visible;
                     mainGrid.ColumnDefinitions[2].Width = new(1, GridUnitType.Star);

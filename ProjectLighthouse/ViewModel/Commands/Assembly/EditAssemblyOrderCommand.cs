@@ -21,7 +21,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Assembly
 
         public void Execute(object parameter)
         {
-            viewModel.EditOrder(parameter as AssemblyManufactureOrder);
+            viewModel.EditOrder();
         }
     }
 }

@@ -27,7 +27,7 @@ namespace ProjectLighthouse.View.UserControls
             control.DataContext = control.statistics;
             string latheID = DatabaseHelper.Read<Lathe>().Where(n => n.FullName == control.statistics.MachineID).FirstOrDefault().Id;
 
-            double percent = (double)control.statistics.PartCountAll / (double)control.statistics.PartCountTarget;
+            double percent = control.statistics.PartCountAll / (double)control.statistics.PartCountTarget;
             percent = Math.Round(percent * 100) / 100;
             if (double.IsNaN(percent))
                 percent = 0;

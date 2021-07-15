@@ -22,31 +22,30 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayLatheManufactureOrder control = d as DisplayLatheManufactureOrder;
+            if (d is not DisplayLatheManufactureOrder control)
+                return;
 
-            if (control != null)
+            control.DataContext = control.LatheManufactureOrder;
+            control.BadgeText.Text = control.LatheManufactureOrder.Status;
+            control.OldInfo.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddDays(3) < DateTime.Now
+                && control.LatheManufactureOrder.Status == "Problem") ? Visibility.Visible : Visibility.Hidden;
+
+            switch (control.LatheManufactureOrder.Status)
             {
-                control.DataContext = control.LatheManufactureOrder;
-                control.BadgeText.Text = control.LatheManufactureOrder.Status;
-                control.OldInfo.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddDays(3) < DateTime.Now
-                    && control.LatheManufactureOrder.Status == "Problem") ? Visibility.Visible : Visibility.Hidden;
-
-                switch (control.LatheManufactureOrder.Status)
-                {
-                    case "Ready":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                        break;
-                    case "Problem":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialError"];
-                        break;
-                    case "Running":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryBlueVar"];
-                        break;
-                    case "Complete":
-                        control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialOnBackground"];
-                        break;
-                }
+                case "Ready":
+                    control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                    break;
+                case "Problem":
+                    control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialError"];
+                    break;
+                case "Running":
+                    control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryBlueVar"];
+                    break;
+                case "Complete":
+                    control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialOnBackground"];
+                    break;
             }
+
         }
 
         public DisplayLatheManufactureOrder()

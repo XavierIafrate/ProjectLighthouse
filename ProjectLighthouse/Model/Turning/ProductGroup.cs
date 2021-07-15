@@ -4,8 +4,9 @@ namespace ProjectLighthouse.Model
 {
     public class ProductGroup
     {
-        [PrimaryKey]
-        public string ID { get; set; }        
+        [PrimaryKey, AutoIncrement]
+        public int ID { get; set; }
+        public string GroupID { get; set; }
         public string MaterialCode { get; set; }
 
         // User facing

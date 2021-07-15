@@ -28,7 +28,7 @@ namespace ProjectLighthouse.View.UserControls
 
             control.DataContext = control.TurnedProduct;
 
-            if (!control.TurnedProduct.canBeManufactured())
+            if (!control.TurnedProduct.CanBeManufactured())
                 control.productText.Foreground = Brushes.Red;
 
             control.materialBadge.Visibility = String.IsNullOrEmpty(control.TurnedProduct.Material) ? Visibility.Hidden : Visibility.Visible;

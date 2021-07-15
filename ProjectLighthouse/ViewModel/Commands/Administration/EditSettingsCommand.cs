@@ -3,25 +3,24 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
-    public class deleteUserCommand : ICommand
+    public class EditSettingsCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
+        private MainViewModel viewModel;
 
-        private ManageUsersViewModel viewModel;
-
-        public deleteUserCommand(ManageUsersViewModel vm)
+        public EditSettingsCommand(MainViewModel vm)
         {
             viewModel = vm;
         }
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.UserRole == "admin";
+            return true;
         }
 
         public void Execute(object parameter)
         {
-            viewModel.DeleteUser();
+            MainViewModel.EditSettings();
         }
     }
 }

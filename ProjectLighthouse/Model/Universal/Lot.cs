@@ -28,18 +28,18 @@ namespace ProjectLighthouse.Model
         {
             return new Lot
             {
-                ID = this.ID,
-                ProductName = this.ProductName,
-                Order = this.Order,
-                AddedBy = this.AddedBy,
-                Quantity = this.Quantity,
-                Date = this.Date,
-                ExcelDate = this.ExcelDate,
-                IsReject = this.IsReject,
-                IsDelivered = this.IsDelivered,
-                MaterialBatch = this.MaterialBatch,
-                ModifiedBy = this.ModifiedBy,
-                ModifiedAt = this.ModifiedAt
+                ID = ID,
+                ProductName = ProductName,
+                Order = Order,
+                AddedBy = AddedBy,
+                Quantity = Quantity,
+                Date = Date,
+                ExcelDate = ExcelDate,
+                IsReject = IsReject,
+                IsDelivered = IsDelivered,
+                MaterialBatch = MaterialBatch,
+                ModifiedBy = ModifiedBy,
+                ModifiedAt = ModifiedAt
             };
 
         }

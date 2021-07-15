@@ -69,7 +69,7 @@ namespace ProjectLighthouse.View
             ManufactureOrderTextBlock.Text = Item.AssignedMO;
             SchedulingGrid.Visibility = App.CurrentUser.UserRole == "Scheduling" || App.CurrentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
             LotsListBox.ItemsSource = null;
-            LotsListBox.ItemsSource = Lots.Where(n=>n.ProductName == Item.ProductName).ToList();
+            LotsListBox.ItemsSource = Lots.Where(n => n.ProductName == Item.ProductName).ToList();
 
             if (Lots.Count > 0)
                 BatchTextBox.Text = Lots.Last().MaterialBatch;
@@ -116,7 +116,7 @@ namespace ProjectLighthouse.View
             DatabaseHelper.Update(Item);
 
             //Update master cycle time record
-            var product = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductName == Item.ProductName).ToList();
+            List<TurnedProduct> product = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductName == Item.ProductName).ToList();
             //should return only one!
             if (product != null)
             {
@@ -135,7 +135,7 @@ namespace ProjectLighthouse.View
                 MessageBox.Show("Failed to update product record.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             SaveExit = true;
-            this.Close();
+            Close();
         }
 
         private void PopulateCycleTimes()
@@ -150,7 +150,7 @@ namespace ProjectLighthouse.View
 
         private void CalculateCycleTime()
         {
-            var bc = new BrushConverter();
+            BrushConverter bc = new BrushConverter();
 
             if (Int32.TryParse(CycleTime_Min.Text, out int min))
             {
@@ -209,7 +209,7 @@ namespace ProjectLighthouse.View
 
             if (Int32.TryParse(QuantityNewLotTextBox.Text, out int n))
             {
-                Lot newLot = new Lot()
+                Lot newLot = new()
                 {
                     ProductName = Item.ProductName,
                     Order = Item.AssignedMO,

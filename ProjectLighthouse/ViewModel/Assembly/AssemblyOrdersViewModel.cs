@@ -36,7 +36,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private List<AssemblyOrderItem> orderItems;
-
         public List<AssemblyOrderItem> OrderItems
         {
             get { return orderItems; }
@@ -81,7 +80,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private List<AssemblyOrderItem> filteredOrderItems;
-
         public List<AssemblyOrderItem> FilteredOrderItems
         {
             get { return filteredOrderItems; }
@@ -140,25 +138,25 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public ICommand EditOrderCommand { get; set; }
-        public ICommand NewOrderCommand { get; set; }
+        public EditAssemblyOrderCommand EditOrderCommand { get; set; }
+        public NewAssemblyOrderCommand NewOrderCommand { get; set; }
         public ICommand GeneratePDFCommand { get; set; }
 
         #endregion
 
         public AssemblyOrdersViewModel()
         {
-            Orders = new List<AssemblyManufactureOrder>();
-            OrderItems = new List<AssemblyOrderItem>();
-            Drops = new List<Drop>();
-            SelectedOrder = new AssemblyManufactureOrder();
+            Orders = new();
+            OrderItems = new();
+            Drops = new();
+            SelectedOrder = new();
 
-            NewOrderCommand = new NewAssemblyOrderCommand(this);
-            EditOrderCommand = new EditAssemblyOrderCommand(this);
+            NewOrderCommand = new(this);
+            EditOrderCommand = new(this);
 
-            ModifiedVis = new Visibility();
-            OrderVis = new Visibility();
-            NothingFoundVis = new Visibility();
+            ModifiedVis = new();
+            OrderVis = new();
+            NothingFoundVis = new();
 
             LoadData();
             SelectedFilter = "All Active";
@@ -193,23 +191,24 @@ namespace ProjectLighthouse.ViewModel
             FilterOrders();
         }
 
-        public void EditOrder(AssemblyManufactureOrder order)
+        public void EditOrder()
         {
-            EditAssemblyOrderWindow EditWindow = new EditAssemblyOrderWindow();
-            EditWindow.Drops = new List<Drop>(FilteredDrops);
-            EditWindow.Order = order.Clone();
+            EditAssemblyOrderWindow EditWindow = new(SelectedOrder, FilteredDrops, FilteredOrderItems);
             EditWindow.ShowDialog();
+            if (EditWindow.SaveExit)
+                LoadData();
         }
 
-        public void GeneratePDF()
+        public static void GeneratePDF()
         {
 
         }
 
         public void NewOrder()
         {
-            NewAssemblyOrderWindow window = new NewAssemblyOrderWindow();
+            NewAssemblyOrderWindow window = new();
             window.ShowDialog();
+            LoadData();
         }
     }
 }

@@ -6,12 +6,10 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -121,7 +119,7 @@ namespace ProjectLighthouse.ViewModel
             newStats.TotalLots = Lots.Count;
             newStats.DeliveredLots = Lots.Where(n => n.IsDelivered).ToList().Count;
 
-            var dayConfig = Mappers.Xy<ChartModel>()
+            CartesianMapper<ChartModel> dayConfig = Mappers.Xy<ChartModel>()
                            .X(dayModel => dayModel.DateTime.Ticks)
                            .Y(dayModel => dayModel.Value);
 
@@ -255,7 +253,7 @@ namespace ProjectLighthouse.ViewModel
             List<StackedRowSeries> temporal = new();
 
             // Create Series
-            for(int i = 0; i < StateLabels.Length; i++)
+            for (int i = 0; i < StateLabels.Length; i++)
             {
                 StackedRowSeries stateSummary = new()
                 {
@@ -276,14 +274,14 @@ namespace ProjectLighthouse.ViewModel
             double OverallRuntime = 0;
             double OverallTime = 0;
 
-            for(int lathe = Lathes.Count-1; lathe >= 0; lathe--)
+            for (int lathe = Lathes.Count - 1; lathe >= 0; lathe--)
             {
-                List<MachineStatistics> data = MachineStatistics.Where(n => n.MachineID == Lathes[lathe].Id && n.DataTime.AddHours(24*7) > DateTime.Now).OrderBy(x => x.DataTime).ToList();
+                List<MachineStatistics> data = MachineStatistics.Where(n => n.MachineID == Lathes[lathe].Id && n.DataTime.AddHours(24 * 7) > DateTime.Now).OrderBy(x => x.DataTime).ToList();
                 if (data.Count == 0)
                     continue;
 
                 lathe_labels.Add(Lathes[lathe].FullName);
-                
+
                 DateTime last_time = data[0].DataTime;
 
                 double sRunning = 0;
@@ -319,11 +317,11 @@ namespace ProjectLighthouse.ViewModel
 
                 OverallTime += (sRunning + sSetting + sBreakdown + sIdle + sOffline);
 
-                var converter = new BrushConverter();
+                BrushConverter converter = new BrushConverter();
                 foreach (StackedRowSeries state in temporal)
                 {
-                    
-                    switch (state.Title) 
+
+                    switch (state.Title)
                     {
                         case "Running":
                             state.Values.Add(sRunning);
@@ -389,8 +387,8 @@ namespace ProjectLighthouse.ViewModel
 
             public ChartModel(DateTime dateTime, int value)
             {
-                this.DateTime = dateTime;
-                this.Value = value;
+                DateTime = dateTime;
+                Value = value;
             }
         }
 
@@ -402,9 +400,9 @@ namespace ProjectLighthouse.ViewModel
 
             public ValueByWeekNumber(double value, string machine, int week)
             {
-                this.Value = value;
-                this.MachineID = machine;
-                this.Week = week;
+                Value = value;
+                MachineID = machine;
+                Week = week;
             }
         }
         #endregion

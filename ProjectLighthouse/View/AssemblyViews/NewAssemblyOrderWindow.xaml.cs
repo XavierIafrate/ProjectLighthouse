@@ -3,7 +3,6 @@ using ProjectLighthouse.Model.Assembly;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +15,7 @@ namespace ProjectLighthouse.View.AssemblyViews
     /// </summary>
     public partial class NewAssemblyOrderWindow : Window
     {
+        #region Vars
         private AssemblyManufactureOrder newOrder;
         public AssemblyManufactureOrder NewOrder
         {
@@ -29,11 +29,12 @@ namespace ProjectLighthouse.View.AssemblyViews
         public List<AssemblyItem> Products { get; set; }
         public List<AssemblyGroup> TreeItems { get; set; }
         public List<BillOfMaterialsItem> BOMItems { get; set; }
+        #endregion
 
         public NewAssemblyOrderWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
+            DataContext = this;
             LoadData();
 
             newDrops = new List<Drop>();
@@ -46,7 +47,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             BOMItems = DatabaseHelper.Read<BillOfMaterialsItem>().ToList();
 
             TreeItems = new List<AssemblyGroup>();
-            List<string> groups = new List<string>();
+            List<string> groups = new();
             foreach (AssemblyItem product in Products)
             {
                 if (!groups.Contains(product.ProductGroup))
@@ -64,7 +65,7 @@ namespace ProjectLighthouse.View.AssemblyViews
 
             foreach (AssemblyGroup group in TreeItems)
             {
-                TreeViewItem ParentItem = new TreeViewItem();
+                TreeViewItem ParentItem = new();
                 ParentItem.Header = group.group;
                 ParentItem.Focusable = false;
                 foreach (AssemblyItem item in group.items)
@@ -151,7 +152,7 @@ namespace ProjectLighthouse.View.AssemblyViews
                     MessageBox.Show("Please enter a drop quantity.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
-                int num_solid_drops = (int)Math.Floor((double)QuantityRequired / (double)drop_quantity);
+                int num_solid_drops = (int)Math.Floor(QuantityRequired / (double)drop_quantity);
                 int trailing_quantity = QuantityRequired % drop_quantity;
 
                 //Debug.WriteLine($"Number of Drops: {num_solid_drops}");
@@ -202,10 +203,10 @@ namespace ProjectLighthouse.View.AssemblyViews
                     }
 
                     ComboBoxItem selected_day_week = (ComboBoxItem)DayOfWeekComboBox.SelectedValue;
-                    Int32.TryParse(selected_day_week.Tag.ToString(), out int day_of_week);
+                    int.TryParse(selected_day_week.Tag.ToString(), out int day_of_week);
 
                     ComboBoxItem selected_cardinal = (ComboBoxItem)cardinal_combobox.SelectedValue;
-                    Int32.TryParse(selected_cardinal.Tag.ToString(), out int week_num);
+                    int.TryParse(selected_cardinal.Tag.ToString(), out int week_num);
 
                     DateTime starting_date = MultiDropStartingDate.SelectedDate.Value;
 
@@ -238,7 +239,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             createOrderButton.IsEnabled = (newDrops.Count > 0 && AssemblyTree.SelectedItem != null);
         }
 
-        public DateTime GetNthDayOfMonth(int occurrance, DayOfWeek dayOfWeek, DateTime firstDayOfMonth)
+        public static DateTime GetNthDayOfMonth(int occurrance, DayOfWeek dayOfWeek, DateTime firstDayOfMonth)
         {
             DateTime i = firstDayOfMonth;
             DateTime result = new();
@@ -262,7 +263,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             return result;
         }
 
-        public int GetDayOfWeekAsInt(DateTime dateTime)
+        public static int GetDayOfWeekAsInt(DateTime dateTime)
         {
             return (int)(dateTime.DayOfWeek + 6) % 7; // shift so Mon=0, Sun=7
         }
@@ -270,7 +271,7 @@ namespace ProjectLighthouse.View.AssemblyViews
         private void CallOffDropQuantity_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
-            if (Int32.TryParse(TotalQuantityTextBox.Text, out int j))
+            if (int.TryParse(TotalQuantityTextBox.Text, out int j))
             {
                 QuantityRequired = j;
             }
@@ -297,7 +298,7 @@ namespace ProjectLighthouse.View.AssemblyViews
 
         private void TotalQuantityTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (Int32.TryParse(TotalQuantityTextBox.Text, out int j))
+            if (int.TryParse(TotalQuantityTextBox.Text, out int j))
             {
                 QuantityRequired = j;
             }
@@ -322,31 +323,9 @@ namespace ProjectLighthouse.View.AssemblyViews
                 AssemblyManufactureOrder newOrder = new() { Name = GetNewAssemblyOrderName(), CreatedAt = DateTime.Now, CreatedBy = App.CurrentUser.GetFullName(), Status = "Problem", ModifiedAt = DateTime.Now, RequiredProduct = selectedProduct };
                 DatabaseHelper.Insert<AssemblyManufactureOrder>(newOrder);
 
-                List<AssemblyItemExpansion> newOrderItems = new();
+                List<AssemblyItemExpansion> OrderItems = AssemblyHelper.ExplodeBillOfMaterials(targetProduct, QuantityRequired, BOMItems, Products);
 
-                newOrderItems.Add(new AssemblyItemExpansion() { Item = targetProduct, Checked = false, Quantity = QuantityRequired });
-
-
-                //expansion
-                bool complete = false;
-                while (!complete)
-                {
-                    List<AssemblyItemExpansion> tmpItems = new();
-                    foreach (AssemblyItemExpansion x in newOrderItems)
-                    {
-                        complete = true;
-                        if (!x.Checked)
-                        {
-                            complete = false;
-                            tmpItems.AddRange(GetChildren(x.Item, x.Quantity));
-                            x.Checked = true;
-                        };
-                    }
-
-                    newOrderItems.AddRange(tmpItems);
-                }
-
-                foreach (AssemblyItemExpansion x in newOrderItems)
+                foreach (AssemblyItemExpansion x in OrderItems)
                 {
                     DatabaseHelper.Insert<AssemblyOrderItem>(new()
                     {
@@ -365,27 +344,9 @@ namespace ProjectLighthouse.View.AssemblyViews
                     DatabaseHelper.Insert<Drop>(d);
                 }
 
-                this.Close();
+                Close();
                 MessageBox.Show($"Successfully created Assembly Order {newOrder.Name}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-
             }
-        }
-
-        private List<AssemblyItemExpansion> GetChildren(AssemblyItem parent, int parent_quantity)
-        {
-            List<BillOfMaterialsItem> items = BOMItems.Where(n => n.BOMID == parent.BillOfMaterials).ToList();
-            List<AssemblyItemExpansion> result = new();
-            if (items.Count > 0)
-            {
-                foreach (BillOfMaterialsItem i in items)
-                {
-                    result.Add(new() { Checked = false, Item = Products.SingleOrDefault(n => n.ProductNumber == i.ComponentItem), Quantity = i.Quantity * parent_quantity, Parent = parent.ProductNumber });
-                    if (result.Last().Item == null)
-                        Debug.WriteLine($"{i.ComponentItem} not found");
-                }
-            }
-
-            return result;
         }
 
         private static string GetNewAssemblyOrderName()
@@ -395,14 +356,5 @@ namespace ProjectLighthouse.View.AssemblyViews
             const string blank = "AM00000";
             return blank.Substring(0, 7 - strOrderNumber.Length) + strOrderNumber;
         }
-
-        private class AssemblyItemExpansion
-        {
-            public AssemblyItem Item { get; set; }
-            public string Parent { get; set; }
-            public int Quantity { get; set; }
-            public bool Checked { get; set; }
-        }
-
     }
 }

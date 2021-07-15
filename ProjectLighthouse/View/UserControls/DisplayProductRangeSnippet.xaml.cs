@@ -1,19 +1,10 @@
-﻿using System;
+﻿using ProjectLighthouse.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ProjectLighthouse.Model;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -44,23 +35,21 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayProductRangeSnippet control = d as DisplayProductRangeSnippet;
-
-            if (control == null)
+            if (d is not DisplayProductRangeSnippet control)
                 return;
 
             if (control.Items == null || control.Info == null)
                 return;
 
 
-            control.Visibility = string.IsNullOrEmpty(control.Info.ID) ? Visibility.Collapsed : Visibility.Visible;
-            if (string.IsNullOrEmpty(control.Info.ID))
+            control.Visibility = string.IsNullOrEmpty(control.Info.GroupID) ? Visibility.Collapsed : Visibility.Visible;
+            if (string.IsNullOrEmpty(control.Info.GroupID))
                 return;
 
             //if (control.Info == "M00142")
             //    control.Visibility = Visibility.Collapsed;
 
-            control.ProductGroupName.Text = control.Info.ID;
+            control.ProductGroupName.Text = control.Info.GroupID;
             control.Breadcrumb.Text = control.Info.Breadcrumb;
             control.ProductTitle.Text = control.Info.ProductTitle;
             control.ProductSubTitle.Text = " - " + control.Info.ProductSubTitle;
@@ -81,7 +70,7 @@ namespace ProjectLighthouse.View.UserControls
         }
 
         public DisplayProductRangeSnippet()
-        { 
+        {
             InitializeComponent();
         }
     }

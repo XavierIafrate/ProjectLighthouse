@@ -25,7 +25,7 @@ namespace ProjectLighthouse.View
         private void CreateProduct_Click(object sender, RoutedEventArgs e)
         {
             submitted = true;
-            this.Close();
+            Close();
         }
 
         private void SelectFile_Click(object sender, RoutedEventArgs e)

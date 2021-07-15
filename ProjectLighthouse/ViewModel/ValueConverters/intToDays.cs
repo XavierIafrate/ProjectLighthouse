@@ -11,10 +11,10 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             int seconds = (int)value;
             double dblSeconds = double.Parse(seconds.ToString());
 
-            double days = dblSeconds / (double)86400;
-            days *= (double)4;
+            double days = dblSeconds / 86400;
+            days *= 4;
             days = Math.Round(days, 0);
-            days /= (double)4;
+            days /= 4;
 
             return String.Format("{0:0.00}", days);
         }

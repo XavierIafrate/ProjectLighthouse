@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.Model;
-using ProjectLighthouse.ViewModel;
+﻿using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using Squirrel;
 using System;
@@ -25,34 +24,22 @@ namespace ProjectLighthouse
 
             if (App.CurrentUser == null)
                 return;
-
-            //viewModel = new();
-            //viewModel.window = this;
-
-
-            //viewModel = Resources["vm"] as MainViewModel;
-            //viewModel.window = this;
-            //viewModel.UpdateViewCommand.Execute(App.currentUser.DefaultView ?? "Orders");
-
-            //Squirrel --releasify Lighthouse.1.0.0.nupkg
-            AddVersionNumber();
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            CheckForUpdates();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
-        private void AddVersionNumber()
+        public void AddVersionNumber()
         {
+            if (App.CurrentUser == null)
+                return;
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-            this.Title += $" v.{versionInfo.FileVersion}";
+            Title += $" v.{versionInfo.FileVersion}";
             File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.CurrentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
         }
 
-        private async Task CheckForUpdates()
+        public async Task CheckForUpdates()
         {
-            using (var manager = new UpdateManager(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
+            using (UpdateManager manager = new(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
             {
                 await manager.UpdateApp();
             };
@@ -65,8 +52,8 @@ namespace ProjectLighthouse
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
                 {
                     DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                        yield return (T)child;
+                    if (child != null && child is T t)
+                        yield return t;
 
                     foreach (T childOfChild in FindVisualChildren<T>(child))
                         yield return childOfChild;
@@ -91,11 +78,10 @@ namespace ProjectLighthouse
         private async void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             Debug.WriteLine($"Key Pressed: {e.Key}");
-            if(e.Key.ToString() == "F8")
+            if (e.Key.ToString() == "F8")
             {
-                if(MessageBox.Show("Are you sure you want to update stock levels?", "Lighthouse Opera Sync", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show("Are you sure you want to update stock levels?", "Lighthouse Opera Sync", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    
                     await OperaHelper.UpdateStockLevelsAsync();
                     MessageBox.Show("Complete");
                 }

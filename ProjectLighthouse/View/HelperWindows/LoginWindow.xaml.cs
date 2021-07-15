@@ -20,8 +20,8 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
             users = new ObservableCollection<User>();
-            var usersList = DatabaseHelper.Read<User>().ToList();
-            foreach (var user in usersList)
+            System.Collections.Generic.List<User> usersList = DatabaseHelper.Read<User>().ToList();
+            foreach (User user in usersList)
             {
                 users.Add(user);
                 if (user.computerUsername == Environment.UserName)
@@ -51,12 +51,12 @@ namespace ProjectLighthouse.View
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            DragMove();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -91,7 +91,7 @@ namespace ProjectLighthouse.View
                         user.computerUsername = Environment.UserName;
                         DatabaseHelper.Update<User>(user);
                         auth_user = user;
-                        this.Close();
+                        Close();
                         return;
                     }
                     else

@@ -80,7 +80,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void CreateNewDelivery()
         {
-            CreateNewDeliveryWindow window = new CreateNewDeliveryWindow();
+            CreateNewDeliveryWindow window = new();
             window.ShowDialog();
             if (!window.SaveExit)
                 return;

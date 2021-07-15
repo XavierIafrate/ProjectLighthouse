@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel;
-using System.Diagnostics;
 using System.Windows;
 
 namespace ProjectLighthouse
@@ -22,6 +21,9 @@ namespace ProjectLighthouse
 
             VM.LoginRoutine();
             Window.Show();
+
+            Window.AddVersionNumber();
+            _ = Window.CheckForUpdates();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ProjectLighthouse.View
         public RequestView()
         {
             viewModel = new RequestViewModel() { window = this };
-            this.DataContext = viewModel;
+            DataContext = viewModel;
             InitializeComponent();
             //viewModel = Resources["vm"] as RequestViewModel;
 
@@ -54,7 +54,7 @@ namespace ProjectLighthouse.View
         private void saveChangesButton_Click(object sender, RoutedEventArgs e)
         {
             // get qty
-            TextBox textbox = quantityTextbox as TextBox;
+            TextBox textbox = quantityTextbox;
             if (string.IsNullOrEmpty(textbox.Text))
             {
                 return;

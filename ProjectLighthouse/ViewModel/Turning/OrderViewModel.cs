@@ -22,7 +22,7 @@ namespace ProjectLighthouse.ViewModel
         public List<TurnedProduct> SelectedProducts { get; set; }
         public List<ProductGroup> ProductGroups { get; set; }
         public ProductGroup SelectedProductGroup { get; set; }
-        public List<MachineStatistics> machineStatistics { get; set; }
+        public List<MachineStatistics> MachineStatistics { get; set; }
         public List<Lot> Lots { get; set; }
 
         private LatheManufactureOrder selectedLatheManufactureOrder;
@@ -52,8 +52,8 @@ namespace ProjectLighthouse.ViewModel
         public string RunInfoText
         {
             get { return runInfoText; }
-            set 
-            { 
+            set
+            {
                 runInfoText = value;
                 OnPropertyChanged("RunInfoText");
             }
@@ -78,6 +78,19 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
         }
+
+        private string searchTerm;
+
+        public string SearchTerm
+        {
+            get { return searchTerm; }
+            set 
+            { 
+                searchTerm = value.ToUpper();
+                Search();
+            }
+        }
+
 
         #region Visibility variables
         private Visibility liveInfoVis;
@@ -144,7 +157,7 @@ namespace ProjectLighthouse.ViewModel
 
             LatheManufactureOrders = new();
             FilteredOrders = new();
-            machineStatistics = new();
+            MachineStatistics = new();
             LMOItems = new();
             FilteredLMOItems = new();
             SelectedLatheManufactureOrder = new();
@@ -166,18 +179,18 @@ namespace ProjectLighthouse.ViewModel
 
         #region MachineStats Display
 
-        private async void GetLatestStats()
+        private void GetLatestStats()
         {
-            machineStatistics = null;
-            machineStatistics = MachineStatsHelper.GetStats();
-            machineStatistics ??= new List<MachineStatistics>();
+            MachineStatistics = null;
+            MachineStatistics = MachineStatsHelper.GetStats();
+            MachineStatistics ??= new List<MachineStatistics>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
-            if (machineStatistics.Count == 0)
+            if (MachineStatistics.Count == 0)
                 return;
 
             string latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
 
-            DisplayStats = machineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
+            DisplayStats = MachineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
 
             if (DisplayStats.DataTime.AddHours(1) < DateTime.Now)
                 LiveInfoVis = Visibility.Collapsed;
@@ -187,9 +200,9 @@ namespace ProjectLighthouse.ViewModel
         #region Loading
         private void GetLatheManufactureOrders()
         {
-            var orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
+            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             LatheManufactureOrders.Clear();
-            foreach (var order in orders)
+            foreach (LatheManufactureOrder order in orders)
                 LatheManufactureOrders.Add(order);
         }
 
@@ -209,6 +222,8 @@ namespace ProjectLighthouse.ViewModel
                 case "Complete":
                     FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.IsComplete).OrderByDescending(n => n.CreatedAt));
                     break;
+                case "Search":
+                    break;
             }
 
             if (FilteredOrders.Count > 0)
@@ -219,9 +234,9 @@ namespace ProjectLighthouse.ViewModel
 
         private void GetLatheManufactureOrderItems()
         {
-            var items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
             LMOItems.Clear();
-            foreach (var item in items)
+            foreach (LatheManufactureOrderItem item in items)
             {
                 LMOItems.Add(item);
             }
@@ -235,7 +250,7 @@ namespace ProjectLighthouse.ViewModel
             string selectedMO = SelectedLatheManufactureOrder.Name;
             FilteredLMOItems.Clear();
 
-            foreach (var item in LMOItems)
+            foreach (LatheManufactureOrderItem item in LMOItems)
                 if (item.AssignedMO == selectedMO)
                     FilteredLMOItems.Add(item);
 
@@ -245,6 +260,55 @@ namespace ProjectLighthouse.ViewModel
         }
 
         #endregion
+
+        public void Search()
+        {
+            if (string.IsNullOrEmpty(SearchTerm))
+            {
+                FilterOrders("All Active");
+                return;
+            }
+
+            List<LatheManufactureOrder> Results = new();
+            List<string> FoundOrders = new();
+
+            foreach(LatheManufactureOrder order in LatheManufactureOrders)
+            {
+                if (order.Name.Contains(SearchTerm))
+                {
+                    Results.Add(order);
+                    FoundOrders.Add(order.Name);
+                    continue;
+                }
+                    
+
+                if(order.POReference.Contains(SearchTerm) && order.POReference != "N/A" && !string.IsNullOrEmpty(order.POReference))
+                {
+                    Results.Add(order);
+                    FoundOrders.Add(order.Name);
+                    continue;
+                }
+            }
+
+
+            List<string> FoundOrdersByItem = new();
+            foreach (LatheManufactureOrderItem item in LMOItems)
+            {
+                if (FoundOrders.Contains(item.AssignedMO))
+                    continue;
+
+                if (item.ProductName.Contains(SearchTerm))
+                {
+                    FoundOrdersByItem.Add(item.AssignedMO);
+                    continue;
+                }
+            }
+
+            Results.AddRange(LatheManufactureOrders.Where(x => FoundOrdersByItem.Contains(x.Name)));
+
+            FilteredOrders = Results;
+            FilterOrders("Search");
+        }
 
         private void LoadOrderCard()
         {
@@ -261,7 +325,7 @@ namespace ProjectLighthouse.ViewModel
             LoadLMOItems();
 
             ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
-            LiveInfoVis = SelectedLatheManufactureOrder.Status == "Running" && machineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
+            LiveInfoVis = SelectedLatheManufactureOrder.Status == "Running" && MachineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
 
             if (LiveInfoVis == Visibility.Visible)
                 GetLatestStats();
@@ -271,23 +335,23 @@ namespace ProjectLighthouse.ViewModel
             RunInfoText = !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine) ?
                 string.Format($"Assigned to {selectedLatheManufactureOrder.AllocatedMachine}, starting {SelectedLatheManufactureOrder.StartDate:dddd, MMMM d}{GetDaySuffix(SelectedLatheManufactureOrder.StartDate.Day)}") : "Not scheduled";
 
-            LoadProductInfoCard();
+            //LoadProductInfoCard();
         }
 
         private void LoadProductInfoCard()
         {
             SelectedProducts = new();
-            foreach(LatheManufactureOrderItem item in FilteredLMOItems)
+            foreach (LatheManufactureOrderItem item in FilteredLMOItems)
             {
                 List<TurnedProduct> tmp = Products.Where(n => n.ProductName == item.ProductName).ToList();
                 if (tmp.Count > 0)
                     SelectedProducts.Add(tmp.First());
             }
 
-            if(SelectedProducts.Count != 0)
+            if (SelectedProducts.Count != 0)
             {
                 TurnedProduct tmp = SelectedProducts.First();
-                List<ProductGroup> matches = ProductGroups.Where(x=>x.ID == tmp.ProductName.Substring(0, 5) && x.MaterialCode == tmp.Material).ToList();
+                List<ProductGroup> matches = ProductGroups.Where(x => x.GroupID == tmp.ProductName.Substring(0, 5) && x.MaterialCode == tmp.Material).ToList();
                 SelectedProductGroup = matches.Count != 0 ? matches.First() : new();
             }
 

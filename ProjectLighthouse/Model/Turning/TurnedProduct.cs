@@ -5,8 +5,8 @@ namespace ProjectLighthouse.Model
 {
     public class TurnedProduct
     {
-        private const double MaxDiameter = (double)38;
-        private const double MaxLength = (double)150;
+        private const double MaxDiameter = 20;
+        private const double MaxLength = 90;
 
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
@@ -43,13 +43,13 @@ namespace ProjectLighthouse.Model
         public int GetRecommendedQuantity()
         {
             const int targetMonthsStock = 12;
-            double scaleFactor = Convert.ToDouble(targetMonthsStock) / (double)18;
+            double scaleFactor = Convert.ToDouble(targetMonthsStock) / 18;
             double toMake = Math.Max(QuantitySold * scaleFactor - QuantityInStock, 0);
 
-            return Convert.ToInt32(Math.Round(toMake / (double)100, 0) * (double)100);
+            return Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
         }
 
-        public bool canBeManufactured()
+        public bool CanBeManufactured()
         {
             return (MajorLength <= MaxLength && MajorDiameter <= MaxDiameter);
         }

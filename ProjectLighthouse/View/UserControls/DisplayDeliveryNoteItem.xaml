@@ -6,9 +6,11 @@
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
              mc:Ignorable="d">
     <Grid Margin="2">
-        <Rectangle Fill="{StaticResource materialBackground}"
-                       Stroke="Black"
-                       StrokeThickness="1"/>
+        <Rectangle Fill="{StaticResource materialBackground}" RadiusX="3" RadiusY="3">
+            <Rectangle.Effect>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="7" Direction="220" Color="Black" Opacity="0.1"/>
+            </Rectangle.Effect>
+        </Rectangle>
         <Grid VerticalAlignment="Center" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>

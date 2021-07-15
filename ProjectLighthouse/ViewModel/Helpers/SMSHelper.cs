@@ -12,7 +12,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             using (HttpClient client = new HttpClient())
             {
-                var response = await client.GetAsync($"https://api-mapper.clicksend.com/http/v2/send.php?method=http&username={USERNAME}&key={API_KEY}&to={PhoneNumber}&message={Message}&senderid={SENDER_NAME}");
+                HttpResponseMessage response = await client.GetAsync($"https://api-mapper.clicksend.com/http/v2/send.php?method=http&username={USERNAME}&key={API_KEY}&to={PhoneNumber}&message={Message}&senderid={SENDER_NAME}");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
             }

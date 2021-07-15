@@ -19,7 +19,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             set
             {
                 product = value;
-                this.Title = string.Format("New Routing: {0}", product.Routing);
+                Title = string.Format("New Routing: {0}", product.Routing);
             }
         }
 
@@ -54,7 +54,7 @@ namespace ProjectLighthouse.View.AssemblyViews
             {
                 DatabaseHelper.Insert<Routing>(newRouting);
                 wasSaved = true;
-                this.Close();
+                Close();
             }
         }
 

@@ -15,8 +15,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             string filename = string.Format("{0}_{1:ddMMyy_HHmmss}.csv", filePrefix, DateTime.Now);
             filename = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), filename);
-            using (var writer = new StreamWriter(filename))
-            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            using (StreamWriter writer = new StreamWriter(filename))
+            using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
                 csv.WriteRecords(stuff);
             }
@@ -38,8 +38,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             try
             {
-                using (var reader = new StreamReader(path))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                using (StreamReader reader = new StreamReader(path))
+                using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Read();
                     csv.ReadHeader();

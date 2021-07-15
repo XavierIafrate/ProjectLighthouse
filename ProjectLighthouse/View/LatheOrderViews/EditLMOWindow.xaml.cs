@@ -24,8 +24,8 @@ namespace ProjectLighthouse.View
             InitializeComponent();
 
             SaveExit = false;
-            items = new List<LatheManufactureOrderItem>(i);
-            lots = new List<Lot>(l);
+            items = new(i);
+            lots = new(l);
             order = (LatheManufactureOrder)o.Clone(); // break the reference
 
             PopulateControls();
@@ -81,10 +81,10 @@ namespace ProjectLighthouse.View
             //    Visibility.Visible : Visibility.Collapsed;
 
             List<User> users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
-            List<string> setterUsers = new List<string>();
+            List<string> setterUsers = new();
 
             // Add Production team to setters combobox by full name
-            foreach (var user in users)
+            foreach (User user in users)
                 setterUsers.Add(user.GetFullName());
 
             //setters.ItemsSource = setterUsers.ToList();
@@ -100,12 +100,12 @@ namespace ProjectLighthouse.View
 
             DatabaseHelper.Update(order);
             SaveExit = true;
-            this.Close();
+            Close();
         }
 
         private void AssignValues()
         {
-            TextRange textRange = new TextRange(notes.Document.ContentStart, notes.Document.ContentEnd);
+            TextRange textRange = new(notes.Document.ContentStart, notes.Document.ContentEnd);
 
             if (textRange.Text.Length > 2)
                 order.Notes = textRange.Text[0..^2];
@@ -151,7 +151,7 @@ namespace ProjectLighthouse.View
         {
             DisplayLMOItems control = sender as DisplayLMOItems;
             EditLMOItemWindow editWindow = new(control.LatheManufactureOrderItem, lots);
-            this.Hide();
+            Hide();
             editWindow.ShowDialog();
 
             if (editWindow.SaveExit)
@@ -160,7 +160,7 @@ namespace ProjectLighthouse.View
                 lots = new List<Lot>(editWindow.Lots);
                 RefreshItems();
             }
-            this.ShowDialog();
+            ShowDialog();
         }
 
         public void RefreshItems()
@@ -176,7 +176,7 @@ namespace ProjectLighthouse.View
         private void calculateTime()
         {
             int estimatedTimeSeconds = 0;
-            foreach (var item in items)
+            foreach (LatheManufactureOrderItem item in items)
                 estimatedTimeSeconds += item.CycleTime * item.TargetQuantity;
 
             order.TimeToComplete = estimatedTimeSeconds;
@@ -242,7 +242,7 @@ namespace ProjectLighthouse.View
 
         private void closeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         // Timestamp and Initials keyb shortcut
@@ -251,11 +251,8 @@ namespace ProjectLighthouse.View
             RichTextBox richTextBox = sender as RichTextBox;
             if (e.Key == Key.F2)
             {
-                TextRange range = new TextRange(richTextBox.Document.ContentEnd, richTextBox.Document.ContentEnd);
-                range.Text = string.Format("({0:dd/MM/yy HH:mm} - {1}{2}) ",
-                    DateTime.Now,
-                    App.CurrentUser.FirstName[0].ToString().ToUpper(),
-                    App.CurrentUser.LastName[0].ToString().ToUpper());
+                TextRange range = new(richTextBox.Document.ContentEnd, richTextBox.Document.ContentEnd);
+                range.Text = $"({DateTime.Now:dd/MM/yy HH:mm} - {App.CurrentUser.FirstName[0].ToString().ToUpper()}{App.CurrentUser.LastName[0].ToString().ToUpper()}) ";
                 Debug.WriteLine(App.CurrentUser.FirstName);
                 Debug.WriteLine(App.CurrentUser.FirstName[0].ToString());
                 TextPointer caretPos = richTextBox.CaretPosition;

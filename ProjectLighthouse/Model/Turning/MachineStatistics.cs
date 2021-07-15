@@ -90,7 +90,7 @@ namespace ProjectLighthouse.Model
             }
 
             List<string> errors = getErrors();
-            foreach (var error in errors)
+            foreach (string error in errors)
             {
                 if (error.ToUpper().Contains("SETTING"))
                 {

@@ -61,7 +61,7 @@ namespace ProjectLighthouse.ViewModel
         {
 
             List<MachineLiveChartModel> results = new();
-            var dayConfig = Mappers.Xy<ChartModel>()
+            CartesianMapper<ChartModel> dayConfig = Mappers.Xy<ChartModel>()
                            .X(dayModel => dayModel.DateTime.Ticks)
                            .Y(dayModel => dayModel.Value);
 
@@ -88,7 +88,7 @@ namespace ProjectLighthouse.ViewModel
                 DateTime start = DateTime.Now;
 
 
-                var temporalValues = new ChartModel[relevantStats.Count];
+                ChartModel[] temporalValues = new ChartModel[relevantStats.Count];
                 int i = 0;
 
                 foreach (MachineStatistics stat in relevantStats)
@@ -121,8 +121,8 @@ namespace ProjectLighthouse.ViewModel
 
             public ChartModel(DateTime dateTime, int value)
             {
-                this.DateTime = dateTime;
-                this.Value = value;
+                DateTime = dateTime;
+                Value = value;
             }
         }
     }

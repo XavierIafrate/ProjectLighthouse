@@ -1,221 +1,263 @@
-﻿<UserControl x:Class="ProjectLighthouse.View.AssemblyViews.AssemblyOrdersView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ProjectLighthouse.View.AssemblyViews"
-             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.AssemblyViews.AssemblyOrdersView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.AssemblyViews"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
     <UserControl.Resources>
-        <vm:AssemblyOrdersViewModel x:Key="vm"/>
+        <vm:AssemblyOrdersViewModel x:Key="vm" />
     </UserControl.Resources>
 
-    <Grid Background="White" 
-          DataContext="{StaticResource vm}"
-          Margin="10">
+    <Grid
+        Margin="10"
+        Background="White"
+        DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" MinWidth="300" MaxWidth="400"/>
+            <ColumnDefinition
+                Width="300"
+                MinWidth="300"
+                MaxWidth="400" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <Button Content="+ New Order"
-                    Grid.Column="1"
-                    Style="{StaticResource ModernGreenButtonTemplate}"
-                    Margin="0,5"
-                    Command="{Binding NewOrderCommand}"/>
-            <ScrollViewer VerticalScrollBarVisibility="Auto"
-                          Grid.Row="1"
-                          Grid.ColumnSpan="2">
-                <ListBox ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                     SelectedItem="{Binding SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     HorizontalContentAlignment="Stretch">
+            <Button
+                Grid.Column="1"
+                Margin="0,5"
+                Command="{Binding NewOrderCommand}"
+                Content="+ New Order"
+                Style="{StaticResource ModernGreenButtonTemplate}" />
+            <ScrollViewer
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                VerticalScrollBarVisibility="Auto">
+                <ListBox
+                    HorizontalContentAlignment="Stretch"
+                    ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <uc:DisplayAssemblyManufactureOrder Order="{Binding}"/>
+                            <uc:DisplayAssemblyManufactureOrder Order="{Binding}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </ScrollViewer>
-            <StatusBar Background="Transparent"
-                       Margin="0,5,0,0"
-                       Grid.ColumnSpan="2"
-                       Grid.Row="2"
-                       HorizontalAlignment="Right">
-                <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}"/>
-                <Separator Margin="5,0" Background="LightGray"/>
-                <TextBlock Text="Filter by:" 
-                       VerticalAlignment="Center"
-                       Margin="0,0,10,0"/>
+            <StatusBar
+                Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Margin="0,5,0,0"
+                HorizontalAlignment="Right"
+                Background="Transparent">
+                <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
+                <Separator Margin="5,0" Background="LightGray" />
+                <TextBlock
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    Text="Filter by:" />
                 <ComboBox Width="100" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBoxItem Content="All Active" IsSelected="True"/>
-                    <ComboBoxItem Content="Complete"/>
+                    <ComboBoxItem Content="All Active" IsSelected="True" />
+                    <ComboBoxItem Content="Complete" />
                 </ComboBox>
             </StatusBar>
         </Grid>
 
-        <GridSplitter Grid.Column="1" Margin="2,0"
-                      Width="3" Background="White"
-                      VerticalAlignment="Stretch" 
-                      HorizontalAlignment="Center"/>
+        <GridSplitter
+            Grid.Column="1"
+            Width="3"
+            Margin="2,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch"
+            Background="White" />
 
-        <ScrollViewer Grid.Column="2" Grid.RowSpan="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            VerticalScrollBarVisibility="Auto">
             <Grid>
-                <TextBlock Text="No orders found"
-                         FontSize="20"
-                         FontStyle="Italic"
-                         Foreground="#888888"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center"
-                         Visibility="{Binding NothingFoundVis}"/>
-                <StackPanel MaxWidth="700" Margin="25,10" Visibility="{Binding OrderVis}">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="20"
+                    FontStyle="Italic"
+                    Foreground="#888888"
+                    Text="No orders found"
+                    Visibility="{Binding NothingFoundVis}" />
+                <StackPanel
+                    MaxWidth="700"
+                    Margin="25,10"
+                    Visibility="{Binding OrderVis}">
                     <Grid>
                         <Rectangle RadiusX="10" RadiusY="10">
                             <Rectangle.Effect>
-                                <DropShadowEffect BlurRadius="15" 
-                                          Direction="220" 
-                                          ShadowDepth="5" 
-                                          Color="#FF000000"
-                                          Opacity="0.3"/>
+                                <DropShadowEffect
+                                    BlurRadius="15"
+                                    Direction="220"
+                                    Opacity="0.3"
+                                    ShadowDepth="5"
+                                    Color="#FF000000" />
                             </Rectangle.Effect>
                             <Rectangle.Fill>
-                                <SolidColorBrush Color="White"/>
+                                <SolidColorBrush Color="White" />
                             </Rectangle.Fill>
                         </Rectangle>
                         <StackPanel Margin="10">
                             <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding SelectedOrder.Name, FallbackValue='A00000'}"
-                                               FontSize="35"
-                                               FontWeight="Bold"
-                                               Margin="10,0"/>
-                                    <Button Grid.Column="2" 
-                                            Content="Edit" 
-                                            Style="{StaticResource ButtonTemplate}"
-                                            Command="{Binding EditOrderCommand}"
-                                            CommandParameter="{Binding SelectedOrder}"/>
-                                    <!--<Button Content="Generate PDF" 
-                                            Style="{StaticResource ButtonTemplate}" 
-                                            Grid.Column="3"/>-->
+                                    <TextBlock
+                                        Margin="10,0"
+                                        FontSize="35"
+                                        FontWeight="Bold"
+                                        Text="{Binding SelectedOrder.Name, FallbackValue='A00000'}" />
+                                    <Button
+                                        Grid.Column="2"
+                                        Command="{Binding EditOrderCommand}"
+                                        Style="{StaticResource ButtonTemplate}">
+                                        <Button.Content>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="M6 2C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H10V20.1L20 10.1V8L14 2H6M13 3.5L18.5 9H13V3.5M20.1 13C20 13 19.8 13.1 19.7 13.2L18.7 14.2L20.8 16.3L21.8 15.3C22 15.1 22 14.7 21.8 14.5L20.5 13.2C20.4 13.1 20.3 13 20.1 13M18.1 14.8L12 20.9V23H14.1L20.2 16.9L18.1 14.8Z"
+                                                      Margin="0,0,5,0"
+                                                      Fill="{StaticResource materialOnPrimary}" Height="10" Stretch="Fill" Width="8"/>
+                                                <TextBlock Text="Edit"/>
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
                                 </Grid>
-                                <TextBlock Text="{Binding SelectedOrder.POReference, FallbackValue='POR123456'}"
-                                           FontSize="18"
-                                           Foreground="{StaticResource materialPrimary}"
-                                           Margin="10,0"/>
-                                <Separator Margin="5,10,5,5"/>
+                                <TextBlock
+                                    Margin="10,0"
+                                    FontSize="18"
+                                    Foreground="{StaticResource materialPrimary}"
+                                    Text="{Binding SelectedOrder.POReference, FallbackValue='POR123456'}" />
+                                <Separator Margin="5,10,5,5" />
                                 <Grid Margin="15,0">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Style="{StaticResource accentTextStyle}">
-                                        <Run Text="Created by"/>
-                                        <Run Text="{Binding SelectedOrder.CreatedBy, FallbackValue='Kyle Brovloski'}"/>
+                                        <Run Text="Created by" />
+                                        <Run Text="{Binding SelectedOrder.CreatedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
-                                    <TextBlock Text="{Binding SelectedOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
-                                               Style="{StaticResource accentTextStyle}"
-                                               Grid.Column="2"
-                                               HorizontalAlignment="Right"/>
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        Style="{StaticResource accentTextStyle}"
+                                        Text="{Binding SelectedOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
 
-                                    <TextBlock Style="{StaticResource accentTextStyle}"
-                                               Grid.Row="1"
-                                               Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
-                                        <Run Text="Modified by"/>
-                                        <Run Text="{Binding SelectedOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}"/>
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Style="{StaticResource accentTextStyle}"
+                                        Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
+                                        <Run Text="Modified by" />
+                                        <Run Text="{Binding SelectedOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
 
-                                    <TextBlock Text="{Binding SelectedOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
-                                               Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource accentTextStyle}"
-                                               HorizontalAlignment="Right"
-                                               Grid.Column="2"
-                                               Grid.Row="1"/>
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        Style="{StaticResource accentTextStyle}"
+                                        Text="{Binding SelectedOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
+                                        Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
                                 </Grid>
-                                <Separator Margin="5"/>
+                                <Separator Margin="5" />
                             </StackPanel>
                             <StackPanel Margin="10">
 
-                                <ItemsControl ItemsSource="{Binding FilteredOrderItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                  Margin="5"
-                                                  HorizontalContentAlignment="Stretch">
+                                <ItemsControl
+                                    Margin="5"
+                                    HorizontalContentAlignment="Stretch"
+                                    ItemsSource="{Binding FilteredOrderItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Margin="10,3">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="auto" />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding ProductName}"/>
-                                                <TextBlock Text="{Binding QuantityRequired,StringFormat='{}{0:#,##0} pcs'}" Grid.Column="2"/>
+                                                <TextBlock Text="{Binding ProductName}" />
+                                                <TextBlock Grid.Column="2" Text="{Binding QuantityRequired, StringFormat='{}{0:#,##0} pcs'}" />
+                                                <TextBlock Grid.Column="3" Text="{Binding QuantityReady, StringFormat='{}{0:#,##0} pcs'}" />
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
-                                <TextBlock Text="{Binding FilteredDrops.Count,StringFormat='{}Drops ({0})'}"
-                                           Style="{StaticResource subtitleTextStyle}"/>
+                                <TextBlock Style="{StaticResource subtitleTextStyle}" Text="{Binding FilteredDrops.Count, StringFormat='{}Drops ({0})'}" />
                                 <Grid>
-                                    <Rectangle Fill="{StaticResource materialBackground}" 
-                                               Stroke="{StaticResource materialPrimary}" 
-                                               RadiusX="5" RadiusY="5"/>
-                                    <ItemsControl ItemsSource="{Binding FilteredDrops, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                  Margin="5"
-                                                  HorizontalContentAlignment="Stretch">
+                                    <Rectangle
+                                        Fill="{StaticResource materialBackground}"
+                                        RadiusX="5"
+                                        RadiusY="5"
+                                        Stroke="{StaticResource materialPrimary}" />
+                                    <ItemsControl
+                                        Margin="5"
+                                        HorizontalContentAlignment="Stretch"
+                                        ItemsSource="{Binding FilteredDrops, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid Margin="10,3">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="auto"/>
+                                                        <ColumnDefinition Width="auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="auto" />
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Text="{Binding Quantity,StringFormat='{}{0:#,##0} pcs'}"/>
-                                                    <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dddd, dd/MM/yy}'}" Grid.Column="2"/>
+                                                    <TextBlock Text="{Binding Quantity, StringFormat='{}{0:#,##0} pcs'}" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding DateRequired, StringFormat='{}{0:dddd, dd/MM/yy}'}" />
                                                 </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </Grid>
                             </StackPanel>
-                            <Separator Margin="0,5"/>
+                            <Separator Margin="0,5" />
                             <StackPanel Margin="10">
-                                <TextBlock Text="Notes"
-                                           Style="{StaticResource subtitleTextStyle}"/>
+                                <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Notes" />
                                 <Grid>
-                                    <Rectangle Fill="White" Stroke="{StaticResource materialPrimary}" StrokeThickness="1" RadiusX="6" RadiusY="6"/>
-                                    <TextBlock Text="{Binding SelectedOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
-                                                   Margin="10,6"
-                                                   Padding="0,0,0,2"
-                                                   TextWrapping="Wrap"/>
+                                    <Rectangle
+                                        Fill="White"
+                                        RadiusX="6"
+                                        RadiusY="6"
+                                        Stroke="{StaticResource materialPrimary}"
+                                        StrokeThickness="1" />
+                                    <TextBlock
+                                        Margin="10,6"
+                                        Padding="0,0,0,2"
+                                        Text="{Binding SelectedOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
+                                        TextWrapping="Wrap" />
                                 </Grid>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
-                
+
                 </StackPanel>
             </Grid>
         </ScrollViewer>

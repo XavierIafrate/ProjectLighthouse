@@ -55,7 +55,7 @@ namespace ProjectLighthouse.View
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
@@ -64,7 +64,7 @@ namespace ProjectLighthouse.View
             AssignRoutingsAndBillOfMaterials();
             DatabaseHelper.Insert<AssemblyItem>(tmpItem);
             addedNew = true;
-            this.Close();
+            Close();
         }
 
         private void AssignRoutingsAndBillOfMaterials()

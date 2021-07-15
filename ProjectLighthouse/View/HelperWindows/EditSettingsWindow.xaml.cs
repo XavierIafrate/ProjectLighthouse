@@ -26,7 +26,7 @@ namespace ProjectLighthouse.View
                 DefaultView = "Schedule"
             };
             helperText.Visibility = Visibility.Collapsed;
-            this.DataContext = App.CurrentUser;
+            DataContext = App.CurrentUser;
             foreach (ComboBoxItem item in defaultViewComboBox.Items)
             {
                 Debug.WriteLine($"{item.Content} - {user.DefaultView}");

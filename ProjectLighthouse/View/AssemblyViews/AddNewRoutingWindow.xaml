@@ -1,39 +1,42 @@
-﻿<Window x:Class="ProjectLighthouse.View.AssemblyViews.AddNewRoutingWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ProjectLighthouse.View.AssemblyViews"
-        mc:Ignorable="d"
-        Title="New Routing"
-        SizeToContent="WidthAndHeight"
-        ResizeMode="NoResize">
-    <StackPanel Margin="20">
-        <TextBlock Text="Add New Routing" Style="{StaticResource heroTextStyle}"/>
-        <Separator/>
-        <TextBlock Text="Description"/>
-        <TextBox Name="DescriptionTextBox"/>
+﻿<Window
+    x:Class="ProjectLighthouse.View.AssemblyViews.AddNewRoutingWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.AssemblyViews"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="New Routing"
+    ResizeMode="NoResize"
+    SizeToContent="WidthAndHeight"
+    mc:Ignorable="d">
+    <StackPanel Margin="30,20">
+        <TextBlock Style="{StaticResource windowTitleTextStyle}" Text="Add New Routing" />
+        <Separator />
+        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Description" />
+        <TextBox Name="DescriptionTextBox" />
 
-        <TextBlock Text="Workstation"/>
+        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Workstation" />
         <ComboBox x:Name="WorkstationComboBox">
-            <ComboBoxItem Content="Mill"/>
-            <ComboBoxItem Content="Lathe"/>
-            <ComboBoxItem Content="Assembly"/>
-            <ComboBoxItem Content="Spark Eroder"/>
+            <ComboBoxItem Content="Mill" />
+            <ComboBoxItem Content="Lathe" />
+            <ComboBoxItem Content="Assembly" />
+            <ComboBoxItem Content="Spark Eroder" />
         </ComboBox>
 
 
-        <TextBlock Text="Setup time (minutes)"/>
-        <TextBox Name="SetupTimeTextBox"/>
+        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Setup time (minutes)" />
+        <TextBox Name="SetupTimeTextBox" />
 
-        <TextBlock Text="Cycle Time (minutes)"/>
-        <TextBox Name="CycleTimeTextBox"/>
+        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Cycle Time (minutes)" />
+        <TextBox Name="CycleTimeTextBox" />
 
-        <TextBlock Text="Quantity per cycle time batch"/>
-        <TextBox Name="QuantityPerCycleTextBox"/>
-        <Button Style="{StaticResource GreenButtonTemplate}"
-                Content="Add Routing"
-                x:Name="AddButton"
-                Click="AddButton_Click"/>
+        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Quantity per batch" />
+        <TextBox Name="QuantityPerCycleTextBox" />
+        <Button
+            x:Name="AddButton"
+            HorizontalAlignment="Right"
+            Click="AddButton_Click"
+            Content="Add Routing"
+            Style="{StaticResource GreenButtonTemplate}" />
     </StackPanel>
 </Window>
