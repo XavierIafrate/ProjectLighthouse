@@ -13,7 +13,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class OperaHelper
     {
-        private const string dbFile = @"C:\Users\xavie\Desktop\a_cname.dbf";
+        private const string dbFile = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cname.dbf";
 
         public static async Task UpdateStockLevelsAsync()
         {
@@ -36,7 +36,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             List<OperaFields> results = new();
 
-            using (var dbfTable = new DbfTable(dbFile, Encoding.UTF8))
+            using (DbfTable dbfTable = new DbfTable(dbFile, Encoding.UTF8))
             {
                 DbfHeader header = dbfTable.Header;
                 Debug.WriteLine($"{header.RecordCount} in Automotion CNAME table.");
