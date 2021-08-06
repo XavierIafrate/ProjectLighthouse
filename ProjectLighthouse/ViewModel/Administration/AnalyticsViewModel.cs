@@ -26,9 +26,6 @@ namespace ProjectLighthouse.ViewModel
         private List<MachineStatistics> MachineStatistics { get; set; }
 
         //public DateTime InitialDateTime { get; set; }
-        public Func<double, string> TimeFormatter { get; set; }
-        public Func<double, string> QuantityFormatter { get; set; }
-        public Func<double, string> ThousandPoundFormatter { get; set; }
         private SeriesCollection seriesCollection;
         public SeriesCollection SeriesCollection
         {
@@ -53,7 +50,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         public string[] LatheLabels { get; set; }
-        public Func<double, string> SecondsToDaysFormatter { get; set; }
+        
         private SeriesCollection machineRuntimeCollection;
         public SeriesCollection MachineRuntimeCollection
         {
@@ -91,6 +88,8 @@ namespace ProjectLighthouse.ViewModel
         {
             DateTime start = DateTime.Now;
             await Task.Run(function: () => GetData());
+
+            
 
             Stats = new();
             Stats = ComputeDashboard();
@@ -137,9 +136,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             };
 
-            TimeFormatter = value => new DateTime((long)value).ToString("dd MMMM yyyy");
-            QuantityFormatter = value => string.Format($"{value:#,##0}");
-            ThousandPoundFormatter = value => string.Format($"£{value:#,##0}");
+            
 
             Lots = Lots.OrderBy(n => n.Date).ToList();
             DateTime _date = Lots.First().Date;
@@ -183,6 +180,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
 
+            OnPropertyChanged("WeekLabels");
             FiveWeekValueCollection = new();
 
             foreach (Lathe lathe in Lathes)
@@ -239,8 +237,8 @@ namespace ProjectLighthouse.ViewModel
             _data_point = new(_date, newStats.TotalPartsMade);
             SeriesCollection[0].Values.Add(_data_point);
 
-            //SeriesCollection.Add(cumulativePartsMade);
             GetDataForMachineRuntime();
+
             return newStats;
         }
 
@@ -261,10 +259,6 @@ namespace ProjectLighthouse.ViewModel
                     Values = new ChartValues<double>() { },
                     StackMode = StackMode.Percentage,
                     RowPadding = 5,
-                    //Height = 100,
-                    //DataLabels = true,
-                    //LabelPoint = p => p.X.ToString();
-
                 };
                 temporal.Add(stateSummary);
             }
@@ -349,12 +343,11 @@ namespace ProjectLighthouse.ViewModel
             }
 
             OverallOperating = Math.Round((OverallRuntime / OverallTime) * 100, 2);
-            PercentageStringFormat = value => string.Format("{0}%", value);
-            OnPropertyChanged("PercentageStringFormat");
             OnPropertyChanged("OverallOperating");
 
             //SecondsToDaysFormatter = value => string.Format("{0:d}",TimeSpan.FromSeconds(value));
             LatheLabels = lathe_labels.ToArray();
+            OnPropertyChanged("LatheLabels");
             MachineRuntimeCollection.AddRange(temporal);
 
         }

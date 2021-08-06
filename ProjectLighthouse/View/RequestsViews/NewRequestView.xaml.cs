@@ -39,6 +39,9 @@ namespace ProjectLighthouse.View
 
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (DateRequiredCalendarView.SelectedDate == null)
+                return;
+
             viewModel.NewRequest.DateRequired = DateRequiredCalendarView.SelectedDate.Value;
             enableSubmit();
         }

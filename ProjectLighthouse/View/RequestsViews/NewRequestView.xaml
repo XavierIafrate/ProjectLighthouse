@@ -397,10 +397,10 @@
                                 </Border>
                                 <StackPanel x:Name="image">
                                     <Image Name="Receiver"
-                                   MaxWidth="400"
-                        gif:ImageBehavior.AnimateInDesignMode="True"
-                        gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
-                        gif:ImageBehavior.RepeatBehavior="3"
+                                           MaxWidth="400"
+                                           gif:ImageBehavior.AnimateInDesignMode="True"
+                                           gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
+                                           gif:ImageBehavior.RepeatBehavior="3"
                                    RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <StackPanel.OpacityMask>
                                         <VisualBrush Visual="{Binding ElementName=Mask}" />

@@ -110,17 +110,18 @@
                         x:Name="EditLotButton"
                         Click="EditLotButton_Click"/>
             </Grid>
-            
-            <ListBox x:Name="LotsListBox" MinHeight="100" HorizontalContentAlignment="Stretch"
+            <ListView x:Name="LotsListBox" MinHeight="100" HorizontalContentAlignment="Stretch"
+                      MaxHeight="350"
                      SelectionChanged="LotsListBox_SelectionChanged">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type mdl:Lot}">
-                        <uc:DisplayLot Lot="{Binding}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type mdl:Lot}">
+                            <uc:DisplayLot Lot="{Binding}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
-            <TextBlock Text="New Lot"
+
+                <TextBlock Text="New Lot"
                        Style="{StaticResource subsubtitleTextStyle}" Margin="0,10,0,5"/>
             <Grid Margin="0,4">
                 <Grid.ColumnDefinitions>
