@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using ProjectLighthouse.ViewModel;
+using System.Drawing;
 using System.Windows.Controls;
 
 namespace ProjectLighthouse.View

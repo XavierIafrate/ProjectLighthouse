@@ -70,7 +70,7 @@ namespace ProjectLighthouse.View
             }
 
             // get notes
-            TextRange textRange = new TextRange(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
+            TextRange textRange = new(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
             string notes = string.Empty;
             if (viewModel != null && textRange.Text.Length >= 2)
             {

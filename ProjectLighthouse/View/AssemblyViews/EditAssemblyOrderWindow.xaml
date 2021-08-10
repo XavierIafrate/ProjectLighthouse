@@ -81,10 +81,13 @@
                     RadiusY="5"
                     Stroke="{StaticResource materialPrimary}"
                     StrokeThickness="2" />
-                <ScrollViewer CanContentScroll="False" VerticalScrollBarVisibility="Visible">
+                <ScrollViewer CanContentScroll="False" VerticalScrollBarVisibility="Visible"
+                              MinHeight="200"
+                              MaxHeight="300"
+                              Margin="5">
                     <ItemsControl
                         x:Name="ItemsListBox"
-                        MinHeight="200"
+
                         Margin="20,10"
                         HorizontalContentAlignment="Stretch"
                         ItemsSource="{Binding ListBoxAssemblies}">
@@ -112,27 +115,39 @@
             </Grid>
 
             <!--  Items List  -->
+            
             <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Delivery Drops" />
-            <ListBox
+            <Grid>
+                <Rectangle
+                    RadiusX="5"
+                    RadiusY="5"
+                    Stroke="{StaticResource materialPrimary}"
+                    StrokeThickness="2" />
+                <ScrollViewer CanContentScroll="False" VerticalScrollBarVisibility="Visible"
+                              Height="100"
+                              Margin="5">
+                    <ListBox
                 MaxHeight="300"
                 HorizontalContentAlignment="Stretch"
                 ItemsSource="{Binding Drops}"
                 ScrollViewer.CanContentScroll="False"
                 ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type model:Drop}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Quantity}" />
-                            <TextBlock Grid.Column="2" Text="{Binding DateRequired, StringFormat='{}{0:d}'}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type model:Drop}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Quantity}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding DateRequired, StringFormat='{}{0:d}'}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
         </StackPanel>
 
         <Grid Grid.Row="2">

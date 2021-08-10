@@ -341,7 +341,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void ApproveRequest()
         {
-            if (selectedRequest.isProductionApproved && selectedRequest.isSchedulingApproved && App.CurrentUser.CanApproveRequests)
+            if (App.CurrentUser.CanApproveRequests) //selectedRequest.isProductionApproved && selectedRequest.isSchedulingApproved &&
             {
                 selectedRequest.IsAccepted = true;
                 selectedRequest.IsDeclined = false;
@@ -349,7 +349,7 @@ namespace ProjectLighthouse.ViewModel
                 selectedRequest.ModifiedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
 
 
-                LMOContructorWindow creationWindow = new LMOContructorWindow(SelectedRequest);
+                LMOContructorWindow creationWindow = new(SelectedRequest);
                 creationWindow.Owner = Application.Current.MainWindow;
                 creationWindow.ShowDialog();
 
@@ -383,10 +383,10 @@ namespace ProjectLighthouse.ViewModel
             {
                 MessageBox.Show("You do not have permission to authorise requests.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            else if (!selectedRequest.isProductionApproved || !selectedRequest.isSchedulingApproved)
-            {
-                MessageBox.Show("Cannot approve without both scheduling and production confirmation.", "Pending input", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            //else if (!selectedRequest.isProductionApproved || !selectedRequest.isSchedulingApproved)
+            //{
+            //    MessageBox.Show("Cannot approve without both scheduling and production confirmation.", "Pending input", MessageBoxButton.OK, MessageBoxImage.Information);
+            //}
             return;
         }
 

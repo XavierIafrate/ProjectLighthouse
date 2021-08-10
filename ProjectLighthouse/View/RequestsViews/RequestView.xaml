@@ -259,7 +259,7 @@
 
                     <StackPanel Margin="10,0" Visibility="{Binding DecisionVis}">
 
-                        <CheckBox
+                        <!--<CheckBox
                             Margin="10,5,0,5"
                             Click="CheckBox_Click"
                             Content="Scheduling Approval"
@@ -270,7 +270,7 @@
                             Click="CheckBox_Click"
                             Content="Production Approval"
                             IsChecked="{Binding SelectedRequest.isProductionApproved, UpdateSourceTrigger=PropertyChanged}"
-                            IsEnabled="{Binding ProductionCheckboxEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            IsEnabled="{Binding ProductionCheckboxEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
                         <TextBlock
                             Grid.Row="2"
                             Style="{StaticResource accentTextStyle}"
