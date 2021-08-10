@@ -59,7 +59,7 @@ namespace ProjectLighthouse.View
             {
                 return;
             }
-            if (Int32.TryParse(textbox.Text, out int j))
+            if (int.TryParse(textbox.Text, out int j))
             {
                 if (j < 0)
                     MessageBox.Show("Invalid Quantity", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

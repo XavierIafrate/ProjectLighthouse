@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
@@ -268,7 +269,7 @@ namespace ProjectLighthouse.ViewModel
         public bool SubmitRequest()
         {
             bool result = false;
-            if (String.IsNullOrEmpty(SelectedProduct.ProductName))
+            if (string.IsNullOrEmpty(SelectedProduct.ProductName))
             {
                 MessageBox.Show("Please select a product!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return result;
@@ -297,6 +298,8 @@ namespace ProjectLighthouse.ViewModel
                     string message = $"{App.CurrentUser.GetFullName()} has submitted a request for {newRequest.QuantityRequired:#,##0}pcs of {newRequest.Product}. {newRequest.Likeliness} ({RecommendedStockText}, {PotentialQuantityText}). Required for {newRequest.DateRequired:d MMMM}.";
                     SMSHelper.SendText("+447979606705", message);
                 }
+
+                Task.Run(() => EmailHelper.NotifyNewRequest(newRequest, SelectedProduct, App.CurrentUser));
 
                 MessageBox.Show("Your request has been submitted", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 ClearScreen();
