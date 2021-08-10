@@ -5,8 +5,8 @@ namespace ProjectLighthouse.Model
 {
     public class TurnedProduct
     {
-        private const double MaxDiameter = 20;
-        private const double MaxLength = 90;
+        private const double MaxDiameter = 38;
+        private const double MaxLength = 150;
 
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
@@ -51,7 +51,7 @@ namespace ProjectLighthouse.Model
 
         public bool CanBeManufactured()
         {
-            return (MajorLength <= MaxLength && MajorDiameter <= MaxDiameter);
+            return MajorLength <= MaxLength && MajorDiameter <= MaxDiameter;
         }
 
         public string GetReasonCannotBeMade()
@@ -77,14 +77,13 @@ namespace ProjectLighthouse.Model
 
         public bool IsScheduleCompatible(TurnedProduct otherProduct)
         {
-            return (
+            return 
                 otherProduct.MajorDiameter == MajorDiameter &&
                 otherProduct.DriveSize == DriveSize &&
                 otherProduct.DriveType == DriveType &&
                 otherProduct.ThreadSize == ThreadSize &&
                 otherProduct.ProductGroup == ProductGroup &&
-                otherProduct.Material == Material
-                );
+                otherProduct.Material == Material;
         }
     }
 }

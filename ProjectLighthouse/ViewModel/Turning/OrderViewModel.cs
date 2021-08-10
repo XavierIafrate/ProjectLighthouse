@@ -181,8 +181,8 @@ namespace ProjectLighthouse.ViewModel
         private void GetLatestStats()
         {
             MachineStatistics = null;
-            MachineStatistics = MachineStatsHelper.GetStats();
-            MachineStatistics ??= new List<MachineStatistics>();
+            MachineStatistics = MachineStatsHelper.GetStats() ?? new();
+            //MachineStatistics ??= new List<MachineStatistics>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
             if (MachineStatistics.Count == 0)
                 return;
@@ -191,6 +191,11 @@ namespace ProjectLighthouse.ViewModel
 
             DisplayStats = MachineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
 
+            if(DisplayStats == null)
+            {
+                LiveInfoVis = Visibility.Collapsed;
+                return;
+            }
             if (DisplayStats.DataTime.AddHours(1) < DateTime.Now)
                 LiveInfoVis = Visibility.Collapsed;
         }

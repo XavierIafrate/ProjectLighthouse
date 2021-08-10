@@ -53,7 +53,7 @@ namespace ProjectLighthouse.ViewModel
 
         public async Task GetData()
         {
-            StatsList = DatabaseHelper.Read<MachineStatistics>().Where(n => n.DataTime > DateTime.Now.AddDays(-2)).ToList();
+            StatsList = DatabaseHelper.Read<MachineStatistics>().Where(n => n.DataTime > DateTime.Now.AddHours(-12)).ToList();
             Lathes = DatabaseHelper.Read<Lathe>();
         }
 

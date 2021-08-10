@@ -9,7 +9,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             double dPrice = System.Convert.ToDouble((int)value) / 100;
-            return string.Format("£{0:0.##}", dPrice);
+            return $"£{dPrice:0.00}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
