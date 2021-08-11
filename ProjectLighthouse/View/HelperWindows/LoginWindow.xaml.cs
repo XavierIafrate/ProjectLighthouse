@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -15,18 +16,16 @@ namespace ProjectLighthouse.View
     public partial class LoginWindow : Window
     {
         public User auth_user;
-        public ObservableCollection<User> users;
+        public List<User> users;
         public LoginWindow()
         {
             InitializeComponent();
-            users = new ObservableCollection<User>();
-            System.Collections.Generic.List<User> usersList = DatabaseHelper.Read<User>().ToList();
-            foreach (User user in usersList)
+            users = DatabaseHelper.Read<User>().ToList();
+            foreach (User user in users)
             {
-                users.Add(user);
                 if (user.computerUsername == Environment.UserName)
                 {
-                    if (String.IsNullOrEmpty(usernameText.Text))
+                    if (string.IsNullOrEmpty(usernameText.Text))
                     {
                         usernameText.Text = user.UserName;
                         passwordText.Focus();
@@ -45,6 +44,7 @@ namespace ProjectLighthouse.View
 
                 }
             }
+
             if (string.IsNullOrEmpty(usernameText.Text))
                 usernameText.Focus();
         }
@@ -67,44 +67,47 @@ namespace ProjectLighthouse.View
         private void passwordText_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
-            {
                 Login();
-            }
         }
 
         private void Login()
         {
             message.Visibility = Visibility.Hidden;
-            foreach (User user in users)
+
+            List<User> matches = users.Where(x => x.UserName == usernameText.Text).ToList();
+            User user;
+
+            if (matches.Count == 0)
             {
-                if (user.UserName == usernameText.Text)
-                {
-                    if (user.Password == passwordText.Password)
-                    {
-                        if (user.IsBlocked)
-                        {
-                            message.Text = "User blocked";
-                            message.Visibility = Visibility.Visible;
-                            return;
-                        }
-                        user.LastLogin = DateTime.Now;
-                        user.computerUsername = Environment.UserName;
-                        DatabaseHelper.Update<User>(user);
-                        auth_user = user;
-                        Close();
-                        return;
-                    }
-                    else
-                    {
-                        message.Text = "Invalid password";
-                        message.Visibility = Visibility.Visible;
-                        return;
-                    }
-                }
+                message.Text = "Username not found";
+                message.Visibility = Visibility.Visible;
+                return;
+            }
+            else
+            {
+                user = matches.First();
             }
 
-            message.Text = "Username not found";
-            message.Visibility = Visibility.Visible;
+            if (user.IsBlocked)
+            {
+                message.Text = "User blocked";
+                message.Visibility = Visibility.Visible;
+                return;
+            }
+            else if (user.Password == passwordText.Password)
+            {
+                user.LastLogin = DateTime.Now;
+                user.computerUsername = Environment.UserName;
+                DatabaseHelper.Update<User>(user);
+
+                auth_user = user;
+                Close();
+            }
+            else
+            {
+                message.Text = "Invalid password";
+                message.Visibility = Visibility.Visible;
+            }
         }
 
         private void usernameText_TextChanged(object sender, TextChangedEventArgs e)

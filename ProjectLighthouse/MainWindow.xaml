@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     Title="Project Lighthouse"
-    Width="1100"
+    Width="1312"
     Height="849"
     MinWidth="1100"
     MinHeight="700"
@@ -256,6 +256,7 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
                 Visibility="{Binding BetaWarningVis}">
+
                 <Grid Margin="30,5,10,5">
                     <Rectangle
                         Fill="{StaticResource materialError}"
@@ -269,6 +270,8 @@
                         Foreground="{StaticResource materialOnError}"
                         Text="BETA" />
                 </Grid>
+
+
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock
                         FontSize="15"
@@ -282,6 +285,8 @@
                         Text="Watch out for bugs!" />
                 </StackPanel>
             </StackPanel>
+
+
             <Viewbox
                 MaxHeight="70"
                 Margin="50,20"
@@ -292,7 +297,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Foreground="{StaticResource materialOnBackground}"
-                    Text="{Binding NavText}" />
+                    Text="{Binding NavText, FallbackValue='[WindowName]'}" />
             </Viewbox>
             <ContentControl Grid.Row="1" Content="{Binding SelectedViewModel}" />
         </Grid>

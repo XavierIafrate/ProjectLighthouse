@@ -59,7 +59,7 @@ namespace ProjectLighthouse.View
             {
                 return;
             }
-            if (Int32.TryParse(textbox.Text, out int j))
+            if (int.TryParse(textbox.Text, out int j))
             {
                 if (j < 0)
                     MessageBox.Show("Invalid Quantity", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -70,7 +70,7 @@ namespace ProjectLighthouse.View
             }
 
             // get notes
-            TextRange textRange = new TextRange(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
+            TextRange textRange = new(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
             string notes = string.Empty;
             if (viewModel != null && textRange.Text.Length >= 2)
             {
