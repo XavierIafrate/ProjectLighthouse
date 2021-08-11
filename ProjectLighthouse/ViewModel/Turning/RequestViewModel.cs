@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
@@ -367,7 +368,7 @@ namespace ProjectLighthouse.ViewModel
 
                 if (DatabaseHelper.Update(SelectedRequest))
                 {
-                    EmailHelper.NotifyRequestApproved(SelectedRequest);
+                    Task.Run( async () => EmailHelper.NotifyRequestApproved(SelectedRequest));
                     FilterRequests(SelectedFilter);
                     OnPropertyChanged("SelectedRequest");
                     SelectedRequestChanged?.Invoke(this, new EventArgs());
@@ -410,7 +411,7 @@ namespace ProjectLighthouse.ViewModel
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                EmailHelper.NotifyRequestDeclined(SelectedRequest);
+                Task.Run(async () => EmailHelper.NotifyRequestDeclined(SelectedRequest));
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");
                 SelectedRequestChanged?.Invoke(this, new EventArgs());

@@ -9,17 +9,17 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         public static void SendEmail(string toPerson, string alertSubject, string message)
         {
-            Email mailMan = new Email();
+            Email mailMan = new();
 
-            EmailSendConfigure myConfig = new EmailSendConfigure();
+            EmailSendConfigure myConfig = new();
             myConfig.TOs = new string[] { toPerson };
-            myConfig.CCs = new string[] { };
+            myConfig.CCs = Array.Empty<string>();
             myConfig.From = "lighthouse@wixroydgroup.com";
             myConfig.FromDisplayName = "Lighthouse Notifications";
             myConfig.Priority = MailPriority.Normal;
             myConfig.Subject = alertSubject;
 
-            EmailContent myContent = new EmailContent();
+            EmailContent myContent = new();
             myContent.Content = message;
 
             mailMan.SendMail(myConfig, myContent);
@@ -27,11 +27,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static void NotifyRequestApproved(Request approvedRequest)
         {
-            Email mailMan = new Email();
-            EmailSendConfigure myConfig = new EmailSendConfigure();
+            Email mailMan = new();
+            EmailSendConfigure myConfig = new();
 
             List<User> users = DatabaseHelper.Read<User>();
-            User PersonWhoRaisedRequest = new User();
+            User PersonWhoRaisedRequest = new();
             foreach (User user in users)
             {
                 if (user.GetFullName() == approvedRequest.RaisedBy)
@@ -41,17 +41,16 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
 
-            if (string.IsNullOrEmpty(PersonWhoRaisedRequest.EmailAddress))
-                return;
+            if (string.IsNullOrEmpty(PersonWhoRaisedRequest.EmailAddress)) return;
 
             myConfig.TOs = new string[] { PersonWhoRaisedRequest.EmailAddress };
-            myConfig.CCs = new string[] { };
+            myConfig.CCs = Array.Empty<string>();
             myConfig.From = "lighthouse@wixroydgroup.com";
             myConfig.FromDisplayName = "Lighthouse Notifications";
             myConfig.Priority = MailPriority.Normal;
             myConfig.Subject = "Request Approved";
 
-            EmailContent myContent = new EmailContent();
+            EmailContent myContent = new();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#00695C'>Request approved!</h2>" +
@@ -67,11 +66,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static void NotifyRequestDeclined(Request declinedRequest)
         {
-            Email mailMan = new Email();
-            EmailSendConfigure myConfig = new EmailSendConfigure();
+            Email mailMan = new();
+            EmailSendConfigure myConfig = new();
 
             List<User> users = DatabaseHelper.Read<User>();
-            User PersonWhoRaisedRequest = new User();
+            User PersonWhoRaisedRequest = new();
             foreach (User user in users)
             {
                 if (user.GetFullName() == declinedRequest.RaisedBy)
@@ -138,6 +137,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
 
             foreach (LatheManufactureOrderItem item in items)
+            {
                 if (item.RequiredQuantity > 0)
                 {
                     message += string.Format("<p><b>Customer requirement:</b> {0} - {1:#,##0}pcs for {2:dddd d MMMM}. Target quantity: {3:#,##0}pcs</p>",
@@ -148,6 +148,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     message += string.Format("<p>{0} - {1:#,##0}pcs</p>",
                        item.ProductName, item.TargetQuantity);
                 }
+            }
 
             message += "</font></html>";
 
