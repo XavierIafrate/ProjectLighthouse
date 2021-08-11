@@ -46,7 +46,7 @@
                     Click="CloseButton_Click"
                     Content="Close"
                     Style="{StaticResource CancelButtonTemplate}" />
-                <Button Style="{StaticResource ButtonTemplate}">
+                <Button Style="{StaticResource ButtonTemplate}" IsEnabled="False">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <Path
@@ -57,7 +57,7 @@
                                 Data="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"
                                 Fill="{StaticResource materialOnPrimary}"
                                 Stretch="Fill" />
-                            <TextBlock VerticalAlignment="Center" Text="Job Sheet" />
+                            <TextBlock VerticalAlignment="Center" Text="Job Sheet (soon!)" />
                         </StackPanel>
                     </Button.Content>
                 </Button>
@@ -134,14 +134,14 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type model:Drop}">
-                                <Grid>
+                                <Grid Margin="10,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Quantity}" />
-                                    <TextBlock Grid.Column="2" Text="{Binding DateRequired, StringFormat='{}{0:d}'}" />
+                                    <TextBlock Text="{Binding Quantity, StringFormat='{}{0} pcs'}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding DateRequired, StringFormat='{}{0:ddd dd/MM/yyyy}'}" />
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

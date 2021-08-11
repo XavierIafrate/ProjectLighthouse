@@ -73,7 +73,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
-        <StackPanel Grid.Row="1" Grid.Column="1">
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,0,0,0">
 
             <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Total Quantity Required" />
             <TextBox

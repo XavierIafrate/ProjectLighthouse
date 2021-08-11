@@ -187,7 +187,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             emailConfig.From = "lighthouse@wixroydgroup.com";
             emailConfig.FromDisplayName = "Lighthouse Notifications";
             emailConfig.Priority = MailPriority.Normal;
-            emailConfig.Subject = $"** TEST ** New Request Raised - {request.Product}";
+            emailConfig.Subject = $"New Request Raised - {request.Product}";
 
             EmailContent myContent = new EmailContent();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
