@@ -192,15 +192,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
             EmailContent myContent = new EmailContent();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
-            string message = $"<html><font face='tahoma'><h2 style='color:#00695C'>New Manufacture Order</h2>" +
+            string message = $"<html><font face='tahoma'><h2 style='color:#01579B'>New Manufacture Request</h2>" +
                 $"<p>Good {greeting}, a new request for {request.QuantityRequired:#,##0} pcs of {request.Product} has been raised.</p>" +
                 $"<p>Please approve/decline this in Lighthouse at your earliest convenience.</p>" +
                 "<p></p>" +
                 $"<p>Material: {turnedProduct.Material}</p>" +
-                $"<p>Major length: {turnedProduct.MajorLength}</p>" +
-                $"<p>Major diameter: {turnedProduct.MajorDiameter}</p>" +
+                $"<p>Major length: {turnedProduct.MajorLength}mm</p>" +
+                $"<p>Major diameter: {turnedProduct.MajorDiameter}mm</p>" +
                 $"<p>Thread: {turnedProduct.ThreadSize}</p>" +
-                $"<p>Drive: {turnedProduct.DriveType} {turnedProduct.DriveType}</p>";
+                $"<p>Drive: '{turnedProduct.DriveType}', size '{turnedProduct.DriveSize}'</p>";
 
 
             if (turnedProduct.QuantityManufactured > 0)
