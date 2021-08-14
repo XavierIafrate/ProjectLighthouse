@@ -3,6 +3,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -137,16 +138,6 @@ namespace ProjectLighthouse.View
             constructLMO.TimeToComplete = totaltime;
         }
 
-        private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
-        }
-
-        private void cancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         private static string GetNewMOName()
         {
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>();
@@ -180,7 +171,7 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Insert(item);
             };
 
-            EmailHelper.NotifyNewOrder(constructLMO, LMOItems.ToList());
+            Task.Run(async () => EmailHelper.NotifyNewOrder(constructLMO, LMOItems.ToList()));
 
             MessageBox.Show($"Created {constructLMO.Name}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             wasCancelled = false;
@@ -241,6 +232,11 @@ namespace ProjectLighthouse.View
 
             LMOItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
             CalculateInsights();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

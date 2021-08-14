@@ -36,7 +36,6 @@
                     Text="New Manufacture Order" />
                 <Separator Margin="0,5,0,10" />
             </StackPanel>
-            <Rectangle Fill="Transparent" MouseDown="Rectangle_MouseDown" />
         </Grid>
         <!--#endregion-->
 
@@ -247,8 +246,8 @@
                 Content="Update" />
 
             <Button
-                x:Name="cancelButton"
-                Click="cancelButton_Click"
+                x:Name="CancelButton"
+                Click="CancelButton_Click"
                 Content="Cancel"
                 Style="{StaticResource CancelButton}" />
             <Button

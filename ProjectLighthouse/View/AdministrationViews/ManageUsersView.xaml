@@ -159,14 +159,9 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanRaiseRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Raise Production Request" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanRaiseRequest, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid>
@@ -184,7 +179,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanApproveRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Approve Production Requests" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanApproveRequests, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can approve or decline requests for turned parts" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid>
@@ -202,7 +197,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanUpdateLMOs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Update Manufacture Orders" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanUpdateLMOs, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can update notes and production information" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid>
@@ -220,7 +215,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanEditLMOs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Edit Manufacture Orders" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanEditLMOs, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can edit all parts of a manufacture order" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
 
@@ -240,7 +235,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanRaiseDelivery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Raise Deliveries" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanRaiseDelivery, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can create deliveries from completed lots" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid>
@@ -258,25 +253,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanCreateAssemblyProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Create Assembly Products" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanCreateAssemblyProducts, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
-                </Grid>
-
-                <Grid>
-                    <!--Create Special-->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanCreateSpecial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
-                    <TextBlock Text="Create Special Items" Grid.Column="1" Margin="0"/>
-                    <TextBlock Text="{Binding SelectedUser.CanCreateSpecial, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="Explanation of effects" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can create new assembly products with routings and BOM" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid Margin="0,20,0,5">
@@ -288,16 +265,11 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
 
                         <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                         <TextBlock Text="Block Sign In" Grid.Column="1" Margin="0" FontWeight="Bold" Foreground="{StaticResource materialOnError}"/>
                         <TextBlock Text="{Binding SelectedUser.IsBlocked, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" Foreground="{StaticResource materialOnError}" FontSize="16"/>
-                        <TextBlock Text="This user will not be able to sign in with their username." Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialOnError}"/>
-                    </Grid>
+                        </Grid>
                 </Grid>
 
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,20">

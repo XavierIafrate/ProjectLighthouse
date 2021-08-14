@@ -339,29 +339,29 @@ namespace ProjectLighthouse.ViewModel
             RunInfoText = !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine) ?
                 string.Format($"Assigned to {selectedLatheManufactureOrder.AllocatedMachine}, starting {SelectedLatheManufactureOrder.StartDate:dddd, MMMM d}{GetDaySuffix(SelectedLatheManufactureOrder.StartDate.Day)}") : "Not scheduled";
 
-            //LoadProductInfoCard();
+            LoadProductInfoCard();
         }
 
-        //private void LoadProductInfoCard()
-        //{
-        //    SelectedProducts = new();
-        //    foreach (LatheManufactureOrderItem item in FilteredLMOItems)
-        //    {
-        //        List<TurnedProduct> tmp = Products.Where(n => n.ProductName == item.ProductName).ToList();
-        //        if (tmp.Count > 0)
-        //            SelectedProducts.Add(tmp.First());
-        //    }
+        private void LoadProductInfoCard()
+        {
+            SelectedProducts = new();
+            foreach (LatheManufactureOrderItem item in FilteredLMOItems)
+            {
+                List<TurnedProduct> tmp = Products.Where(n => n.ProductName == item.ProductName).ToList();
+                if (tmp.Count > 0)
+                    SelectedProducts.Add(tmp.First());
+            }
 
-        //    if (SelectedProducts.Count != 0)
-        //    {
-        //        TurnedProduct tmp = SelectedProducts.First();
-        //        List<ProductGroup> matches = ProductGroups.Where(x => x.GroupID == tmp.ProductName.Substring(0, 5) && x.MaterialCode == tmp.Material).ToList();
-        //        SelectedProductGroup = matches.Count != 0 ? matches.First() : new();
-        //    }
+            if (SelectedProducts.Count != 0)
+            {
+                TurnedProduct tmp = SelectedProducts.First();
+                List<ProductGroup> matches = ProductGroups.Where(x => x.GroupID == tmp.ProductName.Substring(0, 5) && x.MaterialCode == tmp.Material).ToList();
+                SelectedProductGroup = matches.Count != 0 ? matches.First() : new();
+            }
 
-        //    OnPropertyChanged("SelectedProductGroup");
-        //    OnPropertyChanged("SelectedProduct");
-        //}
+            OnPropertyChanged("SelectedProductGroup");
+            OnPropertyChanged("SelectedProduct");
+        }
 
         public void PrintSelectedOrder()
         {

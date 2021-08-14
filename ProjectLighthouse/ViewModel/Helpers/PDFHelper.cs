@@ -510,7 +510,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 // Print stamp
                 font = new XFont("Tahoma", 8, XFontStyle.Regular, options);
                 XRect footer = new XRect(offset, page.Height - offset, page.Width - 2 * offset, 20);
-                gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", "Xavier Iafrate", DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
+                gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", App.CurrentUser.GetFullName(), DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
 
                 #endregion
 
