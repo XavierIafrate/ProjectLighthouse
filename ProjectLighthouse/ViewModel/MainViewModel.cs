@@ -10,6 +10,7 @@ namespace ProjectLighthouse.ViewModel
     public class MainViewModel : BaseViewModel
     {
         #region Vars
+
         private string navText = "Manufacture Orders";
         public string NavText
         {
@@ -52,7 +53,7 @@ namespace ProjectLighthouse.ViewModel
 
         #endregion
 
-        public static void EditSettings()
+        public void EditSettings()
         {
             EditSettingsWindow window = new();
             window.ShowDialog();
@@ -71,15 +72,8 @@ namespace ProjectLighthouse.ViewModel
             if (App.CurrentUser == null)
             {
                 LoginWindow login = new();
-                try
-                {
-                    login.ShowDialog();
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
 
+                login.ShowDialog();
 
                 if (login.auth_user == null)
                 {
@@ -88,9 +82,11 @@ namespace ProjectLighthouse.ViewModel
                 else
                 {
                     App.CurrentUser = login.auth_user;
+                    string TargetView = string.IsNullOrEmpty(App.CurrentUser.DefaultView)
+                        ? "Orders"
+                        : App.CurrentUser.DefaultView;
                     if (MainWindow != null)
-                        UpdateViewCommand.Execute(App.CurrentUser.DefaultView ?? "Orders");
-                    //MainWindow.ToggleButton_Click(new ToggleButton() { Content =  }, new RoutedEventArgs());
+                        UpdateViewCommand.Execute(TargetView);
                 }
             }
         }

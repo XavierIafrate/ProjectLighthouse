@@ -75,7 +75,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 foreach (Assembly a in results)
                 {
-                    foreach(AssemblyOrderItem child in a.Children)
+                    foreach (AssemblyOrderItem child in a.Children)
                     {
                         List<AssemblyOrderItem> NextSeparation = items.Where(x => x.ChildOf == child.ProductName).ToList();
                         if (NextSeparation.Count != 0)

@@ -6,13 +6,13 @@
         xmlns:local="clr-namespace:ProjectLighthouse.View"
         Title="Edit Lot" SizeToContent="Height" ResizeMode="NoResize" Width="370"  WindowStartupLocation="CenterOwner" MaxHeight="500">
     <StackPanel Margin="20">
-        <TextBlock Text="Edit Lot" Style="{StaticResource heroTextStyle}"/>
+        <TextBlock Text="Edit Lot"/>
         <Separator/>
-        <TextBlock Text="Batch" Style="{StaticResource subtitleTextStyle}"/>
+        <TextBlock Text="Batch"/>
         <TextBox x:Name="BatchTextBox" TextChanged="BatchTextBox_TextChanged" TextWrapping="Wrap"/>
-        <TextBlock Text="Quantity" Style="{StaticResource subtitleTextStyle}"/>
+        <TextBlock Text="Quantity"/>
         <TextBox x:Name="QuantityTextBox" PreviewKeyDown="QuantityTextBox_PreviewKeyDown" TextChanged="QuantityTextBox_TextChanged"/>
         <CheckBox x:Name="RejectCheckBox" Content="Lot is Rejects" Margin="10" VerticalContentAlignment="Center" FontSize="16"/>
-        <Button Content="Save" x:Name="SaveButton" Style="{StaticResource GreenButtonTemplate}" HorizontalAlignment="Right" Click="SaveButton_Click"/>
+        <Button Content="Save" x:Name="SaveButton" Style="{StaticResource GreenButton}" HorizontalAlignment="Right" Click="SaveButton_Click"/>
     </StackPanel>
 </Window>

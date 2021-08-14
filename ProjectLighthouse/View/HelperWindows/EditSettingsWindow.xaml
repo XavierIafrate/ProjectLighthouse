@@ -14,17 +14,17 @@
     <Grid Margin="20,0">
         <StackPanel Margin="20,20,20,36" Grid.Column="1" Grid.ColumnSpan="2">
             <TextBlock Text="Settings" FontSize="30" FontWeight="Bold"/>
-            <TextBlock Style="{StaticResource accentTextStyle}">
+            <TextBlock>
                 <Run Text="{Binding FirstName, FallbackValue='Randy'}"/>
                 <Run Text="{Binding LastName, FallbackValue='Marsh'}"/>
             </TextBlock>
-            <TextBlock Style="{StaticResource accentTextStyle}">
+            <TextBlock>
                 <Run Text="User Role:"/>
                 <Run Text="{Binding UserRole, FallbackValue='debug_placeholder'}" x:Name="userRoleText"/>
             </TextBlock>
             
-            <TextBlock Text="Your Permissions" Style="{StaticResource subtitleTextStyle}"/>
-            <TextBlock Text="An administrator is required to modify these." Style="{StaticResource accentTextStyle}"/>
+            <TextBlock Text="Your Permissions"/>
+            <TextBlock Text="An administrator is required to modify these."/>
             <StackPanel Margin="30,0">
                 <TextBlock>
                     <Run Text="Approve Requests:"/>
@@ -48,9 +48,8 @@
                 </TextBlock>
             </StackPanel>
             
-            <TextBlock Text="Default View" Style="{StaticResource subtitleTextStyle}"/>
-            <TextBlock Style="{StaticResource accentTextStyle}"
-                       Text="This is the view that will be loaded on login."/>
+            <TextBlock Text="Default View"/>
+            <TextBlock Text="This is the view that will be loaded on login."/>
             <ComboBox x:Name="defaultViewComboBox"
                       Margin="0,5,0,0"
                       SelectionChanged="defaultViewComboBox_SelectionChanged">
@@ -60,7 +59,7 @@
                 <!--<ComboBoxItem Content="Assembly Orders"/>-->
             </ComboBox>
 
-            <TextBlock Text="Change Password" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBlock Text="Change Password"/>
             <Grid Margin="10,0,10,5">
                 <Rectangle Fill="{StaticResource materialError}" RadiusX="5" RadiusY="5"/>
                 <TextBlock Text="Please don't use your bank password - &#10;This app has no security." 
@@ -71,21 +70,18 @@
             <StackPanel Margin="10,0">
                 <Grid Margin="0,5,0,0">
                     <TextBlock Text="current password" 
-                               Style="{StaticResource ghostTextStyle}" 
                                x:Name="current_password_ghost"/>
                     <PasswordBox x:Name="current" 
                                  PasswordChanged="current_PasswordChanged"/>
                 </Grid>
                 <Grid Margin="0,5,0,0">
                     <TextBlock Text="new password" 
-                               Style="{StaticResource ghostTextStyle}"
                                x:Name="new_password_ghost"/>
                     <PasswordBox x:Name="newPwd" 
                                  PasswordChanged="newPwd_PasswordChanged"/>
                 </Grid>
                 <Grid Margin="0,5,0,0">
                     <TextBlock Text="confirm new password" 
-                               Style="{StaticResource ghostTextStyle}"
                                x:Name="confirm_password_ghost"/>
                     <PasswordBox x:Name="confirmPwd"
                                  PasswordChanged="confirmPwd_PasswordChanged"/>
@@ -102,7 +98,7 @@
             <Button Content="Change Password" 
                     x:Name="ChangePasswordButton"
                     Click="ChangePasswordButton_Click"
-                    Style="{StaticResource GreenButtonTemplate}"
+                    Style="{StaticResource GreenButton}"
                     Margin="0,10,10,0" Width="150"
                     HorizontalAlignment="Right"/>
         </StackPanel>

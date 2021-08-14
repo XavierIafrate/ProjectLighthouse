@@ -10,12 +10,12 @@
     SizeToContent="WidthAndHeight"
     mc:Ignorable="d">
     <StackPanel Margin="30,20">
-        <TextBlock Style="{StaticResource windowTitleTextStyle}" Text="Add New Routing" />
+        <TextBlock Text="Add New Routing" />
         <Separator />
-        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Description" />
+        <TextBlock Text="Description" />
         <TextBox Name="DescriptionTextBox" />
 
-        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Workstation" />
+        <TextBlock Text="Workstation" />
         <ComboBox x:Name="WorkstationComboBox">
             <ComboBoxItem Content="Mill" />
             <ComboBoxItem Content="Lathe" />
@@ -24,19 +24,19 @@
         </ComboBox>
 
 
-        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Setup time (minutes)" />
+        <TextBlock Text="Setup time (minutes)" />
         <TextBox Name="SetupTimeTextBox" />
 
-        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Cycle Time (minutes)" />
+        <TextBlock Text="Cycle Time (minutes)" />
         <TextBox Name="CycleTimeTextBox" />
 
-        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Quantity per batch" />
+        <TextBlock Text="Quantity per batch" />
         <TextBox Name="QuantityPerCycleTextBox" />
         <Button
             x:Name="AddButton"
             HorizontalAlignment="Right"
             Click="AddButton_Click"
             Content="Add Routing"
-            Style="{StaticResource GreenButtonTemplate}" />
+            Style="{StaticResource GreenButton}" />
     </StackPanel>
 </Window>

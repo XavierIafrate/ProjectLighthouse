@@ -8,7 +8,7 @@ namespace ProjectLighthouse.View
     /// </summary>
     public partial class AnalyticsView : UserControl
     {
-        public Func<double, string> TimeFormatter = value => new DateTime((long) value).ToString("dd MMMM yyyy");
+        public Func<double, string> TimeFormatter = value => new DateTime((long)value).ToString("dd MMMM yyyy");
         public Func<double, string> QuantityFormatter = value => $"{value:#,##0}";
         public Func<double, string> ThousandPoundFormatter = value => $"£{value:#,##0}";
         //public Func<double, string> SecondsToDaysFormatter { get; set; }
@@ -17,7 +17,7 @@ namespace ProjectLighthouse.View
         public AnalyticsView()
         {
             InitializeComponent();
-            
+
         }
 
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)

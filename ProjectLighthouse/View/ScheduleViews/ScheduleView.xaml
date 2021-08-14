@@ -13,12 +13,12 @@
 
     <UserControl.Resources>
         <vm:ScheduleViewModel x:Key="vm"/>
-        <Style x:Key="headerTextStyle" TargetType="TextBlock">
+        <!--<Style x:Key="headerTextStyle" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
-        </Style>
+        </Style>-->
         <converters:intToDays x:Key="intToDayConverter"/>
         <LinearGradientBrush x:Key="gradFade" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#eeeeee" Offset="0"  />
@@ -45,14 +45,13 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource heroTextStyle}" Text="{Binding ViewTitle}"/>
+                    <TextBlock Text="{Binding ViewTitle}"/>
                     <StackPanel Grid.Column="2" Orientation="Horizontal" DataContext="{StaticResource vm}">
                         <!--<Button Content="Auto Schedule"
-                                Style="{StaticResource GreenButtonTemplate}" 
+                                Style="{StaticResource GreenButton}" 
                                 Visibility="{Binding AutoScheduleVis}"
                                 Command="{Binding autoScheduleCommand}"/>-->
                         <Button Content="Generate PDF" 
-                                Style="{StaticResource ButtonTemplate}" 
                                 Visibility="{Binding PrintButtonVis}"
                                 Command="{Binding PrintScheduleCommand}"/>
                     </StackPanel>

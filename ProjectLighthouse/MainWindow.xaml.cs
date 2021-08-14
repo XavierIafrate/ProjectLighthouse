@@ -72,7 +72,10 @@ namespace ProjectLighthouse
             assemblyOrders_button.IsEnabled = App.CurrentUser.UserRole == "admin";
             BOM_button.IsEnabled = App.CurrentUser.UserRole == "admin";
             assembly_button.IsEnabled = App.CurrentUser.UserRole == "admin";
-            manage_users_button.Visibility = App.CurrentUser.UserName == "xav" ? Visibility.Visible : Visibility.Collapsed;
+            manage_users_button.Visibility = App.CurrentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
+
+            LoggedInUserName.Text = App.CurrentUser.GetFullName();
+            LoggedInUserRole.Text = App.CurrentUser.UserRole;
         }
 
         private async void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

@@ -25,7 +25,6 @@
         <TextBlock
             Grid.ColumnSpan="3"
             HorizontalAlignment="Left"
-            Style="{StaticResource windowTitleTextStyle}"
             Text="Create a new Assembly Order" />
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -37,7 +36,6 @@
 
             <TextBlock
                 Grid.Row="0"
-                Style="{StaticResource subsubtitleTextStyle}"
                 Text="Select Product" />
             <TreeView
                 x:Name="AssemblyTree"
@@ -47,7 +45,6 @@
 
             <TextBlock
                 Grid.Row="2"
-                Style="{StaticResource subsubtitleTextStyle}"
                 Text="Drops" />
             <ItemsControl
                 x:Name="dropsItemsControl"
@@ -75,12 +72,12 @@
         </Grid>
         <StackPanel Grid.Row="1" Grid.Column="1">
 
-            <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Total Quantity Required" />
+            <TextBlock Text="Total Quantity Required" />
             <TextBox
                 x:Name="TotalQuantityTextBox"
                 PreviewKeyDown="Validate_NumsOnly"
                 TextChanged="TotalQuantityTextBox_TextChanged" />
-            <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Delivery Scheme" />
+            <TextBlock Text="Delivery Scheme" />
             <StackPanel Margin="15,0,0,5">
                 <RadioButton
                     x:Name="singleRadio"
@@ -98,7 +95,7 @@
                 <DatePicker x:Name="FlatRequiredDate" />
             </StackPanel>
 
-            <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Call off configuration" />
+            <TextBlock Text="Call off configuration" />
             <StackPanel Margin="15,0,15,5">
                 <TextBlock Text="Quantity per Drop" />
                 <TextBox
@@ -108,7 +105,7 @@
                 <TextBlock Text="Starting Date" />
                 <DatePicker x:Name="MultiDropStartingDate" IsEnabled="False" />
             </StackPanel>
-            <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Select call off method" />
+            <TextBlock Text="Select call off method" />
             <StackPanel Margin="15,0,15,5">
                 <RadioButton
                     x:Name="interval_radio"
@@ -160,14 +157,13 @@
                 <Button
                     x:Name="refreshDropsButton"
                     Click="refreshDropsButton_Click"
-                    Content="Generate Drops"
-                    Style="{StaticResource ButtonTemplate}" />
+                    Content="Generate Drops" />
                 <Button
                     x:Name="createOrderButton"
                     Click="createOrderButton_Click"
                     Content="Create Order"
                     IsEnabled="False"
-                    Style="{StaticResource GreenButtonTemplate}" />
+                    Style="{StaticResource GreenButton}" />
             </StackPanel>
         </StackPanel>
     </Grid>

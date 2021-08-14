@@ -5,15 +5,13 @@
     xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
-    xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    d:Background="White"
     d:DesignHeight="758.58"
     d:DesignWidth="1179.077"
-    Background="White"
     SizeChanged="UserControl_SizeChanged"
     mc:Ignorable="d">
 
@@ -22,33 +20,6 @@
             <converters:intToPrice x:Key="priceConverter" />
             <converters:timespanToString x:Key="TimespanToString" />
             <converters:timespanToNextAvailable x:Key="TimespanToNextAvailable" />
-
-            <Style x:Key="tipTextStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="Foreground" Value="DimGray" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="Margin" Value="0,0,0,5" />
-            </Style>
-
-            <Style x:Key="insightHeading" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="Foreground" Value="{StaticResource materialOnBackground}" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="Margin" Value="0,0,0,5" />
-            </Style>
-
-            <Style x:Key="insight" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{StaticResource materialOnBackground}" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="Margin" Value="0,0,0,3" />
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Foreground" Value="{StaticResource materialPrimary}" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
             <vm:NewRequestViewModel x:Key="vm" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -72,46 +43,23 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel>
-                <TextBlock Style="{StaticResource tipTextStyle}" Text="Part Number" />
+                <TextBlock Text="Part Number" />
                 <ComboBox
                     Margin="0,5"
                     ItemsSource="{Binding Families}"
                     SelectedValue="{Binding SelectedGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <StackPanel
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal"
-                    Visibility="Collapsed">
-                    <TextBlock
-                        Margin="0,5,0,10"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontStyle="Italic"
-                        Foreground="DimGray"
-                        Text="Not a catalogue item?" />
-                    <Button
-                        Width="120"
-                        Margin="10,5,0,10"
-                        Command="{Binding AddSpecialCommand}"
-                        Content="+ New Special Part"
-                        Style="{StaticResource ButtonTemplate}" />
-                </StackPanel>
             </StackPanel>
 
             <ListBox
                 x:Name="productsListBox"
                 Grid.Row="1"
                 HorizontalContentAlignment="Stretch"
-                ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
+                ItemContainerStyle="{StaticResource NewRequestSelectItem}"
+                ItemsSource="{Binding FilteredList}"
                 ScrollViewer.CanContentScroll="True"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
-                SelectedValue="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectionChanged="productsListBox_SelectionChanged">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <uc:DisplayProduct TurnedProduct="{Binding}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                SelectedValue="{Binding SelectedProduct}"
+                SelectionChanged="productsListBox_SelectionChanged" />
 
             <StackPanel Grid.Row="2">
                 <Grid>
@@ -121,11 +69,8 @@
                     </Grid.ColumnDefinitions>
 
                     <!--  Date Picker  -->
-                    <StackPanel Grid.Column="0" Margin="5">
-                        <TextBlock
-                            HorizontalAlignment="Left"
-                            Style="{StaticResource tipTextStyle}"
-                            Text="Date Required" />
+                    <StackPanel Margin="5">
+                        <TextBlock HorizontalAlignment="Left" Text="Date Required" />
                         <DatePicker
                             x:Name="DateRequiredCalendarView"
                             DisplayDateStart="{x:Static sys:DateTime.Now}"
@@ -133,7 +78,7 @@
                     </StackPanel>
                     <!--  Quantity Input  -->
                     <StackPanel Grid.Column="1" Margin="5">
-                        <TextBlock Style="{StaticResource tipTextStyle}" Text="Quantity Required" />
+                        <TextBlock Text="Quantity Required" />
                         <TextBox
                             x:Name="quantityBox"
                             PreviewKeyDown="quantityBox_PreviewKeyDown"
@@ -142,16 +87,11 @@
                     </StackPanel>
                 </Grid>
 
-                <TextBlock
-                    Margin="0,5"
-                    Style="{StaticResource tipTextStyle}"
-                    Text="Notes" />
+                <TextBlock Margin="0,5" Text="Notes" />
                 <Grid>
                     <RichTextBox
                         x:Name="notesTextBox"
                         MinHeight="100"
-                        BorderBrush="{StaticResource materialPrimary}"
-                        BorderThickness="1"
                         TextChanged="notesTextBox_TextChanged">
                         <FlowDocument LineHeight="2" />
                     </RichTextBox>
@@ -159,12 +99,10 @@
 
                 <Button
                     x:Name="submitButton"
-                    Width="130"
-                    Margin="0,10"
                     HorizontalAlignment="Right"
                     Click="submitButton_Click"
                     Content="Submit Request"
-                    Style="{StaticResource GreenButtonTemplate}" />
+                    Style="{StaticResource SubmitButton}" />
             </StackPanel>
         </Grid>
 
@@ -205,31 +143,27 @@
                                 Color="Black" />
                         </Rectangle.Effect>
                     </Rectangle>
-                    <TextBlock
-                        Padding="20,10"
-                        FontSize="20"
-                        Foreground="{StaticResource materialOnPrimary}"
-                        Text="Insights" />
+                    <TextBlock Text="Insights" />
 
                     <StackPanel Grid.Row="1" Margin="20,10">
-                        <TextBlock Style="{StaticResource insightHeading}" Text="Lighthouse Data" />
+                        <TextBlock Text="Lighthouse Data" />
                         <Separator
                             Width="150"
                             Margin="0,3"
                             HorizontalAlignment="Left" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.ProductName, UpdateSourceTrigger=PropertyChanged, FallbackValue='Product Name'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.SellPrice, Converter={StaticResource priceConverter}, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Sell Price: {0}'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.QuantitySold, StringFormat='{}{0:#,##0} sold (18mo)'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} manufactured'}" />
-                        <TextBlock Style="{StaticResource insightHeading}" Text="Scheduling Algorithm" />
+                        <TextBlock Text="{Binding SelectedProduct.ProductName, StringFormat='{}Product: {0}'}" />
+                        <TextBlock Text="{Binding SelectedProduct.SellPrice, Converter={StaticResource priceConverter}, StringFormat='{}Sell Price: {0}'}" />
+                        <TextBlock Text="{Binding SelectedProduct.QuantitySold, StringFormat='{}{0:#,##0} sold (18mo)'}" />
+                        <TextBlock Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}" />
+                        <TextBlock Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} manufactured'}" />
+                        <TextBlock Text="Scheduling Algorithm" />
                         <Separator
                             Width="150"
                             Margin="0,3"
                             HorizontalAlignment="Left" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding RecommendedStockText, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding PotentialQuantityText, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
-                        <TextBlock Style="{StaticResource insight}" Text="{Binding LikelinessText, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding RecommendedStockText, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
+                        <TextBlock Text="{Binding PotentialQuantityText, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
+                        <TextBlock Text="{Binding LikelinessText, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
 
                     <Grid Grid.Row="2" Margin="0,10,0,0">
@@ -281,32 +215,18 @@
                                         <TextBlock
                                             Grid.RowSpan="2"
                                             VerticalAlignment="Center"
-                                            FontSize="16"
-                                            FontWeight="SemiBold"
-                                            Style="{StaticResource insight}"
                                             Text="{Binding MachineFullName}" />
-                                        <TextBlock
-                                            Grid.Column="2"
-                                            Style="{StaticResource insight}"
-                                            Text="{Binding LeadTime, Converter={StaticResource TimespanToString}, StringFormat='{}approximately {0}'}" />
+                                        <TextBlock Grid.Column="2" Text="{Binding LeadTime, Converter={StaticResource TimespanToString}, StringFormat='{}approximately {0}'}" />
                                         <TextBlock
                                             Grid.Row="1"
                                             Grid.ColumnSpan="3"
                                             HorizontalAlignment="Right"
-                                            FontStyle="Italic"
-                                            Style="{StaticResource insight}"
                                             Text="{Binding LeadTime, Converter={StaticResource TimespanToNextAvailable}, StringFormat='{}({0})'}" />
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </Grid>
-
-                    <!--<Image gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/no.gif"
-                           gif:ImageBehavior.RepeatBehavior="3"
-                                   gif:ImageBehavior.AnimateInDesignMode="True"
-                                   MaxHeight="300" Grid.Row="3"
-                           Margin="10"/>-->
                 </Grid>
             </Grid>
         </ScrollViewer>
@@ -376,32 +296,38 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Visibility="{Binding NotEnoughDataVis}">
-                    <Border Canvas.Left="55"
-                    Canvas.Top="30"
-                    Width="auto"
-                    Height="auto"
-                    Margin="0,10"
-                    VerticalAlignment="Top"
-                    Grid.ColumnSpan="2"
-                    CornerRadius="18"
-                    Grid.Row="3">
+                    <Border
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2"
+                        Canvas.Left="55"
+                        Canvas.Top="30"
+                        Width="auto"
+                        Height="auto"
+                        Margin="0,10"
+                        VerticalAlignment="Top"
+                        CornerRadius="18">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="20" ShadowDepth="20" Direction="220" Color="Black" Opacity="0.2"/>
+                            <DropShadowEffect
+                                BlurRadius="20"
+                                Direction="220"
+                                Opacity="0.2"
+                                ShadowDepth="20"
+                                Color="Black" />
                         </Border.Effect>
-                        <Border Name="ReceiverColor"
-                        CornerRadius="15">
+                        <Border Name="ReceiverColor" CornerRadius="15">
                             <Grid>
-                                <Border Name="Mask"
-                                Background="{StaticResource materialPrimaryBlue}"
-                                CornerRadius="20">
-                                </Border>
+                                <Border
+                                    Name="Mask"
+                                    Background="{StaticResource materialPrimaryBlue}"
+                                    CornerRadius="20" />
                                 <StackPanel x:Name="image">
-                                    <Image Name="Receiver"
-                                           MaxWidth="400"
-                                           gif:ImageBehavior.AnimateInDesignMode="True"
-                                           gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
-                                           gif:ImageBehavior.RepeatBehavior="3"
-                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Image
+                                        Name="Receiver"
+                                        MaxWidth="400"
+                                        gif:ImageBehavior.AnimateInDesignMode="True"
+                                        gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
+                                        gif:ImageBehavior.RepeatBehavior="3"
+                                        RenderOptions.BitmapScalingMode="HighQuality" />
                                     <StackPanel.OpacityMask>
                                         <VisualBrush Visual="{Binding ElementName=Mask}" />
                                     </StackPanel.OpacityMask>

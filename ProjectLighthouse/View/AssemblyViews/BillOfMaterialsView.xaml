@@ -44,7 +44,7 @@
         </Grid.RowDefinitions>
 
         <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="+ New Item" Style="{StaticResource GreenButtonTemplate}" Margin="0,5" Command="{Binding NewProductCommand}"/>
+            <Button Content="+ New Item" Style="{StaticResource GreenButton}" Margin="0,5" Command="{Binding NewProductCommand}"/>
         </StackPanel>-->
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">

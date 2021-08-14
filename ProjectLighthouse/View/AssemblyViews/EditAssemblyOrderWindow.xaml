@@ -37,7 +37,6 @@
             <Grid Grid.Row="1">
                 <TextBlock
                     x:Name="poRefGhostText"
-                    Style="{StaticResource ghostTextStyle}"
                     Text="Enter Purchase Reference" />
                 <TextBox x:Name="PORef" TextChanged="PORef_TextChanged" MaxLength="15"/>
             </Grid>
@@ -45,8 +44,8 @@
                 <Button
                     Click="CloseButton_Click"
                     Content="Close"
-                    Style="{StaticResource CancelButtonTemplate}" />
-                <Button Style="{StaticResource ButtonTemplate}">
+                    Style="{StaticResource CancelButton}" />
+                <Button>
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <Path
@@ -73,7 +72,7 @@
         <!--  Main controls  -->
         <StackPanel Grid.Row="1">
             <!--  Items List  -->
-            <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Sub-Assemblies" />
+            <TextBlock Text="Sub-Assemblies" />
 
             <Grid>
                 <Rectangle
@@ -94,7 +93,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="{Binding Parent.ProductName}" />
+                                    <TextBlock Text="{Binding Parent.ProductName}" />
                                     <ItemsControl
                                         Margin="20,5,0,10"
                                         HorizontalContentAlignment="Stretch"
@@ -116,7 +115,7 @@
 
             <!--  Items List  -->
             
-            <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Delivery Drops" />
+            <TextBlock Text="Delivery Drops" />
             <Grid>
                 <Rectangle
                     RadiusX="5"
@@ -155,7 +154,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Notes" />
+            <TextBlock Text="Notes" />
             <Rectangle
                 Grid.Row="1"
                 RadiusX="10"
@@ -178,6 +177,6 @@
             HorizontalAlignment="Right"
             Click="SaveButton_Click"
             Content="Save and Close"
-            Style="{StaticResource GreenButtonTemplate}" />
+            Style="{StaticResource GreenButton}" />
     </StackPanel>
 </Window>

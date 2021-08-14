@@ -30,8 +30,10 @@ namespace ProjectLighthouse.View
 
         private void SelectFile_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "PDF Files (*.pdf)|*.pdf"
+            };
 
             string openDir = "H:\\Sales Office";
 

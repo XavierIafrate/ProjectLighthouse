@@ -33,12 +33,12 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="M00001" x:Name="nameText" FontSize="50" FontWeight="Bold"/>
-            <Button Content="Close" Style="{StaticResource CancelButtonTemplate}" Grid.Column="2" Click="closeButton_Click"/>
+            <Button Content="Close" Style="{StaticResource CancelButton}" Grid.Column="2" Click="closeButton_Click"/>
             <Separator Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,15"/>
         </Grid>
         <!--Main controls-->
         <StackPanel Grid.Row="1">
-            <TextBlock Text="Administration" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBlock Text="Administration"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -49,7 +49,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid>
-                    <TextBlock Text="Enter Purchase Reference" Style="{StaticResource ghostTextStyle}" x:Name="poRefGhostText"/>
+                    <TextBlock Text="Enter Purchase Reference" x:Name="poRefGhostText"/>
                     <TextBox x:Name="PORef" TextChanged="PORef_TextChanged"/>
                 </Grid>
                 <StackPanel Grid.Column="1" Margin="30,0" Grid.RowSpan="2">
@@ -58,7 +58,7 @@
 
                     <CheckBox Content="Urgent" x:Name="urgent" Margin="0,10" Visibility="Collapsed"/>
 
-                    <TextBlock Text="Set Status" Style="{StaticResource bodyTextStyle}" Margin="0,5,0,3"/>
+                    <TextBlock Text="Set Status" Margin="0,5,0,3"/>
 
                     <RadioButton Content="Not Started" x:Name="not_started_radio" Checked="not_started_radio_Checked"/>
                     <RadioButton Content="Running" x:Name="running_radio" Checked="running_radio_Checked"/>
@@ -67,14 +67,14 @@
                 <!--<TextBlock Text="Allocated Setter" Style="{StaticResource bodyTextStyle}"/>
                     <ComboBox x:Name="setters" Margin="0,0,0,10"/>
 
-                    <Button Style="{StaticResource CancelButtonTemplate}" 
+                    <Button Style="{StaticResource CancelButton}" 
                         Content="Cancel Order"
                         x:Name="cancelOrderButton"
                         Click="CancelOrderButton_Click"/>-->
             </Grid>
             
             <!--Items List-->
-            <TextBlock Text="Items" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBlock Text="Items"/>
             <ListBox x:Name="ItemsListBox" HorizontalContentAlignment="Stretch" MaxHeight="300" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -89,13 +89,12 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="Notes" Style="{StaticResource subtitleTextStyle}"/>
+            <TextBlock Text="Notes"/>
             <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource materialPrimary}" StrokeThickness="2" Grid.Row="1"/>
             <RichTextBox MinHeight="100" BorderThickness="0" Margin="10" Background="Transparent" x:Name="notes" Grid.Row="1" KeyDown="notes_KeyDown">
             </RichTextBox>
         </Grid>
         <Button x:Name="saveButton" 
-                    Style="{StaticResource ButtonTemplate}" 
                     Content="Save and Close" Width="150" 
                     HorizontalAlignment="Right" 
                     Click="saveButton_Click"

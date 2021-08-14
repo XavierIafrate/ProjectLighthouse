@@ -11,16 +11,20 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             Email mailMan = new Email();
 
-            EmailSendConfigure myConfig = new EmailSendConfigure();
-            myConfig.TOs = new string[] { toPerson };
-            myConfig.CCs = new string[] { };
-            myConfig.From = "lighthouse@wixroydgroup.com";
-            myConfig.FromDisplayName = "Lighthouse Notifications";
-            myConfig.Priority = MailPriority.Normal;
-            myConfig.Subject = alertSubject;
+            EmailSendConfigure myConfig = new EmailSendConfigure
+            {
+                TOs = new string[] { toPerson },
+                CCs = new string[] { },
+                From = "lighthouse@wixroydgroup.com",
+                FromDisplayName = "Lighthouse Notifications",
+                Priority = MailPriority.Normal,
+                Subject = alertSubject
+            };
 
-            EmailContent myContent = new EmailContent();
-            myContent.Content = message;
+            EmailContent myContent = new EmailContent
+            {
+                Content = message
+            };
 
             mailMan.SendMail(myConfig, myContent);
         }
@@ -168,7 +172,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             foreach (User user in users)
             {
-                if ((user.UserRole == "Scheduling" || user.UserRole=="admin") && user.CanApproveRequests && !string.IsNullOrEmpty(user.EmailAddress))
+                if ((user.UserRole == "Scheduling" || user.UserRole == "admin") && user.CanApproveRequests && !string.IsNullOrEmpty(user.EmailAddress))
                 {
                     emails.Add(user.EmailAddress);
                 }

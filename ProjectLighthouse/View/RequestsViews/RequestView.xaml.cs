@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;

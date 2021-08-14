@@ -317,8 +317,10 @@ namespace ProjectLighthouse.ViewModel
 
         public void CreateNewRouting()
         {
-            AddNewRoutingWindow window = new AddNewRoutingWindow();
-            window.Product = CurrentProduct.product.Clone();
+            AddNewRoutingWindow window = new AddNewRoutingWindow
+            {
+                Product = CurrentProduct.product.Clone()
+            };
             window.ShowDialog();
             if (window.wasSaved)
             {

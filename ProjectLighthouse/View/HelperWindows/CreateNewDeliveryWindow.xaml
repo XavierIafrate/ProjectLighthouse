@@ -20,11 +20,9 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="New Delivery"
-                   Style="{StaticResource heroTextStyle}"/>
+        <TextBlock Text="New Delivery"/>
         <TextBlock Text="Undelivered Stock Lots"
-                   Grid.Row="1"
-                   Style="{StaticResource subtitleTextStyle}"/>
+                   Grid.Row="1"/>
         <ScrollViewer Grid.Row="2">
             <ListView x:Name="undeliveredList" HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
@@ -51,17 +49,16 @@
         <StackPanel Grid.Column="1"
                     Grid.Row="2" VerticalAlignment="Center">
             <Button Content=">"
-                    Style="{StaticResource GreenButtonTemplate}"
+                    Style="{StaticResource GreenButton}"
                     x:Name="addButton"
                     Click="addButton_Click"/>
             <Button Content="&lt;"
-                    Style="{StaticResource CancelButtonTemplate}"
+                    Style="{StaticResource CancelButton}"
                     x:Name="remButton"
                     Click="remButton_Click"/>
         </StackPanel>
 
         <TextBlock Text="This Delivery" 
-                   Style="{StaticResource subtitleTextStyle}"
                    Grid.Row="1"
                    Grid.Column="2"/>
         <ScrollViewer Grid.Row="2" Grid.Column="2">
@@ -91,11 +88,11 @@
                     Grid.ColumnSpan="3"
                     HorizontalAlignment="Right">
            
-            <Button Style="{StaticResource CancelButtonTemplate}"
+            <Button Style="{StaticResource CancelButton}"
                     Content="Cancel"
                     x:Name="CancelButton"
                     Click="CancelButton_Click"/>
-            <Button Style="{StaticResource GreenButtonTemplate}"
+            <Button Style="{StaticResource GreenButton}"
                     Content="Create"
                     x:Name="CreateButton"
                     Click="CreateButton_Click"/>

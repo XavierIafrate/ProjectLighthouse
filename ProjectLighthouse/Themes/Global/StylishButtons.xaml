@@ -1,0 +1,256 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="Default" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource materialPrimary}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="10,5" />
+        <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="24"
+                        Padding="20,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="12">
+                        <ContentPresenter
+                            Margin="0,0,0,2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialPrimaryVar}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="LightGray" />
+                <Setter Property="Foreground" Value="Gray" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Don't touch  -->
+    <Style BasedOn="{StaticResource Default}" TargetType="Button" />
+
+    <!--  Sub Styles  -->
+    <Style
+        x:Key="GreenButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialPrimaryGreenVar}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="BlueButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource materialPrimaryBlue}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialPrimaryBlueVar}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="CancelButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource materialError}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialErrorVar}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style x:Key="SubtleButtonTemplate" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlue}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="18"
+                        Padding="10,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="9">
+                        <ContentPresenter
+                            Margin="0,0,0,1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialPrimaryBlue}" />
+                <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="LightGray" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SubtleGreenButtonTemplate" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreen}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="18"
+                        Padding="10,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="9">
+                        <ContentPresenter
+                            Margin="0,0,0,1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}" />
+                <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="LightGray" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ModernGreenButtonTemplate" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreen}" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Margin" Value="10,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="30"
+                        Padding="15,2,15,3"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="15">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}" />
+                <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialPrimaryGreenVar}" />
+                <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource disabledGray}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Specific Styles  -->
+    <Style
+        x:Key="SubmitButton"
+        BasedOn="{StaticResource GreenButton}"
+        TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="24"
+                        Padding="20,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="12">
+                        <StackPanel Orientation="Horizontal">
+                            <ContentPresenter
+                                Margin="0,0,0,2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Margin="7,0,0,0"
+                                Data="M2 3V10L17 12L2 14V21L23 12M22 15.5L18.5 19L16.5 17L15 18.5L18.5 22L23.5 17Z"
+                                Fill="{StaticResource materialOnPrimary}"
+                                Stretch="Uniform" />
+                        </StackPanel>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        x:Key="SettingsButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border Width="26" Height="26" CornerRadius="13" Background="{StaticResource materialPrimaryBlue}"/>
+                        <Path
+                        Width="20"
+                        Height="20"
+                        Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"
+                        Fill="{TemplateBinding Foreground}"
+                        Stretch="Uniform" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="#aaaaaa" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="ExitButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Content" Value="exit" />
+        <Setter Property="Background" Value="{StaticResource materialBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource materialError}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialError}" />
+                <Setter Property="Foreground" Value="{StaticResource materialOnError}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+</ResourceDictionary>

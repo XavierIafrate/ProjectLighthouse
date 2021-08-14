@@ -132,8 +132,7 @@
             <Button
                 Margin="0"
                 Command="{Binding ExportCommand}"
-                Content="CSV"
-                Style="{StaticResource ButtonTemplate}" />
+                Content="CSV" />
         </StatusBar>
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
             <TextBlock
@@ -193,7 +192,6 @@
                         </Grid.RowDefinitions>
                         <TextBlock
                             Grid.ColumnSpan="2"
-                            Style="{StaticResource heroTextStyle}"
                             Text="{Binding SelectedRequest.Product, UpdateSourceTrigger=PropertyChanged, FallbackValue='P0XXX.123-456-A2'}" />
 
                         <Grid Grid.Row="1">
@@ -213,7 +211,6 @@
                             x:Name="dateRequiredTextBlock"
                             Grid.Row="2"
                             Grid.ColumnSpan="2"
-                            Style="{StaticResource subtitleTextStyle}"
                             Text="{Binding SelectedRequest.DateRequired, StringFormat='{}Required for {0:dd/MM/yy}', FallbackValue='Required for 01/01/1970'}" />
                     </Grid>
 
@@ -229,23 +226,20 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource accentTextStyle}" Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}" />
+                        <TextBlock Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}" />
                         <TextBlock
                             Grid.Column="2"
                             HorizontalAlignment="Right"
-                            Style="{StaticResource accentTextStyle}"
                             Text="{Binding SelectedRequest.DateRaised, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd/MM/yy HH:mm}', FallbackValue='01/01/1970 23:59'}" />
 
                         <TextBlock
                             Grid.Row="1"
-                            Style="{StaticResource accentTextStyle}"
                             Text="{Binding SelectedRequest.ModifiedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Updated by {0}', FallbackValue='Updated by Kyle Brovloski'}"
                             Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="2"
                             HorizontalAlignment="Right"
-                            Style="{StaticResource accentTextStyle}"
                             Text="{Binding SelectedRequest.LastModified, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd/MM/yy HH:mm}', FallbackValue='01/01/1970 23:59'}"
                             Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
@@ -253,7 +247,6 @@
                     <!--  Controls area  -->
                     <Separator Margin="0,5" />
                     <TextBlock
-                        Style="{StaticResource subtitleTextStyle}"
                         Text="Decision Making"
                         Visibility="{Binding DecisionVis}" />
 
@@ -273,7 +266,6 @@
                             IsEnabled="{Binding ProductionCheckboxEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
                         <TextBlock
                             Grid.Row="2"
-                            Style="{StaticResource accentTextStyle}"
                             Text="Reason for declining:" />
                         <ComboBox
                             x:Name="DeclineComboBox"
@@ -302,13 +294,13 @@
                                 x:Name="DeclineButton"
                                 Command="{Binding DeclineCommand}"
                                 Content="Decline"
-                                Style="{StaticResource CancelButtonTemplate}" />
+                                Style="{StaticResource CancelButton}" />
                             <Button
                                 x:Name="ApproveButton"
                                 Grid.Column="1"
                                 Command="{Binding ApproveCommand}"
                                 Content="Approve"
-                                Style="{StaticResource GreenButtonTemplate}" />
+                                Style="{StaticResource GreenButton}" />
 
                         </Grid>
                     </StackPanel>
@@ -330,10 +322,9 @@
                     </Grid>
 
                     <StackPanel Margin="10,0" Visibility="{Binding ApprovedVis, FallbackValue=Collapsed}">
-                        <TextBlock Style="{StaticResource bodyTextStyle}" Text="This request has been approved for manufacture." />
+                        <TextBlock Text="This request has been approved for manufacture." />
                         <TextBlock
                             Padding="0,5,0,4"
-                            Style="{StaticResource bodyTextStyle}"
                             Text="Please enter the Purchase Order reference here:" />
                         <TextBox BorderBrush="{StaticResource materialPrimary}" Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.Style>
@@ -353,8 +344,7 @@
                                 Grid.Column="1"
                                 Command="{Binding UpdateOrderCommand}"
                                 Content="Update Order"
-                                IsEnabled="{Binding UpdateButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource ButtonTemplate}" />
+                                IsEnabled="{Binding UpdateButtonEnabled, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
                     </StackPanel>
 
@@ -377,7 +367,6 @@
                     <StackPanel Margin="10,0" Visibility="{Binding DeclinedVis, FallbackValue=Collapsed}">
                         <TextBlock
                             Foreground="{StaticResource materialError}"
-                            Style="{StaticResource bodyTextStyle}"
                             Text="Unfortunately this request has been declined, citing the reason below." />
                     </StackPanel>
 
@@ -387,20 +376,20 @@
                         Grid.Row="2"
                         Margin="10"
                         Visibility="{Binding EditControlsVis, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
-                        <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Edit Request" />
-                        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Quantity Required" />
+                        <TextBlock Text="Edit Request" />
+                        <TextBlock Text="Quantity Required" />
                         <TextBox
                             x:Name="quantityTextbox"
                             IsEnabled="{Binding CanEditRequirements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                             Text="{Binding SelectedRequest.QuantityRequired, Mode=OneWay}" />
 
-                        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Date Required" />
+                        <TextBlock Text="Date Required" />
                         <DatePicker
                             DisplayDateStart="{x:Static sys:DateTime.Now}"
                             IsEnabled="{Binding CanEditRequirements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                             SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}" />
 
-                        <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Notes" />
+                        <TextBlock Text="Notes" />
                         <RichTextBox
                             x:Name="notesTextBox"
                             MinHeight="50"
@@ -412,8 +401,7 @@
                             <Button
                                 x:Name="saveChangesButton"
                                 Click="saveChangesButton_Click"
-                                Content="Save"
-                                Style="{StaticResource ButtonTemplate}" />
+                                Content="Save" />
                         </StackPanel>
                     </StackPanel>
                     <TextBlock Text="{Binding SelectedRequest.Status, StringFormat='{}Status: {0}', FallbackValue='Status: Pending input'}" />

@@ -43,7 +43,6 @@
 
                 <TextBlock Text="Accepted" 
                            Margin="0,10,0,5" 
-                           Style="{StaticResource subsubtitleTextStyle}"
                            HorizontalAlignment="Center" 
                            FontWeight="SemiBold"/>
                 <TextBlock x:Name="QtyMadeTextBlock" 
@@ -57,8 +56,7 @@
                            Grid.Column="1"
                            FontWeight="SemiBold"
                            Margin="0,10,0,5"
-                           HorizontalAlignment="Center"
-                            Style="{StaticResource subsubtitleTextStyle}"/>
+                           HorizontalAlignment="Center"/>
                 <TextBlock x:Name="QtyRejectTextBlock" 
                            Grid.Row="1"
                            Grid.Column="1"
@@ -71,8 +69,7 @@
                            Grid.Column="2"
                            Margin="0,10,0,5"
                            FontWeight="SemiBold"
-                           HorizontalAlignment="Center"
-                            Style="{StaticResource subsubtitleTextStyle}"/>
+                           HorizontalAlignment="Center"/>
                 <TextBlock x:Name="QtyDeliveredTextBlock" 
                            Grid.Row="1"
                            Grid.Column="2"
@@ -82,7 +79,7 @@
                            Foreground="{StaticResource materialPrimaryGreen}"/>
             </Grid>
             
-            <TextBlock Text="Cycle Time" Margin="0,10,0,5" Style="{StaticResource subsubtitleTextStyle}"/>
+            <TextBlock Text="Cycle Time" Margin="0,10,0,5"/>
             <StackPanel Orientation="Horizontal">
                 <TextBox Width="30" HorizontalAlignment="Left" 
                          x:Name="CycleTime_Min"
@@ -102,7 +99,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Stock Lots" Margin="0,10,0,5" Style="{StaticResource subsubtitleTextStyle}"/>
+                <TextBlock Text="Stock Lots" Margin="0,10,0,5"/>
                 <Button Content="edit" 
                         Grid.Column="2" 
                         Style="{StaticResource SubtleButtonTemplate}" 
@@ -121,8 +118,7 @@
                 </ListView>
 
 
-                <TextBlock Text="New Lot"
-                       Style="{StaticResource subsubtitleTextStyle}" Margin="0,10,0,5"/>
+                <TextBlock Text="New Lot" Margin="0,10,0,5"/>
             <Grid Margin="0,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -145,11 +141,10 @@
 
                 <TextBlock Text="Material Batch ID" Grid.Row="2" Margin="5,2" VerticalAlignment="Bottom" FontSize="14"/>
                 <TextBox x:Name="BatchTextBox" FontSize="14" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" TextWrapping="Wrap" MaxLength="256"/>
-                <Button Content="+ Add Lot" Style="{StaticResource GreenButtonTemplate}" Grid.Column="2" Grid.Row="3" x:Name="AddLotButton" Click="AddLotButton_Click"/>
+                <Button Content="+ Add Lot" Style="{StaticResource GreenButton}" Grid.Column="2" Grid.Row="3" x:Name="AddLotButton" Click="AddLotButton_Click"/>
             </Grid>
 
             <Button Content="Save Changes" 
-                    Style="{StaticResource ButtonTemplate}" 
                     Margin="0,20,0,0" Width="125"
                     x:Name="SaveButton"
                     Click="SaveButton_Click"/>

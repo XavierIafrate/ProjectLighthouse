@@ -454,9 +454,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 font = new XFont("Tahoma", 12, XFontStyle.Regular, options);
 
                 // Init barcode
-                BarCode barcode = new Code3of9Standard("EMPTY", new XSize(PurchaseRefCol.Width, ProductCol.Height * 0.8));
-                barcode.StartChar = '*';
-                barcode.EndChar = '*';
+                BarCode barcode = new Code3of9Standard("EMPTY", new XSize(PurchaseRefCol.Width, ProductCol.Height * 0.8))
+                {
+                    StartChar = '*',
+                    EndChar = '*'
+                };
 
                 foreach (DeliveryItem deliveryItem in deliveryItems)
                 {

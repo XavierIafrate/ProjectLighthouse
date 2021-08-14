@@ -83,8 +83,8 @@ namespace ProjectLighthouse.ViewModel
         public string SearchTerm
         {
             get { return searchTerm; }
-            set 
-            { 
+            set
+            {
                 searchTerm = value.ToUpper();
                 Search();
             }
@@ -191,7 +191,7 @@ namespace ProjectLighthouse.ViewModel
 
             DisplayStats = MachineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
 
-            if(DisplayStats == null)
+            if (DisplayStats == null)
             {
                 LiveInfoVis = Visibility.Collapsed;
                 return;
@@ -276,7 +276,7 @@ namespace ProjectLighthouse.ViewModel
             List<LatheManufactureOrder> Results = new();
             List<string> FoundOrders = new();
 
-            foreach(LatheManufactureOrder order in LatheManufactureOrders)
+            foreach (LatheManufactureOrder order in LatheManufactureOrders)
             {
                 if (order.Name.Contains(SearchTerm))
                 {
@@ -284,9 +284,9 @@ namespace ProjectLighthouse.ViewModel
                     FoundOrders.Add(order.Name);
                     continue;
                 }
-                    
 
-                if(order.POReference.Contains(SearchTerm) && order.POReference != "N/A" && !string.IsNullOrEmpty(order.POReference))
+
+                if (order.POReference.Contains(SearchTerm) && order.POReference != "N/A" && !string.IsNullOrEmpty(order.POReference))
                 {
                     Results.Add(order);
                     FoundOrders.Add(order.Name);

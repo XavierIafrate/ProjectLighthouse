@@ -60,8 +60,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
 
-            Performace performace = new Performace();
-            performace.summary = new List<PerformanceByMachine>();
+            Performace performace = new Performace
+            {
+                summary = new List<PerformanceByMachine>()
+            };
             PerformanceByMachine tmpMachineSummary = new PerformanceByMachine();
 
             foreach (Lathe lathe in lathes)

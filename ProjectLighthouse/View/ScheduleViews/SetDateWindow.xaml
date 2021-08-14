@@ -13,10 +13,10 @@
         Title="Edit Timings">
     <Grid Height="auto" VerticalAlignment="Center" Margin="20,0">
         <StackPanel>
-            <TextBlock x:Name="TitleText" Style="{StaticResource subtitleTextStyle}"/>
-            <TextBlock Text="Set Start Date" Style="{StaticResource subsubtitleTextStyle}"/>
+            <TextBlock x:Name="TitleText"/>
+            <TextBlock Text="Set Start Date"/>
             <Calendar Margin="15,0,15,5" x:Name="calendar"/>
-            <TextBlock Text="Assign Machine" Style="{StaticResource subsubtitleTextStyle}"/>
+            <TextBlock Text="Assign Machine"/>
             <ComboBox Margin="10,5" x:Name="machine">
                 <ComboBoxItem Content="C01"/>
                 <ComboBoxItem Content="C02"/>
@@ -24,7 +24,7 @@
                 <ComboBoxItem Content="C04"/>
             </ComboBox>
             <Grid HorizontalAlignment="Right">
-                <Button Content="Save" Style="{StaticResource GreenButtonTemplate}" Margin="10" x:Name="confirmButton" Click="confirmButton_Click"/>
+                <Button Content="Save" Style="{StaticResource GreenButton}" Margin="10" x:Name="confirmButton" Click="confirmButton_Click"/>
             </Grid>
             
         </StackPanel>

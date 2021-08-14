@@ -11,7 +11,7 @@
         <converters:StartDateToEndDate x:Key="startToFinish"/>
         <converters:orderItemToRequirementText x:Key="requirementText"/>
 
-        <Style TargetType="TextBlock" x:Key="itemTextStyle">
+        <!--<Style TargetType="TextBlock" x:Key="itemTextStyle">
             <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
@@ -28,7 +28,7 @@
                     <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
                 </Trigger>
             </Style.Triggers>
-        </Style>
+        </Style>-->
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -76,9 +76,9 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Margin="10">
-                <TextBlock Text="{Binding Order.StartDate, StringFormat='{}Start: {0:ddd dd MMM}', FallbackValue='Finish: Mon 01 Jan'}" Style="{StaticResource itemTextStyle}"/>
-                <TextBlock Text="{Binding Order, Converter='{StaticResource startToFinish}', StringFormat='{}Finish: {0:ddd dd MMM}', FallbackValue='Finish: Fri 05 Jan'}" Style="{StaticResource itemTextStyle}"/>
-                <TextBlock Text="{Binding Order.TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}Runtime: {0} days', FallbackValue='Runtime: 5 days'}" Style="{StaticResource itemTextStyle}"/>
+                <TextBlock Text="{Binding Order.StartDate, StringFormat='{}Start: {0:ddd dd MMM}', FallbackValue='Finish: Mon 01 Jan'}"/>
+                <TextBlock Text="{Binding Order, Converter='{StaticResource startToFinish}', StringFormat='{}Finish: {0:ddd dd MMM}', FallbackValue='Finish: Fri 05 Jan'}" />
+                <TextBlock Text="{Binding Order.TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}Runtime: {0} days', FallbackValue='Runtime: 5 days'}"/>
                 <TextBlock Foreground="{StaticResource materialOnBackground}" Grid.Column="4" VerticalAlignment="Center">
                 <Run Text="{Binding Order.BarID}"/>
                 <Run Text="{Binding Order.NumberOfBars, StringFormat='{}x {0} bars'}"/>
@@ -93,9 +93,9 @@
                         <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="150"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Product" Style="{StaticResource itemHeaderStyle}"/>
-                    <TextBlock Text="Quantity" Style="{StaticResource itemHeaderStyle}" Grid.Column="1" HorizontalAlignment="Right"/>
-                    <TextBlock Text="Requirement" Grid.Column="2" Style="{StaticResource itemHeaderStyle}" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Product"/>
+                    <TextBlock Text="Quantity" Grid.Column="1" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Requirement" Grid.Column="2" HorizontalAlignment="Right"/>
                 </Grid>
 
                 <ItemsControl ItemsSource="{Binding OrderItems}">
@@ -107,9 +107,9 @@
                                     <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="150"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Path=ProductName}" Style="{StaticResource itemTextStyle}"/>
-                                <TextBlock Text="{Binding Path=TargetQuantity, StringFormat='{}{0:#,##0}'}" Style="{StaticResource itemTextStyle}" Grid.Column="1" HorizontalAlignment="Right"/>
-                                <TextBlock Text="{Binding Converter='{StaticResource requirementText}'}" Grid.Column="2" Style="{StaticResource itemTextStyle}" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding Path=ProductName}"/>
+                                <TextBlock Text="{Binding Path=TargetQuantity, StringFormat='{}{0:#,##0}'}" Grid.Column="1" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding Converter='{StaticResource requirementText}'}" Grid.Column="2" HorizontalAlignment="Right"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

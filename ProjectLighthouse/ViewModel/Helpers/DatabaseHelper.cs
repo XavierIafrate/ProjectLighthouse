@@ -20,7 +20,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
 
-            using (SQLiteConnection conn = new (GetDatabaseFile()))
+            using (SQLiteConnection conn = new(GetDatabaseFile()))
             {
                 conn.CreateTable<T>();
                 try
@@ -44,7 +44,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
 
-            using (SQLiteConnection conn = new (GetDatabaseFile()))
+            using (SQLiteConnection conn = new(GetDatabaseFile()))
             {
                 try
                 {
@@ -67,7 +67,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
 
-            using (SQLiteConnection conn = new (GetDatabaseFile()))
+            using (SQLiteConnection conn = new(GetDatabaseFile()))
             {
                 conn.CreateTable<T>();
                 int rows = conn.Delete(item);

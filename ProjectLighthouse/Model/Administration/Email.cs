@@ -52,14 +52,16 @@ namespace ProjectLighthouse.Model
         //Send the email using the SMTP server  
         private void Send(MailMessage message, EmailSendConfigure emailConfig)
         {
-            SmtpClient client = new SmtpClient();
-            client.UseDefaultCredentials = false;
-            client.Credentials = new System.Net.NetworkCredential(
+            SmtpClient client = new SmtpClient
+            {
+                UseDefaultCredentials = false,
+                Credentials = new System.Net.NetworkCredential(
                                   emailConfig.ClientCredentialUserName,
-                                  emailConfig.ClientCredentialPassword);
-            client.Host = "wixroydgroup-com.mail.protection.outlook.com";
-            client.Port = 25;  // this is critical
-            client.EnableSsl = true;  // this is critical
+                                  emailConfig.ClientCredentialPassword),
+                Host = "wixroydgroup-com.mail.protection.outlook.com",
+                Port = 25,  // this is critical
+                EnableSsl = true  // this is critical
+            };
 
             try
             {

@@ -20,238 +20,146 @@
     WindowState="Maximized"
     mc:Ignorable="d">
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <vm:MainViewModel x:Key="vm" />
-            <Style x:Key="menuButtonStyle" TargetType="ToggleButton">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="HorizontalContentAlignment" Value="Left" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
-                <Setter Property="FontSize" Value="16" />
-
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
-                            <Border Padding="10,2,0,4" Background="{TemplateBinding Background}">
-                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
-                        <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}" />
-                    </Trigger>
-                    <Trigger Property="IsChecked" Value="True">
-                        <Setter Property="Foreground" Value="{StaticResource materialOnBackground}" />
-                        <Setter Property="Background" Value="{StaticResource materialBackground}" />
-                    </Trigger>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Foreground" Value="DarkGray" />
-                        <Setter Property="Background" Value="Black" />
-                    </Trigger>
-                </Style.Triggers>
-
-            </Style>
-            <Style x:Key="menuSepStyle" TargetType="Separator">
-                <Setter Property="Margin" Value="0,10,0,5" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="Width" Value="175" />
-            </Style>
-            <Style x:Key="menuSectionStyle" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="FontSize" Value="25" />
-                <Setter Property="Margin" Value="0,15,0,0" />
-            </Style>
-            <Style x:Key="menuSubSectionStyle" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="Margin" Value="0,5" />
-            </Style>
-        </ResourceDictionary>
-    </Window.Resources>
-
-    <!--<Window.DataContext>
-        <vm:MainViewModel/>
-    </Window.DataContext>-->
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
                 Width="*"
-                MinWidth="250"
+                MinWidth="300"
                 MaxWidth="350" />
-            <!--<ColumnDefinition Width="10"/>-->
             <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
-        <ScrollViewer>
-            <Grid x:Name="main_menu">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="6*" />
+        </Grid.RowDefinitions>
 
-                <Rectangle Grid.RowSpan="5" Fill="Black" />
+        <Rectangle Grid.RowSpan="2" Fill="{StaticResource materialSurface}" />
 
-                <Image
-                    Width="150"
-                    Margin="0,30"
-                    RenderOptions.BitmapScalingMode="HighQuality"
-                    Source="/Resources/LighthouseLogo.png" />
+        <Image
+            Width="150"
+            RenderOptions.BitmapScalingMode="Fant"
+            Source="/Resources/Lighthouse_dark.png" />
 
-                <StackPanel Grid.Row="1" Margin="20,0,0,0">
 
-                    <TextBlock Style="{StaticResource menuSectionStyle}" Text="Requests" />
-                    <Separator Style="{StaticResource menuSepStyle}" />
-                    <ToggleButton
-                        x:Name="new_request_button"
-                        Command="{Binding UpdateViewCommand}"
-                        CommandParameter="New Request"
-                        Content="New Request"
-                        Style="{StaticResource menuButtonStyle}" />
-                    <ToggleButton
-                        x:Name="requests_button"
-                        Command="{Binding UpdateViewCommand}"
-                        CommandParameter="View Requests"
-                        Content="View Requests"
-                        Style="{StaticResource menuButtonStyle}" />
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <ScrollViewer>
+                <StackPanel x:Name="main_menu">
+                    <StackPanel Margin="0,20">
+                        <ToggleButton
+                            x:Name="new_request_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="New Request"
+                            Content="New Request"
+                            Style="{StaticResource NewRequest_MenuItem}" />
+                        <ToggleButton
+                            x:Name="requests_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="View Requests"
+                            Content="View Requests"
+                            Style="{StaticResource ViewRequests_MenuItem}" />
+                    </StackPanel>
 
-                    <TextBlock Style="{StaticResource menuSectionStyle}" Text="Production" />
-                    <Separator Style="{StaticResource menuSepStyle}" />
-                    <TextBlock Style="{StaticResource menuSubSectionStyle}" Text="Turning" />
-                    <StackPanel Margin="20,0,0,0">
+                    <StackPanel Margin="0,20">
                         <ToggleButton
                             x:Name="orders_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Orders"
                             Content="Orders"
-                            IsChecked="True"
-                            Style="{StaticResource menuButtonStyle}" />
+                            Style="{StaticResource Orders_MenuItem}" />
 
                         <ToggleButton
                             x:Name="schedule_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Schedule"
                             Content="Schedule"
-                            Style="{StaticResource menuButtonStyle}" />
+                            Style="{StaticResource Schedule_MenuItem}" />
                         <ToggleButton
                             x:Name="machine_stats_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Runtime"
                             Content="Runtime"
-                            Style="{StaticResource menuButtonStyle}" />
+                            Style="{StaticResource Runtime_MenuItem}" />
                     </StackPanel>
-                    <TextBlock Style="{StaticResource menuSubSectionStyle}" Text="Assembly" />
-                    <StackPanel Margin="20,0,0,0">
+
+                    <StackPanel Margin="0,20">
 
                         <ToggleButton
                             x:Name="assemblyOrders_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Assembly Orders"
                             Content="Assembly Orders"
-                            Style="{StaticResource menuButtonStyle}" />
+                            Style="{StaticResource AssemblyOrders_MenuItem}" />
                         <ToggleButton
                             x:Name="assembly_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Manage Products"
                             Content="Manage Products"
-                            Style="{StaticResource menuButtonStyle}" />
+                            Style="{StaticResource ManageProducts_MenuItem}" />
                         <ToggleButton
                             x:Name="BOM_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Bill of Materials"
                             Content="Bill of Materials"
-                            Style="{StaticResource menuButtonStyle}" />
+                            Style="{StaticResource BillOfMaterials_MenuItem}" />
                     </StackPanel>
-                    <ToggleButton
-                        x:Name="deliveries_button"
-                        Command="{Binding UpdateViewCommand}"
-                        CommandParameter="Deliveries"
-                        Content="Deliveries"
-                        Style="{StaticResource menuButtonStyle}" />
 
+                    <StackPanel Margin="0,20">
+                        <ToggleButton
+                            x:Name="deliveries_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Deliveries"
+                            Content="Deliveries"
+                            Style="{StaticResource Deliveries_MenuItem}" />
+                    </StackPanel>
 
-                    <TextBlock Style="{StaticResource menuSectionStyle}" Text="Administration" />
-                    <Separator Style="{StaticResource menuSepStyle}" />
-                    <ToggleButton
-                        x:Name="analytics_button"
-                        Command="{Binding UpdateViewCommand}"
-                        CommandParameter="Analytics"
-                        Content="Analytics"
-                        Style="{StaticResource menuButtonStyle}" />
-                    <ToggleButton
-                        x:Name="manage_users_button"
-                        Command="{Binding UpdateViewCommand}"
-                        CommandParameter="Manage Users"
-                        Content="Manage Users"
-                        Style="{StaticResource menuButtonStyle}" />
+                    <StackPanel Margin="0,20">
+                        <ToggleButton
+                            x:Name="analytics_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Analytics"
+                            Content="Analytics"
+                            Style="{StaticResource Analytics_MenuItem}" />
+                        <ToggleButton
+                            x:Name="manage_users_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Manage Users"
+                            Content="Manage Users"
+                            Style="{StaticResource ManageUsers_MenuItem}" />
+                    </StackPanel>
 
                 </StackPanel>
+            </ScrollViewer>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource materialPrimaryBlue}" />
+                <StackPanel Margin="20,10" VerticalAlignment="Center">
+                    <TextBlock
+                        x:Name="LoggedInUserName"
+                        Foreground="{StaticResource materialOnPrimary}"
+                        Text="Randy Marsh" />
+                    <TextBlock
+                        x:Name="LoggedInUserRole"
+                        Foreground="{StaticResource materialOnPrimary}"
+                        Text="Viewer" />
+                </StackPanel>
+
                 <Button
-                    Grid.Row="3"
-                    Width="100"
-                    Margin="5"
+                    Grid.Column="1"
+                    Margin="20"
                     Command="{Binding EditCommand}"
-                    Style="{StaticResource ButtonTemplate}">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Path
-                                Width="11"
-                                Height="11"
-                                Margin="0,0,5,0"
-                                Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"
-                                Fill="{StaticResource materialOnPrimary}"
-                                Stretch="Fill" />
-                            <TextBlock VerticalAlignment="Center" Text="Settings" />
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-                <StackPanel
-                    Grid.Row="4"
-                    Margin="0,5,0,10"
-                    HorizontalAlignment="Center">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontStyle="Italic"
-                        Foreground="#555555"
-                        Text="Copyright Wixroyd Ltd 2021" />
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontStyle="Italic"
-                        Foreground="#555555"
-                        Text="Written by Xavier Iafrate" />
-                </StackPanel>
-                <Grid Grid.RowSpan="5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="10" />
-                    </Grid.ColumnDefinitions>
-
-                    <Rectangle
-                        Grid.Column="1"
-                        Width="40"
-                        Fill="{StaticResource materialBackground}"
-                        RadiusX="10"
-                        RadiusY="10" />
-                </Grid>
+                    Style="{StaticResource SettingsButton}" />
             </Grid>
-        </ScrollViewer>
-        <!--<GridSplitter Grid.Column="1"
-                  Width="3" Background="White"
-                  VerticalAlignment="Stretch"
-                  HorizontalAlignment="Center" />-->
+        </Grid>
 
-        <Grid Grid.Column="1" Background="White">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="6*" />
-            </Grid.RowDefinitions>
+
+        <Grid Grid.Column="1">
             <StackPanel
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
@@ -270,8 +178,6 @@
                         Foreground="{StaticResource materialOnError}"
                         Text="BETA" />
                 </Grid>
-
-
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock
                         FontSize="15"
@@ -285,21 +191,22 @@
                         Text="Watch out for bugs!" />
                 </StackPanel>
             </StackPanel>
-
-
             <Viewbox
                 MaxHeight="70"
                 Margin="50,20"
                 HorizontalAlignment="Right">
 
                 <TextBlock
-                    x:Name="WindowText"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Foreground="{StaticResource materialOnBackground}"
-                    Text="{Binding NavText, FallbackValue='[WindowName]'}" />
+                    Text="{Binding NavText, FallbackValue=CURR_VIEW}" />
             </Viewbox>
-            <ContentControl Grid.Row="1" Content="{Binding SelectedViewModel}" />
+
         </Grid>
+        <ContentControl
+            Grid.Row="1"
+            Grid.Column="1"
+            Content="{Binding SelectedViewModel}" />
     </Grid>
 </Window>

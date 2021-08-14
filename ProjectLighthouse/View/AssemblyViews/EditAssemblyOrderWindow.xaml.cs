@@ -73,14 +73,14 @@ namespace ProjectLighthouse.View.AssemblyViews
             ListBoxAssemblies = new();
             UpdateCommand = new(this);
 
-            foreach(Assembly a in Assemblies)
+            foreach (Assembly a in Assemblies)
             {
 
                 List<AssemblyItemWithCommands> tmp_children = new();
                 foreach (AssemblyOrderItem child in a.Children)
                 {
-                    tmp_children.Add(new() 
-                    { 
+                    tmp_children.Add(new()
+                    {
                         Child = child,
                         UpdateCommand = UpdateCommand
                     });
@@ -120,15 +120,15 @@ namespace ProjectLighthouse.View.AssemblyViews
                 SaveExit = true;
                 Close();
             }
-            
+
         }
 
         private void PORef_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
             Order.POReference = textBox.Text;
-            poRefGhostText.Visibility = string.IsNullOrEmpty(textBox.Text) 
-                ? Visibility.Visible 
+            poRefGhostText.Visibility = string.IsNullOrEmpty(textBox.Text)
+                ? Visibility.Visible
                 : Visibility.Hidden;
         }
 

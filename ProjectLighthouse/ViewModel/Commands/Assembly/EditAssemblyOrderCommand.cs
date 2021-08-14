@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.Model;
-using System;
+﻿using System;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.Assembly

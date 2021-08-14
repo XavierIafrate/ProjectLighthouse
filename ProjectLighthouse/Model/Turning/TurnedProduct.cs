@@ -77,7 +77,7 @@ namespace ProjectLighthouse.Model
 
         public bool IsScheduleCompatible(TurnedProduct otherProduct)
         {
-            return 
+            return
                 otherProduct.MajorDiameter == MajorDiameter &&
                 otherProduct.DriveSize == DriveSize &&
                 otherProduct.DriveType == DriveType &&

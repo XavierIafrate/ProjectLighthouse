@@ -93,14 +93,12 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock
-                x:Name="SearchGhost"
-                Style="{StaticResource ghostTextStyle}"
-                Text="Search..." />
             <TextBox
                 x:Name="SearchBox"
-                Text="{Binding SearchTerm, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource SearchTextBox}"
                 TextChanged="SearchBox_TextChanged" />
+            <!--  Text="{Binding SearchTerm, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"  -->
+
             <Button
                 x:Name="ClearButton"
                 Grid.Column="1"
@@ -114,18 +112,19 @@
         <ListView
             Grid.Row="1"
             HorizontalContentAlignment="Stretch"
-            ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ItemsSource="{Binding FilteredOrders}"
             ScrollViewer.CanContentScroll="False"
             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-            SelectedItem="{Binding SelectedLatheManufactureOrder, UpdateSourceTrigger=PropertyChanged}">
-            <ListView.ItemTemplate>
+            SelectedItem="{Binding SelectedLatheManufactureOrder}">
+
+            <!--<ListView.ItemTemplate>
                 <DataTemplate>
                     <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}" />
                 </DataTemplate>
-            </ListView.ItemTemplate>
+            </ListView.ItemTemplate>-->
         </ListView>
 
-        <StatusBar
+        <!--<StatusBar
             Grid.Row="2"
             Margin="0,5"
             Background="Transparent">
@@ -141,7 +140,7 @@
                 <ComboBoxItem Content="Ready" />
                 <ComboBoxItem Content="Complete" />
             </ComboBox>
-        </StatusBar>
+        </StatusBar>-->
 
         <!--#region Display Order-->
         <StackPanel
@@ -292,14 +291,12 @@
                                         Grid.Column="2"
                                         Command="{Binding EditCommand}"
                                         CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"
-                                        Content="Edit"
-                                        Style="{StaticResource ButtonTemplate}" />
+                                        Content="Edit" />
                                     <Button
                                         x:Name="printButton"
                                         Grid.Column="3"
                                         Command="{Binding PrintOrderCommand}"
-                                        Content="Generate PDF"
-                                        Style="{StaticResource ButtonTemplate}" />
+                                        Content="Generate PDF" />
                                 </Grid>
 
                                 <TextBlock
@@ -320,21 +317,19 @@
                                         <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock x:Name="CreatedTextBlock" Style="{StaticResource accentTextStyle}">
+                                    <TextBlock x:Name="CreatedTextBlock">
                                         <Run Text="Created by" />
                                         <Run Text="{Binding SelectedLatheManufactureOrder.CreatedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
                                     <TextBlock
                                         Grid.Column="2"
                                         HorizontalAlignment="Right"
-                                        Style="{StaticResource accentTextStyle}"
                                         Text="{Binding SelectedLatheManufactureOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
 
                                     <TextBlock
                                         x:Name="ModifiedTextBlock"
                                         Grid.Row="1"
                                         Grid.Column="0"
-                                        Style="{StaticResource accentTextStyle}"
                                         Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
                                         <Run Text="Modified by" />
                                         <Run Text="{Binding SelectedLatheManufactureOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}" />
@@ -343,7 +338,6 @@
                                         Grid.Row="1"
                                         Grid.Column="2"
                                         HorizontalAlignment="Right"
-                                        Style="{StaticResource accentTextStyle}"
                                         Text="{Binding SelectedLatheManufactureOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
                                 </Grid>
                                 <Separator Margin="5" />
@@ -363,14 +357,10 @@
                                     <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock HorizontalAlignment="Center" Text="Setting" />
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Style="{StaticResource highlightText}"
-                                    Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine}" />
+                                <TextBlock Grid.Row="1" Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine}" />
                                 <TextBlock
                                     Grid.Row="2"
                                     HorizontalAlignment="Center"
-                                    Style="{StaticResource accentTextStyle}"
                                     Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:ddd, dd MMMM}'}" />
 
                                 <TextBlock
@@ -380,13 +370,11 @@
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="1"
-                                    Style="{StaticResource highlightText}"
                                     Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
                                 <TextBlock
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     HorizontalAlignment="Center"
-                                    Style="{StaticResource accentTextStyle}"
                                     Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}}" />
 
                                 <TextBlock
@@ -396,13 +384,11 @@
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="2"
-                                    Style="{StaticResource highlightText}"
                                     Text="{Binding SelectedLatheManufactureOrder.BarID}" />
                                 <TextBlock
                                     Grid.Row="2"
                                     Grid.Column="2"
                                     HorizontalAlignment="Center"
-                                    Style="{StaticResource accentTextStyle}"
                                     Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}{0} bars'}" />
 
                             </Grid>
@@ -435,7 +421,7 @@
                             </StackPanel>
                             <!--#endregion-->
                             <!--#region Notes-->
-                            <TextBlock Style="{StaticResource subtitleTextStyle}" Text="Notes" />
+                            <TextBlock Text="Notes" />
                             <Grid>
                                 <Rectangle
                                     Fill="White"

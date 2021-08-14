@@ -16,11 +16,10 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <TextBlock Style="{StaticResource windowTitleTextStyle}" Text="New Assembly Product" />
+            <TextBlock Text="New Assembly Product" />
             <Grid>
                 <TextBlock
                     x:Name="productNumberGhost"
-                    Style="{StaticResource ghostTextStyle}"
                     Text="Product Number" />
                 <TextBox
                     x:Name="ProductNumberTextBox"
@@ -28,12 +27,11 @@
                     TextChanged="ProductNumberTextBox_TextChanged" />
             </Grid>
             <Separator Margin="0,10,0,5" />
-            <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Product Group" />
+            <TextBlock Text="Product Group" />
             <ComboBox x:Name="ProductGroupComboBox" SelectionChanged="ProductGroupComboBox_SelectionChanged" />
             <Grid Margin="0,10,0,0">
                 <TextBlock
                     x:Name="ProductGroupGhost"
-                    Style="{StaticResource ghostTextStyle}"
                     Text="Create a new group" />
                 <TextBox
                     x:Name="ProductGroupTextBox"
@@ -41,7 +39,7 @@
                     TextChanged="ProductGroupTextBox_TextChanged" />
             </Grid>
             <Separator Margin="0,10,0,5" />
-            <TextBlock Style="{StaticResource subsubtitleTextStyle}" Text="Description" />
+            <TextBlock Text="Description" />
             <TextBox
                 x:Name="ProductDescriptionTextBox"
                 Padding="7,2"
@@ -57,12 +55,12 @@
                     x:Name="CancelButton"
                     Click="CancelButton_Click"
                     Content="Cancel"
-                    Style="{StaticResource CancelButtonTemplate}" />
+                    Style="{StaticResource CancelButton}" />
                 <Button
                     x:Name="AddButton"
                     Click="AddButton_Click"
                     Content="Create New Product"
-                    Style="{StaticResource GreenButtonTemplate}" />
+                    Style="{StaticResource GreenButton}" />
             </StackPanel>
         </StackPanel>
     </Grid>

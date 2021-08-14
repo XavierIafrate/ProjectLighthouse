@@ -50,7 +50,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         public string[] LatheLabels { get; set; }
-        
+
         private SeriesCollection machineRuntimeCollection;
         public SeriesCollection MachineRuntimeCollection
         {
@@ -89,7 +89,7 @@ namespace ProjectLighthouse.ViewModel
             DateTime start = DateTime.Now;
             await Task.Run(function: () => GetData());
 
-            
+
 
             Stats = new();
             Stats = ComputeDashboard();
@@ -136,7 +136,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             };
 
-            
+
 
             Lots = Lots.OrderBy(n => n.Date).ToList();
             DateTime _date = Lots.First().Date;

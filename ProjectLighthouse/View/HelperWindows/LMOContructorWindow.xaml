@@ -69,12 +69,12 @@
                 x:Name="addButton"
                 Click="addButton_Click"
                 Content="&gt;"
-                Style="{StaticResource GreenButtonTemplate}" />
+                Style="{StaticResource GreenButton}" />
             <Button
                 x:Name="removeButton"
                 Click="removeButton_Click"
                 Content="&lt;"
-                Style="{StaticResource CancelButtonTemplate}" />
+                Style="{StaticResource CancelButton}" />
 
         </StackPanel>
         <!--#endregion-->
@@ -244,20 +244,19 @@
             <Button
                 x:Name="updateButton"
                 Click="updateButton_Click"
-                Content="Update"
-                Style="{StaticResource ButtonTemplate}" />
+                Content="Update" />
 
             <Button
                 x:Name="cancelButton"
                 Click="cancelButton_Click"
                 Content="Cancel"
-                Style="{StaticResource CancelButtonTemplate}" />
+                Style="{StaticResource CancelButton}" />
             <Button
                 x:Name="confirmButton"
                 Width="150"
                 Click="confirmButton_Click"
                 Content="Confirm"
-                Style="{StaticResource GreenButtonTemplate}" />
+                Style="{StaticResource GreenButton}" />
         </StackPanel>
         <!--#endregion-->
 
