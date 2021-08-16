@@ -8,12 +8,12 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value ? "Has a program" : "Does not have a program";
+            return (bool)value ? "Program is ready" : "Program is not ready";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (string)value == "Has a program";
+            return (string)value == "Program is ready";
         }
     }
 }

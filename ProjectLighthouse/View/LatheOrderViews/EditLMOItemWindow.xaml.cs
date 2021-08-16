@@ -150,7 +150,7 @@ namespace ProjectLighthouse.View
 
         private void CalculateCycleTime()
         {
-            BrushConverter bc = new BrushConverter();
+            BrushConverter bc = new();
 
             if (Int32.TryParse(CycleTime_Min.Text, out int min))
             {

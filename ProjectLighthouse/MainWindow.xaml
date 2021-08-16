@@ -9,7 +9,7 @@
     Title="Project Lighthouse"
     Width="1312"
     Height="849"
-    MinWidth="1100"
+    MinWidth="1200"
     MinHeight="700"
     MaxWidth="2000"
     Background="{StaticResource materialBackground}"
@@ -77,12 +77,12 @@
                             CommandParameter="Schedule"
                             Content="Schedule"
                             Style="{StaticResource Schedule_MenuItem}" />
-                        <ToggleButton
+                        <!--<ToggleButton
                             x:Name="machine_stats_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Runtime"
                             Content="Runtime"
-                            Style="{StaticResource Runtime_MenuItem}" />
+                            Style="{StaticResource Runtime_MenuItem}" />-->
                     </StackPanel>
 
                     <StackPanel Margin="0,20">
@@ -141,10 +141,12 @@
                 <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource materialPrimaryBlue}" />
                 <StackPanel Margin="20,10" VerticalAlignment="Center">
                     <TextBlock
+                        FontSize="20"
                         x:Name="LoggedInUserName"
                         Foreground="{StaticResource materialOnPrimary}"
                         Text="Randy Marsh" />
                     <TextBlock
+                        FontStyle="Italic"
                         x:Name="LoggedInUserRole"
                         Foreground="{StaticResource materialOnPrimary}"
                         Text="Viewer" />

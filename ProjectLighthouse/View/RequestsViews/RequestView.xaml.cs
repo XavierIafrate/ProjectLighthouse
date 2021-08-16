@@ -15,7 +15,7 @@ namespace ProjectLighthouse.View
 
         public RequestView()
         {
-            viewModel = new RequestViewModel() { window = this };
+            viewModel = new RequestViewModel() { Window = this };
             DataContext = viewModel;
             InitializeComponent();
             //viewModel = Resources["vm"] as RequestViewModel;

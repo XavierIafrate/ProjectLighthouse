@@ -29,23 +29,23 @@ namespace ProjectLighthouse.View.UserControls
                 switch (control.orderObject.Order.Status)
                 {
                     case "Ready":
-                        control.bg.Fill = (Brush)App.Current.Resources["materialPrimaryGreen"];
+                        control.bg.Background = (Brush)App.Current.Resources["materialPrimaryGreen"];
                         control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialPrimaryGreen"];
                         break;
                     case "Awaiting scheduling":
-                        control.bg.Fill = (Brush)App.Current.Resources["materialError"];
+                        control.bg.Background = (Brush)App.Current.Resources["materialError"];
                         control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialError"];
                         break;
                     case "Running":
-                        control.bg.Fill = (Brush)App.Current.Resources["materialPrimaryBlue"];
+                        control.bg.Background = (Brush)App.Current.Resources["materialPrimaryBlue"];
                         control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialPrimaryBlue"];
                         break;
                     case "Problem":
-                        control.bg.Fill = (Brush)App.Current.Resources["materialError"];
+                        control.bg.Background = (Brush)App.Current.Resources["materialError"];
                         control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialError"];
                         break;
                     default:
-                        control.bg.Fill = (Brush)App.Current.Resources["materialError"];
+                        control.bg.Background = (Brush)App.Current.Resources["materialError"];
                         control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialError"];
                         break;
                 }

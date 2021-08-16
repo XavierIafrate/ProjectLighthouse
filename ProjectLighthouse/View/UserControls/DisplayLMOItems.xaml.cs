@@ -30,18 +30,9 @@ namespace ProjectLighthouse.View.UserControls
                 control.requirementsBadge.Fill = (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
                     (Brush)Application.Current.Resources["materialPrimaryGreen"] : (Brush)Application.Current.Resources["materialError"];
 
-                if (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity) // if done
-                {
-                    control.doneFlag.Visibility = Visibility.Visible;
-                    control.bgRect.Stroke = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                    control.bgRect.StrokeThickness = 2;
-                }
-                else
-                {
-                    control.doneFlag.Visibility = Visibility.Hidden;
-                    control.bgRect.Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#f0f0f0"));
-                    control.bgRect.StrokeThickness = 1;
-                }
+                control.doneFlag.Visibility = control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity
+                    ? Visibility.Visible
+                    : Visibility.Hidden;
             }
         }
 

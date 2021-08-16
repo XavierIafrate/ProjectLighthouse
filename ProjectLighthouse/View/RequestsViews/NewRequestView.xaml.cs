@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -17,10 +16,10 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
             viewModel = Resources["vm"] as NewRequestViewModel;
-            enableSubmit();
+            EnableSubmit();
         }
 
-        private void enableSubmit()
+        private void EnableSubmit()
         {
             submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate.HasValue &&
                                      int.TryParse(quantityBox.Text, out _) &&
@@ -28,7 +27,7 @@ namespace ProjectLighthouse.View
                                      App.CurrentUser.CanRaiseRequest;
         }
 
-        private void submitButton_Click(object sender, RoutedEventArgs e)
+        private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             if (viewModel.SubmitRequest())
             {
@@ -43,17 +42,17 @@ namespace ProjectLighthouse.View
                 return;
 
             viewModel.NewRequest.DateRequired = DateRequiredCalendarView.SelectedDate.Value;
-            enableSubmit();
+            EnableSubmit();
         }
 
-        private void quantityBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void QuantityBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textbox = sender as TextBox;
-            if (String.IsNullOrEmpty(textbox.Text))
+            if (string.IsNullOrEmpty(textbox.Text))
             {
                 return;
             }
-            if (Int32.TryParse(textbox.Text, out int j))
+            if (int.TryParse(textbox.Text, out int j))
             {
                 if (j > 0 && j <= 100000)
                 {
@@ -69,15 +68,15 @@ namespace ProjectLighthouse.View
             {
                 MessageBox.Show("Invalid Quantity", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            enableSubmit();
+            EnableSubmit();
         }
 
-        private void productsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ProductsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            enableSubmit();
+            EnableSubmit();
         }
 
-        private void notesTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void NotesTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextRange textRange = new(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
             if (viewModel != null && textRange.Text.Length >= 2)
@@ -86,7 +85,7 @@ namespace ProjectLighthouse.View
             }
         }
 
-        private void quantityBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void QuantityBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }

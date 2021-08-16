@@ -17,9 +17,9 @@ namespace ProjectLighthouse.Model
         }
 
         // Put the properties of the email including "to", "cc", "from", "subject" and "email body"  
-        private MailMessage ConstructEmailMessage(EmailSendConfigure emailConfig, EmailContent content)
+        private static MailMessage ConstructEmailMessage(EmailSendConfigure emailConfig, EmailContent content)
         {
-            MailMessage msg = new MailMessage();
+            MailMessage msg = new();
             foreach (string to in emailConfig.TOs)
             {
                 if (!string.IsNullOrEmpty(to))
@@ -50,9 +50,9 @@ namespace ProjectLighthouse.Model
         }
 
         //Send the email using the SMTP server  
-        private void Send(MailMessage message, EmailSendConfigure emailConfig)
+        private static void Send(MailMessage message, EmailSendConfigure emailConfig)
         {
-            SmtpClient client = new SmtpClient
+            SmtpClient client = new()
             {
                 UseDefaultCredentials = false,
                 Credentials = new System.Net.NetworkCredential(

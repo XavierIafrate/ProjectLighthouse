@@ -7,20 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     MinWidth="200"
     MinHeight="50"
-    d:DesignWidth="200"
+    d:DesignWidth="280"
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
-        <Rectangle x:Name="OldInfo" Fill="{StaticResource materialError}" />
-        <StackPanel
-            Grid.Column="1"
-            Margin="10,5,5,5"
-            VerticalAlignment="Center">
+        <StackPanel Margin="0,5" VerticalAlignment="Center">
             <TextBlock
                 x:Name="MOTextBlock"
                 FontSize="22"
@@ -29,19 +24,30 @@
                 Text="{Binding Name, FallbackValue='M00001'}" />
             <TextBlock
                 x:Name="PORTextBlock"
-                FontSize="12"
-                Foreground="{StaticResource materialOnBackground}"
+                FontSize="11"
+                Foreground="{StaticResource materialOffBlack}"
                 Text="{Binding POReference, FallbackValue='POR012345'}" />
         </StackPanel>
+        <Grid Grid.Column="1">
+            <Path
+                Margin="5"
+                x:Name="OldInfo"
+                Width="20"
+                Height="20"
+                HorizontalAlignment="Right"
+                Data="M12,2C16.46,2 20.26,4.95 21.54,9H18V20C16.33,21.25 14.25,22 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M16.2,16.2L17,14.9L12.5,12.2V7H11V13L16.2,16.2M20,11H22V18H20V11M20,20H22V22H20V20Z"
+                Fill="{StaticResource materialError}"
+                Stretch="Uniform" />
+        </Grid>
         <Grid
-            Grid.Column="3"
-            Margin="10,0"
+            Grid.Column="2"
             VerticalAlignment="Center">
             <Rectangle
                 x:Name="badgeBackground"
+                Height="20"
                 Fill="{StaticResource materialError}"
-                RadiusX="5"
-                RadiusY="5" />
+                RadiusX="10"
+                RadiusY="10" />
             <TextBlock
                 x:Name="BadgeText"
                 Padding="15,0,15,2"

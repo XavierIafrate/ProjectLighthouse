@@ -84,7 +84,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 return;
 
             myConfig.TOs = new string[] { PersonWhoRaisedRequest.EmailAddress };
-            myConfig.CCs = new string[] { };
+            myConfig.CCs = Array.Empty<string>();
             myConfig.From = "lighthouse@wixroydgroup.com";
             myConfig.FromDisplayName = "Lighthouse Notifications";
             myConfig.Priority = MailPriority.Normal;
@@ -107,7 +107,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static void NotifyNewOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
         {
             Email mailMan = new();
-            EmailSendConfigure emailConfig = new EmailSendConfigure();
+            EmailSendConfigure emailConfig = new();
             List<User> users = DatabaseHelper.Read<User>();
             List<User> send_to = new();
             List<string> emails = new();
@@ -128,7 +128,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             emailConfig.Priority = MailPriority.Normal;
             emailConfig.Subject = $"New Manufacture Order - {order.Name}";
 
-            EmailContent myContent = new EmailContent();
+            EmailContent myContent = new();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#00695C'>New Manufacture Order</h2>" +
@@ -189,7 +189,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             emailConfig.Priority = MailPriority.Normal;
             emailConfig.Subject = $"New Request Raised - {request.Product}";
 
-            EmailContent myContent = new EmailContent();
+            EmailContent myContent = new();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#01579B'>New Manufacture Request</h2>" +

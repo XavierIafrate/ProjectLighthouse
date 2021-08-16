@@ -8,84 +8,12 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-    MaxHeight="1000"
     Background="{StaticResource materialBackground}">
 
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <Style x:Key="ApproveButton" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource gradGood}" />
-                <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova" />
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="Height" Value="28" />
-                <Setter Property="Width" Value="100" />
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="Margin" Value="0,5" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border
-                                Height="28"
-                                Padding="20,0"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                CornerRadius="14,0,0,14">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}" />
-                        <Setter Property="Foreground" Value="White" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="DeclineButton" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource materialError}" />
-                <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova" />
-                <Setter Property="Foreground" Value="{StaticResource materialOnError}" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="Height" Value="28" />
-                <Setter Property="Width" Value="100" />
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="Margin" Value="0,5" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border
-                                Height="28"
-                                Padding="20,0"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                CornerRadius="0,14,14,0">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource materialErrorVar}" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <!--<vm:RequestViewModel x:Key="vm"/>-->
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <!--  DataContext="{StaticResource vm}"  -->
-
-
-    <Grid Margin="10">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="340" />
-            <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" MinWidth="350" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -112,16 +40,13 @@
             Margin="0,5,0,0"
             HorizontalAlignment="Right"
             Background="Transparent">
-            <TextBlock Text="{Binding FilteredRequests.Count, StringFormat='{}{0} request(s)'}" />
+            <TextBlock Text="{Binding FilteredRequests.Count, StringFormat='{}{0} request(s)', FallbackValue='10 request(s)'}" />
             <Separator Margin="5,0" Background="LightGray" />
             <TextBlock
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
                 Text="Filter by:" />
-            <ComboBox
-                x:Name="filterComboBox"
-                Width="100"
-                Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox x:Name="filterComboBox" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="Last 14 Days" IsSelected="True" />
                 <ComboBoxItem Content="My Requests" />
                 <ComboBoxItem Content="Pending" />
@@ -129,10 +54,9 @@
                 <ComboBoxItem Content="Declined" />
                 <ComboBoxItem Content="All" />
             </ComboBox>
-            <Button
-                Margin="0"
+            <!--<Button
                 Command="{Binding ExportCommand}"
-                Content="CSV" />
+                Style="{StaticResource CSVButton}"/>-->
         </StatusBar>
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
             <TextBlock
@@ -151,72 +75,42 @@
                 Text="try changing the filter"
                 Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
-        <ScrollViewer
-            Grid.RowSpan="2"
-            Grid.Column="2"
-            MaxWidth="700"
-            VerticalScrollBarVisibility="Hidden">
-            <Grid Margin="20,10" Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
+        <ScrollViewer Grid.RowSpan="2" Grid.Column="2">
+            <Grid
+                MaxWidth="700"
+                Margin="20,10"
+                Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Rectangle RadiusX="10" RadiusY="10">
-                    <Rectangle.Effect>
-                        <DropShadowEffect
-                            BlurRadius="15"
-                            Direction="220"
-                            Opacity="0.3"
-                            RenderingBias="Quality"
-                            ShadowDepth="5"
-                            Color="#FF000000" />
-                    </Rectangle.Effect>
-                    <Rectangle.Fill>
-                        <SolidColorBrush Color="White" />
-                    </Rectangle.Fill>
-                </Rectangle>
+                <Rectangle
+                    RadiusX="5"
+                    RadiusY="5"
+                    Stroke="{StaticResource materialPrimaryBlue}"
+                    StrokeThickness="2" />
 
-                <StackPanel Margin="10">
+                <StackPanel Margin="20">
                     <!--  Card Header  -->
-                    <Grid DataContext="{Binding}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock
-                            Grid.ColumnSpan="2"
-                            Text="{Binding SelectedRequest.Product, UpdateSourceTrigger=PropertyChanged, FallbackValue='P0XXX.123-456-A2'}" />
 
-                        <Grid Grid.Row="1">
-                            <Rectangle
-                                Fill="{StaticResource materialPrimary}"
-                                RadiusX="5"
-                                RadiusY="5" />
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock Style="{StaticResource title}" Text="{Binding SelectedRequest.Product, FallbackValue='P0XXX.123-456-A2'}" />
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource subtitle}" Text="{Binding SelectedRequest.QuantityRequired, StringFormat='{}{0:#,##0} pcs required', FallbackValue='0 pcs required'}" />
                             <TextBlock
-                                x:Name="requiredQtyTextBlock"
-                                Margin="10,3,10,5"
-                                FontSize="18"
-                                Foreground="{StaticResource materialOnPrimary}"
-                                Text="{Binding SelectedRequest.QuantityRequired, StringFormat='{}{0:#,##0} pcs required', FallbackValue='0 pcs required'}" />
-                        </Grid>
+                                x:Name="dateRequiredTextBlock"
+                                Style="{StaticResource subtitle}"
+                                Text="{Binding SelectedRequest.DateRequired, StringFormat='{} for {0:dd/MM/yy}', FallbackValue=' for 01/01/1970'}" />
 
-                        <TextBlock
-                            x:Name="dateRequiredTextBlock"
-                            Grid.Row="2"
-                            Grid.ColumnSpan="2"
-                            Text="{Binding SelectedRequest.DateRequired, StringFormat='{}Required for {0:dd/MM/yy}', FallbackValue='Required for 01/01/1970'}" />
-                    </Grid>
+                        </StackPanel>
+                    </StackPanel>
+
 
                     <!--  MetaData Dates display grid  -->
                     <Separator Margin="0,5" />
-                    <Grid Margin="5,0">
+                    <Grid Margin="15,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
@@ -226,20 +120,23 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}" />
+                        <TextBlock FontStyle="Italic" Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}" />
                         <TextBlock
                             Grid.Column="2"
                             HorizontalAlignment="Right"
+                            FontStyle="Italic"
                             Text="{Binding SelectedRequest.DateRaised, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd/MM/yy HH:mm}', FallbackValue='01/01/1970 23:59'}" />
 
                         <TextBlock
                             Grid.Row="1"
+                            FontStyle="Italic"
                             Text="{Binding SelectedRequest.ModifiedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Updated by {0}', FallbackValue='Updated by Kyle Brovloski'}"
                             Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="2"
                             HorizontalAlignment="Right"
+                            FontStyle="Italic"
                             Text="{Binding SelectedRequest.LastModified, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd/MM/yy HH:mm}', FallbackValue='01/01/1970 23:59'}"
                             Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
@@ -247,28 +144,21 @@
                     <!--  Controls area  -->
                     <Separator Margin="0,5" />
                     <TextBlock
-                        Text="Decision Making"
+                        Margin="0,15,0,0"
+                        Style="{StaticResource section}"
+                        Text="Approval Controls"
                         Visibility="{Binding DecisionVis}" />
 
                     <StackPanel Margin="10,0" Visibility="{Binding DecisionVis}">
-
-                        <!--<CheckBox
-                            Margin="10,5,0,5"
-                            Click="CheckBox_Click"
-                            Content="Scheduling Approval"
-                            IsChecked="{Binding SelectedRequest.isSchedulingApproved, UpdateSourceTrigger=PropertyChanged}"
-                            IsEnabled="{Binding SchedulingCheckboxEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <CheckBox
-                            Margin="10,5"
-                            Click="CheckBox_Click"
-                            Content="Production Approval"
-                            IsChecked="{Binding SelectedRequest.isProductionApproved, UpdateSourceTrigger=PropertyChanged}"
-                            IsEnabled="{Binding ProductionCheckboxEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
                         <TextBlock
                             Grid.Row="2"
+                            Margin="0,10,0,5"
+                            HorizontalAlignment="Center"
+                            FontStyle="Italic"
                             Text="Reason for declining:" />
                         <ComboBox
                             x:Name="DeclineComboBox"
+                            MaxWidth="300"
                             Margin="0,0,0,5"
                             IsEnabled="{Binding DropboxEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Text="{Binding SelectedRequest.DeclinedReason, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
@@ -279,10 +169,14 @@
                             <ComboBoxItem Content="Duplicate request" />
                         </ComboBox>
 
-                        <Grid x:Name="approvalControls" Visibility="{Binding ApprovalControlsVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid
+                            x:Name="approvalControls"
+                            Margin="0,20"
+                            HorizontalAlignment="Center"
+                            Visibility="{Binding ApprovalControlsVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto" />
@@ -292,41 +186,33 @@
                             </Grid.RowDefinitions>
                             <Button
                                 x:Name="DeclineButton"
+                                Margin="10,0"
                                 Command="{Binding DeclineCommand}"
-                                Content="Decline"
-                                Style="{StaticResource CancelButton}" />
+                                Style="{StaticResource DeclineButton}" />
                             <Button
                                 x:Name="ApproveButton"
                                 Grid.Column="1"
+                                Margin="10,0"
                                 Command="{Binding ApproveCommand}"
-                                Content="Approve"
-                                Style="{StaticResource GreenButton}" />
+                                Style="{StaticResource ApproveButton}" />
 
                         </Grid>
                     </StackPanel>
-                    <Grid Margin="10" Visibility="{Binding ApprovedVis, FallbackValue=Collapsed}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Rectangle
-                            Fill="{StaticResource materialPrimaryGreen}"
-                            RadiusX="5"
-                            RadiusY="5" />
+                    <Grid Margin="10" Visibility="{Binding ApprovedVis, FallbackValue=Visible}">
+                        <Rectangle Fill="{StaticResource materialPrimaryGreen}" />
                         <TextBlock
                             Padding="10,5"
+                            HorizontalAlignment="Center"
                             FontSize="16"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource materialOnPrimary}"
-                            Text="APPROVED" />
+                            Text="Approved" />
                     </Grid>
 
-                    <StackPanel Margin="10,0" Visibility="{Binding ApprovedVis, FallbackValue=Collapsed}">
+                    <StackPanel Margin="10,0" Visibility="{Binding ApprovedVis, FallbackValue=Visible}">
                         <TextBlock Text="This request has been approved for manufacture." />
-                        <TextBlock
-                            Padding="0,5,0,4"
-                            Text="Please enter the Purchase Order reference here:" />
-                        <TextBox BorderBrush="{StaticResource materialPrimary}" Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBlock Padding="0,5,0,4" Text="Please enter the Purchase Order reference here:" />
+                        <TextBox Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.Style>
                                 <Style TargetType="TextBox">
                                     <Setter Property="Padding" Value="2" />
@@ -348,26 +234,18 @@
                         </Grid>
                     </StackPanel>
 
-                    <Grid Margin="10" Visibility="{Binding DeclinedVis, FallbackValue=Collapsed}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Rectangle
-                            Fill="{StaticResource materialError}"
-                            RadiusX="5"
-                            RadiusY="5" />
+                    <Grid Margin="10" Visibility="{Binding DeclinedVis, FallbackValue=Visible}">
+                        <Rectangle Fill="{StaticResource materialError}" />
                         <TextBlock
                             Padding="10,5"
+                            HorizontalAlignment="Center"
                             FontSize="16"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource materialOnError}"
-                            Text="DECLINED" />
+                            Text="Declined" />
                     </Grid>
-                    <StackPanel Margin="10,0" Visibility="{Binding DeclinedVis, FallbackValue=Collapsed}">
-                        <TextBlock
-                            Foreground="{StaticResource materialError}"
-                            Text="Unfortunately this request has been declined, citing the reason below." />
+                    <StackPanel Margin="10,0" Visibility="{Binding DeclinedVis, FallbackValue=Visible}">
+                        <TextBlock Foreground="{StaticResource materialError}" Text="Unfortunately this request has been declined, citing the reason below." />
                     </StackPanel>
 
                     <Separator Margin="0,5" />
@@ -376,27 +254,36 @@
                         Grid.Row="2"
                         Margin="10"
                         Visibility="{Binding EditControlsVis, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
-                        <TextBlock Text="Edit Request" />
+                        <TextBlock
+                            Margin="0,5"
+                            Style="{StaticResource section}"
+                            Text="Edit Request" />
                         <TextBlock Text="Quantity Required" />
                         <TextBox
                             x:Name="quantityTextbox"
-                            IsEnabled="{Binding CanEditRequirements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                            Text="{Binding SelectedRequest.QuantityRequired, Mode=OneWay}" />
+                            IsEnabled="{Binding CanEditRequirements}"
+                            Text="{Binding SelectedRequest.QuantityRequired}"
+                            Style="{StaticResource UsernameTextBox}"/>
 
                         <TextBlock Text="Date Required" />
                         <DatePicker
                             DisplayDateStart="{x:Static sys:DateTime.Now}"
-                            IsEnabled="{Binding CanEditRequirements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsEnabled="{Binding CanEditRequirements}"
                             SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}" />
 
                         <TextBlock Text="Notes" />
-                        <RichTextBox
-                            x:Name="notesTextBox"
-                            MinHeight="50"
-                            BorderBrush="{StaticResource materialPrimary}"
-                            BorderThickness="2">
-                            <FlowDocument LineHeight="2" />
-                        </RichTextBox>
+                        <Grid>
+                            <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
+                            <RichTextBox
+                                x:Name="notesTextBox"
+                                MinHeight="50"
+                                Margin="5,10"
+                                Background="Transparent"
+                                BorderThickness="0">
+                                <FlowDocument LineHeight="2" />
+                            </RichTextBox>
+                        </Grid>
+
                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                             <Button
                                 x:Name="saveChangesButton"

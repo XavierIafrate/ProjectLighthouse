@@ -46,10 +46,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         private static void logLine(string line)
         {
             string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            using (StreamWriter outputFile = new StreamWriter(System.IO.Path.Combine(docPath, String.Format("{0}.txt", "performance")), append: true))
-            {
-                outputFile.WriteLine(line);
-            }
+            using StreamWriter outputFile = new(Path.Combine(docPath, $"{"performance"}.txt"), append: true);
+            outputFile.WriteLine(line);
         }
 
         private static Performace FetchData(DateTime from, DateTime to)
@@ -60,11 +58,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
 
-            Performace performace = new Performace
+            Performace performace = new()
             {
                 summary = new List<PerformanceByMachine>()
             };
-            PerformanceByMachine tmpMachineSummary = new PerformanceByMachine();
+            PerformanceByMachine tmpMachineSummary = new();
 
             foreach (Lathe lathe in lathes)
             {
@@ -87,9 +85,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static List<PerformanceBlob> GetPerformanceBlob(string machineID, List<MachineStatistics> stats)
         {
-            List<PerformanceBlob> results = new List<PerformanceBlob>();
-            PerformanceBlob blob = new PerformanceBlob();
-            string state = String.Empty;
+            List<PerformanceBlob> results = new();
+            PerformanceBlob blob = new();
+            string state = string.Empty;
             DateTime lastDateTime = DateTime.MinValue;
             DateTime CounterLastChanged = DateTime.MinValue;
 
@@ -188,9 +186,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static List<PerformanceBlob> DebouncePerformanceBlobs(List<PerformanceBlob> pbs)
         {
-            List<PerformanceBlob> debouncedBlobs = new List<PerformanceBlob>();
+            List<PerformanceBlob> debouncedBlobs = new();
 
-            PerformanceBlob absorber = new PerformanceBlob();
+            PerformanceBlob absorber = new();
             TimeSpan BounceLimit = TimeSpan.FromMinutes(5);
 
             foreach (PerformanceBlob b in pbs)

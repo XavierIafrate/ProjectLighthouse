@@ -40,9 +40,8 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 _selectedViewModel = value;
-                Debug.WriteLine(String.Format("SelectedViewModel updated to {0}", _selectedViewModel.ToString()));
+                Debug.WriteLine($"SelectedViewModel updated to {_selectedViewModel}");
                 OnPropertyChanged("SelectedViewModel");
-                //OnPropertyChanged(nameof(SelectedViewModel));
             }
         }
 

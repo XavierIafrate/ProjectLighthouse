@@ -30,7 +30,7 @@ namespace ProjectLighthouse.View
 
         private void SelectFile_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            OpenFileDialog openFileDialog = new()
             {
                 Filter = "PDF Files (*.pdf)|*.pdf"
             };

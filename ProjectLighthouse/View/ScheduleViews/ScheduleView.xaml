@@ -1,122 +1,143 @@
-﻿<UserControl x:Class="ProjectLighthouse.View.ScheduleView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ProjectLighthouse.View"
-             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-             xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             Background="White">
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.ScheduleView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Background="White"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
-        <vm:ScheduleViewModel x:Key="vm"/>
+        <vm:ScheduleViewModel x:Key="vm" />
         <!--<Style x:Key="headerTextStyle" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="/Resources/Font/#Proxima Nova"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="{StaticResource materialOnBackground}"/>
         </Style>-->
-        <converters:intToDays x:Key="intToDayConverter"/>
+        <converters:intToDays x:Key="intToDayConverter" />
         <LinearGradientBrush x:Key="gradFade" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#eeeeee" Offset="0"  />
-            <GradientStop Color="#ffffffff" Offset="0.02" />
+            <GradientStop Offset="0" Color="#eeeeee" />
+            <GradientStop Offset="0.02" Color="#ffffffff" />
         </LinearGradientBrush>
     </UserControl.Resources>
 
     <Grid DataContext="{StaticResource vm}">
-        
+
         <Grid.Resources>
             <DataTemplate x:Key="CustomHeaderTemplate">
-                <Label Content="{Binding LatheName}" FontSize="16"/>
+                <Label Content="{Binding LatheName}" FontSize="16" />
             </DataTemplate>
-        
+
             <DataTemplate x:Key="CustomItemTemplate">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding ViewTitle}"/>
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" DataContext="{StaticResource vm}">
+                    <TextBlock Text="{Binding ViewTitle}" />
+                    <StackPanel
+                        Grid.Column="2"
+                        DataContext="{StaticResource vm}"
+                        Orientation="Horizontal">
                         <!--<Button Content="Auto Schedule"
-                                Style="{StaticResource GreenButton}" 
+                                Style="{StaticResource GreenButton}"
                                 Visibility="{Binding AutoScheduleVis}"
                                 Command="{Binding autoScheduleCommand}"/>-->
-                        <Button Content="Generate PDF" 
-                                Visibility="{Binding PrintButtonVis}"
-                                Command="{Binding PrintScheduleCommand}"/>
+                        <Button
+                            Command="{Binding PrintScheduleCommand}"
+                            Style="{StaticResource PDFButton}"
+                            Visibility="{Binding PrintButtonVis}" />
                     </StackPanel>
 
-                    <ListView Grid.Row="1"
-                              Grid.ColumnSpan="3"
-                              ItemsSource="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" 
-                              HorizontalContentAlignment="Stretch"
-                              BorderBrush="{StaticResource materialSecondary}"
-                              BorderThickness="2"
-                              ScrollViewer.CanContentScroll="False"
-                              SelectedValue="{Binding SelectedOrder}">
+                    <ListView
+                        Grid.Row="1"
+                        Grid.ColumnSpan="3"
+                        HorizontalContentAlignment="Stretch"
+                        BorderBrush="{StaticResource materialSecondary}"
+                        BorderThickness="2"
+                        ItemsSource="{Binding Orders, UpdateSourceTrigger=PropertyChanged}"
+                        ScrollViewer.CanContentScroll="False"
+                        SelectedValue="{Binding SelectedOrder}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <uc:DisplayLMOScheduling orderObject="{Binding}"/>
+                                <uc:DisplayLMOScheduling orderObject="{Binding}" />
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
 
                     <Grid Grid.Row="2" Grid.ColumnSpan="3">
-                        <Border BorderThickness="0" Grid.Row="0" Grid.ColumnSpan="2"
-                                    CornerRadius="0,0,14,14" Background="{StaticResource materialSecondary}"/>
-                        <Rectangle Height="28"/>
+                        <Border
+                            Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            Background="{StaticResource materialSecondary}"
+                            BorderThickness="0"
+                            CornerRadius="0,0,14,14" />
+                        <Rectangle Height="28" />
 
-                        <TextBlock Foreground="{StaticResource materialOnSecondary}" FontSize="16" VerticalAlignment="Center"
-                                               Padding="20,3,20,5">
-                            <Run Text="{Binding Orders.Count, Mode=OneWay, StringFormat='{}{0} Order(s)'}"/>
-                            <Run Text="//"/>
-                                        
-                            <Run Text="Workload:"/>
-                            <Run Text="{Binding TotalTime, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Converter={StaticResource intToDayConverter}}"/>
-                            <Run Text="days"/>
-                            
-                            <Run Text="//"/>
-                            <Run Text="Booked up to:"/>
-                            <Run Text="{Binding BookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                        <TextBlock
+                            Padding="20,3,20,5"
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Foreground="{StaticResource materialOnSecondary}">
+                            <Run Text="{Binding Orders.Count, Mode=OneWay, StringFormat='{}{0} Order(s)'}" />
+                            <Run Text="//" />
+
+                            <Run Text="Workload:" />
+                            <Run Text="{Binding TotalTime, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Converter={StaticResource intToDayConverter}}" />
+                            <Run Text="days" />
+
+                            <Run Text="//" />
+                            <Run Text="Booked up to:" />
+                            <Run Text="{Binding BookedTo, StringFormat='{}{0:dd MMMM}', UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                         </TextBlock>
                     </Grid>
                 </Grid>
             </DataTemplate>
         </Grid.Resources>
 
-        <TabControl Margin="10"
-                    ItemTemplate="{StaticResource CustomHeaderTemplate}"
-                    ContentTemplate="{StaticResource CustomItemTemplate}"
-                    ItemsSource="{Binding WindowTabs}"
-                    SelectedItem="{Binding SelectedTab, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    BorderThickness="0"
-                    Background="{StaticResource gradFade}">
+        <TabControl
+            Margin="10"
+            Background="{StaticResource gradFade}"
+            BorderThickness="0"
+            ContentTemplate="{StaticResource CustomItemTemplate}"
+            ItemTemplate="{StaticResource CustomHeaderTemplate}"
+            ItemsSource="{Binding WindowTabs}"
+            SelectedItem="{Binding SelectedTab, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="TabItem">
-                                <Border Name="Border" BorderThickness="1,1,1,0" BorderBrush="Gainsboro" CornerRadius="4,4,0,0" Margin="2,0">
-                                    <ContentPresenter x:Name="ContentSite"
-                                        VerticalAlignment="Center"
+                                <Border
+                                    Name="Border"
+                                    Margin="2,0"
+                                    BorderBrush="Gainsboro"
+                                    BorderThickness="1,1,1,0"
+                                    CornerRadius="4,4,0,0">
+                                    <ContentPresenter
+                                        x:Name="ContentSite"
+                                        Margin="10,2"
                                         HorizontalAlignment="Center"
-                                        ContentSource="Header"
-                                        Margin="10,2"/>
+                                        VerticalAlignment="Center"
+                                        ContentSource="Header" />
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource materialSecondary}"/>
+                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource materialSecondary}" />
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="False">
                                         <Setter TargetName="Border" Property="Background" Value="GhostWhite" />
@@ -129,4 +150,4 @@
             </TabControl.Resources>
         </TabControl>
     </Grid>
-</UserControl>  
+</UserControl>

@@ -28,8 +28,8 @@
                                 CaretBrush="#212121"
                                 Foreground="#212121"
                                 MaxLength="20"
-                                TextWrapping="Wrap" 
-                                Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap" />
                             <TextBlock
                                 Margin="12,0,0,0"
                                 HorizontalAlignment="Left"
@@ -67,12 +67,11 @@
                     <Border Background="{TemplateBinding Background}" CornerRadius="8">
                         <Grid Margin="8">
                             <ScrollViewer
-                                Margin="10,0"
                                 x:Name="PART_ContentHost"
+                                Margin="10,0"
                                 Focusable="false"
                                 HorizontalScrollBarVisibility="Hidden"
                                 VerticalScrollBarVisibility="Hidden" />
-                           
                         </Grid>
                     </Border>
                 </ControlTemplate>

@@ -27,7 +27,7 @@ namespace ProjectLighthouse.View
 
         public void LoadContent()
         {
-            List<string> groups = new List<string>();
+            List<string> groups = new();
             items = DatabaseHelper.Read<AssemblyItem>().ToList();
             foreach (AssemblyItem item in items)
             {

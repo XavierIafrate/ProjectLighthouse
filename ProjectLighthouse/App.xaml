@@ -11,76 +11,23 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
 
-                <ResourceDictionary Source="./Themes/Global/Colours.xaml" />
-                <ResourceDictionary Source="./Themes/Global/StylishScrollBar.xaml" />
-                <ResourceDictionary Source="./Themes/Global/StylishButtons.xaml" />
-                <ResourceDictionary Source="./Themes/Global/StylishText.xaml" />
-                <ResourceDictionary Source="./Themes/Global/StylishToggleButtons.xaml" />
-                <ResourceDictionary Source="./Themes/Global/StylishTextBox.xaml" />
-                <ResourceDictionary Source="./Themes/Global/StylishPasswordBox.xaml" />
+                <ResourceDictionary Source="./Themes/GlobalColours.xaml" />
+                <ResourceDictionary Source="./Themes/StylishScrollBar.xaml" />
+                <ResourceDictionary Source="./Themes/StylishButtons.xaml" />
+                <ResourceDictionary Source="./Themes/StylishText.xaml" />
+                <ResourceDictionary Source="./Themes/StylishToggleButtons.xaml" />
+                <ResourceDictionary Source="./Themes/StylishTextBox.xaml" />
+                <ResourceDictionary Source="./Themes/StylishPasswordBox.xaml" />
+                <ResourceDictionary Source="./Themes/StylishListView.xaml" />
+                <ResourceDictionary Source="./Themes/StylishListViewItem.xaml" />
+                <ResourceDictionary Source="./Themes/StylishItemsControl.xaml" />
+                <ResourceDictionary Source="./Themes/StylishComboBox.xaml" />
 
-                <ResourceDictionary Source="./Themes/Requests/NewRequestSelectItem.xaml" />
-                
-                <!--<ResourceDictionary Source="./Themes/LatheOrders/LatheOrderItem.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
             <!--#region Legacy-->
-            <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="20" />
-                    </Grid.ColumnDefinitions>
-                    <Border
-                        x:Name="Border"
-                        Grid.ColumnSpan="2"
-                        BorderThickness="1"
-                        CornerRadius="2">
-                        <Border.BorderBrush>
-                            <SolidColorBrush Color="#6200EE" />
-                        </Border.BorderBrush>
-                        <Border.Background>
-                            <SolidColorBrush Color="#6200EE" />
-                        </Border.Background>
-                    </Border>
-                    <Border
-                        Grid.Column="0"
-                        Margin="1"
-                        CornerRadius="2,0,0,2">
-                        <Border.Background>
-                            <SolidColorBrush Color="#FFFFFF" />
-                        </Border.Background>
-                    </Border>
-                    <Path
-                        x:Name="Arrow"
-                        Grid.Column="1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Data="M 0 0 L 4 4 L 8 0 Z">
-                        <Path.Fill>
-                            <SolidColorBrush Color="#FFFFFF" />
-                        </Path.Fill>
-                    </Path>
-                </Grid>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter TargetName="Border" Property="BorderBrush" Value="#aaaaaa" />
-                        <Setter TargetName="Border" Property="Background" Value="#aaaaaa" />
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
 
-            <ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
-                <Border
-                    x:Name="PART_ContentHost"
-                    Background="{TemplateBinding Background}"
-                    Focusable="False" />
-            </ControlTemplate>
-
-
-
-
-            <Style TargetType="{x:Type DatePicker}">
+            <!--<Style TargetType="{x:Type DatePicker}">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="FontSize" Value="14" />
             </Style>
@@ -89,172 +36,11 @@
                 <Setter Property="BorderThickness" Value="0,0,0,2" />
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="Margin" Value="4,2" />
-            </Style>
-
-            <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">
-                <Setter Property="SnapsToDevicePixels" Value="true" />
-                <Setter Property="OverridesDefaultStyle" Value="true" />
-                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
-                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-                <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-                <Setter Property="MinWidth" Value="120" />
-                <Setter Property="MinHeight" Value="20" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ComboBox}">
-                            <Grid>
-                                <ToggleButton
-                                    x:Name="ToggleButton"
-                                    Grid.Column="2"
-                                    ClickMode="Press"
-                                    Focusable="false"
-                                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                    Template="{StaticResource ComboBoxToggleButton}" />
-                                <ContentPresenter
-                                    x:Name="ContentSite"
-                                    Margin="3,3,23,3"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Stretch"
-                                    Content="{TemplateBinding SelectionBoxItem}"
-                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                    ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                    IsHitTestVisible="False" />
-                                <TextBox
-                                    x:Name="PART_EditableTextBox"
-                                    Margin="3,3,23,3"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Bottom"
-                                    Background="White"
-                                    Focusable="True"
-                                    IsReadOnly="{TemplateBinding IsReadOnly}"
-                                    Style="{x:Null}"
-                                    Template="{StaticResource ComboBoxTextBox}"
-                                    Visibility="Hidden" />
-                                <Popup
-                                    x:Name="Popup"
-                                    AllowsTransparency="False"
-                                    Focusable="False"
-                                    IsOpen="{TemplateBinding IsDropDownOpen}"
-                                    Placement="Bottom"
-                                    PopupAnimation="Slide">
-                                    <Grid
-                                        x:Name="DropDown"
-                                        MinWidth="{TemplateBinding ActualWidth}"
-                                        MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                        Background="White"
-                                        SnapsToDevicePixels="True">
-                                        <Border
-                                            x:Name="DropDownBorder"
-                                            BorderBrush="DodgerBlue"
-                                            BorderThickness="1" />
-                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
-                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
-                                        </ScrollViewer>
-                                    </Grid>
-                                </Popup>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-
-                                <Trigger Property="HasItems" Value="false">
-                                    <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
-                                </Trigger>
-                                <Trigger Property="IsGrouping" Value="true">
-                                    <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
-                                </Trigger>
-                                <Trigger SourceName="Popup" Property="AllowsTransparency" Value="true">
-                                    <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="4" />
-                                    <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style TargetType="ComboBoxItem">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                            <Border
-                                x:Name="Bd"
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                SnapsToDevicePixels="True">
-                                <ContentPresenter
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    Content="{TemplateBinding Content}"
-                                    ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter TargetName="Bd" Property="TextElement.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                                </Trigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="False" />
-                                        <Condition Property="IsMouseOver" Value="True" />
-                                        <Condition Property="IsKeyboardFocused" Value="False" />
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="Background" Value="#A826A0DA" />
-                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#A826A0DA" />
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="True" />
-                                        <Condition Property="IsMouseOver" Value="False" />
-                                        <Condition Property="IsKeyboardFocused" Value="True" />
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="Background" Value="#3D26A0DA" />
-                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#FF26A0DA" />
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="True" />
-                                        <Condition Property="IsMouseOver" Value="True" />
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="Background" Value="#99006CD9" />
-                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#99006CD9" />
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="True" />
-                                        <Condition Property="IsMouseOver" Value="False" />
-                                        <Condition Property="IsKeyboardFocused" Value="False" />
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="Background" Value="#3DDADADA" />
-                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#FFDADADA" />
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="False" />
-                                        <Condition Property="IsMouseOver" Value="False" />
-                                        <Condition Property="IsKeyboardFocused" Value="True" />
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#FF26A0DA" />
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="False" />
-                                        <Condition Property="IsMouseOver" Value="True" />
-                                        <Condition Property="IsKeyboardFocused" Value="True" />
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="Background" Value="#FF26A0DA" />
-                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#FF26A0DA" />
-                                </MultiTrigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+            </Style>-->
 
             <!--#endregion-->
 
+            <!--#region DataTemplates-->
             <DataTemplate DataType="{x:Type vms:RequestViewModel}">
                 <views:RequestView />
             </DataTemplate>
@@ -288,6 +74,7 @@
             <DataTemplate DataType="{x:Type vms:ManageUsersViewModel}">
                 <views:ManageUsersView />
             </DataTemplate>
+            <!--#endregion-->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -5,44 +5,47 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignWidth="400"
-    Background="Transparent"
+    d:DesignWidth="450"
     mc:Ignorable="d">
     <Grid Margin="0,2">
-        <Rectangle
-            x:Name="bgRect"
-            Fill="{StaticResource materialBackground}"
-            RadiusX="5"
-            RadiusY="5"
-            Stroke="#f0f0f0" />
+        <Border
+            Background="{StaticResource materialBackground}"
+            CornerRadius="10"
+            BorderBrush="#f0f0f0"
+            BorderThickness="1"/>
 
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" MinWidth="130" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
+            
 
-            <StackPanel Margin="10,2" VerticalAlignment="Center">
+            <StackPanel
+                Margin="5,2,10,2"
+                VerticalAlignment="Center">
                 <TextBlock
                     x:Name="productText"
                     Padding="0,2"
                     VerticalAlignment="Center"
-                    FontSize="15"
+                    FontSize="16"
+                    FontWeight="SemiBold"
                     Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
                 <Grid x:Name="specialFlag">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Rectangle Fill="{StaticResource materialPrimary}" />
+                    <Border
+                        Height="20"
+                        Background="{StaticResource materialPrimary}"
+                        CornerRadius="10" />
                     <TextBlock
                         Padding="10,0,10,2"
                         Foreground="{StaticResource materialOnPrimary}"
@@ -50,10 +53,21 @@
                 </Grid>
             </StackPanel>
 
+            <Path
+                x:Name="doneFlag"
+                
+                Grid.Column="1"
+                Width="25"
+                Height="25"
+                Margin="10,0"
+                Data="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"
+                Fill="{StaticResource materialPrimaryGreen}"
+                Stretch="Uniform" />
 
             <StackPanel
                 x:Name="requirements"
                 Grid.Column="2"
+                HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
                 <Grid>
@@ -82,41 +96,35 @@
                             Text="{Binding DateRequired, StringFormat='{}{0:dd/MM/yy}', FallbackValue='01/01/1970'}" />
                     </StackPanel>
                 </Grid>
-                <Image
-                    x:Name="doneFlag"
-                    Grid.Column="5"
-                    Height="20"
-                    Margin="5"
-                    RenderOptions.BitmapScalingMode="HighQuality"
-                    Source="/Resources/done.png" />
             </StackPanel>
 
             <Grid
-                Grid.Column="4"
+                Grid.Column="3"
                 Margin="5"
                 VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" MinWidth="5" />
+                    <ColumnDefinition Width="*" MinWidth="10" />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <TextBlock Text="Target" />
+                <TextBlock FontWeight="SemiBold" Text="Target:" />
                 <TextBlock
-                    Grid.Column="1"
+                    Grid.Column="2"
                     HorizontalAlignment="Right"
-                    FontSize="12"
-                    Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='1000 pcs'}" />
+                    Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
 
-                <TextBlock Grid.Row="1" Text="Made" />
                 <TextBlock
                     Grid.Row="1"
-                    Grid.Column="1"
+                    FontWeight="SemiBold"
+                    Text="Made:" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="2"
                     HorizontalAlignment="Right"
-                    FontSize="12"
                     Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}" />
             </Grid>
 

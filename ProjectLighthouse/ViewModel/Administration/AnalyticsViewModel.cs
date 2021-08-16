@@ -311,7 +311,7 @@ namespace ProjectLighthouse.ViewModel
 
                 OverallTime += (sRunning + sSetting + sBreakdown + sIdle + sOffline);
 
-                BrushConverter converter = new BrushConverter();
+                BrushConverter converter = new();
                 foreach (StackedRowSeries state in temporal)
                 {
 

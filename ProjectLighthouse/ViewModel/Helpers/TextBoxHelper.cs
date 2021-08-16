@@ -19,7 +19,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 if ("0123456789".Contains(strKey.Substring(strKey.Length - 1, 1)))
                     return false;
 
-            List<string> nonNumericAllowedKeys = new List<string>()
+            List<string> nonNumericAllowedKeys = new()
             {
                 "Back",
                 "Left",

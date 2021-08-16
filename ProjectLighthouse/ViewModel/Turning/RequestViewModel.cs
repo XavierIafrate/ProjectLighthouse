@@ -17,7 +17,7 @@ namespace ProjectLighthouse.ViewModel
         #region Variables
         public List<Request> Requests { get; set; }
         public ObservableCollection<Request> FilteredRequests { get; set; }
-        public RequestView window { get; set; }
+        public RequestView Window { get; set; }
 
         private string selectedFilter;
         public string SelectedFilter
@@ -368,7 +368,7 @@ namespace ProjectLighthouse.ViewModel
 
                 if (DatabaseHelper.Update(SelectedRequest))
                 {
-                    Task.Run( async () => EmailHelper.NotifyRequestApproved(SelectedRequest));
+                    Task.Run(async () => EmailHelper.NotifyRequestApproved(SelectedRequest));
                     FilterRequests(SelectedFilter);
                     OnPropertyChanged("SelectedRequest");
                     SelectedRequestChanged?.Invoke(this, new EventArgs());

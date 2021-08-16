@@ -19,10 +19,12 @@
     <SolidColorBrush x:Key="materialOnSecondary" Color="#000000" />
     <SolidColorBrush x:Key="materialOnBackground" Color="#000000" />
     <SolidColorBrush x:Key="materialOnSurface" Color="#000000" />
+    <SolidColorBrush x:Key="materialOffBlack" Color="#161b23" />
     <SolidColorBrush x:Key="materialOnError" Color="#FFFFFF" />
 
     <SolidColorBrush x:Key="materialYellow" Color="#ffff71" />
-    <SolidColorBrush x:Key="materialBlue" Color="#96e7f1" />
+    <SolidColorBrush x:Key="materialBlue" Color="#00A1af" />
+    <SolidColorBrush x:Key="materialSelectedColour" Color="#d9effd" />
     <SolidColorBrush x:Key="materialGreen" Color="#03DAC6" />
 
     <SolidColorBrush x:Key="disabledGray" Color="#aaaaaa" />

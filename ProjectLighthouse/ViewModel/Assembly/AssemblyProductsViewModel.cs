@@ -154,7 +154,7 @@ namespace ProjectLighthouse.ViewModel
 
         public List<CompleteAssemblyProduct> GetSubAssembliesFromCompleteProduct(CompleteAssemblyProduct product, bool unlimitedDepth) // implement unlimited depth
         {
-            List<CompleteAssemblyProduct> assemblies = new List<CompleteAssemblyProduct>();
+            List<CompleteAssemblyProduct> assemblies = new();
             if (product.materials.ID == null)
                 return assemblies;
 
@@ -186,7 +186,7 @@ namespace ProjectLighthouse.ViewModel
 
         public CompleteAssemblyProduct GetCompleteProductFromProduct(AssemblyItem assemblyItem)
         {
-            CompleteAssemblyProduct _product = new CompleteAssemblyProduct()
+            CompleteAssemblyProduct _product = new()
             {
                 product = assemblyItem,
                 materials = new BillOfMaterials(),
@@ -317,7 +317,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void CreateNewRouting()
         {
-            AddNewRoutingWindow window = new AddNewRoutingWindow
+            AddNewRoutingWindow window = new()
             {
                 Product = CurrentProduct.product.Clone()
             };
@@ -334,7 +334,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void AddNewProduct()
         {
-            NewAssemblyProductWindow window = new NewAssemblyProductWindow();
+            NewAssemblyProductWindow window = new();
             window.ShowDialog();
             //MessageBox.Show(string.Format("ProductAdded: {0}", window.addedNew));
             if (!window.addedNew)

@@ -15,12 +15,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             string filename = string.Format("{0}_{1:ddMMyy_HHmmss}.csv", filePrefix, DateTime.Now);
             filename = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), filename);
-            using (StreamWriter writer = new StreamWriter(filename))
-            using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            using (StreamWriter writer = new(filename))
+            using (CsvWriter csv = new(writer, CultureInfo.InvariantCulture))
             {
                 csv.WriteRecords(stuff);
             }
-            MessageBox.Show(String.Format("Saved to {0}", filename), "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Saved to {filename}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             OpenWithDefaultProgram(filename);
         }
 
@@ -38,36 +38,34 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             try
             {
-                using (StreamReader reader = new StreamReader(path))
-                using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                using StreamReader reader = new(path);
+                using CsvReader csv = new(reader, CultureInfo.InvariantCulture);
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
                 {
-                    csv.Read();
-                    csv.ReadHeader();
-                    while (csv.Read())
+                    Lot record = new()
                     {
-                        Lot record = new()
-                        {
-                            ProductName = csv.GetField("ProductName"),
-                            Order = csv.GetField("Order"),
-                            AddedBy = csv.GetField("AddedBy"),
-                            Quantity = csv.GetField<int>("Quantity"),
-                            ExcelDate = csv.GetField("ExcelDate"),
-                            IsReject = csv.GetField<bool>("IsReject"),
-                            IsDelivered = csv.GetField<bool>("IsDelivered"),
-                            MaterialBatch = csv.GetField("MaterialBatch"),
-                        };
+                        ProductName = csv.GetField("ProductName"),
+                        Order = csv.GetField("Order"),
+                        AddedBy = csv.GetField("AddedBy"),
+                        Quantity = csv.GetField<int>("Quantity"),
+                        ExcelDate = csv.GetField("ExcelDate"),
+                        IsReject = csv.GetField<bool>("IsReject"),
+                        IsDelivered = csv.GetField<bool>("IsDelivered"),
+                        MaterialBatch = csv.GetField("MaterialBatch"),
+                    };
 
-                        if (DateTime.TryParse(record.ExcelDate, out DateTime _date))
-                        {
-                            record.Date = _date;
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"Could not parse datetime: {record.ExcelDate}");
-                        }
-
-                        Lots.Add(record);
+                    if (DateTime.TryParse(record.ExcelDate, out DateTime _date))
+                    {
+                        record.Date = _date;
                     }
+                    else
+                    {
+                        Debug.WriteLine($"Could not parse datetime: {record.ExcelDate}");
+                    }
+
+                    Lots.Add(record);
                 }
             }
             catch (IOException e)

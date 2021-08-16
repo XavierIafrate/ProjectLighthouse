@@ -86,6 +86,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 searchTerm = value.ToUpper();
+                OnPropertyChanged("SearchTerm");
                 Search();
             }
         }
@@ -269,7 +270,7 @@ namespace ProjectLighthouse.ViewModel
         {
             if (string.IsNullOrEmpty(SearchTerm))
             {
-                FilterOrders("All Active");
+                FilterOrders(SelectedFilter);
                 return;
             }
 

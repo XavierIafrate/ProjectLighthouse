@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
              mc:Ignorable="d" 
              MinHeight="50"
-             MinWidth="300"
              d:DesignWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -33,7 +32,7 @@
 
         </StackPanel>
         <Grid Grid.Column="2" VerticalAlignment="Center">
-            <Rectangle Fill="{StaticResource materialPrimaryBlue}" RadiusX="5" RadiusY="5" x:Name="statusBadge"/>
+            <Rectangle Fill="{StaticResource materialPrimaryBlue}" Height="20" RadiusX="10" RadiusY="10" x:Name="statusBadge"/>
             <TextBlock Text="Pending" Foreground="{StaticResource materialOnPrimary}" Padding="15,0,15,2" x:Name="statusText"/>
         </Grid>
     </Grid>
