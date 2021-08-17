@@ -212,14 +212,8 @@
                     <StackPanel Margin="10,0" Visibility="{Binding ApprovedVis, FallbackValue=Visible}">
                         <TextBlock Text="This request has been approved for manufacture." />
                         <TextBlock Padding="0,5,0,4" Text="Please enter the Purchase Order reference here:" />
-                        <TextBox Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox">
-                                    <Setter Property="Padding" Value="2" />
-                                    <Setter Property="FontSize" Value="16" />
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                        <TextBox Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource UsernameTextBox}"/>
 
                         <Grid>
                             <Grid.ColumnDefinitions>

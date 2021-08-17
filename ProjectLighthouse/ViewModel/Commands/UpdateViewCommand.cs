@@ -85,7 +85,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Analytics")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new AnalyticsViewModel();
                 viewModel.NavText = "Analytics";
             }

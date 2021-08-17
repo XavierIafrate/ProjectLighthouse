@@ -57,7 +57,7 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid VerticalAlignment="Center" Visibility="{Binding EditControlsVis}">
-                    <Rectangle Fill="{StaticResource gradBlue}" RadiusX="5" RadiusY="5"/>
+                    <Rectangle Fill="{StaticResource materialPrimaryBlue}" RadiusX="5" RadiusY="5"/>
                     <TextBlock Text="editing" HorizontalAlignment="Center" Padding="20,5,20,6" Foreground="{StaticResource materialOnPrimary}" FontSize="20" FontStyle="Italic"/>
                 </Grid>
                 <StackPanel Grid.Column="2">
@@ -69,7 +69,7 @@
                     </TextBlock>
                     <TextBlock FontSize="22" FontStyle="Italic"
                            HorizontalAlignment="Right"
-                           Foreground="{StaticResource materialPrimary}"
+                           Foreground="{StaticResource materialPrimaryBlue}"
                            Text="{Binding SelectedUser.UserRole, FallbackValue='debug_placeholder'}"/>
                 </StackPanel>
             </Grid>
@@ -104,7 +104,7 @@
                     <TextBox Text="{Binding SelectedUser.EmailAddress}" 
                              Grid.Column="3"
                              MinWidth="200"
-                             BorderBrush="{StaticResource materialPrimary}"
+                             Style="{StaticResource UsernameTextBox}"
                              IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
 
@@ -179,7 +179,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanApproveRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Approve Production Requests" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanApproveRequests, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="User can approve or decline requests for turned parts" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can approve or decline requests for turned parts" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid>
@@ -197,7 +197,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanUpdateLMOs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Update Manufacture Orders" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanUpdateLMOs, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="User can update notes and production information" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can update notes and production information" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid>
@@ -215,7 +215,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanEditLMOs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Edit Manufacture Orders" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanEditLMOs, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="User can edit all parts of a manufacture order" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can edit all parts of a manufacture order" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
 
@@ -235,7 +235,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanRaiseDelivery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Raise Deliveries" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanRaiseDelivery, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="User can create deliveries from completed lots" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can create deliveries from completed lots" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid>
@@ -253,7 +253,7 @@
                     <CheckBox Visibility="{Binding EditControlsVis}" IsChecked="{Binding SelectedUser.CanCreateAssemblyProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Create Assembly Products" Grid.Column="1" Margin="0"/>
                     <TextBlock Text="{Binding SelectedUser.CanCreateAssemblyProducts, Converter='{StaticResource boolConverter}'}" Grid.Column="3" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="User can create new assembly products with routings and BOM" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource accentTextStyle}" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
+                    <TextBlock Text="User can create new assembly products with routings and BOM" Grid.Row="1" Grid.ColumnSpan="4" Margin="20,1,20,6" Foreground="{StaticResource materialPrimaryBlue}"/>
                 </Grid>
 
                 <Grid Margin="0,20,0,5">

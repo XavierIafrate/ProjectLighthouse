@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
-using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -12,6 +11,7 @@ namespace ProjectLighthouse.ViewModel
         #region Vars
 
         private string navText = "Manufacture Orders";
+
         public string NavText
         {
             get { return navText; }
@@ -23,6 +23,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility betaWarningVis = Visibility.Collapsed;
+
         public Visibility BetaWarningVis
         {
             get { return betaWarningVis; }
@@ -34,6 +35,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private BaseViewModel _selectedViewModel;
+
         public BaseViewModel SelectedViewModel
         {
             get { return _selectedViewModel; }
@@ -50,7 +52,7 @@ namespace ProjectLighthouse.ViewModel
 
         public MainWindow MainWindow { get; set; }
 
-        #endregion
+        #endregion Vars
 
         public void EditSettings()
         {

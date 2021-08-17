@@ -27,8 +27,6 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedFilter = value;
                 FilterRequests(value);
-                //if(window != null && window.filterComboBox.Text != value)
-                //    window.filterComboBox.Text = value;
                 if (FilteredRequests.Count > 0)
                 {
                     SelectedRequest = FilteredRequests.First();
@@ -79,14 +77,7 @@ namespace ProjectLighthouse.ViewModel
                 {
                     return;
                 }
-                if (value.Length > 3)
-                {
-                    UpdateButtonEnabled = value.Substring(0, 3) == "POR";
-                }
-                else
-                {
-                    UpdateButtonEnabled = false;
-                }
+                UpdateButtonEnabled = App.CurrentUser.UserRole is "Purchasing" or "admin";
                 OnPropertyChanged("UpdateButtonEnabled");
                 OnPropertyChanged("PurchaseRef");
             }
@@ -241,10 +232,6 @@ namespace ProjectLighthouse.ViewModel
 
             approvalControlsVis = App.CurrentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
             GetRequests();
-            //SelectedFilter = "Last 14 Days";
-
-            //if (FilteredRequests.Count < 1)
-            //    SelectedFilter = "My Requests";
         }
 
         public void LoadRequestCard(Request request)

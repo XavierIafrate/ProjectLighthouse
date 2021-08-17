@@ -14,6 +14,7 @@ namespace ProjectLighthouse.ViewModel
     public class OrderViewModel : BaseViewModel
     {
         #region Variables
+
         public List<LatheManufactureOrder> LatheManufactureOrders { get; set; }
         public List<LatheManufactureOrder> FilteredOrders { get; set; }
         public List<LatheManufactureOrderItem> LMOItems { get; set; }
@@ -26,6 +27,7 @@ namespace ProjectLighthouse.ViewModel
         public List<Lot> Lots { get; set; }
 
         private LatheManufactureOrder selectedLatheManufactureOrder;
+
         public LatheManufactureOrder SelectedLatheManufactureOrder
         {
             get { return selectedLatheManufactureOrder; }
@@ -38,6 +40,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private MachineStatistics displayStats; // Stats for the machine listed on the order currently selected
+
         public MachineStatistics DisplayStats
         {
             get { return displayStats; }
@@ -49,6 +52,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private string runInfoText;
+
         public string RunInfoText
         {
             get { return runInfoText; }
@@ -60,6 +64,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private string selectedFilter;
+
         public string SelectedFilter
         {
             get { return selectedFilter; }
@@ -80,6 +85,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private string searchTerm;
+
         public string SearchTerm
         {
             get { return searchTerm; }
@@ -91,9 +97,10 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
         #region Visibility variables
+
         private Visibility liveInfoVis;
+
         public Visibility LiveInfoVis
         {
             get { return liveInfoVis; }
@@ -105,6 +112,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility cardVis;
+
         public Visibility CardVis
         {
             get { return cardVis; }
@@ -122,6 +130,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility nothingVis;
+
         public Visibility NothingVis
         {
             get { return nothingVis; }
@@ -133,6 +142,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility modifiedVis;
+
         public Visibility ModifiedVis
         {
             get { return modifiedVis; }
@@ -143,13 +153,14 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        #endregion
+        #endregion Visibility variables
 
         public ICommand PrintOrderCommand { get; set; }
         public ICommand EditCommand { get; set; }
 
         public event EventHandler SelectedLatheManufactureOrderChanged;
-        #endregion
+
+        #endregion Variables
 
         public OrderViewModel()
         {
@@ -200,9 +211,11 @@ namespace ProjectLighthouse.ViewModel
             if (DisplayStats.DataTime.AddHours(1) < DateTime.Now)
                 LiveInfoVis = Visibility.Collapsed;
         }
-        #endregion
+
+        #endregion MachineStats Display
 
         #region Loading
+
         private void GetLatheManufactureOrders()
         {
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
@@ -218,15 +231,19 @@ namespace ProjectLighthouse.ViewModel
                 case "All Active":
                     FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete || n.ModifiedAt.AddDays(1) > DateTime.Now));
                     break;
+
                 case "Not Ready":
                     FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && !n.IsReady));
                     break;
+
                 case "Ready":
                     FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && n.IsReady && n.Status != "Running"));
                     break;
+
                 case "Complete":
                     FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.IsComplete).OrderByDescending(n => n.CreatedAt));
                     break;
+
                 case "Search":
                     break;
             }
@@ -264,7 +281,7 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged("FilteredLMOItems");
         }
 
-        #endregion
+        #endregion Loading
 
         public void Search()
         {
@@ -286,7 +303,6 @@ namespace ProjectLighthouse.ViewModel
                     continue;
                 }
 
-
                 if (order.POReference.Contains(SearchTerm) && order.POReference != "N/A" && !string.IsNullOrEmpty(order.POReference))
                 {
                     Results.Add(order);
@@ -294,7 +310,6 @@ namespace ProjectLighthouse.ViewModel
                     continue;
                 }
             }
-
 
             List<string> FoundOrdersByItem = new();
             foreach (LatheManufactureOrderItem item in LMOItems)
@@ -329,16 +344,21 @@ namespace ProjectLighthouse.ViewModel
 
             LoadLMOItems();
 
-            ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy) ? Visibility.Collapsed : Visibility.Visible;
-            LiveInfoVis = SelectedLatheManufactureOrder.Status == "Running" && MachineStatistics.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
+            ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy) 
+                ? Visibility.Collapsed 
+                : Visibility.Visible;
+            LiveInfoVis = SelectedLatheManufactureOrder.Status == "Running" && MachineStatistics.Count != 0 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
 
             if (LiveInfoVis == Visibility.Visible)
                 GetLatestStats();
 
             Lots = DatabaseHelper.Read<Lot>().ToList();
 
-            RunInfoText = !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine) ?
-                string.Format($"Assigned to {selectedLatheManufactureOrder.AllocatedMachine}, starting {SelectedLatheManufactureOrder.StartDate:dddd, MMMM d}{GetDaySuffix(SelectedLatheManufactureOrder.StartDate.Day)}") : "Not scheduled";
+            RunInfoText = !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine) 
+                ? $"Assigned to {selectedLatheManufactureOrder.AllocatedMachine}, starting {SelectedLatheManufactureOrder.StartDate:dddd, MMMM d}{GetDaySuffix(SelectedLatheManufactureOrder.StartDate.Day)}" 
+                : "Not scheduled";
 
             LoadProductInfoCard();
         }
