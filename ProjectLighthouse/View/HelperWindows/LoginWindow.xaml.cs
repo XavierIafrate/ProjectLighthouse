@@ -11,47 +11,40 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for LoginWindow.xaml
-    /// </summary>
     public partial class LoginWindow : Window
     {
         public User auth_user;
 
-        public List<User> users;
+        public List<User> Users;
         public LoginWindow()
         {
             InitializeComponent();
             AddVersionNumber();
 
-            users = DatabaseHelper.Read<User>().ToList();
-            foreach (User user in users)
+            Users = DatabaseHelper.Read<User>().ToList();
+
+            if (Environment.UserName == "xavier" || Debugger.IsAttached)
             {
-                if (user.computerUsername == Environment.UserName)
+                User user = Users.SingleOrDefault(u => u.UserName == "xav");
+                if (user == null)
                 {
-                    if (string.IsNullOrEmpty(usernameText.Text))
-                    {
-                        usernameText.Text = user.UserName;
-                        PasswordBox.Focus();
-                    }
-                    else // multiple people using the computer
-                    {
-                        usernameText.Text = "";
-                        PasswordBox.Password = "";
-                        usernameText.Focus();
-                    }
-
-                    if (Environment.UserName == "xavier")
-                    {
-                        PasswordBox.Password = user.Password;
-                        PasswordBox.GetType().GetMethod("Select", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(PasswordBox, new object[] { user.Password.Length, 0 });
-                    }
-
+                    return;
                 }
+                UsernameTextBox.Text = user.UserName;
+                PasswordBox.Password = user.Password;
+                _ = PasswordBox.Focus();
+                _ = PasswordBox.GetType().GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(PasswordBox, new object[] { user.Password.Length, 0 });
+                return;
             }
 
-            if (string.IsNullOrEmpty(usernameText.Text))
-                usernameText.Focus();
+            List<User> UsersOfThisComputer = Users.Where(u => u.computerUsername == Environment.UserName).ToList();
+
+            if (UsersOfThisComputer.Count == 1)
+            {
+                UsernameTextBox.Text = UsersOfThisComputer.Single().UserName;
+                _ = PasswordBox.Focus();
+                return;
+            }
         }
 
         private void AddVersionNumber()
@@ -79,45 +72,41 @@ namespace ProjectLighthouse.View
         private void PasswordText_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
+            {
                 Login();
+            }
         }
 
         private void Login()
         {
-            List<User> matches = users.Where(x => x.UserName == usernameText.Text).ToList();
-            User user;
+            User User = Users.FirstOrDefault(u => u.UserName == UsernameTextBox.Text);
 
-            if (matches.Count == 0)
+            if (User == null)
             {
                 message.Text = "Username not found";
                 MessageBadge.Visibility = Visibility.Visible;
                 return;
             }
-            else
-            {
-                user = matches.First();
-            }
-
-            if (user.IsBlocked)
+            else if (User.IsBlocked)
             {
                 message.Text = "User blocked";
                 MessageBadge.Visibility = Visibility.Visible;
                 return;
             }
-            else if (user.Password == PasswordBox.Password)
-            {
-                user.LastLogin = DateTime.Now;
-                user.computerUsername = Environment.UserName;
-                DatabaseHelper.Update<User>(user);
-
-                auth_user = user;
-                Close();
-            }
-            else
+            else if (User.Password != PasswordBox.Password)
             {
                 message.Text = "Invalid password";
                 MessageBadge.Visibility = Visibility.Visible;
+                return;
             }
+
+            User.LastLogin = DateTime.Now;
+            User.computerUsername = Environment.UserName;
+            _ = DatabaseHelper.Update(User);
+
+            auth_user = User;
+
+            Close();
         }
 
         private void PasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
@@ -127,9 +116,9 @@ namespace ProjectLighthouse.View
                : Visibility.Hidden;
         }
 
-        private void usernameText_TextChanged(object sender, TextChangedEventArgs e)
+        private void UsernameText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UsernameGhost.Visibility = string.IsNullOrEmpty(usernameText.Text)
+            UsernameGhost.Visibility = string.IsNullOrEmpty(UsernameTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Hidden;
         }

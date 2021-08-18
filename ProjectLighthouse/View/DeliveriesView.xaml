@@ -15,17 +15,12 @@
         <vm:DeliveriesViewModel x:Key="vm" />
     </UserControl.Resources>
     <Grid DataContext="{StaticResource vm}">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
-                Width="400"
-                MinWidth="300"
-                MaxWidth="400" />
+                Width="*"
+                MinWidth="280" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
         <Grid>
@@ -46,18 +41,16 @@
                     Content="+ New Delivery"
                     Style="{StaticResource GreenButton}" />
             </Grid>
-            <ListBox
+            <ListView
                 Grid.Row="1"
-                HorizontalContentAlignment="Stretch"
                 ItemsSource="{Binding DeliveryNotes}"
-                ScrollViewer.CanContentScroll="False"
                 SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ListBox.ItemTemplate>
+                <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayDeliveryNote deliveryNote="{Binding}" />
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
         <GridSplitter
             Grid.Row="0"
@@ -70,22 +63,14 @@
         <Grid Grid.Column="2" Background="{StaticResource materialBackground}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid
-                    MaxWidth="600"
+                    MaxWidth="700"
                     Margin="30"
                     VerticalAlignment="Top">
                     <Rectangle
-                        Fill="{StaticResource materialBackground}"
-                        RadiusX="20"
-                        RadiusY="20">
-                        <Rectangle.Effect>
-                            <DropShadowEffect
-                                BlurRadius="40"
-                                Direction="220"
-                                Opacity="0.3"
-                                ShadowDepth="15"
-                                Color="Black" />
-                        </Rectangle.Effect>
-                    </Rectangle>
+                            RadiusX="5"
+                            RadiusY="5"
+                            Stroke="{StaticResource materialPrimaryBlue}"
+                            StrokeThickness="2" />
                     <Grid Margin="30">
                         <StackPanel>
                             <Grid>
@@ -102,22 +87,8 @@
                                 <TextBlock Text="{Binding SelectedDeliveryNote.Name}" />
                                 <Button
                                     Grid.Column="2"
-                                    Margin="0"
+                                    Style="{StaticResource PDFButton}"
                                     Command="{Binding GenerateDeliveryNotePDFCommand}">
-
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Path
-                                                Width="8"
-                                                Height="8"
-                                                Margin="0,0,5,0"
-                                                VerticalAlignment="Center"
-                                                Data="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"
-                                                Fill="{StaticResource materialOnPrimary}"
-                                                Stretch="Fill" />
-                                            <TextBlock VerticalAlignment="Center" Text="PDF" />
-                                        </StackPanel>
-                                    </Button.Content>
                                 </Button>
                                 <TextBlock Grid.Row="1" Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}'}" />
                                 <TextBlock Grid.Row="2" Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{}Delivered by {0}'}" />

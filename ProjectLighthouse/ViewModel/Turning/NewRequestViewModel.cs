@@ -27,13 +27,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        //        var image = new BitmapImage();
-        //        image.BeginInit();
-        //image.UriSource = new Uri(fileName);
-        //        image.EndInit();
-        //ImageBehavior.SetAnimatedSource(img, image);
-
-
         public List<TurnedProduct> TurnedProducts { get; set; }
         public List<TurnedProduct> FilteredList { get; set; }
         public string PotentialQuantityText { get; set; }
@@ -49,17 +42,11 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedProduct = value;
                 OnPropertyChanged("SelectedProduct");
-                OnPropertyChanged("RecommendedStockText");
-                OnPropertyChanged("PotentialQuantityText");
-                SelectedProductChanged?.Invoke(this, new EventArgs());
+                //OnPropertyChanged("RecommendedStockText");
+                //OnPropertyChanged("PotentialQuantityText");
+
                 if (selectedProduct != null)
                 {
-                    //int deficit = SelectedProduct.QuantityInStock - SelectedProduct.QuantityOnSO + SelectedProduct.QuantityOnPO;
-                    //RequiredQtyPrefill = $"{Math.Abs(deficit)}";
-
-                    OnPropertyChanged("RequiredQtyPrefill");
-
-
                     if (!selectedProduct.CanBeManufactured())
                     {
                         MessageBox.Show(selectedProduct.ProductName + " cannot be made on the lathes." + Environment.NewLine
@@ -83,7 +70,7 @@ namespace ProjectLighthouse.ViewModel
                 selectedGroup = value;
                 OnPropertyChanged("SelectedGroup");
                 PopulateListBox();
-                OnPropertyChanged("FilteredList");
+                
             }
         }
 
@@ -187,7 +174,6 @@ namespace ProjectLighthouse.ViewModel
                     if (product.isSpecialPart)
                         FilteredList.Add(product);
                 }
-                return;
             }
             else
             {
@@ -197,7 +183,9 @@ namespace ProjectLighthouse.ViewModel
                         FilteredList.Add(product);
                 }
             }
+
             FilteredList = new List<TurnedProduct>(FilteredList.OrderBy(n => n.Material).ThenBy(n => n.ProductName));
+            OnPropertyChanged("FilteredList");
             LoadGraph();
         }
 

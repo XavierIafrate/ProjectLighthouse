@@ -86,7 +86,9 @@ namespace ProjectLighthouse.View
             };
 
             if (newItem.CycleTime == 0)
+            {
                 newItem.CycleTime = 120;
+            }
 
             return newItem;
         }
@@ -96,13 +98,12 @@ namespace ProjectLighthouse.View
             ListboxProducts.Clear();
             foreach (TurnedProduct product in ProductPool)
             {
-                bool found = false;
-                foreach (LatheManufactureOrderItem item in LMOItems)
-                    if (item.ProductName == product.ProductName)
-                        found = true;
+                bool found = LMOItems.SingleOrDefault(x => x.ProductName == product.ProductName) != null;
 
                 if (!found)
+                {
                     ListboxProducts.Add(product);
+                }
             }
 
             LMOItemsListBox.ItemsSource = LMOItems.ToList();
@@ -149,11 +150,11 @@ namespace ProjectLighthouse.View
             return blank.Substring(0, 6 - orderNumLen) + strOrderNum;
         }
 
-        private void confirmButton_Click(object sender, RoutedEventArgs e)
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             constructLMO.Name = GetNewMOName();
             constructLMO.CreatedAt = DateTime.Now;
-            constructLMO.CreatedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
+            constructLMO.CreatedBy = $"{App.CurrentUser.FirstName} {App.CurrentUser.LastName}";
             constructLMO.IsComplete = false;
             constructLMO.Status = "Awaiting scheduling";
             constructLMO.IsReady = false;
@@ -162,11 +163,11 @@ namespace ProjectLighthouse.View
             constructLMO.HasStarted = false;
 
             // Add order & items to database
-            DatabaseHelper.Insert(constructLMO);
+            _ = DatabaseHelper.Insert(constructLMO);
             foreach (LatheManufactureOrderItem item in LMOItems)
             {
                 item.AssignedMO = constructLMO.Name;
-                item.AddedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
+                item.AddedBy = $"{App.CurrentUser.FirstName} {App.CurrentUser.LastName}";
                 item.DateAdded = DateTime.Now;
                 DatabaseHelper.Insert(item);
             };
@@ -178,7 +179,7 @@ namespace ProjectLighthouse.View
             Close();
         }
 
-        private void removeButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
             if (LMOItemsListBox.SelectedValue is not LatheManufactureOrderItem selectedLMOItem)
                 return;
@@ -194,7 +195,7 @@ namespace ProjectLighthouse.View
             RefreshView();
         }
 
-        private void addButton_Click(object sender, RoutedEventArgs e)
+        private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             if (LMOItems.Count >= 4)
             {
@@ -203,7 +204,9 @@ namespace ProjectLighthouse.View
             }
 
             if (poolListBox.SelectedValue is not TurnedProduct selectedProduct)
+            {
                 return;
+            }
 
             //LatheManufactureOrderItem newItem = TurnedProductToLMOItem(selectedProduct, 0, DateTime.MinValue);
 
@@ -211,25 +214,30 @@ namespace ProjectLighthouse.View
             RefreshView();
         }
 
-        private void updateQty_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void UpdateQty_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
 
-        private void updateButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(updateQty.Text, out int j))
+            if (!int.TryParse(UpdateQty.Text, out int j))
+            {
                 return;
+            }
 
             List<LatheManufactureOrderItem> items = (List<LatheManufactureOrderItem>)LMOItemsListBox.ItemsSource;
 
             LatheManufactureOrderItem selected = (LatheManufactureOrderItem)LMOItemsListBox.SelectedValue;
 
             foreach (LatheManufactureOrderItem i in items)
+            {
                 if (i.ProductName == selected.ProductName)
+                {
                     i.TargetQuantity = j;
-
-
+                }
+            }
+            
             LMOItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
             CalculateInsights();
         }

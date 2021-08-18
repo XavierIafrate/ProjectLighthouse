@@ -81,11 +81,11 @@
 
                 <Grid Width="250">
                     <TextBox
-                        x:Name="usernameText"
+                        x:Name="UsernameTextBox"
                         Focusable="True"
                         KeyDown="PasswordText_KeyDown"
                         Style="{StaticResource UsernameTextBox}"
-                        TextChanged="usernameText_TextChanged" />
+                        TextChanged="UsernameText_TextChanged" />
                     <TextBlock
                             x:Name="UsernameGhost"
                             Margin="24,0,0,0"

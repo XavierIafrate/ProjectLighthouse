@@ -65,13 +65,13 @@
             Grid.Column="1"
             VerticalAlignment="Center">
             <Button
-                x:Name="addButton"
-                Click="addButton_Click"
+                x:Name="AddButton"
+                Click="AddButton_Click"
                 Content="&gt;"
                 Style="{StaticResource GreenButton}" />
             <Button
-                x:Name="removeButton"
-                Click="removeButton_Click"
+                x:Name="RemoveButton"
+                Click="RemoveButton_Click"
                 Content="&lt;"
                 Style="{StaticResource CancelButton}" />
 
@@ -235,14 +235,14 @@
             HorizontalAlignment="Right"
             Orientation="Horizontal">
             <TextBox
-                x:Name="updateQty"
+                x:Name="UpdateQty"
                 Width="100"
                 VerticalAlignment="Center"
                 Margin="0,5"
-                PreviewKeyDown="updateQty_PreviewKeyDown" />
+                PreviewKeyDown="UpdateQty_PreviewKeyDown" />
             <Button
-                x:Name="updateButton"
-                Click="updateButton_Click"
+                x:Name="UpdateButton"
+                Click="UpdateButton_Click"
                 Content="Update" />
 
             <Button
@@ -251,9 +251,9 @@
                 Content="Cancel"
                 Style="{StaticResource CancelButton}" />
             <Button
-                x:Name="confirmButton"
+                x:Name="ConfirmButton"
                 Width="150"
-                Click="confirmButton_Click"
+                Click="ConfirmButton_Click"
                 Content="Confirm"
                 Style="{StaticResource GreenButton}" />
         </StackPanel>
