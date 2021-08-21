@@ -18,14 +18,17 @@ namespace ProjectLighthouse.View
         public List<LatheManufactureOrderItem> items;
         public List<Lot> lots;
         public bool SaveExit { get; set; }
+        public List<Note> Notes;
 
-        public EditLMOWindow(LatheManufactureOrder o, List<LatheManufactureOrderItem> i, List<Lot> l)
+        public EditLMOWindow(LatheManufactureOrder o, List<LatheManufactureOrderItem> i, List<Lot> l, List<Note> n)
         {
             InitializeComponent();
 
             SaveExit = false;
             items = new(i);
             lots = new(l);
+            Notes = n;
+
             order = (LatheManufactureOrder)o.Clone(); // break the reference
 
             PopulateControls();
@@ -34,20 +37,16 @@ namespace ProjectLighthouse.View
         private void PopulateControls()
         {
             ItemsListBox.ItemsSource = items;
+            NotesDisplay.ItemsSource = Notes;
 
             nameText.Text = order.Name;
             PORef.Text = order.POReference;
 
-            notes.Document.Blocks.Clear();
-            notes.AppendText(order.Notes);
-            notes.Document.LineHeight = 2;
-
-            urgent.IsChecked = order.IsUrgent;
             program.IsChecked = order.HasProgram;
             ready.IsChecked = order.IsReady;
 
-            if (!order.HasProgram)
-                ready.IsEnabled = false;
+            ready.IsEnabled = order.HasProgram;
+                
 
             switch (order.Status)
             {
@@ -70,25 +69,8 @@ namespace ProjectLighthouse.View
                     not_started_radio.IsChecked = true;
                     break;
             }
-
-            if (!App.CurrentUser.CanEditLMOs)
-            {
-                PORef.IsEnabled = false;
-                //setters.IsEnabled = false;
-            }
-
-            //cancelOrderButton.Visibility = (App.currentUser.UserRole == "Scheduling" || App.currentUser.UserRole == "admin") ?
-            //    Visibility.Visible : Visibility.Collapsed;
-
-            List<User> users = DatabaseHelper.Read<User>().Where(n => n.UserRole == "Production").ToList();
-            List<string> setterUsers = new();
-
-            // Add Production team to setters combobox by full name
-            foreach (User user in users)
-                setterUsers.Add(user.GetFullName());
-
-            //setters.ItemsSource = setterUsers.ToList();
-            //setters.Text = order.AllocatedSetter;
+                
+            PORef.IsEnabled = App.CurrentUser.CanEditLMOs || App.CurrentUser.UserRole == "admin";
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
@@ -105,14 +87,7 @@ namespace ProjectLighthouse.View
 
         private void AssignValues()
         {
-            TextRange textRange = new(notes.Document.ContentStart, notes.Document.ContentEnd);
-
-            if (textRange.Text.Length > 2)
-                order.Notes = textRange.Text[0..^2];
-
             order.POReference = PORef.Text;
-            //order.AllocatedSetter = setters.Text;
-            //order.IsUrgent = urgent.IsChecked ?? false;
             order.HasProgram = (bool)program.IsChecked;
             order.IsReady = (bool)ready.IsChecked;
 
@@ -124,6 +99,8 @@ namespace ProjectLighthouse.View
             {
                 order.Status = (bool)running_radio.IsChecked ? "Running" : "Complete";
             }
+
+            
 
             order.IsComplete = order.Status == "Complete";
 
@@ -264,7 +241,53 @@ namespace ProjectLighthouse.View
         private void PORef_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            poRefGhostText.Visibility = string.IsNullOrEmpty(textBox.Text) ? Visibility.Visible : Visibility.Hidden;
+            poRefGhostText.Visibility = string.IsNullOrEmpty(textBox.Text) 
+                ? Visibility.Visible 
+                : Visibility.Hidden;
+        }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(Message.Text))
+            {
+                AddNewNote(Message.Text.Trim());
+            }
+        }
+
+        private void Message_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ComposeGhost.Visibility = string.IsNullOrEmpty(Message.Text)
+                ? Visibility.Visible
+                : Visibility.Hidden;
+        }
+
+        public void AddNewNote(string note)
+        {
+            Note newNote = new()
+            {
+                Message = note,
+                OriginalMessage = note,
+                IsEdited = false,
+                IsDeleted = false,
+                SentBy = App.CurrentUser.UserName,
+                DateSent = DateTime.Now.ToString("s"),
+                DateEdited = DateTime.MinValue.ToString("s"),
+                DocumentReference = order.Name
+            };
+
+            DatabaseHelper.Insert(newNote);
+            Notes.Add(newNote);
+            NotesDisplay.ItemsSource = new List<Note>();
+            NotesDisplay.ItemsSource = Notes;
+            Message.Text = "";
+        }
+
+        private void Message_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(Message.Text) && e.Key == Key.Enter)
+            {
+                AddNewNote(Message.Text.Trim());
+            }
         }
     }
 }

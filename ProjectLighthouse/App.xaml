@@ -9,8 +9,9 @@
 
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
 
+            <!--#region Themes-->
+            <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="./Themes/GlobalColours.xaml" />
                 <ResourceDictionary Source="./Themes/StylishScrollBar.xaml" />
                 <ResourceDictionary Source="./Themes/StylishButtons.xaml" />
@@ -22,22 +23,8 @@
                 <ResourceDictionary Source="./Themes/StylishListViewItem.xaml" />
                 <ResourceDictionary Source="./Themes/StylishItemsControl.xaml" />
                 <ResourceDictionary Source="./Themes/StylishComboBox.xaml" />
-
+                <ResourceDictionary Source="./Themes/StylishDatePicker.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <!--#region Legacy-->
-
-            <!--<Style TargetType="{x:Type DatePicker}">
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="FontSize" Value="14" />
-            </Style>
-
-            <Style TargetType="{x:Type DatePickerTextBox}">
-                <Setter Property="BorderThickness" Value="0,0,0,2" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="Margin" Value="4,2" />
-            </Style>-->
-
             <!--#endregion-->
 
             <!--#region DataTemplates-->
@@ -75,6 +62,7 @@
                 <views:ManageUsersView />
             </DataTemplate>
             <!--#endregion-->
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

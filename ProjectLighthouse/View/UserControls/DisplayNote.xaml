@@ -1,0 +1,81 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.DisplayNote"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MaxWidth="600"
+    d:Background="White"
+    d:DesignHeight="117.862"
+    d:DesignWidth="369.688"
+    mc:Ignorable="d">
+    <Grid x:Name="ControlGrid" Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Border
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Background="{StaticResource materialSelectedColour}"
+            CornerRadius="10" />
+        <StackPanel
+            x:Name="MetadataStackPanel"
+            Grid.Column="1"
+            Margin="10,5,10,0"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            TextElement.FontSize="8"
+            TextElement.FontStyle="Italic"
+            TextElement.FontWeight="SemiBold"
+            TextElement.Foreground="{StaticResource materialPrimaryBlue}">
+            <TextBlock
+                x:Name="SentByTextBlock"
+                VerticalAlignment="Center"
+                Text="randy" />
+            <StackPanel
+                x:Name="DevBadge"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock Text=" " />
+                <Path
+                    Width="12"
+                    Height="12"
+                    VerticalAlignment="Center"
+                    Data="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M11 8H9V10C9 11.1 8.1 12 7 12C8.1 12 9 12.9 9 14V16H11V18H9C7.9 18 7 17.1 7 16V15C7 13.9 6.1 13 5 13V11C6.1 11 7 10.1 7 9V8C7 6.9 7.9 6 9 6H11V8M19 13C17.9 13 17 13.9 17 15V16C17 17.1 16.1 18 15 18H13V16H15V14C15 12.9 15.9 12 17 12C15.9 12 15 11.1 15 10V8H13V6H15C16.1 6 17 6.9 17 8V9C17 10.1 17.9 11 19 11V13Z"
+                    Fill="{StaticResource materialPrimaryBlueVar}"
+                    Stretch="Uniform">
+                    <Path.RenderTransform>
+                        <TranslateTransform Y="2" />
+                    </Path.RenderTransform>
+                </Path>
+            </StackPanel>
+            <TextBlock VerticalAlignment="Center" Text=" · " />
+            <TextBlock
+                x:Name="SentAtTextBlock"
+                VerticalAlignment="Center"
+                Text="01/01/1970 12:00" />
+        </StackPanel>
+        <Label
+            x:Name="TextBlockContainer"
+            Grid.Row="1"
+            Grid.Column="1">
+            <TextBlock
+                x:Name="MessageTextBlock"
+                Margin="10,0,10,2"
+                FontSize="14"
+                Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id gravida urna, sit amet euismod orci."
+                TextWrapping="WrapWithOverflow" />
+        </Label>
+
+
+
+
+    </Grid>
+</UserControl>

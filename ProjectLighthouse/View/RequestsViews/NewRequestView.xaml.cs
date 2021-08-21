@@ -1,5 +1,7 @@
-﻿using ProjectLighthouse.ViewModel;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -41,6 +43,7 @@ namespace ProjectLighthouse.View
             if (DateRequiredCalendarView.SelectedDate == null)
                 return;
 
+            date_display.Text = DateRequiredCalendarView.SelectedDate.Value.ToString("dd/MM/yyyy");
             viewModel.NewRequest.DateRequired = DateRequiredCalendarView.SelectedDate.Value;
             EnableSubmit();
         }
@@ -73,6 +76,16 @@ namespace ProjectLighthouse.View
 
         private void ProductsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (viewModel.SelectedGroup == "Live")
+            {
+                TurnedProduct turnedProduct = productsListBox.SelectedValue as TurnedProduct;
+                if (turnedProduct != null)
+                {
+                    int NetStockLevel = turnedProduct.QuantityInStock + turnedProduct.QuantityOnPO - turnedProduct.QuantityOnSO;
+                    quantityBox.Text = Math.Abs(NetStockLevel).ToString();
+                }
+                
+            }
             EnableSubmit();
         }
 

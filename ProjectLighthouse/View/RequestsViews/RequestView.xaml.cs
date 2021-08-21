@@ -18,6 +18,7 @@ namespace ProjectLighthouse.View
             viewModel = new RequestViewModel() { Window = this };
             DataContext = viewModel;
             InitializeComponent();
+            
             //viewModel = Resources["vm"] as RequestViewModel;
 
             updateNotes();
@@ -39,6 +40,10 @@ namespace ProjectLighthouse.View
 
             notesTextBox.Document.Blocks.Clear();
             notesTextBox.AppendText(request.Notes);
+            if (date_display == null)
+                return;
+
+            date_display.Text = request.DateRequired.ToString("dd/MM/yyyy");
         }
 
         private void requests_ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -77,6 +82,17 @@ namespace ProjectLighthouse.View
             }
 
             viewModel.UpdateRequirements(notes, j);
+        }
+
+        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (EditDate_DatePicker.SelectedDate == null)
+                return;
+
+            if (date_display == null)
+                return;
+
+            date_display.Text = EditDate_DatePicker.SelectedDate.Value.ToString("dd/MM/yyyy");
         }
     }
 }

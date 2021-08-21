@@ -85,7 +85,7 @@ namespace ProjectLighthouse
             {
                 if (MessageBox.Show("Are you sure you want to update stock levels?", "Lighthouse Opera Sync", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    await OperaHelper.UpdateStockLevelsAsync();
+                    //await OperaHelper.UpdateStockLevelsAsync();
                     MessageBox.Show("Complete");
                 }
             }

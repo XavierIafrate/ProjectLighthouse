@@ -15,20 +15,42 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         public static readonly string dbFile = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cname.dbf";
 
-        public static async Task UpdateStockLevelsAsync()
+        // int uploads = await UploadPicturesAsync(GenerateTestImages(),
+        // new Progress<int>(percent => progressBar1.Value = percent));
+
+        public static async Task<int> UpdateStockLevelsAsync(IProgress<int> progress)
         {
-            if (!File.Exists(dbFile))
+            //int totalCount = imageList.Count;
+            int processCount = await Task.Run<int>(() =>
             {
-                MessageBox.Show("Cannot locate database.", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>();
-            string[] lookup = new string[products.Count];
+                int tempCount = 0;
+                //foreach (var image in imageList)
+                //{
+                //    //await the processing and uploading logic here
+                //    //int processed = await UploadAndProcessAsync(image);
+                //    if (progress != null)
+                //    {
+                //        //progress.Report((tempCount * 100 / totalCount));
+                //    }
+                //    tempCount++;
+                //}
+                return tempCount;
+            });
+            return processCount;
 
-            for (int i = 0; i < products.Count; i++)
-                lookup[i] = products[i].ProductName;
+            //if (!File.Exists(dbFile))
+            //{
+            //    MessageBox.Show("Cannot locate database.", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
 
-            await Task.Run(() => UpdateRecords(products, lookup));
+            //List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>();
+            //string[] lookup = new string[products.Count];
+
+            //for (int i = 0; i < products.Count; i++)
+            //    lookup[i] = products[i].ProductName;
+
+            //await Task.Run(() => UpdateRecords(products, lookup));
         }
 
         public static void UpdateRecords(List<TurnedProduct> products, string[] nameLookup)

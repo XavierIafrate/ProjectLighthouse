@@ -13,7 +13,7 @@
                         Height="{TemplateBinding Height}"
                         Background="{StaticResource materialPrimaryBlueVar}"
                         CornerRadius="4"
-                        Opacity="0.3"
+                        Opacity="0.4"
                         SnapsToDevicePixels="True" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">

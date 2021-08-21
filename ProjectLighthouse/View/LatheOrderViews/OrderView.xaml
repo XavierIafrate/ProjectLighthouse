@@ -9,7 +9,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-    Background="{StaticResource materialBackground}">
+    d:DesignHeight="850"
+    d:DesignWidth="869"
+    Background="{StaticResource materialBackground}"
+    mc:Ignorable="d">
 
 
     <UserControl.Resources>
@@ -109,11 +112,11 @@
                 <ComboBoxItem Content="Ready" />
                 <ComboBoxItem Content="Complete" />
             </ComboBox>
-
-
         </StatusBar>
 
         <!--#region Display Order-->
+
+
         <StackPanel
             Grid.Row="1"
             Grid.Column="1"
@@ -139,7 +142,7 @@
                         Color="Black" />
                 </Border.Effect>
                 <Border Name="ReceiverColor" CornerRadius="15">
-                    <Grid>
+                    <Grid Visibility="Hidden">
                         <Border
                             Name="Mask"
                             Background="{StaticResource materialPrimaryBlue}"
@@ -163,11 +166,13 @@
                 HorizontalAlignment="Center"
                 FontSize="30"
                 Foreground="{StaticResource disabledGray}"
-                Text="None found" />
+                Text="None found"
+                Visibility="Hidden" />
         </StackPanel>
         <ScrollViewer
             Grid.RowSpan="3"
             Grid.Column="1"
+            ScrollChanged="ScrollViewer_ScrollChanged"
             Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel>
                 <StackPanel Margin="25,10">
@@ -382,7 +387,10 @@
                             </Grid>
 
                             <StackPanel>
-                                <TextBlock Style="{StaticResource section}" Text="{Binding FilteredLMOItems.Count, StringFormat='{}Items ({0})'}" Margin="0,15,0,5"/>
+                                <TextBlock
+                                    Margin="0,15,0,5"
+                                    Style="{StaticResource section}"
+                                    Text="{Binding FilteredLMOItems.Count, StringFormat='{}Items ({0})'}" />
 
                                 <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <ItemsControl.ItemTemplate>
@@ -394,15 +402,25 @@
                             </StackPanel>
                             <!--#endregion-->
                             <!--#region Notes-->
-                            <TextBlock Style="{StaticResource section}" Text="Notes" Margin="0,15,0,5"/>
-                            <Grid>
+                            <TextBlock
+                                Margin="0,15,0,5"
+                                Style="{StaticResource section}"
+                                Text="Notes" />
+                            <ItemsControl ItemsSource="{Binding FilteredNotes}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <uc:DisplayNote Note="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <!--<Grid>
                                 <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
                                 <TextBlock
                                     Margin="10"
                                     Padding="0,0,0,2"
                                     Text="{Binding SelectedLatheManufactureOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
                                     TextWrapping="Wrap" />
-                            </Grid>
+                            </Grid>-->
 
 
                             <!--#endregion-->
@@ -410,14 +428,23 @@
                     </Grid>
                 </StackPanel>
 
-                <uc:DisplayProductRangeSnippet
+                <!--<uc:DisplayProductRangeSnippet
                     Width="{Binding ActualWidth, ElementName=OrderCardGrid}"
                     MaxWidth="700"
                     Info="{Binding SelectedProductGroup}"
-                    Items="{Binding SelectedProducts}" />
+                    Items="{Binding SelectedProducts}" />-->
                 <Grid Height="100" />
             </StackPanel>
         </ScrollViewer>
+
+        <Rectangle x:Name="grad" Grid.Column="1">
+            <Rectangle.Fill>
+                <LinearGradientBrush Opacity="0.1" StartPoint="0,1" EndPoint="0,0">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Black" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
         <!--#endregion-->
 
     </Grid>

@@ -19,6 +19,9 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrder> FilteredOrders { get; set; }
         public List<LatheManufactureOrderItem> LMOItems { get; set; }
         public List<LatheManufactureOrderItem> FilteredLMOItems { get; set; }
+        public List<Note> Notes { get; set; }
+        public List<Note> FilteredNotes { get; set; }
+
         public List<TurnedProduct> Products { get; set; }
         public List<TurnedProduct> SelectedProducts { get; set; }
         public List<ProductGroup> ProductGroups { get; set; }
@@ -165,7 +168,8 @@ namespace ProjectLighthouse.ViewModel
         public OrderViewModel()
         {
             Debug.WriteLine("Init: OrderViewModel");
-
+            Notes = new();
+            FilteredNotes = new();
             LatheManufactureOrders = new();
             FilteredOrders = new();
             MachineStatistics = new();
@@ -176,6 +180,8 @@ namespace ProjectLighthouse.ViewModel
             ProductGroups = new();
             SelectedProductGroup = new();
             SelectedProducts = new();
+
+            
 
             PrintOrderCommand = new PrintCommand(this);
             EditCommand = new EditManufactureOrderCommand(this);
@@ -256,12 +262,12 @@ namespace ProjectLighthouse.ViewModel
 
         private void GetLatheManufactureOrderItems()
         {
-            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
             LMOItems.Clear();
-            foreach (LatheManufactureOrderItem item in items)
-            {
-                LMOItems.Add(item);
-            }
+            LMOItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+
+            Notes.Clear();
+            Notes = DatabaseHelper.Read<Note>().ToList();
+
         }
 
         private void LoadLMOItems()
@@ -272,13 +278,20 @@ namespace ProjectLighthouse.ViewModel
             string selectedMO = SelectedLatheManufactureOrder.Name;
             FilteredLMOItems.Clear();
 
-            foreach (LatheManufactureOrderItem item in LMOItems)
-                if (item.AssignedMO == selectedMO)
-                    FilteredLMOItems.Add(item);
+            var associatedItems = LMOItems.Where(i => i.AssignedMO == selectedMO);
 
-            FilteredLMOItems = new List<LatheManufactureOrderItem>
-                (FilteredLMOItems.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName));
+            FilteredLMOItems = new(associatedItems.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName));
+            if (App.CurrentUser.UserRole == "admin")
+            {
+                FilteredNotes = Notes.Where(n => n.DocumentReference == selectedMO).OrderBy(x => x.DateSent).ToList();
+            }
+            else
+            {
+                FilteredNotes = Notes.Where(n => n.DocumentReference == selectedMO && !n.IsDeleted).OrderBy(x => x.DateSent).ToList();
+            }
+            
             OnPropertyChanged("FilteredLMOItems");
+            OnPropertyChanged("FilteredNotes");
         }
 
         #endregion Loading
@@ -391,7 +404,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void EditLMO()
         {
-            EditLMOWindow editWindow = new((LatheManufactureOrder)SelectedLatheManufactureOrder.Clone(), FilteredLMOItems, Lots.Where(n => n.Order == SelectedLatheManufactureOrder.Name).ToList());
+            EditLMOWindow editWindow = new((LatheManufactureOrder)SelectedLatheManufactureOrder, FilteredLMOItems, Lots.Where(n => n.Order == SelectedLatheManufactureOrder.Name).ToList(), FilteredNotes);
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
 

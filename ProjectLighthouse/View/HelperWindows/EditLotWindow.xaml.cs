@@ -38,7 +38,6 @@ namespace ProjectLighthouse.View
                 originalLot.MaterialBatch == EditLot.MaterialBatch &&
                 originalLot.IsReject == EditLot.IsReject)
             {
-                MessageBox.Show("nothing happened");
                 Close();
                 return;
             }

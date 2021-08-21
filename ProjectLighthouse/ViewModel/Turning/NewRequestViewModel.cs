@@ -102,7 +102,7 @@ namespace ProjectLighthouse.ViewModel
             GraphVis = Visibility.Hidden;
 
             ClearScreen();
-            SelectedGroup = "P0130";
+            SelectedGroup = "Live";
             PopulateMachineInsights();
         }
 
@@ -150,6 +150,7 @@ namespace ProjectLighthouse.ViewModel
             List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().ToList();
             TurnedProducts.Clear();
             Families.Clear();
+            Families.Add("Live");
 
             foreach (TurnedProduct product in products)
             {
@@ -162,6 +163,7 @@ namespace ProjectLighthouse.ViewModel
 
             Families = Families.OrderBy(n => n).ToList();
             Families.Add("Specials");
+            
         }
 
         public void PopulateListBox()
@@ -172,6 +174,14 @@ namespace ProjectLighthouse.ViewModel
                 foreach (TurnedProduct product in TurnedProducts)
                 {
                     if (product.isSpecialPart)
+                        FilteredList.Add(product);
+                }
+            }
+            else if (SelectedGroup == "Live")
+            {
+                foreach (TurnedProduct product in TurnedProducts)
+                {
+                    if ((product.QuantityInStock + product.QuantityOnPO) < product.QuantityOnSO)
                         FilteredList.Add(product);
                 }
             }

@@ -66,6 +66,7 @@ namespace ProjectLighthouse.View
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            //MySQLHelper.test();
             Login();
         }
 

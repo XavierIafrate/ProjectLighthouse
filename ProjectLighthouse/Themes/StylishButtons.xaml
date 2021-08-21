@@ -369,6 +369,37 @@
         </Style.Triggers>
     </Style>
 
+    <Style
+        x:Key="SendButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource materialOffBlack}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border
+                            Width="30"
+                            Height="26"
+                            Background="{StaticResource materialSurface}"
+                            CornerRadius="5" />
+                        <Path
+                            Width="20"
+                            Height="20"
+                            Data="M2,21L23,12L2,3V10L17,12L2,14V21Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlue}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="ApproveButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource materialPrimaryGreen}" />
         <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
@@ -381,7 +412,7 @@
                         Height="30"
                         Background="{TemplateBinding Background}"
                         CornerRadius="15">
-                        <Grid HorizontalAlignment="Center" Margin="20,0">
+                        <Grid Margin="20,0" HorizontalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
@@ -394,8 +425,8 @@
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
                             <TextBlock
-                                Margin="0,0,0,2"
                                 Grid.Column="1"
+                                Margin="0,0,0,2"
                                 VerticalAlignment="Center"
                                 FontSize="18"
                                 Text="Approve" />
@@ -424,7 +455,7 @@
                         Height="30"
                         Background="{TemplateBinding Background}"
                         CornerRadius="15">
-                        <Grid HorizontalAlignment="Center" Margin="20,0">
+                        <Grid Margin="20,0" HorizontalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
@@ -437,8 +468,8 @@
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
                             <TextBlock
-                                Margin="0,0,0,2"
                                 Grid.Column="1"
+                                Margin="0,0,0,2"
                                 VerticalAlignment="Center"
                                 FontSize="18"
                                 Text="Decline" />
