@@ -17,8 +17,8 @@ namespace ProjectLighthouse.ViewModel
         ScheduleViewModel : BaseViewModel
     {
         #region Variables
-        public ObservableCollection<LatheManufactureOrder> Orders { get; set; }
-        public ObservableCollection<LatheManufactureOrderItem> OrderItems { get; set; }
+        public List<LatheManufactureOrder> Orders { get; set; }
+        public List<LatheManufactureOrderItem> OrderItems { get; set; }
         public List<Lathe> Lathes { get; set; }
         public List<CompleteOrder> CompleteOrders { get; set; }
         public List<TabInfo> WindowTabs { get; set; }
@@ -59,7 +59,6 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedTab = value;
                 LoadTabOrders();
-                //SelectedTabChanged?.Invoke(this, new EventArgs());
                 OnPropertyChanged("SelectedTab");
             }
         }
@@ -70,11 +69,11 @@ namespace ProjectLighthouse.ViewModel
         public ScheduleViewModel()
         {
             Debug.WriteLine("Init: ScheduleViewModel");
-            Orders = new ObservableCollection<LatheManufactureOrder>();
-            OrderItems = new ObservableCollection<LatheManufactureOrderItem>();
-            CompleteOrders = new List<CompleteOrder>();
-            Lathes = new List<Lathe>();
-            WindowTabs = new List<TabInfo>();
+            Orders = new();
+            OrderItems = new();
+            CompleteOrders = new();
+            Lathes = new();
+            WindowTabs = new();
             SelectedOrder = new();
 
             PrintScheduleCommand = new(this);
@@ -86,22 +85,18 @@ namespace ProjectLighthouse.ViewModel
             CreateTabs();
 
             if (WindowTabs.Count > 1)
+            {
                 SelectedTab = WindowTabs[1];
+            }
         }
 
         private void ReadOrders()
         {
-            // Get Orders
-            IEnumerable<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList().Where(n => n.IsComplete != true);
             Orders.Clear();
-            foreach (LatheManufactureOrder order in orders)
-                Orders.Add(order);
+            Orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(o => !o.IsComplete).ToList();
 
-            // Get Order Items
-            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
             OrderItems.Clear();
-            foreach (LatheManufactureOrderItem item in items)
-                OrderItems.Add(item);
+            OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
         }
 
         private void LoadTabOrders()
@@ -111,7 +106,8 @@ namespace ProjectLighthouse.ViewModel
             SelectedTab.CalculateTimings();
             PrintButtonVis = SelectedTab.LatheID == "" ? Visibility.Collapsed : Visibility.Visible;
             AutoScheduleVis = (App.CurrentUser.UserRole == "admin" || App.CurrentUser.UserRole == "Scheduling") && SelectedTab.LatheID != ""
-                ? Visibility.Visible : Visibility.Collapsed;
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
         }
 
         private void LoadCompleteOrders()
@@ -120,14 +116,14 @@ namespace ProjectLighthouse.ViewModel
 
             foreach (LatheManufactureOrder order in Orders)
             {
-                if (order.IsComplete)
-                    continue;
+                CompleteOrder tmpOrder = new()
+                {
+                    Order = order, 
+                    OrderItems = new(), 
+                    UpdateCommand = UpdateItemCommand 
+                };
 
-                CompleteOrder tmpOrder = new() { Order = order, OrderItems = new List<LatheManufactureOrderItem>(), UpdateCommand = UpdateItemCommand };
-
-                foreach (LatheManufactureOrderItem item in OrderItems)
-                    if (item.AssignedMO == order.Name)
-                        tmpOrder.OrderItems.Add(item);
+                tmpOrder.OrderItems.AddRange(OrderItems.Where(i => i.AssignedMO == order.Name).ToList());
 
                 CompleteOrders.Add(tmpOrder);
             }
@@ -152,7 +148,7 @@ namespace ProjectLighthouse.ViewModel
                     LatheID = lathe.Id,
                     LatheName = lathe.FullName,
                     Orders = CompleteOrders.Where(n => n.Order.AllocatedMachine == lathe.Id).ToList(),
-                    ViewTitle = string.Format("{0} Schedule", lathe.FullName)
+                    ViewTitle = $"{lathe.FullName} Schedule"
                 });
             }
         }
@@ -182,10 +178,15 @@ namespace ProjectLighthouse.ViewModel
                 foreach (CompleteOrder order in Orders)
                 {
                     if (order.Order.StartDate < firstItemStarts)
+                    {
                         firstItemStarts = order.Order.StartDate;
+                    }
+
                     TotalTime += 60 * 60 * 3; // Setting time
                     foreach (LatheManufactureOrderItem item in order.OrderItems)
+                    {
                         TotalTime += item.CycleTime * item.TargetQuantity;
+                    }
                 }
 
                 BookedTo = firstItemStarts.AddDays(1) + TimeSpan.FromSeconds(TotalTime);

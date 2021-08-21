@@ -37,8 +37,8 @@
 
         <StatusBar
             Grid.Row="1"
-            Margin="0,5,0,0"
-            HorizontalAlignment="Right"
+            Margin="10,5"
+            HorizontalAlignment="Left"
             Background="Transparent">
             <TextBlock Text="{Binding FilteredRequests.Count, StringFormat='{}{0} request(s)', FallbackValue='10 request(s)'}" />
             <Separator Margin="5,0" Background="LightGray" />
@@ -212,8 +212,7 @@
                     <StackPanel Margin="10,0" Visibility="{Binding ApprovedVis, FallbackValue=Visible}">
                         <TextBlock Text="This request has been approved for manufacture." />
                         <TextBlock Padding="0,5,0,4" Text="Please enter the Purchase Order reference here:" />
-                        <TextBox Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource UsernameTextBox}"/>
+                        <TextBox Style="{StaticResource UsernameTextBox}" Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -252,18 +251,51 @@
                             Margin="0,5"
                             Style="{StaticResource section}"
                             Text="Edit Request" />
-                        <TextBlock Text="Quantity Required" />
-                        <TextBox
-                            x:Name="quantityTextbox"
-                            IsEnabled="{Binding CanEditRequirements}"
-                            Text="{Binding SelectedRequest.QuantityRequired}"
-                            Style="{StaticResource UsernameTextBox}"/>
+                        <Grid Margin="10">
+                            <TextBox
+                                x:Name="quantityTextbox"
+                                Margin="0"
+                                IsEnabled="{Binding CanEditRequirements}"
+                                Style="{StaticResource UsernameTextBox}"
+                                Text="{Binding SelectedRequest.QuantityRequired, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock
+                                x:Name="QuantityGhost"
+                                Margin="30,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                FontStyle="Italic"
+                                Foreground="#aaaaaa"
+                                IsHitTestVisible="False"
+                                Text="Quantity Required" />
+                        </Grid>
 
-                        <TextBlock Text="Date Required" />
-                        <DatePicker
-                            DisplayDateStart="{x:Static sys:DateTime.Now}"
-                            IsEnabled="{Binding CanEditRequirements}"
-                            SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}" />
+                        <Grid Margin="10">
+                            <DatePicker
+                                x:Name="EditDate_DatePicker"
+                                DisplayDateStart="{x:Static sys:DateTime.Now}"
+                                IsEnabled="{Binding CanEditRequirements}"
+                                SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}"
+                                SelectedDateChanged="DatePicker_SelectedDateChanged" />
+                            <TextBlock
+                                x:Name="date_display"
+                                Padding="15,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                Text="" />
+                            <TextBlock
+                                x:Name="DateGhost"
+                                Margin="30,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                FontStyle="Italic"
+                                Foreground="#aaaaaa"
+                                IsHitTestVisible="False"
+                                Text="Quantity Required" />
+                        </Grid>
+
 
                         <TextBlock Text="Notes" />
                         <Grid>

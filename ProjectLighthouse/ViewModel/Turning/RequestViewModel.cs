@@ -239,32 +239,32 @@ namespace ProjectLighthouse.ViewModel
             if (request == null)
                 return;
 
-            ModifiedVis = (String.IsNullOrEmpty(request.ModifiedBy)) ? Visibility.Collapsed : Visibility.Visible;
+            ModifiedVis = (string.IsNullOrEmpty(request.ModifiedBy)) ? Visibility.Collapsed : Visibility.Visible;
 
             ApprovalControlsVis = (App.CurrentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
             EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy || App.CurrentUser.CanApproveRequests) ? Visibility.Visible : Visibility.Collapsed;
             DecisionVis = (request.IsDeclined || request.IsAccepted) ? Visibility.Collapsed : Visibility.Visible;
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
             DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
-            CanEditRequirements = (!request.IsAccepted && !request.IsDeclined);
+            CanEditRequirements = !request.IsAccepted && !request.IsDeclined;
 
 
-            ProductionCheckboxEnabled = (request.Status == "Pending approval" &&
+            ProductionCheckboxEnabled = request.Status == "Pending approval" &&
                 (App.CurrentUser.UserRole == "Production" ||
                 App.CurrentUser.UserRole == "admin")
-                && App.CurrentUser.CanApproveRequests);
+                && App.CurrentUser.CanApproveRequests;
 
-            SchedulingCheckboxEnabled = (request.Status == "Pending approval" &&
+            SchedulingCheckboxEnabled = request.Status == "Pending approval" &&
                 (App.CurrentUser.UserRole == "Scheduling" ||
-                App.CurrentUser.UserRole == "admin"));
+                App.CurrentUser.UserRole == "admin");
 
-            DropboxEnabled = (request.Status == "Pending approval" &&
+            DropboxEnabled = request.Status == "Pending approval" &&
                 (App.CurrentUser.UserRole == "Scheduling" ||
                 App.CurrentUser.UserRole == "admin" ||
                 App.CurrentUser.UserRole == "Production")
-                && App.CurrentUser.CanApproveRequests);
+                && App.CurrentUser.CanApproveRequests;
 
-            PurchaseRef = !String.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
+            PurchaseRef = !string.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
         }
 
         public void UpdateOrderPurchaseRef()
@@ -296,7 +296,7 @@ namespace ProjectLighthouse.ViewModel
         public void UpdateRequest()
         {
             SelectedRequest.LastModified = DateTime.Now;
-            SelectedRequest.ModifiedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
+            SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 OnPropertyChanged("SelectedRequest");
@@ -334,7 +334,7 @@ namespace ProjectLighthouse.ViewModel
                 selectedRequest.IsAccepted = true;
                 selectedRequest.IsDeclined = false;
                 selectedRequest.LastModified = DateTime.Now;
-                selectedRequest.ModifiedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
+                selectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
 
 
                 LMOContructorWindow creationWindow = new(SelectedRequest);
@@ -349,7 +349,7 @@ namespace ProjectLighthouse.ViewModel
                 {
                     selectedRequest.AcceptedBy = App.CurrentUser.FirstName;
                     selectedRequest.ResultingLMO = creationWindow.constructLMO.Name;
-                    selectedRequest.Status = String.Format("Accepted by {0} - {1}", selectedRequest.AcceptedBy, selectedRequest.ResultingLMO);
+                    selectedRequest.Status = $"Accepted by {selectedRequest.AcceptedBy} - {selectedRequest.ResultingLMO}";
                 }
 
 
@@ -385,7 +385,7 @@ namespace ProjectLighthouse.ViewModel
                 MessageBox.Show("You do not have permission to decline requests.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            if (String.IsNullOrEmpty(SelectedRequest.DeclinedReason))
+            if (string.IsNullOrEmpty(SelectedRequest.DeclinedReason))
             {
                 MessageBox.Show("You must enter a reason for declining the request.", "Information required", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
@@ -393,8 +393,8 @@ namespace ProjectLighthouse.ViewModel
             SelectedRequest.IsAccepted = false;
             SelectedRequest.IsDeclined = true;
             SelectedRequest.LastModified = DateTime.Now;
-            SelectedRequest.ModifiedBy = String.Format("{0} {1}", App.CurrentUser.FirstName, App.CurrentUser.LastName);
-            selectedRequest.Status = String.Format("Declined - {0}", SelectedRequest.DeclinedReason);
+            SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
+            selectedRequest.Status = $"Declined - {SelectedRequest.DeclinedReason}";
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);

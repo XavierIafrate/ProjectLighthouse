@@ -67,13 +67,19 @@ namespace ProjectLighthouse.View
             DateRequiredPicker.SelectedDate = Item.DateRequired;
             ProductNameTextBlock.Text = Item.ProductName;
             ManufactureOrderTextBlock.Text = Item.AssignedMO;
-            SchedulingGrid.Visibility = App.CurrentUser.UserRole == "Scheduling" || App.CurrentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
+
+            SchedulingGrid.Visibility = App.CurrentUser.UserRole == "Scheduling" || App.CurrentUser.UserRole == "admin" 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
+
             LotsListBox.ItemsSource = null;
             LotsListBox.ItemsSource = Lots.Where(n => n.ProductName == Item.ProductName).ToList();
 
             if (Lots.Count > 0)
+            {
                 BatchTextBox.Text = Lots.Last().MaterialBatch;
-
+            }
+            
             PopulateCycleTimes();
         }
 
@@ -140,7 +146,7 @@ namespace ProjectLighthouse.View
 
         private void PopulateCycleTimes()
         {
-            intCycleTimeText.Text = String.Format("({0}s)", Item.CycleTime);
+            intCycleTimeText.Text = $"({Item.CycleTime}s)";
             int secs = Item.CycleTime % 60;
             int mins = (Item.CycleTime - secs) / 60;
 
@@ -152,7 +158,7 @@ namespace ProjectLighthouse.View
         {
             BrushConverter bc = new();
 
-            if (Int32.TryParse(CycleTime_Min.Text, out int min))
+            if (int.TryParse(CycleTime_Min.Text, out int min))
             {
                 CycleTime_Min.BorderBrush = (Brush)bc.ConvertFrom("#FFABADB3");
             }
@@ -163,7 +169,7 @@ namespace ProjectLighthouse.View
                 return;
             }
 
-            if (Int32.TryParse(CycleTime_Sec.Text, out int sec))
+            if (int.TryParse(CycleTime_Sec.Text, out int sec))
             {
                 CycleTime_Sec.BorderBrush = (Brush)bc.ConvertFrom("#FFABADB3");
             }
@@ -175,7 +181,7 @@ namespace ProjectLighthouse.View
             }
 
             int cycleTime = min * 60 + sec;
-            intCycleTimeText.Text = String.Format("({0}s)", cycleTime);
+            intCycleTimeText.Text = $"({cycleTime}s)";
 
         }
 
@@ -207,7 +213,7 @@ namespace ProjectLighthouse.View
                 return;
             }
 
-            if (Int32.TryParse(QuantityNewLotTextBox.Text, out int n))
+            if (int.TryParse(QuantityNewLotTextBox.Text, out int n))
             {
                 Lot newLot = new()
                 {
@@ -221,7 +227,7 @@ namespace ProjectLighthouse.View
                     MaterialBatch = BatchTextBox.Text.Trim()
                 };
                 newLot.SetExcelDateTime();
-                if (!DatabaseHelper.Insert<Lot>(newLot))
+                if (!DatabaseHelper.Insert(newLot))
                 {
                     MessageBox.Show("Failed to add to database", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -241,8 +247,8 @@ namespace ProjectLighthouse.View
                 SaveExit = true;
 
                 LotsListBox.ItemsSource = new List<Lot>(Lots);
-                QtyMadeTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityMade);
-                QtyRejectTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityReject);
+                QtyMadeTextBlock.Text = $"{Item.QuantityMade:#,##0} pcs";
+                QtyRejectTextBlock.Text = $"{Item.QuantityReject:#,##0} pcs";
 
                 QuantityNewLotTextBox.Text = "";
                 //BatchTextBox.Text = "";
@@ -259,6 +265,13 @@ namespace ProjectLighthouse.View
         private void EditLotButton_Click(object sender, RoutedEventArgs e)
         {
             Lot SelectedLot = LotsListBox.SelectedValue as Lot;
+
+            if (SelectedLot == null)
+            {
+                return;
+            }
+                
+
             EditLotWindow window = new(SelectedLot);
             window.Owner = Application.Current.MainWindow;
             window.ShowDialog();

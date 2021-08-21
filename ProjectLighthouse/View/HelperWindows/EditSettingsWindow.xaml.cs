@@ -29,7 +29,6 @@ namespace ProjectLighthouse.View
             DataContext = App.CurrentUser;
             foreach (ComboBoxItem item in defaultViewComboBox.Items)
             {
-                Debug.WriteLine($"{item.Content} - {user.DefaultView}");
                 if ((string)item.Content == user.DefaultView)
                 {
                     defaultViewComboBox.SelectedItem = item;
@@ -98,6 +97,11 @@ namespace ProjectLighthouse.View
         private void newPwd_PasswordChanged(object sender, RoutedEventArgs e)
         {
             new_password_ghost.Visibility = newPwd.Password.Length > 0 ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        private void current_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
         }
     }
 }

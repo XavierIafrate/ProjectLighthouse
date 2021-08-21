@@ -1,130 +1,220 @@
-﻿<Window x:Class="ProjectLighthouse.View.EditSettingsWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        SizeToContent="WidthAndHeight"
-        ResizeMode="NoResize"
-        MinWidth="250"
-        WindowStartupLocation="CenterScreen">
+﻿<Window
+    x:Class="ProjectLighthouse.View.EditSettingsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="clr-namespace:ProjectLighthouse.Model"
+    MinWidth="250"
+    Title="Lighthouse User Settings"
+    d:DataContext="{d:DesignInstance Type=model:User}"
+    ResizeMode="NoResize"
+    SizeToContent="WidthAndHeight"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
 
-    <Grid Margin="20,0">
+    <Grid Margin="30">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" MaxWidth="300"/>
+            <ColumnDefinition Width="auto" MaxWidth="300" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <TextBlock Text="Settings"
-                       Style="{StaticResource title}" Grid.ColumnSpan="2" />
-        <StackPanel Grid.Row="1" >
-
-            <TextBlock Style="{StaticResource subtitle}">
-                <Run Text="{Binding FirstName, FallbackValue='Randy'}" />
-                <Run Text="{Binding LastName, FallbackValue='Marsh'}" />
-            </TextBlock>
-            <TextBlock>
-                <Run Text="User Role:" />
-                <Run Text="{Binding UserRole, FallbackValue='debug_placeholder'}" x:Name="userRoleText" />
-            </TextBlock>
-
-            <TextBlock Text="Your Permissions" Style="{StaticResource section}"/>
-            <TextBlock Text="An administrator is required to modify these." />
-            <StackPanel Margin="30,0">
-                <TextBlock>
-                    <Run Text="Approve Requests:" />
-                    <Run Text="{Binding CanApproveRequests}" />
+        <TextBlock
+            Grid.ColumnSpan="2"
+            Style="{StaticResource title}"
+            Text="Settings" />
+        <StackPanel Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource subtitle}" Foreground="{StaticResource materialPrimaryBlue}" VerticalAlignment="Center">
+                    <Run Text="{Binding FirstName, FallbackValue='Randy'}" />
+                    <Run Text="{Binding LastName, FallbackValue='Marsh'}" />
                 </TextBlock>
-                <TextBlock>
-                    <Run Text="Edit Orders:" />
-                    <Run Text="{Binding CanEditLMOs}" />
-                </TextBlock>
-                <TextBlock>
-                    <Run Text="Update Orders:" />
-                    <Run Text="{Binding CanUpdateLMOs}" />
-                </TextBlock>
-                <TextBlock>
-                    <Run Text="Raise Deliveries:" />
-                    <Run Text="{Binding CanRaiseDelivery}" />
-                </TextBlock>
-                <TextBlock>
-                    <Run Text="Create Assembly Products:" />
-                    <Run Text="{Binding CanCreateAssemblyProducts}" />
-                </TextBlock>
+                <Grid Margin="10,0">
+                    <Border Background="{StaticResource materialPrimaryBlue}" CornerRadius="10" Height="25"/>
+                    <TextBlock Text="{Binding UserRole}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10,10,10,11" Foreground="White"/>
+                </Grid>
             </StackPanel>
 
-            <TextBlock Text="Default View" />
+            <Separator Margin="0,10" />
+
+            <TextBlock Style="{StaticResource section}" Text="Your Permissions" />
+            <TextBlock Text="An administrator is required to modify these." />
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    FontStyle="Italic"
+                    Text="Raise Requests" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Text="{Binding CanRaiseRequest}" />
+
+                <TextBlock
+                    Grid.Row="1"
+                    FontStyle="Italic"
+                    Text="Approve Requests" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Text="{Binding CanApproveRequests}" />
+
+                <TextBlock
+                    Grid.Row="2"
+                    FontStyle="Italic"
+                    Text="Edit Orders" />
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Text="{Binding CanEditLMOs}" />
+
+                <TextBlock
+                    Grid.Row="3"
+                    FontStyle="Italic"
+                    Text="Update Orders" />
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Text="{Binding CanUpdateLMOs}" />
+
+                <TextBlock
+                    Grid.Row="4"
+                    FontStyle="Italic"
+                    Text="Create Products" />
+                <TextBlock
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Text="{Binding CanCreateAssemblyProducts}" />
+            </Grid>
+
+            <TextBlock Style="{StaticResource section}" Text="Default View" />
             <TextBlock Text="This is the view that will be loaded on login." />
-            <ComboBox x:Name="defaultViewComboBox"
-                      Margin="0,5,0,0"
-                      SelectionChanged="defaultViewComboBox_SelectionChanged">
+            <ComboBox
+                x:Name="defaultViewComboBox"
+                Margin="0,5,0,0"
+                SelectionChanged="defaultViewComboBox_SelectionChanged">
                 <ComboBoxItem Content="View Requests" />
                 <ComboBoxItem Content="Orders" />
                 <ComboBoxItem Content="Schedule" />
                 <!--<ComboBoxItem Content="Assembly Orders" />-->
             </ComboBox>
         </StackPanel>
-        <StackPanel Grid.Column="1" Grid.Row="1">
-            <TextBlock Text="Change Password" Style="{StaticResource section}"/>
-            <Grid>
-                <Rectangle Fill="{StaticResource materialError}" RadiusX="10" RadiusY="10" />
-                <TextBlock Text="Please don't use your bank password."
-                           TextWrapping="Wrap"
-                           Margin="12,6"
-                           Foreground="{StaticResource materialOnError}"
-                           FontWeight="SemiBold" />
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="20,0,0,0">
+            <TextBlock Style="{StaticResource section}" Text="Change Password" />
+            <Grid Margin="0,10">
+                <Rectangle
+                    Fill="{StaticResource materialError}"
+                    RadiusX="10"
+                    RadiusY="10" />
+                <TextBlock
+                    Margin="12,6"
+                    HorizontalAlignment="Center"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource materialOnError}"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap">
+                    Please don't use your bank password.<LineBreak />
+                    There is no security in this app</TextBlock>
             </Grid>
             <StackPanel />
 
             <Grid Width="250">
-                    <PasswordBox
-                        x:Name="current"
-                        Focusable="True"
-                        KeyDown="PasswordText_KeyDown"
-                        PasswordChanged="current_PasswordChanged"
-                        Style="{StaticResource PasswordBox}" />
-                    <Grid>
-                        <TextBlock
-                            x:Name="current_password_ghost"
-                            Margin="24,0,0,0"
-                            Padding="8"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            FontSize="20"
-                            Foreground="#888888"
-                            IsHitTestVisible="False"
-                            Text="current password" />
-                    </Grid>
+                <PasswordBox
+                    x:Name="current"
+                    Focusable="True"
+                    KeyDown="current_KeyDown"
+                    PasswordChanged="current_PasswordChanged"
+                    Style="{StaticResource PasswordBox}" />
+                <Grid>
+                    <TextBlock
+                        x:Name="current_password_ghost"
+                        Margin="24,0,0,0"
+                        Padding="8"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Foreground="#888888"
+                        IsHitTestVisible="False"
+                        Text="current password" />
                 </Grid>
-            <Grid>
-                <PasswordBox x:Name="newPwd"
-                                 PasswordChanged="newPwd_PasswordChanged" />
-                <TextBlock Text="new password"
-                               x:Name="new_password_ghost" />
             </Grid>
-            <Grid>
-                <PasswordBox x:Name="confirmPwd"
-                                 PasswordChanged="confirmPwd_PasswordChanged" />
-                <TextBlock Text="confirm new password"
-                               x:Name="confirm_password_ghost" />
+            <Grid Width="250">
+                <PasswordBox
+                    x:Name="newPwd"
+                    Focusable="True"
+                    KeyDown="current_KeyDown"
+                    PasswordChanged="newPwd_PasswordChanged"
+                    Style="{StaticResource PasswordBox}" />
+                <Grid>
+                    <TextBlock
+                        x:Name="new_password_ghost"
+                        Margin="24,0,0,0"
+                        Padding="8"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Foreground="#888888"
+                        IsHitTestVisible="False"
+                        Text="new password" />
+                </Grid>
+            </Grid>
+            <Grid Width="250">
+                <PasswordBox
+                    x:Name="confirmPwd"
+                    Focusable="True"
+                    KeyDown="current_KeyDown"
+                    PasswordChanged="confirmPwd_PasswordChanged"
+                    Style="{StaticResource PasswordBox}" />
+                <Grid>
+                    <TextBlock
+                        x:Name="confirm_password_ghost"
+                        Margin="24,0,0,0"
+                        Padding="8"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Foreground="#888888"
+                        IsHitTestVisible="False"
+                        Text="confirm new" />
+                </Grid>
             </Grid>
 
-            <TextBlock Text="Helper Text"
-                           x:Name="helperText"
-                           Foreground="{StaticResource materialError}"
-                           FontStyle="Italic"
-                           HorizontalAlignment="Center" />
+            <TextBlock
+                x:Name="helperText"
+                HorizontalAlignment="Center"
+                FontStyle="Italic"
+                Foreground="{StaticResource materialError}"
+                Text="Helper Text" />
 
 
-            <Button Content="Change Password"
-                    x:Name="ChangePasswordButton"
-                    Click="ChangePasswordButton_Click"
-                    Style="{StaticResource GreenButton}"
-                    Width="150"
-                    HorizontalAlignment="Right" />
+            <Button
+                x:Name="ChangePasswordButton"
+                Width="150"
+                HorizontalAlignment="Right"
+                Click="ChangePasswordButton_Click"
+                Content="Change Password"
+                Style="{StaticResource GreenButton}" />
         </StackPanel>
     </Grid>
 </Window>

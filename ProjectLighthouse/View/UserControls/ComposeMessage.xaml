@@ -1,0 +1,32 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.ComposeMessage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="56.188"
+    d:DesignWidth="273"
+    mc:Ignorable="d">
+    <Grid Margin="5">
+        <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
+        <Grid Margin="10,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                VerticalContentAlignment="Center"
+                x:Name="Message"
+                Foreground="{StaticResource materialOffBlack}"
+                Background="Transparent"
+                BorderThickness="0"
+                Text="Test" />
+            <TextBlock Text="Compose message..." FontStyle="Italic" Foreground="#aaaaaa" VerticalAlignment="Center" Margin="10,0" IsHitTestVisible="False"/>
+            <Button Style="{StaticResource SendButton}" Grid.Column="1" Margin="10,0,0,0"
+                    x:Name="SendButton"
+                    Click="SendButton_Click"/>
+        </Grid>
+
+    </Grid>
+</UserControl>

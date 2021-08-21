@@ -10,8 +10,8 @@
                         <ScrollViewer
                             x:Name="PART_ContentHost"
                             Margin="10"
-                            Focusable="false"
                             CanContentScroll="True"
+                            Focusable="false"
                             HorizontalScrollBarVisibility="Hidden"
                             VerticalScrollBarVisibility="Auto">
                             <ItemsPresenter />

@@ -1,10 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics;
+using System.Windows.Controls;
+using System.Windows;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for OrderView.xaml
-    /// </summary>
     public partial class OrderView : UserControl
     {
         public OrderView()
@@ -15,13 +14,21 @@ namespace ProjectLighthouse.View
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             ClearButton.Visibility = string.IsNullOrEmpty(SearchBox.Text)
-                ? System.Windows.Visibility.Hidden
-                : System.Windows.Visibility.Visible;
+                ? Visibility.Hidden
+                : Visibility.Visible;
         }
 
-        private void ClearButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             SearchBox.Text = "";
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            ScrollViewer scrollViewer = sender as ScrollViewer;
+            grad.Visibility = scrollViewer.VerticalOffset == 0
+                ? Visibility.Hidden
+                : Visibility.Visible;
         }
     }
 }
