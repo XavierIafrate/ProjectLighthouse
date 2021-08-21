@@ -14,7 +14,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             EmailSendConfigure myConfig = new();
             myConfig.TOs = new string[] { toPerson };
             myConfig.CCs = Array.Empty<string>();
-            myConfig.From = "lighthouse@wixroydgroup.com";
+            myConfig.From = "notifications@lighthouse.software";
             myConfig.FromDisplayName = "Lighthouse Notifications";
             myConfig.Priority = MailPriority.Normal;
             myConfig.Subject = alertSubject;
@@ -45,7 +45,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             myConfig.TOs = new string[] { PersonWhoRaisedRequest.EmailAddress };
             myConfig.CCs = Array.Empty<string>();
-            myConfig.From = "lighthouse@wixroydgroup.com";
+            myConfig.From = "notifications@lighthouse.software";
             myConfig.FromDisplayName = "Lighthouse Notifications";
             myConfig.Priority = MailPriority.Normal;
             myConfig.Subject = "Request Approved";
@@ -85,12 +85,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             myConfig.TOs = new string[] { PersonWhoRaisedRequest.EmailAddress };
             myConfig.CCs = Array.Empty<string>();
-            myConfig.From = "lighthouse@wixroydgroup.com";
+            myConfig.From = "notifications@lighthouse.software";
             myConfig.FromDisplayName = "Lighthouse Notifications";
             myConfig.Priority = MailPriority.Normal;
             myConfig.Subject = "Request Declined";
 
-            EmailContent myContent = new EmailContent();
+            EmailContent myContent = new();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#B00020'>Request declined</h2>" +
@@ -122,8 +122,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             emailConfig.TOs = emails.ToArray();
             //myConfig.TOs = new string[] { "x.iafrate@wixroydgroup.com" };
-            emailConfig.CCs = new string[] { "x.iafrate@wixroydgroup.com" };
-            emailConfig.From = "lighthouse@wixroydgroup.com";
+            emailConfig.CCs = new string[] { "x.iafrate@wixroydgroup.com", "purchasing@automotioncomponents.co.uk" };
+            emailConfig.From = "notifications@lighthouse.software";
             emailConfig.FromDisplayName = "Lighthouse Notifications";
             emailConfig.Priority = MailPriority.Normal;
             emailConfig.Subject = $"New Manufacture Order - {order.Name}";
@@ -140,13 +140,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 if (item.RequiredQuantity > 0)
                 {
-                    message += string.Format("<p><b>Customer requirement:</b> {0} - {1:#,##0}pcs for {2:dddd d MMMM}. Target quantity: {3:#,##0}pcs</p>",
-                        item.ProductName, item.RequiredQuantity, item.DateRequired, item.TargetQuantity);
+                    message += $"<p><b>Customer requirement:</b> {item.ProductName} - {item.RequiredQuantity:#,##0}pcs for {item.DateRequired:dddd d MMMM}. Target quantity: {item.TargetQuantity:#,##0}pcs</p>";
                 }
                 else
                 {
-                    message += string.Format("<p>{0} - {1:#,##0}pcs</p>",
-                       item.ProductName, item.TargetQuantity);
+                    message += $"<p>{item.ProductName} - {item.TargetQuantity:#,##0}pcs</p>";
                 }
             }
 
@@ -161,7 +159,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static void NotifyNewRequest(Request request, TurnedProduct turnedProduct, User personWhoRaised)
         {
             Email mailMan = new();
-            EmailSendConfigure emailConfig = new EmailSendConfigure();
+            EmailSendConfigure emailConfig = new();
             List<User> users = DatabaseHelper.Read<User>();
 
             List<string> emails = new();
@@ -182,12 +180,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
 
             emailConfig.TOs = emails.ToArray();
-            //myConfig.TOs = new string[] { "x.iafrate@wixroydgroup.com" };
+            //emailConfig.TOs = new string[] { "xavieriafrate@gmail.com" };
             emailConfig.CCs = emails_cc.ToArray();
-            emailConfig.From = "lighthouse@wixroydgroup.com";
+            emailConfig.From = "notifications@lighthouse.software";
             emailConfig.FromDisplayName = "Lighthouse Notifications";
             emailConfig.Priority = MailPriority.Normal;
             emailConfig.Subject = $"New Request Raised - {request.Product}";
+            
 
             EmailContent myContent = new();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
@@ -216,5 +215,27 @@ namespace ProjectLighthouse.ViewModel.Helpers
             mailMan.SendMail(emailConfig, myContent);
         }
 
+
+        public static void TestEmail()
+        {
+            Email mailMan = new();
+            EmailSendConfigure emailConfig = new();
+
+            emailConfig.TOs = new string[] { "xavieriafrate@gmail.com" };
+            emailConfig.CCs = Array.Empty<string>();
+            emailConfig.From = "notifications@lighthouse.software";
+            emailConfig.FromDisplayName = "Lighthouse Notifications";
+            emailConfig.Priority = MailPriority.Normal;
+            emailConfig.Subject = "TEST";
+
+            EmailContent myContent = new();
+
+            string message = "This is a test email";
+
+            myContent.IsHtml = true;
+            myContent.Content = message;
+
+            mailMan.SendMail(emailConfig, myContent);
+        }
     }
 }

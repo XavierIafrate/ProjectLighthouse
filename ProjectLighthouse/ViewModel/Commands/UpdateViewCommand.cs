@@ -79,7 +79,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Manage Users")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ManageUsersViewModel();
                 viewModel.NavText = "Manage Users";
             }

@@ -13,7 +13,7 @@ namespace ProjectLighthouse.View
     /// </summary>
     public partial class NewRequestView : UserControl
     {
-        NewRequestViewModel viewModel;
+        private NewRequestViewModel viewModel;
         public NewRequestView()
         {
             InitializeComponent();
@@ -24,7 +24,7 @@ namespace ProjectLighthouse.View
         private void EnableSubmit()
         {
             submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate.HasValue &&
-                                     int.TryParse(quantityBox.Text, out _) &&
+                                     viewModel.NewRequest.QuantityRequired > 0 &&
                                      productsListBox.SelectedItem != null &&
                                      App.CurrentUser.CanRaiseRequest;
         }
@@ -34,6 +34,7 @@ namespace ProjectLighthouse.View
             if (viewModel.SubmitRequest())
             {
                 quantityBox.Text = "";
+                date_display.Text = "";
                 notesTextBox.Document.Blocks.Clear();
             }
         }
@@ -41,9 +42,14 @@ namespace ProjectLighthouse.View
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DateRequiredCalendarView.SelectedDate == null)
+            {
                 return;
+            }
 
             date_display.Text = DateRequiredCalendarView.SelectedDate.Value.ToString("dd/MM/yyyy");
+            DateGhost.Visibility = string.IsNullOrEmpty(date_display.Text)
+                ? Visibility.Visible
+                : Visibility.Hidden;
             viewModel.NewRequest.DateRequired = DateRequiredCalendarView.SelectedDate.Value;
             EnableSubmit();
         }
@@ -53,23 +59,19 @@ namespace ProjectLighthouse.View
             TextBox textbox = sender as TextBox;
             if (string.IsNullOrEmpty(textbox.Text))
             {
+                QuantityGhost.Visibility = Visibility.Visible;
                 return;
             }
+
+            QuantityGhost.Visibility = Visibility.Hidden;
+
             if (int.TryParse(textbox.Text, out int j))
             {
-                if (j > 0 && j <= 100000)
+                if (j > 0)
                 {
                     viewModel.NewRequest.QuantityRequired = j;
                     viewModel.CalculateInsights();
                 }
-                else
-                {
-                    MessageBox.Show("Invalid Quantity", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Invalid Quantity", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             EnableSubmit();
         }
@@ -78,14 +80,13 @@ namespace ProjectLighthouse.View
         {
             if (viewModel.SelectedGroup == "Live")
             {
-                TurnedProduct turnedProduct = productsListBox.SelectedValue as TurnedProduct;
-                if (turnedProduct != null)
+                if (productsListBox.SelectedValue is TurnedProduct turnedProduct)
                 {
                     int NetStockLevel = turnedProduct.QuantityInStock + turnedProduct.QuantityOnPO - turnedProduct.QuantityOnSO;
                     quantityBox.Text = Math.Abs(NetStockLevel).ToString();
                 }
-                
             }
+
             EnableSubmit();
         }
 
@@ -95,6 +96,9 @@ namespace ProjectLighthouse.View
             if (viewModel != null && textRange.Text.Length >= 2)
             {
                 viewModel.NewRequest.Notes = textRange.Text[0..^2];
+                NotesGhost.Visibility = string.IsNullOrEmpty(textRange.Text[0..^2])
+                    ? Visibility.Visible
+                    : Visibility.Hidden;
             }
         }
 
@@ -112,7 +116,6 @@ namespace ProjectLighthouse.View
                     graphGrid.Visibility = Visibility.Collapsed;
                     mainGrid.ColumnDefinitions[2].Width = new(0);
                     mainGrid.ColumnDefinitions[1].Width = new(1, GridUnitType.Star);
-
                 }
             }
             else

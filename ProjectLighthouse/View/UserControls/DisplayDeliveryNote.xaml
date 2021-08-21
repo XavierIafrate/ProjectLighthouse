@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     MinWidth="200"
     MinHeight="50"
+    d:Background="White"
     d:DesignWidth="200"
     mc:Ignorable="d">
     <Grid>
@@ -15,7 +16,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Margin="10,5,5,5" VerticalAlignment="Center">
+        <StackPanel VerticalAlignment="Center">
             <TextBlock
                 x:Name="MOTextBlock"
                 FontSize="22"
@@ -25,7 +26,7 @@
             <TextBlock
                 x:Name="PORTextBlock"
                 FontSize="12"
-                Foreground="{StaticResource materialPrimaryGreen}"
+                Foreground="{StaticResource materialPrimaryBlue}"
                 Text="{Binding DeliveryDate, FallbackValue='01/01/1970', StringFormat='{}Delivered {0:dd/MM/yy HH:mm}'}" />
         </StackPanel>
     </Grid>

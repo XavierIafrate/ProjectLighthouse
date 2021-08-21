@@ -85,7 +85,7 @@
                             Style="{StaticResource Runtime_MenuItem}" />-->
                     </StackPanel>
 
-                    <StackPanel Margin="0,20">
+                    <!--<StackPanel Margin="0,20">
 
                         <ToggleButton
                             x:Name="assemblyOrders_button"
@@ -105,7 +105,7 @@
                             CommandParameter="Bill of Materials"
                             Content="Bill of Materials"
                             Style="{StaticResource BillOfMaterials_MenuItem}" />
-                    </StackPanel>
+                    </StackPanel>-->
 
                     <StackPanel Margin="0,20">
                         <ToggleButton

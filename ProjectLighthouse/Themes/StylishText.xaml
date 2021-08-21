@@ -43,10 +43,16 @@
     </Style>
 
     <Style
-        x:Key="h4"
+        x:Key="GhostText"
         BasedOn="{StaticResource Default}"
         TargetType="TextBlock">
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Margin" Value="32,0" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="Foreground" Value="#aaa" />
     </Style>
 
 </ResourceDictionary>

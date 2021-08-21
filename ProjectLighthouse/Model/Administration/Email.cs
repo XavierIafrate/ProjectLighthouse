@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Mail;
 using System.Text;
+using System.Windows;
 
 namespace ProjectLighthouse.Model
 {
@@ -43,8 +45,8 @@ namespace ProjectLighthouse.Model
             msg.Body = content.Content;
             msg.Priority = emailConfig.Priority;
             msg.Subject = emailConfig.Subject;
-            msg.BodyEncoding = System.Text.Encoding.UTF8;
-            msg.SubjectEncoding = System.Text.Encoding.UTF8;
+            msg.BodyEncoding = Encoding.UTF8;
+            msg.SubjectEncoding = Encoding.UTF8;
 
             return msg;
         }
@@ -56,13 +58,22 @@ namespace ProjectLighthouse.Model
             {
                 UseDefaultCredentials = false,
                 Credentials = new System.Net.NetworkCredential(
-                                  emailConfig.ClientCredentialUserName,
-                                  emailConfig.ClientCredentialPassword),
-                Host = "wixroydgroup-com.mail.protection.outlook.com",
-                Port = 25,  // this is critical
+                                  "xav@lighthouse.software",
+                                  "L$tcxtRbxTPcnL6m"),
+                Host = "smtp.gmail.com",
+                Port = 587,  // this is critical
                 EnableSsl = true  // this is critical
             };
 
+            if (Debugger.IsAttached)
+            {
+                if (MessageBox.Show("Email triggered, do you want to send?", "Debug options", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+                {
+                    message.Dispose();
+                    return;
+                }
+            }
+            
             try
             {
                 client.Send(message);
@@ -71,6 +82,7 @@ namespace ProjectLighthouse.Model
             {
                 Console.WriteLine("Error in Send email: {0}", e.Message);
             }
+
             message.Dispose();
         }
 

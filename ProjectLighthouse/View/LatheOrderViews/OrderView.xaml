@@ -85,6 +85,7 @@
         </Grid>
 
         <ListView
+            SelectionChanged="ListView_SelectionChanged"
             Grid.Row="1"
             ItemsSource="{Binding FilteredOrders}"
             SelectedItem="{Binding SelectedLatheManufactureOrder}">
@@ -172,6 +173,7 @@
         <ScrollViewer
             Grid.RowSpan="3"
             Grid.Column="1"
+            x:Name="OrderScroller"
             ScrollChanged="ScrollViewer_ScrollChanged"
             Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel>
@@ -391,14 +393,17 @@
                                     Margin="0,15,0,5"
                                     Style="{StaticResource section}"
                                     Text="{Binding FilteredLMOItems.Count, StringFormat='{}Items ({0})'}" />
+                                <Grid>
+                                    <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Rectangle Fill="#01ffffff" />
+                                </Grid>
 
-                                <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" />
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
                             </StackPanel>
                             <!--#endregion-->
                             <!--#region Notes-->
@@ -406,13 +411,17 @@
                                 Margin="0,15,0,5"
                                 Style="{StaticResource section}"
                                 Text="Notes" />
-                            <ItemsControl ItemsSource="{Binding FilteredNotes}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <uc:DisplayNote Note="{Binding}" />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            <Grid>
+                                <ItemsControl ItemsSource="{Binding FilteredNotes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <uc:DisplayNote Note="{Binding}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Rectangle Fill="#01ffffff" />
+                            </Grid>
+
                             <!--<Grid>
                                 <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
                                 <TextBlock
@@ -439,9 +448,9 @@
 
         <Rectangle x:Name="grad" Grid.Column="1">
             <Rectangle.Fill>
-                <LinearGradientBrush Opacity="0.1" StartPoint="0,1" EndPoint="0,0">
+                <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
                     <GradientStop Offset="0" Color="Transparent" />
-                    <GradientStop Offset="1" Color="Black" />
+                    <GradientStop Offset="1" Color="Gray" />
                 </LinearGradientBrush>
             </Rectangle.Fill>
         </Rectangle>

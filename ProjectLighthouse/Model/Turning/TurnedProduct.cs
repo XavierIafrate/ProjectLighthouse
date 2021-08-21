@@ -12,9 +12,7 @@ namespace ProjectLighthouse.Model
         public int Id { get; set; }
         [Indexed]
         public string ProductName { get; set; }
-        public string Alias { get; set; }
         public int CycleTime { get; set; }
-        public bool isABitchToMake { get; set; }
         public string Material { get; set; }
         public string BarID { get; set; }
 

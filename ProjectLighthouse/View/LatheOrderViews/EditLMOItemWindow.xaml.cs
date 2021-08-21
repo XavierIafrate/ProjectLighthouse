@@ -22,12 +22,12 @@ namespace ProjectLighthouse.View
 
         public EditLMOItemWindow(LatheManufactureOrderItem item, List<Lot> lots)
         {
+            InitializeComponent();
             QuantityAdded = 0;
             SaveExit = false;
             Item = item;
             Lots = lots;
-            InitializeComponent();
-
+            
             LoadUI();
         }
 
@@ -45,7 +45,9 @@ namespace ProjectLighthouse.View
                     {
                         intQtyMade += lot.Quantity;
                         if (lot.IsDelivered)
+                        {
                             intQtyDelivered += lot.Quantity;
+                        }
                     }
                     else
                     {
@@ -59,16 +61,18 @@ namespace ProjectLighthouse.View
             Item.QuantityMade = intQtyMade;
             Item.QuantityReject = intQtyReject;
 
-            QtyMadeTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityMade);
-            QtyRejectTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityReject);
-            QtyDeliveredTextBlock.Text = string.Format("{0:#,##0} pcs", Item.QuantityDelivered);
+            QtyMadeTextBlock.Text = $"{Item.QuantityMade:#,##0} pcs";
+            QtyRejectTextBlock.Text = $"{Item.QuantityReject:#,##0} pcs";
+            QtyDeliveredTextBlock.Text = $"{Item.QuantityDelivered:#,##0} pcs";
             QuantityRequiredTextbox.Text = Item.RequiredQuantity.ToString();
             QuantityTargetTextbox.Text = Item.TargetQuantity.ToString();
             DateRequiredPicker.SelectedDate = Item.DateRequired;
+            DateDisplay.Text = Item.DateRequired.ToString("dd/MM/yy");
+
             ProductNameTextBlock.Text = Item.ProductName;
             ManufactureOrderTextBlock.Text = Item.AssignedMO;
 
-            SchedulingGrid.Visibility = App.CurrentUser.UserRole == "Scheduling" || App.CurrentUser.UserRole == "admin" 
+            SchedulingGrid.Visibility = App.CurrentUser.UserRole is "Scheduling" or "admin"
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
 
@@ -158,6 +162,11 @@ namespace ProjectLighthouse.View
         {
             BrushConverter bc = new();
 
+            if (CycleTime_Min == null || CycleTime_Sec == null)
+            {
+                return;
+            }
+
             if (int.TryParse(CycleTime_Min.Text, out int min))
             {
                 CycleTime_Min.BorderBrush = (Brush)bc.ConvertFrom("#FFABADB3");
@@ -194,11 +203,6 @@ namespace ProjectLighthouse.View
         {
             CalculateCycleTime();
         }
-
-        //private void ClearDateButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Item.DateRequired = DateTime.MinValue;
-        //}
 
         private void Allow_Nums_Only(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -251,7 +255,6 @@ namespace ProjectLighthouse.View
                 QtyRejectTextBlock.Text = $"{Item.QuantityReject:#,##0} pcs";
 
                 QuantityNewLotTextBox.Text = "";
-                //BatchTextBox.Text = "";
                 RejectCheckBox.IsChecked = false;
                 QuantityAdded += newLot.Quantity;
             }
@@ -295,6 +298,27 @@ namespace ProjectLighthouse.View
                 EditLotButton.IsEnabled = (!l.IsDelivered && l.Date.AddDays(14) > DateTime.Now) || App.CurrentUser.UserRole == "admin";
             }
 
+        }
+
+        private void BatchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            BatchGhost.Visibility = string.IsNullOrEmpty(BatchTextBox.Text)
+                ? Visibility.Visible
+                : Visibility.Hidden;
+
+        }
+
+        private void QuantityNewLotTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            QuantityGhost.Visibility = string.IsNullOrEmpty(QuantityNewLotTextBox.Text)
+                ? Visibility.Visible
+                : Visibility.Hidden;
+        }
+
+        private void DateRequiredPicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DateTime SelectedDate = (DateTime)DateRequiredPicker.SelectedDate;
+            DateDisplay.Text = SelectedDate.ToString("dd/MM/yy");
         }
     }
 }

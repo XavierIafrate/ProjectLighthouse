@@ -69,9 +69,11 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            assemblyOrders_button.IsEnabled = App.CurrentUser.UserRole == "admin";
-            BOM_button.IsEnabled = App.CurrentUser.UserRole == "admin";
-            assembly_button.IsEnabled = App.CurrentUser.UserRole == "admin";
+            //assemblyOrders_button.IsEnabled = App.CurrentUser.UserRole == "admin";
+            //BOM_button.IsEnabled = App.CurrentUser.UserRole == "admin";
+            //assembly_button.IsEnabled = App.CurrentUser.UserRole == "admin";
+
+
             manage_users_button.Visibility = App.CurrentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
@@ -80,14 +82,13 @@ namespace ProjectLighthouse
 
         private async void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            Debug.WriteLine($"Key Pressed: {e.Key}");
             if (e.Key.ToString() == "F8")
             {
-                if (MessageBox.Show("Are you sure you want to update stock levels?", "Lighthouse Opera Sync", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    //await OperaHelper.UpdateStockLevelsAsync();
-                    MessageBox.Show("Complete");
-                }
+                //if (MessageBox.Show("Are you sure you want to update stock levels?", "Lighthouse Opera Sync", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                //{
+                //    //await OperaHelper.UpdateStockLevelsAsync();
+                //    MessageBox.Show("Complete");
+                //}
             }
         }
     }

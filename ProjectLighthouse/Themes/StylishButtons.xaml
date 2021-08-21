@@ -373,7 +373,7 @@
         x:Key="SendButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource materialOffBlack}"/>
+        <Setter Property="Foreground" Value="{StaticResource materialOffBlack}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

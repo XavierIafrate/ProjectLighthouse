@@ -173,7 +173,7 @@
                             x:Name="approvalControls"
                             Margin="0,20"
                             HorizontalAlignment="Center"
-                            Visibility="{Binding ApprovalControlsVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Visibility="{Binding ApprovalControlsVis}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
@@ -257,7 +257,8 @@
                                 Margin="0"
                                 IsEnabled="{Binding CanEditRequirements}"
                                 Style="{StaticResource UsernameTextBox}"
-                                Text="{Binding SelectedRequest.QuantityRequired, UpdateSourceTrigger=PropertyChanged}" />
+                                Text="{Binding SelectedRequest.QuantityRequired, UpdateSourceTrigger=PropertyChanged}"
+                                TextChanged="quantityTextbox_TextChanged" />
                             <TextBlock
                                 x:Name="QuantityGhost"
                                 Margin="30,0"
@@ -267,7 +268,8 @@
                                 FontStyle="Italic"
                                 Foreground="#aaaaaa"
                                 IsHitTestVisible="False"
-                                Text="Quantity Required" />
+                                Text="Quantity Required"
+                                Visibility="Hidden" />
                         </Grid>
 
                         <Grid Margin="10">
@@ -293,12 +295,13 @@
                                 FontStyle="Italic"
                                 Foreground="#aaaaaa"
                                 IsHitTestVisible="False"
-                                Text="Quantity Required" />
+                                Text="Quantity Required"
+                                Visibility="Hidden" />
                         </Grid>
 
 
-                        <TextBlock Text="Notes" />
-                        <Grid>
+                        <TextBlock Style="{StaticResource section}" Text="Notes" />
+                        <Grid Margin="10">
                             <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
                             <RichTextBox
                                 x:Name="notesTextBox"

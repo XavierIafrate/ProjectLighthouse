@@ -29,7 +29,7 @@ namespace ProjectLighthouse.Model
 
         public string GetFullName()
         {
-            return String.Format("{0} {1}", FirstName, LastName);
+            return $"{FirstName} {LastName}";
         }
     }
 }

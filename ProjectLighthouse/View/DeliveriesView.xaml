@@ -9,7 +9,8 @@
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:DesignHeight="590.975"
     d:DesignWidth="1123.47"
-    Background="{StaticResource materialBackground}"
+    d:Background="White"
+    d:DataContext="{d:DesignInstance Type=vm:DeliveriesViewModel}"
     mc:Ignorable="d">
     <UserControl.Resources>
         <vm:DeliveriesViewModel x:Key="vm" />
@@ -84,22 +85,22 @@
                                     <RowDefinition Height="auto" />
                                     <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{Binding SelectedDeliveryNote.Name}" />
+                                <TextBlock Text="{Binding SelectedDeliveryNote.Name}" Style="{StaticResource title}"/>
                                 <Button
                                     Grid.Column="2"
                                     Style="{StaticResource PDFButton}"
                                     Command="{Binding GenerateDeliveryNotePDFCommand}">
                                 </Button>
-                                <TextBlock Grid.Row="1" Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}'}" />
+                                <TextBlock Grid.Row="1" Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}'}" Foreground="{StaticResource materialPrimaryBlue}"/>
                                 <TextBlock Grid.Row="2" Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{}Delivered by {0}'}" />
                             </Grid>
                             <Separator Margin="0,10" />
-                            <TextBlock Text="Delivery Items" />
+                            <TextBlock Text="Delivery Items" Style="{StaticResource section}" />
 
                             <ItemsControl HorizontalContentAlignment="Stretch" ItemsSource="{Binding filteredDeliveryItems, Mode=OneWay}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <uc:DisplayDeliveryNoteItem Item="{Binding}" />
+                                        <uc:DisplayDeliveryNoteItem Item="{Binding}" Margin="0,5"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

@@ -30,5 +30,13 @@ namespace ProjectLighthouse.View
                 ? Visibility.Hidden
                 : Visibility.Visible;
         }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (OrderScroller != null)
+            {
+                OrderScroller.ScrollToVerticalOffset(0);
+            }
+        }
     }
 }

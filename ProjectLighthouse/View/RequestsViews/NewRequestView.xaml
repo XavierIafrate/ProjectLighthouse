@@ -22,6 +22,20 @@
             <converters:timespanToString x:Key="TimespanToString" />
             <converters:timespanToNextAvailable x:Key="TimespanToNextAvailable" />
             <vm:NewRequestViewModel x:Key="vm" />
+
+
+            <Style x:Key="InsightName" TargetType="TextBlock">
+                <Setter Property="Padding" Value="0,2" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+
+            <Style x:Key="InsightValue" TargetType="TextBlock">
+                <Setter Property="Padding" Value="0,2" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextAlignment" Value="Right" />
+                <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlueVar}" />
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -66,58 +80,73 @@
 
             <StackPanel Grid.Row="2">
                 <!--  Date Picker  -->
-                <StackPanel Margin="0,5">
-                    <TextBlock
-                        Margin="0,0,0,5"
-                        Style="{StaticResource section}"
-                        Text="Select Date Required" />
-                    <Grid Margin="20,0,0,0">
-                        <DatePicker
-                            x:Name="DateRequiredCalendarView"
-                            DisplayDateStart="{x:Static sys:DateTime.Now}"
-                            SelectedDateChanged="DateRequiredCalendarView_SelectedDatesChanged" />
-                        <TextBlock
-                            x:Name="date_display"
-                            Padding="15,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            FontSize="18" />
-                    </Grid>
 
-                </StackPanel>
-                <!--  Quantity Input  -->
-                <StackPanel>
+                <Grid Margin="0,5">
+                    <DatePicker
+                        x:Name="DateRequiredCalendarView"
+                        DisplayDateStart="{x:Static sys:DateTime.Now}"
+                        SelectedDateChanged="DateRequiredCalendarView_SelectedDatesChanged" />
                     <TextBlock
-                        Margin="0,0,0,5"
-                        Style="{StaticResource section}"
-                        Text="Enter Quantity Required" />
+                        x:Name="date_display"
+                        Padding="15,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="18" />
+                    <TextBlock
+                        x:Name="DateGhost"
+                        Margin="20,0"
+                        VerticalAlignment="Center"
+                        FontSize="18"
+                        FontStyle="Italic"
+                        Foreground="#aaa"
+                        IsHitTestVisible="False"
+                        Text="Select Date Required" />
+                </Grid>
+
+                <!--  Quantity Input  -->
+                <Grid Margin="0,5">
+
                     <TextBox
                         x:Name="quantityBox"
-                        Margin="20,0,0,0"
+                        Margin="0"
                         PreviewKeyDown="QuantityBox_PreviewKeyDown"
                         Style="{StaticResource UsernameTextBox}"
                         Text="{Binding RequiredQtyPrefill, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         TextChanged="QuantityBox_TextChanged" />
-                </StackPanel>
+                    <TextBlock
+                        x:Name="QuantityGhost"
+                        Margin="20,0"
+                        VerticalAlignment="Center"
+                        FontSize="18"
+                        FontStyle="Italic"
+                        Foreground="#aaa"
+                        IsHitTestVisible="False"
+                        Text="Enter Quantity Required" />
+                </Grid>
 
-                <TextBlock
-                    Margin="0,0,0,5"
-                    Style="{StaticResource section}"
-                    Text="Add Notes (optional)" />
 
-                <Grid>
+
+                <Grid Margin="0,5">
                     <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
                     <RichTextBox
                         x:Name="notesTextBox"
                         MinHeight="50"
                         MaxHeight="100"
-                        Margin="5,10"
+                        Margin="10,10"
                         Background="Transparent"
                         BorderThickness="0"
-                        FontSize="14"
+                        FontSize="18"
                         TextChanged="NotesTextBox_TextChanged">
                         <FlowDocument LineHeight="2" />
                     </RichTextBox>
+                    <TextBlock
+                        x:Name="NotesGhost"
+                        Margin="20,12"
+                        FontSize="18"
+                        FontStyle="Italic"
+                        Foreground="#aaa"
+                        IsHitTestVisible="False"
+                        Text="Add Notes (optional)" />
                 </Grid>
 
                 <Button
@@ -152,38 +181,93 @@
                         Background="{StaticResource materialSurface}"
                         CornerRadius="0,0,10,10" />
                     <TextBlock
-                        Margin="15,5"
-                        FontSize="20"
+                        Margin="15,8"
+                        FontSize="22"
                         Foreground="{StaticResource materialOnPrimary}"
                         Text="Insights" />
-                    <StackPanel Grid.Row="1" Margin="15">
-                        <TextBlock Text="Test" />
-                    </StackPanel>
+                    <Grid Grid.Row="1" Margin="20,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
 
+                        <TextBlock Style="{StaticResource InsightName}" Text="Product" />
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding SelectedProduct.ProductName, FallbackValue='Nothing selected'}" />
 
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource InsightName}"
+                            Text="Quantity in Stock" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} pcs'}" />
 
-                    <!--<StackPanel Grid.Row="1" Margin="20,10">
-                    -->
-                    <!--<TextBlock Text="Lighthouse Data" />
-                        <Separator
-                            Width="150"
-                            Margin="0,3"
-                            HorizontalAlignment="Left" />-->
-                    <!--<TextBlock Text="{Binding SelectedProduct.ProductName, StringFormat='{}Product: {0}'}" />
-                        <TextBlock Text="{Binding SelectedProduct.SellPrice, Converter={StaticResource priceConverter}, StringFormat='{}Sell Price: {0}'}" />
-                        <TextBlock Text="{Binding SelectedProduct.QuantitySold, StringFormat='{}{0:#,##0} sold (18mo)'}" />
-                        <TextBlock Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}" />
-                        <TextBlock Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} manufactured'}" />
-                        <TextBlock Text="Scheduling Algorithm" />
-                        <Separator
-                            Width="150"
-                            Margin="0,3"
-                            HorizontalAlignment="Left" />
-                        <TextBlock Text="{Binding RecommendedStockText, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
-                        <TextBlock Text="{Binding PotentialQuantityText, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
-                        <TextBlock Text="{Binding LikelinessText, UpdateSourceTrigger=PropertyChanged}" />-->
-                    <!--
-                    </StackPanel>-->
+                        <TextBlock
+                            Grid.Row="2"
+                            Style="{StaticResource InsightName}"
+                            Text="Sales Order Quantity" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding SelectedProduct.QuantityOnSO, StringFormat='{}{0:#,##0} pcs'}" />
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Style="{StaticResource InsightName}"
+                            Text="Quantity Manufactured" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Style="{StaticResource InsightName}"
+                            Text="Schedule Compatible" />
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding PotentialQuantityText}" />
+
+                        <TextBlock
+                            Grid.Row="5"
+                            Style="{StaticResource InsightName}"
+                            Text="Recommended for Stock" />
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding RecommendedStockText}" />
+
+                        <TextBlock
+                            Grid.Row="6"
+                            Style="{StaticResource InsightName}"
+                            Text="Approval Likeliness" />
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding LikelinessText}" />
+                    </Grid>
+
                     <Grid Grid.Row="2" Height="10" />
                     <Border
                         Grid.Row="3"
@@ -191,8 +275,8 @@
                         CornerRadius="10,10,0,0" />
                     <TextBlock
                         Grid.Row="3"
-                        Margin="15,5"
-                        FontSize="20"
+                        Margin="15,8"
+                        FontSize="22"
                         Foreground="{StaticResource materialOnPrimary}"
                         Text="Machine Workload" />
 
@@ -223,11 +307,16 @@
                                         VerticalAlignment="Center"
                                         FontSize="20"
                                         Text="{Binding MachineFullName}" />
-                                    <TextBlock Grid.Column="2" Text="{Binding LeadTime, Converter={StaticResource TimespanToString}, StringFormat='{}{0}'}" />
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Padding="0"
+                                        Style="{StaticResource InsightValue}"
+                                        Text="{Binding LeadTime, Converter={StaticResource TimespanToString}, StringFormat='{}{0}'}" />
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.ColumnSpan="3"
                                         HorizontalAlignment="Right"
+                                        Style="{StaticResource InsightValue}"
                                         Text="{Binding LeadTime, Converter={StaticResource TimespanToNextAvailable}, StringFormat='{}({0})'}" />
                                 </Grid>
                             </DataTemplate>
@@ -303,6 +392,7 @@
                     VerticalAlignment="Center"
                     Visibility="{Binding NotEnoughDataVis}">
                     <Border
+                        x:Name="gifContainer"
                         Grid.Row="3"
                         Grid.ColumnSpan="2"
                         Canvas.Left="55"
@@ -320,7 +410,7 @@
                                 ShadowDepth="20"
                                 Color="Black" />
                         </Border.Effect>
-                        <Border Name="ReceiverColor" CornerRadius="15">
+                        <Border Name="ReceiverColor" CornerRadius="15" Visibility="{Binding GIFVis}">
                             <Grid>
                                 <Border
                                     Name="Mask"

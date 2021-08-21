@@ -42,8 +42,6 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedProduct = value;
                 OnPropertyChanged("SelectedProduct");
-                //OnPropertyChanged("RecommendedStockText");
-                //OnPropertyChanged("PotentialQuantityText");
 
                 if (selectedProduct != null)
                 {
@@ -86,6 +84,7 @@ namespace ProjectLighthouse.ViewModel
         public string GraphTitle { get; set; }
         public Visibility NotEnoughDataVis { get; set; }
         public Visibility GraphVis { get; set; }
+        public Visibility GIFVis { get; set; }
 
         #endregion
 
@@ -100,6 +99,7 @@ namespace ProjectLighthouse.ViewModel
 
             NotEnoughDataVis = Visibility.Visible;
             GraphVis = Visibility.Hidden;
+            GIFVis = Visibility.Visible;
 
             ClearScreen();
             SelectedGroup = "Live";
@@ -171,19 +171,11 @@ namespace ProjectLighthouse.ViewModel
             FilteredList.Clear();
             if (SelectedGroup == "Specials")
             {
-                foreach (TurnedProduct product in TurnedProducts)
-                {
-                    if (product.isSpecialPart)
-                        FilteredList.Add(product);
-                }
+                FilteredList.AddRange(TurnedProducts.Where(p => p.isSpecialPart));
             }
             else if (SelectedGroup == "Live")
             {
-                foreach (TurnedProduct product in TurnedProducts)
-                {
-                    if ((product.QuantityInStock + product.QuantityOnPO) < product.QuantityOnSO)
-                        FilteredList.Add(product);
-                }
+                FilteredList.AddRange(TurnedProducts.Where(p => (p.QuantityInStock + p.QuantityOnPO) < p.QuantityOnSO));
             }
             else
             {
@@ -194,7 +186,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
 
-            FilteredList = new List<TurnedProduct>(FilteredList.OrderBy(n => n.Material).ThenBy(n => n.ProductName));
+            FilteredList = new(FilteredList.OrderBy(n => n.Material).ThenBy(n => n.ProductName));
             OnPropertyChanged("FilteredList");
             LoadGraph();
         }
@@ -202,13 +194,19 @@ namespace ProjectLighthouse.ViewModel
         private void LoadGraph()
         {
             List<string> labels = new();
-            ThousandsSeparator = value => string.Format($"{value:#,##0}");
+            ThousandsSeparator = value => $"{value:#,##0}";
 
-            if (FilteredList.Count == 0)
+            if (SelectedGroup is "Live" or "Specials")
             {
                 GraphTitle = "Select a product group to view analytics";
                 GraphVis = Visibility.Hidden;
                 NotEnoughDataVis = Visibility.Visible;
+                GIFVis = Visibility.Collapsed;
+                OnPropertyChanged("GraphTitle");
+                OnPropertyChanged("GraphVis");
+                OnPropertyChanged("GIFVis");
+                OnPropertyChanged("NotEnoughDataVis");
+                return;
             }
 
             for (int i = 0; i < FilteredList.Count; i++) // labels
@@ -248,10 +246,11 @@ namespace ProjectLighthouse.ViewModel
                 GraphTitle = "Lighthouse Analytics Not Available";
                 GraphVis = Visibility.Hidden;
                 NotEnoughDataVis = Visibility.Visible;
+                GIFVis = Visibility.Visible;
             }
             else
             {
-                GraphTitle = string.Format($"At a Glance: {SelectedGroup}");
+                GraphTitle = $"At a Glance: {SelectedGroup}";
                 GraphVis = Visibility.Visible;
                 NotEnoughDataVis = Visibility.Hidden;
             }
@@ -259,6 +258,7 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged("XAxisLabels");
             OnPropertyChanged("GraphTitle");
             OnPropertyChanged("GraphVis");
+            OnPropertyChanged("GIFVis");
             OnPropertyChanged("NotEnoughDataVis");
             OnPropertyChanged("SeriesCollection");
             OnPropertyChanged("ThousandsSeparator");
@@ -331,13 +331,15 @@ namespace ProjectLighthouse.ViewModel
         {
             if (selectedProduct != null)
             {
-                RecommendedStockText = $"Recommended for stock: {selectedProduct.GetRecommendedQuantity():#,##0} pcs";
+                RecommendedStockText = $"{selectedProduct.GetRecommendedQuantity():#,##0} pcs";
 
                 List<int> classQuantities = new();
                 foreach (TurnedProduct product in FilteredList)
                 {
                     if (product.ProductName != selectedProduct.ProductName && product.IsScheduleCompatible(selectedProduct))
+                    {
                         classQuantities.Add(product.GetRecommendedQuantity());
+                    }
                 }
 
                 classQuantities.Sort();
@@ -349,34 +351,47 @@ namespace ProjectLighthouse.ViewModel
                     tmpQuant += classQuantities[i];
                 }
 
-                PotentialQuantityText = $"Schedule compatible: {tmpQuant:#,##0} pcs";
+                PotentialQuantityText = $"{tmpQuant:#,##0} pcs";
 
                 LikelinessText = "";
                 int hypothetical = selectedProduct.GetRecommendedQuantity() + tmpQuant + newRequest.QuantityRequired;
-
-                if (hypothetical > 5000)
+                if (hypothetical == 2147483647)
                 {
-                    LikelinessText = "Almost certain";
+                    LikelinessText = "Upper limit of the software";
+                }
+                else if (hypothetical > 500000)
+                {
+                    LikelinessText = "1000yr lead time";
+                }
+                else if (hypothetical > 50000)
+                {
+                    LikelinessText = "Seriously?";
+                }
+                else if (hypothetical > 5000)
+                {
+                    LikelinessText = "Strong";
                 }
                 else if (hypothetical > 2000)
                 {
-                    LikelinessText = "Good chance";
-                }
-                else if (hypothetical > 500)
-                {
-                    LikelinessText = "Workload dependant";
+                    LikelinessText = "Good";
                 }
                 else
                 {
-                    LikelinessText = "Unlikely";
+                    LikelinessText = hypothetical > 500 
+                        ? "Fair" 
+                        : "Unlikely";
                 }
-
-                LikelinessText = "Likeliness: " + LikelinessText;
-
-                OnPropertyChanged("RecommendedStockText");
-                OnPropertyChanged("LikelinessText");
-                OnPropertyChanged("PotentialQuantityText");
             }
+            else
+            {
+                RecommendedStockText = "";
+                LikelinessText = "";
+                PotentialQuantityText = "";
+            }
+
+            OnPropertyChanged("RecommendedStockText");
+            OnPropertyChanged("LikelinessText");
+            OnPropertyChanged("PotentialQuantityText");
         }
 
         public void AddSpecialRequest()

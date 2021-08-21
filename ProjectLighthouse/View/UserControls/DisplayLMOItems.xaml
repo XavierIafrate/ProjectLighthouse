@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
+    Background="#01FFFFFF"
     d:DesignWidth="450"
     mc:Ignorable="d">
     <Grid>
