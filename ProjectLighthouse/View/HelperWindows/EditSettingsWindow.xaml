@@ -83,9 +83,10 @@
                     <PasswordBox
                         x:Name="current"
                         Focusable="True"
-                        KeyDown="PasswordText_KeyDown"
+                        
                         PasswordChanged="current_PasswordChanged"
                         Style="{StaticResource PasswordBox}" />
+                <!--KeyDown="PasswordText_KeyDown"-->
                     <Grid>
                         <TextBlock
                             x:Name="current_password_ghost"

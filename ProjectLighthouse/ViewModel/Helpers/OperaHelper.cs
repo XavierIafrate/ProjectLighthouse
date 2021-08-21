@@ -13,7 +13,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class OperaHelper
     {
-        private const string dbFile = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cname.dbf";
+        public static readonly string dbFile = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cname.dbf";
 
         public static async Task UpdateStockLevelsAsync()
         {
@@ -31,15 +31,17 @@ namespace ProjectLighthouse.ViewModel.Helpers
             await Task.Run(() => UpdateRecords(products, lookup));
         }
 
-        private static void UpdateRecords(List<TurnedProduct> products, string[] nameLookup)
+        public static void UpdateRecords(List<TurnedProduct> products, string[] nameLookup)
         {
+            int total_records;
+            int i;
 
             List<OperaFields> results = new();
 
             using (DbfTable dbfTable = new(dbFile, Encoding.UTF8))
             {
                 DbfHeader header = dbfTable.Header;
-                Debug.WriteLine($"{header.RecordCount} in Automotion CNAME table.");
+                Console.WriteLine($"{header.RecordCount:#,##0} records in Automotion CNAME table.");
 
                 int iStockRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_REF").Single());
                 int iSalesOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_SALEORD").Single());
@@ -49,8 +51,18 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 DbfRecord dbfRecord = new(dbfTable);
 
+                total_records = (int)header.RecordCount;
+                i = 0;
+
                 while (dbfTable.Read(dbfRecord))
                 {
+                    double percent_progress = (double)i / (double)total_records;
+                    percent_progress *= 100;
+
+                    Console.Write($"\rReading Opera... [  {percent_progress:#.00}%  ]");
+
+
+                    i++;
 
                     if (dbfRecord.IsDeleted)
                         continue;
@@ -83,8 +95,18 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
 
+            total_records = (int)results.Count;
+            i = 0;
+
             foreach (OperaFields r in results)
             {
+                i++;
+                double percent_progress = (double)i / (double)total_records;
+                percent_progress *= 100;
+                Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
+
+                
+
                 TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
                 if (productRecord == null)
                     continue;

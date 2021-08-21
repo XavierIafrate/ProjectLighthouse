@@ -13,7 +13,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         private static string GetDatabaseFile()
         {
 
-            return Environment.UserName == "xavier" ? @"C:\Users\xavie\Desktop\manufactureDB.db3" : Path.Join(App.ROOT_PATH ?? Environment.SpecialFolder.Desktop.ToString(), dbFile);
+            return Environment.UserName == "xavier" ? @"C:\Users\xavie\Desktop\manufactureDB.db3" : Path.Join(App.ROOT_PATH ?? @"H:\Production\Administration\Manufacture Records\Lighthouse", dbFile);
         }
 
         public static bool Insert<T>(T item)
