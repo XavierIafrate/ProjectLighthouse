@@ -29,9 +29,24 @@ namespace ProjectLighthouse.View
             lots = new(l);
             Notes = n;
 
+            FormatNoteDisplay();
+
             order = (LatheManufactureOrder)o.Clone(); // break the reference
 
             PopulateControls();
+        }
+
+        private void FormatNoteDisplay()
+        {
+            string name = "";
+            foreach (Note note in Notes)
+            {
+                DateTime DateOfNote = DateTime.Parse(note.DateSent);
+                note.ShowEdit = DateOfNote.AddDays(14) > DateTime.Now && note.SentBy == App.CurrentUser.UserName;
+
+                note.ShowHeader = name != note.SentBy;
+                name = note.SentBy;
+            }
         }
 
         private void PopulateControls()
@@ -280,6 +295,8 @@ namespace ProjectLighthouse.View
             NotesDisplay.ItemsSource = new List<Note>();
             NotesDisplay.ItemsSource = Notes;
             Message.Text = "";
+
+            FormatNoteDisplay();
         }
 
         private void Message_KeyDown(object sender, KeyEventArgs e)

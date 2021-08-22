@@ -1,9 +1,5 @@
 ﻿using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.Model
 {
@@ -19,5 +15,10 @@ namespace ProjectLighthouse.Model
         public string DateEdited { get; set; }
         public string DocumentReference { get; set; }
         public bool IsDeleted { get; set; }
+
+        [Ignore]
+        public bool ShowHeader { get; set; }
+        [Ignore]
+        public bool ShowEdit { get; set; }
     }
 }

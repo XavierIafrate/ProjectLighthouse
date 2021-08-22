@@ -7,13 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     MaxWidth="600"
     d:Background="White"
-    d:DesignHeight="117.862"
-    d:DesignWidth="369.688"
-    mc:Ignorable="d">
+    d:DesignWidth="458.688"
+    mc:Ignorable="d" d:DesignHeight="154.24">
     <Grid x:Name="ControlGrid" Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0" />
@@ -21,7 +20,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Border
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             Grid.Column="1"
             Background="{StaticResource materialSelectedColour}"
             CornerRadius="10" />
@@ -61,18 +60,41 @@
                 x:Name="SentAtTextBlock"
                 VerticalAlignment="Center"
                 Text="01/01/1970 12:00" />
+            <!--<Path Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" Fill="Red" />-->
+
+
         </StackPanel>
-        <Label
-            x:Name="TextBlockContainer"
+        <Grid
             Grid.Row="1"
-            Grid.Column="1">
-            <TextBlock
-                x:Name="MessageTextBlock"
-                Margin="10,0,10,2"
-                FontSize="14"
-                Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id gravida urna, sit amet euismod orci."
-                TextWrapping="WrapWithOverflow" />
-        </Label>
+            Grid.Column="1"
+            HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                x:Name="EditControls"
+                Margin="5"
+                VerticalAlignment="Center">
+                <Button x:Name="EditButton" Style="{StaticResource IconEditButton}" />
+            </StackPanel>
+            <Label x:Name="TextBlockContainer" Grid.Column="1">
+                <TextBlock
+                    x:Name="MessageTextBlock"
+                    Margin="10,0,10,2"
+                    FontSize="14"
+                    Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id gravida urna, sit amet euismod orci."
+                    TextWrapping="WrapWithOverflow" />
+            </Label>
+        </Grid>
+
+
+        <!--<TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="10,0,10,2"
+            Background="Red"
+            BorderThickness="0" />-->
 
 
 

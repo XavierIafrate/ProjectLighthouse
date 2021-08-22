@@ -59,6 +59,18 @@ namespace ProjectLighthouse.View.UserControls
             control.DevBadge.Visibility = control.Note.SentBy == "xav"
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+
+            control.MetadataStackPanel.Visibility = control.Note.ShowHeader
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            control.ControlGrid.Margin = control.Note.ShowHeader
+                ? new Thickness(5, 5, 5, 5)
+                : new Thickness(5, 0, 5, 5);
+
+            control.EditControls.Visibility = control.Note.ShowEdit
+                ? Visibility.Collapsed
+                : Visibility.Collapsed;
         }
 
         public DisplayNote()

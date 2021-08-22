@@ -224,10 +224,8 @@ namespace ProjectLighthouse.ViewModel
 
         private void GetLatheManufactureOrders()
         {
-            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             LatheManufactureOrders.Clear();
-            foreach (LatheManufactureOrder order in orders)
-                LatheManufactureOrders.Add(order);
+            LatheManufactureOrders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
         }
 
         private void FilterOrders(string filter)
@@ -255,8 +253,10 @@ namespace ProjectLighthouse.ViewModel
             }
 
             if (FilteredOrders.Count > 0)
+            {
                 SelectedLatheManufactureOrder = FilteredOrders.First();
-
+            }
+                
             OnPropertyChanged("FilteredOrders");
         }
 
@@ -273,12 +273,14 @@ namespace ProjectLighthouse.ViewModel
         private void LoadLMOItems()
         {
             if (SelectedLatheManufactureOrder == null)
+            {
                 return;
+            }
 
             string selectedMO = SelectedLatheManufactureOrder.Name;
             FilteredLMOItems.Clear();
 
-            var associatedItems = LMOItems.Where(i => i.AssignedMO == selectedMO);
+            IEnumerable<LatheManufactureOrderItem> associatedItems = LMOItems.Where(i => i.AssignedMO == selectedMO);
 
             FilteredLMOItems = new(associatedItems.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName));
             if (App.CurrentUser.UserRole == "admin")
@@ -288,6 +290,15 @@ namespace ProjectLighthouse.ViewModel
             else
             {
                 FilteredNotes = Notes.Where(n => n.DocumentReference == selectedMO && !n.IsDeleted).OrderBy(x => x.DateSent).ToList();
+            }
+
+            string name = "";
+
+            foreach (Note note in FilteredNotes) // Tidy headers
+            {
+                note.ShowEdit = false;
+                note.ShowHeader = note.SentBy != name;
+                name = note.SentBy;
             }
             
             OnPropertyChanged("FilteredLMOItems");
@@ -383,7 +394,9 @@ namespace ProjectLighthouse.ViewModel
             {
                 List<TurnedProduct> tmp = Products.Where(n => n.ProductName == item.ProductName).ToList();
                 if (tmp.Count > 0)
+                {
                     SelectedProducts.Add(tmp.First());
+                }
             }
 
             if (SelectedProducts.Count != 0)
@@ -399,12 +412,18 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSelectedOrder()
         {
-            PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
+            DebugWriteFile();
+            //PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
+        }
+
+        public void DeleteMessage()
+        {
+
         }
 
         public void EditLMO()
         {
-            EditLMOWindow editWindow = new((LatheManufactureOrder)SelectedLatheManufactureOrder, FilteredLMOItems, Lots.Where(n => n.Order == SelectedLatheManufactureOrder.Name).ToList(), FilteredNotes);
+            EditLMOWindow editWindow = new(SelectedLatheManufactureOrder, FilteredLMOItems, Lots.Where(n => n.Order == SelectedLatheManufactureOrder.Name).ToList(), FilteredNotes);
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
 
@@ -412,14 +431,16 @@ namespace ProjectLighthouse.ViewModel
             {
                 GetLatheManufactureOrders();
                 FilterOrders(SelectedFilter); // update list on screen
-                foreach (LatheManufactureOrder order in LatheManufactureOrders) // re-select order
-                {
-                    if (order.Name == editWindow.order.Name)
-                    {
-                        SelectedLatheManufactureOrder = order;
-                        break;
-                    }
-                }
+
+                SelectedLatheManufactureOrder = LatheManufactureOrders.Where(o => o.Name == editWindow.order.Name).FirstOrDefault();
+                //foreach (LatheManufactureOrder order in LatheManufactureOrders) // re-select order
+                //{
+                //    if (order.Name == editWindow.order.Name)
+                //    {
+                //        SelectedLatheManufactureOrder = order;
+                //        break;
+                //    }
+                //}
             }
 
             editWindow = null;
@@ -437,6 +458,11 @@ namespace ProjectLighthouse.ViewModel
                 3 or 23 => "rd",
                 _ => "th",
             };
+        }
+
+        private void DebugWriteFile()
+        {
+            CSVHelper.WriteListToCSV(LatheManufactureOrders, "test");
         }
     }
 }

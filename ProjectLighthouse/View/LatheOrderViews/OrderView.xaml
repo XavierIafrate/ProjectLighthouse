@@ -85,10 +85,10 @@
         </Grid>
 
         <ListView
-            SelectionChanged="ListView_SelectionChanged"
             Grid.Row="1"
             ItemsSource="{Binding FilteredOrders}"
-            SelectedItem="{Binding SelectedLatheManufactureOrder}">
+            SelectedItem="{Binding SelectedLatheManufactureOrder}"
+            SelectionChanged="ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}" />
@@ -171,9 +171,9 @@
                 Visibility="Hidden" />
         </StackPanel>
         <ScrollViewer
+            x:Name="OrderScroller"
             Grid.RowSpan="3"
             Grid.Column="1"
-            x:Name="OrderScroller"
             ScrollChanged="ScrollViewer_ScrollChanged"
             Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel>
@@ -412,7 +412,7 @@
                                 Style="{StaticResource section}"
                                 Text="Notes" />
                             <Grid>
-                                <ItemsControl ItemsSource="{Binding FilteredNotes}">
+                                <ItemsControl MinHeight="100" ItemsSource="{Binding FilteredNotes}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <uc:DisplayNote Note="{Binding}" />
@@ -421,27 +421,16 @@
                                 </ItemsControl>
                                 <Rectangle Fill="#01ffffff" />
                             </Grid>
-
-                            <!--<Grid>
-                                <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
-                                <TextBlock
-                                    Margin="10"
-                                    Padding="0,0,0,2"
-                                    Text="{Binding SelectedLatheManufactureOrder.Notes, FallbackValue='Lorem ipsum dolor sit amet'}"
-                                    TextWrapping="Wrap" />
-                            </Grid>-->
-
-
                             <!--#endregion-->
                         </StackPanel>
                     </Grid>
                 </StackPanel>
 
-                <!--<uc:DisplayProductRangeSnippet
+                <uc:DisplayProductRangeSnippet
                     Width="{Binding ActualWidth, ElementName=OrderCardGrid}"
                     MaxWidth="700"
                     Info="{Binding SelectedProductGroup}"
-                    Items="{Binding SelectedProducts}" />-->
+                    Items="{Binding SelectedProducts}" />
                 <Grid Height="100" />
             </StackPanel>
         </ScrollViewer>

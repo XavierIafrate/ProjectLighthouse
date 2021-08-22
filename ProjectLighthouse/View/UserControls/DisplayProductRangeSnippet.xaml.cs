@@ -36,23 +36,27 @@ namespace ProjectLighthouse.View.UserControls
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not DisplayProductRangeSnippet control)
+            {
                 return;
+            }
 
             if (control.Items == null || control.Info == null)
+            {
                 return;
-
+            }
 
             control.Visibility = string.IsNullOrEmpty(control.Info.GroupID) ? Visibility.Collapsed : Visibility.Visible;
             if (string.IsNullOrEmpty(control.Info.GroupID))
+            {
                 return;
+            }
 
-            //if (control.Info == "M00142")
-            //    control.Visibility = Visibility.Collapsed;
 
             control.ProductGroupName.Text = control.Info.GroupID;
             control.Breadcrumb.Text = control.Info.Breadcrumb;
             control.ProductTitle.Text = control.Info.ProductTitle;
             control.ProductSubTitle.Text = " - " + control.Info.ProductSubTitle;
+
             string uri = App.ROOT_PATH + control.Info.LineDrawingURL;
             if (File.Exists(uri))
             {
@@ -65,8 +69,6 @@ namespace ProjectLighthouse.View.UserControls
             }
 
             control.ProductDisplay.ItemsSource = control.Items;
-
-            //control.DataContext = control.Items;
         }
 
         public DisplayProductRangeSnippet()
