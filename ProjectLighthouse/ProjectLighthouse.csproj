@@ -8,12 +8,12 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.4</FileVersion>
-    <AssemblyVersion>1.4</AssemblyVersion>
+    <FileVersion>1.4.0.1</FileVersion>
+    <AssemblyVersion>1.4.0.1</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4</Version>
+    <Version>1.4.0.1</Version>
     <Product>ProjectLighthouse</Product>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>Patched email error</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
