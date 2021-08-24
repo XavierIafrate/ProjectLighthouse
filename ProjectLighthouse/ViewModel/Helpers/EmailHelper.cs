@@ -1,34 +1,33 @@
-﻿using ProjectLighthouse.Model;
+﻿using IO.ClickSend.ClickSend.Model;
+using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
-using System.Net.Mail;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class EmailHelper
     {
-        public static void SendEmail(string toPerson, string alertSubject, string message)
-        {
-            Email mailMan = new();
+        //public static void SendEmail(string toPerson, string alertSubject, string message)
+        //{
+        //    //ProjectLighthouse.Model.Email mailMan = new();
 
-            EmailSendConfigure myConfig = new();
-            myConfig.TOs = new string[] { toPerson };
-            myConfig.CCs = Array.Empty<string>();
-            myConfig.From = "notifications@lighthouse.software";
-            myConfig.FromDisplayName = "Lighthouse Notifications";
-            myConfig.Priority = MailPriority.Normal;
-            myConfig.Subject = alertSubject;
+        //    //EmailSendConfigure myConfig = new();
+        //    //myConfig.TOs = new string[] { toPerson };
+        //    //myConfig.CCs = Array.Empty<string>();
+        //    //myConfig.From = "notifications@lighthouse.software";
+        //    //myConfig.FromDisplayName = "Lighthouse Notifications";
+        //    //myConfig.Priority = MailPriority.Normal;
+        //    //myConfig.Subject = alertSubject;
 
-            EmailContent myContent = new();
-            myContent.Content = message;
+        //    //EmailContent myContent = new();
+        //    //myContent.Content = message;
 
-            mailMan.SendMail(myConfig, myContent);
-        }
+        //    //mailMan.SendMail(myConfig, myContent);
+        //}
 
         public static void NotifyRequestApproved(Request approvedRequest)
         {
-            Email mailMan = new();
-            EmailSendConfigure myConfig = new();
+            Model.Email email = new();
 
             List<User> users = DatabaseHelper.Read<User>();
             User PersonWhoRaisedRequest = new();
@@ -41,16 +40,16 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
 
-            if (string.IsNullOrEmpty(PersonWhoRaisedRequest.EmailAddress)) return;
+            if (string.IsNullOrEmpty(PersonWhoRaisedRequest.EmailAddress))
+                return;
 
-            myConfig.TOs = new string[] { PersonWhoRaisedRequest.EmailAddress };
-            myConfig.CCs = Array.Empty<string>();
-            myConfig.From = "notifications@lighthouse.software";
-            myConfig.FromDisplayName = "Lighthouse Notifications";
-            myConfig.Priority = MailPriority.Normal;
-            myConfig.Subject = "Request Approved";
+            email.TOs.Add(new EmailRecipient(
+                email: PersonWhoRaisedRequest.EmailAddress,
+                name: PersonWhoRaisedRequest.GetFullName()
+                ));
 
-            EmailContent myContent = new();
+            string subject = "Request Approved";
+
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#00695C'>Request approved!</h2>" +
@@ -58,18 +57,14 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 $" of {approvedRequest.Product} has been approved.</p><p>Please update Lighthouse with the purchase order reference." +
                 $"</p></font></html>";
 
-            myContent.IsHtml = true;
-            myContent.Content = message;
-
-            mailMan.SendMail(myConfig, myContent);
+            email.Send(subject, message);
         }
 
         public static void NotifyRequestDeclined(Request declinedRequest)
         {
-            Email mailMan = new();
-            EmailSendConfigure myConfig = new();
-
+            Model.Email email = new();
             List<User> users = DatabaseHelper.Read<User>();
+
             User PersonWhoRaisedRequest = new();
             foreach (User user in users)
             {
@@ -83,14 +78,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             if (string.IsNullOrEmpty(PersonWhoRaisedRequest.EmailAddress))
                 return;
 
-            myConfig.TOs = new string[] { PersonWhoRaisedRequest.EmailAddress };
-            myConfig.CCs = Array.Empty<string>();
-            myConfig.From = "notifications@lighthouse.software";
-            myConfig.FromDisplayName = "Lighthouse Notifications";
-            myConfig.Priority = MailPriority.Normal;
-            myConfig.Subject = "Request Declined";
+            email.TOs.Add(new EmailRecipient(
+                email: PersonWhoRaisedRequest.EmailAddress,
+                name: PersonWhoRaisedRequest.GetFullName()
+                ));
 
-            EmailContent myContent = new();
+            string subject = "Request Declined";
+
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#B00020'>Request declined</h2>" +
@@ -98,43 +92,49 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 $" of {declinedRequest.Product} has been declined.</p><p>Reason: {declinedRequest.DeclinedReason}" +
                 $"</p></font></html>";
 
-            myContent.IsHtml = true;
-            myContent.Content = message;
 
-            mailMan.SendMail(myConfig, myContent);
+            email.Send(subject, message);
         }
 
         public static void NotifyNewOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
         {
-            Email mailMan = new();
-            EmailSendConfigure emailConfig = new();
+            Model.Email email = new();
             List<User> users = DatabaseHelper.Read<User>();
-            List<User> send_to = new();
-            List<string> emails = new();
+
             foreach (User user in users)
             {
                 if (user.UserRole == "Production" && !string.IsNullOrEmpty(user.EmailAddress))
                 {
-                    send_to.Add(user);
-                    emails.Add(user.EmailAddress);
+                    email.TOs.Add(new EmailRecipient()
+                    {
+                        Name = user.GetFullName(),
+                        Email = user.EmailAddress
+                    });
+                }
+
+                if (user.UserRole == "Scheduling" && !string.IsNullOrEmpty(user.EmailAddress))
+                {
+                    email.TOs.Add(new EmailRecipient()
+                    {
+                        Name = user.GetFullName(),
+                        Email = user.EmailAddress
+                    });
                 }
             }
 
-            emailConfig.TOs = emails.ToArray();
-            //myConfig.TOs = new string[] { "x.iafrate@wixroydgroup.com" };
-            emailConfig.CCs = new string[] { "x.iafrate@wixroydgroup.com", "purchasing@automotioncomponents.co.uk" };
-            emailConfig.From = "notifications@lighthouse.software";
-            emailConfig.FromDisplayName = "Lighthouse Notifications";
-            emailConfig.Priority = MailPriority.Normal;
-            emailConfig.Subject = $"New Manufacture Order - {order.Name}";
+            email.CCs.Add(new EmailRecipient()
+            {
+                Name = "Automotion Purchasing",
+                Email = "purchasing@automotioncomponents.co.uk"
+            });
 
-            EmailContent myContent = new();
+            string subject = $"New Manufacture Order - {order.Name}";
+
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#00695C'>New Manufacture Order</h2>" +
                 $"<p>Good {greeting}, a new Manufacture Order ({order.Name}) has been raised.</p>" +
                 $"<p>Please update the order details in Lighthouse at your earliest convenience.</p>";
-
 
             foreach (LatheManufactureOrderItem item in items)
             {
@@ -150,45 +150,37 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             message += "</font></html>";
 
-            myContent.IsHtml = true;
-            myContent.Content = message;
-
-            mailMan.SendMail(emailConfig, myContent);
+            email.Send(subject, message);
         }
 
         public static void NotifyNewRequest(Request request, TurnedProduct turnedProduct, User personWhoRaised)
         {
-            Email mailMan = new();
-            EmailSendConfigure emailConfig = new();
+            Model.Email email = new();
             List<User> users = DatabaseHelper.Read<User>();
-
-            List<string> emails = new();
-            List<string> emails_cc = new();
 
             foreach (User user in users)
             {
                 if ((user.UserRole == "Scheduling" || user.UserRole == "admin") && user.CanApproveRequests && !string.IsNullOrEmpty(user.EmailAddress))
                 {
-                    emails.Add(user.EmailAddress);
+                    email.TOs.Add(new EmailRecipient(
+                        email: user.EmailAddress,
+                        name: user.GetFullName()
+                        ));
                 }
             }
 
-            if (!emails.Contains(personWhoRaised.EmailAddress))
+            EmailRecipient RaisedBy = new(
+                email: personWhoRaised.EmailAddress,
+                name: personWhoRaised.GetFullName());
+
+            if (!email.TOs.Contains(RaisedBy))
             {
-                emails_cc.Add(personWhoRaised.EmailAddress);
+                email.CCs.Add(RaisedBy);
             }
 
+            string subject = $"New Request Raised - {request.Product}";
 
-            emailConfig.TOs = emails.ToArray();
-            //emailConfig.TOs = new string[] { "xavieriafrate@gmail.com" };
-            emailConfig.CCs = emails_cc.ToArray();
-            emailConfig.From = "notifications@lighthouse.software";
-            emailConfig.FromDisplayName = "Lighthouse Notifications";
-            emailConfig.Priority = MailPriority.Normal;
-            emailConfig.Subject = $"New Request Raised - {request.Product}";
-            
 
-            EmailContent myContent = new();
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#01579B'>New Manufacture Request</h2>" +
@@ -206,36 +198,25 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 message += $"<p>Made in house: {turnedProduct.QuantityManufactured:#,##0} pcs, last made {turnedProduct.lastManufactured:D}</p>";
             }
-
             message += "</font></html>";
 
-            myContent.IsHtml = true;
-            myContent.Content = message;
-
-            mailMan.SendMail(emailConfig, myContent);
+            email.Send(subject, message);
         }
 
 
         public static void TestEmail()
         {
-            Email mailMan = new();
-            EmailSendConfigure emailConfig = new();
+            Model.Email email = new();
 
-            emailConfig.TOs = new string[] { "xavieriafrate@gmail.com" };
-            emailConfig.CCs = Array.Empty<string>();
-            emailConfig.From = "notifications@lighthouse.software";
-            emailConfig.FromDisplayName = "Lighthouse Notifications";
-            emailConfig.Priority = MailPriority.Normal;
-            emailConfig.Subject = "TEST";
+            email.TOs.Add(new(
+                email: "x.iafrate@wixroydgroup.com",
+                name: "Xav"
+                ));
 
-            EmailContent myContent = new();
-
-            string message = "This is a test email";
-
-            myContent.IsHtml = true;
-            myContent.Content = message;
-
-            mailMan.SendMail(emailConfig, myContent);
+            email.Send("Test Subject",
+                 $"<html><font face='tahoma'><h2 style='color:#00695C'>New Manufacture Order</h2>" +
+                $"<p>Good morning, a new Manufacture Order (TEST) has been raised.</p>" +
+                $"<p>Please update the order details in Lighthouse at your earliest convenience.</p>");
         }
     }
 }
