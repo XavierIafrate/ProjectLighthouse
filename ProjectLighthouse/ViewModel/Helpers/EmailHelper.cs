@@ -2,29 +2,12 @@
 using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class EmailHelper
     {
-        //public static void SendEmail(string toPerson, string alertSubject, string message)
-        //{
-        //    //ProjectLighthouse.Model.Email mailMan = new();
-
-        //    //EmailSendConfigure myConfig = new();
-        //    //myConfig.TOs = new string[] { toPerson };
-        //    //myConfig.CCs = Array.Empty<string>();
-        //    //myConfig.From = "notifications@lighthouse.software";
-        //    //myConfig.FromDisplayName = "Lighthouse Notifications";
-        //    //myConfig.Priority = MailPriority.Normal;
-        //    //myConfig.Subject = alertSubject;
-
-        //    //EmailContent myContent = new();
-        //    //myContent.Content = message;
-
-        //    //mailMan.SendMail(myConfig, myContent);
-        //}
-
         public static void NotifyRequestApproved(Request approvedRequest)
         {
             Model.Email email = new();
@@ -105,6 +88,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 if (user.UserRole == "Production" && !string.IsNullOrEmpty(user.EmailAddress))
                 {
+                    Debug.WriteLine($"TO: {user.EmailAddress}");
                     email.TOs.Add(new EmailRecipient()
                     {
                         Name = user.GetFullName(),
@@ -114,6 +98,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 if (user.UserRole == "Scheduling" && !string.IsNullOrEmpty(user.EmailAddress))
                 {
+                    Debug.WriteLine($"TO: {user.EmailAddress}");
                     email.TOs.Add(new EmailRecipient()
                     {
                         Name = user.GetFullName(),
@@ -129,6 +114,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             });
 
             string subject = $"New Manufacture Order - {order.Name}";
+            Debug.WriteLine($"TO: {subject}");
 
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 

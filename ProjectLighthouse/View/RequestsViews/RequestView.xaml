@@ -164,6 +164,7 @@
                             Text="{Binding SelectedRequest.DeclinedReason, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                             <ComboBoxItem Content="Uneconomical" />
                             <ComboBoxItem Content="Below MOQ" />
+                            <ComboBoxItem Content="No active requirement" />
                             <ComboBoxItem Content="Cannot deliver on time" />
                             <ComboBoxItem Content="Machining not possible" />
                             <ComboBoxItem Content="Duplicate request" />

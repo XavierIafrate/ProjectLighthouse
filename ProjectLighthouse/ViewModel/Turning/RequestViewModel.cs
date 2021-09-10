@@ -237,9 +237,13 @@ namespace ProjectLighthouse.ViewModel
         public void LoadRequestCard(Request request)
         {
             if (request == null)
+            {
                 return;
+            }
 
-            ModifiedVis = (string.IsNullOrEmpty(request.ModifiedBy)) ? Visibility.Collapsed : Visibility.Visible;
+            ModifiedVis = string.IsNullOrEmpty(request.ModifiedBy) 
+                ? Visibility.Collapsed 
+                : Visibility.Visible;
 
             ApprovalControlsVis = (App.CurrentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
             EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy || App.CurrentUser.CanApproveRequests) ? Visibility.Visible : Visibility.Collapsed;
@@ -331,10 +335,10 @@ namespace ProjectLighthouse.ViewModel
         {
             if (App.CurrentUser.CanApproveRequests) //selectedRequest.isProductionApproved && selectedRequest.isSchedulingApproved &&
             {
-                selectedRequest.IsAccepted = true;
-                selectedRequest.IsDeclined = false;
-                selectedRequest.LastModified = DateTime.Now;
-                selectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
+                SelectedRequest.IsAccepted = true;
+                SelectedRequest.IsDeclined = false;
+                SelectedRequest.LastModified = DateTime.Now;
+                SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
 
 
                 LMOContructorWindow creationWindow = new(SelectedRequest);
@@ -345,17 +349,22 @@ namespace ProjectLighthouse.ViewModel
                 {
                     return;
                 }
-                else
-                {
-                    selectedRequest.AcceptedBy = App.CurrentUser.FirstName;
-                    selectedRequest.ResultingLMO = creationWindow.constructLMO.Name;
-                    selectedRequest.Status = $"Accepted by {selectedRequest.AcceptedBy} - {selectedRequest.ResultingLMO}";
-                }
+                
+                
+                SelectedRequest.AcceptedBy = App.CurrentUser.FirstName;
+                SelectedRequest.ResultingLMO = creationWindow.constructLMO.Name;
+                SelectedRequest.Status = $"Accepted by {SelectedRequest.AcceptedBy} - {SelectedRequest.ResultingLMO}";
+                
 
 
                 if (DatabaseHelper.Update(SelectedRequest))
                 {
-                    Task.Run(async () => EmailHelper.NotifyRequestApproved(SelectedRequest));
+                    //Task.Run(async () =>);
+                    //Task.Run(async () => );
+
+                    EmailHelper.NotifyRequestApproved(SelectedRequest);
+                    EmailHelper.NotifyNewOrder(creationWindow.constructLMO, creationWindow.LMOItems);
+
                     FilterRequests(SelectedFilter);
                     OnPropertyChanged("SelectedRequest");
                     SelectedRequestChanged?.Invoke(this, new EventArgs());
@@ -390,11 +399,13 @@ namespace ProjectLighthouse.ViewModel
                 MessageBox.Show("You must enter a reason for declining the request.", "Information required", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
+
             SelectedRequest.IsAccepted = false;
             SelectedRequest.IsDeclined = true;
             SelectedRequest.LastModified = DateTime.Now;
             SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
-            selectedRequest.Status = $"Declined - {SelectedRequest.DeclinedReason}";
+            SelectedRequest.Status = $"Declined - {SelectedRequest.DeclinedReason}";
+
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);

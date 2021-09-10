@@ -172,7 +172,7 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Insert(item);
             };
 
-            Task.Run(async () => EmailHelper.NotifyNewOrder(constructLMO, LMOItems.ToList()));
+            
 
             MessageBox.Show($"Created {constructLMO.Name}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             wasCancelled = false;
