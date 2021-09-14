@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.ViewModel;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel;
+using ProjectLighthouse.ViewModel.Helpers;
 using Squirrel;
 using System;
 using System.Collections.Generic;
@@ -22,7 +24,9 @@ namespace ProjectLighthouse
             InitializeComponent();
 
             if (App.CurrentUser == null)
+            {
                 return;
+            }
         }
 
         public void AddVersionNumber()
@@ -36,7 +40,7 @@ namespace ProjectLighthouse
             File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.CurrentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
         }
 
-        public static async Task CheckForUpdates()
+        public async Task CheckForUpdates()
         {
             using (UpdateManager manager = new(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
             {
@@ -83,11 +87,33 @@ namespace ProjectLighthouse
         {
             if (e.Key.ToString() == "F8")
             {
-                //if (MessageBox.Show("Are you sure you want to update stock levels?", "Lighthouse Opera Sync", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                //{
-                //    //await OperaHelper.UpdateStockLevelsAsync();
-                //    MessageBox.Show("Complete");
-                //}
+                if (MessageBox.Show("Are you sure you want to update stock levels?", "Lighthouse Opera Sync", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    string logPath = @"C:\Users\x.iafrate\Documents\sync_log.txt";
+
+                    if (File.Exists(OperaHelper.dbFile))
+                    {
+                        Console.WriteLine("Proceeding");
+
+                        List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>();
+                        List<BarStock> bar = DatabaseHelper.Read<BarStock>();
+                        string[] lookup = new string[products.Count];
+
+                        for (int i = 0; i < products.Count; i++)
+                            lookup[i] = products[i].ProductName;
+
+                        OperaHelper.UpdateRecords(products, bar, lookup);
+
+                        File.AppendAllText(logPath, $"{DateTime.Now:s} - pass\n");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to locate db");
+                        File.AppendAllText(logPath, $"{DateTime.Now:s} - fail\n");
+                        Console.ReadLine();
+                    }
+                    MessageBox.Show("Complete");
+                }
             }
         }
     }

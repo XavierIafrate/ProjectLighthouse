@@ -50,12 +50,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             //await Task.Run(() => UpdateRecords(products, lookup));
         }
 
-        public static void UpdateRecords(List<TurnedProduct> products, string[] nameLookup)
+        public static void UpdateRecords(List<TurnedProduct> products, List<BarStock> barstock, string[] nameLookup)
         {
             int total_records;
             int i;
 
             List<OperaFields> results = new();
+            List<OperaFields> bar_records = new();
 
             using (DbfTable dbfTable = new(dbFile, Encoding.UTF8))
             {
@@ -67,6 +68,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 int iStockQuantity = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_INSTOCK").Single());
                 int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_ONORDER").Single());
                 int iSell = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_SELL").Single());
+                int iCost = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_COST").Single());
 
                 DbfRecord dbfRecord = new(dbfTable);
 
@@ -87,13 +89,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         continue;
 
                     string name = dbfRecord.Values[iStockRef].ToString();
-                    if (!nameLookup.Contains(name))
+
+                    if (!nameLookup.Contains(name) && !name.StartsWith("PRB"))
                         continue;
 
                     _ = int.TryParse(dbfRecord.Values[iSalesOrder].ToString(), out int SalesOrder);
                     _ = int.TryParse(dbfRecord.Values[iStockQuantity].ToString(), out int Stock);
                     _ = int.TryParse(dbfRecord.Values[iPurchaseOrder].ToString(), out int OnOrder);
                     _ = int.TryParse(dbfRecord.Values[iSell].ToString(), out int Sell);
+                    _ = int.TryParse(dbfRecord.Values[iCost].ToString(), out int Cost);
 
                     SalesOrder /= 100;
                     Stock /= 100;
@@ -105,10 +109,18 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         QtyInStock = Stock,
                         QtyPurchaseOrder = OnOrder,
                         QtySalesOrder = SalesOrder,
-                        SellPrice = Sell
+                        SellPrice = Sell,
+                        CostPrice = Cost
                     };
 
-                    results.Add(record);
+                    if (record.StockReference.StartsWith("PRB"))
+                    {
+                        bar_records.Add(record);
+                    }
+                    else
+                    {
+                        results.Add(record);
+                    }
 
                     //Debug.Write($"NAME:{name}, SALESORDER:{SalesOrder}pcs, STOCK:{Stock}pcs, ONORDER:{OnOrder}\n");
                 }
@@ -116,26 +128,50 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             total_records = (int)results.Count;
             i = 0;
+            Console.WriteLine();
 
-            foreach (OperaFields r in results)
+            //foreach (OperaFields r in results)
+            //{
+            //    i++;
+            //    double percent_progress = (double)i / (double)total_records;
+            //    percent_progress *= 100;
+            //    Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
+
+            //    TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
+            //    if (productRecord == null)
+            //        continue;
+
+            //    productRecord.QuantityInStock = r.QtyInStock;
+            //    productRecord.QuantityOnPO = r.QtyPurchaseOrder;
+            //    productRecord.QuantityOnSO = r.QtySalesOrder;
+            //    productRecord.SellPrice = r.SellPrice;
+
+            //    DatabaseHelper.Update<TurnedProduct>(productRecord);
+            //}
+
+
+            total_records = (int)bar_records.Count;
+            i = 0;
+            Console.WriteLine();
+
+            foreach (OperaFields r in bar_records)
             {
                 i++;
                 double percent_progress = (double)i / (double)total_records;
                 percent_progress *= 100;
-                Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
 
+                Console.Write($"\rUpdating Bar Stock records... [  {percent_progress:#.00}%  ]");
 
-
-                TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
-                if (productRecord == null)
+                BarStock bar_record = barstock.Find(x => x.Id == r.StockReference);
+                if (bar_record == null)
                     continue;
 
-                productRecord.QuantityInStock = r.QtyInStock;
-                productRecord.QuantityOnPO = r.QtyPurchaseOrder;
-                productRecord.QuantityOnSO = r.QtySalesOrder;
-                productRecord.SellPrice = r.SellPrice;
 
-                DatabaseHelper.Update<TurnedProduct>(productRecord);
+                bar_record.InStock = Convert.ToDouble(r.QtyInStock);
+                bar_record.OnOrder = Convert.ToDouble(r.QtyPurchaseOrder);
+                bar_record.Cost = r.CostPrice;
+
+                DatabaseHelper.Update<BarStock>(bar_record);
             }
         }
 
@@ -146,6 +182,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             public int QtyPurchaseOrder { get; set; }
             public int QtySalesOrder { get; set; }
             public int SellPrice { get; set; }
+            public int CostPrice { get; set; }
         }
     }
 }

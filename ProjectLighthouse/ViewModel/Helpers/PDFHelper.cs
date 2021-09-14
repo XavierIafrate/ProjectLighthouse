@@ -26,20 +26,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
         private static string SCH_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Schedule Printouts";
         private static string Address = "Automotion Components\nAlexia House\nGlenmore Business Park\nChichester, UK\nP019 7BJ";
 
-        //#region Debug Formats
-        //private static XSolidBrush brush = new(XColor.FromArgb(120, 255, 0, 0));
-        //private static XSolidBrush bluebrush = new(XColor.FromArgb(120, 0, 0, 255));
-        //#endregion
-
         #region Schedule Formats
 
-
-
-        private static double gutter = 30;
-        private static double header_height = 40;
-        private static XFont TitleFont = new("Tahoma", 32, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        private static double DOCUMENT_GUTTER = 30;
+        private static double HEADER_HEIGHT = 40;
+        private static XFont TITLE_FONT = new("Tahoma", 32, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
         #endregion
         // This needs a massive fucking overhaul
+
+        #region hide
 
         public static void PrintOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
         {
@@ -542,56 +537,54 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return result;
         }
 
+        #endregion
         public static void PrintSchedule(List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, List<Lathe> lathes)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             using PdfDocument document = new();
-            List<LatheManufactureOrderItem> tmpItems = new List<LatheManufactureOrderItem>();
-            List<LatheManufactureOrder> tmpOrders = new List<LatheManufactureOrder>();
+            List<LatheManufactureOrderItem> tmpItems = new();
+            List<LatheManufactureOrder> tmpOrders = new();
 
             foreach (Lathe lathe in lathes)
             {
-                tmpOrders = new List<LatheManufactureOrder>(orders.Where(n => n.AllocatedMachine == lathe.Id));
-                List<string> assignedOrders = new List<string>();
-                foreach (LatheManufactureOrder order in tmpOrders)
-                {
-                    assignedOrders.Add(order.Name);
-                }
-                tmpItems = new List<LatheManufactureOrderItem>(items.Where(n => assignedOrders.Contains(n.AssignedMO)));
-
-                PrintSingleMachineSchedule(tmpOrders, tmpItems, lathe, document);
+                AppendScheduleForLathe(orders.Where(o => o.AllocatedMachine == lathe.Id).ToList(), items, lathe, document);
             }
 
-            string fileName = string.Format("{0}_{1:ddMMyy_HHmm}.pdf", "schedule", DateTime.Now);
-            string path = Directory.Exists(SCH_PDF_OUTPUTDIR) ? Path.Join(SCH_PDF_OUTPUTDIR, fileName) : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+            string fileName = $"{"schedule"}_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
+            string path = Directory.Exists(SCH_PDF_OUTPUTDIR) 
+                ? Path.Join(SCH_PDF_OUTPUTDIR, fileName) 
+                : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+
             SavePDF(document, path, true);
         }
 
-        public static PdfDocument PrintSingleMachineSchedule(List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, Lathe lathe, PdfDocument doc)
+        public static PdfDocument AppendScheduleForLathe(List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, Lathe lathe, PdfDocument doc)
         {
-
             items = items.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName).ToList();
             orders = orders.OrderBy(n => n.StartDate).ToList();
 
             PdfPage page = doc.AddPage();
-            page.Orientation = PdfSharp.PageOrientation.Landscape;
+            page.Orientation = PdfSharp.PageOrientation.Portrait;
             XGraphics gfx = XGraphics.FromPdfPage(page);
-            XTextFormatter formatter = new XTextFormatter(gfx);
+            XTextFormatter formatter = new(gfx);
 
             // Logo
             XImage logo = XImage.FromFile(GetLogoFile());
-            double width = logo.PixelWidth / logo.PixelHeight * header_height;
-            XRect logoRect = new XRect(gutter, gutter, width, header_height);
+            double width = logo.PixelWidth / logo.PixelHeight * HEADER_HEIGHT;
+            XRect logoRect = new XRect(DOCUMENT_GUTTER, DOCUMENT_GUTTER, width, HEADER_HEIGHT);
             gfx.DrawImage(logo, logoRect);
 
-            gfx.DrawString(string.Format("Schedule: {0}", lathe.FullName), TitleFont, XBrushes.Black, new XRect(gutter + width + 35, gutter, page.Width - gutter * 2 - width, header_height), XStringFormats.CenterLeft);
+            gfx.DrawString($"Schedule: {lathe.FullName}",
+                TITLE_FONT, XBrushes.Black,
+                new XRect(DOCUMENT_GUTTER + width + 35, DOCUMENT_GUTTER, page.Width - DOCUMENT_GUTTER * 2 - width, HEADER_HEIGHT),
+                XStringFormats.CenterLeft);
 
 
-            double y = gutter + header_height + 40;
+            double y = DOCUMENT_GUTTER + HEADER_HEIGHT + 40;
             double rowHeight = 15;
 
-            XRect dateRaisedCol = new XRect(gutter, y, 70, rowHeight);
+            XRect dateRaisedCol = new XRect(DOCUMENT_GUTTER, y, 70, rowHeight);
             XRect MORefCol = new XRect(dateRaisedCol.X + dateRaisedCol.Width, y, 65, rowHeight);
             XRect PORefCol = new XRect(MORefCol.X + MORefCol.Width, y, 95, rowHeight);
             XRect PartNumCol = new XRect(PORefCol.X + PORefCol.Width, y, 125, rowHeight);
@@ -649,13 +642,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             gfx.DrawString("Date", headerFont, XBrushes.Black, StartDateCol, XStringFormats.Center);
             y += rowHeight + 4;
 
-            gfx.DrawLine(new XPen(XColors.Black, 2), gutter, y, page.Width - gutter, y);
+            gfx.DrawLine(new XPen(XColors.Black, 2), DOCUMENT_GUTTER, y, page.Width - DOCUMENT_GUTTER, y);
             y += 4;
 
             foreach (LatheManufactureOrder order in orders)
             {
                 if (order != orders.First())
-                    gfx.DrawLine(stroke, gutter, y, page.Width - gutter, y);
+                    gfx.DrawLine(stroke, DOCUMENT_GUTTER, y, page.Width - DOCUMENT_GUTTER, y);
                 dateRaisedCol.Y = y;
                 MORefCol.Y = y;
                 PORefCol.Y = y;
@@ -692,10 +685,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
                 y += rowHeight;
             }
-            gfx.DrawLine(new(XColors.Black, 2), gutter, y, page.Width - gutter, y);
+            gfx.DrawLine(new(XColors.Black, 2), DOCUMENT_GUTTER, y, page.Width - DOCUMENT_GUTTER, y);
 
             XFont font = new("Tahoma", 8, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode));
-            XRect footer = new(gutter, page.Height - gutter, page.Width - 2 * gutter, 20);
+            XRect footer = new(DOCUMENT_GUTTER, page.Height - DOCUMENT_GUTTER, page.Width - 2 * DOCUMENT_GUTTER, 20);
             gfx.DrawString(string.Format("Generated in Lighthouse by {0} at {1:dd/MM/yy HH:mm}", App.CurrentUser.GetFullName(), DateTime.Now), font, XBrushes.Black, footer, XStringFormats.BottomLeft);
             return doc;
         }

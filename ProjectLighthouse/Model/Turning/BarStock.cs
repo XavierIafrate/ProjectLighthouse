@@ -11,6 +11,7 @@ namespace ProjectLighthouse.Model
         public int Length { get; set; }
         public int Size { get; set; }
         public double InStock { get; set; }
+        public double OnOrder { get; set; }
         public int Cost { get; set; }
     }
 }
