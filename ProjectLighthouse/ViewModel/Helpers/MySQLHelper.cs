@@ -1,5 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
 using System.Diagnostics;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -7,7 +6,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
     public class MySQLHelper
     {
         private static readonly string ConnectionString = "server=localhost; user id=root;database=test;Password=Lighthouse12!";
-    
+
         public static void test()
         {
             MySqlConnection conn = new();

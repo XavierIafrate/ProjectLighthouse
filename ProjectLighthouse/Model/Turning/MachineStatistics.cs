@@ -16,7 +16,7 @@ namespace ProjectLighthouse.Model
             set
             {
                 dataTime = value;
-                ExcelDataTime = String.Format("{0:dd/MM/yyyy HH:mm:ss}", value);
+                ExcelDataTime = $"{value:dd/MM/yyyy HH:mm:ss}";
             }
         }
         public string ExcelDataTime { get; set; }
@@ -35,7 +35,6 @@ namespace ProjectLighthouse.Model
         public int PartCountRemaining { get; set; }
         public int PartCountTarget { get; set; }
         public string Program { get; set; }
-
         public int CycleTime { get; set; }
         public int CuttingTime { get; set; }
 
@@ -46,7 +45,7 @@ namespace ProjectLighthouse.Model
         {
             get
             {
-                if (String.IsNullOrEmpty(status))
+                if (string.IsNullOrEmpty(status))
                 {
                     status = "Unknown";
                 }
@@ -62,9 +61,12 @@ namespace ProjectLighthouse.Model
             return Status == "Breakdown";
         }
 
-        public static string GetError()
+        public string GetError()
         {
-            return "debug_err";
+            List<string> errors = getErrors();
+            errors = new List<string>(errors.Where(n => n.Contains("EX")));
+            string result = errors.Count > 0 ? errors.First().ToString() : "Unknown";
+            return result;
         }
 
         private List<string> getErrors()
@@ -131,7 +133,7 @@ namespace ProjectLighthouse.Model
 
         public bool IsConnected()
         {
-            return !String.IsNullOrEmpty(EmergencyStop);
+            return !string.IsNullOrEmpty(EmergencyStop);
         }
 
         public string EstimateCompletion()
@@ -147,6 +149,11 @@ namespace ProjectLighthouse.Model
             return string.Format("{0}d {1:D2}h {2:D2}m ({3:dddd d}{4} {3:MMMM HH:mm})", t.Days, t.Hours, t.Minutes, finishDate, GetDaySuffix(finishDate.Day));
         }
 
+        public DateTime GetCompletionDateTime()
+        {
+            return DateTime.Now.AddSeconds(CycleTime * PartCountRemaining);
+        }
+
         public string EstimateCompletionDate()
         {
             int secondsLeft = CycleTime * PartCountRemaining;
@@ -154,9 +161,10 @@ namespace ProjectLighthouse.Model
             {
                 return "-";
             }
+            TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
             DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
 
-            return string.Format("{0:ddd d}{1} {0:MMM HH:mm}", finishDate, GetDaySuffix(finishDate.Day));
+            return $"{finishDate:ddd d}{GetDaySuffix(finishDate.Day)} {finishDate:MMM HH:mm}";
         }
 
         public string EstimateCompletionTimeRemaining()
@@ -167,8 +175,9 @@ namespace ProjectLighthouse.Model
                 return "-";
             }
             TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
+            DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
 
-            return string.Format("{0:D2}d {1:D2}h {2:D2}m", t.Days, t.Hours, t.Minutes);
+            return $"{t.Days:D2}d {t.Hours:D2}h {t.Minutes:D2}m";
         }
 
         private static string GetDaySuffix(int day)
@@ -189,7 +198,7 @@ namespace ProjectLighthouse.Model
             variables.Add(new Variables
             {
                 Name = "Data Time",
-                TextValue = String.Format("{0:dd/MM/yy HH:mm:ss}", DataTime)
+                TextValue = $"{DataTime:dd/MM/yy HH:mm:ss}"
             });
             variables.Add(new Variables
             {

@@ -61,7 +61,7 @@ namespace ProjectLighthouse.View
             ready.IsChecked = order.IsReady;
 
             ready.IsEnabled = order.HasProgram;
-                
+
 
             switch (order.Status)
             {
@@ -84,7 +84,7 @@ namespace ProjectLighthouse.View
                     not_started_radio.IsChecked = true;
                     break;
             }
-                
+
             PORef.IsEnabled = App.CurrentUser.CanEditLMOs || App.CurrentUser.UserRole == "admin";
         }
 
@@ -115,7 +115,7 @@ namespace ProjectLighthouse.View
                 order.Status = (bool)running_radio.IsChecked ? "Running" : "Complete";
             }
 
-            
+
 
             order.IsComplete = order.Status == "Complete";
 
@@ -256,8 +256,8 @@ namespace ProjectLighthouse.View
         private void PORef_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            poRefGhostText.Visibility = string.IsNullOrEmpty(textBox.Text) 
-                ? Visibility.Visible 
+            poRefGhostText.Visibility = string.IsNullOrEmpty(textBox.Text)
+                ? Visibility.Visible
                 : Visibility.Hidden;
         }
 

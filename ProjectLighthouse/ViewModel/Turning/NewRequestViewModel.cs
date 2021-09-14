@@ -68,7 +68,7 @@ namespace ProjectLighthouse.ViewModel
                 selectedGroup = value;
                 OnPropertyChanged("SelectedGroup");
                 PopulateListBox();
-                
+
             }
         }
 
@@ -163,7 +163,7 @@ namespace ProjectLighthouse.ViewModel
 
             Families = Families.OrderBy(n => n).ToList();
             Families.Add("Specials");
-            
+
         }
 
         public void PopulateListBox()
@@ -377,8 +377,8 @@ namespace ProjectLighthouse.ViewModel
                 }
                 else
                 {
-                    LikelinessText = hypothetical > 500 
-                        ? "Fair" 
+                    LikelinessText = hypothetical > 500
+                        ? "Fair"
                         : "Unlikely";
                 }
             }

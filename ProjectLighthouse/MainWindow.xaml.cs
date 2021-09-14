@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.ViewModel;
-using ProjectLighthouse.ViewModel.Helpers;
 using Squirrel;
 using System;
 using System.Collections.Generic;
@@ -37,7 +36,7 @@ namespace ProjectLighthouse
             File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.CurrentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
         }
 
-        public async Task CheckForUpdates()
+        public static async Task CheckForUpdates()
         {
             using (UpdateManager manager = new(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
             {
