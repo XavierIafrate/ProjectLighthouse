@@ -60,7 +60,7 @@
                         Grid.Row="1"
                         Grid.ColumnSpan="3"
                         Margin="0,10"
-                        ItemsSource="{Binding Orders, UpdateSourceTrigger=PropertyChanged}"
+                        ItemsSource="{Binding Orders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         SelectedValue="{Binding SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <ListView.ItemTemplate>
                             <DataTemplate>

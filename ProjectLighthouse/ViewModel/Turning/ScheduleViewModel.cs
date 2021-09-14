@@ -94,9 +94,11 @@ namespace ProjectLighthouse.ViewModel
         {
             Orders.Clear();
             Orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(o => !o.IsComplete).ToList();
+            OnPropertyChanged("Orders");
 
             OrderItems.Clear();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            OnPropertyChanged("OrderItems");
         }
 
         private void LoadTabOrders()
@@ -108,6 +110,7 @@ namespace ProjectLighthouse.ViewModel
             AutoScheduleVis = (App.CurrentUser.UserRole == "admin" || App.CurrentUser.UserRole == "Scheduling") && SelectedTab.LatheID != ""
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
+            OnPropertyChanged("SelectedTab.Orders");
         }
 
         private void LoadCompleteOrders()
@@ -124,9 +127,9 @@ namespace ProjectLighthouse.ViewModel
                 };
 
                 tmpOrder.OrderItems.AddRange(OrderItems.Where(i => i.AssignedMO == order.Name).ToList());
-
                 CompleteOrders.Add(tmpOrder);
             }
+            OnPropertyChanged("CompleteOrders");
         }
 
         private void CreateTabs()

@@ -425,12 +425,12 @@
                         </StackPanel>
                     </Grid>
                 </StackPanel>
-
-                <uc:DisplayProductRangeSnippet
+                <!--<WebBrowser Source="https://www.automotioncomponents.co.uk/media/files/datasheet/P0130.A2-Shoulder-screws-hex-socket-head-stainless-303.pdf" MaxWidth="700" Height="500" />-->
+                <!--<uc:DisplayProductRangeSnippet
                     Width="{Binding ActualWidth, ElementName=OrderCardGrid}"
                     MaxWidth="700"
                     Info="{Binding SelectedProductGroup}"
-                    Items="{Binding SelectedProducts}" />
+                    Items="{Binding SelectedProducts}" />-->
                 <Grid Height="100" />
             </StackPanel>
         </ScrollViewer>
