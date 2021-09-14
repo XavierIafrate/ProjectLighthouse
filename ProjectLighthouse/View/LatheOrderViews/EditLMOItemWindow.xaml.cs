@@ -27,7 +27,7 @@ namespace ProjectLighthouse.View
             SaveExit = false;
             Item = item;
             Lots = lots;
-            
+
             LoadUI();
         }
 
@@ -73,7 +73,7 @@ namespace ProjectLighthouse.View
             ManufactureOrderTextBlock.Text = Item.AssignedMO;
 
             SchedulingGrid.Visibility = App.CurrentUser.UserRole is "Scheduling" or "admin"
-                ? Visibility.Visible 
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             LotsListBox.ItemsSource = null;
@@ -83,7 +83,7 @@ namespace ProjectLighthouse.View
             {
                 BatchTextBox.Text = Lots.Last().MaterialBatch;
             }
-            
+
             PopulateCycleTimes();
         }
 
@@ -267,13 +267,11 @@ namespace ProjectLighthouse.View
 
         private void EditLotButton_Click(object sender, RoutedEventArgs e)
         {
-            Lot SelectedLot = LotsListBox.SelectedValue as Lot;
-
-            if (SelectedLot == null)
+            if (LotsListBox.SelectedValue is not Lot SelectedLot)
             {
                 return;
             }
-                
+
 
             EditLotWindow window = new(SelectedLot);
             window.Owner = Application.Current.MainWindow;

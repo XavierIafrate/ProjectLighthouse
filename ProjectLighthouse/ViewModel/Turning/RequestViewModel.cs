@@ -241,8 +241,8 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
 
-            ModifiedVis = string.IsNullOrEmpty(request.ModifiedBy) 
-                ? Visibility.Collapsed 
+            ModifiedVis = string.IsNullOrEmpty(request.ModifiedBy)
+                ? Visibility.Collapsed
                 : Visibility.Visible;
 
             ApprovalControlsVis = (App.CurrentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
@@ -349,12 +349,12 @@ namespace ProjectLighthouse.ViewModel
                 {
                     return;
                 }
-                
-                
+
+
                 SelectedRequest.AcceptedBy = App.CurrentUser.FirstName;
                 SelectedRequest.ResultingLMO = creationWindow.constructLMO.Name;
                 SelectedRequest.Status = $"Accepted by {SelectedRequest.AcceptedBy} - {SelectedRequest.ResultingLMO}";
-                
+
 
 
                 if (DatabaseHelper.Update(SelectedRequest))

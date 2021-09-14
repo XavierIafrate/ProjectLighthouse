@@ -6,7 +6,6 @@ using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -106,7 +105,7 @@ namespace ProjectLighthouse.ViewModel
             SelectedTab.CalculateTimings();
             PrintButtonVis = SelectedTab.LatheID == "" ? Visibility.Collapsed : Visibility.Visible;
             AutoScheduleVis = (App.CurrentUser.UserRole == "admin" || App.CurrentUser.UserRole == "Scheduling") && SelectedTab.LatheID != ""
-                ? Visibility.Visible 
+                ? Visibility.Visible
                 : Visibility.Collapsed;
         }
 
@@ -118,9 +117,9 @@ namespace ProjectLighthouse.ViewModel
             {
                 CompleteOrder tmpOrder = new()
                 {
-                    Order = order, 
-                    OrderItems = new(), 
-                    UpdateCommand = UpdateItemCommand 
+                    Order = order,
+                    OrderItems = new(),
+                    UpdateCommand = UpdateItemCommand
                 };
 
                 tmpOrder.OrderItems.AddRange(OrderItems.Where(i => i.AssignedMO == order.Name).ToList());

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using ProjectLighthouse.Model;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using ProjectLighthouse.Model;
-using ProjectLighthouse.ViewModel.Commands;
-using ProjectLighthouse.ViewModel.Helpers;
 
 namespace ProjectLighthouse.View.UserControls
 {

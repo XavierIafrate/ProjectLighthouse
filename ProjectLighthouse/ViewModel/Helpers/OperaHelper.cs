@@ -2,12 +2,9 @@
 using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
@@ -127,7 +124,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 percent_progress *= 100;
                 Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
 
-                
+
 
                 TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
                 if (productRecord == null)

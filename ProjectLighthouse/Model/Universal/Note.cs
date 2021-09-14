@@ -1,5 +1,4 @@
 ﻿using SQLite;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.Model
 {

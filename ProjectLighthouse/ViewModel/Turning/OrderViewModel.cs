@@ -181,7 +181,7 @@ namespace ProjectLighthouse.ViewModel
             SelectedProductGroup = new();
             SelectedProducts = new();
 
-            
+
 
             PrintOrderCommand = new PrintCommand(this);
             EditCommand = new EditManufactureOrderCommand(this);
@@ -256,7 +256,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 SelectedLatheManufactureOrder = FilteredOrders.First();
             }
-                
+
             OnPropertyChanged("FilteredOrders");
         }
 
@@ -300,7 +300,7 @@ namespace ProjectLighthouse.ViewModel
                 note.ShowHeader = note.SentBy != name;
                 name = note.SentBy;
             }
-            
+
             OnPropertyChanged("FilteredLMOItems");
             OnPropertyChanged("FilteredNotes");
         }
@@ -368,11 +368,11 @@ namespace ProjectLighthouse.ViewModel
 
             LoadLMOItems();
 
-            ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy) 
-                ? Visibility.Collapsed 
+            ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy)
+                ? Visibility.Collapsed
                 : Visibility.Visible;
-            LiveInfoVis = SelectedLatheManufactureOrder.Status == "Running" && MachineStatistics.Count != 0 
-                ? Visibility.Visible 
+            LiveInfoVis = SelectedLatheManufactureOrder.Status == "Running" && MachineStatistics.Count != 0
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             if (LiveInfoVis == Visibility.Visible)
@@ -380,8 +380,8 @@ namespace ProjectLighthouse.ViewModel
 
             Lots = DatabaseHelper.Read<Lot>().ToList();
 
-            RunInfoText = !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine) 
-                ? $"Assigned to {selectedLatheManufactureOrder.AllocatedMachine}, starting {SelectedLatheManufactureOrder.StartDate:dddd, MMMM d}{GetDaySuffix(SelectedLatheManufactureOrder.StartDate.Day)}" 
+            RunInfoText = !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine)
+                ? $"Assigned to {selectedLatheManufactureOrder.AllocatedMachine}, starting {SelectedLatheManufactureOrder.StartDate:dddd, MMMM d}{GetDaySuffix(SelectedLatheManufactureOrder.StartDate.Day)}"
                 : "Not scheduled";
 
             LoadProductInfoCard();
@@ -414,11 +414,6 @@ namespace ProjectLighthouse.ViewModel
         {
             DebugWriteFile();
             //PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
-        }
-
-        public void DeleteMessage()
-        {
-
         }
 
         public void EditLMO()

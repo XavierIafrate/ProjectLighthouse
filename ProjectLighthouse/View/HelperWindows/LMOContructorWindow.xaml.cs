@@ -3,7 +3,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -172,7 +171,7 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Insert(item);
             };
 
-            
+
 
             MessageBox.Show($"Created {constructLMO.Name}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             wasCancelled = false;
@@ -237,7 +236,7 @@ namespace ProjectLighthouse.View
                     i.TargetQuantity = j;
                 }
             }
-            
+
             LMOItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
             CalculateInsights();
         }
