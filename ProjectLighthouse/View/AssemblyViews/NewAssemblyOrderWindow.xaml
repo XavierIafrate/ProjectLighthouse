@@ -9,10 +9,10 @@
     MinWidth="800"
     MinHeight="450"
     MaxWidth="1200"
-    MaxHeight="700"
+    MaxHeight="800"
     SizeToContent="WidthAndHeight"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    mc:Ignorable="d" d:DesignWidth="856">
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -24,8 +24,9 @@
         </Grid.RowDefinitions>
         <TextBlock
             Grid.ColumnSpan="3"
-            HorizontalAlignment="Left"
-            Text="Create a new Assembly Order" />
+            Padding="0,10"
+            Style="{StaticResource title}"
+            Text="New Assembly Order" />
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -36,48 +37,57 @@
 
             <TextBlock
                 Grid.Row="0"
+                Style="{StaticResource section}"
                 Text="Select Product" />
-            <TreeView
-                x:Name="AssemblyTree"
-                Grid.Row="1"
-                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                SelectedItemChanged="AssemblyTree_SelectedItemChanged" />
+            <ScrollViewer Grid.Row="1">
+                <StackPanel>
+                    <TreeView
+                        x:Name="AssemblyTree"
+                        MinHeight="100"
+                        ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                        SelectedItemChanged="AssemblyTree_SelectedItemChanged" />
 
-            <TextBlock
-                Grid.Row="2"
-                Text="Drops" />
-            <ItemsControl
-                x:Name="dropsItemsControl"
-                Grid.Row="3"
-                MinHeight="100"
-                BorderBrush="Black"
-                BorderThickness="0.5">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Margin="10,3" Text="{Binding Quantity, StringFormat='{}{0} pcs'}" />
-                            <TextBlock
-                                Grid.Column="2"
-                                Margin="10,3"
-                                Text="{Binding DateRequired, StringFormat='{}{0:dd MMM yyyy}'}" />
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                    <TextBlock Style="{StaticResource section}" Text="Drops" />
+                    <ItemsControl
+                        x:Name="dropsItemsControl"
+                        MinHeight="100"
+                        BorderBrush="Black"
+                        BorderThickness="0.5">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Margin="10,3" Text="{Binding Quantity, StringFormat='{}{0} pcs'}" />
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Margin="10,3"
+                                        Text="{Binding DateRequired, StringFormat='{}{0:dd MMM yyyy}'}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+
+
+
         </Grid>
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,0,0,0">
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="20,0,0,0">
 
-            <TextBlock Text="Total Quantity Required" />
+            <TextBlock Style="{StaticResource section}" Text="Total Quantity Required" />
             <TextBox
                 x:Name="TotalQuantityTextBox"
                 PreviewKeyDown="Validate_NumsOnly"
+                Style="{StaticResource UsernameTextBox}"
                 TextChanged="TotalQuantityTextBox_TextChanged" />
-            <TextBlock Text="Delivery Scheme" />
+            <TextBlock Style="{StaticResource section}" Text="Delivery Scheme" />
             <StackPanel Margin="15,0,0,5">
                 <RadioButton
                     x:Name="singleRadio"
@@ -92,20 +102,24 @@
                     GroupName="scheme"
                     IsChecked="False" />
                 <TextBlock Text="Date Required (single drop)" />
-                <DatePicker x:Name="FlatRequiredDate" />
+                <DatePicker x:Name="FlatRequiredDate" Margin="10,5" />
             </StackPanel>
 
-            <TextBlock Text="Call off configuration" />
-            <StackPanel Margin="15,0,15,5">
+            <TextBlock Style="{StaticResource section}" Text="Call off configuration" />
+            <StackPanel Margin="15,0,0,5">
                 <TextBlock Text="Quantity per Drop" />
                 <TextBox
                     x:Name="CallOffDropQuantity"
                     IsEnabled="False"
-                    PreviewKeyDown="CallOffDropQuantity_PreviewKeyDown" />
+                    PreviewKeyDown="CallOffDropQuantity_PreviewKeyDown"
+                    Style="{StaticResource UsernameTextBox}" />
                 <TextBlock Text="Starting Date" />
-                <DatePicker x:Name="MultiDropStartingDate" IsEnabled="False" />
+                <DatePicker
+                    x:Name="MultiDropStartingDate"
+                    Margin="10,5"
+                    IsEnabled="False" />
             </StackPanel>
-            <TextBlock Text="Select call off method" />
+            <TextBlock Style="{StaticResource section}" Text="Select call off method" />
             <StackPanel Margin="15,0,15,5">
                 <RadioButton
                     x:Name="interval_radio"
@@ -118,7 +132,8 @@
                 <TextBox
                     x:Name="interval_textbox"
                     IsEnabled="False"
-                    PreviewKeyDown="Validate_NumsOnly" />
+                    PreviewKeyDown="Validate_NumsOnly"
+                    Style="{StaticResource UsernameTextBox}" />
                 <Separator Margin="0,5" />
                 <RadioButton
                     x:Name="cardinal_radio"

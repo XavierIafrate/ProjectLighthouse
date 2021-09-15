@@ -11,6 +11,5 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
         }
-
     }
 }

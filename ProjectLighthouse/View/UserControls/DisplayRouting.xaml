@@ -1,58 +1,78 @@
-﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayRouting"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.DisplayRouting"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
-        <Style TargetType="TextBlock" x:Key="RoutingTitle">
-            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="FontWeight" Value="Bold"/>
+        <Style x:Key="RoutingTitle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Bold" />
         </Style>
-        <Style TargetType="TextBlock" x:Key="Description">
-            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontStyle" Value="Italic"/>
+        <Style x:Key="Description" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontStyle" Value="Italic" />
         </Style>
-        <Style TargetType="TextBlock" x:Key="Timings">
-            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}"/>
-            <Setter Property="FontSize" Value="12"/>
+        <Style x:Key="Timings" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+            <Setter Property="FontSize" Value="12" />
         </Style>
     </UserControl.Resources>
     <Grid Margin="0,2">
-        <Rectangle Fill="{StaticResource materialPrimaryBlue}"
-                   RadiusX="5"
-                   RadiusY="5">
-        </Rectangle>
+        <Rectangle
+            Fill="{StaticResource materialPrimaryBlue}"
+            RadiusX="5"
+            RadiusY="5" />
         <Grid Margin="15,5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding RoutingID}" Style="{StaticResource RoutingTitle}"/>
-                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0">
-                        <Rectangle Fill="{StaticResource materialOnPrimary}" RadiusX="3" RadiusY="3"/>
+                    <TextBlock Style="{StaticResource RoutingTitle}" Text="{Binding RoutingID}" />
+                    <Grid
+                        Margin="5,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <Rectangle
+                            Fill="{StaticResource materialOnPrimary}"
+                            RadiusX="3"
+                            RadiusY="3" />
                         <Grid Margin="5,1">
-                            <TextBlock Text="{Binding Workstation}" FontWeight="DemiBold" Foreground="{StaticResource materialPrimaryBlue}"/>
+                            <TextBlock
+                                FontWeight="DemiBold"
+                                Foreground="{StaticResource materialPrimaryBlue}"
+                                Text="{Binding Workstation}" />
                         </Grid>
-                        
+
                     </Grid>
                 </StackPanel>
-                
-                <TextBlock Text="{Binding Description}" Style="{StaticResource Description}"/>
+
+                <TextBlock Style="{StaticResource Description}" Text="{Binding Description}" />
             </StackPanel>
-            
+
             <StackPanel Grid.Column="2">
-                <TextBlock Text="{Binding SetupTime, StringFormat='{}Setup time: {0} min'}" Style="{StaticResource Timings}" HorizontalAlignment="Right"/>
-                <TextBlock Text="{Binding CycleTime, StringFormat='{}Cycle time: {0} min'}" Style="{StaticResource Timings}" HorizontalAlignment="Right"/>
-                <TextBlock Text="{Binding QuantityPerCycle, StringFormat='{}Quantity per Cycle: {0} pcs'}" Style="{StaticResource Timings}" HorizontalAlignment="Right"/>
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource Timings}"
+                    Text="{Binding SetupTime, StringFormat='{}Setup time: {0} min'}" />
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource Timings}"
+                    Text="{Binding CycleTime, StringFormat='{}Cycle time: {0} min'}" />
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource Timings}"
+                    Text="{Binding QuantityPerCycle, StringFormat='{}Quantity per Cycle: {0} pcs'}" />
             </StackPanel>
         </Grid>
     </Grid>
