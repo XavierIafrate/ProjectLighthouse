@@ -21,9 +21,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayBillOfMaterial control = d as DisplayBillOfMaterial;
-
-            if (control == null)
+            if (d is not DisplayBillOfMaterial control)
                 return;
 
             control.DataContext = control.BOM;

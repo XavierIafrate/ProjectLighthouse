@@ -21,9 +21,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayAssemblyItem control = d as DisplayAssemblyItem;
-
-            if (control == null)
+            if (d is not DisplayAssemblyItem control)
                 return;
 
             control.DataContext = control.item;

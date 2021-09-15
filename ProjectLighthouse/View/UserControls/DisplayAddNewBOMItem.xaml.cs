@@ -20,9 +20,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayAddNewBOMItem control = d as DisplayAddNewBOMItem;
-
-            if (control == null)
+            if (d is not DisplayAddNewBOMItem control)
                 return;
 
             control.DataContext = control.item;

@@ -21,11 +21,10 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayDeliveryNote control = d as DisplayDeliveryNote;
-            if (control != null)
-            {
+            //if (d is DisplayDeliveryNote control)
+            //{
 
-            }
+            //}
         }
 
         public DisplayDeliveryNote()

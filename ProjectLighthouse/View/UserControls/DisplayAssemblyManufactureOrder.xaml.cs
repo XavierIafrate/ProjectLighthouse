@@ -23,9 +23,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayAssemblyManufactureOrder control = d as DisplayAssemblyManufactureOrder;
-
-            if (control == null)
+            if (d is not DisplayAssemblyManufactureOrder control)
                 return;
 
             control.DataContext = control.Order;

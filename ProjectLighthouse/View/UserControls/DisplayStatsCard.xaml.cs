@@ -20,9 +20,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void setValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayStatsCard control = d as DisplayStatsCard;
-
-            if (control == null)
+            if (d is not DisplayStatsCard control)
                 return;
             control.DataContext = control.statistics;
             string latheID = DatabaseHelper.Read<Lathe>().Where(n => n.FullName == control.statistics.MachineID).FirstOrDefault().Id;

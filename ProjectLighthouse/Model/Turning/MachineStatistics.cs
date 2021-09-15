@@ -146,7 +146,7 @@ namespace ProjectLighthouse.Model
             TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
             DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
 
-            return string.Format("{0}d {1:D2}h {2:D2}m ({3:dddd d}{4} {3:MMMM HH:mm})", t.Days, t.Hours, t.Minutes, finishDate, GetDaySuffix(finishDate.Day));
+            return $"{t.Days}d {t.Hours:D2}h {t.Minutes:D2}m ({finishDate:dddd d}{GetDaySuffix(finishDate.Day)} {finishDate:MMMM HH:mm})";
         }
 
         public DateTime GetCompletionDateTime()
@@ -161,7 +161,6 @@ namespace ProjectLighthouse.Model
             {
                 return "-";
             }
-            TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
             DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
 
             return $"{finishDate:ddd d}{GetDaySuffix(finishDate.Day)} {finishDate:MMM HH:mm}";
@@ -175,7 +174,6 @@ namespace ProjectLighthouse.Model
                 return "-";
             }
             TimeSpan t = TimeSpan.FromSeconds(secondsLeft);
-            DateTime finishDate = DateTime.Now.AddSeconds(secondsLeft);
 
             return $"{t.Days:D2}d {t.Hours:D2}h {t.Minutes:D2}m";
         }

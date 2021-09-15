@@ -25,8 +25,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayMachineLiveChart control = d as DisplayMachineLiveChart;
-            if (control == null)
+            if (d is not DisplayMachineLiveChart control)
                 return;
 
             control.DataContext = control.dataSet;

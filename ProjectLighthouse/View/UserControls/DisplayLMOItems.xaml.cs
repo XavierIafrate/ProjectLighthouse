@@ -18,9 +18,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayLMOItems control = d as DisplayLMOItems;
-
-            if (control != null)
+            if (d is DisplayLMOItems control)
             {
                 control.DataContext = control.LatheManufactureOrderItem;
 

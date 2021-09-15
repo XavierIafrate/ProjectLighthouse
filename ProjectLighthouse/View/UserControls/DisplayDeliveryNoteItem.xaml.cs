@@ -21,9 +21,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayDeliveryNoteItem control = d as DisplayDeliveryNoteItem;
-
-            if (control == null)
+            if (d is not DisplayDeliveryNoteItem control)
                 return;
 
             control.DataContext = control.Item;

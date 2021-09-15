@@ -171,7 +171,7 @@ namespace ProjectLighthouse.ViewModel
         #region Helpers
         public AssemblyItem GetProductFromBOMItem(BillOfMaterialsItem BOMitem)
         {
-            AssemblyItem assemblyItem = new AssemblyItem();
+            AssemblyItem assemblyItem = new();
 
             foreach (AssemblyItem item in items)
             {

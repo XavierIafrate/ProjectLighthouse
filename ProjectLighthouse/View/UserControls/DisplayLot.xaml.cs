@@ -23,9 +23,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayLot control = d as DisplayLot;
-
-            if (control == null)
+            if (d is not DisplayLot control)
                 return;
 
             control.DataContext = control.Lot;

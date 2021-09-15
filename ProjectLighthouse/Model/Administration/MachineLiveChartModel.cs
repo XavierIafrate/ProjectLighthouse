@@ -13,6 +13,6 @@ namespace ProjectLighthouse.Model
         public DateTime tick2 { get; set; }
 
         public Func<double, string> TimeFormatter = value => new DateTime((long)value).ToString("dd MMMM yyyy");
-        public Func<double, string> QuantityFormatter = value => string.Format($"{value:#,##0}");
+        public Func<double, string> QuantityFormatter = value => $"{value:#,##0}";
     }
 }

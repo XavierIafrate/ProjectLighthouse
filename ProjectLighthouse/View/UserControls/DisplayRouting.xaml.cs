@@ -21,9 +21,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayRouting control = d as DisplayRouting;
-
-            if (control == null)
+            if (d is not DisplayRouting control)
                 return;
 
             control.DataContext = control.routing;
