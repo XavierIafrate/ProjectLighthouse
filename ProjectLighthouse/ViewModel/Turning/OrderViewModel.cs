@@ -339,7 +339,9 @@ namespace ProjectLighthouse.ViewModel
             foreach (LatheManufactureOrderItem item in LMOItems)
             {
                 if (FoundOrders.Contains(item.AssignedMO))
+                {
                     continue;
+                }
 
                 if (item.ProductName.Contains(SearchTerm))
                 {
@@ -412,15 +414,15 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSelectedOrder()
         {
-            DebugWriteFile();
-            //PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
+            //DebugWriteFile();
+            PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
         }
 
         public void EditLMO()
         {
             EditLMOWindow editWindow = new(SelectedLatheManufactureOrder, FilteredLMOItems, Lots.Where(n => n.Order == SelectedLatheManufactureOrder.Name).ToList(), FilteredNotes);
             editWindow.Owner = Application.Current.MainWindow;
-            editWindow.ShowDialog();
+            _ = editWindow.ShowDialog();
 
             if (editWindow.SaveExit)
             {

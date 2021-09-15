@@ -21,6 +21,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\GIF\fireworks.gif" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\Font\Roboto-Bold.ttf" />
     <Resource Include="Resources\Font\Roboto-BoldItalic.ttf" />
     <Resource Include="Resources\Font\Roboto-Italic.ttf" />
@@ -56,6 +60,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\GIF\excited.gif" />
+    <Resource Include="Resources\GIF\fireworks.gif" />
     <Resource Include="Resources\GIF\moderate.gif" />
     <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\GIF\travolta.gif" />

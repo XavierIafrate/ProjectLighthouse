@@ -120,18 +120,22 @@ namespace ProjectLighthouse.View
             foreach (LatheManufactureOrderItem item in LMOItems)
             {
                 totaltime += item.CycleTime * item.TargetQuantity;
-                bars += (item.TargetQuantity * (item.MajorLength + 2)) / 2700;
+                bars += item.TargetQuantity * (item.MajorLength + 2) / 2700;
                 if (item.RequiredQuantity > 0)
+                {
                     requiredtime += item.RequiredQuantity * item.CycleTime;
+                }
             }
 
             bars = Math.Ceiling(bars);
 
             IEnumerable<BarStock> barStock = DatabaseHelper.Read<BarStock>().Where(n => n.Id == constructLMO.BarID);
             int costPerBar = barStock.First().Cost;
-            double dblmaterialCost = Math.Round((Convert.ToDouble(costPerBar) / 100) * bars, 2);
+            double dblmaterialCost = Math.Round(Convert.ToDouble(costPerBar) / 100 * bars, 2);
 
             nBars.Text = $"{bars}";
+
+            constructLMO.NumberOfBars = bars;
             materialCost.Text = $"£{Math.Round(dblmaterialCost, 0)}";
             reqTime.Text = $"{Math.Round(requiredtime / (double)86400, 2)} day(s)";
             totalTime.Text = $"{Math.Round(totaltime / (double)86400, 2)} day(s)";
@@ -226,7 +230,6 @@ namespace ProjectLighthouse.View
             }
 
             List<LatheManufactureOrderItem> items = (List<LatheManufactureOrderItem>)LMOItemsListBox.ItemsSource;
-
             LatheManufactureOrderItem selected = (LatheManufactureOrderItem)LMOItemsListBox.SelectedValue;
 
             foreach (LatheManufactureOrderItem i in items)

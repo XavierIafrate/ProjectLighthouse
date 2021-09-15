@@ -1,81 +1,157 @@
-﻿<UserControl x:Class="ProjectLighthouse.View.AnalyticsView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-             xmlns:local="clr-namespace:ProjectLighthouse.View"
-             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-             Loaded="UserControl_Loaded"
-             mc:Ignorable="d" 
-             Background="{StaticResource materialBackground}"
-             d:DesignHeight="450" d:DesignWidth="800">
-    
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.AnalyticsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    d:DesignHeight="716"
+    d:DesignWidth="989"
+    Background="{StaticResource materialBackground}"
+    Loaded="UserControl_Loaded"
+    mc:Ignorable="d">
+
     <UserControl.DataContext>
-        <vm:AnalyticsViewModel/>
+        <vm:AnalyticsViewModel />
     </UserControl.DataContext>
     <ScrollViewer HorizontalAlignment="Stretch">
-        <StackPanel HorizontalAlignment="Stretch" MaxWidth="900">
+        <StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
+
+            <Grid Margin="20" Visibility="{Binding CelebrationVisibility}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Border
+                    Name="ReceiverColor"
+                    Grid.RowSpan="2"
+                    Grid.ColumnSpan="3"
+                    CornerRadius="15">
+                    <Grid>
+                        <Border
+                            Name="Mask"
+                            Background="{StaticResource materialPrimaryBlue}"
+                            CornerRadius="50" />
+                        <StackPanel x:Name="image">
+                            <Image
+                                Name="Receiver"
+                                Height="200"
+                                gif:ImageBehavior.AnimateInDesignMode="True"
+                                gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/fireworks.gif"
+                                gif:ImageBehavior.RepeatBehavior="3"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Stretch="UniformToFill" />
+                            <StackPanel.OpacityMask>
+                                <VisualBrush Stretch="Fill" Visual="{Binding ElementName=Mask}" />
+                            </StackPanel.OpacityMask>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <!--</Border>-->
+
+
+                <TextBlock
+                    Grid.ColumnSpan="3"
+                    HorizontalAlignment="Center"
+                    FontSize="70"
+                    FontStyle="Italic"
+                    FontWeight="ExtraBold"
+                    Foreground="White"
+                    Text="1,000,000" />
+                <Grid Grid.Row="1" Grid.Column="1" Margin="10">
+                    <Border Background="Black" Opacity="0.5"/>
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.ColumnSpan="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="25"
+                        FontStyle="Italic"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="The Production team have now delivered over one million parts from the lathes!"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                </Grid>
+
+
+
+
+
+            </Grid>
+
             <Grid HorizontalAlignment="Center">
                 <Grid.Resources>
                     <Style x:Key="dataHero" TargetType="TextBlock">
-                        <Setter Property="FontSize" Value="40"/>
-                        <Setter Property="HorizontalAlignment" Value="Right"/>
-                        <Setter Property="FontWeight" Value="SemiBold"/>
-                        <Setter Property="FontStyle" Value="Italic"/>
-                        <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreen}"/>
+                        <Setter Property="FontSize" Value="40" />
+                        <Setter Property="HorizontalAlignment" Value="Right" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="FontStyle" Value="Italic" />
+                        <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreen}" />
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource gradGood}"/>
+                                <Setter Property="Foreground" Value="{StaticResource gradGood}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                     <Style x:Key="statName" TargetType="TextBlock">
-                        <Setter Property="FontSize" Value="30"/>
-                        <Setter Property="HorizontalAlignment" Value="Left"/>
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="FontStyle" Value="Italic"/>
-                        <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlue}"/>
+                        <Setter Property="FontSize" Value="30" />
+                        <Setter Property="HorizontalAlignment" Value="Left" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="FontStyle" Value="Italic" />
+                        <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlue}" />
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
+                                <Setter Property="Foreground" Value="{StaticResource materialPrimary}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <TextBlock Text="{Binding Stats.TotalPartsMade, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
-                           Style="{StaticResource dataHero}"/>
-                <TextBlock Text="total items delivered (all time)"
-                           Grid.Column="2"
-                           Style="{StaticResource statName}"/>
+                <TextBlock Style="{StaticResource dataHero}" Text="{Binding Stats.TotalPartsMade, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
+                <TextBlock
+                    Grid.Column="2"
+                    Style="{StaticResource statName}"
+                    Text="total items delivered (all time)" />
 
-                <TextBlock Text="{Binding Stats.TotalPartsMadeThisYear, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
-                           Grid.Row="1"
-                           Style="{StaticResource dataHero}"/>
-                <TextBlock Text="total items delivered (this year)"
-                           Grid.Row="1"
-                           Grid.Column="2"
-                           Style="{StaticResource statName}"/>
+                <TextBlock
+                    Grid.Row="1"
+                    Style="{StaticResource dataHero}"
+                    Text="{Binding Stats.TotalPartsMadeThisYear, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Style="{StaticResource statName}"
+                    Text="total items delivered (this year)" />
 
-                <TextBlock Text="{Binding Stats.TotalOrders, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}"
-                           Grid.Row="2"
-                           Style="{StaticResource dataHero}"/>
-                <TextBlock Text="orders"
-                           Grid.Row="2"
-                           Grid.Column="2"
-                           Style="{StaticResource statName}"/>
+                <TextBlock
+                    Grid.Row="2"
+                    Style="{StaticResource dataHero}"
+                    Text="{Binding Stats.TotalOrders, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Style="{StaticResource statName}"
+                    Text="orders" />
 
                 <!--<TextBlock Text="{Binding Stats.TotalValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}£{0:#,##0}'}"
                            Grid.Row="3"
@@ -86,83 +162,95 @@
                            Style="{StaticResource statName}"/>-->
             </Grid>
 
-            <!--MinValue="{Binding InitialDateTime.Ticks}"-->
-            <TextBlock Text="Sum of Parts Made Over Time"
-                       FontSize="18"
-                       Margin="0,20,0,10"
-                       HorizontalAlignment="Center"/>
-            <lvc:CartesianChart Series="{Binding SeriesCollection}"
-                                Height="400"
-                                Margin="0,0,0,30">
+            <!--  MinValue="{Binding InitialDateTime.Ticks}"  -->
+            <TextBlock
+                Margin="0,20,0,10"
+                HorizontalAlignment="Center"
+                FontSize="18"
+                Text="Sum of Parts Made Over Time" />
+            <lvc:CartesianChart
+                Height="400"
+                Margin="0,0,0,30"
+                Series="{Binding SeriesCollection}">
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis x:Name="totalParts_X" ShowLabels="False"/>
+                    <lvc:Axis x:Name="totalParts_X" ShowLabels="False" />
                 </lvc:CartesianChart.AxisX>
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis MinValue="0" x:Name="totalParts_Y"/>
+                    <lvc:Axis x:Name="totalParts_Y" MinValue="0" />
                 </lvc:CartesianChart.AxisY>
             </lvc:CartesianChart>
 
-            <TextBlock Text="Parts made, last 6 weeks"
-                       FontSize="18"
-                       Margin="0,20,0,10"
-                       HorizontalAlignment="Center"/>
-            <lvc:CartesianChart Series="{Binding FiveWeekValueCollection}" LegendLocation="Top"
-                                Height="400"
-                                Margin="0,0,0,30">
+            <TextBlock
+                Margin="0,20,0,10"
+                HorizontalAlignment="Center"
+                FontSize="18"
+                Text="Parts made, last 6 weeks" />
+            <lvc:CartesianChart
+                Height="400"
+                Margin="0,0,0,30"
+                LegendLocation="Top"
+                Series="{Binding FiveWeekValueCollection}">
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis Title="Week" Labels="{Binding WeekLabels}"/>
+                    <lvc:Axis Title="Week" Labels="{Binding WeekLabels}" />
                 </lvc:CartesianChart.AxisX>
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Value Produced" x:Name="Value_Y"/>
+                    <lvc:Axis x:Name="Value_Y" Title="Value Produced" />
                 </lvc:CartesianChart.AxisY>
             </lvc:CartesianChart>
 
             <Grid>
-                <Rectangle Fill="Black"/>
-                <StackPanel Margin="30,15
-                            ">
-                    <TextBlock Text="Sentry" 
-                               FontSize="25"
-                               FontFamily="OCR A Extended"
-                               Foreground="White"/>
-                    <TextBlock Text="alarm and monitoring system" 
-                               FontSize="16"
-                               FontFamily="OCR A Extended"
-                               Foreground="White"/>
+                <Rectangle Fill="Black" />
+                <StackPanel Margin="30,15">
+                    <TextBlock
+                        FontFamily="OCR A Extended"
+                        FontSize="25"
+                        Foreground="White"
+                        Text="Sentry" />
+                    <TextBlock
+                        FontFamily="OCR A Extended"
+                        FontSize="16"
+                        Foreground="White"
+                        Text="alarm and monitoring system" />
                 </StackPanel>
             </Grid>
-            
 
-            <TextBlock Text="Machine Performance (T-7d)"
-                       FontSize="18"
-                       Margin="0,20,0,10"
-                       HorizontalAlignment="Center"/>
-            <lvc:CartesianChart Series="{Binding MachineRuntimeCollection}" LegendLocation="Top"
-                                
-                                Height="400">
+
+            <TextBlock
+                Margin="0,20,0,10"
+                HorizontalAlignment="Center"
+                FontSize="18"
+                Text="Machine Performance (T-7d)" />
+            <lvc:CartesianChart
+                Height="400"
+                LegendLocation="Top"
+                Series="{Binding MachineRuntimeCollection}">
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Machine" Labels="{Binding LatheLabels}"/>
+                    <lvc:Axis Title="Machine" Labels="{Binding LatheLabels}" />
                 </lvc:CartesianChart.AxisY>
                 <!--<lvc:CartesianChart.AxisX>
-                    --><!--<lvc:Axis LabelFormatter="{Binding SecondsToDaysFormatter}"/>--><!--
+                -->
+                <!--<lvc:Axis LabelFormatter="{Binding SecondsToDaysFormatter}"/>-->
+                <!--
                 </lvc:CartesianChart.AxisX>-->
 
             </lvc:CartesianChart>
 
-            <lvc:Gauge Value="{Binding OverallOperating}"
-                              From="0" To="100"
-                              Height="200"
-                              
-                              FontWeight="Bold" FontSize="16"
-                              x:Name="Gauge">
+            <lvc:Gauge
+                x:Name="Gauge"
+                Height="200"
+                FontSize="16"
+                FontWeight="Bold"
+                Value="{Binding OverallOperating}"
+                From="0"
+                To="100">
                 <!--<lvc:Gauge.Sections>
                     <lvc:AngularSection FromValue="0" ToValue="80"/>
                     <lvc:AngularSection FromValue="80" ToValue="100"
                                         Fill="{StaticResource materialPrimaryGreen}"/>
                 </lvc:Gauge.Sections>-->
-                
+
             </lvc:Gauge>
-            <Grid Height="300"/>
+            <Grid Height="300" />
 
             <!--<lvc:CartesianChart Series="{Binding OperatingByMachineSeriesCollection}" LegendLocation="Top">
                 <lvc:CartesianChart.AxisY>

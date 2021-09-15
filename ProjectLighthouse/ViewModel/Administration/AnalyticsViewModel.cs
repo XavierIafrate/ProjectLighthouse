@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
@@ -77,10 +78,27 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private Visibility celebrationVisibility;
+
+        public Visibility CelebrationVisibility
+        {
+            get { return celebrationVisibility; }
+            set 
+            { 
+                celebrationVisibility = value;
+                OnPropertyChanged("CelebrationVisibility");
+            }
+        }
+
+
+
+
         #endregion
+
         public AnalyticsViewModel()
         {
             Debug.WriteLine("Init: AnalyticsViewModel");
+            CelebrationVisibility = Visibility.Collapsed;
             LoadData();
         }
 
@@ -88,8 +106,6 @@ namespace ProjectLighthouse.ViewModel
         {
             DateTime start = DateTime.Now;
             await Task.Run(function: () => GetData());
-
-
 
             Stats = new();
             Stats = ComputeDashboard();
@@ -235,6 +251,11 @@ namespace ProjectLighthouse.ViewModel
             }
 
             _data_point = new(_date, newStats.TotalPartsMade);
+
+            CelebrationVisibility = (newStats.TotalPartsMade >= 1000000 && newStats.TotalPartsMade <= 1015000)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
             SeriesCollection[0].Values.Add(_data_point);
 
             GetDataForMachineRuntime();
