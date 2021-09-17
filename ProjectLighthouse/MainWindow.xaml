@@ -86,28 +86,6 @@
                     </StackPanel>
 
                     <StackPanel Margin="0,20">
-
-                        <ToggleButton
-                            x:Name="assemblyOrders_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Assembly Orders"
-                            Content="Assembly Orders"
-                            Style="{StaticResource AssemblyOrders_MenuItem}" />
-                        <ToggleButton
-                            x:Name="assembly_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Manage Products"
-                            Content="Manage Products"
-                            Style="{StaticResource ManageProducts_MenuItem}" />
-                        <ToggleButton
-                            x:Name="BOM_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Bill of Materials"
-                            Content="Bill of Materials"
-                            Style="{StaticResource BillOfMaterials_MenuItem}" />
-                    </StackPanel>
-
-                    <StackPanel Margin="0,20">
                         <ToggleButton
                             x:Name="deliveries_button"
                             Command="{Binding UpdateViewCommand}"

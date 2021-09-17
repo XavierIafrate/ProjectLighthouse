@@ -59,24 +59,24 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new DeliveriesViewModel();
                 viewModel.NavText = "Deliveries";
             }
-            else if (parameter.ToString() == "Manage Products")
-            {
-                viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.SelectedViewModel = new AssemblyProductsViewModel();
-                viewModel.NavText = "Assembly";
-            }
-            else if (parameter.ToString() == "Bill of Materials")
-            {
-                viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.SelectedViewModel = new BillOfMaterialsViewModel();
-                viewModel.NavText = "Bill of Materials";
-            }
-            else if (parameter.ToString() == "Assembly Orders")
-            {
-                viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.SelectedViewModel = new AssemblyOrdersViewModel();
-                viewModel.NavText = "Assembly Orders";
-            }
+            //else if (parameter.ToString() == "Manage Products")
+            //{
+            //    viewModel.BetaWarningVis = Visibility.Visible;
+            //    viewModel.SelectedViewModel = new AssemblyProductsViewModel();
+            //    viewModel.NavText = "Assembly";
+            //}
+            //else if (parameter.ToString() == "Bill of Materials")
+            //{
+            //    viewModel.BetaWarningVis = Visibility.Visible;
+            //    viewModel.SelectedViewModel = new BillOfMaterialsViewModel();
+            //    viewModel.NavText = "Bill of Materials";
+            //}
+            //else if (parameter.ToString() == "Assembly Orders")
+            //{
+            //    viewModel.BetaWarningVis = Visibility.Visible;
+            //    viewModel.SelectedViewModel = new AssemblyOrdersViewModel();
+            //    viewModel.NavText = "Assembly Orders";
+            //}
             else if (parameter.ToString() == "Manage Users")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;

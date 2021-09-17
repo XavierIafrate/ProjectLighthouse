@@ -19,7 +19,14 @@ namespace ProjectLighthouse
 
         public MainWindow()
         {
-            App.ROOT_PATH = Environment.UserName == "xavier" ? @"C:\Users\xavie\Desktop\" : @"H:\Production\Administration\Manufacture Records\Lighthouse\";
+            App.ROOT_PATH = Environment.UserName == "xavier" ? @"C:\Users\xavie\Desktop\" : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\";
+
+            if (!Directory.Exists(App.ROOT_PATH))
+            {
+                MessageBox.Show("Could not locate root directory.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+                return;
+            }
             //App.ROOT_PATH = @"\\groupfile01\Roaming\x.iafrate\Desktop\";
             InitializeComponent();
 
@@ -42,9 +49,9 @@ namespace ProjectLighthouse
 
         public async Task CheckForUpdates()
         {
-            using (UpdateManager manager = new(@"H:\Production\Administration\Manufacture Records\Lighthouse\Release"))
+            using (UpdateManager manager = new(@"\\groupfile01\Production\Administration\Manufacture Records\Lighthouse\Release"))
             {
-                await manager.UpdateApp();
+                _ = await manager.UpdateApp();
             };
         }
 
@@ -55,11 +62,15 @@ namespace ProjectLighthouse
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
                 {
                     DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T t)
+                    if (child is not null and T t)
+                    {
                         yield return t;
+                    }
 
                     foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
                         yield return childOfChild;
+                    }
                 }
             }
         }
@@ -67,7 +78,9 @@ namespace ProjectLighthouse
         public void SelectButton(string buttonName)
         {
             foreach (ToggleButton button in FindVisualChildren<ToggleButton>(main_menu))
+            {
                 button.IsChecked = (string)button.CommandParameter == buttonName;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

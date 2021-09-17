@@ -64,6 +64,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 Console.WriteLine($"{header.RecordCount:#,##0} records in Automotion CNAME table.");
 
                 int iStockRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_REF").Single());
+                int iSearchRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_CAT").Single());
                 int iSalesOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_SALEORD").Single());
                 int iStockQuantity = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_INSTOCK").Single());
                 int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_ONORDER").Single());
@@ -89,9 +90,25 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         continue;
 
                     string name = dbfRecord.Values[iStockRef].ToString();
+                    string searchref = dbfRecord.Values[iSearchRef].ToString();
+
+                    //if (name.StartsWith("P0435") && !name.Contains("-A4"))
+                    //{
+                    //    name += "-A2";
+                    //}
 
                     if (!nameLookup.Contains(name) && !name.StartsWith("PRB"))
-                        continue;
+                    {
+                        if (nameLookup.Contains(searchref))
+                        {
+                            name = searchref;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                        
 
                     _ = int.TryParse(dbfRecord.Values[iSalesOrder].ToString(), out int SalesOrder);
                     _ = int.TryParse(dbfRecord.Values[iStockQuantity].ToString(), out int Stock);
@@ -130,24 +147,24 @@ namespace ProjectLighthouse.ViewModel.Helpers
             i = 0;
             Console.WriteLine();
 
-            //foreach (OperaFields r in results)
-            //{
-            //    i++;
-            //    double percent_progress = (double)i / (double)total_records;
-            //    percent_progress *= 100;
-            //    Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
+            foreach (OperaFields r in results)
+            {
+                i++;
+                double percent_progress = (double)i / (double)total_records;
+                percent_progress *= 100;
+                Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
 
-            //    TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
-            //    if (productRecord == null)
-            //        continue;
+                TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
+                if (productRecord == null)
+                    continue;
 
-            //    productRecord.QuantityInStock = r.QtyInStock;
-            //    productRecord.QuantityOnPO = r.QtyPurchaseOrder;
-            //    productRecord.QuantityOnSO = r.QtySalesOrder;
-            //    productRecord.SellPrice = r.SellPrice;
+                productRecord.QuantityInStock = r.QtyInStock;
+                productRecord.QuantityOnPO = r.QtyPurchaseOrder;
+                productRecord.QuantityOnSO = r.QtySalesOrder;
+                productRecord.SellPrice = r.SellPrice;
 
-            //    DatabaseHelper.Update<TurnedProduct>(productRecord);
-            //}
+                DatabaseHelper.Update<TurnedProduct>(productRecord);
+            }
 
 
             total_records = (int)bar_records.Count;

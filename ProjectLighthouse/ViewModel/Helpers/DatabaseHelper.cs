@@ -13,7 +13,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
         private static string GetDatabaseFile()
         {
 
-            return Environment.UserName == "xavier" ? @"C:\Users\xavie\Desktop\manufactureDB.db3" : Path.Join(App.ROOT_PATH ?? @"H:\Production\Administration\Manufacture Records\Lighthouse", dbFile);
+            return Environment.UserName == "xavier"
+                ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
+                : Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", dbFile);
         }
 
         public static bool Insert<T>(T item)
@@ -82,13 +84,21 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static List<T> Read<T>() where T : new()
         {
             List<T> items;
-
-            using (SQLiteConnection conn = new(GetDatabaseFile()))
+            try
             {
-                conn.CreateTable<T>();
-                items = conn.Table<T>().ToList();
+                using (SQLiteConnection conn = new(GetDatabaseFile()))
+                {
+                    conn.CreateTable<T>();
+                    items = conn.Table<T>().ToList();
+                }
+
+                return items;
             }
-            return items;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
         }
     }
 }
