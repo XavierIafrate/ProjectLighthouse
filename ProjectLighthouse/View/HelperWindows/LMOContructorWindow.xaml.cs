@@ -66,18 +66,35 @@ namespace ProjectLighthouse.View
             foreach (TurnedProduct product in ProductPool.ToList())
             {
                 if (!product.IsScheduleCompatible(requiredProduct) || !product.CanBeManufactured())
+                {
                     ProductPool.Remove(product);
+                }
             }
         }
 
         public static LatheManufactureOrderItem TurnedProductToLMOItem(TurnedProduct product, int requiredQuantity, DateTime dateRequired)
         {
-            const int MOQ = 500;
+            int MOQ = product.MajorDiameter switch
+            {
+                > 35 => 10,
+                > 30 => 50,
+                > 25 => 100,
+                > 20 => 200,
+                > 15 => 300,
+                _ => 500,
+            };
+            
+            int recommendedQuantity = product.GetRecommendedQuantity();
+            int target = recommendedQuantity + requiredQuantity > MOQ
+                ? (int)Math.Ceiling((double)(recommendedQuantity + requiredQuantity) / 100) * 100
+                : MOQ;
+
+
             LatheManufactureOrderItem newItem = new()
             {
                 ProductName = product.ProductName,
                 RequiredQuantity = requiredQuantity,
-                TargetQuantity = Math.Max(requiredQuantity + Math.Max(500, product.GetRecommendedQuantity()), MOQ),
+                TargetQuantity = target,
                 DateRequired = dateRequired,
                 CycleTime = product.CycleTime,
                 MajorLength = product.MajorLength,

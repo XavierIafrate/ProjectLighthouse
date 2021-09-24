@@ -239,6 +239,7 @@
                 Width="100"
                 VerticalAlignment="Center"
                 Margin="0,5"
+                Style="{StaticResource UsernameTextBox}"
                 PreviewKeyDown="UpdateQty_PreviewKeyDown" />
             <Button
                 x:Name="UpdateButton"

@@ -40,6 +40,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         #region hide
 
+        //private static PdfDocument AddOrderPageMetadata(LatheManufactureOrder order, PdfDocument doc)
+        //{
+
+
+        //    return doc;
+        //}
+
         public static void PrintOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -245,13 +252,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             TargetQuantityCol.Y = y;
             CycleTimeCol.Y = y;
 
-            //debug
-            //gfx.DrawRectangle(XPens.Black, brush, RowNumCol);
-            //gfx.DrawRectangle(XPens.Black, bluebrush, ProductNameCol);
-            //gfx.DrawRectangle(XPens.Black, brush, QuantityRequiredCol);
-            //gfx.DrawRectangle(XPens.Black, bluebrush, DateRequiredCol);
-            //gfx.DrawRectangle(XPens.Black, brush, TargetQuantityCol);
-            //gfx.DrawRectangle(XPens.Black, bluebrush, CycleTimeCol);
 
             gfx.DrawLine(stroke, offset, y, page.Width - offset, y);
             gfx.DrawString("", font, XBrushes.DarkBlue, RowNumCol, XStringFormats.Center);
@@ -720,10 +720,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
-
-            Debug.Write($"Page Width: {page.Width}");
-            Debug.Write($"Page Width w/o gutter: {page.Width-DOCUMENT_GUTTER*2}");
-
             // Logo
             XImage logo = XImage.FromFile(GetLogoFile());
             double logo_width = 100;
@@ -829,7 +825,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             return (Environment.UserName == "xavier") ?
                 @"C:\Users\xavie\Desktop\Lighthouse_dark.png" :
-                @"H:\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
+                @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
         }
 
         public static void OpenWithDefaultProgram(string path)
@@ -842,12 +838,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static string intToQuantity(int qty)
         {
-            return qty == 0 ? "" : string.Format("{0:#,##0}", qty);
+            return qty == 0 ? "" : $"{qty:#,##0}";
         }
 
         public static string DateToDateStamp(DateTime date_input)
         {
-            return date_input == DateTime.MinValue ? "" : string.Format("{0:dd/MM/yy}", date_input);
+            return date_input == DateTime.MinValue ? "" : $"{date_input:dd/MM/yy}";
         }
 
         public static string intToCycleTime(int cycle_time_seconds)

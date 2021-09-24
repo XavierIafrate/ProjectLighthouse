@@ -27,7 +27,7 @@ namespace ProjectLighthouse
                 Application.Current.Shutdown();
                 return;
             }
-            //App.ROOT_PATH = @"\\groupfile01\Roaming\x.iafrate\Desktop\";
+
             InitializeComponent();
 
             if (App.CurrentUser == null)
@@ -39,11 +39,20 @@ namespace ProjectLighthouse
         public void AddVersionNumber()
         {
             if (App.CurrentUser == null)
+            {
                 return;
+            }
+
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
             Title += $" v.{versionInfo.FileVersion}";
+
+#if DEBUG
+            Title += $" - {DatabaseHelper.GetDatabaseFile()}";
+            DebugTile.Visibility = Visibility.Visible;
+#endif
+
             File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.CurrentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
         }
 

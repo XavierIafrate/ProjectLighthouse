@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
@@ -8,14 +9,23 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class DatabaseHelper
     {
+
+        private static readonly string DEBUG_dbFile = @"manufactureDB_debug.db3";
+
         private static readonly string dbFile = @"manufactureDB.db3";
 
-        private static string GetDatabaseFile()
+        public static string GetDatabaseFile()
         {
-
-            return Environment.UserName == "xavier"
+            if (Debugger.IsAttached)
+            {
+                return Environment.UserName == "xavier"
                 ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
-                : Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", dbFile);
+                : Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", DEBUG_dbFile);
+            }
+            else
+            {
+                return Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", dbFile);
+            } 
         }
 
         public static bool Insert<T>(T item)
