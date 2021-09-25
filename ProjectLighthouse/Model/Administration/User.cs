@@ -7,6 +7,7 @@ namespace ProjectLighthouse.Model
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
@@ -14,7 +15,20 @@ namespace ProjectLighthouse.Model
         public string Password { get; set; }
         public string UserRole { get; set; }
         public string computerUsername { get; set; }
-        public DateTime LastLogin { get; set; }
+        
+        private DateTime lastLogin;
+
+        public DateTime LastLogin
+        {
+            get { return lastLogin; }
+            set 
+            { 
+                lastLogin = value;
+                LastLoginText = value.ToString("s");
+            }
+        }
+
+        public string LastLoginText { get; set; }
 
         public bool IsBlocked { get; set; }
         public bool CanApproveRequests { get; set; }

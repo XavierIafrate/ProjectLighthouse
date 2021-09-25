@@ -42,7 +42,7 @@ namespace ProjectLighthouse.Model
         {
             const int targetMonthsStock = 12;
             double scaleFactor = Convert.ToDouble(targetMonthsStock) / 18;
-            double toMake = Math.Max(QuantitySold * scaleFactor - QuantityInStock, 0);
+            double toMake = Math.Max((QuantitySold * scaleFactor) - QuantityInStock, 0);
 
             return Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
         }

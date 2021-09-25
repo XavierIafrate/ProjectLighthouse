@@ -92,11 +92,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     string name = dbfRecord.Values[iStockRef].ToString();
                     string searchref = dbfRecord.Values[iSearchRef].ToString();
 
-                    //if (name.StartsWith("P0435") && !name.Contains("-A4"))
-                    //{
-                    //    name += "-A2";
-                    //}
-
                     if (!nameLookup.Contains(name) && !name.StartsWith("PRB"))
                     {
                         if (nameLookup.Contains(searchref))
@@ -139,11 +134,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         results.Add(record);
                     }
 
-                    //Debug.Write($"NAME:{name}, SALESORDER:{SalesOrder}pcs, STOCK:{Stock}pcs, ONORDER:{OnOrder}\n");
+
                 }
             }
 
-            total_records = (int)results.Count;
+            total_records = results.Count;
             i = 0;
             Console.WriteLine();
 
@@ -156,18 +151,23 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
                 if (productRecord == null)
+                {
                     continue;
+                }
 
-                productRecord.QuantityInStock = r.QtyInStock;
-                productRecord.QuantityOnPO = r.QtyPurchaseOrder;
-                productRecord.QuantityOnSO = r.QtySalesOrder;
-                productRecord.SellPrice = r.SellPrice;
+                if (RecordNeedsUpdating(productRecord, r))
+                {
+                    productRecord.QuantityInStock = r.QtyInStock;
+                    productRecord.QuantityOnPO = r.QtyPurchaseOrder;
+                    productRecord.QuantityOnSO = r.QtySalesOrder;
+                    productRecord.SellPrice = r.SellPrice;
 
-                DatabaseHelper.Update<TurnedProduct>(productRecord);
+                    DatabaseHelper.Update<TurnedProduct>(productRecord);
+                }
             }
 
 
-            total_records = (int)bar_records.Count;
+            total_records = bar_records.Count;
             i = 0;
             Console.WriteLine();
 
@@ -190,6 +190,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 DatabaseHelper.Update<BarStock>(bar_record);
             }
+        }
+
+        private static bool RecordNeedsUpdating(TurnedProduct product, OperaFields operaRecord)
+        {
+            return
+                product.QuantityInStock != operaRecord.QtyInStock ||
+                product.QuantityOnPO != operaRecord.QtyPurchaseOrder ||
+                product.QuantityOnSO != operaRecord.QtySalesOrder ||
+                product.SellPrice != operaRecord.SellPrice;
         }
 
         protected class OperaFields

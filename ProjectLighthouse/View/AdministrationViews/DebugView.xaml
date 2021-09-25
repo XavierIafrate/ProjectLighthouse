@@ -1,0 +1,35 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.DebugView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    d:Background="White"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <vm:DebugViewModel x:Key="vm" />
+    </UserControl.Resources>
+
+    <Grid DataContext="{StaticResource vm}">
+        <Border
+            Margin="20"
+            Background="{StaticResource materialSurface}"
+            CornerRadius="20" />
+        <StackPanel Margin="20">
+            <Button Click="Button_Click" Content="Imprint Dates" />
+            <TextBox
+                x:Name="TestBox"
+                Width="400"
+                MinHeight="150"
+                Padding="10"
+                Background="Black"
+                Foreground="White"
+                FontSize="16"
+                FontFamily="Lucida Console"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

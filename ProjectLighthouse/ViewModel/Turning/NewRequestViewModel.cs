@@ -156,9 +156,12 @@ namespace ProjectLighthouse.ViewModel
             {
                 TurnedProducts.Add(product);
                 if (!product.isSpecialPart)
+                {
                     if (!Families.Any(item => item.ToString() == product.ProductName.Substring(0, 5)))
+                    {
                         Families.Add(product.ProductName.Substring(0, 5));
-
+                    }
+                }
             }
 
             Families = Families.OrderBy(n => n).ToList();
@@ -182,7 +185,9 @@ namespace ProjectLighthouse.ViewModel
                 foreach (TurnedProduct product in TurnedProducts)
                 {
                     if (product.ProductName.Substring(0, Math.Min(5, product.ProductName.Length)) == SelectedGroup && !product.isSpecialPart)
+                    {
                         FilteredList.Add(product);
+                    }
                 }
             }
 
@@ -334,10 +339,11 @@ namespace ProjectLighthouse.ViewModel
                 RecommendedStockText = $"{selectedProduct.GetRecommendedQuantity():#,##0} pcs";
 
                 List<int> classQuantities = new();
-                foreach (TurnedProduct product in FilteredList)
+                foreach (TurnedProduct product in TurnedProducts)
                 {
                     if (product.ProductName != selectedProduct.ProductName && product.IsScheduleCompatible(selectedProduct))
                     {
+                        Debug.WriteLine(product.ProductName);
                         classQuantities.Add(product.GetRecommendedQuantity());
                     }
                 }

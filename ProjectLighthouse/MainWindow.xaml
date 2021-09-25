@@ -40,7 +40,7 @@
             RenderOptions.BitmapScalingMode="Fant"
             Source="/Resources/Lighthouse_dark.png" />
 
-            <Grid x:Name="DebugTile" Margin="10" Visibility="Collapsed">
+            <Grid x:Name="DebugTile" Margin="10" Visibility="Visible">
                 <Border Background="{StaticResource materialError}" CornerRadius="10"/>
                 <TextBlock Text="DEBUG VERSION" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold" Foreground="{StaticResource materialOnError}" Margin="0,5"/>
             </Grid>
@@ -114,6 +114,12 @@
                             CommandParameter="Manage Users"
                             Content="Manage Users"
                             Style="{StaticResource ManageUsers_MenuItem}" />
+                        <ToggleButton
+                            x:Name="debug_users_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Dev Area / Debug"
+                            Content="Dev Area"
+                            Style="{StaticResource Debug_MenuItem}" />
                     </StackPanel>
 
                 </StackPanel>
