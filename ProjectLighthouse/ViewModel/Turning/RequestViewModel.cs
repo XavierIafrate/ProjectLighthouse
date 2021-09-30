@@ -47,7 +47,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedRequest = value;
                 OnPropertyChanged("SelectedRequest");
-                SelectedRequestChanged?.Invoke(this, new EventArgs());
+                //SelectedRequestChanged?.Invoke(this, new EventArgs());
 
                 LoadRequestCard(value);
             }
@@ -149,6 +149,19 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private Visibility cleaningVis;
+
+        public Visibility CleaningVis
+        {
+            get { return cleaningVis; }
+            set 
+            { 
+                cleaningVis = value;
+                OnPropertyChanged("CleaningVis");
+            }
+        }
+
+
         private Visibility cardVis;
         public Visibility CardVis
         {
@@ -240,6 +253,10 @@ namespace ProjectLighthouse.ViewModel
             {
                 return;
             }
+
+            CleaningVis = request.CleanCustomerRequirement
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
             ModifiedVis = string.IsNullOrEmpty(request.ModifiedBy)
                 ? Visibility.Collapsed

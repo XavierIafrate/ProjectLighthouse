@@ -58,7 +58,8 @@ namespace ProjectLighthouse.View
                 {
                     requiredProduct = product;
                     constructLMO.BarID = product.BarID;
-                    LMOItems.Add(TurnedProductToLMOItem(requiredProduct, request.QuantityRequired, request.DateRequired));
+                    constructLMO.ItemNeedsCleaning = request.CleanCustomerRequirement;
+                    LMOItems.Add(TurnedProductToLMOItem(requiredProduct, request.QuantityRequired, request.DateRequired, request.CleanCustomerRequirement));
                 }
             }
 
@@ -72,7 +73,7 @@ namespace ProjectLighthouse.View
             }
         }
 
-        public static LatheManufactureOrderItem TurnedProductToLMOItem(TurnedProduct product, int requiredQuantity, DateTime dateRequired)
+        public static LatheManufactureOrderItem TurnedProductToLMOItem(TurnedProduct product, int requiredQuantity, DateTime dateRequired, bool cleaning)
         {
             int MOQ = product.MajorDiameter switch
             {
@@ -99,6 +100,7 @@ namespace ProjectLighthouse.View
                 CycleTime = product.CycleTime,
                 MajorLength = product.MajorLength,
                 IsSpecialPart = product.isSpecialPart,
+                NeedsCleaning = cleaning,
             };
 
             if (newItem.CycleTime == 0)
@@ -230,7 +232,7 @@ namespace ProjectLighthouse.View
 
             //LatheManufactureOrderItem newItem = TurnedProductToLMOItem(selectedProduct, 0, DateTime.MinValue);
 
-            LMOItems.Add(TurnedProductToLMOItem(selectedProduct, 0, DateTime.MinValue));
+            LMOItems.Add(TurnedProductToLMOItem(selectedProduct, 0, DateTime.MinValue, false));
             RefreshView();
         }
 

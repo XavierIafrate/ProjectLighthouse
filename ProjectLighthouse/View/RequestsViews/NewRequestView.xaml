@@ -79,6 +79,9 @@
             </ListView>
 
             <StackPanel Grid.Row="2">
+
+
+
                 <!--  Date Picker  -->
 
                 <Grid Margin="0,5">
@@ -148,13 +151,27 @@
                         IsHitTestVisible="False"
                         Text="Add Notes (optional)" />
                 </Grid>
+                <Grid Margin="0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid HorizontalAlignment="Center">
+                        <CheckBox
+                            x:Name="CleaningButton"
+                            Content="Ultrasonic Cleaning"
+                            IsChecked="{Binding NewRequest.CleanCustomerRequirement, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    </Grid>
+                    <Button
+                        x:Name="submitButton"
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Click="SubmitButton_Click"
+                        Content="Submit Request"
+                        Style="{StaticResource SubmitButton}" />
 
-                <Button
-                    x:Name="submitButton"
-                    HorizontalAlignment="Right"
-                    Click="SubmitButton_Click"
-                    Content="Submit Request"
-                    Style="{StaticResource SubmitButton}" />
+                </Grid>
             </StackPanel>
         </Grid>
 
@@ -410,7 +427,10 @@
                                 ShadowDepth="20"
                                 Color="Black" />
                         </Border.Effect>
-                        <Border Name="ReceiverColor" CornerRadius="15" Visibility="{Binding GIFVis}">
+                        <Border
+                            Name="ReceiverColor"
+                            CornerRadius="15"
+                            Visibility="{Binding GIFVis}">
                             <Grid>
                                 <Border
                                     Name="Mask"

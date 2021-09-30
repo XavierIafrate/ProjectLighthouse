@@ -24,7 +24,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
             else
             {
-                return Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", dbFile);
+                return Environment.UserName == "xavier"
+                ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
+                : Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", dbFile);
             } 
         }
 

@@ -28,5 +28,7 @@ namespace ProjectLighthouse.Model
         public string Status { get; set; } = "Pending approval";
         public string Likeliness { get; set; }
         public string Notes { get; set; }
+
+        public bool CleanCustomerRequirement { get; set; }
     }
 }

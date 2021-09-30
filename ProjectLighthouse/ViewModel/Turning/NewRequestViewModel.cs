@@ -68,7 +68,6 @@ namespace ProjectLighthouse.ViewModel
                 selectedGroup = value;
                 OnPropertyChanged("SelectedGroup");
                 PopulateListBox();
-
             }
         }
 
@@ -138,7 +137,9 @@ namespace ProjectLighthouse.ViewModel
                 foreach (LatheManufactureOrderItem item in items)
                 {
                     if (order.Name == item.AssignedMO)
+                    {
                         totalTime += item.CycleTime * item.TargetQuantity;
+                    }
                 }
             }
 
@@ -322,7 +323,7 @@ namespace ProjectLighthouse.ViewModel
             TurnedProducts = new();
             FilteredList = new();
             Families = new();
-            SelectedGroup = "";
+            SelectedGroup = "Live";
             SelectedProduct = new();
 
             PopulateComboBox();

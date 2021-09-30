@@ -10,8 +10,10 @@ namespace ProjectLighthouse.Model
 
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
+
         [Indexed]
         public string ProductName { get; set; }
+
         public int CycleTime { get; set; }
         public string Material { get; set; }
         public string BarID { get; set; }

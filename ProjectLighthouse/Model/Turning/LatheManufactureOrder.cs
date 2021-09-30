@@ -33,6 +33,7 @@ namespace ProjectLighthouse.Model
         public bool HasStarted { get; set; }
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
+        public bool ItemNeedsCleaning { get; set; }
 
         public object Clone()
         {
@@ -60,7 +61,8 @@ namespace ProjectLighthouse.Model
                 HasProgram = HasProgram,
                 HasStarted = HasStarted,
                 BarID = BarID,
-                NumberOfBars = NumberOfBars
+                NumberOfBars = NumberOfBars,
+                ItemNeedsCleaning = ItemNeedsCleaning
             };
         }
     }

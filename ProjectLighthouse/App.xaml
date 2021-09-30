@@ -23,6 +23,7 @@
                 <ResourceDictionary Source="./Themes/StylishItemsControl.xaml" />
                 <ResourceDictionary Source="./Themes/StylishComboBox.xaml" />
                 <ResourceDictionary Source="./Themes/StylishDatePicker.xaml" />
+                <ResourceDictionary Source="./Themes/StylishCheckbox.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--#endregion-->
 
@@ -30,31 +31,31 @@
             <DataTemplate DataType="{x:Type vms:RequestViewModel}">
                 <views:RequestView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vms:NewRequestViewModel}">
                 <views:NewRequestView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vms:MachineStatsViewModel}">
                 <views:MachineStatsView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vms:OrderViewModel}">
                 <views:OrderView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vms:ScheduleViewModel}">
                 <views:ScheduleView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vms:DeliveriesViewModel}">
                 <views:DeliveriesView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vms:AnalyticsViewModel}">
                 <views:AnalyticsView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vms:ManageUsersViewModel}">
                 <views:ManageUsersView />
             </DataTemplate>

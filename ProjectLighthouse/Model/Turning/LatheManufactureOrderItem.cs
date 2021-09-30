@@ -26,5 +26,6 @@ namespace ProjectLighthouse.Model
         public bool IsSpecialPart { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public bool NeedsCleaning { get; set; }
     }
 }

@@ -46,10 +46,11 @@
             FontSize="22"
             Text="Product Pool" />
         <ScrollViewer
+           
             Grid.Row="2"
             HorizontalScrollBarVisibility="Hidden"
             VerticalScrollBarVisibility="Auto">
-            <ListBox x:Name="poolListBox" HorizontalContentAlignment="Stretch">
+            <ListBox x:Name="poolListBox" HorizontalContentAlignment="Stretch"  MaxHeight="400">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <uc:LMOConstructionDisplayProducts Product="{Binding}" />

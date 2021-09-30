@@ -94,7 +94,7 @@
                 <StackPanel Margin="20">
                     <!--  Card Header  -->
 
-                    <StackPanel Margin="0,0,0,10">
+                    <StackPanel Margin="0,0,0,10" HorizontalAlignment="Stretch">
                         <TextBlock Style="{StaticResource title}" Text="{Binding SelectedRequest.Product, FallbackValue='P0XXX.123-456-A2'}" />
 
                         <StackPanel Orientation="Horizontal">
@@ -105,7 +105,38 @@
                                 Text="{Binding SelectedRequest.DateRequired, StringFormat='{} for {0:dd/MM/yy}', FallbackValue=' for 01/01/1970'}" />
 
                         </StackPanel>
+
+                        <Grid
+                            Margin="10,10,10,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Visibility="{Binding CleaningVis}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Grid.ColumnSpan="2"
+                                Background="{StaticResource materialPrimaryBlue}"
+                                CornerRadius="10" />
+                            <Path
+                                Width="25"
+                                Height="25"
+                                Margin="10"
+                                Data="M12,20A6,6 0 0,1 6,14C6,10 12,3.25 12,3.25C12,3.25 18,10 18,14A6,6 0 0,1 12,20Z"
+                                Fill="White"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Padding="5,5,15,5"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource materialBackground}"
+                                Style="{StaticResource subtitle}"
+                                Text="Ultrasonic Cleaning Required" />
+                        </Grid>
                     </StackPanel>
+
+
 
 
                     <!--  MetaData Dates display grid  -->

@@ -89,21 +89,19 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 if (user.UserRole == "Production" && !string.IsNullOrEmpty(user.EmailAddress))
                 {
                     Debug.WriteLine($"TO: {user.EmailAddress}");
-                    email.TOs.Add(new EmailRecipient()
-                    {
-                        Name = user.GetFullName(),
-                        Email = user.EmailAddress
-                    });
+                    email.TOs.Add(new EmailRecipient(
+                        email: user.EmailAddress,
+                        name: user.GetFullName()
+                        ));
                 }
 
                 if (user.UserRole == "Scheduling" && !string.IsNullOrEmpty(user.EmailAddress))
                 {
                     Debug.WriteLine($"TO: {user.EmailAddress}");
-                    email.TOs.Add(new EmailRecipient()
-                    {
-                        Name = user.GetFullName(),
-                        Email = user.EmailAddress
-                    });
+                    email.TOs.Add(new EmailRecipient(
+                        email: user.EmailAddress,
+                        name: user.GetFullName()
+                        ));
                 }
             }
 
