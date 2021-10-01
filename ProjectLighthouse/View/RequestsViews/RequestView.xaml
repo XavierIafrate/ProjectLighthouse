@@ -7,7 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel" 
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=vm:RequestViewModel}"
     Background="{StaticResource materialBackground}">
 
     <Grid>
@@ -54,9 +56,9 @@
                 <ComboBoxItem Content="Declined" />
                 <ComboBoxItem Content="All" />
             </ComboBox>
-            <!--<Button
+            <Button
                 Command="{Binding ExportCommand}"
-                Style="{StaticResource CSVButton}"/>-->
+                Style="{StaticResource CSVButton}"/>
         </StatusBar>
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
             <TextBlock
@@ -330,6 +332,8 @@
                                 Text="Quantity Required"
                                 Visibility="Hidden" />
                         </Grid>
+
+                        <CheckBox Content="Ultrasonic cleaning required?"  HorizontalAlignment="Center" IsChecked="{Binding SelectedRequest.CleanCustomerRequirement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEditRequirements}"/>
 
 
                         <TextBlock Style="{StaticResource section}" Text="Notes" />

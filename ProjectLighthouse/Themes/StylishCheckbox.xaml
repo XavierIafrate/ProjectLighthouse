@@ -20,16 +20,22 @@
                                 x:Name="checkmark"/>
                         </Grid>
                         <ContentPresenter
+                            x:Name="content"
                             Margin="5,0,5,1"
                             VerticalAlignment="Center"
                             TextElement.FontSize="15"
-                            TextElement.Foreground="{StaticResource disabledGray}"/>
+                            TextElement.Foreground="{StaticResource materialOffBlack}"/>
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="checkmark" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="box" Property="Background" Value="{StaticResource materialPrimaryGreen}" />
                             <Setter TargetName="box" Property="BorderThickness" Value="0" />
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource materialPrimaryGreen}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource disabledGray}"/>
                         </Trigger>
 
                     </ControlTemplate.Triggers>

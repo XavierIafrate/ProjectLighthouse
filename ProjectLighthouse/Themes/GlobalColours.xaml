@@ -19,7 +19,7 @@
     <SolidColorBrush x:Key="materialOnSecondary" Color="#000000" />
     <SolidColorBrush x:Key="materialOnBackground" Color="#000000" />
     <SolidColorBrush x:Key="materialOnSurface" Color="#000000" />
-    <SolidColorBrush x:Key="materialOffBlack" Color="#161b23" />
+    <SolidColorBrush x:Key="materialOffBlack" Color="#333333" />
     <SolidColorBrush x:Key="materialOnError" Color="#FFFFFF" />
 
     <SolidColorBrush x:Key="materialYellow" Color="#ffff71" />

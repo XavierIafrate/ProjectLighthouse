@@ -33,6 +33,16 @@
                     Duration="0:0:01" />
             </Storyboard>
 
+            <Storyboard x:Key="AnimateLighthouse" RepeatBehavior="Forever">
+                <DoubleAnimation
+                    AutoReverse="True"
+                    BeginTime="0:0:1"
+                    Storyboard.TargetProperty="Opacity"
+                    From="1"
+                    To="0"
+                    Duration="0:0:01"/>
+            </Storyboard>
+
             <Style x:Key="liveCircle" TargetType="Rectangle">
                 <Setter Property="Width" Value="16" />
                 <Setter Property="Height" Value="16" />
@@ -43,6 +53,19 @@
                 <Style.Triggers>
                     <EventTrigger RoutedEvent="Loaded">
                         <BeginStoryboard Storyboard="{StaticResource AnimateFlicker}" />
+                    </EventTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="lighthouse" TargetType="Path">
+                <Setter Property="Data" Value="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"/>
+                <Setter Property="Width" Value="30" />
+                <Setter Property="Fill" Value="{StaticResource materialOnError}" />
+                <Setter Property="Stretch" Value="Uniform"/>
+                <Setter Property="Margin" Value="20,0" />
+                <Style.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard Storyboard="{StaticResource AnimateLighthouse}" />
                     </EventTrigger>
                 </Style.Triggers>
             </Style>
@@ -116,8 +139,6 @@
         </StatusBar>
 
         <!--#region Display Order-->
-
-
         <StackPanel
             Grid.Row="1"
             Grid.Column="1"
@@ -320,13 +341,27 @@
                                         HorizontalAlignment="Right"
                                         FontStyle="Italic"
                                         Style="{StaticResource statement}"
-                                        Text="{Binding SelectedLatheManufactureOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
+                                        Text="{Binding SelectedLatheManufactureOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
+                                        Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}"/>
                                 </Grid>
                                 <Separator Margin="0,5" />
                             </StackPanel>
                             <!--#endregion-->
 
                             <!--#region Metadata-->
+
+                            <Grid Visibility="{Binding CleaningVis}" Margin="10">
+                                <Border Background="{StaticResource materialPrimaryBlue}" CornerRadius="10"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <Path Style="{StaticResource lighthouse}"/>
+                                    <StackPanel VerticalAlignment="Center" Margin="5,10">
+                                        <TextBlock Text="Ultrasonic Cleaning" Foreground="{StaticResource materialOnPrimary}" FontSize="20"/>
+                                        <TextBlock Text="For Customer Requirement" Foreground="{StaticResource materialOnPrimary}" Opacity="0.5" FontStyle="Italic" FontSize="15"/>
+                                    </StackPanel>
+                                    
+                                </StackPanel>
+                            </Grid>
+                            
                             <Grid Margin="15,10">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />

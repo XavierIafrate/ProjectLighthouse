@@ -114,6 +114,19 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private Visibility cleaningVis;
+
+        public Visibility CleaningVis
+        {
+            get { return cleaningVis; }
+            set
+            {
+                cleaningVis = value;
+                OnPropertyChanged("CleaningVis");
+            }
+        }
+
+
         private Visibility cardVis;
 
         public Visibility CardVis
@@ -180,8 +193,6 @@ namespace ProjectLighthouse.ViewModel
             ProductGroups = new();
             SelectedProductGroup = new();
             SelectedProducts = new();
-
-
 
             PrintOrderCommand = new PrintCommand(this);
             EditCommand = new EditManufactureOrderCommand(this);
@@ -327,11 +338,14 @@ namespace ProjectLighthouse.ViewModel
                     continue;
                 }
 
-                if (order.POReference.Contains(SearchTerm) && order.POReference != "N/A" && !string.IsNullOrEmpty(order.POReference))
+                if (order.POReference != null)
                 {
-                    Results.Add(order);
-                    FoundOrders.Add(order.Name);
-                    continue;
+                    if (order.POReference.Contains(SearchTerm) && order.POReference != "N/A")
+                    {
+                        Results.Add(order);
+                        FoundOrders.Add(order.Name);
+                        continue;
+                    }
                 }
             }
 
@@ -377,6 +391,10 @@ namespace ProjectLighthouse.ViewModel
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
+            CleaningVis = SelectedLatheManufactureOrder.ItemNeedsCleaning
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
             if (LiveInfoVis == Visibility.Visible)
                 GetLatestStats();
 
@@ -414,8 +432,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSelectedOrder()
         {
-            //DebugWriteFile();
-            PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems);
+            PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems, FilteredNotes);
         }
 
         public void EditLMO()
@@ -430,14 +447,6 @@ namespace ProjectLighthouse.ViewModel
                 FilterOrders(SelectedFilter); // update list on screen
 
                 SelectedLatheManufactureOrder = LatheManufactureOrders.Where(o => o.Name == editWindow.order.Name).FirstOrDefault();
-                //foreach (LatheManufactureOrder order in LatheManufactureOrders) // re-select order
-                //{
-                //    if (order.Name == editWindow.order.Name)
-                //    {
-                //        SelectedLatheManufactureOrder = order;
-                //        break;
-                //    }
-                //}
             }
 
             editWindow = null;
@@ -457,9 +466,9 @@ namespace ProjectLighthouse.ViewModel
             };
         }
 
-        private void DebugWriteFile()
-        {
-            CSVHelper.WriteListToCSV(LatheManufactureOrders, "test");
-        }
+        //private void DebugWriteFile()
+        //{
+        //    CSVHelper.WriteListToCSV(LatheManufactureOrders, "test");
+        //}
     }
 }

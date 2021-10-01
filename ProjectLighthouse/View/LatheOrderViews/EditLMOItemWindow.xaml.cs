@@ -41,9 +41,15 @@ namespace ProjectLighthouse.View
             {
                 foreach (Lot lot in Lots)
                 {
-                    if (!lot.IsReject && lot.ProductName == Item.ProductName)
+                    if (lot.ProductName != Item.ProductName)
+                    {
+                        continue;
+                    }
+
+                    if (!lot.IsReject)
                     {
                         intQtyMade += lot.Quantity;
+
                         if (lot.IsDelivered)
                         {
                             intQtyDelivered += lot.Quantity;
@@ -53,7 +59,6 @@ namespace ProjectLighthouse.View
                     {
                         intQtyReject += lot.Quantity;
                     }
-
                 }
             }
 
@@ -77,7 +82,7 @@ namespace ProjectLighthouse.View
                 : Visibility.Collapsed;
 
             LotsListBox.ItemsSource = null;
-            LotsListBox.ItemsSource = Lots.Where(n => n.ProductName == Item.ProductName).ToList();
+            LotsListBox.ItemsSource = Lots.Where(l => l.ProductName == Item.ProductName).ToList();
 
             if (Lots.Count > 0)
             {

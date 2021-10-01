@@ -11,20 +11,20 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Title="Edit Timings">
-    <Grid Height="auto" VerticalAlignment="Center" Margin="20,0">
+    <Grid Height="auto" VerticalAlignment="Center" Margin="20,10">
         <StackPanel>
-            <TextBlock x:Name="TitleText"/>
-            <TextBlock Text="Set Start Date"/>
-            <Calendar Margin="15,0,15,5" x:Name="calendar"/>
-            <TextBlock Text="Assign Machine"/>
-            <ComboBox Margin="10,5" x:Name="machine">
+            <TextBlock x:Name="TitleText" Text="Editing: M00000" Style="{StaticResource subtitle}"/>
+            <TextBlock Text="Set Start Date" Style="{StaticResource subsubtitle}"/>
+            <Calendar Margin="10" x:Name="calendar"/>
+            <TextBlock Text="Assign Machine" Style="{StaticResource subsubtitle}"/>
+            <ComboBox Margin="5" x:Name="machine">
                 <ComboBoxItem Content="C01"/>
                 <ComboBoxItem Content="C02"/>
                 <ComboBoxItem Content="C03"/>
                 <ComboBoxItem Content="C04"/>
             </ComboBox>
             <Grid HorizontalAlignment="Right">
-                <Button Content="Save" Style="{StaticResource GreenButton}" Margin="10" x:Name="confirmButton" Click="confirmButton_Click"/>
+                <Button Content="Save" Style="{StaticResource GreenButton}" x:Name="confirmButton" Click="confirmButton_Click"/>
             </Grid>
             
         </StackPanel>

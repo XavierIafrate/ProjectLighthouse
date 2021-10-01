@@ -318,6 +318,7 @@ namespace ProjectLighthouse.ViewModel
         {
             SelectedRequest.LastModified = DateTime.Now;
             SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
+
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 OnPropertyChanged("SelectedRequest");

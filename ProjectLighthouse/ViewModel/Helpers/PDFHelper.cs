@@ -30,8 +30,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static double DOCUMENT_GUTTER = 30;
         private static double HEADER_HEIGHT = 40;
-        private static XFont TITLE_FONT = new("Courier New", 25, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
-        private static XFont HEADER_FONT = new("Courier New", 20, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        private static XFont TITLE_FONT = new("Tahoma", 25, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        private static XFont HEADER_FONT = new("Tahoma", 18, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        private static XFont DEFAULT_FONT = new("Tahoma", 12, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
 
         private static double SCHEDULE_ROW_HEIGHT = 20;
 
@@ -47,7 +48,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         //    return doc;
         //}
 
-        public static void PrintOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
+        public static void PrintOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<Note> Notes)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -66,10 +67,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             #region Title
             // Logo
-            string logo_file = @"H:\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
+            string logo_file = @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
 
             if (Environment.UserName == "xavier")
-                logo_file = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
+                logo_file = @"C:\Users\xavie\Desktop\Lighthouse_dark.png";
 
             XImage logo = XImage.FromFile(logo_file);
             const double dy = 150;
@@ -116,7 +117,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             valueRect.Y = y;
 
             gfx.DrawString("Start Date", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
-            gfx.DrawString(string.Format("{0:ddd dd/MM/yy}", order.StartDate), valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
+            gfx.DrawString($"{order.StartDate:ddd dd/MM/yy}", valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
 
             y += valueRect.Height;
             parameterRect.Y = y;
@@ -218,15 +219,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 TargetQuantityCol.Y = y;
                 CycleTimeCol.Y = y;
 
-                //debug
-                //gfx.DrawRectangle(XPens.Black, brush, RowNumCol);
-                //gfx.DrawRectangle(XPens.Black, bluebrush, ProductNameCol);
-                //gfx.DrawRectangle(XPens.Black, brush, QuantityRequiredCol);
-                //gfx.DrawRectangle(XPens.Black, bluebrush, DateRequiredCol);
-                //gfx.DrawRectangle(XPens.Black, brush, TargetQuantityCol);
-                //gfx.DrawRectangle(XPens.Black, bluebrush, CycleTimeCol);
-
-                gfx.DrawString(string.Format("{0}.", i), font, XBrushes.Black, RowNumCol, XStringFormats.Center);
+                gfx.DrawString($"{i}.", font, XBrushes.Black, RowNumCol, XStringFormats.Center);
                 gfx.DrawString(item.ProductName, font, XBrushes.Black, ProductNameCol, XStringFormats.CenterLeft);
                 gfx.DrawString(intToQuantity(item.RequiredQuantity), font, XBrushes.Black, QuantityRequiredCol, XStringFormats.Center);
                 gfx.DrawString(DateToDateStamp(item.DateRequired), font, XBrushes.Black, DateRequiredCol, XStringFormats.Center);
@@ -354,10 +347,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             #region Title
             // Logo
-            string logo_file = @"H:\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
+            string logo_file = @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
 
             if (Environment.UserName == "xavier")
-                logo_file = "C:\\Users\\xavie\\Desktop\\Lighthouse_dark.png";
+            {
+                logo_file = @"C:\Users\xavie\Desktop\Lighthouse_dark.png";
+            }
 
             XImage logo = XImage.FromFile(logo_file);
             const double dy = 150;
@@ -462,10 +457,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 ThisDelCol.Y = y;
                 //ToFollowCol.Y = y;
 
-                gfx.DrawString(string.Format("{0}.", i), font, XBrushes.Black, RowNumCol, XStringFormats.Center);
+                gfx.DrawString($"{i}.", font, XBrushes.Black, RowNumCol, XStringFormats.Center);
                 gfx.DrawString(deliveryItem.PurchaseOrderReference, font, XBrushes.Black, PurchaseRefCol, XStringFormats.CenterLeft);
                 gfx.DrawString(deliveryItem.Product, font, XBrushes.Black, ProductCol, XStringFormats.CenterLeft);
-                gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityThisDelivery), font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
+                gfx.DrawString($"{deliveryItem.QuantityThisDelivery:#,##0} pcs", font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
                 //gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityToFollow), font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
 
                 //PO Ref Barcode
@@ -547,9 +542,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 AppendScheduleForLathe(orders.Where(o => o.AllocatedMachine == lathe.Id).ToList(), items, lathe, document);
             }
 
-            string fileName = $"{"schedule"}_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
-            string path = Directory.Exists(SCH_PDF_OUTPUTDIR) 
-                ? Path.Join(SCH_PDF_OUTPUTDIR, fileName) 
+            string fileName = $"schedule_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
+            string path = Directory.Exists(SCH_PDF_OUTPUTDIR)
+                ? Path.Join(SCH_PDF_OUTPUTDIR, fileName)
                 : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
 
             SavePDF(document, path, true);
@@ -563,7 +558,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             Dictionary<string, XRect> columns = new();
 
-            // 20%
             columns.Add("METADATA",
                 new(DOCUMENT_GUTTER, 0, 130, SCHEDULE_ROW_HEIGHT));
 
@@ -628,7 +622,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 if (i == 0)
                 {
                     gfx.DrawString(order.Name,
-                        new("Courier New", 16,XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode)),
+                        DEFAULT_FONT,
                         XBrushes.Black,
                         columns["METADATA"],
                         XStringFormats.CenterLeft);
@@ -636,7 +630,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 else if (i == 1)
                 {
                     gfx.DrawString(order.POReference ?? "TBC",
-                        new("Courier New", 14, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode)),
+                        DEFAULT_FONT,
                         XBrushes.Blue,
                         columns["METADATA"],
                         XStringFormats.CenterLeft);
@@ -644,7 +638,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 else if (i == 2)
                 {
                     gfx.DrawString(string.Format("Setting {0:dd/MM/yy}", order.StartDate),
-                        new("Courier New", 12, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode)),
+                        DEFAULT_FONT,
                         XBrushes.Black,
                         columns["METADATA"],
                         XStringFormats.CenterLeft);
@@ -653,7 +647,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 if (i < items.Count)
                 {
                     gfx.DrawString("  " + items[i].ProductName,
-                        new("Courier New", 12, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode)),
+                        DEFAULT_FONT,
                         XBrushes.Black,
                         columns["PRODUCT"],
                         XStringFormats.CenterLeft);
@@ -662,7 +656,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     gfx.DrawRectangle(XPens.Black, XBrushes.Transparent, columns["CHECKBOX_COMPLETE"]);
 
                     gfx.DrawString($"{items[i].TargetQuantity:#,##0}",
-                        new("Courier New", 12, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode)),
+                        DEFAULT_FONT,
                         XBrushes.Black,
                         columns["TARGET"],
                         XStringFormats.CenterRight);
@@ -670,7 +664,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     if (items[i].RequiredQuantity == 0)
                     {
                         gfx.DrawString("--NONE--",
-                            new("Courier New", 12, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode)),
+                            DEFAULT_FONT,
                             XBrushes.Gray,
                             columns["REQUIREMENT"],
                             XStringFormats.CenterRight);
@@ -678,7 +672,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     else
                     {
                         gfx.DrawString($"{items[i].RequiredQuantity:#,##0} -> {items[i].DateRequired:dd/MM}",
-                            new("Courier New", 12, XFontStyle.Regular, new XPdfFontOptions(PdfFontEncoding.Unicode)),
+                            DEFAULT_FONT,
                             XBrushes.Black,
                             columns["REQUIREMENT"],
                             XStringFormats.CenterRight);

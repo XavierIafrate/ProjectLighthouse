@@ -317,23 +317,19 @@
                 <ControlTemplate TargetType="Button">
                     <Border
                         Height="24"
-                        Padding="20,0"
+                        Width="24"
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
-                        CornerRadius="12">
-                        <StackPanel Orientation="Horizontal">
-                            <Path
-                                Width="12"
-                                Height="12"
-                                Margin="0,0,5,0"
+                        CornerRadius="12"
+                        ToolTip="Danielle's csv button :D">
+                        <Path
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Width="10"
+                                Height="10"
                                 Data="M19.92,12.08L12,20L4.08,12.08L5.5,10.67L11,16.17V2H13V16.17L18.5,10.66L19.92,12.08M12,20H2V22H22V20H12Z"
                                 Fill="{StaticResource materialOnPrimary}"
                                 Stretch="Uniform" />
-                            <TextBlock
-                                Padding="0,0,0,2"
-                                VerticalAlignment="Center"
-                                Text="CSV" />
-                        </StackPanel>
 
                     </Border>
                 </ControlTemplate>

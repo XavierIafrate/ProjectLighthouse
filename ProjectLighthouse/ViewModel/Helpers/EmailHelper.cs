@@ -105,11 +105,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
 
-            email.CCs.Add(new EmailRecipient()
-            {
-                Name = "Automotion Purchasing",
-                Email = "purchasing@automotioncomponents.co.uk"
-            });
+            email.CCs.Add(new EmailRecipient(
+                name: "Automotion Purchasing",
+                email: "purchasing@automotioncomponents.co.uk"
+                ));
+
+            email.CCs.Add(new EmailRecipient(
+                name: "Xavier Iafrate",
+                email: "x.iafrate@wixroydgroup.com"
+                ));
 
             string subject = $"New Manufacture Order - {order.Name}";
             Debug.WriteLine($"TO: {subject}");
