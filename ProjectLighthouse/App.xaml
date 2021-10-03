@@ -48,6 +48,14 @@
                 <views:ScheduleView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type vms:BarStockViewModel}">
+                <views:BarStockView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vms:DrawingBrowserViewModel}">
+                <views:DrawingBrowserView />
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type vms:DeliveriesViewModel}">
                 <views:DeliveriesView />
             </DataTemplate>

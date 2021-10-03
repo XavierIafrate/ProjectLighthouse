@@ -12,15 +12,24 @@ using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class
-        ScheduleViewModel : BaseViewModel
+    public class ScheduleViewModel : BaseViewModel
     {
         #region Variables
         public List<LatheManufactureOrder> Orders { get; set; }
         public List<LatheManufactureOrderItem> OrderItems { get; set; }
         public List<Lathe> Lathes { get; set; }
         public List<CompleteOrder> CompleteOrders { get; set; }
-        public List<TabInfo> WindowTabs { get; set; }
+
+        private List<TabInfo> windowTabs;
+        public List<TabInfo> WindowTabs
+        {
+            get { return windowTabs; }
+            set
+            {
+                windowTabs = value;
+                OnPropertyChanged("WindowTabs");
+            }
+        }
         public DisplayLMOScheduling SelectedOrder { get; set; }
 
         private Visibility autoScheduleVis;
@@ -48,6 +57,7 @@ namespace ProjectLighthouse.ViewModel
         public PrintScheduleCommand PrintScheduleCommand { get; set; }
         public AutoScheduleCommand AutoScheduleCommand { get; set; }
         public UpdateItemOnScheduleCommand UpdateItemCommand { get; set; }
+
         public event EventHandler SelectedTabChanged;
 
         private TabInfo selectedTab;
@@ -61,7 +71,6 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("SelectedTab");
             }
         }
-
 
         #endregion
 

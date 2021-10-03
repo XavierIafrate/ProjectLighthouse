@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             xmlns:converters ="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+             xmlns:converters ="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters" 
+             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls" 
              mc:Ignorable="d"
-             d:Background="White">
+             d:Background="White" d:DesignWidth="692.307">
 
     <UserControl.Resources>
         <converters:intToDays x:Key="inttoday"/>
@@ -29,21 +30,21 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Margin="20,10">
-                <TextBlock Text="{Binding Order.Name, FallbackValue='M00001'}" FontSize="25" Foreground="{StaticResource materialOnBackground}" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Order.Name, FallbackValue='M00001', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="25" Foreground="{StaticResource materialOnBackground}" FontWeight="Bold"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Rectangle x:Name="statusBadgeText" Fill="{StaticResource materialError}" RadiusX="12" RadiusY="12" Height="24"/>
-                    <TextBlock Text="{Binding Order.Status, FallbackValue='Ready'}" 
+                    <TextBlock Text="{Binding Order.Status, FallbackValue='Ready', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                Foreground="{StaticResource materialOnPrimary}" 
                                FontSize="14"
                                Padding="10,0,10,2"
                                VerticalAlignment="Center"/>
                 </Grid>
                 <Button Command="{Binding UpdateCommand}" 
-                        CommandParameter="{Binding Order}"
+                        CommandParameter="{Binding Order, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Content="edit" 
                         x:Name="editButton"
                         Style="{StaticResource SubtleButtonTemplate}"

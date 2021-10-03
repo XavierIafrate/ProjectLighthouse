@@ -65,5 +65,10 @@ namespace ProjectLighthouse.Model
                 ItemNeedsCleaning = ItemNeedsCleaning
             };
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

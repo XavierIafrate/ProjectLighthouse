@@ -18,10 +18,15 @@ namespace ProjectLighthouse.View.UserControls
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not LMOConstructionDisplayLMOItems control)
+            {
                 return;
+            }
 
             if (control == null)
+            {
                 return;
+            }
+
             control.DataContext = control.Item;
 
             control.customerRequirementBadge.Visibility = control.Item.RequiredQuantity == 0

@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     d:Background="White"
-    Background="#01ffffff">
+    Background="#01ffffff"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <Style x:Key="text" TargetType="TextBlock">

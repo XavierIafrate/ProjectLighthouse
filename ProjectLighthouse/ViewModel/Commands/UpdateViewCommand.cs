@@ -47,6 +47,18 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new OrderViewModel();
                 viewModel.NavText = "Manufacture Orders";
             }
+            else if (parameter.ToString() == "Bar Stock")
+            {
+                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new BarStockViewModel();
+                viewModel.NavText = "Bar Stock";
+            }
+            else if (parameter.ToString() == "Drawings")
+            {
+                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new DrawingBrowserViewModel();
+                viewModel.NavText = "Technical Drawings";
+            }
             else if (parameter.ToString() == "Runtime")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;

@@ -28,8 +28,8 @@
             Grid.RowSpan="2"
             Grid.Column="1"
             Margin="5"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center">
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
 
             <Rectangle
                 Grid.RowSpan="2"
@@ -54,20 +54,20 @@
         </Grid>
 
         <TextBlock
-            VerticalAlignment="Bottom"
             Grid.Column="2"
             HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
             FontSize="16"
             Text="{Binding TargetQuantity, StringFormat='{}target: {0:#,##0} pcs', FallbackValue='target: 500 pcs'}" />
 
         <TextBlock
             x:Name="cycleTime"
-            Foreground="DodgerBlue"
-            Grid.Column="2"
             Grid.Row="1"
-            VerticalAlignment="Top"
+            Grid.Column="2"
             HorizontalAlignment="Right"
+            VerticalAlignment="Top"
             FontSize="14"
+            Foreground="DodgerBlue"
             Text="{Binding CycleTime, StringFormat='{}cycle time: {0}s', FallbackValue='cycle time: 120s'}" />
     </Grid>
 </UserControl>

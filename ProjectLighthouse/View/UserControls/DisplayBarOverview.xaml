@@ -1,0 +1,177 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.DisplayBarOverview"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="clr-namespace:ProjectLighthouse.Model"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid Margin="10">
+        <Border Background="{StaticResource materialBackground}" CornerRadius="20" />
+        <StackPanel Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="BarID"
+                    Margin="25,0"
+                    FontSize="30"
+                    FontWeight="SemiBold"
+                    Text="PRB000-0000-000" />
+                <Grid
+                    x:Name="WarningFlag"
+                    Grid.Column="2"
+                    Height="30"
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed">
+                    <Border Background="{StaticResource materialError}" CornerRadius="15" />
+                    <StackPanel Orientation="Horizontal">
+                        <Path
+                            Margin="13,5,8,5"
+                            Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
+                            Fill="{StaticResource materialOnError}"
+                            Stretch="UniformToFill" />
+                        <TextBlock
+                            Margin="0,5,15,5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource materialOnError}"
+                            Text="Warning!" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid
+                    x:Name="WaitingFlag"
+                    Grid.Column="2"
+                    Height="30"
+                    VerticalAlignment="Center">
+                    <Border
+                        Background="{StaticResource materialYellow}"
+                        BorderBrush="{StaticResource materialOffBlack}"
+                        BorderThickness="2"
+                        CornerRadius="15" />
+                    <StackPanel Orientation="Horizontal">
+                        <Path
+                            Margin="13,5,8,5"
+                            Data="M12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17.5 22 22 17.5 22 12S17.5 2 12 2M7.7 15.5L7 14.2L11 11.9V7H12.5V12.8L7.7 15.5Z"
+                            Fill="{StaticResource materialOffBlack}"
+                            Stretch="UniformToFill" />
+                        <TextBlock
+                            Margin="0,5,15,5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource materialOffBlack}"
+                            Text="Required bar incoming" />
+                    </StackPanel>
+                </Grid>
+                <Grid
+                    x:Name="OKFlag"
+                    Grid.Column="2"
+                    Height="30"
+                    VerticalAlignment="Center">
+                    <Border Background="{StaticResource materialPrimaryGreen}" CornerRadius="15" />
+                    <StackPanel Orientation="Horizontal">
+                        <Path
+                            Margin="13,5,8,5"
+                            Data="M12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17.5 22 22 17.5 22 12S17.5 2 12 2M7.7 15.5L7 14.2L11 11.9V7H12.5V12.8L7.7 15.5Z"
+                            Fill="{StaticResource materialOnPrimary}"
+                            Stretch="UniformToFill" />
+                        <TextBlock
+                            Margin="0,5,15,5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource materialOnPrimary}"
+                            Text="Stock OK" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <StackPanel
+                Margin="10"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock
+                    x:Name="InStockText"
+                    Margin="25,3"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="X in stock" />
+
+                <TextBlock
+                    x:Name="OnOrderText"
+                    Margin="25,3"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="Y on order" />
+                <TextBlock
+                    x:Name="RequiredBarsText"
+                    Margin="25,3"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="Z required for orders" />
+            </StackPanel>
+
+            <Grid Height="30" HorizontalAlignment="Center">
+                <Border
+                    x:Name="StatusBackground"
+                    Background="{StaticResource materialPrimaryGreen}"
+                    CornerRadius="15" />
+                <TextBlock
+                    x:Name="StatusText"
+                    Margin="20,1,20,0"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource materialOnPrimary}"
+                    Text="Stock level OK - N free bars" />
+            </Grid>
+
+
+            <TextBlock
+                Margin="25,3"
+                FontSize="20"
+                FontWeight="SemiBold"
+                Text="Orders" />
+            <TextBlock
+                x:Name="NoneText"
+                Margin="25,3"
+                FontSize="20"
+                FontStyle="Italic"
+                Foreground="{StaticResource disabledGray}"
+                Text="None"
+                Visibility="Collapsed" />
+            <ListView x:Name="OrdersListBox" Margin="25,5,25,10">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="10,5" TextElement.FontWeight="SemiBold">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="18" Text="{Binding Name}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0"
+                                VerticalAlignment="Center"
+                                FontStyle="Italic"
+                                FontWeight="Normal"
+                                Foreground="{StaticResource disabledGray}"
+                                Text="{Binding StartDate, StringFormat='{}starting {0:dd/MM}'}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                FontSize="18"
+                                Text="{Binding NumberOfBars, StringFormat='{}{0} bars'}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackPanel>
+    </Grid>
+
+</UserControl>

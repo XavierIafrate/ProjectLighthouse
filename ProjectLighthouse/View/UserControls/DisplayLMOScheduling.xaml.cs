@@ -1,19 +1,23 @@
 ﻿using ProjectLighthouse.Model;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DisplayLMOScheduling.xaml
-    /// </summary>
     public partial class DisplayLMOScheduling : UserControl
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public CompleteOrder orderObject
         {
             get { return (CompleteOrder)GetValue(orderObjectProperty); }
-            set { SetValue(orderObjectProperty, value); }
+            set 
+            { 
+                SetValue(orderObjectProperty, value);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("orderObject"));
+            }
         }
 
         public static readonly DependencyProperty orderObjectProperty =
@@ -29,28 +33,30 @@ namespace ProjectLighthouse.View.UserControls
                 switch (control.orderObject.Order.Status)
                 {
                     case "Ready":
-                        control.bg.Background = (Brush)App.Current.Resources["materialPrimaryGreen"];
-                        control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialPrimaryGreen"];
+                        control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
                         break;
                     case "Awaiting scheduling":
-                        control.bg.Background = (Brush)App.Current.Resources["materialError"];
-                        control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialError"];
+                        control.bg.Background = (Brush)Application.Current.Resources["materialError"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
                         break;
                     case "Running":
-                        control.bg.Background = (Brush)App.Current.Resources["materialPrimaryBlue"];
-                        control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialPrimaryBlue"];
+                        control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryBlue"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryBlue"];
                         break;
                     case "Problem":
-                        control.bg.Background = (Brush)App.Current.Resources["materialError"];
-                        control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialError"];
+                        control.bg.Background = (Brush)Application.Current.Resources["materialError"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
                         break;
                     default:
-                        control.bg.Background = (Brush)App.Current.Resources["materialError"];
-                        control.statusBadgeText.Fill = (Brush)App.Current.Resources["materialError"];
+                        control.bg.Background = (Brush)Application.Current.Resources["materialError"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
                         break;
                 }
             }
-            control.editButton.Visibility = App.CurrentUser.UserRole == "Scheduling" || App.CurrentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
+            control.editButton.Visibility = App.CurrentUser.UserRole is "Scheduling" or "admin"
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
         }
 
         public DisplayLMOScheduling()
