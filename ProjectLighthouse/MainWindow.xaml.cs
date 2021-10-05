@@ -47,6 +47,7 @@ namespace ProjectLighthouse
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
             Title += $" v.{versionInfo.FileVersion}";
+            DebugTile.Visibility = Visibility.Collapsed;
 
 #if DEBUG
             Title += $" - {DatabaseHelper.GetDatabaseFile()}";
