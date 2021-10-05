@@ -10,8 +10,6 @@ namespace ProjectLighthouse.View.UserControls
     /// </summary>
     public partial class DisplayBarOverview : UserControl
     {
-
-
         public BarStockRequirementOverview Bar
         {
             get { return (BarStockRequirementOverview)GetValue(BarProperty); }
@@ -79,6 +77,11 @@ namespace ProjectLighthouse.View.UserControls
         public DisplayBarOverview()
         {
             InitializeComponent();
+        }
+
+        private void Copy_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(Bar.BarStock.Id);
         }
     }
 }

@@ -101,12 +101,12 @@
                             Content="Bar Stock"
                             Style="{StaticResource BarStock_MenuItem}" />
 
-                        <ToggleButton
+                        <!--<ToggleButton
                             x:Name="drawings_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Drawings"
                             Content="Drawings"
-                            Style="{StaticResource Drawings_MenuItem}" />
+                            Style="{StaticResource Drawings_MenuItem}" />-->
                     </StackPanel>
 
                     <StackPanel Margin="0,20">
