@@ -77,7 +77,7 @@
     <Resource Include="Resources\MO-2star.png" />
     <Resource Include="Resources\MO-3star.png" />
     <Resource Include="Resources\done.png" />
-    <Resource Include="Resources\StartPoint.png" />
+    <SplashScreen Include="Resources\StartPoint.png" />
   </ItemGroup>
 
   <ItemGroup>
