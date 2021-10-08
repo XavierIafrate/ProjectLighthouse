@@ -95,6 +95,13 @@
                             Style="{StaticResource Schedule_MenuItem}" />
 
                         <ToggleButton
+                            x:Name="agenda_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Agenda"
+                            Content="Agenda"
+                            Style="{StaticResource Agenda_MenuItem}" />
+
+                        <ToggleButton
                             x:Name="barstock_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Bar Stock"

@@ -436,7 +436,7 @@
         x:Key="ClipboardButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource materialPrimaryBlue}"/>
+        <Setter Property="Background" Value="{StaticResource materialPrimaryBlue}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -460,7 +460,7 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="#aaaaaa" />
             </Trigger>
-            
+
         </Style.Triggers>
     </Style>
 
