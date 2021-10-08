@@ -8,12 +8,12 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.4.1</FileVersion>
-    <AssemblyVersion>1.4.1</AssemblyVersion>
+    <FileVersion>1.4.3</FileVersion>
+    <AssemblyVersion>1.4.3</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4.1</Version>
+    <Version>1.4.3</Version>
     <Product>ProjectLighthouse</Product>
-    <PackageReleaseNotes>Patched email error</PackageReleaseNotes>
+    <PackageReleaseNotes>Added bar stock</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,10 +21,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\bantham.jpg" />
+    <None Remove="Resources\faroe_waterfall.jpg" />
     <None Remove="Resources\GIF\fireworks.gif" />
+    <None Remove="Resources\gjogv.jpg" />
+    <None Remove="Resources\snowdonia.jpg" />
+    <None Remove="Resources\teignmouth.jpg" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\bantham.jpg" />
+    <Resource Include="Resources\faroe_waterfall.jpg" />
     <Resource Include="Resources\Font\Roboto-Bold.ttf" />
     <Resource Include="Resources\Font\Roboto-BoldItalic.ttf" />
     <Resource Include="Resources\Font\Roboto-Italic.ttf" />
@@ -64,6 +71,7 @@
     <Resource Include="Resources\GIF\moderate.gif" />
     <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\GIF\travolta.gif" />
+    <Resource Include="Resources\gjogv.jpg" />
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -73,11 +81,10 @@
     <Resource Include="Resources\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\MO-1star.png" />
-    <Resource Include="Resources\MO-2star.png" />
-    <Resource Include="Resources\MO-3star.png" />
     <Resource Include="Resources\done.png" />
-    <SplashScreen Include="Resources\StartPoint.png" />
+    <Resource Include="Resources\snowdonia.jpg" />
+    <Resource Include="Resources\StartPoint.png" />
+    <Resource Include="Resources\teignmouth.jpg" />
   </ItemGroup>
 
   <ItemGroup>

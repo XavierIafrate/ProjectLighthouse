@@ -130,8 +130,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             parameterRect.Y = y;
             valueRect.Y = y;
 
-            gfx.DrawString("Assigned Setter", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
-            gfx.DrawString(order.AllocatedSetter ?? "n/a", valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
+            //gfx.DrawString("Assigned Setter", parameterFont, XBrushes.Black, parameterRect, XStringFormats.CenterLeft);
+            //gfx.DrawString(order.AllocatedSetter ?? "n/a", valueFont, XBrushes.Black, valueRect, XStringFormats.CenterLeft);
 
             //Second Column
             y = 200;
@@ -308,13 +308,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             y += 20;
 
-            if (y + offset + 20 < page.Height.Value)
-            {
-                gfx.DrawString("NOTES", font, XBrushes.Black, notesRect, XStringFormats.TopLeft);
-                font = new("Tahoma", 10, XFontStyle.Regular, options);
-                notesRect = new(offset, y, page.Width - 2 * offset, page.Height.Value - y - offset);
-                formatter.DrawString(string.IsNullOrWhiteSpace(order.Notes) ? "***None***" : order.Notes, font, XBrushes.Black, notesRect, XStringFormats.TopLeft);
-            }
+            //if (y + offset + 20 < page.Height.Value)
+            //{
+            //    gfx.DrawString("NOTES", font, XBrushes.Black, notesRect, XStringFormats.TopLeft);
+            //    font = new("Tahoma", 10, XFontStyle.Regular, options);
+            //    notesRect = new(offset, y, page.Width - 2 * offset, page.Height.Value - y - offset);
+            //    formatter.DrawString(string.IsNullOrWhiteSpace(order.Notes) ? "***None***" : order.Notes, font, XBrushes.Black, notesRect, XStringFormats.TopLeft);
+            //}
 
             XRect footer = new(offset, page.Height - offset, page.Width - 2 * offset, 20);
             font = new("Tahoma", 8, XFontStyle.Regular, options);
@@ -629,7 +629,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
                 else if (i == 1)
                 {
-                    gfx.DrawString(order.POReference ?? "TBC",
+                    gfx.DrawString(string.IsNullOrEmpty(order.POReference) ? "TBC" : order.POReference,
                         DEFAULT_FONT,
                         XBrushes.Blue,
                         columns["METADATA"],

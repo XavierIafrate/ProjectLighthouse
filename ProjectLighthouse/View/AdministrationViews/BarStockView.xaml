@@ -43,11 +43,11 @@
                         </StackPanel>
                     </Grid>
 
-                    <Button
+                    <!--<Button
                         Grid.Column="2"
                         Command="{Binding EmailCommand}"
                         Content="Compose Email"
-                        Style="{StaticResource LighthouseButton}" />
+                        Style="{StaticResource LighthouseButton}" />-->
                 </Grid>
                 <ItemsControl Grid.Row="1" ItemsSource="{Binding BarStockOverview}">
                     <ItemsControl.ItemTemplate>
@@ -56,7 +56,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Rectangle Grid.Row="1" Fill="#01ffffff" />
+                <!--<Rectangle Grid.Row="1" Fill="#01ffffff" />-->
             </Grid>
 
         </ScrollViewer>

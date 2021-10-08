@@ -61,7 +61,10 @@ namespace ProjectLighthouse.ViewModel
                 && o.Status != "Complete").ToList()));
             }
 
-            BarStockOverview = BarStockOverview.Where(b => b.BarStock.InStock > 0 || b.Orders.Count > 0).ToList();
+            BarStockOverview = BarStockOverview
+                .Where(b => b.BarStock.InStock > 0 || b.Orders.Count > 0)
+                .OrderBy(x => x.Priority)
+                .ToList();
 
             foreach (BarStockRequirementOverview bar in BarStockOverview)
             {

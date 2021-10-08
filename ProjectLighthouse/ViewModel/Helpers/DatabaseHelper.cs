@@ -19,14 +19,14 @@ namespace ProjectLighthouse.ViewModel.Helpers
             if (Debugger.IsAttached)
             {
                 return Environment.UserName == "xavier"
-                ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
-                : Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", DEBUG_dbFile);
+                    ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
+                    : Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", DEBUG_dbFile);
             }
             else
             {
                 return Environment.UserName == "xavier"
-                ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
-                : Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", dbFile);
+                    ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
+                    : Path.Join(App.ROOT_PATH ?? @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse", dbFile);
             } 
         }
 

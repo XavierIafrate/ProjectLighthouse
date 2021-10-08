@@ -87,15 +87,15 @@
                         Style="{StaticResource UsernameTextBox}"
                         TextChanged="UsernameText_TextChanged" />
                     <TextBlock
-                            x:Name="UsernameGhost"
-                            Margin="24,0,0,0"
-                            Padding="8"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            FontSize="20"
-                            Foreground="#888888"
-                            IsHitTestVisible="False"
-                            Text="username" />
+                        x:Name="UsernameGhost"
+                        Margin="24,0,0,0"
+                        Padding="8"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Foreground="#888888"
+                        IsHitTestVisible="False"
+                        Text="username" />
                 </Grid>
 
                 <Grid Width="250">

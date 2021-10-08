@@ -29,6 +29,12 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new ScheduleViewModel();
                 viewModel.NavText = "Schedule";
             }
+            else if (parameter.ToString() == "Agenda")
+            {
+                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new AgendaViewModel();
+                viewModel.NavText = "Agenda";
+            }
             else if (parameter.ToString() == "View Requests")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
