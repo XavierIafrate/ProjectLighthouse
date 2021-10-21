@@ -176,13 +176,14 @@ namespace ProjectLighthouse.View
         {
             constructLMO.Name = GetNewMOName();
             constructLMO.CreatedAt = DateTime.Now;
-            constructLMO.CreatedBy = $"{App.CurrentUser.FirstName} {App.CurrentUser.LastName}";
+            constructLMO.CreatedBy = App.CurrentUser.GetFullName();
             constructLMO.IsComplete = false;
             constructLMO.Status = "Awaiting scheduling";
             constructLMO.IsReady = false;
             constructLMO.IsUrgent = false;
             constructLMO.HasProgram = false;
             constructLMO.HasStarted = false;
+            constructLMO.BarIsAllocated = false;
 
             // Add order & items to database
             _ = DatabaseHelper.Insert(constructLMO);

@@ -21,7 +21,10 @@ namespace ProjectLighthouse.Model
 
             foreach (LatheManufactureOrder order in orders)
             {
-                BarsRequiredForOrders += order.NumberOfBars;
+                if (!order.BarIsAllocated)
+                {
+                    BarsRequiredForOrders += order.NumberOfBars;
+                }
             }
 
             FreeBar = BarStock.InStock + BarStock.OnOrder - BarsRequiredForOrders;

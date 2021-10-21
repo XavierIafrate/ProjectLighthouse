@@ -17,6 +17,21 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrder> Orders { get; set; }
         public List<BarStockRequirementOverview> BarStockOverview { get; set; }
         public SendMetalexEmailCommand EmailCommand { get; set; }
+        public PrintBarRequisitionCommand PrintCommand { get; set; }
+
+        private bool requisitionAvailable;
+
+        public bool RequisitionAvailable
+        {
+            get { return requisitionAvailable; }
+            set
+            {
+                requisitionAvailable = value;
+                OnPropertyChanged("RequisitionAvailable");
+            }
+        }
+
+
         public double CostOfNewBar { get; set; }
         public double NumberOfBars { get; set; }
         private Visibility quickOrderVis;
@@ -38,10 +53,12 @@ namespace ProjectLighthouse.ViewModel
             Orders = new();
             BarStockOverview = new();
             EmailCommand = new(this);
-            QuickOrderVis = Visibility.Collapsed;
+            PrintCommand = new(this);
+            QuickOrderVis = Visibility.Hidden;
 
             CostOfNewBar = new();
             NumberOfBars = new();
+            RequisitionAvailable = false;
 
             LoadData();
         }
@@ -58,7 +75,8 @@ namespace ProjectLighthouse.ViewModel
             foreach (BarStock bar in BarStock)
             {
                 BarStockOverview.Add(new(bar, Orders.Where(o => o.BarID == bar.Id
-                && o.Status != "Complete").ToList()));
+                    && o.Status != "Complete"
+                    && o.BarIsVerified).ToList()));
             }
 
             BarStockOverview = BarStockOverview
@@ -72,6 +90,13 @@ namespace ProjectLighthouse.ViewModel
                 {
                     NumberOfBars += Math.Abs(bar.FreeBar);
                     CostOfNewBar += Math.Abs(bar.FreeBar) * bar.BarStock.Cost / 100;
+                }
+                foreach (LatheManufactureOrder order in bar.Orders)
+                {
+                    if (order.BarIsVerified && !order.BarIsAllocated && order.NumberOfBars < bar.BarStock.InStock && DateTime.Now.AddDays(14) >= order.StartDate)
+                    {
+                        RequisitionAvailable = true;
+                    }
                 }
             }
 
@@ -96,6 +121,11 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged("NumberOfBars");
             OnPropertyChanged("CostOfNewBar");
             OnPropertyChanged("BarStockOverview");
+        }
+
+        public void PrintRequisition()
+        {
+            PDFHelper.PrintBarRequisition(BarStockOverview);
         }
 
         public void ComposeEmail()

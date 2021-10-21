@@ -103,6 +103,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <TextBlock FontWeight="SemiBold" Text="Target:" />
                 <TextBlock
@@ -119,6 +120,16 @@
                     Grid.Column="2"
                     HorizontalAlignment="Right"
                     Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}" />
+
+                <TextBlock
+                    Grid.Row="2"
+                    FontWeight="SemiBold"
+                    Text="Delivered:" />
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    Text="{Binding QuantityDelivered, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}" />
             </Grid>
 
         </Grid>

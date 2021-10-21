@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -27,8 +28,10 @@ namespace ProjectLighthouse.View.UserControls
                 return;
             }
 
+            
+
             control.BarID.Text = control.Bar.BarStock.Id;
-            control.InStockText.Text = $"{control.Bar.BarStock.InStock} in stock";
+            control.InStockText.Text = $"{control.Bar.BarStock.InStock} in Kasto"; // (appx. {mass:#,##0kg})
             control.OnOrderText.Text = $"{control.Bar.BarStock.OnOrder} on order";
 
             if (control.Bar.Orders.Count > 0)
@@ -36,15 +39,18 @@ namespace ProjectLighthouse.View.UserControls
                 control.NoneText.Visibility = Visibility.Collapsed;
                 control.OrdersListBox.Visibility = Visibility.Visible;
                 control.OrdersListBox.ItemsSource = control.Bar.Orders;
+                control.ExtraInfo.Visibility = Visibility.Visible;
             }
             else
             {
                 control.NoneText.Visibility = Visibility.Visible;
                 control.OrdersListBox.Visibility = Visibility.Collapsed;
+                control.ExtraInfo.Visibility = Visibility.Collapsed;
             }
 
             if (control.Bar.FreeBar >= 0)
             {
+                control.SuggestionText.Visibility = Visibility.Collapsed;
                 control.StatusBackground.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
                 control.StatusText.Text = $"Stock level OK. {control.Bar.FreeBar} free bars.";
                 if (control.Bar.BarStock.InStock < control.Bar.BarsRequiredForOrders)
@@ -64,6 +70,15 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.StatusBackground.Background = (Brush)Application.Current.Resources["materialError"];
                 control.StatusText.Text = $"Stock level warning. {control.Bar.FreeBar} free bars.";
+                if (control.Bar.BarStock.SuggestedStock > 0)
+                {
+                    control.SuggestionText.Text = $"Suggested Stock: {control.Bar.BarStock.SuggestedStock} bar(s)";
+                    control.SuggestionText.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    control.SuggestionText.Visibility = Visibility.Collapsed;
+                }
                 control.WarningFlag.Visibility = Visibility.Visible;
                 control.WaitingFlag.Visibility = Visibility.Collapsed;
                 control.OKFlag.Visibility = Visibility.Collapsed;

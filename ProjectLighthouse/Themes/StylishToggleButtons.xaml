@@ -220,7 +220,7 @@
                         <TextBlock
                             Grid.Column="1"
                             FontSize="{TemplateBinding FontSize}"
-                            Text="Bar Stock (preview)" />
+                            Text="Bar Stock" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

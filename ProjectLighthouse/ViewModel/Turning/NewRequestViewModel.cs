@@ -148,7 +148,7 @@ namespace ProjectLighthouse.ViewModel
 
         private void PopulateComboBox()
         {
-            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().ToList();
+            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().OrderBy(x => x.ProductName).ToList();
             TurnedProducts.Clear();
             Families.Clear();
             Families.Add("Live");

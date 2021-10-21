@@ -58,26 +58,21 @@ namespace ProjectLighthouse.View
             PORef.Text = order.POReference;
 
             program.IsChecked = order.HasProgram;
+            bar_allocated.IsChecked = order.BarIsAllocated;
+            bar_verified.IsChecked = order.BarIsVerified;
             ready.IsChecked = order.IsReady;
 
-            ready.IsEnabled = order.HasProgram;
 
 
             switch (order.Status)
             {
                 case "Running":
-                    ready.IsEnabled = false;
-                    program.IsEnabled = false;
                     running_radio.IsChecked = true;
                     break;
                 case "Complete":
-                    ready.IsEnabled = false;
-                    program.IsEnabled = false;
                     complete_radio.IsChecked = true;
                     break;
                 case "Problem":
-                    running_radio.IsEnabled = false;
-                    complete_radio.IsEnabled = false;
                     not_started_radio.IsChecked = true;
                     break;
                 default:
@@ -85,7 +80,7 @@ namespace ProjectLighthouse.View
                     break;
             }
 
-            PORef.IsEnabled = App.CurrentUser.CanEditLMOs || App.CurrentUser.UserRole == "admin";
+            PORef.IsEnabled = App.CurrentUser.CanEditLMOs || App.CurrentUser.UserRole == "admin" || App.CurrentUser.UserRole == "Purchasing";
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
@@ -105,38 +100,22 @@ namespace ProjectLighthouse.View
             order.POReference = PORef.Text;
             order.HasProgram = (bool)program.IsChecked;
             order.IsReady = (bool)ready.IsChecked;
+            order.BarIsAllocated = (bool)bar_allocated.IsChecked;
+            order.BarIsVerified = (bool)bar_verified.IsChecked;
 
             if ((bool)not_started_radio.IsChecked)
             {
-                order.Status = order.IsReady ? "Ready" : "Problem";
+                order.Status = order.IsReady && order.BarIsAllocated && order.HasProgram && order.BarIsVerified ? "Ready" : "Problem";
             }
             else
             {
                 order.Status = (bool)running_radio.IsChecked ? "Running" : "Complete";
             }
 
-
-
             order.IsComplete = order.Status == "Complete";
 
             calculateTime();
             CalculateBarRequirements();
-        }
-
-        private void program_Click(object sender, RoutedEventArgs e)
-        {
-            CheckBox checkBox = sender as CheckBox;
-            if (checkBox.IsChecked ?? false)
-            {
-                ready.IsEnabled = true;
-            }
-            else
-            {
-                ready.IsEnabled = false;
-                ready.IsChecked = false;
-                running_radio.IsEnabled = false;
-                complete_radio.IsEnabled = false;
-            }
         }
 
         private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -189,21 +168,56 @@ namespace ProjectLighthouse.View
             order.NumberOfBars = Math.Ceiling(totalLengthRequired / 2700);
         }
 
+        private void program_Click(object sender, RoutedEventArgs e)
+        {
+            //CheckBox checkBox = sender as CheckBox;
+            //if (checkBox.IsChecked ?? false)
+            //{
+            //    ready.IsEnabled = true;
+            //}
+            //else
+            //{
+            //    ready.IsEnabled = false;
+            //    ready.IsChecked = false;
+            //    running_radio.IsEnabled = false;
+            //    complete_radio.IsEnabled = false;
+            //}
+            SetControls();
+        }
+
+        private void bar_allocated_Click(object sender, RoutedEventArgs e)
+        {
+            //CheckBox checkBox = sender as CheckBox;
+            //if (checkBox.IsChecked ?? false)
+            //{
+            //    ready.IsEnabled = true;
+            //}
+            //else
+            //{
+            //    ready.IsEnabled = false;
+            //    ready.IsChecked = false;
+            //    running_radio.IsEnabled = false;
+            //    complete_radio.IsEnabled = false;
+            //}
+            SetControls();
+        }
+
         private void ready_Click(object sender, RoutedEventArgs e)
         {
-            CheckBox checkBox = sender as CheckBox;
-            if (checkBox.IsChecked ?? false)
-            {
-                order.Status = "Ready";
-                running_radio.IsEnabled = true;
-                complete_radio.IsEnabled = true;
-            }
-            else
-            {
-                order.Status = "Problem";
-                running_radio.IsEnabled = false;
-                complete_radio.IsEnabled = false;
-            }
+            //CheckBox checkBox = sender as CheckBox;
+            //if (checkBox.IsChecked ?? false)
+            //{
+            //    order.Status = "Ready";
+            //    running_radio.IsEnabled = true;
+            //    complete_radio.IsEnabled = true;
+            //}
+            //else
+            //{
+            //    order.Status = "Problem";
+            //    running_radio.IsEnabled = false;
+            //    complete_radio.IsEnabled = false;
+            //}
+            SetControls();
         }
 
         private void CancelOrderButton_Click(object sender, RoutedEventArgs e)
@@ -216,25 +230,55 @@ namespace ProjectLighthouse.View
 
         private void not_started_radio_Checked(object sender, RoutedEventArgs e)
         {
-            ready.IsEnabled = true;
-            program.IsEnabled = true;
+            //ready.IsEnabled = true;
+            //bar_allocated.IsEnabled = true;
+            //program.IsEnabled = true;
+            SetControls();
         }
 
         private void running_radio_Checked(object sender, RoutedEventArgs e)
         {
-            ready.IsEnabled = false;
-            program.IsEnabled = false;
+            //ready.IsEnabled = false;
+            //bar_allocated.IsEnabled = false;
+            //program.IsEnabled = false;
+            SetControls();
         }
 
         private void complete_radio_Checked(object sender, RoutedEventArgs e)
         {
-            ready.IsEnabled = false;
-            program.IsEnabled = false;
+            //ready.IsEnabled = false;
+            //bar_allocated.IsEnabled = false;
+            //program.IsEnabled = false;
+            SetControls();
         }
 
         private void closeButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void SetControls()
+        {
+            bool checkboxes_enabled = !((bool)running_radio.IsChecked || (bool)complete_radio.IsChecked);
+
+            program.IsEnabled = checkboxes_enabled;
+            bar_allocated.IsEnabled = true;
+            bar_verified.IsEnabled = true;
+            ready.IsEnabled = checkboxes_enabled;
+
+            if ((bool)program.IsChecked && (bool)bar_allocated.IsChecked && (bool)ready.IsChecked && (bool)bar_verified.IsChecked)
+            {
+                not_started_radio.IsEnabled = true;
+                running_radio.IsEnabled = true;
+                complete_radio.IsEnabled = true;
+            }
+            else
+            {
+                not_started_radio.IsEnabled = false;
+                running_radio.IsEnabled = false;
+                complete_radio.IsEnabled = false;
+            }
+            
         }
 
         // Timestamp and Initials keyb shortcut
@@ -305,6 +349,11 @@ namespace ProjectLighthouse.View
             {
                 AddNewNote(Message.Text.Trim());
             }
+        }
+
+        private void bar_verified_Click(object sender, RoutedEventArgs e)
+        {
+            SetControls();
         }
     }
 }

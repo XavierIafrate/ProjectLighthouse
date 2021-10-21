@@ -51,7 +51,8 @@
                     FontSize="20"
                     FontWeight="Bold"
                     Foreground="{StaticResource materialOnError}"
-                    Text="DEBUG VERSION" />
+                    Text="DEBUG VERSION"
+                    Visibility="Collapsed" />
             </Grid>
         </StackPanel>
 
@@ -94,12 +95,12 @@
                             Content="Schedule"
                             Style="{StaticResource Schedule_MenuItem}" />
 
-                        <ToggleButton
+                        <!--<ToggleButton
                             x:Name="agenda_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Agenda"
                             Content="Agenda"
-                            Style="{StaticResource Agenda_MenuItem}" />
+                            Style="{StaticResource Agenda_MenuItem}" />-->
 
                         <ToggleButton
                             x:Name="barstock_button"

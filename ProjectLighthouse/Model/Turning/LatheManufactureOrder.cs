@@ -34,6 +34,8 @@ namespace ProjectLighthouse.Model
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
         public bool ItemNeedsCleaning { get; set; }
+        public bool BarIsAllocated { get; set; }
+        public bool BarIsVerified { get; set; }
 
         public object Clone()
         {
@@ -62,7 +64,9 @@ namespace ProjectLighthouse.Model
                 HasStarted = HasStarted,
                 BarID = BarID,
                 NumberOfBars = NumberOfBars,
-                ItemNeedsCleaning = ItemNeedsCleaning
+                ItemNeedsCleaning = ItemNeedsCleaning,
+                BarIsAllocated = BarIsAllocated,
+                BarIsVerified = BarIsVerified
             };
         }
 

@@ -80,6 +80,14 @@
                         Click="program_Click"
                         Content="Has Program" />
                     <CheckBox
+                        x:Name="bar_verified"
+                        Click="bar_verified_Click"
+                        Content="Bar Settings Verified" />
+                    <CheckBox
+                        x:Name="bar_allocated"
+                        Click="bar_allocated_Click"
+                        Content="Bar Stock Ready" />
+                    <CheckBox
                         x:Name="ready"
                         Click="ready_Click"
                         Content="Ready to Set" />
