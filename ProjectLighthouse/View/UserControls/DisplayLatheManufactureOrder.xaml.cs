@@ -26,9 +26,9 @@ namespace ProjectLighthouse.View.UserControls
                 return;
 
             control.DataContext = control.LatheManufactureOrder;
-            control.BadgeText.Text = control.LatheManufactureOrder.Status;
+            control.BadgeText.Text = control.LatheManufactureOrder.State.ToString();
             control.OldInfo.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddDays(3) < DateTime.Now
-                    && control.LatheManufactureOrder.Status == "Problem")
+                    && control.LatheManufactureOrder.State == OrderState.Problem)
                                             ? Visibility.Visible
                                             : Visibility.Collapsed;
 
@@ -36,18 +36,18 @@ namespace ProjectLighthouse.View.UserControls
                                             ? Visibility.Visible
                                             : Visibility.Collapsed;
 
-            switch (control.LatheManufactureOrder.Status)
+            switch (control.LatheManufactureOrder.State)
             {
-                case "Ready":
+                case OrderState.Ready or OrderState.Prepared:
                     control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
                     break;
-                case "Problem":
+                case OrderState.Problem:
                     control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialError"];
                     break;
-                case "Running":
+                case OrderState.Running:
                     control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialPrimaryBlueVar"];
                     break;
-                case "Complete":
+                case OrderState.Complete or OrderState.Cancelled:
                     control.badgeBackground.Fill = (Brush)Application.Current.Resources["materialOnBackground"];
                     break;
             }

@@ -244,19 +244,19 @@ namespace ProjectLighthouse.ViewModel
             switch (filter)
             {
                 case "All Active":
-                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete || n.ModifiedAt.AddDays(1) > DateTime.Now));
+                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.State < OrderState.Complete || n.ModifiedAt.AddDays(1) > DateTime.Now));
                     break;
 
                 case "Not Ready":
-                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && !n.IsReady));
+                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.State == OrderState.Problem));
                     break;
 
                 case "Ready":
-                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => !n.IsComplete && n.IsReady && n.Status != "Running"));
+                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.State == OrderState.Ready || n.State == OrderState.Prepared));
                     break;
 
                 case "Complete":
-                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.IsComplete).OrderByDescending(n => n.CreatedAt));
+                    FilteredOrders = new List<LatheManufactureOrder>(LatheManufactureOrders.Where(n => n.State > OrderState.Running).OrderByDescending(n => n.CreatedAt));
                     break;
 
                 case "Search":
@@ -387,7 +387,7 @@ namespace ProjectLighthouse.ViewModel
             ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
-            LiveInfoVis = SelectedLatheManufactureOrder.Status == "Running" && MachineStatistics.Count != 0
+            LiveInfoVis = SelectedLatheManufactureOrder.State == OrderState.Running && MachineStatistics.Count != 0
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 

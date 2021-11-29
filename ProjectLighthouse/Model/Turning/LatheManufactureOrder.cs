@@ -3,7 +3,7 @@ using System;
 
 namespace ProjectLighthouse.Model
 {
-    public class LatheManufactureOrder : ICloneable
+    public partial class LatheManufactureOrder : ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -16,26 +16,61 @@ namespace ProjectLighthouse.Model
         public string ModifiedBy { get; set; }
         public int TimeToComplete { get; set; } // in seconds
 
-        public bool IsComplete { get; set; }
-        public string Status { get; set; }
-        public string Notes { get; set; }
-        public bool IsUrgent { get; set; }
-        public int SettingTime { get; set; }
+        public OrderState State
+        {
+            get
+            {
+                if (IsCancelled)
+                {
+                    return OrderState.Cancelled;
+                }
+                else if (IsComplete)
+                {
+                    return OrderState.Complete;
+                }
+                else if (BarIsAllocated && BarIsVerified && HasProgram && IsReady)
+                {
+                    return OrderState.Prepared;
+                }
+                else if (BarIsVerified && HasProgram && IsReady && StartDate.AddDays(-14) > DateTime.Now)
+                {
+                    return OrderState.Ready;
+                }
+                else
+                {
+                    return OrderState.Problem;
+                }
+            }
+            set { }
+        }
 
+
+        
+        
+        public bool IsReady { get; set; } // alias for tooling ready (legacy)
+        public bool HasProgram { get; set; }
+        public bool HasStarted { get; set; }
+        public bool BarIsAllocated { get; set; }
+        public bool BarIsVerified { get; set; }
+        public bool IsComplete { get; set; }
+        public bool IsCancelled { get; set; }
+        
+        public string Status { get; set; }
+
+
+        public bool IsUrgent { get; set; }
         public string AllocatedMachine { get; set; }
         public string AllocatedSetter { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime SettingFinished { get; set; }
         public DateTime CompletedAt { get; set; }
-
-        public bool IsReady { get; set; }
-        public bool HasProgram { get; set; }
-        public bool HasStarted { get; set; }
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
+        public double MajorDiameter { get; set; }
         public bool ItemNeedsCleaning { get; set; }
-        public bool BarIsAllocated { get; set; }
-        public bool BarIsVerified { get; set; }
+
+        public string Notes { get; set; }
+
 
         public object Clone()
         {
@@ -53,7 +88,8 @@ namespace ProjectLighthouse.Model
                 Status = Status,
                 Notes = Notes,
                 IsUrgent = IsUrgent,
-                SettingTime = SettingTime,
+                IsCancelled = IsCancelled,
+                State = State,
                 AllocatedMachine = AllocatedMachine,
                 AllocatedSetter = AllocatedSetter,
                 StartDate = StartDate,

@@ -1,0 +1,113 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.ScheduleAgendaView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:viewModel="clr-namespace:ProjectLighthouse.ViewModel"
+    d:Background="White"
+    d:DesignHeight="784.72"
+    d:DesignWidth="1111.297"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <viewModel:ScheduleViewModel x:Key="vm" />
+    </UserControl.Resources>
+    <Grid Margin="10" DataContext="{StaticResource vm}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource title}" Text="{Binding ViewTitle}" />
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="300"
+                    MinWidth="200"
+                    MaxWidth="350" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <ListView
+                    FontSize="18"
+                    ItemsSource="{Binding filterOptions}"
+                    SelectedValue="{Binding Filter, Mode=TwoWay}"
+                    SelectionMode="Single" />
+                <Border
+                    Visibility="{Binding InsightsVis}"
+                    Margin="5"
+                    Padding="15"
+                    Background="{StaticResource materialPrimary}"
+                    CornerRadius="10"
+                    TextElement.Foreground="White">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,4"
+                            FontSize="22"
+                            Text="Overview" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            FontStyle="Italic"
+                            Text="{Binding MachineInfoInsights}" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            FontStyle="Italic"
+                            Text="{Binding MachineCapabilitiesInsights}" />
+                        <TextBlock
+                            Margin="0,4,0,2"
+                            FontSize="22"
+                            Text="Workload" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            Text="{Binding NumberOfOrdersInsights}" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            Text="{Binding BookedUntilInsights}" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            Text="{Binding WorkloadInsights}" />
+                        <TextBlock
+                            Margin="0,4,0,0"
+                            FontStyle="Italic"
+                            Opacity="0.6"
+                            Text="*workload calculations factor in approximations for setting and gaps between orders."
+                            TextWrapping="Wrap" />
+
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch"
+                Background="{StaticResource materialBackground}" />
+
+            <ListView Grid.Column="2" ItemsSource="{Binding FilteredOrders}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <userControls:DisplayLMOScheduling orderObject="{Binding Path=., Mode=TwoWay}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <TextBlock
+                Visibility="{Binding NoneFoundVis}"
+                Grid.Column="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="30"
+                FontStyle="Italic"
+                Foreground="{StaticResource disabledGray}"
+                Text="No orders found" />
+        </Grid>
+
+    </Grid>
+</UserControl>

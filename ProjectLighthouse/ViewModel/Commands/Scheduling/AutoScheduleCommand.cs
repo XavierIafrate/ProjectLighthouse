@@ -16,8 +16,9 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            ScheduleViewModel.TabInfo tab = viewModel.SelectedTab;
-            return tab.Orders.Count > 1;
+            return true;
+            //ScheduleViewModel.TabInfo tab = viewModel.SelectedTab;
+            //return tab.Orders.Count > 1;
         }
 
         public void Execute(object parameter)

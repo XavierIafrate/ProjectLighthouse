@@ -28,13 +28,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 DbfHeader header = dbfTable.Header;
                 Console.WriteLine($"{header.RecordCount:#,##0} records in Automotion CNAME table.");
 
-                int iStockRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_REF").Single());
-                int iSearchRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_CAT").Single());
-                int iSalesOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_SALEORD").Single());
-                int iStockQuantity = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_INSTOCK").Single());
-                int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_ONORDER").Single());
-                int iSell = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_SELL").Single());
-                int iCost = dbfTable.Columns.IndexOf(dbfTable.Columns.Where(n => n.ColumnName == "CN_COST").Single());
+                int iStockRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_REF"));
+                int iSearchRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_CAT"));
+                int iSalesOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_SALEORD"));
+                int iStockQuantity = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_INSTOCK"));
+                int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_ONORDER"));
+                int iSell = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_SELL"));
+                int iCost = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_COST"));
 
                 DbfRecord dbfRecord = new(dbfTable);
 
@@ -150,6 +150,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 DatabaseHelper.Update<BarStock>(bar_record);
             }
         }
+
+
 
         public static async Task<int> UpdateStockLevelsAsync(IProgress<int> progress)
         {

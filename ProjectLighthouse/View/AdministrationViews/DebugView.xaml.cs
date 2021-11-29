@@ -44,5 +44,11 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Update(user);
             }
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            List<MachineOperatingBlock> stats = DatabaseHelper.Read<MachineOperatingBlock>();
+            CSVHelper.WriteListToCSV(stats, "Performance");
+        }
     }
 }

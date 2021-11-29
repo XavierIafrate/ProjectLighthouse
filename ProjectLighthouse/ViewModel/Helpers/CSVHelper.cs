@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.TypeConversion;
 using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,14 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         public static void WriteListToCSV<T>(List<T> stuff, string filePrefix)
         {
-            string filename = string.Format("{0}_{1:ddMMyy_HHmmss}.csv", filePrefix, DateTime.Now);
+            string filename = $"{filePrefix}_{DateTime.Now:ddMMyy_HHmmss}.csv";
             filename = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), filename);
+            
             using (StreamWriter writer = new(filename))
             using (CsvWriter csv = new(writer, CultureInfo.InvariantCulture))
             {
+                var options = new TypeConverterOptions { Formats = new[] { "s" } };
+                csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
                 csv.WriteRecords(stuff);
             }
             MessageBox.Show($"Saved to {filename}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -75,8 +79,5 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             return Lots;
         }
-
-
-
     }
 }

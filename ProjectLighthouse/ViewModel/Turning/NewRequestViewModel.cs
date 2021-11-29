@@ -110,40 +110,30 @@ namespace ProjectLighthouse.ViewModel
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
             Snippets = new List<MachineInfoSnippet>();
 
-            foreach (Lathe lathe in lathes)
+            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(x => x.State < OrderState.Complete).ToList();
+            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+
+            List<CompleteOrder> completeOrders = new();
+            foreach (LatheManufactureOrder order in orders)
             {
+                completeOrders.Add(new(order: order, items: items.Where(i => i.AssignedMO == order.Name).ToList()));
+            }
+
+            for(int i = 0; i < lathes.Count; i++)
+            {
+                List<CompleteOrder> ordersForLathe = completeOrders.Where(o => o.Order.AllocatedMachine == lathes[i].Id).ToList();
+                var workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
+
                 MachineInfoSnippet tmpSnippet = new()
                 {
-                    MachineID = lathe.Id,
-                    MachineFullName = lathe.FullName,
-                    LeadTime = GetMachineLeadTime(lathe.Id)
+                    MachineID = lathes[i].Id,
+                    MachineFullName = lathes[i].FullName,
+                    LeadTime = workload.Item1
                 };
 
                 Snippets.Add(tmpSnippet);
             }
             OnPropertyChanged("Snippets");
-        }
-
-        private static TimeSpan GetMachineLeadTime(string MachineID)
-        {
-            int totalTime = 0;
-            DateTime earliestStart = DateTime.MaxValue;
-
-            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.AllocatedMachine == MachineID && !n.IsComplete).ToList();
-            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
-
-            foreach (LatheManufactureOrder order in orders)
-            {
-                foreach (LatheManufactureOrderItem item in items)
-                {
-                    if (order.Name == item.AssignedMO)
-                    {
-                        totalTime += item.CycleTime * item.TargetQuantity;
-                    }
-                }
-            }
-
-            return TimeSpan.FromSeconds(totalTime);
         }
 
         private void PopulateComboBox()

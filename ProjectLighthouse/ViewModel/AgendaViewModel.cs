@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Turning;
 using ProjectLighthouse.ViewModel.Helpers;
 
 namespace ProjectLighthouse.ViewModel
@@ -23,7 +24,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private List<LatheManufactureOrder> orders;
-
         public List<LatheManufactureOrder> Orders
         {
             get => orders;
@@ -33,7 +33,6 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged("Orders");
             }
         }
-
 
         public AgendaViewModel()
         {
@@ -46,26 +45,32 @@ namespace ProjectLighthouse.ViewModel
             Days = new();
 
             List<LatheManufactureOrder> activeOrders = Orders
-                .Where(o => o.Status != "Complete")
+                .Where(o => o.State < OrderState.Complete)
                 .OrderBy(o => o.StartDate)
                 .ToList();
 
-            DateTime startDate = activeOrders.First().StartDate;
+            DateTime startDate = DateTime.Today.Date; //activeOrders.First().StartDate;
             DateTime endDate = activeOrders.Last().StartDate;
 
             Debug.WriteLine($"Days = {(endDate - startDate).Days}");
 
             for (int i = 0; i < (endDate - startDate).Days; i++)
             {
-                Days.Add(new(
-                    startDate.AddDays(i),
-                    activeOrders.Where(o => o.StartDate.Date == startDate.AddDays(i)).ToList()
-                    ));
+                List<LatheManufactureOrder> ordersOnDay = activeOrders.Where(o => o.StartDate.Date == startDate.AddDays(i)).ToList();
+                DateTime day = startDate.AddDays(i);
+                if (day.DayOfWeek is not DayOfWeek.Sunday and not DayOfWeek.Saturday)
+                {
+                    Days.Add(new(
+                           startDate.AddDays(i),
+                           ordersOnDay));
+                }
+                else if (ordersOnDay.Count > 0)
+                {
+                    Days.Add(new(
+                           startDate.AddDays(i),
+                           ordersOnDay));
+                }  
             }
-
-
-
-
         }
     }
 }

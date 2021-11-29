@@ -10,6 +10,7 @@ namespace ProjectLighthouse.Model
     {
         public DateTime Date { get; set; }
         public List<LatheManufactureOrder> Orders { get; set; }
+        public List<LatheManufactureOrderItem> OrderItems { get; set; }
 
         public CalendarDay(DateTime date, List<LatheManufactureOrder> orders)
         {
@@ -19,6 +20,11 @@ namespace ProjectLighthouse.Model
                 Orders = orders;
             }
             
+        }
+
+        public override string ToString()
+        {
+            return $"{Date:s}";
         }
     }
 }

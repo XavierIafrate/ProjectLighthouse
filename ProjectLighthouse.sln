@@ -12,9 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LighthouseOperaSync", "..\..\LighthouseOperaSync\LighthouseOperaSync\LighthouseOperaSync.csproj", "{A293B101-F5CA-40BA-9107-411462FCEBA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentry", "..\Watchtower\Watchtower\Sentry.csproj", "{ED357890-729B-4D7E-8C8C-DFAF6F9AC5B1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LighthouseWeb", "LighthouseWeb\LighthouseWeb.csproj", "{0620039B-AE96-4F16-BC75-738604910B35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentry", "..\Sentry\Sentry\Sentry.csproj", "{F65152BA-902B-4770-BAB8-BDC741302D15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,16 +37,14 @@ Global
 		{A293B101-F5CA-40BA-9107-411462FCEBA1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A293B101-F5CA-40BA-9107-411462FCEBA1}.Release|x86.ActiveCfg = Release|Any CPU
 		{A293B101-F5CA-40BA-9107-411462FCEBA1}.Release|x86.Build.0 = Release|Any CPU
-		{ED357890-729B-4D7E-8C8C-DFAF6F9AC5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED357890-729B-4D7E-8C8C-DFAF6F9AC5B1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{ED357890-729B-4D7E-8C8C-DFAF6F9AC5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED357890-729B-4D7E-8C8C-DFAF6F9AC5B1}.Release|x86.ActiveCfg = Release|Any CPU
-		{ED357890-729B-4D7E-8C8C-DFAF6F9AC5B1}.Release|x86.Build.0 = Release|Any CPU
-		{0620039B-AE96-4F16-BC75-738604910B35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0620039B-AE96-4F16-BC75-738604910B35}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0620039B-AE96-4F16-BC75-738604910B35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0620039B-AE96-4F16-BC75-738604910B35}.Release|x86.ActiveCfg = Release|Any CPU
-		{0620039B-AE96-4F16-BC75-738604910B35}.Release|x86.Build.0 = Release|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|x86.Build.0 = Debug|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Release|x86.ActiveCfg = Release|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

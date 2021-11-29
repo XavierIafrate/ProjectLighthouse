@@ -75,7 +75,7 @@ namespace ProjectLighthouse.ViewModel
             foreach (BarStock bar in BarStock)
             {
                 BarStockOverview.Add(new(bar, Orders.Where(o => o.BarID == bar.Id
-                    && o.Status != "Complete"
+                    && o.State < OrderState.Complete
                     && o.BarIsVerified).ToList()));
             }
 

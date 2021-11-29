@@ -36,12 +36,6 @@ namespace ProjectLighthouse.View
 
             ReadDatabase(approvedRequest);
 
-            //LatheManufactureOrderItem requiredItem = new LatheManufactureOrderItem()
-            //{
-            //    ProductName = approvedRequest.Product,
-            //    RequiredQuantity = approvedRequest.QuantityRequired,
-            //};
-
             RefreshView();
         }
 
@@ -99,6 +93,7 @@ namespace ProjectLighthouse.View
                 DateRequired = dateRequired,
                 CycleTime = product.CycleTime,
                 MajorLength = product.MajorLength,
+                MajorDiameter = product.MajorDiameter,
                 IsSpecialPart = product.isSpecialPart,
                 NeedsCleaning = cleaning,
             };
@@ -178,19 +173,22 @@ namespace ProjectLighthouse.View
             constructLMO.CreatedAt = DateTime.Now;
             constructLMO.CreatedBy = App.CurrentUser.GetFullName();
             constructLMO.IsComplete = false;
-            constructLMO.Status = "Awaiting scheduling";
+            constructLMO.Status = "Problem";
+            constructLMO.State = OrderState.Problem;
             constructLMO.IsReady = false;
             constructLMO.IsUrgent = false;
             constructLMO.HasProgram = false;
             constructLMO.HasStarted = false;
             constructLMO.BarIsAllocated = false;
+            constructLMO.MajorDiameter = LMOItems.First().MajorDiameter;
+
 
             // Add order & items to database
             _ = DatabaseHelper.Insert(constructLMO);
             foreach (LatheManufactureOrderItem item in LMOItems)
             {
                 item.AssignedMO = constructLMO.Name;
-                item.AddedBy = $"{App.CurrentUser.FirstName} {App.CurrentUser.LastName}";
+                item.AddedBy = App.CurrentUser.GetFullName();
                 item.DateAdded = DateTime.Now;
                 DatabaseHelper.Insert(item);
             };

@@ -19,6 +19,7 @@ namespace ProjectLighthouse.Model
         public int QuantityDelivered { get; set; }
         public int CycleTime { get; set; }
         public double MajorLength { get; set; }
+        public double MajorDiameter { get; set; }
 
         public DateTime DateRequired { get; set; }
         public DateTime DateAdded { get; set; }

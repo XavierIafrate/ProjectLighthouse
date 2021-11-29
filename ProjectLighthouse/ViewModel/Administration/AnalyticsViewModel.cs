@@ -24,7 +24,7 @@ namespace ProjectLighthouse.ViewModel
         //private List<DeliveryItem> DeliveryItems { get; set; }
         private List<TurnedProduct> TurnedProducts { get; set; }
         private List<Lathe> Lathes { get; set; }
-        private List<MachineStatistics> MachineStatistics { get; set; }
+        private List<MachineOperatingBlock> MachineStatistics { get; set; }
 
         //public DateTime InitialDateTime { get; set; }
         private SeriesCollection seriesCollection;
@@ -90,9 +90,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
-
-
         #endregion
 
         public AnalyticsViewModel()
@@ -123,7 +120,7 @@ namespace ProjectLighthouse.ViewModel
             Lots = DatabaseHelper.Read<Lot>().ToList();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
-            MachineStatistics = DatabaseHelper.Read<MachineStatistics>().ToList();
+            MachineStatistics = DatabaseHelper.Read<MachineOperatingBlock>().ToList();
         }
 
         public DashboardStats ComputeDashboard()
@@ -289,15 +286,15 @@ namespace ProjectLighthouse.ViewModel
             double OverallRuntime = 0;
             double OverallTime = 0;
 
+            double startTimeSpan = 24 * 7; // hours ago
+
             for (int lathe = Lathes.Count - 1; lathe >= 0; lathe--)
             {
-                List<MachineStatistics> data = MachineStatistics.Where(n => n.MachineID == Lathes[lathe].Id && n.DataTime.AddHours(24 * 7) > DateTime.Now).OrderBy(x => x.DataTime).ToList();
+                List<MachineOperatingBlock> data = MachineStatistics.Where(n => n.MachineID == Lathes[lathe].Id && n.StateLeft.AddHours(startTimeSpan) > DateTime.Now).OrderBy(x => x.StateEntered).ToList();
                 if (data.Count == 0)
                     continue;
 
-                lathe_labels.Add(Lathes[lathe].FullName);
-
-                DateTime last_time = data[0].DataTime;
+                lathe_labels.Add(Lathes[lathe].FullName);                
 
                 double sRunning = 0;
                 double sSetting = 0;
@@ -307,57 +304,66 @@ namespace ProjectLighthouse.ViewModel
 
                 for (int i = 1; i < data.Count; i++)
                 {
-                    switch (data[i].Status)
-                    {
-                        case "Running":
-                            sRunning += (data[i].DataTime - last_time).TotalSeconds;
-                            break;
-                        case "Setting":
-                            sSetting += (data[i].DataTime - last_time).TotalSeconds;
-                            break;
-                        case "Breakdown":
-                            sBreakdown += (data[i].DataTime - last_time).TotalSeconds;
-                            break;
-                        case "Idle":
-                            sIdle += (data[i].DataTime - last_time).TotalSeconds;
-                            break;
-                        case "Offline":
-                            sOffline += (data[i].DataTime - last_time).TotalSeconds;
-                            break;
+                    DateTime last_time;
 
+                    if (i == 0)
+                    {
+                        last_time = DateTime.Now.AddHours(-startTimeSpan) > data[i].StateEntered
+                            ? DateTime.Now.AddHours(-startTimeSpan)
+                            : data[i].StateEntered;
+                    }
+                    else
+                    {
+                        last_time = data[i].StateEntered;
                     }
 
-                    last_time = data[i].DataTime;
+                    switch (data[i].State)
+                    {
+                        case "Running":
+                            sRunning += (data[i].StateLeft - last_time).TotalSeconds;
+                            break;
+                        case "Setting":
+                            sSetting += (data[i].StateLeft - last_time).TotalSeconds;
+                            break;
+                        case "Breakdown":
+                            sBreakdown += (data[i].StateLeft - last_time).TotalSeconds;
+                            break;
+                        case "Idle":
+                            sIdle += (data[i].StateLeft - last_time).TotalSeconds;
+                            break;
+                        case "Offline":
+                            sOffline += (data[i].StateLeft - last_time).TotalSeconds;
+                            break;
+                    }
                 }
 
-                OverallTime += (sRunning + sSetting + sBreakdown + sIdle + sOffline);
+                OverallTime += sRunning + sSetting + sBreakdown + sIdle + sOffline;
 
                 BrushConverter converter = new();
                 foreach (StackedRowSeries state in temporal)
                 {
-
                     switch (state.Title)
                     {
                         case "Running":
                             state.Values.Add(sRunning);
                             OverallRuntime += sRunning;
-                            state.Fill = (System.Windows.Media.Brush)converter.ConvertFromString("#009688");
+                            state.Fill = (Brush)converter.ConvertFromString("#009688");
                             break;
                         case "Setting":
                             state.Values.Add(sSetting);
-                            state.Fill = (System.Windows.Media.Brush)converter.ConvertFromString("#0277BD");
+                            state.Fill = (Brush)converter.ConvertFromString("#0277BD");
                             break;
                         case "Breakdown":
                             state.Values.Add(sBreakdown);
-                            state.Fill = (System.Windows.Media.Brush)converter.ConvertFromString("#B00020");
+                            state.Fill = (Brush)converter.ConvertFromString("#B00020");
                             break;
                         case "Idle":
                             state.Values.Add(sIdle);
-                            state.Fill = (System.Windows.Media.Brush)converter.ConvertFromString("#ffff71");
+                            state.Fill = (Brush)converter.ConvertFromString("#ffff71");
                             break;
                         case "Offline":
                             state.Values.Add(sOffline);
-                            state.Fill = (System.Windows.Media.Brush)converter.ConvertFromString("#000000");
+                            state.Fill = (Brush)converter.ConvertFromString("#000000");
                             break;
                     }
                 }
@@ -377,7 +383,9 @@ namespace ProjectLighthouse.ViewModel
         {
             DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
             if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            {
                 time = time.AddDays(3);
+            }
 
             // Return the week of our adjusted day
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Tuesday);

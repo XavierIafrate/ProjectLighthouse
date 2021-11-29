@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel.Helpers;
+using System.Collections.Generic;
+using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -7,6 +10,11 @@ namespace ProjectLighthouse.ViewModel
         public static void Test()
         {
             _ = MessageBox.Show("Test");
+        }
+
+        public static void ExportErrorStates()
+        {
+            
         }
     }
 }

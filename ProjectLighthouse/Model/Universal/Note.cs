@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using System;
 
 namespace ProjectLighthouse.Model
 {
@@ -9,6 +10,7 @@ namespace ProjectLighthouse.Model
         public string Message { get; set; }
         public string OriginalMessage { get; set; }
         public bool IsEdited { get; set; }
+
         public string SentBy { get; set; }
         public string DateSent { get; set; }
         public string DateEdited { get; set; }
@@ -19,5 +21,7 @@ namespace ProjectLighthouse.Model
         public bool ShowHeader { get; set; }
         [Ignore]
         public bool ShowEdit { get; set; }
+
+        public event Action PropertyChanged;
     }
 }

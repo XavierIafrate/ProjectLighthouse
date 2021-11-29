@@ -36,6 +36,11 @@ namespace ProjectLighthouse.View
             PopulateControls();
         }
 
+        public void Test()
+        {
+            MessageBox.Show("Hello, world!");
+        }
+
         private void FormatNoteDisplay()
         {
             string name = "";
@@ -61,8 +66,6 @@ namespace ProjectLighthouse.View
             bar_allocated.IsChecked = order.BarIsAllocated;
             bar_verified.IsChecked = order.BarIsVerified;
             ready.IsChecked = order.IsReady;
-
-
 
             switch (order.Status)
             {
@@ -148,7 +151,9 @@ namespace ProjectLighthouse.View
         {
             int estimatedTimeSeconds = 0;
             foreach (LatheManufactureOrderItem item in items)
+            {
                 estimatedTimeSeconds += item.CycleTime * item.TargetQuantity;
+            }
 
             order.TimeToComplete = estimatedTimeSeconds;
         }
