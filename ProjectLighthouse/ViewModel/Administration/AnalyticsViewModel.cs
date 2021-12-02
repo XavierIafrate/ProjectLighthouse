@@ -19,14 +19,11 @@ namespace ProjectLighthouse.ViewModel
         #region Vars
         private List<Lot> Lots { get; set; }
         private List<LatheManufactureOrder> LatheOrders { get; set; }
-        //private List<LatheManufactureOrderItem> LatheOrderItems { get; set; }
-        //private List<DeliveryNote> DeliveryNotes { get; set; }
-        //private List<DeliveryItem> DeliveryItems { get; set; }
         private List<TurnedProduct> TurnedProducts { get; set; }
         private List<Lathe> Lathes { get; set; }
         private List<MachineOperatingBlock> MachineStatistics { get; set; }
 
-        //public DateTime InitialDateTime { get; set; }
+
         private SeriesCollection seriesCollection;
         public SeriesCollection SeriesCollection
         {
@@ -83,8 +80,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility CelebrationVisibility
         {
             get { return celebrationVisibility; }
-            set 
-            { 
+            set
+            {
                 celebrationVisibility = value;
                 OnPropertyChanged("CelebrationVisibility");
             }
@@ -106,17 +103,11 @@ namespace ProjectLighthouse.ViewModel
 
             Stats = new();
             Stats = ComputeDashboard();
-
-            //OnPropertyChanged("SeriesCollection");
-            Debug.WriteLine($"Data computed at time {(DateTime.Now - start).TotalMilliseconds:N0} ms");
         }
 
         public async Task GetData()
         {
             LatheOrders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
-            //LatheOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
-            //DeliveryItems = DatabaseHelper.Read<DeliveryItem>().ToList();
-            //DeliveryNotes = DatabaseHelper.Read<DeliveryNote>().ToList();
             Lots = DatabaseHelper.Read<Lot>().ToList();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
@@ -149,8 +140,6 @@ namespace ProjectLighthouse.ViewModel
                 }
             };
 
-
-
             Lots = Lots.OrderBy(n => n.Date).ToList();
             DateTime _date = Lots.First().Date;
             ChartModel _data_point;
@@ -160,7 +149,6 @@ namespace ProjectLighthouse.ViewModel
             for (int i = 0; i < 6; i++) // labels
             {
                 WeekLabels[i] = GetIso8601WeekOfYear(DateTime.Now.AddDays((6 - i) * 7 * -1)).ToString();
-                //Debug.WriteLine($"Week Num: {WeekLabels[i]}");
             }
 
             List<Lot> recentLots = Lots.Where(n => n.Date.AddDays(7 * 7) > DateTime.Now).ToList();
@@ -168,21 +156,29 @@ namespace ProjectLighthouse.ViewModel
             foreach (Lot l in recentLots)
             {
                 if (l.IsReject || !l.IsDelivered)
+                {
                     continue;
+                }
+
                 List<LatheManufactureOrder> matchedOrders = LatheOrders.Where(n => n.Name == l.Order).ToList();
                 if (matchedOrders.Count == 0)
+                {
                     continue;
+                }
 
                 List<TurnedProduct> matchedProducts = TurnedProducts.Where(n => n.ProductName == l.ProductName).ToList();
                 if (matchedProducts.Count == 0)
+                {
                     continue;
+                }
 
                 LatheManufactureOrder order = matchedOrders.First();
                 TurnedProduct product = matchedProducts.First();
 
                 if (product.SellPrice <= 0)
+                {
                     product.SellPrice = 200; //pennies
-
+                }
 
                 int weekNum = GetIso8601WeekOfYear(l.Date);
                 if (WeekLabels.Contains(weekNum.ToString()))
@@ -294,7 +290,7 @@ namespace ProjectLighthouse.ViewModel
                 if (data.Count == 0)
                     continue;
 
-                lathe_labels.Add(Lathes[lathe].FullName);                
+                lathe_labels.Add(Lathes[lathe].FullName);
 
                 double sRunning = 0;
                 double sSetting = 0;
@@ -372,7 +368,7 @@ namespace ProjectLighthouse.ViewModel
             OverallOperating = Math.Round((OverallRuntime / OverallTime) * 100, 2);
             OnPropertyChanged("OverallOperating");
 
-            //SecondsToDaysFormatter = value => string.Format("{0:d}",TimeSpan.FromSeconds(value));
+            //SecondsToDaysFormatter = value => string.Format("{0:d}", TimeSpan.FromSeconds(value));
             LatheLabels = lathe_labels.ToArray();
             OnPropertyChanged("LatheLabels");
             MachineRuntimeCollection.AddRange(temporal);

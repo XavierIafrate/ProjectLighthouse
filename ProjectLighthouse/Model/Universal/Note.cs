@@ -21,7 +21,9 @@ namespace ProjectLighthouse.Model
         public bool ShowHeader { get; set; }
         [Ignore]
         public bool ShowEdit { get; set; }
+        [Ignore]
+        public bool ShowSpacerUnder { get; set; }
 
-        public event Action PropertyChanged;
+        public event Action Edited;
     }
 }

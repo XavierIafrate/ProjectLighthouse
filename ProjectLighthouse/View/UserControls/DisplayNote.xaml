@@ -10,98 +10,104 @@
     d:DesignHeight="154.24"
     d:DesignWidth="458.688"
     mc:Ignorable="d">
-    <Grid x:Name="ControlGrid" Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0" />
-            <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Border
-            Grid.RowSpan="3"
-            Grid.Column="1"
-            Background="{StaticResource materialSelectedColour}"
-            CornerRadius="10" />
-        <StackPanel
-            x:Name="MetadataStackPanel"
-            Grid.Column="1"
-            Margin="10,5,10,0"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            TextElement.FontSize="8"
-            TextElement.FontStyle="Italic"
-            TextElement.FontWeight="SemiBold"
-            TextElement.Foreground="{StaticResource materialPrimaryBlue}">
-            <TextBlock
-                x:Name="SentByTextBlock"
-                VerticalAlignment="Center"
-                Text="randy" />
-            <StackPanel
-                x:Name="DevBadge"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
-                <TextBlock Text=" " />
-                <Path
-                    Width="12"
-                    Height="12"
-                    VerticalAlignment="Center"
-                    Data="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M11 8H9V10C9 11.1 8.1 12 7 12C8.1 12 9 12.9 9 14V16H11V18H9C7.9 18 7 17.1 7 16V15C7 13.9 6.1 13 5 13V11C6.1 11 7 10.1 7 9V8C7 6.9 7.9 6 9 6H11V8M19 13C17.9 13 17 13.9 17 15V16C17 17.1 16.1 18 15 18H13V16H15V14C15 12.9 15.9 12 17 12C15.9 12 15 11.1 15 10V8H13V6H15C16.1 6 17 6.9 17 8V9C17 10.1 17.9 11 19 11V13Z"
-                    Fill="{StaticResource materialPrimaryBlueVar}"
-                    Stretch="Uniform">
-                    <Path.RenderTransform>
-                        <TranslateTransform Y="2" />
-                    </Path.RenderTransform>
-                </Path>
-            </StackPanel>
-            <TextBlock VerticalAlignment="Center" Text=" · " />
-            <TextBlock
-                x:Name="SentAtTextBlock"
-                VerticalAlignment="Center"
-                Text="01/01/1970 12:00" />
-            <!--<Path Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" Fill="Red" />-->
-
-
-        </StackPanel>
-        <Grid
-            Grid.Row="1"
-            Grid.Column="1"
-            HorizontalAlignment="Stretch">
+    <StackPanel>
+        <Grid x:Name="ControlGrid" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="0" />
+                <ColumnDefinition Width="4*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <Border
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                Background="{StaticResource materialSelectedColour}"
+                CornerRadius="10" 
+                BorderThickness="1"
+                BorderBrush="{StaticResource materialPrimaryBlue}"/>
             <StackPanel
-                x:Name="EditControls"
-                Margin="5"
-                VerticalAlignment="Center">
-                <Button
-                    x:Name="EditButton"
-                    Click="EditButton_Click"
-                    Style="{StaticResource IconEditButton}" />
-            </StackPanel>
-            <Label x:Name="TextBlockContainer" Grid.Column="1">
+                x:Name="MetadataStackPanel"
+                Grid.Column="1"
+                Margin="10,5,10,0"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                TextElement.FontSize="8"
+                TextElement.FontStyle="Italic"
+                TextElement.FontWeight="SemiBold"
+                TextElement.Foreground="{StaticResource materialPrimaryBlue}">
                 <TextBlock
-                    x:Name="MessageTextBlock"
-                    Margin="10,0,10,2"
-                    FontSize="14"
-                    Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id gravida urna, sit amet euismod orci."
-                    TextWrapping="WrapWithOverflow" />
-            </Label>
-        </Grid>
+                    x:Name="SentByTextBlock"
+                    VerticalAlignment="Center"
+                    Text="randy" />
+                <StackPanel
+                    x:Name="DevBadge"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock Text=" " />
+                    <Path
+                        Width="12"
+                        Height="12"
+                        VerticalAlignment="Center"
+                        Data="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M11 8H9V10C9 11.1 8.1 12 7 12C8.1 12 9 12.9 9 14V16H11V18H9C7.9 18 7 17.1 7 16V15C7 13.9 6.1 13 5 13V11C6.1 11 7 10.1 7 9V8C7 6.9 7.9 6 9 6H11V8M19 13C17.9 13 17 13.9 17 15V16C17 17.1 16.1 18 15 18H13V16H15V14C15 12.9 15.9 12 17 12C15.9 12 15 11.1 15 10V8H13V6H15C16.1 6 17 6.9 17 8V9C17 10.1 17.9 11 19 11V13Z"
+                        Fill="{StaticResource materialPrimaryBlueVar}"
+                        Stretch="Uniform">
+                        <Path.RenderTransform>
+                            <TranslateTransform Y="2" />
+                        </Path.RenderTransform>
+                    </Path>
+                </StackPanel>
+                <TextBlock VerticalAlignment="Center" Text=" · " />
+                <TextBlock
+                    x:Name="SentAtTextBlock"
+                    VerticalAlignment="Center"
+                    Text="01/01/1970 12:00" />
+                <!--<Path Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" Fill="Red" />-->
 
 
-        <!--<TextBox
+            </StackPanel>
+            <Grid
+                Grid.Row="1"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    x:Name="EditControls"
+                    Margin="5"
+                    VerticalAlignment="Center">
+                    <Button
+                        x:Name="EditButton"
+                        Click="EditButton_Click"
+                        Style="{StaticResource IconEditButton}" />
+                </StackPanel>
+                <Label x:Name="TextBlockContainer" Grid.Column="1">
+                    <TextBlock
+                        x:Name="MessageTextBlock"
+                        Margin="10,0,10,2"
+                        FontSize="14"
+                        Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id gravida urna, sit amet euismod orci."
+                        TextWrapping="WrapWithOverflow" />
+                </Label>
+            </Grid>
+
+
+            <!--<TextBox
             Grid.Row="1"
             Grid.Column="1"
             Margin="10,0,10,2"
             Background="Red"
             BorderThickness="0" />-->
 
+        </Grid>
+        <Grid
+            x:Name="spacer"
+            Grid.Row="1"
+            Height="15" />
+    </StackPanel>
 
-
-
-    </Grid>
 </UserControl>

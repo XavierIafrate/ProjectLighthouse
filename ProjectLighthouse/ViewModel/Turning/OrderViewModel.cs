@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -176,6 +177,12 @@ namespace ProjectLighthouse.ViewModel
 
         public event EventHandler SelectedLatheManufactureOrderChanged;
 
+
+        public Brush ToolingIconBrush { get; set; }
+        public Brush ProgramIconBrush { get; set; }
+        public Brush BarVerifiedIconBrush { get; set; }
+        public Brush BarAllocatedIconBrush { get; set; }
+
         #endregion Variables
 
         public OrderViewModel()
@@ -193,6 +200,11 @@ namespace ProjectLighthouse.ViewModel
             ProductGroups = new();
             SelectedProductGroup = new();
             SelectedProducts = new();
+
+            ToolingIconBrush = (Brush)Application.Current.Resources["materialError"];
+            ProgramIconBrush = (Brush)Application.Current.Resources["materialError"];
+            BarVerifiedIconBrush = (Brush)Application.Current.Resources["materialError"];
+            BarAllocatedIconBrush = (Brush)Application.Current.Resources["materialError"];
 
             PrintOrderCommand = new PrintCommand(this);
             EditCommand = new EditManufactureOrderCommand(this);
@@ -304,12 +316,17 @@ namespace ProjectLighthouse.ViewModel
             }
 
             string name = "";
+            DateTime lastTimeStamp = DateTime.MinValue;
 
-            foreach (Note note in FilteredNotes) // Tidy headers
+            for(int i = 0; i < FilteredNotes.Count; i++)
             {
-                note.ShowEdit = false;
-                note.ShowHeader = note.SentBy != name;
-                name = note.SentBy;
+                FilteredNotes[i].ShowEdit = false;
+                FilteredNotes[i].ShowHeader = FilteredNotes[i].SentBy != name 
+                    || DateTime.Parse(FilteredNotes[i].DateSent) > lastTimeStamp.AddHours(6);
+                if (i < FilteredNotes.Count - 1)
+                {
+                    FilteredNotes[i].ShowSpacerUnder = DateTime.Parse(FilteredNotes[i + 1].DateSent) > DateTime.Parse(FilteredNotes[i].DateSent).AddHours(6);
+                }
             }
 
             OnPropertyChanged("FilteredLMOItems");
@@ -381,6 +398,25 @@ namespace ProjectLighthouse.ViewModel
             {
                 CardVis = Visibility.Visible;
             }
+            ProgramIconBrush = SelectedLatheManufactureOrder.HasProgram
+                ? (Brush)Application.Current.Resources["materialPrimaryGreen"]
+                : (Brush)Application.Current.Resources["materialError"];
+            OnPropertyChanged("ProgramIconBrush");
+
+            ToolingIconBrush = SelectedLatheManufactureOrder.IsReady
+                ? (Brush)Application.Current.Resources["materialPrimaryGreen"]
+                : (Brush)Application.Current.Resources["materialError"];
+            OnPropertyChanged("ToolingIconBrush");
+
+            BarVerifiedIconBrush = SelectedLatheManufactureOrder.BarIsVerified
+                ? (Brush)Application.Current.Resources["materialPrimaryGreen"]
+                : (Brush)Application.Current.Resources["materialError"];
+            OnPropertyChanged("BarVerifiedIconBrush");
+
+            BarAllocatedIconBrush = SelectedLatheManufactureOrder.BarIsAllocated
+                ? (Brush)Application.Current.Resources["materialPrimaryGreen"]
+                : (Brush)Application.Current.Resources["materialError"];
+            OnPropertyChanged("BarAllocatedIconBrush");
 
             LoadLMOItems();
 

@@ -49,6 +49,13 @@ namespace ProjectLighthouse.Model
             return Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
         }
 
+        public TimeSpan GetTimeToMake(int quantity)
+        {
+            return CycleTime == 0
+                ? TimeSpan.FromSeconds(quantity * 120) 
+                : TimeSpan.FromSeconds(quantity * CycleTime);
+        }
+
         public bool CanBeManufactured()
         {
             return MajorLength <= MaxLength && MajorDiameter <= MaxDiameter;
@@ -85,5 +92,15 @@ namespace ProjectLighthouse.Model
                 otherProduct.ProductGroup == ProductGroup &&
                 otherProduct.Material == Material;
         }
+
+        // For requests engine
+        [Ignore]
+        public bool RecentlyDeclined { get; set; }
+        [Ignore]
+        public string OrderReference { get; set; }
+        [Ignore]
+        public bool IsAlreadyOnOrder { get; set; }
+        [Ignore]
+        public int QuantityOnOrder { get; set; }
     }
 }

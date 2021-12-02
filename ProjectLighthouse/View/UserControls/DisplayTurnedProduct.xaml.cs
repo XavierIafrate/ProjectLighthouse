@@ -51,9 +51,29 @@ namespace ProjectLighthouse.View.UserControls
                         break;
                 }
 
+                if (!string.IsNullOrEmpty(control.Product.OrderReference))
+                {
+                    if (control.Product.IsAlreadyOnOrder)
+                    {
+                        control.CouldBeAddedFlag.Text = $"{control.Product.QuantityOnOrder:#,##0}pcs on order {control.Product.OrderReference}";
+                        control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryGreen"];
+                    }
+                    else
+                    {
+                        control.CouldBeAddedFlag.Text = $"could add to {control.Product.OrderReference}";
+                        control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryBlue"];
+                    }
 
+                    control.CouldBeAddedFlag.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    control.RecentlyDeclined.Visibility = control.Product.RecentlyDeclined
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+                    control.CouldBeAddedFlag.Visibility = Visibility.Collapsed;
+                }
             }
-
         }
 
         public DisplayTurnedProduct()

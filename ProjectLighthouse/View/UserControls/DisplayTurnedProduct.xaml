@@ -6,9 +6,14 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
+    d:DesignWidth="252.14"
     d:MinWidth="200"
     mc:Ignorable="d">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
@@ -18,7 +23,8 @@
             <TextBlock
                 x:Name="ProductName"
                 Margin="5"
-                FontSize="16" />
+                FontSize="16"
+                Text="P0130.000-000-A2" />
             <Path
                 x:Name="HotFlag"
                 Width="15"
@@ -28,7 +34,10 @@
                 Stretch="Uniform" />
         </StackPanel>
 
-        <Grid Grid.Column="2" Margin="0,0,5,0">
+        <Grid
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Margin="0,0,5,0">
             <Rectangle
                 x:Name="Badge"
                 Height="26"
@@ -40,8 +49,24 @@
                 Margin="12,0,12,2"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Foreground="{StaticResource materialOnPrimary}" />
+                Foreground="{StaticResource materialOnPrimary}"
+                Text="A0" />
         </Grid>
+        <TextBlock
+            x:Name="RecentlyDeclined"
+            Grid.Row="1"
+            Padding="5,0,5,2"
+            FontStyle="Italic"
+            Foreground="{StaticResource materialError}"
+            Text="recently declined"
+            Visibility="Collapsed" />
+        <TextBlock
+            x:Name="CouldBeAddedFlag"
+            Grid.Row="1"
+            Padding="5,0,5,2"
+            FontStyle="Italic"
+            Foreground="{StaticResource materialPrimaryBlue}"
+            Text="could add to M12345"
+            Visibility="Visible" />
     </Grid>
-
 </UserControl>

@@ -346,7 +346,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             foreach (Lathe lathe in lathes)
             {
-                AppendScheduleForLathe(orders.Where(o => o.AllocatedMachine == lathe.Id).ToList(), items, lathe, document);
+                AppendScheduleForLathe(
+                    orders.Where(o => o.AllocatedMachine == lathe.Id && o.State < OrderState.Complete).ToList(), 
+                    items, lathe, document);
             }
 
             string fileName = $"schedule_{DateTime.Now:yyyyMMdd_HHmm}.pdf";

@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,6 @@ namespace ProjectLighthouse.ViewModel
         public string ViewTitle { get; set; }
         public Lathe SelectedLathe { get; set; }
 
-        
         public List<CompleteOrder> ActiveOrders = new();
         private List<CompleteOrder> filteredOrders;
 
@@ -34,6 +34,8 @@ namespace ProjectLighthouse.ViewModel
 
         public Visibility NoneFoundVis { get; set; }
         public Visibility InsightsVis { get; set; }
+        public Visibility PrintButtonVis { get; set; }
+        public PrintScheduleCommand PrintScheduleCommand { get; set; }
 
         public List<string> filterOptions { get; set; }
 
@@ -48,7 +50,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
         public string MachineInfoInsights { get; set; }
         public string MachineCapabilitiesInsights { get; set; }
         public string NumberOfOrdersInsights { get; set; }
@@ -60,6 +61,8 @@ namespace ProjectLighthouse.ViewModel
         {
             FilteredOrders = new();
             filterOptions = new();
+
+            PrintScheduleCommand = new(this);
 
             LoadData();
             Filter = filterOptions.Count > 1 
@@ -101,14 +104,16 @@ namespace ProjectLighthouse.ViewModel
             string searchString;
             if (Filter == "Unallocated")
             {
-                searchString = "";
+                searchString = null;
+                PrintButtonVis = Visibility.Collapsed;
             }
             else
             {
                 SelectedLathe = Lathes.Single(l => l.FullName == Filter);
                 searchString = SelectedLathe.Id;
-
+                PrintButtonVis = Visibility.Visible;
             }
+            OnPropertyChanged("PrintButtonVis");
 
             FilteredOrders = ActiveOrders
                 .Where(o => o.Order.AllocatedMachine == searchString)
@@ -131,6 +136,7 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged("InsightsVis");
 
             ViewTitle = $"Schedule for {Filter}";
+            OnPropertyChanged("ViewTitle");
 
             GetInsights();
         }
@@ -167,7 +173,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSchedule()
         {
-            //PDFHelper.PrintSchedule(Orders.ToList(), OrderItems.ToList(), Lathes);
+            PDFHelper.PrintSchedule(OrderHeaders.ToList(), OrderItems.ToList(), Lathes);
         }
     }
 }

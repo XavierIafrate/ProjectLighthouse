@@ -28,7 +28,8 @@ namespace ProjectLighthouse.View.UserControls
             control.DataContext = control.LatheManufactureOrder;
             control.BadgeText.Text = control.LatheManufactureOrder.State.ToString();
             control.OldInfo.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddDays(3) < DateTime.Now
-                    && control.LatheManufactureOrder.State == OrderState.Problem)
+                    && control.LatheManufactureOrder.State == OrderState.Problem
+                    && control.LatheManufactureOrder.CreatedAt.AddDays(3) < DateTime.Now)
                                             ? Visibility.Visible
                                             : Visibility.Collapsed;
 

@@ -28,6 +28,10 @@ namespace ProjectLighthouse.Model
                 {
                     return OrderState.Complete;
                 }
+                else if (HasStarted || Status == "Running")
+                {
+                    return OrderState.Running;
+                }
                 else if (BarIsAllocated && BarIsVerified && HasProgram && IsReady)
                 {
                     return OrderState.Prepared;
@@ -44,9 +48,6 @@ namespace ProjectLighthouse.Model
             set { }
         }
 
-
-        
-        
         public bool IsReady { get; set; } // alias for tooling ready (legacy)
         public bool HasProgram { get; set; }
         public bool HasStarted { get; set; }
@@ -57,7 +58,6 @@ namespace ProjectLighthouse.Model
         
         public string Status { get; set; }
 
-
         public bool IsUrgent { get; set; }
         public string AllocatedMachine { get; set; }
         public string AllocatedSetter { get; set; }
@@ -66,6 +66,7 @@ namespace ProjectLighthouse.Model
         public DateTime CompletedAt { get; set; }
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
+        public double BarsInStockAtCreation { get; set; }
         public double MajorDiameter { get; set; }
         public bool ItemNeedsCleaning { get; set; }
 
@@ -102,7 +103,8 @@ namespace ProjectLighthouse.Model
                 NumberOfBars = NumberOfBars,
                 ItemNeedsCleaning = ItemNeedsCleaning,
                 BarIsAllocated = BarIsAllocated,
-                BarIsVerified = BarIsVerified
+                BarIsVerified = BarIsVerified,
+                BarsInStockAtCreation = BarsInStockAtCreation
             };
         }
 

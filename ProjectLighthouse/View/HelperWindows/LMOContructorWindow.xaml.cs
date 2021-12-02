@@ -16,6 +16,7 @@ namespace ProjectLighthouse.View
         public List<LatheManufactureOrderItem> LMOItems;
         public string OrderBarID;
 
+        BarStock OrderBar;
         public List<TurnedProduct> ListboxProducts;
         public List<TurnedProduct> ProductPool;
 
@@ -43,6 +44,7 @@ namespace ProjectLighthouse.View
         {
             string productName = request.Product;
             ProductPool = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductGroup == productName.Substring(0, 9)).ToList();
+            
             TurnedProduct requiredProduct = new();
 
             // Assign required product
@@ -57,6 +59,8 @@ namespace ProjectLighthouse.View
                 }
             }
 
+            OrderBar = DatabaseHelper.Read<BarStock>().First(n => n.Id == constructLMO.BarID);
+            
             // remove incompatible
             foreach (TurnedProduct product in ProductPool.ToList())
             {
@@ -143,8 +147,7 @@ namespace ProjectLighthouse.View
 
             bars = Math.Ceiling(bars);
 
-            IEnumerable<BarStock> barStock = DatabaseHelper.Read<BarStock>().Where(n => n.Id == constructLMO.BarID);
-            int costPerBar = barStock.First().Cost;
+            int costPerBar = OrderBar.Cost;
             double dblmaterialCost = Math.Round(Convert.ToDouble(costPerBar) / 100 * bars, 2);
 
             nBars.Text = $"{bars}";
@@ -181,7 +184,7 @@ namespace ProjectLighthouse.View
             constructLMO.HasStarted = false;
             constructLMO.BarIsAllocated = false;
             constructLMO.MajorDiameter = LMOItems.First().MajorDiameter;
-
+            constructLMO.BarsInStockAtCreation = OrderBar.InStock;
 
             // Add order & items to database
             _ = DatabaseHelper.Insert(constructLMO);

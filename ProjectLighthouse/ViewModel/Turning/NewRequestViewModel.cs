@@ -29,6 +29,10 @@ namespace ProjectLighthouse.ViewModel
 
         public List<TurnedProduct> TurnedProducts { get; set; }
         public List<TurnedProduct> FilteredList { get; set; }
+
+        public List<TurnedProduct> ItemsOnOrder { get; set; }
+        public List<Request> RecentlyDeclinedRequests { get; set; }
+
         public string PotentialQuantityText { get; set; }
         public string RecommendedStockText { get; set; }
         public string LikelinessText { get; set; }
@@ -96,6 +100,8 @@ namespace ProjectLighthouse.ViewModel
             SubmitRequestCommand = new(this);
             AddSpecialCommand = new(this);
 
+            TurnedProducts = new();
+
             NotEnoughDataVis = Visibility.Visible;
             GraphVis = Visibility.Hidden;
             GIFVis = Visibility.Visible;
@@ -162,6 +168,15 @@ namespace ProjectLighthouse.ViewModel
 
         public void PopulateListBox()
         {
+            if (TurnedProducts.Count == 0) // called before loading
+            {
+                return;
+            }
+
+            RecentlyDeclinedRequests = DatabaseHelper.Read<Request>()
+                .Where(r => r.DateRaised.AddDays(14) > DateTime.Now && r.IsDeclined)
+                .ToList();
+
             FilteredList.Clear();
             if (SelectedGroup == "Specials")
             {
@@ -178,6 +193,56 @@ namespace ProjectLighthouse.ViewModel
                     if (product.ProductName.Substring(0, Math.Min(5, product.ProductName.Length)) == SelectedGroup && !product.isSpecialPart)
                     {
                         FilteredList.Add(product);
+                    }
+                }
+            }
+
+            List<LatheManufactureOrder> activeOrders = DatabaseHelper.Read<LatheManufactureOrder>()
+                .Where(o => o.State < OrderState.Complete)
+                .ToList();
+            List<LatheManufactureOrderItem> activeOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(i => activeOrders.Any(o => i.AssignedMO == o.Name)).ToList();
+
+            activeOrders = null;
+            ItemsOnOrder = new();
+
+            for (int i = 0; i < activeOrderItems.Count; i++)
+            {
+                TurnedProduct productOnOrder = TurnedProducts.Single(p => p.ProductName == activeOrderItems[i].ProductName);
+                productOnOrder.OrderReference = activeOrderItems[i].AssignedMO;
+                productOnOrder.QuantityOnOrder = activeOrderItems[i].RequiredQuantity;
+                ItemsOnOrder.Add(productOnOrder);
+            }
+
+            activeOrders = null;
+            activeOrderItems = null;
+
+            // populate recent Lighthouse decisions
+            foreach (TurnedProduct item in FilteredList)
+            {
+                foreach (TurnedProduct orderItem in ItemsOnOrder)
+                {
+                    if (item.IsScheduleCompatible(orderItem))
+                    {
+                        item.OrderReference = orderItem.OrderReference;
+                    }
+                    if (item.ProductName == orderItem.ProductName)
+                    {
+                        item.IsAlreadyOnOrder = true;
+                        item.QuantityOnOrder = orderItem.QuantityOnOrder;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(item.OrderReference))
+                {
+                    continue;
+                }
+
+                foreach (Request declinedRequest in RecentlyDeclinedRequests)
+                {
+                    if (declinedRequest.Product == item.ProductName)
+                    {
+                        item.RecentlyDeclined = true;
+                        break;
                     }
                 }
             }
@@ -315,6 +380,7 @@ namespace ProjectLighthouse.ViewModel
             Families = new();
             SelectedGroup = "Live";
             SelectedProduct = new();
+            RecentlyDeclinedRequests = new();
 
             PopulateComboBox();
             PopulateListBox();

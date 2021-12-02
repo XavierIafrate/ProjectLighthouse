@@ -7,24 +7,12 @@ namespace ProjectLighthouse.View.UserControls
 {
     public partial class DisplayNote : UserControl
     {
-        public Delegate EditCommand
-        {
-            get { return (Delegate)GetValue(EditCommandProperty); }
-            set { SetValue(EditCommandProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for EditCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty EditCommandProperty =
-            DependencyProperty.Register("EditCommand", typeof(Delegate), typeof(DisplayNote), new PropertyMetadata(null, SetValues));
-
-
         public Note Note
         {
             get => (Note)GetValue(NoteProperty);
             set => SetValue(NoteProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for Note.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NoteProperty =
             DependencyProperty.Register("Note", typeof(Note), typeof(DisplayNote), new PropertyMetadata(null, SetValues));
 
@@ -34,9 +22,6 @@ namespace ProjectLighthouse.View.UserControls
             {
                 if (control.Note != null)
                 {
-                    //control.Note.PropertyChanged += EditButton_Click();
-
-
                     control.MessageTextBlock.Text = control.Note.Message;
 
                     DateTime SentAt = DateTime.Parse(control.Note.DateSent);
@@ -65,9 +50,13 @@ namespace ProjectLighthouse.View.UserControls
                         ? new Thickness(5, 5, 5, 5)
                         : new Thickness(5, 0, 5, 5);
 
-                    //control.EditControls.Visibility = control.Note.ShowEdit
-                    //    ? Visibility.Collapsed
-                    //    : Visibility.Collapsed;
+                    control.EditControls.Visibility = control.Note.ShowEdit
+                        ? Visibility.Collapsed
+                        : Visibility.Collapsed;
+
+                    control.spacer.Visibility = control.Note.ShowSpacerUnder
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
                 }
             }
         }
