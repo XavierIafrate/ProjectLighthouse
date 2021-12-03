@@ -28,7 +28,7 @@ namespace ProjectLighthouse.Model
                 {
                     return OrderState.Complete;
                 }
-                else if (HasStarted || Status == "Running")
+                else if (HasStarted)
                 {
                     return OrderState.Running;
                 }
@@ -60,7 +60,6 @@ namespace ProjectLighthouse.Model
 
         public bool IsUrgent { get; set; }
         public string AllocatedMachine { get; set; }
-        public string AllocatedSetter { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime SettingFinished { get; set; }
         public DateTime CompletedAt { get; set; }
@@ -69,9 +68,6 @@ namespace ProjectLighthouse.Model
         public double BarsInStockAtCreation { get; set; }
         public double MajorDiameter { get; set; }
         public bool ItemNeedsCleaning { get; set; }
-
-        public string Notes { get; set; }
-
 
         public object Clone()
         {
@@ -87,12 +83,10 @@ namespace ProjectLighthouse.Model
                 TimeToComplete = TimeToComplete,
                 IsComplete = IsComplete,
                 Status = Status,
-                Notes = Notes,
                 IsUrgent = IsUrgent,
                 IsCancelled = IsCancelled,
                 State = State,
                 AllocatedMachine = AllocatedMachine,
-                AllocatedSetter = AllocatedSetter,
                 StartDate = StartDate,
                 SettingFinished = SettingFinished,
                 CompletedAt = CompletedAt,
@@ -111,6 +105,18 @@ namespace ProjectLighthouse.Model
         public override string ToString()
         {
             return Name;
+        }
+
+        public bool IsUpdated(LatheManufactureOrder OtherOrder)
+        {
+            return IsCancelled != OtherOrder.IsCancelled
+                || IsComplete != OtherOrder.IsComplete
+                || HasStarted != OtherOrder.HasStarted
+                || BarIsAllocated != OtherOrder.BarIsAllocated
+                || BarIsVerified != OtherOrder.BarIsVerified
+                || HasProgram != OtherOrder.HasProgram
+                || IsReady != OtherOrder.IsReady
+                || POReference != OtherOrder.POReference;
         }
     }
 }

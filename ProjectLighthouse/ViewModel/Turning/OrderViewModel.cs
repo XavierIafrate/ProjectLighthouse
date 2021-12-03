@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -31,7 +32,6 @@ namespace ProjectLighthouse.ViewModel
         public List<Lot> Lots { get; set; }
 
         private LatheManufactureOrder selectedLatheManufactureOrder;
-
         public LatheManufactureOrder SelectedLatheManufactureOrder
         {
             get { return selectedLatheManufactureOrder; }
@@ -44,7 +44,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private MachineStatistics displayStats; // Stats for the machine listed on the order currently selected
-
         public MachineStatistics DisplayStats
         {
             get { return displayStats; }
@@ -183,6 +182,8 @@ namespace ProjectLighthouse.ViewModel
         public Brush BarVerifiedIconBrush { get; set; }
         public Brush BarAllocatedIconBrush { get; set; }
 
+        public Timer liveTimer; 
+
         #endregion Variables
 
         public OrderViewModel()
@@ -211,6 +212,13 @@ namespace ProjectLighthouse.ViewModel
             ProductGroups = DatabaseHelper.Read<ProductGroup>();
             Products = DatabaseHelper.Read<TurnedProduct>();
 
+            liveTimer = new();
+
+            liveTimer.Elapsed += OnTimedEvent;
+            liveTimer.Interval = 60000;
+            liveTimer.Enabled = true;
+            liveTimer.Start();
+
             GetLatheManufactureOrders();
             FilterOrders("All Active");
             GetLatheManufactureOrderItems();
@@ -218,6 +226,11 @@ namespace ProjectLighthouse.ViewModel
         }
 
         #region MachineStats Display
+
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            GetLatestStats();
+        }
 
         private void GetLatestStats()
         {
@@ -327,6 +340,8 @@ namespace ProjectLighthouse.ViewModel
                 {
                     FilteredNotes[i].ShowSpacerUnder = DateTime.Parse(FilteredNotes[i + 1].DateSent) > DateTime.Parse(FilteredNotes[i].DateSent).AddHours(6);
                 }
+                lastTimeStamp = DateTime.Parse(FilteredNotes[i].DateSent);
+                name = FilteredNotes[i].SentBy;
             }
 
             OnPropertyChanged("FilteredLMOItems");

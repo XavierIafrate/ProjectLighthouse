@@ -48,12 +48,10 @@ namespace ProjectLighthouse
 
             Title += $" v.{versionInfo.FileVersion}";
 
-//#if DEBUG
-//            Title += $" - {DatabaseHelper.GetDatabaseFile()}";
-//            DebugTile.Visibility = Visibility.Visible;
-//#endif
-
-            File.AppendAllText(Path.Join(App.ROOT_PATH, "log.txt"), $"{App.CurrentUser.UserName} login at {DateTime.Now:dd/MM/yy HH:mm:ss} with version {versionInfo.FileVersion}\n");
+#if DEBUG
+            Title += $" - {DatabaseHelper.GetDatabaseFile()}";
+            DebugTile.Visibility = Visibility.Visible;
+#endif
         }
 
         public async Task CheckForUpdates()
@@ -94,11 +92,6 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //assemblyOrders_button.IsEnabled = App.CurrentUser.UserRole == "admin";
-            //BOM_button.IsEnabled = App.CurrentUser.UserRole == "admin";
-            //assembly_button.IsEnabled = App.CurrentUser.UserRole == "admin";
-
-
             manage_users_button.Visibility = App.CurrentUser.UserRole == "admin" ? Visibility.Visible : Visibility.Collapsed;
             debug_button.Visibility = App.CurrentUser.UserName == "xav" ? Visibility.Visible : Visibility.Collapsed;
 

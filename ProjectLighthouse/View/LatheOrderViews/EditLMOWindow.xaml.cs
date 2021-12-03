@@ -3,128 +3,67 @@ using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.View
 {
     public partial class EditLMOWindow : Window
     {
-        public LatheManufactureOrder order;
+        #region Variables
+
+        private LatheManufactureOrder _order;
+        public LatheManufactureOrder order
+        {
+            get { return _order; }
+            set 
+            { 
+                _order = value;
+                SetCheckboxEnabling();
+            }
+        }
+
+        public LatheManufactureOrder savedOrder;
+
         public List<LatheManufactureOrderItem> items;
         public List<Lot> lots;
         public bool SaveExit { get; set; }
         public List<Note> Notes;
+
+        #endregion
 
         public EditLMOWindow(LatheManufactureOrder o, List<LatheManufactureOrderItem> i, List<Lot> l, List<Note> n)
         {
             InitializeComponent();
 
             SaveExit = false;
-            items = new(i);
+
+            items = new();
+            foreach (LatheManufactureOrderItem item in i)
+            {
+                item.RequestToEdit += EditItem;
+                items.Add(item);
+                item.ShowEdit = App.CurrentUser.CanUpdateLMOs;
+            }
+
             lots = new(l);
             Notes = n;
 
             FormatNoteDisplay();
 
+            savedOrder = o;
             order = (LatheManufactureOrder)o.Clone(); // break the reference
 
-            PopulateControls();
+            DataContext = this.order;
+
+            UpdateControls();
         }
 
-        public void Test()
+        private void EditItem(LatheManufactureOrderItem item)
         {
-            MessageBox.Show("Hello, world!");
-        }
-
-        private void FormatNoteDisplay()
-        {
-            string name = "";
-            foreach (Note note in Notes)
-            {
-                DateTime DateOfNote = DateTime.Parse(note.DateSent);
-                note.ShowEdit = DateOfNote.AddDays(14) > DateTime.Now && note.SentBy == App.CurrentUser.UserName;
-
-                note.ShowHeader = name != note.SentBy;
-                name = note.SentBy;
-            }
-        }
-
-        private void PopulateControls()
-        {
-            ItemsListBox.ItemsSource = items;
-            NotesDisplay.ItemsSource = Notes;
-
-            nameText.Text = order.Name;
-            PORef.Text = order.POReference;
-
-            program.IsChecked = order.HasProgram;
-            bar_allocated.IsChecked = order.BarIsAllocated;
-            bar_verified.IsChecked = order.BarIsVerified;
-            ready.IsChecked = order.IsReady;
-
-            switch (order.Status)
-            {
-                case "Running":
-                    running_radio.IsChecked = true;
-                    break;
-                case "Complete":
-                    complete_radio.IsChecked = true;
-                    break;
-                case "Problem":
-                    not_started_radio.IsChecked = true;
-                    break;
-                default:
-                    not_started_radio.IsChecked = true;
-                    break;
-            }
-
-            PORef.IsEnabled = App.CurrentUser.CanEditLMOs || App.CurrentUser.UserRole == "admin" || App.CurrentUser.UserRole == "Purchasing";
-        }
-
-        private void saveButton_Click(object sender, RoutedEventArgs e)
-        {
-            AssignValues();
-
-            order.ModifiedBy = App.CurrentUser.GetFullName();
-            order.ModifiedAt = DateTime.Now;
-
-            DatabaseHelper.Update(order);
-            SaveExit = true;
-            Close();
-        }
-
-        private void AssignValues()
-        {
-            order.POReference = PORef.Text;
-            order.HasProgram = (bool)program.IsChecked;
-            order.IsReady = (bool)ready.IsChecked;
-            order.BarIsAllocated = (bool)bar_allocated.IsChecked;
-            order.BarIsVerified = (bool)bar_verified.IsChecked;
-
-            if ((bool)not_started_radio.IsChecked)
-            {
-                order.Status = order.IsReady && order.BarIsAllocated && order.HasProgram && order.BarIsVerified ? "Ready" : "Problem";
-            }
-            else
-            {
-                order.Status = (bool)running_radio.IsChecked ? "Running" : "Complete";
-            }
-
-            order.IsComplete = order.Status == "Complete";
-
-            calculateTime();
-            CalculateBarRequirements();
-        }
-
-        private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            DisplayLMOItems control = sender as DisplayLMOItems;
-            EditLMOItemWindow editWindow = new(control.LatheManufactureOrderItem, lots);
+            EditLMOItemWindow editWindow = new(item, lots);
             Hide();
             editWindow.ShowDialog();
 
@@ -137,17 +76,150 @@ namespace ProjectLighthouse.View
             ShowDialog();
         }
 
+        private void FormatNoteDisplay()
+        {
+            string name = "";
+            DateTime lastTimeStamp = DateTime.MinValue;
+
+            for (int i = 0; i < Notes.Count; i++)
+            {
+                Notes[i].ShowEdit = Notes[i].SentBy == App.CurrentUser.UserName;
+                Notes[i].ShowHeader = Notes[i].SentBy != name
+                    || DateTime.Parse(Notes[i].DateSent) > lastTimeStamp.AddHours(6);
+                if (i < Notes.Count - 1)
+                {
+                    Notes[i].ShowSpacerUnder = DateTime.Parse(Notes[i + 1].DateSent) > DateTime.Parse(Notes[i].DateSent).AddHours(6);
+                }
+                lastTimeStamp = DateTime.Parse(Notes[i].DateSent);
+                name = Notes[i].SentBy;
+            }
+        }
+
+        private void UpdateControls()
+        {
+            ItemsListBox.ItemsSource = items;
+            NotesDisplay.ItemsSource = Notes;
+
+            PORef.IsEnabled = App.CurrentUser.CanUpdateLMOs;
+
+            SetCheckboxEnabling();
+        }
+
+        private void SetCheckboxEnabling()
+        {
+            bool tier1;
+            bool tier2;
+            bool tier3;
+            bool tier4;
+
+            switch (order.State)
+            {
+                case >= OrderState.Complete:
+                    tier1 = false;
+                    tier2 = false;
+                    tier3 = false;
+                    tier4 = true;
+                    break;
+                case OrderState.Running:
+                    tier1 = false;
+                    tier2 = false;
+                    tier3 = true;
+                    tier4 = true;
+                    break;
+                case OrderState.Prepared:
+                    tier1 = false;
+                    tier2 = true;
+                    tier3 = true;
+                    tier4 = false;
+                    break;
+                case OrderState.Problem or OrderState.Ready:
+                    tier1 = true;
+                    tier2 = order.BarIsVerified;
+                    tier3 = false;
+                    tier4 = false;
+                    break;
+                default:
+                    tier1 = false;
+                    tier2 = false;
+                    tier3 = false;
+                    tier4 = false;
+                    break;
+            }
+
+            if (!App.CurrentUser.CanUpdateLMOs)
+            {
+                tier1 = false;
+                tier2 = false;
+                tier3 = false;
+                tier4 = false;
+            }
+
+            Tooling_Checkbox.IsEnabled = tier1;
+            Program_Checkbox.IsEnabled = tier1;
+            BarVerified_Checkbox.IsEnabled = tier1;
+
+            BarAllocated_Checkbox.IsEnabled = tier2;
+
+            Running_Checkbox.IsEnabled = tier3;
+
+            Complete_Checkbox.IsEnabled = tier4 && !order.IsCancelled;
+            Cancelled_Checkbox.IsEnabled = App.CurrentUser.UserRole is "Scheduling" or "admin";
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            AssignValues();
+
+            if (savedOrder.IsUpdated(order))
+            {
+                SaveExit = true;
+            }
+
+            if (SaveExit)
+            {
+                order.ModifiedBy = App.CurrentUser.GetFullName();
+                order.ModifiedAt = DateTime.Now;
+
+                order.Status = order.State.ToString();
+
+                if (savedOrder.State < OrderState.Complete && order.State >= OrderState.Complete)
+                {
+                    order.CompletedAt = order.ModifiedAt;
+                }
+
+                _ = DatabaseHelper.Update(order);
+            }
+
+            Close();
+        }
+
+        private void AssignValues()
+        {
+            CalculateTime();
+            CalculateBarRequirements();
+        }
+
+        private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DisplayLMOItems control = sender as DisplayLMOItems;
+            if (App.CurrentUser.CanUpdateLMOs)
+            {
+                EditItem(control.LatheManufactureOrderItem);
+            }
+        }
+
         public void RefreshItems()
         {
-            items = new List<LatheManufactureOrderItem>();
-            items = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name).
-                OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName).ToList();
+            items = new();
+            items = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name)
+                .OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName)
+                .ToList();
+
             ItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
         }
 
-
         #region Helpers
-        private void calculateTime()
+        private void CalculateTime()
         {
             int estimatedTimeSeconds = 0;
             foreach (LatheManufactureOrderItem item in items)
@@ -173,133 +245,8 @@ namespace ProjectLighthouse.View
             order.NumberOfBars = Math.Ceiling(totalLengthRequired / 2700);
         }
 
-        private void program_Click(object sender, RoutedEventArgs e)
-        {
-            //CheckBox checkBox = sender as CheckBox;
-            //if (checkBox.IsChecked ?? false)
-            //{
-            //    ready.IsEnabled = true;
-            //}
-            //else
-            //{
-            //    ready.IsEnabled = false;
-            //    ready.IsChecked = false;
-            //    running_radio.IsEnabled = false;
-            //    complete_radio.IsEnabled = false;
-            //}
-            SetControls();
-        }
 
-        private void bar_allocated_Click(object sender, RoutedEventArgs e)
-        {
-            //CheckBox checkBox = sender as CheckBox;
-            //if (checkBox.IsChecked ?? false)
-            //{
-            //    ready.IsEnabled = true;
-            //}
-            //else
-            //{
-            //    ready.IsEnabled = false;
-            //    ready.IsChecked = false;
-            //    running_radio.IsEnabled = false;
-            //    complete_radio.IsEnabled = false;
-            //}
-            SetControls();
-        }
 
-        private void ready_Click(object sender, RoutedEventArgs e)
-        {
-            //CheckBox checkBox = sender as CheckBox;
-            //if (checkBox.IsChecked ?? false)
-            //{
-            //    order.Status = "Ready";
-            //    running_radio.IsEnabled = true;
-            //    complete_radio.IsEnabled = true;
-            //}
-            //else
-            //{
-            //    order.Status = "Problem";
-            //    running_radio.IsEnabled = false;
-            //    complete_radio.IsEnabled = false;
-            //}
-            SetControls();
-        }
-
-        private void CancelOrderButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show("Are you sure you want to cancel this order?", "Cancel Order", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
-            {
-                MessageBox.Show("Not Implemented!!");
-            }
-        }
-
-        private void not_started_radio_Checked(object sender, RoutedEventArgs e)
-        {
-            //ready.IsEnabled = true;
-            //bar_allocated.IsEnabled = true;
-            //program.IsEnabled = true;
-            SetControls();
-        }
-
-        private void running_radio_Checked(object sender, RoutedEventArgs e)
-        {
-            //ready.IsEnabled = false;
-            //bar_allocated.IsEnabled = false;
-            //program.IsEnabled = false;
-            SetControls();
-        }
-
-        private void complete_radio_Checked(object sender, RoutedEventArgs e)
-        {
-            //ready.IsEnabled = false;
-            //bar_allocated.IsEnabled = false;
-            //program.IsEnabled = false;
-            SetControls();
-        }
-
-        private void closeButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void SetControls()
-        {
-            bool checkboxes_enabled = !((bool)running_radio.IsChecked || (bool)complete_radio.IsChecked);
-
-            program.IsEnabled = checkboxes_enabled;
-            bar_allocated.IsEnabled = true;
-            bar_verified.IsEnabled = true;
-            ready.IsEnabled = checkboxes_enabled;
-
-            if ((bool)program.IsChecked && (bool)bar_allocated.IsChecked && (bool)ready.IsChecked && (bool)bar_verified.IsChecked)
-            {
-                not_started_radio.IsEnabled = true;
-                running_radio.IsEnabled = true;
-                complete_radio.IsEnabled = true;
-            }
-            else
-            {
-                not_started_radio.IsEnabled = false;
-                running_radio.IsEnabled = false;
-                complete_radio.IsEnabled = false;
-            }
-            
-        }
-
-        // Timestamp and Initials keyb shortcut
-        private void notes_KeyDown(object sender, KeyEventArgs e)
-        {
-            RichTextBox richTextBox = sender as RichTextBox;
-            if (e.Key == Key.F2)
-            {
-                TextRange range = new(richTextBox.Document.ContentEnd, richTextBox.Document.ContentEnd);
-                range.Text = $"({DateTime.Now:dd/MM/yy HH:mm} - {App.CurrentUser.FirstName[0].ToString().ToUpper()}{App.CurrentUser.LastName[0].ToString().ToUpper()}) ";
-                Debug.WriteLine(App.CurrentUser.FirstName);
-                Debug.WriteLine(App.CurrentUser.FirstName[0].ToString());
-                TextPointer caretPos = richTextBox.CaretPosition;
-                richTextBox.CaretPosition = caretPos.DocumentEnd;
-            }
-        }
         #endregion
 
         private void PORef_TextChanged(object sender, TextChangedEventArgs e)
@@ -356,9 +303,14 @@ namespace ProjectLighthouse.View
             }
         }
 
-        private void bar_verified_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            SetControls();
+            Close();
+        }
+
+        private void Checkbox_Checked(object sender, RoutedEventArgs e)
+        {
+            SetCheckboxEnabling();
         }
     }
 }

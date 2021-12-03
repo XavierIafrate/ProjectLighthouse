@@ -2,6 +2,7 @@
 using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -76,7 +77,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility celebrationVisibility;
-
         public Visibility CelebrationVisibility
         {
             get { return celebrationVisibility; }
@@ -87,13 +87,30 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public GeneratePerformanceReportCommand GenerateReportCommand { get; set; }
+
         #endregion
 
         public AnalyticsViewModel()
         {
             Debug.WriteLine("Init: AnalyticsViewModel");
             CelebrationVisibility = Visibility.Collapsed;
+            GenerateReportCommand = new(this);
             LoadData();
+        }
+
+        public void GenerateReport()
+        {
+            List<MachineOperatingBlock> segmentedData = MachinePerformanceHelper.SplitBlocksIntoDays(MachineStatistics);
+
+            DateTime reportStartDate = DateTime.Now.AddDays(-7).AddDays((((int)DateTime.Now.DayOfWeek) * -1) + 1).Date;
+            DateTime reportEndDate = reportStartDate.AddDays(7);
+
+            segmentedData = segmentedData
+                .Where(d => d.StateEntered.Date >= reportStartDate && d.StateEntered.Date < reportEndDate)
+                .ToList();
+
+            PDFHelper.PrintPerformanceReport(segmentedData, Lathes, LatheOrders);
         }
 
         private async void LoadData()

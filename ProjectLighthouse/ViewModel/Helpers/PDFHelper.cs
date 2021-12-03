@@ -25,6 +25,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         private static string DEL_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Delivery Notes";
         private static string SCH_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Schedule Printouts";
         private static string REQ_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Requisition Printouts";
+        private static string PFM_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Performance Reports";
         private static string Address = "Automotion Components\nAlexia House\nGlenmore Business Park\nChichester, UK\nP019 7BJ";
 
         #region Schedule Formats
@@ -38,6 +39,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static double SCHEDULE_ROW_HEIGHT = 20;
         private static double BAR_ROW_HEIGHT = 20;
+        private static double PERFORMANCE_ROW_HEIGHT = 30;
 
         #endregion Schedule Formats
 
@@ -1017,6 +1019,137 @@ namespace ProjectLighthouse.ViewModel.Helpers
         }
 
         #endregion Bar Requisition
+
+        #region Performance Report
+
+        public static void PrintPerformanceReport(List<MachineOperatingBlock> Statistics, List<Lathe> Lathes, List<LatheManufactureOrder> Orders)
+        {
+            Statistics = Statistics.OrderBy(s => s.StateEntered).ToList();
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            PdfDocument document = new();
+
+            double cursor = DOCUMENT_GUTTER + HEADER_HEIGHT;
+
+            Dictionary<string, double> ColumnDefinitions = new();
+
+            ColumnDefinitions.Add("DAY", 70);
+            ColumnDefinitions.Add("OVERALL", 120);
+            ColumnDefinitions.Add("BREAKDOWNS", 120);
+            ColumnDefinitions.Add("ORDERS", 150);
+
+            Dictionary<string, XRect> columns = GetCenteredColumns(ColumnDefinitions, BAR_ROW_HEIGHT, 595);
+
+            
+            foreach (Lathe lathe in Lathes)
+            {
+                document = DrawPerformanceReport(Statistics, lathe, Orders, columns, document);
+            }
+
+            string fileName = $"performance_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
+            string path = Directory.Exists(PFM_PDF_OUTPUTDIR)
+                ? Path.Join(PFM_PDF_OUTPUTDIR, fileName)
+                : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+
+            SavePDF(document, path, true);
+        }
+
+        private static PdfDocument DrawPerformanceReport(List<MachineOperatingBlock> Statistics, Lathe Lathe, List<LatheManufactureOrder> Orders, Dictionary<string, XRect> cols, PdfDocument doc)
+        {
+            string timespan = $"{ Statistics.First().StateEntered.Date:d} - {Statistics.Last().StateEntered.Date:d}";
+            doc = GetPerformanceReportTemplate(cols, timespan, doc);
+
+            PdfPage page = doc.Pages[^1];
+
+
+
+            return doc;
+        }
+
+        private static PdfDocument GetPerformanceReportTemplate(Dictionary<string, XRect> cols, string TimeStamps, PdfDocument doc)
+        {
+            PdfPage page = new();
+            page.Orientation = PdfSharp.PageOrientation.Portrait;
+
+            doc.AddPage(page);
+
+            page = doc.Pages[^1];
+
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            // Logo
+            XImage logo = XImage.FromFile(GetLogoFile());
+            double logo_width = 100;
+            double logo_aspect_ratio = Convert.ToDouble(logo.PixelHeight) / Convert.ToDouble(logo.PixelWidth);
+            double logo_height = logo_width * logo_aspect_ratio;
+
+            double logo_y_position = (HEADER_HEIGHT - logo_height) / 2 + DOCUMENT_GUTTER;
+
+            XRect logoRect = new(DOCUMENT_GUTTER, logo_y_position, logo_width, logo_height);
+            gfx.DrawImage(logo, logoRect);
+
+            gfx.DrawString("Performance Report",
+                TITLE_FONT,
+                XBrushes.Black,
+                new XRect(DOCUMENT_GUTTER + logo_width, DOCUMENT_GUTTER, page.Width - DOCUMENT_GUTTER * 2 - logo_width, HEADER_HEIGHT),
+                XStringFormats.CenterRight);
+            gfx.DrawString(TimeStamps,
+                HEADER_FONT,
+                XBrushes.Black,
+                new XRect(DOCUMENT_GUTTER + logo_width, DOCUMENT_GUTTER + HEADER_HEIGHT, page.Width - DOCUMENT_GUTTER * 2 - logo_width, HEADER_HEIGHT),
+                XStringFormats.CenterRight);
+
+            cols = SetCellHeights(cols, DOCUMENT_GUTTER + HEADER_HEIGHT + HEADER_HEIGHT + PERFORMANCE_ROW_HEIGHT);
+
+            gfx.DrawString("Day",
+                HEADER_FONT,
+                XBrushes.Black,
+                cols["DAY"],
+                XStringFormats.CenterLeft);
+
+            gfx.DrawString("Performance",
+                HEADER_FONT,
+                XBrushes.Black,
+                cols["OVERALL"],
+                XStringFormats.CenterLeft);
+
+            gfx.DrawString("Breakdowns",
+                HEADER_FONT,
+                XBrushes.Black,
+                cols["BREAKDOWNS"],
+                XStringFormats.CenterLeft);
+
+            gfx.DrawString("Orders",
+                HEADER_FONT,
+                XBrushes.Black,
+                cols["ORDERS"],
+                XStringFormats.CenterLeft);
+
+
+            gfx.DrawLine(new XPen(XColors.Black, 1),
+                new XPoint(cols["DAY"].X,
+                    y: DOCUMENT_GUTTER
+                    + HEADER_HEIGHT
+                    + HEADER_HEIGHT
+                    + (PERFORMANCE_ROW_HEIGHT * 2.5)),
+                new XPoint(page.Width - cols["ORDERS"].X + cols["ORDERS"].Width,
+                    y: DOCUMENT_GUTTER
+                    + HEADER_HEIGHT
+                    + HEADER_HEIGHT
+                    + (PERFORMANCE_ROW_HEIGHT * 2.5)));
+
+            gfx.DrawString($"Generated in Lighthouse by {App.CurrentUser.GetFullName()} at {DateTime.Now:dd/MM/yy HH:mm}",
+                new XFont("Courier New", 8, XFontStyle.Regular, new(PdfFontEncoding.Unicode)),
+                XBrushes.Gray,
+                new XRect(DOCUMENT_GUTTER, page.Height - DOCUMENT_GUTTER, page.Width - 2 * DOCUMENT_GUTTER, 20),
+                XStringFormats.CenterLeft);
+
+            gfx.Dispose();
+            return page;
+        }
+
+        #endregion
 
         #region Helper functions
 

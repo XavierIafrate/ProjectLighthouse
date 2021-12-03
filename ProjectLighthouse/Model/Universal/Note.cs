@@ -25,5 +25,10 @@ namespace ProjectLighthouse.Model
         public bool ShowSpacerUnder { get; set; }
 
         public event Action Edited;
+
+        public void NotifyEdited()
+        {
+            Edited?.Invoke();
+        }
     }
 }

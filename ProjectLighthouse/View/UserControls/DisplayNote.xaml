@@ -15,6 +15,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0" />
@@ -25,9 +26,9 @@
                 Grid.RowSpan="3"
                 Grid.Column="1"
                 Background="{StaticResource materialSelectedColour}"
-                CornerRadius="10" 
+                BorderBrush="{StaticResource materialPrimaryBlue}"
                 BorderThickness="1"
-                BorderBrush="{StaticResource materialPrimaryBlue}"/>
+                CornerRadius="10" />
             <StackPanel
                 x:Name="MetadataStackPanel"
                 Grid.Column="1"
@@ -64,12 +65,21 @@
                     x:Name="SentAtTextBlock"
                     VerticalAlignment="Center"
                     Text="01/01/1970 12:00" />
-                <!--<Path Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" Fill="Red" />-->
-
+                <TextBlock x:Name="EditedAtTextBlock" Text=" (edited 01-01 00:00)" />
 
             </StackPanel>
-            <Grid
+            <TextBox
+                x:Name="OriginalMessage"
                 Grid.Row="1"
+                Grid.Column="1"
+                Margin="10,5"
+                BorderThickness="0"
+                FontStyle="Italic"
+                Foreground="{StaticResource materialError}"
+                Text="{Binding OriginalMessage}"
+                TextWrapping="Wrap" />
+            <Grid
+                Grid.Row="2"
                 Grid.Column="1"
                 HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
@@ -84,24 +94,46 @@
                         x:Name="EditButton"
                         Click="EditButton_Click"
                         Style="{StaticResource IconEditButton}" />
+                    <Button
+                        x:Name="CancelButton"
+                        Click="CancelButton_Click"
+                        Visibility="Collapsed"
+                        Style="{StaticResource IconCancelButton}" />
+                    <Button
+                        x:Name="SaveButton"
+                        Click="SaveButton_Click"
+                        Style="{StaticResource IconSaveButton}"
+                        Visibility="Collapsed" />
                 </StackPanel>
-                <Label x:Name="TextBlockContainer" Grid.Column="1">
-                    <TextBlock
-                        x:Name="MessageTextBlock"
-                        Margin="10,0,10,2"
-                        FontSize="14"
-                        Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id gravida urna, sit amet euismod orci."
-                        TextWrapping="WrapWithOverflow" />
+                <Label
+                    x:Name="TextBlockContainer"
+                    Grid.Column="1"
+                    Padding="10,4,10,4">
+                    <Grid>
+                        <TextBlock
+                            x:Name="MessageTextBlock"
+                            Padding="4,0,4,2"
+                            FontSize="14"
+                            Text="{Binding Message, FallbackValue='Lorem Ipsum'}"
+                            TextWrapping="WrapWithOverflow" />
+                        <TextBox
+                            x:Name="EditBox"
+                            MaxWidth="500"
+                            Margin="0"
+                            AcceptsReturn="True"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            FontSize="14"
+                            IsEnabled="False"
+                            Text="{Binding Message}"
+                            TextWrapping="Wrap"
+                            Visibility="Collapsed" />
+                    </Grid>
                 </Label>
             </Grid>
 
 
-            <!--<TextBox
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="10,0,10,2"
-            Background="Red"
-            BorderThickness="0" />-->
+
 
         </Grid>
         <Grid

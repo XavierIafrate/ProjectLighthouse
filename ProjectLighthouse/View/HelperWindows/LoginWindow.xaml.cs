@@ -149,6 +149,19 @@ namespace ProjectLighthouse.View
             User.computerUsername = Environment.UserName;
             _ = DatabaseHelper.Update(User);
 
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            Login login = new()
+            {
+                User = User.UserName,
+                Host = User.computerUsername,
+                Role = User.UserRole,
+                Time = User.LastLogin,
+                Version = versionInfo.FileVersion
+            };
+
+            _ = DatabaseHelper.Insert(login);
             auth_user = User;
 
             Close();

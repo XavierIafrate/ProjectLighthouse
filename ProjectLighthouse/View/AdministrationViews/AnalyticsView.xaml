@@ -8,7 +8,6 @@
     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-    d:DesignHeight="716"
     d:DesignWidth="989"
     Background="{StaticResource materialBackground}"
     Loaded="UserControl_Loaded"
@@ -66,8 +65,11 @@
                     FontWeight="ExtraBold"
                     Foreground="White"
                     Text="1,000,000" />
-                <Grid Grid.Row="1" Grid.Column="1" Margin="10">
-                    <Border Background="Black" Opacity="0.5"/>
+                <Grid
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="10">
+                    <Border Background="Black" Opacity="0.5" />
                     <TextBlock
                         Grid.Row="1"
                         Grid.ColumnSpan="3"
@@ -199,7 +201,11 @@
             </lvc:CartesianChart>
 
             <Grid>
-                <Rectangle Fill="Black" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.ColumnSpan="2" Fill="Black" />
                 <StackPanel Margin="30,15">
                     <TextBlock
                         FontFamily="OCR A Extended"
@@ -212,6 +218,10 @@
                         Foreground="White"
                         Text="alarm and monitoring system" />
                 </StackPanel>
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding GenerateReportCommand}"
+                    Style="{StaticResource PDFButton}" />
             </Grid>
 
 

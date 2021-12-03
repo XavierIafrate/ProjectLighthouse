@@ -1,8 +1,6 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -12,15 +10,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static string GetDatabaseFile()
         {
 
-//#if DEBUG
-//            return Environment.UserName == "xavier"
-//                               ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
-//                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
-//#else
+            //#if DEBUG
+            //            return Environment.UserName == "xavier"
+            //                               ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
+            //                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
+            //#else
 
-    return @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
+            return @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
 
-//#endif
+            //#endif
         }
 
         public static bool Insert<T>(T item)

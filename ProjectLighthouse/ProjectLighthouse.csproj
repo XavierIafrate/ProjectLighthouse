@@ -8,12 +8,12 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.4.4</FileVersion>
-    <AssemblyVersion>1.4.4</AssemblyVersion>
+    <FileVersion>1.4.5</FileVersion>
+    <AssemblyVersion>1.4.5</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4.4</Version>
+    <Version>1.4.5</Version>
     <Product>ProjectLighthouse</Product>
-    <PackageReleaseNotes>Added bar stock</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,7 +21,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\bantham.jpg" />
     <None Remove="Resources\faroe_waterfall.jpg" />
     <None Remove="Resources\GIF\fireworks.gif" />
     <None Remove="Resources\gjogv.jpg" />
@@ -31,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\bantham.jpg" />
     <Resource Include="Resources\faroe_waterfall.jpg" />
     <Resource Include="Resources\Font\Roboto-Bold.ttf" />
     <Resource Include="Resources\Font\Roboto-BoldItalic.ttf" />

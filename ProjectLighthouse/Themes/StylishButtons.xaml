@@ -209,6 +209,93 @@
 
     <Style x:Key="IconEditButton" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlue}" />
+        <Setter Property="Background" Value="{StaticResource materialSelectedColour}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="20"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="10">
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Margin="7,0"
+                                HorizontalAlignment="Center"
+                                Data="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform">
+                                <Path.RenderTransform>
+                                    <TranslateTransform X="0.00" />
+                                </Path.RenderTransform>
+                            </Path>
+                            <ContentPresenter
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}"
+                                TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </StackPanel>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+                <Setter Property="Background" Value="{StaticResource materialPrimaryBlueVar}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="IconCancelButton" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource materialErrorVar}" />
+        <Setter Property="Background" Value="#01ffffff" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ToolTip" Value="Cancel" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="20"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="10">
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                            <Path
+                                Width="10"
+                                Height="10"
+                                HorizontalAlignment="Center"
+                                Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12C4,13.85 4.63,15.55 5.68,16.91L16.91,5.68C15.55,4.63 13.85,4 12,4M12,20A8,8 0 0,0 20,12C20,10.15 19.37,8.45 18.32,7.09L7.09,18.32C8.45,19.37 10.15,20 12,20Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform">
+                                <Path.RenderTransform>
+                                    <TranslateTransform X="0.00" />
+                                </Path.RenderTransform>
+                            </Path>
+                            <ContentPresenter
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}"
+                                TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </StackPanel>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource materialOnError}" />
+                <Setter Property="Background" Value="{StaticResource materialError}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="IconSaveButton" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlue}" />
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
@@ -216,15 +303,14 @@
                     <Border
                         Width="20"
                         Height="20"
-                        Background="{StaticResource materialSelectedColour}"
+                        Background="{TemplateBinding Background}"
                         BorderThickness="0"
                         CornerRadius="10">
                         <Path
-                            Width="15"
-                            Height="15"
-                            Data="M21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.11 3.9 21 5 21H11V19.13L19.39 10.74C19.83 10.3 20.39 10.06 21 10M14 4.5L19.5 10H14V4.5M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83Z"
+                            Width="10"
+                            Height="10"
+                            Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"
                             Fill="{TemplateBinding Foreground}"
-                            Opacity="0.5"
                             Stretch="Uniform">
                             <Path.RenderTransform>
                                 <TranslateTransform Y="0" />
@@ -236,7 +322,8 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlueVar}" />
+                <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+                <Setter Property="Background" Value="{StaticResource materialPrimaryBlue}" />
             </Trigger>
         </Style.Triggers>
     </Style>

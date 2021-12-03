@@ -3,12 +3,12 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
-    class EditManufactureOrderCommand : ICommand
+    public class GeneratePerformanceReportCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private OrderViewModel viewModel;
+        public AnalyticsViewModel viewModel;
 
-        public EditManufactureOrderCommand(OrderViewModel vm)
+        public GeneratePerformanceReportCommand(AnalyticsViewModel vm)
         {
             viewModel = vm;
         }
@@ -20,7 +20,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            viewModel.EditLMO();
+            viewModel.GenerateReport();
         }
     }
 }

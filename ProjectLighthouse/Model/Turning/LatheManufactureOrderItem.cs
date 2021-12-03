@@ -28,5 +28,14 @@ namespace ProjectLighthouse.Model
         public string UpdatedBy { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool NeedsCleaning { get; set; }
+
+        public bool ShowEdit;
+        [Ignore]
+        public Action<LatheManufactureOrderItem> RequestToEdit { get; set; }
+
+        public void NotifyRequestToEdit()
+        {
+            RequestToEdit?.Invoke(this);
+        }
     }
 }

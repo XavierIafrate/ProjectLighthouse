@@ -7,12 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Edit Order"
-    Width="600"
+    Width="700"
+    MinHeight="600"
+    d:DataContext="{Binding Path=order}"
     ResizeMode="NoResize"
     SizeToContent="Height"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-
 
     <Grid Margin="25">
         <!--  Header Area  -->
@@ -36,12 +37,23 @@
             <TextBlock
                 x:Name="nameText"
                 Style="{StaticResource title}"
-                Text="M00001" />
-            <Button
-                Grid.Column="2"
-                Click="closeButton_Click"
-                Content="Close"
-                Style="{StaticResource CancelButton}" />
+                Text="{Binding Name}" />
+            <StackPanel Grid.Column="2">
+                <Button
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    Click="CloseButton_Click"
+                    Content="Close"
+                    Style="{StaticResource CancelButton}" />
+                <Button
+                    x:Name="SaveButton"
+                    Grid.Row="3"
+                    HorizontalAlignment="Right"
+                    Click="SaveButton_Click"
+                    Content="Save &amp; Close"
+                    Style="{StaticResource BlueButton}" />
+            </StackPanel>
+
             <Separator
                 Grid.Row="1"
                 Grid.ColumnSpan="3"
@@ -49,20 +61,25 @@
         </Grid>
         <!--  Main controls  -->
         <StackPanel Grid.Row="1">
-            <TextBlock Style="{StaticResource section}" Text="Administration" />
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid>
+                <TextBlock Text="Purchase Order:" Style="{StaticResource section}"
+                           VerticalAlignment="Center"
+                           FontStyle="Italic"/>
+                <Grid Margin="0,5" Grid.Column="1">
                     <TextBox
                         x:Name="PORef"
+                        Width="200"
                         Style="{StaticResource UsernameTextBox}"
+                        Text="{Binding POReference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="PORef_TextChanged" />
                     <TextBlock
                         x:Name="poRefGhostText"
@@ -74,55 +91,108 @@
                         IsHitTestVisible="False"
                         Text="POR..." />
                 </Grid>
-                <StackPanel Grid.Row="1" Margin="10">
-                    <CheckBox
-                        x:Name="program"
-                        Click="program_Click"
-                        Content="Has Program" />
-                    <CheckBox
-                        x:Name="bar_verified"
-                        Click="bar_verified_Click"
-                        Content="Bar Settings Verified" />
-                    <CheckBox
-                        x:Name="bar_allocated"
-                        Click="bar_allocated_Click"
-                        Content="Bar Stock Ready" />
-                    <CheckBox
-                        x:Name="ready"
-                        Click="ready_Click"
-                        Content="Ready to Set" />
-                </StackPanel>
+                <Grid Grid.Row="1" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-                <StackPanel
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Margin="30,0"
-                    VerticalAlignment="Center">
+                    <Grid Grid.Column="0">
+                        <Border Background="{StaticResource materialError}" CornerRadius="10,0,0,10" />
+                    </Grid>
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="5,10"
+                        HorizontalAlignment="Center">
+                        <CheckBox
+                            x:Name="Tooling_Checkbox"
+                            Checked="Checkbox_Checked"
+                            Content="Tooling"
+                            IsChecked="{Binding IsReady, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Unchecked="Checkbox_Checked" />
+                        <CheckBox
+                            x:Name="Program_Checkbox"
+                            Checked="Checkbox_Checked"
+                            Content="Program"
+                            IsChecked="{Binding HasProgram, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Unchecked="Checkbox_Checked" />
+                        <CheckBox
+                            x:Name="BarVerified_Checkbox"
+                            Checked="Checkbox_Checked"
+                            Content="Bar Settings"
+                            IsChecked="{Binding BarIsVerified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Unchecked="Checkbox_Checked" />
+                    </StackPanel>
 
+                    <Grid Grid.Column="1">
+                        <Border Background="{StaticResource materialPrimaryGreen}" />
+                        <Polygon Fill="{StaticResource materialError}" Points="-1,0 0,0 10,10 0,20 -1,20" />
+                    </Grid>
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="5,10"
+                        HorizontalAlignment="Center">
+                        <CheckBox
+                            x:Name="BarAllocated_Checkbox"
+                            Checked="Checkbox_Checked"
+                            Content="Bar Allocated"
+                            IsChecked="{Binding BarIsAllocated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Unchecked="Checkbox_Checked" />
+                    </StackPanel>
 
-                    <TextBlock
-                        Margin="0,5,0,3"
-                        Style="{StaticResource section}"
-                        Text="Set Status" />
+                    <Grid Grid.Column="2">
+                        <Border Background="{StaticResource materialPrimaryBlue}" />
+                        <Polygon Fill="{StaticResource materialPrimaryGreen}" Points="-1,0 0,0 10,10 0,20 -1,20" />
+                    </Grid>
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="5,10"
+                        HorizontalAlignment="Center">
+                        <CheckBox
+                            x:Name="Running_Checkbox"
+                            Checked="Checkbox_Checked"
+                            Content="Running"
+                            IsChecked="{Binding HasStarted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Unchecked="Checkbox_Checked" />
+                    </StackPanel>
 
-                    <RadioButton
-                        x:Name="not_started_radio"
-                        Checked="not_started_radio_Checked"
-                        Content="Not Started" />
-                    <RadioButton
-                        x:Name="running_radio"
-                        Checked="running_radio_Checked"
-                        Content="Running" />
-                    <RadioButton
-                        x:Name="complete_radio"
-                        Checked="complete_radio_Checked"
-                        Content="Complete" />
-                </StackPanel>
+                    <Grid Grid.Column="3">
+                        <Border Background="{StaticResource materialOnBackground}" CornerRadius="0,10,10,0" />
+                        <Polygon Fill="{StaticResource materialPrimaryBlue}" Points="-1,0 0,0 10,10 0,20 -1,20" />
+                    </Grid>
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        Margin="5,10"
+                        HorizontalAlignment="Center">
+                        <CheckBox
+                            x:Name="Complete_Checkbox"
+                            Checked="Checkbox_Checked"
+                            Content="Complete"
+                            IsChecked="{Binding IsComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Unchecked="Checkbox_Checked" />
+                        <CheckBox
+                            x:Name="Cancelled_Checkbox"
+                            Checked="Checkbox_Checked"
+                            Content="Cancelled"
+                            IsChecked="{Binding IsCancelled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Unchecked="Checkbox_Checked" />
+                    </StackPanel>
+                </Grid>
             </Grid>
 
             <!--  Items List  -->
             <TextBlock Style="{StaticResource section}" Text="Items" />
-            <ListView x:Name="ItemsListBox">
+            <ListView x:Name="ItemsListBox" MinHeight="50">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" />
@@ -142,7 +212,7 @@
                 x:Name="NotesDisplay"
                 Grid.Row="1"
                 MinHeight="50"
-                MaxHeight="200"
+                MaxHeight="400"
                 HorizontalContentAlignment="Stretch"
                 ScrollViewer.CanContentScroll="False">
                 <ItemsControl.ItemTemplate>
@@ -162,11 +232,11 @@
                         x:Name="Message"
                         VerticalContentAlignment="Center"
                         Background="Transparent"
-                        TextWrapping="WrapWithOverflow"
                         BorderThickness="0"
                         Foreground="{StaticResource materialOffBlack}"
-                        TextChanged="Message_TextChanged" 
-                        KeyDown="Message_KeyDown"/>
+                        KeyDown="Message_KeyDown"
+                        TextChanged="Message_TextChanged"
+                        TextWrapping="WrapWithOverflow" />
                     <TextBlock
                         x:Name="ComposeGhost"
                         Margin="10,0"
@@ -184,12 +254,6 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Button
-            x:Name="saveButton"
-            Grid.Row="3"
-            Width="150"
-            HorizontalAlignment="Right"
-            Click="saveButton_Click"
-            Content="Save and Close" />
+
     </Grid>
 </Window>

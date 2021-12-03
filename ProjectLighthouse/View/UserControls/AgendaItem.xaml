@@ -23,7 +23,8 @@
         <TextBlock
             FontSize="25"
             FontWeight="Bold"
-            Text="{Binding Date, StringFormat='{}{0:dddd dd/MM/yyyy}'}" />
+            Text="{Binding Date, StringFormat='{}{0:dddd dd/MM/yyyy}'}" 
+            Grid.ColumnSpan="3"/>
         <ListView
             x:Name="orderList"
             Grid.Row="1"

@@ -31,12 +31,21 @@ namespace ProjectLighthouse.View.UserControls
                 control.doneFlag.Visibility = control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity
                     ? Visibility.Visible
                     : Visibility.Hidden;
+
+                control.EditButton.Visibility = control.LatheManufactureOrderItem.ShowEdit
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
         }
 
         public DisplayLMOItems()
         {
             InitializeComponent();
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            LatheManufactureOrderItem.NotifyRequestToEdit();
         }
     }
 }
