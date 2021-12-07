@@ -240,8 +240,18 @@ namespace ProjectLighthouse.ViewModel
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
             if (MachineStatistics.Count == 0)
                 return;
+            string latheName;
 
-            string latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
+            try
+            {
+                latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
+            }
+            catch
+            {
+                LiveInfoVis = Visibility.Collapsed;
+                return;
+            }
+            
 
             DisplayStats = MachineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
 
@@ -438,9 +448,11 @@ namespace ProjectLighthouse.ViewModel
             ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
-            LiveInfoVis = SelectedLatheManufactureOrder.State == OrderState.Running && MachineStatistics.Count != 0
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            LiveInfoVis = SelectedLatheManufactureOrder.State == OrderState.Running 
+                && MachineStatistics.Count != 0 
+                && !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
 
             CleaningVis = SelectedLatheManufactureOrder.ItemNeedsCleaning
                 ? Visibility.Visible
