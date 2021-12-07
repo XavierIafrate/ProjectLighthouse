@@ -41,9 +41,16 @@ namespace ProjectLighthouse.View.UserControls
 
             control.DataContext = control.Day;
 
+            //if (control.Day.Date.DayOfWeek == DayOfWeek.Monday)
+            //{
+            //    control.ControlGrid.Margin = new(10,20,10,10);
+            //}
+
             if (control.Day.Orders.Count == 0)
             {
                 control.orderList.Visibility = Visibility.Collapsed;
+                control.DateText.Foreground = (Brush)App.Current.Resources["disabledGray"];
+                control.DateText.FontSize = 18;
             }
 
             if (control.Day.Date.DayOfWeek is DayOfWeek.Sunday or DayOfWeek.Saturday && control.Day.Orders.Count is 0)

@@ -9,16 +9,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         public static string GetDatabaseFile()
         {
-
-            //#if DEBUG
-            //            return Environment.UserName == "xavier"
-            //                               ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
-            //                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
-            //#else
-
-            return @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
-
-            //#endif
+            return Environment.UserName == "xavier"
+                               ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
+                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
         }
 
         public static bool Insert<T>(T item)

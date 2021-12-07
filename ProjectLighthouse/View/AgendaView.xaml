@@ -5,21 +5,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:Background="White"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="906"
+    d:DesignWidth="1546"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <vm:AgendaViewModel x:Key="vm"/>
+        <vm:AgendaViewModel x:Key="vm" />
     </UserControl.Resources>
-    <Grid DataContext="{StaticResource vm}" Margin="20">
+    <Grid Margin="20" DataContext="{StaticResource vm}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding Days}" Grid.Row="1" Margin="20">
+        <ListView
+            Grid.Row="1"
+            Margin="20"
+            ItemsSource="{Binding Days}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <uc:AgendaItem Day="{Binding}" />

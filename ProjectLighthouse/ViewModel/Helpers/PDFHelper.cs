@@ -1058,7 +1058,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         private static PdfDocument DrawPerformanceReport(List<MachineOperatingBlock> Statistics, Lathe Lathe, List<LatheManufactureOrder> Orders, Dictionary<string, XRect> cols, PdfDocument doc)
         {
             string timespan = $"{ Statistics.First().StateEntered.Date:d} - {Statistics.Last().StateEntered.Date:d}";
-            doc = GetPerformanceReportTemplate(cols, timespan, doc);
+            doc = GetPerformanceReportTemplate(cols, timespan, doc, Lathe.Id);
 
             PdfPage page = doc.Pages[^1];
 
@@ -1067,15 +1067,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return doc;
         }
 
-        private static PdfDocument GetPerformanceReportTemplate(Dictionary<string, XRect> cols, string TimeStamps, PdfDocument doc)
+        private static PdfDocument GetPerformanceReportTemplate(Dictionary<string, XRect> cols, string TimeStamps, PdfDocument doc, string LatheID)
         {
             PdfPage page = new();
             page.Orientation = PdfSharp.PageOrientation.Portrait;
 
-            doc.AddPage(page);
-
+            _ = doc.AddPage(page);
             page = doc.Pages[^1];
-
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
             // Logo
@@ -1089,7 +1087,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             XRect logoRect = new(DOCUMENT_GUTTER, logo_y_position, logo_width, logo_height);
             gfx.DrawImage(logo, logoRect);
 
-            gfx.DrawString("Performance Report",
+            gfx.DrawString($"Performance Report - {LatheID}",
                 TITLE_FONT,
                 XBrushes.Black,
                 new XRect(DOCUMENT_GUTTER + logo_width, DOCUMENT_GUTTER, page.Width - DOCUMENT_GUTTER * 2 - logo_width, HEADER_HEIGHT),
@@ -1100,7 +1098,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 new XRect(DOCUMENT_GUTTER + logo_width, DOCUMENT_GUTTER + HEADER_HEIGHT, page.Width - DOCUMENT_GUTTER * 2 - logo_width, HEADER_HEIGHT),
                 XStringFormats.CenterRight);
 
-            cols = SetCellHeights(cols, DOCUMENT_GUTTER + HEADER_HEIGHT + HEADER_HEIGHT + PERFORMANCE_ROW_HEIGHT);
+            double cursor = DOCUMENT_GUTTER + HEADER_HEIGHT + HEADER_HEIGHT + PERFORMANCE_ROW_HEIGHT;
+
+            cols = SetCellHeights(cols, cursor);
 
             gfx.DrawString("Day",
                 HEADER_FONT,
@@ -1127,17 +1127,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 XStringFormats.CenterLeft);
 
 
+            cursor += PERFORMANCE_ROW_HEIGHT;
+
             gfx.DrawLine(new XPen(XColors.Black, 1),
                 new XPoint(cols["DAY"].X,
-                    y: DOCUMENT_GUTTER
-                    + HEADER_HEIGHT
-                    + HEADER_HEIGHT
-                    + (PERFORMANCE_ROW_HEIGHT * 2.5)),
-                new XPoint(page.Width - cols["ORDERS"].X + cols["ORDERS"].Width,
-                    y: DOCUMENT_GUTTER
-                    + HEADER_HEIGHT
-                    + HEADER_HEIGHT
-                    + (PERFORMANCE_ROW_HEIGHT * 2.5)));
+                    y: cursor),
+                new XPoint(cols["ORDERS"].X + cols["ORDERS"].Width,
+                    y: cursor));
 
             gfx.DrawString($"Generated in Lighthouse by {App.CurrentUser.GetFullName()} at {DateTime.Now:dd/MM/yy HH:mm}",
                 new XFont("Courier New", 8, XFontStyle.Regular, new(PdfFontEncoding.Unicode)),
@@ -1146,7 +1142,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 XStringFormats.CenterLeft);
 
             gfx.Dispose();
-            return page;
+            return doc;
         }
 
         #endregion
