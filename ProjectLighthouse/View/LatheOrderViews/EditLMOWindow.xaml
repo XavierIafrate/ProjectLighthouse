@@ -9,6 +9,7 @@
     Title="Edit Order"
     Width="700"
     MinHeight="600"
+    MaxHeight="1000"
     d:DataContext="{Binding Path=order}"
     ResizeMode="NoResize"
     SizeToContent="Height"
@@ -57,7 +58,7 @@
             <Separator
                 Grid.Row="1"
                 Grid.ColumnSpan="3"
-                Margin="0,0,0,15" />
+                Margin="0,5" />
         </Grid>
         <!--  Main controls  -->
         <StackPanel Grid.Row="1">
