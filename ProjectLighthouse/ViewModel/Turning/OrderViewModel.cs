@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -495,7 +496,25 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSelectedOrder()
         {
-            PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems, FilteredNotes);
+            //PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems, FilteredNotes);
+            //return;
+            ReportPdf reportService = new();
+            OrderPrintoutData reportData = new()
+            {
+                Order = SelectedLatheManufactureOrder,
+                Items = FilteredLMOItems.ToArray(),
+                Notes = FilteredNotes.ToArray()
+            };
+
+            string path = GetTempPdfPath();
+
+            reportService.Export(path, reportData);
+            reportService.OpenPdf(path);
+        }
+
+        private static string GetTempPdfPath()
+        {
+            return System.IO.Path.GetTempFileName() + ".pdf";
         }
 
         public void EditLMO()
