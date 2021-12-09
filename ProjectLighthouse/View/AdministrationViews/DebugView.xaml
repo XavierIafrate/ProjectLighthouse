@@ -27,10 +27,11 @@
                 MinHeight="150"
                 Padding="10"
                 Background="Black"
-                Foreground="White"
+                FontFamily="Lucida Console"
                 FontSize="16"
-                FontFamily="Lucida Console"/>
+                Foreground="White" />
             <Button Click="Button_Click_1" Content="Export Stats" />
+            <Button Click="Button_Click_2" Content="Test PDF" />
         </StackPanel>
     </Grid>
 </UserControl>

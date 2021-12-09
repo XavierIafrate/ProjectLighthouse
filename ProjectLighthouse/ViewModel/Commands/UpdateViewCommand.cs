@@ -31,7 +31,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Agenda")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new AgendaViewModel();
                 viewModel.NavText = "Agenda";
             }

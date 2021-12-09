@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -240,13 +241,19 @@ namespace ProjectLighthouse.ViewModel
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
             if (MachineStatistics.Count == 0)
                 return;
+            string latheName;
 
-            if (SelectedLatheManufactureOrder.AllocatedMachine == null)
+            try
             {
+                latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
+            }
+            catch
+            {
+                LiveInfoVis = Visibility.Collapsed;
                 return;
             }
+            
 
-            string latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
             DisplayStats = MachineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
 
             if (DisplayStats == null)
@@ -442,9 +449,11 @@ namespace ProjectLighthouse.ViewModel
             ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
-            LiveInfoVis = SelectedLatheManufactureOrder.State == OrderState.Running && MachineStatistics.Count != 0
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            LiveInfoVis = SelectedLatheManufactureOrder.State == OrderState.Running 
+                && MachineStatistics.Count != 0 
+                && !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
 
             CleaningVis = SelectedLatheManufactureOrder.ItemNeedsCleaning
                 ? Visibility.Visible
@@ -487,7 +496,25 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSelectedOrder()
         {
-            PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems, FilteredNotes);
+            //PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems, FilteredNotes);
+            //return;
+            ReportPdf reportService = new();
+            OrderPrintoutData reportData = new()
+            {
+                Order = SelectedLatheManufactureOrder,
+                Items = FilteredLMOItems.ToArray(),
+                Notes = FilteredNotes.ToArray()
+            };
+
+            string path = GetTempPdfPath();
+
+            reportService.Export(path, reportData);
+            reportService.OpenPdf(path);
+        }
+
+        private static string GetTempPdfPath()
+        {
+            return System.IO.Path.GetTempFileName() + ".pdf";
         }
 
         public void EditLMO()

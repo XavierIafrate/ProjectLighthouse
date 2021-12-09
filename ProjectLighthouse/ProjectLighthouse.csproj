@@ -25,6 +25,7 @@
     <None Remove="Resources\GIF\fireworks.gif" />
     <None Remove="Resources\gjogv.jpg" />
     <None Remove="Resources\hartland.jpg" />
+    <None Remove="Resources\Lighthouse_dark_PDF.png" />
     <None Remove="Resources\snowdonia.jpg" />
     <None Remove="Resources\teignmouth.jpg" />
   </ItemGroup>
@@ -54,6 +55,7 @@
     <PackageReference Include="MySql.Data" Version="8.0.26" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="PdfSharp" Version="1.50.5147" />
+    <PackageReference Include="PDFsharp-MigraDoc" Version="1.50.5147" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
     <PackageReference Include="squirrel.windows" Version="1.9.0" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
@@ -75,8 +77,11 @@
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <EmbeddedResource Include="Resources\Lighthouse_dark_PDF.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Resource Include="Resources\Lighthouse_dark.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
