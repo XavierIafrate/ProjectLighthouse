@@ -1146,7 +1146,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 XStringFormats.CenterLeft);
 
             gfx.Dispose();
-            return page;
+            return doc;
         }
 
         #endregion

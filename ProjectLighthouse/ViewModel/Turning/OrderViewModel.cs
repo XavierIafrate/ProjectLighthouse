@@ -241,8 +241,12 @@ namespace ProjectLighthouse.ViewModel
             if (MachineStatistics.Count == 0)
                 return;
 
-            string latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
+            if (SelectedLatheManufactureOrder.AllocatedMachine == null)
+            {
+                return;
+            }
 
+            string latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
             DisplayStats = MachineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
 
             if (DisplayStats == null)
