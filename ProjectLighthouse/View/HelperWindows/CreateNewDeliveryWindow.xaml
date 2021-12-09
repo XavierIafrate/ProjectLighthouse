@@ -44,28 +44,31 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding FromMachine, FallbackValue='N/A'}" Grid.RowSpan="2" VerticalAlignment="Center" Margin="5,5,10,5" FontSize="18" FontWeight="Bold"/>
+
                             <TextBlock
                                 FontSize="16"
-                                FontWeight="Bold"
+                                FontWeight="SemiBold"
+                                Grid.Row="1"
+                                Grid.Column="1"
                                 Foreground="{StaticResource materialPrimaryBlue}"
                                 Text="{Binding ItemManufactureOrderNumber}" />
 
                             <TextBlock
                                 Grid.Column="1"
-                                Padding="10,0"
                                 FontSize="16"
-                                FontWeight="Bold"
+                                FontWeight="SemiBold"
                                 Text="{Binding Product}" />
                             <TextBlock
                                 Grid.Column="3"
                                 HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Grid.RowSpan="2"
                                 FontSize="16"
                                 Text="{Binding QuantityThisDelivery, StringFormat='{}{0} pcs'}" />
 
-                            <!--<TextBlock Text="{Binding }" Something about putting machine on here
-                                       FontSize="16"
-                                       Foreground="{StaticResource materialPrimaryBlue}"
-                                       FontWeight="Bold"/>-->
+                            
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

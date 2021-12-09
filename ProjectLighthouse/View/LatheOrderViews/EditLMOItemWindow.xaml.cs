@@ -16,17 +16,23 @@ namespace ProjectLighthouse.View
         public int intQtyMade;
         public int intQtyReject;
         public int intQtyDelivered;
-        private int QuantityAdded;
+        private bool LotAdded;
+        private string ProducedOnMachine { get; set; }
 
         public bool SaveExit;
 
-        public EditLMOItemWindow(LatheManufactureOrderItem item, List<Lot> lots)
+        public EditLMOItemWindow(LatheManufactureOrderItem item, List<Lot> lots, string MachineID)
         {
             InitializeComponent();
-            QuantityAdded = 0;
             SaveExit = false;
             Item = item;
             Lots = lots;
+            foreach (Lot lot in Lots)
+            {
+                lot.RequestToEdit += EditLot;
+            }
+
+            ProducedOnMachine = MachineID;
 
             LoadUI();
         }
@@ -137,9 +143,9 @@ namespace ProjectLighthouse.View
             {
                 TurnedProduct thisProduct = product.First();
                 thisProduct.CycleTime = cycleTime;
-                if (QuantityAdded != 0)
+                if (LotAdded)
                 {
-                    thisProduct.QuantityManufactured += QuantityAdded;
+                    thisProduct.QuantityManufactured = Lots.Where(l => l.ProductName == Item.ProductName).Sum(l => l.Quantity);
                     thisProduct.lastManufactured = DateTime.Now;
                 }
 
@@ -232,9 +238,13 @@ namespace ProjectLighthouse.View
                     Quantity = n,
                     Date = DateTime.Now,
                     IsReject = (bool)RejectCheckBox.IsChecked,
+                    IsAccepted = (bool)AcceptedCheckBox.IsChecked,
                     IsDelivered = false,
-                    MaterialBatch = BatchTextBox.Text.Trim()
+                    MaterialBatch = BatchTextBox.Text.Trim(),
+                    FromMachine = ProducedOnMachine,
+                    Remarks = RemarksTextBox.Text.Trim()
                 };
+
                 newLot.SetExcelDateTime();
                 if (!DatabaseHelper.Insert(newLot))
                 {
@@ -250,18 +260,24 @@ namespace ProjectLighthouse.View
                     Item.QuantityMade += n;
                 }
 
+                LotAdded = true;
                 DatabaseHelper.Update<LatheManufactureOrderItem>(Item);
 
                 Lots.Add(newLot);
                 SaveExit = true;
+                List<Lot> refreshedLots = new List<Lot>(Lots.Where(l => l.ProductName == Item.ProductName));
 
-                LotsListBox.ItemsSource = new List<Lot>(Lots);
+                foreach (Lot lot in refreshedLots)
+                {
+                    lot.RequestToEdit += EditLot;
+                }
+
+                LotsListBox.ItemsSource = refreshedLots;
                 QtyMadeTextBlock.Text = $"{Item.QuantityMade:#,##0} pcs";
                 QtyRejectTextBlock.Text = $"{Item.QuantityReject:#,##0} pcs";
 
                 QuantityNewLotTextBox.Text = "";
                 RejectCheckBox.IsChecked = false;
-                QuantityAdded += newLot.Quantity;
             }
             else
             {
@@ -270,37 +286,20 @@ namespace ProjectLighthouse.View
             }
         }
 
-        private void EditLotButton_Click(object sender, RoutedEventArgs e)
+        private void EditLot(Lot lotToEdit)
         {
-            if (LotsListBox.SelectedValue is not Lot SelectedLot)
-            {
-                return;
-            }
-
-
-            EditLotWindow window = new(SelectedLot);
+            EditLotWindow window = new(lotToEdit);
             window.Owner = Application.Current.MainWindow;
             window.ShowDialog();
 
-            if (window.SaveExit)
+            Lots = null;
+            Lots = DatabaseHelper.Read<Lot>().Where(n => n.Order == Item.AssignedMO).ToList();
+            foreach (Lot lot in Lots)
             {
-                Lots = null;
-                Lots = DatabaseHelper.Read<Lot>().Where(n => n.Order == Item.AssignedMO && n.ProductName == Item.ProductName).ToList();
-                LoadUI();
+                lot.RequestToEdit += EditLot;
             }
 
-        }
-
-        private void LotsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (LotsListBox.SelectedValue == null)
-                EditLotButton.IsEnabled = false;
-            else
-            {
-                Lot l = (Lot)LotsListBox.SelectedValue;
-                EditLotButton.IsEnabled = (!l.IsDelivered && l.Date.AddDays(14) > DateTime.Now) || App.CurrentUser.UserRole == "admin";
-            }
-
+            LoadUI();
         }
 
         private void BatchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -322,6 +321,29 @@ namespace ProjectLighthouse.View
         {
             DateTime SelectedDate = (DateTime)DateRequiredPicker.SelectedDate;
             DateDisplay.Text = SelectedDate.ToString("dd/MM/yy");
+        }
+
+        private void RejectCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if ((bool)AcceptedCheckBox.IsChecked)
+            {
+                AcceptedCheckBox.IsChecked = false;
+            }
+        }
+
+        private void AcceptedCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if ((bool)RejectCheckBox.IsChecked)
+            {
+                RejectCheckBox.IsChecked = false;
+            }
+        }
+
+        private void RemarksTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            RemarksGhost.Visibility = string.IsNullOrEmpty(RemarksTextBox.Text)
+                ? Visibility.Visible
+                : Visibility.Hidden;
         }
     }
 }

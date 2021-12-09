@@ -31,7 +31,7 @@ namespace ProjectLighthouse.View
 
         private void GetUndelivered()
         {
-            Lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && !n.IsReject && n.Quantity > 0).ToList();
+            Lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && n.IsAccepted && n.Quantity > 0).ToList();
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             //List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
@@ -50,16 +50,14 @@ namespace ProjectLighthouse.View
                     }
                 }
 
-                //if (string.IsNullOrWhiteSpace(_POref))
-                //    continue;
-
                 allUndeliveredItems.Add(new DeliveryItem()
                 {
                     ItemManufactureOrderNumber = lot.Order,
                     PurchaseOrderReference = _POref,
                     Product = lot.ProductName,
                     QuantityThisDelivery = lot.Quantity,
-                    LotID = lot.ID
+                    LotID = lot.ID,
+                    FromMachine = lot.FromMachine
                     //QuantityToFollow = Math.Max(item.TargetQuantity - item.QuantityDelivered - item.Quantiy, (int)0)
                 });
             }

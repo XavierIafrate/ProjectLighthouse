@@ -13,5 +13,7 @@ namespace ProjectLighthouse.Model
         public int QuantityThisDelivery { get; set; }
         public int QuantityToFollow { get; set; }
         public int LotID { get; set; }
+        [Ignore]
+        public string FromMachine { get; set; }
     }
 }

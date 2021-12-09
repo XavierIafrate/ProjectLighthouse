@@ -12,7 +12,6 @@
     SizeToContent="WidthAndHeight"
     WindowStartupLocation="CenterScreen">
 
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -57,7 +56,7 @@
                     Margin="0,10,0,5"
                     HorizontalAlignment="Center"
                     FontWeight="SemiBold"
-                    Text="Accepted" />
+                    Text="Manufactured" />
                 <TextBlock
                     x:Name="QtyMadeTextBlock"
                     Grid.Row="1"
@@ -103,13 +102,13 @@
                 Text="Cycle Time" />
             <StackPanel Orientation="Horizontal">
                 <TextBox
-                    HorizontalContentAlignment="Center"
                     x:Name="CycleTime_Min"
                     Width="60"
-                    Text="60"
+                    HorizontalContentAlignment="Center"
                     MaxLength="2"
-                    Style="{StaticResource UsernameTextBox}"
                     PreviewKeyDown="Allow_Nums_Only"
+                    Style="{StaticResource UsernameTextBox}"
+                    Text="60"
                     TextChanged="CycleTime_Min_TextChanged" />
                 <TextBlock
                     Margin="2,0,8,5"
@@ -117,13 +116,12 @@
                     FontSize="20"
                     Text="min" />
                 <TextBox
-                    
-                    HorizontalContentAlignment="Center"
                     x:Name="CycleTime_Sec"
                     Width="60"
+                    HorizontalContentAlignment="Center"
                     MaxLength="2"
-                    Style="{StaticResource UsernameTextBox}"
                     PreviewKeyDown="Allow_Nums_Only"
+                    Style="{StaticResource UsernameTextBox}"
                     TextChanged="CycleTime_Sec_TextChanged" />
                 <TextBlock
                     Margin="2,0,8,5"
@@ -149,20 +147,19 @@
                     Margin="0,10,0,5"
                     Style="{StaticResource section}"
                     Text="Stock Lots" />
-                <Button
+                <!--<Button
                     x:Name="EditLotButton"
                     Grid.Column="2"
                     VerticalAlignment="Bottom"
                     Click="EditLotButton_Click"
                     Content="edit"
-                    Style="{StaticResource SubtleButtonTemplate}" />
+                    Style="{StaticResource SubtleButtonTemplate}" />-->
             </Grid>
             <ListView
                 x:Name="LotsListBox"
                 MinHeight="100"
                 MaxHeight="350"
-                HorizontalContentAlignment="Stretch"
-                SelectionChanged="LotsListBox_SelectionChanged">
+                HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type mdl:Lot}">
                         <uc:DisplayLot Lot="{Binding}" />
@@ -185,6 +182,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
                 <Grid>
@@ -199,12 +197,21 @@
                         Text="Quantity in Lot" />
                 </Grid>
 
-                <CheckBox
-                    x:Name="RejectCheckBox"
-                    Grid.Column="1"
-                    Margin="5,0"
-                    VerticalAlignment="Center"
-                    Content="Lot is Rejects" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <CheckBox
+                        x:Name="AcceptedCheckBox"
+                        Margin="5,0,5,5"
+                        Checked="AcceptedCheckBox_Checked"
+                        VerticalAlignment="Center"
+                        Content="QC Accept" />
+                    <CheckBox
+                        x:Name="RejectCheckBox"
+                        Checked="RejectCheckBox_Checked"
+                        Margin="5,0"
+                        VerticalAlignment="Center"
+                        Content="QC Reject" />
+                </StackPanel>
+
 
                 <Grid Grid.Row="1" Grid.ColumnSpan="2">
                     <TextBox
@@ -218,11 +225,30 @@
                         Style="{StaticResource GhostText}"
                         Text="Batch" />
                 </Grid>
+                <ScrollViewer
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    MaxHeight="200">
+                    <Grid>
+                        <TextBox
+                            x:Name="RemarksTextBox"
+                            MaxLength="512"
+                            Style="{StaticResource UsernameTextBox}"
+                            TextChanged="RemarksTextBox_TextChanged"
+                            TextWrapping="Wrap" />
+
+                        <TextBlock
+                            x:Name="RemarksGhost"
+                            Style="{StaticResource GhostText}"
+                            Text="Remarks" />
+                    </Grid>
+
+                </ScrollViewer>
 
 
                 <Button
                     x:Name="AddLotButton"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.Column="2"
                     Click="AddLotButton_Click"
                     Content="+ Add Lot"
@@ -250,24 +276,29 @@
             <TextBox
                 x:Name="QuantityRequiredTextbox"
                 Width="150"
-                Style="{StaticResource UsernameTextBox}"
-                PreviewKeyDown="Allow_Nums_Only" />
+                PreviewKeyDown="Allow_Nums_Only"
+                Style="{StaticResource UsernameTextBox}" />
             <TextBlock Margin="0,10,0,5" Text="Quantity Target" />
             <TextBox
                 x:Name="QuantityTargetTextbox"
                 Width="150"
-                Style="{StaticResource UsernameTextBox}"
-                PreviewKeyDown="Allow_Nums_Only" />
+                PreviewKeyDown="Allow_Nums_Only"
+                Style="{StaticResource UsernameTextBox}" />
             <TextBlock Margin="0,10,0,5" Text="Date Required" />
             <Grid>
                 <DatePicker
-                x:Name="DateRequiredPicker"
-                Width="150"
-                    SelectedDateChanged="DateRequiredPicker_SelectedDateChanged"
-                HorizontalAlignment="Stretch" />
-                <TextBlock x:Name="DateDisplay" Text="DateDisplay" VerticalAlignment="Center" Margin="20,0" HorizontalAlignment="Left"/>
+                    x:Name="DateRequiredPicker"
+                    Width="150"
+                    HorizontalAlignment="Stretch"
+                    SelectedDateChanged="DateRequiredPicker_SelectedDateChanged" />
+                <TextBlock
+                    x:Name="DateDisplay"
+                    Margin="20,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="DateDisplay" />
             </Grid>
-            
+
             <!--<Button Style="{StaticResource ButtonTemplate}" Content="Clear Date" x:Name="ClearDateButton" Click="ClearDateButton_Click"/>-->
         </StackPanel>
     </Grid>

@@ -14,14 +14,26 @@ namespace ProjectLighthouse.Model
         public DateTime Date { get; set; }
         public string ExcelDate { get; set; }
         public bool IsReject { get; set; }
+        public bool IsAccepted { get; set; }
         public bool IsDelivered { get; set; }
         public string MaterialBatch { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime ModifiedAt { get; set; }
+        public string FromMachine { get; set; }
+        public string Remarks { get; set; }
+
+        [Ignore]
+        public Action<Lot> RequestToEdit { get; set; }
+
+        public void NotifyRequestToEdit()
+        {
+            RequestToEdit?.Invoke(this);
+        }
+
 
         public void SetExcelDateTime()
         {
-            ExcelDate = string.Format("{0:dd/MM/yyyy HH:mm:ss}", Date);
+            ExcelDate = $"{Date:dd/MM/yyyy HH:mm:ss}";
         }
 
         public object Clone()
@@ -36,12 +48,14 @@ namespace ProjectLighthouse.Model
                 Date = Date,
                 ExcelDate = ExcelDate,
                 IsReject = IsReject,
+                IsAccepted = IsAccepted,
                 IsDelivered = IsDelivered,
                 MaterialBatch = MaterialBatch,
                 ModifiedBy = ModifiedBy,
-                ModifiedAt = ModifiedAt
+                ModifiedAt = ModifiedAt,
+                FromMachine = FromMachine,
+                Remarks = Remarks
             };
-
         }
     }
 }

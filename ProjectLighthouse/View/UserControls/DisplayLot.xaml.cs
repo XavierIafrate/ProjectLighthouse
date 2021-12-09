@@ -1,30 +1,27 @@
 ﻿using ProjectLighthouse.Model;
 using System.Windows;
 using System.Windows.Controls;
+using System;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DisplayLot.xaml
-    /// </summary>
     public partial class DisplayLot : UserControl
     {
-
-
         public Lot Lot
         {
             get { return (Lot)GetValue(LotProperty); }
             set { SetValue(LotProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Lot.  This enables animation, styling, binding, etc...
         private static readonly DependencyProperty LotProperty =
             DependencyProperty.Register("Lot", typeof(Lot), typeof(DisplayLot), new PropertyMetadata(null, SetValues));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not DisplayLot control)
+            {
                 return;
+            }
 
             control.DataContext = control.Lot;
 
@@ -36,15 +33,29 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.HelperText.Text = "Delivered";
             }
-            else
+            else if (control.Lot.IsAccepted)
             {
                 control.HelperText.Text = "Not Delivered";
+            }
+            else
+            {
+                control.HelperText.Text = "Quarantined";
+            }
+
+            if (control.Lot.IsDelivered || control.Lot.Date.AddDays(14) < DateTime.Now)
+            {
+                control.EditButton.Visibility = Visibility.Collapsed;
             }
         }
 
         public DisplayLot()
         {
             InitializeComponent();
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            Lot.NotifyRequestToEdit();
         }
     }
 }

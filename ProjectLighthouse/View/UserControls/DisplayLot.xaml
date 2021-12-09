@@ -2,6 +2,7 @@
     x:Class="ProjectLighthouse.View.UserControls.DisplayLot"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:ProjectLighthouse.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -22,10 +23,14 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid x:Name="controlGrid">
+    <Grid
+        x:Name="controlGrid"
+        Margin="5"
+        d:DataContext="{x:Type core:Lot}">
 
         <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" MaxWidth="350" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
@@ -34,38 +39,68 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock FontSize="14">
-                <Run Text="{Binding Date, StringFormat='{}Recorded at {0:dd/MM/yy HH:mm}', FallbackValue='Recorded at {0:dd/MM/yy HH:mm}'}" />
-                <Run Text="{Binding AddedBy, StringFormat='{}by {0}', FallbackValue='by randy'}" />
-            </TextBlock>
-            <TextBlock
-                Grid.Column="2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                FontSize="16"
-                FontWeight="SemiBold"
-                Style="{StaticResource text}"
-                Text="{Binding Quantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
-            <TextBlock
-                x:Name="HelperText"
-                Grid.Row="1"
-                Grid.Column="2"
-                HorizontalAlignment="Right"
-                Style="{StaticResource text}"
-                Text="Not delivered" />
+            <StackPanel
+                Grid.RowSpan="3"
+                Margin="0,0,10,0"
+                VerticalAlignment="Center">
+                <TextBlock
+                    FontWeight="Bold"
+                    Text="{Binding ID, StringFormat='{}#{0}', FallbackValue='#0000'}" />
+                <Button
+                    Margin="0,5,0,0"
+                    x:Name="EditButton"
+                    Click="EditButton_Click"
+                    Style="{StaticResource IconEditButton}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource materialPrimaryBlue}"
+                    Text="{Binding Date, StringFormat='dd/MM/yyyy HH:mm'}" />
+                <TextBlock Text=" · " />
+                <TextBlock FontWeight="SemiBold" Text="{Binding AddedBy}" />
+            </StackPanel>
+
+            <StackPanel
+                Grid.RowSpan="3"
+                Grid.Column="3"
+                VerticalAlignment="Center">
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Style="{StaticResource text}"
+                    Text="{Binding Quantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
+                <TextBlock
+                    x:Name="HelperText"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource text}"
+                    Text="N/A" />
+            </StackPanel>
+
 
             <TextBlock
-                Grid.Row="2"
-                Grid.ColumnSpan="1"
+                Grid.Row="1"
+                Grid.Column="1"
                 FontStyle="Italic"
-                Foreground="{StaticResource materialPrimaryBlue}"
+                Foreground="{StaticResource materialOffBlack}"
                 Text="{Binding MaterialBatch, FallbackValue='batch 123456789 test'}"
                 ToolTip="{Binding MaterialBatch}"
                 ToolTipService.BetweenShowDelay="1000"
                 ToolTipService.InitialShowDelay="2000"
                 ToolTipService.ShowDuration="10000" />
+
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="1"
+                FontStyle="Italic"
+                Foreground="{StaticResource materialOffBlack}"
+                Text="{Binding Remarks, FallbackValue='batch 123456789 test'}" />
         </Grid>
     </Grid>
 </UserControl>

@@ -1,18 +1,56 @@
-﻿<Window x:Class="ProjectLighthouse.View.EditLotWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ProjectLighthouse.View"
-        Title="Edit Lot" SizeToContent="Height" ResizeMode="NoResize" Width="370"  WindowStartupLocation="CenterOwner" MaxHeight="500">
+﻿<Window
+    x:Class="ProjectLighthouse.View.EditLotWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Edit Lot"
+    Width="370"
+    MaxHeight="500"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner">
     <StackPanel Margin="20">
-        <TextBlock Text="Edit Lot" Style="{StaticResource section}"/>
-        <Separator/>
-        <TextBlock Text="Batch"/>
-        <TextBox x:Name="BatchTextBox" TextChanged="BatchTextBox_TextChanged" TextWrapping="Wrap"/>
-        <TextBlock Text="Quantity"/>
-        <TextBox x:Name="QuantityTextBox" PreviewKeyDown="QuantityTextBox_PreviewKeyDown" TextChanged="QuantityTextBox_TextChanged"/>
-        <CheckBox x:Name="RejectCheckBox" Content="Lot is Rejects" Margin="10" VerticalContentAlignment="Center" FontSize="16"/>
-        <Button Content="Save" x:Name="SaveButton" Style="{StaticResource GreenButton}" HorizontalAlignment="Right" Click="SaveButton_Click"/>
+        <TextBlock Style="{StaticResource section}" Text="Edit Lot" />
+        <Separator />
+        <TextBlock Text="Batch" />
+        <TextBox
+            x:Name="BatchTextBox"
+            TextChanged="BatchTextBox_TextChanged"
+            TextWrapping="Wrap" />
+        <TextBlock Text="Quantity" />
+        <TextBox
+            x:Name="QuantityTextBox"
+            PreviewKeyDown="QuantityTextBox_PreviewKeyDown"
+            TextChanged="QuantityTextBox_TextChanged" />
+        <TextBlock Text="Remarks" />
+        <TextBox
+            x:Name="RemarksTextBox"
+            MinHeight="50"
+            MaxLength="512"
+            TextChanged="BatchTextBox_TextChanged"
+            TextWrapping="Wrap" />
+
+        <CheckBox
+            x:Name="RejectCheckBox"
+            Margin="10"
+            VerticalContentAlignment="Center"
+            Checked="RejectCheckBox_Checked"
+            Content="Lot is Rejects"
+            FontSize="16" />
+        <CheckBox
+            x:Name="AcceptCheckBox"
+            Margin="10"
+            VerticalContentAlignment="Center"
+            Checked="AcceptCheckBox_Checked"
+            Content="Lot is Accepted"
+            FontSize="16" />
+        <Button
+            x:Name="SaveButton"
+            HorizontalAlignment="Right"
+            Click="SaveButton_Click"
+            Content="Save"
+            Style="{StaticResource GreenButton}" />
     </StackPanel>
 </Window>

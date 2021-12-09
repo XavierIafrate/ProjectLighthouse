@@ -27,16 +27,30 @@ namespace ProjectLighthouse.View
         {
             QuantityTextBox.Text = EditLot.Quantity.ToString();
             RejectCheckBox.IsChecked = EditLot.IsReject;
+            AcceptCheckBox.IsChecked = EditLot.IsAccepted;
             BatchTextBox.Text = EditLot.MaterialBatch;
+            RemarksTextBox.Text = EditLot.Remarks;
+
+            if (EditLot.IsDelivered)
+            {
+                RejectCheckBox.IsEnabled = false;
+                AcceptCheckBox.IsEnabled = false;
+                QuantityTextBox.IsEnabled = false;
+                BatchTextBox.IsEnabled = false;
+            }
         }
 
         public void Save()
         {
             EditLot.IsReject = (bool)RejectCheckBox.IsChecked;
+            EditLot.IsAccepted = (bool)AcceptCheckBox.IsChecked;
+            EditLot.Remarks = RemarksTextBox.Text.Trim();
 
             if (originalLot.Quantity == EditLot.Quantity &&
                 originalLot.MaterialBatch == EditLot.MaterialBatch &&
-                originalLot.IsReject == EditLot.IsReject)
+                originalLot.IsReject == EditLot.IsReject &&
+                originalLot.IsAccepted == EditLot.IsAccepted &&
+                originalLot.Remarks == EditLot.Remarks)
             {
                 Close();
                 return;
@@ -64,14 +78,35 @@ namespace ProjectLighthouse.View
         private void QuantityTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (int.TryParse(QuantityTextBox.Text, out int j))
+            {
                 EditLot.Quantity = j;
+            }
+
             if (string.IsNullOrEmpty(QuantityTextBox.Text))
+            {
                 EditLot.Quantity = 0;
+            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             Save();
+        }
+
+        private void RejectCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if ((bool)AcceptCheckBox.IsChecked)
+            {
+                AcceptCheckBox.IsChecked = false;
+            }
+        }
+
+        private void AcceptCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if ((bool)RejectCheckBox.IsChecked)
+            {
+                RejectCheckBox.IsChecked = false;
+            }
         }
     }
 }

@@ -63,7 +63,7 @@ namespace ProjectLighthouse.View
 
         private void EditItem(LatheManufactureOrderItem item)
         {
-            EditLMOItemWindow editWindow = new(item, lots);
+            EditLMOItemWindow editWindow = new(item, lots, order.AllocatedMachine ?? "");
             Hide();
             editWindow.ShowDialog();
 
@@ -214,6 +214,12 @@ namespace ProjectLighthouse.View
             items = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name)
                 .OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName)
                 .ToList();
+
+            foreach (LatheManufactureOrderItem item in items)
+            {
+                item.ShowEdit = true;
+                item.RequestToEdit += EditItem;
+            }
 
             ItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
         }

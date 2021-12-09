@@ -441,7 +441,7 @@
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
                         CornerRadius="12"
-                        ToolTip="Danielle's csv button :D">
+                        ToolTip="Download as CSV">
                         <Path
                             Width="10"
                             Height="10"
