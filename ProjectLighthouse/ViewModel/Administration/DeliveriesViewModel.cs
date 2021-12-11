@@ -3,7 +3,6 @@ using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 
@@ -50,8 +49,6 @@ namespace ProjectLighthouse.ViewModel
 
         public DeliveriesViewModel()
         {
-            Debug.WriteLine("Init: DeliveriesViewModel");
-
             DeliveryNotes = new List<DeliveryNote>();
             deliveryItems = new List<DeliveryItem>();
             selectedDeliveryNote = new DeliveryNote();

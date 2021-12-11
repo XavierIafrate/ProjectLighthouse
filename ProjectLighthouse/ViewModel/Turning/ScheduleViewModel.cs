@@ -1,12 +1,9 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -43,8 +40,8 @@ namespace ProjectLighthouse.ViewModel
         public string Filter
         {
             get { return filter; }
-            set 
-            { 
+            set
+            {
                 filter = value;
                 SetView();
             }
@@ -65,8 +62,8 @@ namespace ProjectLighthouse.ViewModel
             PrintScheduleCommand = new(this);
 
             LoadData();
-            Filter = filterOptions.Count > 1 
-                ? filterOptions[1] 
+            Filter = filterOptions.Count > 1
+                ? filterOptions[1]
                 : filterOptions[0];
             //SetView();
         }
@@ -159,7 +156,7 @@ namespace ProjectLighthouse.ViewModel
                 NumberOfOrdersInsights = $"{FilteredOrders.Count} orders assigned";
             }
 
-            var workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredOrders);
+            System.Tuple<System.TimeSpan, System.DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredOrders);
 
             WorkloadInsights = $"{workload.Item1.TotalDays:N0} days work";
             BookedUntilInsights = $"Booked until {workload.Item2:dddd, dd MMMM}";

@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -42,7 +41,6 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 _selectedViewModel = value;
-                Debug.WriteLine($"SelectedViewModel updated to {_selectedViewModel}");
                 OnPropertyChanged("SelectedViewModel");
             }
         }
@@ -62,8 +60,6 @@ namespace ProjectLighthouse.ViewModel
 
         public MainViewModel()
         {
-            Debug.WriteLine("Init: MainViewModel");
-
             EditCommand = new EditSettingsCommand(this);
             UpdateViewCommand = new UpdateViewCommand(this);
         }

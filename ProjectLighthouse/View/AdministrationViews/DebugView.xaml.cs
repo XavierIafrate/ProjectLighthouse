@@ -3,11 +3,8 @@ using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
-using System.IO;
 
 namespace ProjectLighthouse.View
 {

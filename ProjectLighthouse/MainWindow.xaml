@@ -13,7 +13,6 @@
     MinHeight="700"
     MaxWidth="2000"
     Background="{StaticResource materialBackground}"
-    KeyDown="Window_KeyDown"
     Loaded="Window_Loaded"
     ResizeMode="CanResize"
     WindowStartupLocation="CenterScreen"

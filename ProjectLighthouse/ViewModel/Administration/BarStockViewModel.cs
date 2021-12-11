@@ -3,9 +3,7 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Web;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
@@ -16,7 +14,6 @@ namespace ProjectLighthouse.ViewModel
         public List<BarStock> BarStock { get; set; }
         public List<LatheManufactureOrder> Orders { get; set; }
         public List<BarStockRequirementOverview> BarStockOverview { get; set; }
-        public SendMetalexEmailCommand EmailCommand { get; set; }
         public PrintBarRequisitionCommand PrintCommand { get; set; }
 
         private bool requisitionAvailable;
@@ -34,8 +31,8 @@ namespace ProjectLighthouse.ViewModel
 
         public double CostOfNewBar { get; set; }
         public double NumberOfBars { get; set; }
-        private Visibility quickOrderVis;
 
+        private Visibility quickOrderVis;
         public Visibility QuickOrderVis
         {
             get { return quickOrderVis; }
@@ -52,7 +49,6 @@ namespace ProjectLighthouse.ViewModel
             BarStock = new();
             Orders = new();
             BarStockOverview = new();
-            EmailCommand = new(this);
             PrintCommand = new(this);
             QuickOrderVis = Visibility.Hidden;
 
@@ -126,45 +122,6 @@ namespace ProjectLighthouse.ViewModel
         public void PrintRequisition()
         {
             PDFHelper.PrintBarRequisition(BarStockOverview);
-        }
-
-        public void ComposeEmail()
-        {
-            List<BarStockRequirementOverview> needsStock = BarStockOverview.Where(b => b.FreeBar < 0).OrderBy(b => b.BarStock.Material).ThenBy(b => b.BarStock.Size).ToList();
-
-            string body = DateTime.Now.Hour < 13
-                ? "Good morning,"
-                : "Good afternoon,";
-
-            body += Environment.NewLine;
-            body += Environment.NewLine;
-
-            body += "Could you please provide price and delivery for:";
-
-            body += Environment.NewLine;
-            body += Environment.NewLine;
-            string material = null;
-            foreach (BarStockRequirementOverview bar in needsStock)
-            {
-                if (bar.BarStock.Material != material && material != null)
-                {
-                    body += Environment.NewLine;
-                }
-                material = bar.BarStock.Material;
-                if (Math.Ceiling(Math.Abs(bar.FreeBar)) == 1)
-                {
-                    body += $"{bar.BarStock.Id} - {Math.Ceiling(Math.Abs(bar.FreeBar))} bar" + Environment.NewLine;
-                }
-                else
-                {
-                    body += $"{bar.BarStock.Id} - {Math.Ceiling(Math.Abs(bar.FreeBar))} bars" + Environment.NewLine;
-                }
-            }
-            body += Environment.NewLine + "Best regards,";
-
-            string url = "mailto:sales@metalex.co.uk?subject=Automotion%20Components%20RFQ&body=" + HttpUtility.UrlEncode(body);
-
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         }
     }
 }

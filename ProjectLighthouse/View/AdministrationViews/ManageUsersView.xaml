@@ -392,41 +392,6 @@
                         Text="User can create deliveries from completed lots" />
                 </Grid>
 
-                <Grid>
-                    <!--  Create Assembly Products  -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <CheckBox
-                        Margin="5,0"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding SelectedUser.CanCreateAssemblyProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding EditControlsVis}" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="0"
-                        Text="Create Assembly Products" />
-                    <TextBlock
-                        Grid.Column="3"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedUser.CanCreateAssemblyProducts, Converter='{StaticResource boolConverter}'}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.ColumnSpan="4"
-                        Margin="20,1,20,6"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource materialPrimaryBlue}"
-                        Text="User can create new assembly products with routings and BOM" />
-                </Grid>
-
                 <Grid Margin="0,20,0,5">
                     <Rectangle
                         Grid.RowSpan="2"

@@ -8,8 +8,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace ProjectLighthouse.View
 {
@@ -50,46 +48,6 @@ namespace ProjectLighthouse.View
             }
         }
 
-        private void RandomiseSplashScreen() // ??
-        {
-            Random rng = new();
-
-            List<SplashImage> images = new();
-
-            //"pack://application:,,,/AssemblyName;component/Resources/logo.png"
-
-            //images.Add(new("pack://application:,,,/ProjectLighthouse;component/Resources/StartPoint.png", -0.135, 0));
-            images.Add(new("pack://application:,,,/ProjectLighthouse;component/Resources/snowdonia.jpg", -0.22, 0));
-
-
-            SplashImage selectedImage = images.Last();
-            
-
-            TranslateTransform transform = new();
-
-            transform.X = selectedImage.x_translate;
-            transform.Y = selectedImage.y_translate;
-
-            image.Transform = transform;
-
-            image.ImageSource = selectedImage.source;
-
-        }
-
-        private class SplashImage
-        {
-            public ImageSource source { get; set; }
-            public double x_translate { get; set; }
-            public double y_translate { get; set; }
-
-            public SplashImage(string src, double X, double Y)
-            {
-                source = new BitmapImage(new Uri(src, UriKind.RelativeOrAbsolute));
-                x_translate = X;
-                y_translate = Y;
-            }
-        }
-
         private void AddVersionNumber()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -109,8 +67,6 @@ namespace ProjectLighthouse.View
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            //EmailHelper.TestEmail();
-            //MySQLHelper.test();
             Login();
         }
 

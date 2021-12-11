@@ -93,8 +93,6 @@ namespace ProjectLighthouse.ViewModel
 
         public NewRequestViewModel()
         {
-            Debug.WriteLine("Init: NewRequestViewModel");
-
             NewRequest = new();
 
             SubmitRequestCommand = new(this);
@@ -125,10 +123,10 @@ namespace ProjectLighthouse.ViewModel
                 completeOrders.Add(new(order: order, items: items.Where(i => i.AssignedMO == order.Name).ToList()));
             }
 
-            for(int i = 0; i < lathes.Count; i++)
+            for (int i = 0; i < lathes.Count; i++)
             {
                 List<CompleteOrder> ordersForLathe = completeOrders.Where(o => o.Order.AllocatedMachine == lathes[i].Id).ToList();
-                var workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
+                Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
 
                 MachineInfoSnippet tmpSnippet = new()
                 {
@@ -154,9 +152,9 @@ namespace ProjectLighthouse.ViewModel
                 TurnedProducts.Add(product);
                 if (!product.isSpecialPart)
                 {
-                    if (!Families.Any(item => item.ToString() == product.ProductName.Substring(0, 5)))
+                    if (!Families.Any(item => item.ToString() == product.ProductName[..5]))
                     {
-                        Families.Add(product.ProductName.Substring(0, 5));
+                        Families.Add(product.ProductName[..5]);
                     }
                 }
             }
@@ -190,7 +188,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 foreach (TurnedProduct product in TurnedProducts)
                 {
-                    if (product.ProductName.Substring(0, Math.Min(5, product.ProductName.Length)) == SelectedGroup && !product.isSpecialPart)
+                    if (product.ProductName[..Math.Min(5, product.ProductName.Length)] == SelectedGroup && !product.isSpecialPart)
                     {
                         FilteredList.Add(product);
                     }
@@ -400,7 +398,6 @@ namespace ProjectLighthouse.ViewModel
                 {
                     if (product.ProductName != selectedProduct.ProductName && product.IsScheduleCompatible(selectedProduct))
                     {
-                        Debug.WriteLine(product.ProductName);
                         classQuantities.Add(product.GetRecommendedQuantity());
                     }
                 }

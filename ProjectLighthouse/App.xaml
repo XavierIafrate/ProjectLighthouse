@@ -36,10 +36,6 @@
                 <views:NewRequestView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:MachineStatsViewModel}">
-                <views:MachineStatsView />
-            </DataTemplate>
-
             <DataTemplate DataType="{x:Type vms:OrderViewModel}">
                 <views:OrderView />
             </DataTemplate>

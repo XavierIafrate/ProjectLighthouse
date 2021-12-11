@@ -29,6 +29,6 @@ namespace ProjectLighthouse.Model
         public bool CleanCustomerRequirement { get; set; }
 
 
-        
+
     }
 }

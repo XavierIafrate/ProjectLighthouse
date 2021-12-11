@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.ViewModel.Commands;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model
 {

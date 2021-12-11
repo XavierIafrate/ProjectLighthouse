@@ -76,10 +76,10 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 
         private int Age(DateTime birthdate)
         {
-            var today = DateTime.Today;
+            DateTime today = DateTime.Today;
             int age = today.Year - birthdate.Year;
-            return birthdate.AddYears(age) > today 
-                ? age - 1 
+            return birthdate.AddYears(age) > today
+                ? age - 1
                 : age;
         }
     }

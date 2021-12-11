@@ -245,7 +245,9 @@ namespace ProjectLighthouse.View
                     Remarks = RemarksTextBox.Text.Trim()
                 };
 
+                newLot.DateProduced = newLot.Date;
                 newLot.SetExcelDateTime();
+
                 if (!DatabaseHelper.Insert(newLot))
                 {
                     MessageBox.Show("Failed to add to database", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -265,7 +267,7 @@ namespace ProjectLighthouse.View
 
                 Lots.Add(newLot);
                 SaveExit = true;
-                List<Lot> refreshedLots = new List<Lot>(Lots.Where(l => l.ProductName == Item.ProductName));
+                List<Lot> refreshedLots = new(Lots.Where(l => l.ProductName == Item.ProductName));
 
                 foreach (Lot lot in refreshedLots)
                 {
@@ -307,7 +309,6 @@ namespace ProjectLighthouse.View
             BatchGhost.Visibility = string.IsNullOrEmpty(BatchTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Hidden;
-
         }
 
         private void QuantityNewLotTextBox_TextChanged(object sender, TextChangedEventArgs e)

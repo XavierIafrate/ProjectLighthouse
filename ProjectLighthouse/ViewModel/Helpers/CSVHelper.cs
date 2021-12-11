@@ -16,11 +16,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             string filename = $"{filePrefix}_{DateTime.Now:ddMMyy_HHmmss}.csv";
             filename = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), filename);
-            
+
             using (StreamWriter writer = new(filename))
             using (CsvWriter csv = new(writer, CultureInfo.InvariantCulture))
             {
-                var options = new TypeConverterOptions { Formats = new[] { "s" } };
+                TypeConverterOptions options = new TypeConverterOptions { Formats = new[] { "s" } };
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
                 csv.WriteRecords(stuff);
             }

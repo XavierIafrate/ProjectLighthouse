@@ -52,7 +52,7 @@ namespace ProjectLighthouse.Model
         public TimeSpan GetTimeToMake(int quantity)
         {
             return CycleTime == 0
-                ? TimeSpan.FromSeconds(quantity * 120) 
+                ? TimeSpan.FromSeconds(quantity * 120)
                 : TimeSpan.FromSeconds(quantity * CycleTime);
         }
 

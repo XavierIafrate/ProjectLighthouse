@@ -23,24 +23,13 @@ namespace ProjectLighthouse.View.UserControls
 
             requestControl.DataContext = requestControl.Request;
 
-            #region colourFormatting
-            switch (requestControl.Request.QuantityRequired)
+            requestControl.qtyTextBlock.Foreground = requestControl.Request.QuantityRequired switch
             {
-                case >= 1000:
-                    requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                    break;
+                >= 1000 => (Brush)Application.Current.Resources["materialPrimaryGreen"],
+                < 100 => (Brush)Application.Current.Resources["materialError"],
+                _ => (Brush)Application.Current.Resources["materialOnBackground"],
+            };
 
-                case < 100:
-                    requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialError"];
-                    break;
-
-                default:
-                    requestControl.qtyTextBlock.Foreground = (Brush)Application.Current.Resources["materialOnBackground"];
-                    break;
-            }
-            #endregion
-
-            #region flags
             if (requestControl.Request.IsAccepted)
             {
                 requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
@@ -56,7 +45,6 @@ namespace ProjectLighthouse.View.UserControls
                 requestControl.statusBadge.Fill = (Brush)Application.Current.Resources["materialPrimaryBlue"];
                 requestControl.statusText.Text = "Pending";
             }
-            #endregion
         }
 
         public DisplayRequest()

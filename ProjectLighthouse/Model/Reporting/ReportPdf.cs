@@ -36,7 +36,7 @@ namespace ProjectLighthouse.Model.Reporting
         }
         private void ExportPdf(string path, Document report)
         {
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer();
+            PdfDocumentRenderer pdfRenderer = new();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             pdfRenderer.Document = report;
             pdfRenderer.RenderDocument();
@@ -54,7 +54,7 @@ namespace ProjectLighthouse.Model.Reporting
 
         private Document CreateReport(PerformanceReportData data)
         {
-            Document doc = new Document();
+            Document doc = new();
             CustomStyles.Define(doc);
             doc.Add(CreateMainSection(data));
             return doc;
@@ -62,7 +62,7 @@ namespace ProjectLighthouse.Model.Reporting
 
         private Section CreateMainSection(PerformanceReportData data)
         {
-            Section section = new Section();
+            Section section = new();
             SetUpPage(section);
             AddHeaderAndFooter(section);
             AddContents(section, data);
@@ -120,7 +120,7 @@ namespace ProjectLighthouse.Model.Reporting
             {
                 AddOrderNotes(section, data.Notes);
             }
-            
+
         }
 
         private void AddOrderMetadata(Section section, LatheManufactureOrder order)

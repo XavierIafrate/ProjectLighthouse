@@ -23,7 +23,6 @@ namespace ProjectLighthouse
             Window.Show();
 
             Window.AddVersionNumber();
-            _ = Window.CheckForUpdates();
         }
     }
 }

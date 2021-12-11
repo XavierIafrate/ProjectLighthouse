@@ -18,9 +18,9 @@ namespace ProjectLighthouse.ViewModel
                 .OrderByDescending(p => p.GetRecommendedQuantity())
                 .ToList();
 
-            
+
             currentRuntime = requiredProduct.GetTimeToMake(qtyOfRequired);
-            
+
 
             foreach (TurnedProduct product in turnedProducts)
             {
@@ -31,7 +31,7 @@ namespace ProjectLighthouse.ViewModel
                     return new(result, currentRuntime);
                 }
 
-                
+
             }
 
             return new(result, currentRuntime);

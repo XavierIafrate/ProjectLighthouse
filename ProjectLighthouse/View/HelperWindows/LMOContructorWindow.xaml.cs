@@ -43,8 +43,8 @@ namespace ProjectLighthouse.View
         public void ReadDatabase(Request request)
         {
             string productName = request.Product;
-            ProductPool = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductGroup == productName.Substring(0, 9)).ToList();
-            
+            ProductPool = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductGroup == productName[..9]).ToList();
+
             TurnedProduct requiredProduct = new();
 
             // Assign required product
@@ -60,7 +60,7 @@ namespace ProjectLighthouse.View
             }
 
             OrderBar = DatabaseHelper.Read<BarStock>().First(n => n.Id == constructLMO.BarID);
-            
+
             // remove incompatible
             foreach (TurnedProduct product in ProductPool.ToList())
             {
@@ -82,7 +82,7 @@ namespace ProjectLighthouse.View
                 > 15 => 300,
                 _ => 500,
             };
-            
+
             int recommendedQuantity = product.GetRecommendedQuantity();
             int target = recommendedQuantity + requiredQuantity > MOQ
                 ? (int)Math.Ceiling((double)(recommendedQuantity + requiredQuantity) / 100) * 100
@@ -167,7 +167,7 @@ namespace ProjectLighthouse.View
             int orderNumLen = strOrderNum.Length;
             const string blank = "M00000";
 
-            return blank.Substring(0, 6 - orderNumLen) + strOrderNum;
+            return blank[..(6 - orderNumLen)] + strOrderNum;
         }
 
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)

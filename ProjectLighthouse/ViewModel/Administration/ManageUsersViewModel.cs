@@ -3,7 +3,6 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -110,8 +109,6 @@ namespace ProjectLighthouse.ViewModel
         #endregion
         public ManageUsersViewModel()
         {
-            Debug.WriteLine("Init: ManageUsersViewModel");
-
             roles = new() { "admin", "Purchasing", "Scheduling", "Production", "Viewer" };
             views = new() { "View Requests", "Orders", "Schedule", "Assembly Orders" };
 

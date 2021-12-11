@@ -5,7 +5,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -154,8 +153,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility CleaningVis
         {
             get { return cleaningVis; }
-            set 
-            { 
+            set
+            {
                 cleaningVis = value;
                 OnPropertyChanged("CleaningVis");
             }
@@ -234,7 +233,6 @@ namespace ProjectLighthouse.ViewModel
 
         public RequestViewModel()
         {
-            Debug.WriteLine("Init: RequestsViewModel");
             Requests = new List<Request>();
             FilteredRequests = new ObservableCollection<Request>();
             ApproveCommand = new ApproveRequestCommand(this);
