@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 

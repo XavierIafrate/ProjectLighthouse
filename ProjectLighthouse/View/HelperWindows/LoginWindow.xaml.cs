@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,7 +21,6 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
             AddVersionNumber();
-            //RandomiseSplashScreen();
 
             Users = DatabaseHelper.Read<User>().ToList();
 

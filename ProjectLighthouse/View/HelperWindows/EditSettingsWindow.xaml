@@ -34,7 +34,7 @@
                 </TextBlock>
                 <Grid Margin="10,0">
                     <Border Background="{StaticResource materialPrimaryBlue}" CornerRadius="10" Height="25"/>
-                    <TextBlock Text="{Binding UserRole}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10,10,10,11" Foreground="White"/>
+                    <TextBlock Text="{Binding UserRole, FallbackValue='Viewer'}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10,10,10,11" Foreground="White"/>
                 </Grid>
             </StackPanel>
 

@@ -1,9 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--<FontFamily x:Key="Roboto">pack://application:,,,/Resources/Fonts/#Roboto</FontFamily>-->
+    <FontFamily x:Key="Roboto">pack://application:,,,/Resources/Fonts/Roboto</FontFamily>
 
     <Style x:Key="Default" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
-        <!--<Setter Property="FontFamily" Value="{StaticResource Roboto}" />-->
+        <!--<Setter Property="FontFamily" Value="Resources/Font/Roboto-Medium.ttf #Roboto" />-->
     </Style>
     <!--  Don't touch  -->
     <Style BasedOn="{StaticResource Default}" TargetType="TextBlock" />

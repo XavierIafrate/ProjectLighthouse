@@ -16,10 +16,15 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;NU1701</NoWarn>
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>True</Optimize>
   </PropertyGroup>
 
@@ -41,7 +46,7 @@
     <Resource Include="Resources\Font\Roboto-Italic.ttf" />
     <Resource Include="Resources\Font\Roboto-Light.ttf" />
     <Resource Include="Resources\Font\Roboto-LightItalic.ttf" />
-    <Resource Include="Resources\Font\Roboto-Medium.ttf" />
+    <EmbeddedResource Include="Resources\Font\Roboto-Medium.ttf" />
 	<Resource Include="Resources\Font\Roboto-MediumItalic.ttf" />
 	<Resource Include="Resources\Font\Roboto-Regular.ttf" />
   </ItemGroup>
