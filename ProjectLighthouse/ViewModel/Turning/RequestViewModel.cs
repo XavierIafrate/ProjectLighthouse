@@ -16,6 +16,25 @@ namespace ProjectLighthouse.ViewModel
         #region Variables
         public List<Request> Requests { get; set; }
         public ObservableCollection<Request> FilteredRequests { get; set; }
+        public List<TurnedProduct> Products { get; set; }
+        public List<LatheManufactureOrderItem> RecommendedManifest { get; set; }
+        private double targetRuntime;
+
+        public double TargetRuntime
+        {
+            get { return targetRuntime; }
+            set
+            {
+                targetRuntime = value;
+                OnPropertyChanged("TargetRuntime");
+
+                if (SelectedRequest.Status == "Pending approval" && SelectedRequest.Product != null)
+                {
+                    LoadRecommendedOrder();
+                }
+            }
+        }
+
         public RequestView Window { get; set; }
 
         private string selectedFilter;
@@ -46,20 +65,8 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedRequest = value;
                 OnPropertyChanged("SelectedRequest");
-                //SelectedRequestChanged?.Invoke(this, new EventArgs());
 
                 LoadRequestCard(value);
-            }
-        }
-
-        private bool productionCheckboxEnabled;
-        public bool ProductionCheckboxEnabled
-        {
-            get { return productionCheckboxEnabled; }
-            set
-            {
-                productionCheckboxEnabled = value;
-                OnPropertyChanged("ProductionCheckboxEnabled");
             }
         }
 
@@ -101,17 +108,6 @@ namespace ProjectLighthouse.ViewModel
             {
                 canEditRequirements = value;
                 OnPropertyChanged("CanEditRequirements");
-            }
-        }
-
-        private bool schedulingCheckboxEnabled;
-        public bool SchedulingCheckboxEnabled
-        {
-            get { return schedulingCheckboxEnabled; }
-            set
-            {
-                schedulingCheckboxEnabled = value;
-                OnPropertyChanged("SchedulingCheckboxEnabled");
             }
         }
 
@@ -233,6 +229,7 @@ namespace ProjectLighthouse.ViewModel
 
         public RequestViewModel()
         {
+            RecommendedManifest = new();
             Requests = new List<Request>();
             FilteredRequests = new ObservableCollection<Request>();
             ApproveCommand = new ApproveRequestCommand(this);
@@ -240,6 +237,9 @@ namespace ProjectLighthouse.ViewModel
             UpdateOrderCommand = new UpdatePORefCommand(this);
             ExportCommand = new RequestsToCSVCommand(this);
             SelectedRequest = new Request();
+            Products = DatabaseHelper.Read<TurnedProduct>();
+
+            TargetRuntime = 5;
 
             approvalControlsVis = App.CurrentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
             GetRequests();
@@ -267,16 +267,6 @@ namespace ProjectLighthouse.ViewModel
             DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
             CanEditRequirements = !request.IsAccepted && !request.IsDeclined;
 
-
-            ProductionCheckboxEnabled = request.Status == "Pending approval" &&
-                (App.CurrentUser.UserRole == "Production" ||
-                App.CurrentUser.UserRole == "admin")
-                && App.CurrentUser.CanApproveRequests;
-
-            SchedulingCheckboxEnabled = request.Status == "Pending approval" &&
-                (App.CurrentUser.UserRole == "Scheduling" ||
-                App.CurrentUser.UserRole == "admin");
-
             DropboxEnabled = request.Status == "Pending approval" &&
                 (App.CurrentUser.UserRole == "Scheduling" ||
                 App.CurrentUser.UserRole == "admin" ||
@@ -284,6 +274,23 @@ namespace ProjectLighthouse.ViewModel
                 && App.CurrentUser.CanApproveRequests;
 
             PurchaseRef = !string.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
+
+            if (request.Status == "Pending approval" && request.Product != null)
+            {
+                LoadRecommendedOrder();
+            }
+        }
+
+        private void LoadRecommendedOrder()
+        {
+            RecommendedManifest.Clear();
+            TurnedProduct requiredProduct = Products.First(p => p.ProductName == SelectedRequest.Product);
+
+            RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(Products,
+                requiredProduct,
+                SelectedRequest.QuantityRequired,
+                TimeSpan.FromDays(Math.Round(TargetRuntime)));
+            OnPropertyChanged("RecommendedManifest");
         }
 
         public void UpdateOrderPurchaseRef()
@@ -349,58 +356,42 @@ namespace ProjectLighthouse.ViewModel
 
         public void ApproveRequest()
         {
-            if (App.CurrentUser.CanApproveRequests) //selectedRequest.isProductionApproved && selectedRequest.isSchedulingApproved &&
-            {
-                SelectedRequest.IsAccepted = true;
-                SelectedRequest.IsDeclined = false;
-                SelectedRequest.LastModified = DateTime.Now;
-                SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
-
-
-                LMOContructorWindow creationWindow = new(SelectedRequest);
-                creationWindow.Owner = Application.Current.MainWindow;
-                creationWindow.ShowDialog();
-
-                if (creationWindow.wasCancelled)
-                {
-                    return;
-                }
-
-
-                SelectedRequest.AcceptedBy = App.CurrentUser.FirstName;
-                SelectedRequest.ResultingLMO = creationWindow.constructLMO.Name;
-                SelectedRequest.Status = $"Accepted by {SelectedRequest.AcceptedBy} - {SelectedRequest.ResultingLMO}";
-
-
-
-                if (DatabaseHelper.Update(SelectedRequest))
-                {
-                    //Task.Run(async () =>);
-                    //Task.Run(async () => );
-
-                    EmailHelper.NotifyRequestApproved(SelectedRequest);
-                    EmailHelper.NotifyNewOrder(creationWindow.constructLMO, creationWindow.LMOItems);
-
-                    FilterRequests(SelectedFilter);
-                    OnPropertyChanged("SelectedRequest");
-                    SelectedRequestChanged?.Invoke(this, new EventArgs());
-                    SelectedRequest = Requests.First();
-                }
-                else
-                {
-                    MessageBox.Show("Failed to update the request.", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                return;
-            }
             if (!App.CurrentUser.CanApproveRequests)
             {
-                MessageBox.Show("You do not have permission to authorise requests.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("You do not have permission to authorise requests.\nHow can you even see the buttons??",
+                    "Access Denied",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
+                return;
             }
-            //else if (!selectedRequest.isProductionApproved || !selectedRequest.isSchedulingApproved)
-            //{
-            //    MessageBox.Show("Cannot approve without both scheduling and production confirmation.", "Pending input", MessageBoxButton.OK, MessageBoxImage.Information);
-            //}
-            return;
+
+            LMOContructorWindow creationWindow = new(SelectedRequest, TargetRuntime, Products);
+            creationWindow.Owner = Application.Current.MainWindow;
+            creationWindow.ShowDialog();
+
+            if (creationWindow.wasCancelled)
+            {
+                return;
+            }
+
+            SelectedRequest.ResultingLMO = creationWindow.NewOrder.Name;
+            SelectedRequest.MarkAsAccepted();
+
+            if (DatabaseHelper.Update(SelectedRequest))
+            {
+                Task.Run(() => EmailHelper.NotifyRequestApproved(SelectedRequest));
+                Task.Run(() => EmailHelper.NotifyNewOrder(creationWindow.NewOrder, creationWindow.NewOrderItems));
+
+                FilterRequests(SelectedFilter);
+                OnPropertyChanged("SelectedRequest");
+
+                SelectedRequestChanged?.Invoke(this, new EventArgs());
+                SelectedRequest = Requests.First();
+            }
+            else
+            {
+                MessageBox.Show("Failed to update the request.", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public void DeclineRequest()
@@ -416,18 +407,16 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
 
-            SelectedRequest.IsAccepted = false;
-            SelectedRequest.IsDeclined = true;
-            SelectedRequest.LastModified = DateTime.Now;
-            SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
-            SelectedRequest.Status = $"Declined - {SelectedRequest.DeclinedReason}";
+            SelectedRequest.MarkAsDeclined();
 
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                Task.Run(async () => EmailHelper.NotifyRequestDeclined(SelectedRequest));
+                Task.Run(() => EmailHelper.NotifyRequestDeclined(SelectedRequest));
+
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");
+
                 SelectedRequestChanged?.Invoke(this, new EventArgs());
                 SelectedRequest = Requests.First();
             }
@@ -470,6 +459,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 SelectedRequest = FilteredRequests.First();
             }
+
             OnPropertyChanged("FilteredRequests");
             OnPropertyChanged("SelectedFilter");
         }

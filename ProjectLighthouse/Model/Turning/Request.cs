@@ -28,7 +28,24 @@ namespace ProjectLighthouse.Model
 
         public bool CleanCustomerRequirement { get; set; }
 
+        public void MarkAsAccepted()
+        {
+            IsAccepted = true;
+            IsDeclined = false;
+            LastModified = DateTime.Now;
+            ModifiedBy = App.CurrentUser.GetFullName();
+            AcceptedBy = App.CurrentUser.FirstName;
+            Status = $"Accepted by {AcceptedBy} - {ResultingLMO}";
+        }
 
+        public void MarkAsDeclined()
+        {
+            IsAccepted = false;
+            IsDeclined = true;
+            LastModified = DateTime.Now;
+            ModifiedBy = App.CurrentUser.GetFullName();
+            Status = $"Declined - {DeclinedReason}";
+        }
 
     }
 }

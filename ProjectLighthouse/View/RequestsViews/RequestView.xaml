@@ -7,10 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel" 
-    mc:Ignorable="d"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:DataContext="{d:DesignInstance Type=vm:RequestViewModel}"
-    Background="{StaticResource materialBackground}">
+    Background="{StaticResource materialBackground}"
+    mc:Ignorable="d">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -56,9 +56,7 @@
                 <ComboBoxItem Content="Declined" />
                 <ComboBoxItem Content="All" />
             </ComboBox>
-            <Button
-                Command="{Binding ExportCommand}"
-                Style="{StaticResource CSVButton}"/>
+            <Button Command="{Binding ExportCommand}" Style="{StaticResource CSVButton}" />
         </StatusBar>
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
             <TextBlock
@@ -100,9 +98,13 @@
                         <TextBlock Style="{StaticResource title}" Text="{Binding SelectedRequest.Product, FallbackValue='P0XXX.123-456-A2'}" />
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource subtitle}" Text="{Binding SelectedRequest.QuantityRequired, StringFormat='{}{0:#,##0} pcs required', FallbackValue='0 pcs required'}" />
+                            <TextBlock
+                                Foreground="{StaticResource materialError}"
+                                Style="{StaticResource subtitle}"
+                                Text="{Binding SelectedRequest.QuantityRequired, StringFormat='{}{0:#,##0} pcs required', FallbackValue='0 pcs required'}" />
                             <TextBlock
                                 x:Name="dateRequiredTextBlock"
+                                Foreground="{StaticResource materialError}"
                                 Style="{StaticResource subtitle}"
                                 Text="{Binding SelectedRequest.DateRequired, StringFormat='{} for {0:dd/MM/yy}', FallbackValue=' for 01/01/1970'}" />
 
@@ -176,25 +178,90 @@
 
                     <!--  Controls area  -->
                     <Separator Margin="0,5" />
-                    <TextBlock
-                        Margin="0,15,0,0"
-                        Style="{StaticResource section}"
-                        Text="Approval Controls"
-                        Visibility="{Binding DecisionVis}" />
 
-                    <StackPanel Margin="10,0" Visibility="{Binding DecisionVis}">
+                    <StackPanel Margin="10,20,10,20" Visibility="{Binding DecisionVis}">
+                        <TextBlock Style="{StaticResource section}" Text="Recommended Manifest" />
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Padding="10,0,0,0"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource materialOnBackground}"
+                                Style="{StaticResource statement}"
+                                Text="{Binding TargetRuntime, StringFormat='{}Runtime Cap [{0:N0} day(s)]'}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Padding="10,0"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource materialOnBackground}"
+                                Style="{StaticResource statement}"
+                                Text="1 day" />
+                            <Slider
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                IsSnapToTickEnabled="True"
+                                Maximum="14"
+                                Minimum="1"
+                                TickPlacement="BottomRight" 
+                                Value="{Binding TargetRuntime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock
+                                Grid.Column="3"
+                                Padding="10,0"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource materialOnBackground}"
+                                Style="{StaticResource statement}"
+                                Text="14 days" />
+                        </Grid>
+                        <Grid>
+                            <ListView ItemsSource="{Binding RecommendedManifest}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <uc:DisplayManifestItem Item="{Binding}" />
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <Rectangle Fill="#01ffffff" />
+                        </Grid>
+
+                        <StackPanel
+                            Margin="10,0"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="11"
+                                Opacity="0.25"
+                                Text="Lighthouse Requests Engine" />
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Margin="3,1,0,0"
+                                Data="M12 3C7.03 3 3 7.03 3 12S7.03 21 12 21C14 21 15.92 20.34 17.5 19.14L16.06 17.7C14.87 18.54 13.45 19 12 19C8.13 19 5 15.87 5 12S8.13 5 12 5 19 8.13 19 12H16L20 16L24 12H21C21 7.03 16.97 3 12 3M7.71 13.16C7.62 13.23 7.59 13.35 7.64 13.45L8.54 15C8.6 15.12 8.72 15.12 8.82 15.12L9.95 14.67C10.19 14.83 10.44 14.97 10.7 15.09L10.88 16.28C10.9 16.39 11 16.47 11.1 16.47H12.9C13 16.5 13.11 16.41 13.13 16.3L13.31 15.12C13.58 15 13.84 14.85 14.07 14.67L15.19 15.12C15.3 15.16 15.42 15.11 15.47 15L16.37 13.5C16.42 13.38 16.39 13.26 16.31 13.19L15.31 12.45C15.34 12.15 15.34 11.85 15.31 11.55L16.31 10.79C16.4 10.72 16.42 10.61 16.37 10.5L15.47 8.95C15.41 8.85 15.3 8.81 15.19 8.85L14.07 9.3C13.83 9.13 13.57 9 13.3 8.88L13.13 7.69C13.11 7.58 13 7.5 12.9 7.5H11.14C11.04 7.5 10.95 7.57 10.93 7.67L10.76 8.85C10.5 8.97 10.23 9.12 10 9.3L8.85 8.88C8.74 8.84 8.61 8.89 8.56 9L7.65 10.5C7.6 10.62 7.63 10.74 7.71 10.81L8.71 11.55C8.69 11.7 8.69 11.85 8.71 12C8.7 12.15 8.7 12.3 8.71 12.45L7.71 13.19M12 13.5H12C11.16 13.5 10.5 12.82 10.5 12C10.5 11.17 11.17 10.5 12 10.5S13.5 11.17 13.5 12 12.83 13.5 12 13.5"
+                                Fill="Black"
+                                Opacity="0.25"
+                                Stretch="Uniform" />
+                        </StackPanel>
+
                         <TextBlock
                             Grid.Row="2"
                             Margin="0,10,0,5"
                             HorizontalAlignment="Center"
                             FontStyle="Italic"
-                            Text="Reason for declining:" />
+                            Text="Reason for declining:"
+                            Visibility="{Binding ApprovalControlsVis}" />
                         <ComboBox
                             x:Name="DeclineComboBox"
                             MaxWidth="300"
                             Margin="0,0,0,5"
                             IsEnabled="{Binding DropboxEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Text="{Binding SelectedRequest.DeclinedReason, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                            Text="{Binding SelectedRequest.DeclinedReason, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Visibility="{Binding ApprovalControlsVis}">
                             <ComboBoxItem Content="Uneconomical" />
                             <ComboBoxItem Content="Below MOQ" />
                             <ComboBoxItem Content="No active requirement" />
@@ -333,7 +400,11 @@
                                 Visibility="Hidden" />
                         </Grid>
 
-                        <CheckBox Content="Ultrasonic cleaning required?"  HorizontalAlignment="Center" IsChecked="{Binding SelectedRequest.CleanCustomerRequirement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEditRequirements}"/>
+                        <CheckBox
+                            HorizontalAlignment="Center"
+                            Content="Ultrasonic cleaning required?"
+                            IsChecked="{Binding SelectedRequest.CleanCustomerRequirement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsEnabled="{Binding CanEditRequirements}" />
 
 
                         <TextBlock Style="{StaticResource section}" Text="Notes" />

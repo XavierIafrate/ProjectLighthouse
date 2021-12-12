@@ -89,6 +89,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility GraphVis { get; set; }
         public Visibility GIFVis { get; set; }
 
+        public Visibility HighLeadTimeVisibility { get; set; }
+
         #endregion
 
         public NewRequestViewModel()
@@ -103,6 +105,7 @@ namespace ProjectLighthouse.ViewModel
             NotEnoughDataVis = Visibility.Visible;
             GraphVis = Visibility.Hidden;
             GIFVis = Visibility.Visible;
+            HighLeadTimeVisibility = Visibility.Collapsed;
 
             ClearScreen();
             SelectedGroup = "Live";
@@ -123,6 +126,9 @@ namespace ProjectLighthouse.ViewModel
                 completeOrders.Add(new(order: order, items: items.Where(i => i.AssignedMO == order.Name).ToList()));
             }
 
+            TimeSpan L20_leadTimes = TimeSpan.Zero;
+            int num_L20s = 0;
+
             for (int i = 0; i < lathes.Count; i++)
             {
                 List<CompleteOrder> ordersForLathe = completeOrders.Where(o => o.Order.AllocatedMachine == lathes[i].Id).ToList();
@@ -135,8 +141,25 @@ namespace ProjectLighthouse.ViewModel
                     LeadTime = workload.Item1
                 };
 
+                if (lathes[i].Model.StartsWith("L20"))
+                {
+                    num_L20s++;
+                    L20_leadTimes += tmpSnippet.LeadTime;
+                }
+
                 Snippets.Add(tmpSnippet);
             }
+
+            if (num_L20s > 0)
+            {
+                L20_leadTimes /= num_L20s;
+                HighLeadTimeVisibility = L20_leadTimes.TotalDays > 33
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+
+                OnPropertyChanged("HighLeadTimeVisibility");
+            }
+            
             OnPropertyChanged("Snippets");
         }
 
@@ -161,7 +184,6 @@ namespace ProjectLighthouse.ViewModel
 
             Families = Families.OrderBy(n => n).ToList();
             Families.Add("Specials");
-
         }
 
         public void PopulateListBox()

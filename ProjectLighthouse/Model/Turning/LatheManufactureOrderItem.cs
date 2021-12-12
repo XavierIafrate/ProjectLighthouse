@@ -30,12 +30,70 @@ namespace ProjectLighthouse.Model
         public bool NeedsCleaning { get; set; }
 
         public bool ShowEdit;
+        public int RecommendedQuantity;
+
         [Ignore]
         public Action<LatheManufactureOrderItem> RequestToEdit { get; set; }
 
         public void NotifyRequestToEdit()
         {
             RequestToEdit?.Invoke(this);
+        }
+
+        public LatheManufactureOrderItem()
+        {
+
+        }
+
+        public LatheManufactureOrderItem(TurnedProduct fromProduct)
+        {
+            ProductName = fromProduct.ProductName;
+            CycleTime = fromProduct.CycleTime;
+            MajorDiameter = fromProduct.MajorDiameter;
+            MajorLength = fromProduct.MajorLength;
+            DateAdded = DateTime.Now;
+            AddedBy = App.CurrentUser.GetFullName();
+            IsSpecialPart = fromProduct.isSpecialPart;
+
+            RequiredQuantity = 0;
+            TargetQuantity = fromProduct.GetRecommendedQuantity();
+            RecommendedQuantity = TargetQuantity;
+        }
+
+        public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity)
+        {
+            ProductName = fromProduct.ProductName;
+            CycleTime = fromProduct.CycleTime;
+            MajorDiameter = fromProduct.MajorDiameter;
+            MajorLength = fromProduct.MajorLength;
+            DateAdded = DateTime.Now;
+            AddedBy = App.CurrentUser.GetFullName();
+            IsSpecialPart = fromProduct.isSpecialPart;
+
+            RequiredQuantity = requiredQuantity;
+            TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity();
+            RecommendedQuantity = TargetQuantity - RequiredQuantity;
+        }
+
+        public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity, DateTime dateRequired, bool needsCleaning = false)
+        {
+            ProductName = fromProduct.ProductName;
+            CycleTime = fromProduct.CycleTime;
+            MajorDiameter = fromProduct.MajorDiameter;
+            MajorLength = fromProduct.MajorLength;
+            DateAdded = DateTime.Now;
+            AddedBy = App.CurrentUser.GetFullName();
+            IsSpecialPart = fromProduct.isSpecialPart;
+
+            RequiredQuantity = requiredQuantity;
+            TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity();
+            DateRequired = dateRequired;
+            RecommendedQuantity = TargetQuantity - RequiredQuantity;
+        }
+
+        public override string ToString()
+        {
+            return ProductName;
         }
     }
 }
