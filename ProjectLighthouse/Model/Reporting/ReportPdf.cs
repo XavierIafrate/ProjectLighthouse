@@ -1,6 +1,7 @@
 ﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.Rendering;
 using ProjectLighthouse.Model.Reporting.Internal;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
@@ -36,7 +37,7 @@ namespace ProjectLighthouse.Model.Reporting
         }
         private void ExportPdf(string path, Document report)
         {
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer();
+            PdfDocumentRenderer pdfRenderer = new();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             pdfRenderer.Document = report;
             pdfRenderer.RenderDocument();
@@ -54,7 +55,7 @@ namespace ProjectLighthouse.Model.Reporting
 
         private Document CreateReport(PerformanceReportData data)
         {
-            Document doc = new Document();
+            Document doc = new();
             CustomStyles.Define(doc);
             doc.Add(CreateMainSection(data));
             return doc;
@@ -62,28 +63,30 @@ namespace ProjectLighthouse.Model.Reporting
 
         private Section CreateMainSection(PerformanceReportData data)
         {
-            Section section = new Section();
+            Section section = new();
             SetUpPage(section);
             AddHeaderAndFooter(section);
             AddContents(section, data);
             return section;
         }
 
-
         private void AddContents(Section section, PerformanceReportData data)
         {
-            //AddPatientInfo(section, data.Patient);
-            AddStructureSet(section, data.StructureSet);
+            AddReportMetadata(section, data);
+            for (int i = 0; i < data.Days.Count; i++)
+            {
+                AddDaysPerformance(section, data.Days[i]);
+            }
         }
 
-        private void AddPatientInfo(Section section, Patient patient)
+        private void AddReportMetadata(Section section, PerformanceReportData data)
         {
-            new PatientInfo().Add(section, patient);
+            new Metadata().Add(section, data);
         }
 
-        private void AddStructureSet(Section section, StructureSet structureSet)
+        private void AddDaysPerformance(Section section, DailyPerformance day)
         {
-            new StructureSetContent().Add(section, structureSet);
+            new PerformanceReportDailyContent().Add(section, day);
         }
 
         #endregion
@@ -120,7 +123,6 @@ namespace ProjectLighthouse.Model.Reporting
             {
                 AddOrderNotes(section, data.Notes);
             }
-            
         }
 
         private void AddOrderMetadata(Section section, LatheManufactureOrder order)

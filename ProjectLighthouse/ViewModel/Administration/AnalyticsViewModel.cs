@@ -2,6 +2,8 @@
 using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Reporting;
+using ProjectLighthouse.Model.Universal;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -20,6 +22,7 @@ namespace ProjectLighthouse.ViewModel
         #region Vars
         private List<Lot> Lots { get; set; }
         private List<LatheManufactureOrder> LatheOrders { get; set; }
+        private List<Delivery> Deliveries { get; set; }
         private List<TurnedProduct> TurnedProducts { get; set; }
         private List<Lathe> Lathes { get; set; }
         private List<MachineOperatingBlock> MachineStatistics { get; set; }
@@ -110,7 +113,59 @@ namespace ProjectLighthouse.ViewModel
                 .Where(d => d.StateEntered.Date >= reportStartDate && d.StateEntered.Date < reportEndDate)
                 .ToList();
 
-            PDFHelper.PrintPerformanceReport(segmentedData, Lathes, LatheOrders);
+            ReportPdf reportService = new();
+            PerformanceReportData reportData = new()
+            {
+                FromDate = reportStartDate,
+                ToDate = reportEndDate,
+                Days = new(7),
+            };
+
+            for (int i = 0; i < 7; i++)
+            {
+                DateTime _date = reportStartDate.AddDays(i);
+                DailyPerformance _dailyPerformance = new()
+                {
+                    Date = _date,
+                    Deliveries = Deliveries.Where(d => d.Header.DeliveryDate.Date == _date).ToArray(),
+                    LathePerformance = new DailyPerformanceForLathe[Lathes.Count]
+                };
+
+                DailyPerformanceForLathe _dailyPerformanceForLathe;
+
+                for (int j = 0; j < Lathes.Count; j++)
+                {
+                    _dailyPerformanceForLathe = new()
+                    {
+                        Lathe = Lathes[j],
+                        Lots = Lots
+                            .Where(l => l.Date.Date == _date
+                                && l.FromMachine == Lathes[j].Id).ToArray(),
+                        OperatingBlocks = segmentedData
+                            .Where(d => d.MachineID == Lathes[j].Id
+                                && d.StateEntered.Date == _date).ToArray(),
+                        Orders = LatheOrders
+                            .Where(o => o.AllocatedMachine == Lathes[j].Id 
+                                && o.StartDate.Date == _date).ToArray()
+
+                    };
+
+                    _dailyPerformance.LathePerformance[j] = _dailyPerformanceForLathe;
+                }
+
+                reportData.Days.Add(_dailyPerformance);
+
+            }
+
+            string path = GetTempPdfPath();
+
+            reportService.Export(path, reportData);
+            reportService.OpenPdf(path);
+        }
+
+        private static string GetTempPdfPath()
+        {
+            return System.IO.Path.GetTempFileName() + ".pdf";
         }
 
         private async void LoadData()
@@ -129,6 +184,18 @@ namespace ProjectLighthouse.ViewModel
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
             MachineStatistics = DatabaseHelper.Read<MachineOperatingBlock>().ToList();
+            List<DeliveryNote> deliveryHeaders = DatabaseHelper.Read<DeliveryNote>().ToList();
+            List<DeliveryItem> deliveryItems = DatabaseHelper.Read<DeliveryItem>().ToList();
+            Deliveries = new();
+
+            foreach (DeliveryNote deliveryNote in deliveryHeaders)
+            {
+                Deliveries.Add(new Delivery()
+                {
+                    Header = deliveryNote,
+                    Items = deliveryItems.Where(i => i.AllocatedDeliveryNote == deliveryNote.Name).ToArray()
+                });
+            }
         }
 
         public DashboardStats ComputeDashboard()

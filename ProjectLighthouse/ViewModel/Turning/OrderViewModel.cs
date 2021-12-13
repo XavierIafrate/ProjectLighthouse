@@ -241,11 +241,21 @@ namespace ProjectLighthouse.ViewModel
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
             if (MachineStatistics.Count == 0)
                 return;
+
             string latheName;
 
             try
             {
-                latheName = lathes.Where(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine).FirstOrDefault().Id;
+                Lathe allocatedLathe = lathes.First(n => n.Id == SelectedLatheManufactureOrder.AllocatedMachine);
+                if (allocatedLathe == null)
+                {
+                    LiveInfoVis = Visibility.Collapsed;
+                    return;
+                }
+                else
+                {
+                    latheName = allocatedLathe.Id;
+                }
             }
             catch
             {
@@ -254,7 +264,7 @@ namespace ProjectLighthouse.ViewModel
             }
             
 
-            DisplayStats = MachineStatistics.Where(n => n.MachineID == latheName).FirstOrDefault();
+            DisplayStats = MachineStatistics.First(n => n.MachineID == latheName);
 
             if (DisplayStats == null)
             {
@@ -371,6 +381,8 @@ namespace ProjectLighthouse.ViewModel
 
             List<LatheManufactureOrder> Results = new();
             List<string> FoundOrders = new();
+
+            // Add quick jump buttons
 
             foreach (LatheManufactureOrder order in LatheManufactureOrders)
             {

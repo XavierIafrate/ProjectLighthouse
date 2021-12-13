@@ -47,51 +47,6 @@ namespace ProjectLighthouse.View
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            ReportPdf reportService = new();
-            PerformanceReportData reportData = CreateReportData();
-
-            string path = GetTempPdfPath();
-            reportService.Export(path, reportData);
-
-            reportService.OpenPdf(path);
-        }
-
-        private static PerformanceReportData CreateReportData()
-        {
-            return new PerformanceReportData
-            {
-                Patient = new Patient
-                {
-                    Id = "38561948",
-                    FirstName = "Daniel",
-                    LastName = "Price",
-                    Birthdate = new DateTime(1970, 1, 1)
-                },
-                StructureSet = new StructureSet
-                {
-                    Id = "Test01",
-                    Image = new Model.Reporting.Image
-                    {
-                        Id = "TestImageID",
-                        CreationTime = new DateTime(1970, 1, 1, 12, 0, 0)
-                    },
-                    Structures = new[]
-                    {
-                        new DataStructure
-                        {
-                            Id = "Row0",
-                            Efficiency = 90,
-                            GoodPartsMade = 1000
-                        },
-                        new DataStructure
-                        {
-                            Id = "Row1",
-                            Efficiency = 50,
-                            GoodPartsMade = 100
-                        },
-                    }
-                }
-            };
 
         }
 

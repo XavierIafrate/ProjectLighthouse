@@ -1,9 +1,12 @@
-﻿namespace ProjectLighthouse.Model.Reporting
+﻿using System;
+using System.Collections.Generic;
+
+namespace ProjectLighthouse.Model.Reporting
 {
     public class PerformanceReportData
     {
-        public string Name { get; set; }
-        public Patient Patient { get; set; }
-        public StructureSet StructureSet { get; set; }
+        public DateTime FromDate    { get; set; }
+        public DateTime ToDate { get; set; }
+        public List<DailyPerformance> Days { get; set; }
     }
 }

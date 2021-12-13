@@ -56,10 +56,31 @@ namespace ProjectLighthouse
 
         public async Task CheckForUpdates()
         {
-            using (UpdateManager manager = new(@"\\groupfile01\Production\Administration\Manufacture Records\Lighthouse\Release"))
-            {
-                _ = await manager.UpdateApp();
-            };
+            //using (var mgr = new UpdateManager(@"\\groupfile01\Production\Administration\Manufacture Records\Lighthouse\Release"))
+            //{
+            //    if (mgr.IsInstalledApp)
+            //    {
+            //        Debug.WriteLine($"Current Version: v{mgr.CurrentlyInstalledVersion()}");
+            //        var updates = await mgr.CheckForUpdate();
+            //        if (updates.ReleasesToApply.Count > 0)
+            //        {
+            //            Debug.WriteLine("Updates found. Applying updates.");
+            //            var release = await mgr.UpdateApp();
+
+            //            Debug.WriteLine("Updates applied. Restarting app.");
+            //            UpdateManager.RestartApp();
+            //        }
+            //    }
+            //}
+
+            using UpdateManager manager = new(@"\\groupfile01\Production\Administration\Manufacture Records\Lighthouse\Release");
+            await manager.UpdateApp();
+
+
+
+            //string newVersion = releaseEntry?.Version.ToString() ?? "No update";
+            //MessageBox.Show(newVersion);
+
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject

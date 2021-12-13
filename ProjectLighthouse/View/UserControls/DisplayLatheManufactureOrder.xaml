@@ -25,9 +25,10 @@
                 Text="{Binding Name, FallbackValue='M00001'}" />
             <TextBlock
                 x:Name="PORTextBlock"
-                FontSize="11"
+                FontSize="14"
                 Foreground="{StaticResource materialOffBlack}"
-                Text="{Binding POReference, FallbackValue='POR012345'}" />
+                FontWeight="SemiBold"
+                Text="{Binding AllocatedMachine, FallbackValue='C00'}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
             <Grid x:Name="CleaningRequired" ToolTip="An item requires ultrasonic cleaning!">

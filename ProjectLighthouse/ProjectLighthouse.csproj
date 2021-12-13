@@ -8,10 +8,10 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.4.5</FileVersion>
-    <AssemblyVersion>1.4.5</AssemblyVersion>
+    <FileVersion>1.4.6</FileVersion>
+    <AssemblyVersion>1.4.6</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4.5</Version>
+    <Version>1.4.6</Version>
     <Product>ProjectLighthouse</Product>
     <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
@@ -21,17 +21,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\faroe_waterfall.jpg" />
     <None Remove="Resources\GIF\fireworks.gif" />
-    <None Remove="Resources\gjogv.jpg" />
-    <None Remove="Resources\hartland.jpg" />
     <None Remove="Resources\Lighthouse_dark_PDF.png" />
-    <None Remove="Resources\snowdonia.jpg" />
-    <None Remove="Resources\teignmouth.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\faroe_waterfall.jpg" />
     <Resource Include="Resources\Font\Roboto-Bold.ttf" />
     <Resource Include="Resources\Font\Roboto-BoldItalic.ttf" />
     <Resource Include="Resources\Font\Roboto-Italic.ttf" />
@@ -64,16 +58,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\0.gif">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Resources\GIF\excited.gif" />
     <Resource Include="Resources\GIF\fireworks.gif" />
     <Resource Include="Resources\GIF\moderate.gif" />
     <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\GIF\travolta.gif" />
-    <Resource Include="Resources\gjogv.jpg" />
-    <Resource Include="Resources\hartland.jpg" />
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -86,10 +75,7 @@
     <Resource Include="Resources\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\done.png" />
-    <Resource Include="Resources\snowdonia.jpg" />
     <Resource Include="Resources\StartPoint.png" />
-    <Resource Include="Resources\teignmouth.jpg" />
   </ItemGroup>
 
   <ItemGroup>

@@ -16,6 +16,16 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddOrderInfo(table, order);
             AddBorders(table);
         }
+        public void Add(Section section, PerformanceReportData data)
+        {
+            section.AddParagraph("Performance Report", StyleNames.Heading1);
+            section.AddParagraph($"From {data.FromDate:d} to {data.ToDate:d}", StyleNames.Heading2);
+
+            //Table table = AddMetadataTable(section);
+
+            //AddOrderInfo(table, order);
+            //AddBorders(table);
+        }
 
         private Table AddMetadataTable(Section section)
         {

@@ -10,5 +10,7 @@ namespace ProjectLighthouse.Model
         public DateTime StateEntered{ get; set; }
         public DateTime StateLeft { get; set; }
         public double SecondsElapsed { get; set; }
+
+        public enum States { Running, Setting, Breakdown, Idle, Offline, Unknown}
     }
 }
