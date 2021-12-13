@@ -1,7 +1,7 @@
 ﻿using ProjectLighthouse.Model;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System;
 
 namespace ProjectLighthouse.View.UserControls
 {

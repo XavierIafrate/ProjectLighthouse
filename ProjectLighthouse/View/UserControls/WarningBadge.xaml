@@ -5,8 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Rectangle
@@ -15,10 +13,10 @@
             RadiusY="8"
             Stroke="{StaticResource materialOnBackground}"
             StrokeThickness="2" />
-        <StackPanel Margin="10" Orientation="Horizontal">
+        <StackPanel Margin="10,5" Orientation="Horizontal">
             <Path
-                Width="37"
-                Height="37"
+                Width="22"
+                Height="22"
                 Margin="0,0,12,0"
                 Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
                 Fill="{StaticResource materialOnBackground}"
@@ -26,7 +24,7 @@
             <TextBlock
                 x:Name="message"
                 VerticalAlignment="Center"
-                FontSize="30"
+                FontSize="20"
                 FontWeight="SemiBold"
                 Text="$WarningText_Placeholder" />
         </StackPanel>

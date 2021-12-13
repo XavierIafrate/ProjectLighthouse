@@ -12,7 +12,7 @@ namespace ProjectLighthouse.Model
         public string AddedBy { get; set; }
         public int Quantity { get; set; }
         public DateTime Date { get; set; }
-        public DateTime DateMachined { get; set; } //TODO
+        public DateTime DateProduced { get; set; }
         public string ExcelDate { get; set; }
         public bool IsReject { get; set; }
         public bool IsAccepted { get; set; }
@@ -47,6 +47,7 @@ namespace ProjectLighthouse.Model
                 AddedBy = AddedBy,
                 Quantity = Quantity,
                 Date = Date,
+                DateProduced = DateProduced,
                 ExcelDate = ExcelDate,
                 IsReject = IsReject,
                 IsAccepted = IsAccepted,

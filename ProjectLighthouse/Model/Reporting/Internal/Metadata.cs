@@ -70,7 +70,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         {
             for (int i = 0; i < table.Rows.Count; i++)
             {
-                if (i % 2 == 0) 
+                if (i % 2 == 0)
                 {
                     table.Rows[i].Shading.Color = Color.FromRgb(216, 216, 216);
                 }

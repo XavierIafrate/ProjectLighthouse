@@ -8,7 +8,6 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -74,7 +73,6 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 stats = value;
-                Debug.WriteLine($"Stats total parts: {value.TotalPartsMade}");
                 OnPropertyChanged("Stats");
             }
         }
@@ -96,7 +94,6 @@ namespace ProjectLighthouse.ViewModel
 
         public AnalyticsViewModel()
         {
-            Debug.WriteLine("Init: AnalyticsViewModel");
             CelebrationVisibility = Visibility.Collapsed;
             GenerateReportCommand = new(this);
             LoadData();

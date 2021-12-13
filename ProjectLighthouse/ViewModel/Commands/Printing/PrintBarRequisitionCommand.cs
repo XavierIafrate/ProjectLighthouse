@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProjectLighthouse.Model;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands

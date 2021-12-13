@@ -63,13 +63,13 @@ namespace ProjectLighthouse.Model
 
         public string GetError()
         {
-            List<string> errors = getErrors();
+            List<string> errors = GetErrors();
             errors = new List<string>(errors.Where(n => n.Contains("EX")));
             string result = errors.Count > 0 ? errors.First().ToString() : "Unknown";
             return result;
         }
 
-        private List<string> getErrors()
+        private List<string> GetErrors()
         {
             List<string> results = new();
 
@@ -91,7 +91,7 @@ namespace ProjectLighthouse.Model
                 return;
             }
 
-            List<string> errors = getErrors();
+            List<string> errors = GetErrors();
             foreach (string error in errors)
             {
                 if (error.ToUpper().Contains("SETTING"))

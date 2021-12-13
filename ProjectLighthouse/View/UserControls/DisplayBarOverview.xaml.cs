@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -28,7 +27,7 @@ namespace ProjectLighthouse.View.UserControls
                 return;
             }
 
-            
+
 
             control.BarID.Text = control.Bar.BarStock.Id;
             control.InStockText.Text = $"{control.Bar.BarStock.InStock} in Kasto"; // (appx. {mass:#,##0kg})

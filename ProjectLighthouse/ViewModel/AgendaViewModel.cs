@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProjectLighthouse.Model;
-using ProjectLighthouse.Model.Turning;
+﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -49,10 +45,8 @@ namespace ProjectLighthouse.ViewModel
                 .OrderBy(o => o.StartDate)
                 .ToList();
 
-            DateTime startDate = DateTime.Today.Date; //activeOrders.First().StartDate;
+            DateTime startDate = DateTime.Today.Date;
             DateTime endDate = activeOrders.Last().StartDate;
-
-            Debug.WriteLine($"Days = {(endDate - startDate).Days}");
 
             for (int i = 0; i < (endDate - startDate).Days; i++)
             {
@@ -69,7 +63,7 @@ namespace ProjectLighthouse.ViewModel
                     Days.Add(new(
                            startDate.AddDays(i),
                            ordersOnDay));
-                }  
+                }
             }
         }
     }

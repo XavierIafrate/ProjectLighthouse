@@ -5,7 +5,6 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -183,13 +182,12 @@ namespace ProjectLighthouse.ViewModel
         public Brush BarVerifiedIconBrush { get; set; }
         public Brush BarAllocatedIconBrush { get; set; }
 
-        public Timer liveTimer; 
+        public Timer liveTimer;
 
         #endregion Variables
 
         public OrderViewModel()
         {
-            Debug.WriteLine("Init: OrderViewModel");
             Notes = new();
             FilteredNotes = new();
             LatheManufactureOrders = new();
@@ -262,7 +260,7 @@ namespace ProjectLighthouse.ViewModel
                 LiveInfoVis = Visibility.Collapsed;
                 return;
             }
-            
+
 
             DisplayStats = MachineStatistics.First(n => n.MachineID == latheName);
 
@@ -352,10 +350,10 @@ namespace ProjectLighthouse.ViewModel
             string name = "";
             DateTime lastTimeStamp = DateTime.MinValue;
 
-            for(int i = 0; i < FilteredNotes.Count; i++)
+            for (int i = 0; i < FilteredNotes.Count; i++)
             {
                 FilteredNotes[i].ShowEdit = false;
-                FilteredNotes[i].ShowHeader = FilteredNotes[i].SentBy != name 
+                FilteredNotes[i].ShowHeader = FilteredNotes[i].SentBy != name
                     || DateTime.Parse(FilteredNotes[i].DateSent) > lastTimeStamp.AddHours(6);
                 if (i < FilteredNotes.Count - 1)
                 {
@@ -461,8 +459,8 @@ namespace ProjectLighthouse.ViewModel
             ModifiedVis = string.IsNullOrEmpty(SelectedLatheManufactureOrder.ModifiedBy)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
-            LiveInfoVis = SelectedLatheManufactureOrder.State == OrderState.Running 
-                && MachineStatistics.Count != 0 
+            LiveInfoVis = SelectedLatheManufactureOrder.State == OrderState.Running
+                && MachineStatistics.Count != 0
                 && !string.IsNullOrEmpty(SelectedLatheManufactureOrder.AllocatedMachine)
                     ? Visibility.Visible
                     : Visibility.Collapsed;
@@ -498,7 +496,7 @@ namespace ProjectLighthouse.ViewModel
             if (SelectedProducts.Count != 0)
             {
                 TurnedProduct tmp = SelectedProducts.First();
-                List<ProductGroup> matches = ProductGroups.Where(x => x.GroupID == tmp.ProductName.Substring(0, 5) && x.MaterialCode == tmp.Material).ToList();
+                List<ProductGroup> matches = ProductGroups.Where(x => x.GroupID == tmp.ProductName[..5] && x.MaterialCode == tmp.Material).ToList();
                 SelectedProductGroup = matches.Count != 0 ? matches.First() : new();
             }
 
@@ -508,8 +506,6 @@ namespace ProjectLighthouse.ViewModel
 
         public void PrintSelectedOrder()
         {
-            //PDFHelper.PrintOrder(SelectedLatheManufactureOrder, FilteredLMOItems, FilteredNotes);
-            //return;
             ReportPdf reportService = new();
             OrderPrintoutData reportData = new()
             {

@@ -52,7 +52,7 @@ namespace ProjectLighthouse.Model
         public TimeSpan GetTimeToMake(int quantity)
         {
             return CycleTime == 0
-                ? TimeSpan.FromSeconds(quantity * 120) 
+                ? TimeSpan.FromSeconds(quantity * 120)
                 : TimeSpan.FromSeconds(quantity * CycleTime);
         }
 
@@ -90,7 +90,8 @@ namespace ProjectLighthouse.Model
                 otherProduct.DriveType == DriveType &&
                 otherProduct.ThreadSize == ThreadSize &&
                 otherProduct.ProductGroup == ProductGroup &&
-                otherProduct.Material == Material;
+                otherProduct.Material == Material &&
+                otherProduct.ProductName != ProductName;
         }
 
         // For requests engine

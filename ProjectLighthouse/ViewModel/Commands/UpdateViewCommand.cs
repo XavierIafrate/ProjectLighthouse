@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,7 +12,6 @@ namespace ProjectLighthouse.ViewModel.Commands
         public UpdateViewCommand(MainViewModel viewModel)
         {
             this.viewModel = viewModel;
-            Debug.WriteLine("UpdateViewCommand viewModel set");
         }
 
         public bool CanExecute(object parameter)
@@ -65,12 +63,6 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new DrawingBrowserViewModel();
                 viewModel.NavText = "Technical Drawings";
             }
-            else if (parameter.ToString() == "Runtime")
-            {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new MachineStatsViewModel();
-                viewModel.NavText = "Machine Statistics";
-            }
             else if (parameter.ToString() == "Deliveries")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
@@ -95,11 +87,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new AnalyticsViewModel();
                 viewModel.NavText = "Analytics";
             }
-            else
-            {
-                Debug.WriteLine("UpdateViewCommand not set");
-            }
-            Debug.WriteLine($"UpdateViewCommand: {nameof(viewModel.SelectedViewModel)}");
+
             viewModel.MainWindow.SelectButton(parameter.ToString());
         }
     }

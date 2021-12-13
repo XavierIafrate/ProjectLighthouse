@@ -159,8 +159,7 @@ namespace ProjectLighthouse.View
             string strOrderNum = Convert.ToString(nOrders + 1);
             int orderNumLen = strOrderNum.Length;
             const string blank = "DN00000";
-            return blank.Substring(0, 7 - orderNumLen) + strOrderNum;
-
+            return blank[..(7 - orderNumLen)] + strOrderNum;
         }
 
         private void updateQty_PreviewKeyDown(object sender, KeyEventArgs e)

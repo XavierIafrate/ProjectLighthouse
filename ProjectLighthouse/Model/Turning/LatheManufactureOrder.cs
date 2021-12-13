@@ -55,7 +55,7 @@ namespace ProjectLighthouse.Model
         public bool BarIsVerified { get; set; }
         public bool IsComplete { get; set; }
         public bool IsCancelled { get; set; }
-        
+
         public string Status { get; set; }
 
         public bool IsUrgent { get; set; }

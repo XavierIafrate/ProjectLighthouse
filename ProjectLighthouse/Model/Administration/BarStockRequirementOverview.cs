@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model
 {
@@ -31,7 +27,7 @@ namespace ProjectLighthouse.Model
 
             if (FreeBar >= 0)
             {
-                
+
                 if (BarStock.InStock < BarsRequiredForOrders)
                 {
                     Priority = 1; // Awaiting stock

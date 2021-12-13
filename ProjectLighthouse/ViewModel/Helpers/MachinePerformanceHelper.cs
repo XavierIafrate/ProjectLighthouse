@@ -55,10 +55,5 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             return result;
         }
-
-        public class Report
-        {
-
-        }
     }
 }

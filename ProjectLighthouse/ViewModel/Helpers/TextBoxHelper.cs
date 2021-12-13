@@ -1,6 +1,5 @@
 ﻿
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -9,10 +8,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         public static bool ValidateKeyPressNumbersOnly(KeyEventArgs e)
         {
-            Debug.WriteLine(string.Format("Key pressed: {0}", e.Key.ToString()));
-            //if (e.Key == Key.Space)
-            //    return true;
-
             string strKey = e.Key.ToString();
 
             if ((strKey.Contains("D") && strKey.Length == 2) || strKey.Contains("NumPad"))

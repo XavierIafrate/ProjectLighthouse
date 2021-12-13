@@ -89,12 +89,12 @@ namespace ProjectLighthouse.ViewModel
         public Visibility GraphVis { get; set; }
         public Visibility GIFVis { get; set; }
 
+        public Visibility HighLeadTimeVisibility { get; set; }
+
         #endregion
 
         public NewRequestViewModel()
         {
-            Debug.WriteLine("Init: NewRequestViewModel");
-
             NewRequest = new();
 
             SubmitRequestCommand = new(this);
@@ -105,6 +105,7 @@ namespace ProjectLighthouse.ViewModel
             NotEnoughDataVis = Visibility.Visible;
             GraphVis = Visibility.Hidden;
             GIFVis = Visibility.Visible;
+            HighLeadTimeVisibility = Visibility.Collapsed;
 
             ClearScreen();
             SelectedGroup = "Live";
@@ -125,10 +126,13 @@ namespace ProjectLighthouse.ViewModel
                 completeOrders.Add(new(order: order, items: items.Where(i => i.AssignedMO == order.Name).ToList()));
             }
 
-            for(int i = 0; i < lathes.Count; i++)
+            TimeSpan L20_leadTimes = TimeSpan.Zero;
+            int num_L20s = 0;
+
+            for (int i = 0; i < lathes.Count; i++)
             {
                 List<CompleteOrder> ordersForLathe = completeOrders.Where(o => o.Order.AllocatedMachine == lathes[i].Id).ToList();
-                var workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
+                Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
 
                 MachineInfoSnippet tmpSnippet = new()
                 {
@@ -137,8 +141,25 @@ namespace ProjectLighthouse.ViewModel
                     LeadTime = workload.Item1
                 };
 
+                if (lathes[i].Model.StartsWith("L20"))
+                {
+                    num_L20s++;
+                    L20_leadTimes += tmpSnippet.LeadTime;
+                }
+
                 Snippets.Add(tmpSnippet);
             }
+
+            if (num_L20s > 0)
+            {
+                L20_leadTimes /= num_L20s;
+                HighLeadTimeVisibility = L20_leadTimes.TotalDays > 33
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+
+                OnPropertyChanged("HighLeadTimeVisibility");
+            }
+            
             OnPropertyChanged("Snippets");
         }
 
@@ -154,16 +175,15 @@ namespace ProjectLighthouse.ViewModel
                 TurnedProducts.Add(product);
                 if (!product.isSpecialPart)
                 {
-                    if (!Families.Any(item => item.ToString() == product.ProductName.Substring(0, 5)))
+                    if (!Families.Any(item => item.ToString() == product.ProductName[..5]))
                     {
-                        Families.Add(product.ProductName.Substring(0, 5));
+                        Families.Add(product.ProductName[..5]);
                     }
                 }
             }
 
             Families = Families.OrderBy(n => n).ToList();
             Families.Add("Specials");
-
         }
 
         public void PopulateListBox()
@@ -190,7 +210,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 foreach (TurnedProduct product in TurnedProducts)
                 {
-                    if (product.ProductName.Substring(0, Math.Min(5, product.ProductName.Length)) == SelectedGroup && !product.isSpecialPart)
+                    if (product.ProductName[..Math.Min(5, product.ProductName.Length)] == SelectedGroup && !product.isSpecialPart)
                     {
                         FilteredList.Add(product);
                     }
@@ -400,7 +420,6 @@ namespace ProjectLighthouse.ViewModel
                 {
                     if (product.ProductName != selectedProduct.ProductName && product.IsScheduleCompatible(selectedProduct))
                     {
-                        Debug.WriteLine(product.ProductName);
                         classQuantities.Add(product.GetRecommendedQuantity());
                     }
                 }

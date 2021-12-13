@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
@@ -151,42 +150,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-
-
-        public static async Task<int> UpdateStockLevelsAsync(IProgress<int> progress)
-        {
-            //int totalCount = imageList.Count;
-            int processCount = await Task.Run<int>(() =>
-            {
-                int tempCount = 0;
-                //foreach (var image in imageList)
-                //{
-                //    //await the processing and uploading logic here
-                //    //int processed = await UploadAndProcessAsync(image);
-                //    if (progress != null)
-                //    {
-                //        //progress.Report((tempCount * 100 / totalCount));
-                //    }
-                //    tempCount++;
-                //}
-                return tempCount;
-            });
-            return processCount;
-
-            //if (!File.Exists(dbFile))
-            //{
-            //    MessageBox.Show("Cannot locate database.", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
-
-            //List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>();
-            //string[] lookup = new string[products.Count];
-
-            //for (int i = 0; i < products.Count; i++)
-            //    lookup[i] = products[i].ProductName;
-
-            //await Task.Run(() => UpdateRecords(products, lookup));
-        }
         private static bool RecordNeedsUpdating(TurnedProduct product, OperaFields operaRecord)
         {
             return

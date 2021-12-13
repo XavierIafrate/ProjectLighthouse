@@ -15,14 +15,14 @@ namespace ProjectLighthouse.Model
         public string Password { get; set; }
         public string UserRole { get; set; }
         public string computerUsername { get; set; }
-        
+
         private DateTime lastLogin;
 
         public DateTime LastLogin
         {
             get { return lastLogin; }
-            set 
-            { 
+            set
+            {
                 lastLogin = value;
                 LastLoginText = value.ToString("s");
             }

@@ -85,7 +85,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
                 {
                     row.Cells[2].AddParagraph("-");
                 }
-                
+
                 row.Cells[3].AddParagraph($"{item.TargetQuantity:#,##0}");
             }
         }

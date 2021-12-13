@@ -18,8 +18,8 @@ namespace ProjectLighthouse.View
         public LatheManufactureOrder order
         {
             get { return _order; }
-            set 
-            { 
+            set
+            {
                 _order = value;
                 SetCheckboxEnabling();
             }
