@@ -14,5 +14,6 @@ namespace ProjectLighthouse.Model
         public string ControllerReference { get; set; }
         public int MaxDiameter { get; set; }
         public int MaxLength { get; set; }
+        public double PartOff { get; set; }
     }
 }

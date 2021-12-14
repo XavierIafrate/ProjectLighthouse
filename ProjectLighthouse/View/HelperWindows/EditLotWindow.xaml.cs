@@ -30,6 +30,9 @@ namespace ProjectLighthouse.View
             AcceptCheckBox.IsChecked = EditLot.IsAccepted;
             BatchTextBox.Text = EditLot.MaterialBatch;
             RemarksTextBox.Text = EditLot.Remarks;
+            ProducedDatePicker.SelectedDate = EditLot.DateProduced.Year < 2000 
+                ? EditLot.Date 
+                : EditLot.DateProduced;
 
             if (EditLot.IsDelivered)
             {
@@ -50,7 +53,8 @@ namespace ProjectLighthouse.View
                 originalLot.MaterialBatch == EditLot.MaterialBatch &&
                 originalLot.IsReject == EditLot.IsReject &&
                 originalLot.IsAccepted == EditLot.IsAccepted &&
-                originalLot.Remarks == EditLot.Remarks)
+                originalLot.Remarks == EditLot.Remarks &&
+                originalLot.DateProduced == EditLot.DateProduced)
             {
                 Close();
                 return;
@@ -107,6 +111,13 @@ namespace ProjectLighthouse.View
             {
                 RejectCheckBox.IsChecked = false;
             }
+        }
+
+        private void ProducedDatePicker_SelectedDateChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            System.Windows.Controls.DatePicker picker = sender as System.Windows.Controls.DatePicker;
+            EditLot.DateProduced = picker.SelectedDate.Value;
+            ProducedDateGhost.Text = picker.SelectedDate.Value.ToString("d");
         }
     }
 }

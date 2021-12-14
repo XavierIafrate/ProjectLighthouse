@@ -27,21 +27,22 @@ namespace ProjectLighthouse.ViewModel
 
             foreach (TurnedProduct product in turnedProducts)
             {
-                unfilteredItems.Add(new(product));
+                LatheManufactureOrderItem newItem = new(product);
+                unfilteredItems.Add(newItem);
             }
 
-            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(unfilteredItems, maxRuntime);
+            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(unfilteredItems, maxRuntime, enforceMOQs:true);
 
             return filteredItems;
         }
 
-        public static List<LatheManufactureOrderItem> CapQuantitiesForTimeSpan(List<LatheManufactureOrderItem> items, TimeSpan maxRuntime, bool regenerateTargets = false)
+        public static List<LatheManufactureOrderItem> CapQuantitiesForTimeSpan(List<LatheManufactureOrderItem> items, TimeSpan maxRuntime, bool regenerateTargets = false, bool enforceMOQs = false)
         {
-
             if (items == null)
             {
                 return null;
             }
+
             List<LatheManufactureOrderItem> cleanedItems = new();
             double permittedSeconds = maxRuntime.TotalSeconds;
 
@@ -54,9 +55,13 @@ namespace ProjectLighthouse.ViewModel
                     item.TargetQuantity = item.RequiredQuantity + item.RecommendedQuantity;
                 }
 
-                if (item.TargetQuantity < 10)
+                int minimumQuantity = GetMiniumumOrderQuantity(item);
+                bool minimumQuantityEnforced = false;
+
+                if (enforceMOQs && item.TargetQuantity < minimumQuantity)
                 {
-                    break;
+                    minimumQuantityEnforced = true;
+                    item.TargetQuantity = minimumQuantity;
                 }
 
                 if (possibleQuantity < item.RequiredQuantity) // requirement alone will max time
@@ -65,25 +70,51 @@ namespace ProjectLighthouse.ViewModel
                     cleanedItems.Add(item);
                     break;
                 }
+                else if (enforceMOQs && minimumQuantity > possibleQuantity)
+                {
+                    break;
+                }
                 else if (possibleQuantity < item.TargetQuantity) // Target needs to be capped
                 {
-                    item.TargetQuantity = RoundQuantity(possibleQuantity);
-                    cleanedItems.Add(item);
+                    if (!minimumQuantityEnforced)
+                    {
+                        item.TargetQuantity = RoundQuantity(possibleQuantity);
+                        cleanedItems.Add(item);
+                    }
+
                     break;
                 }
                 else
                 {
+                    if (item.RequiredQuantity > 0)
+                    {
+                        item.TargetQuantity = RoundQuantity(item.TargetQuantity, true);
+                    }
                     cleanedItems.Add(item);
                 }
 
-                permittedSeconds -= item.CycleTime * item.TargetQuantity;
+                int cycleTime = item.CycleTime == 0 ? 120 : item.CycleTime;
+                permittedSeconds -= cycleTime * item.TargetQuantity;
 
             }
 
             return cleanedItems;
         }
 
-        private static int RoundQuantity(int originalNumber)
+        private static int GetMiniumumOrderQuantity(LatheManufactureOrderItem item)
+        {
+            return item.MajorDiameter switch
+            {
+                > 35 => 10,
+                > 30 => 50,
+                > 25 => 100,
+                > 20 => 200,
+                > 15 => 300,
+                _ => 500,
+            };
+        }
+
+        private static int RoundQuantity(int originalNumber, bool roundUp = false)
         {
             int divisor = originalNumber switch
             {
@@ -94,6 +125,12 @@ namespace ProjectLighthouse.ViewModel
                 > 10 => 10,
                 _ => 1,
             };
+
+            if (roundUp)
+            {
+                originalNumber += divisor;
+            }
+            
             return originalNumber - (originalNumber % divisor);
         }
 

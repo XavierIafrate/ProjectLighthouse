@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -116,8 +115,10 @@ namespace ProjectLighthouse.View
                 Time = User.LastLogin,
                 Version = versionInfo.FileVersion
             };
-
-            _ = DatabaseHelper.Insert(login);
+            if (!Debugger.IsAttached)
+            {
+                _ = DatabaseHelper.Insert(login);
+            }
             auth_user = User;
 
             Close();

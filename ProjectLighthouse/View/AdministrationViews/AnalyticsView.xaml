@@ -201,11 +201,7 @@
             </lvc:CartesianChart>
 
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <Rectangle Grid.ColumnSpan="2" Fill="Black" />
+                <Rectangle Fill="Black" />
                 <StackPanel Margin="30,15">
                     <TextBlock
                         FontFamily="OCR A Extended"
@@ -218,12 +214,23 @@
                         Foreground="White"
                         Text="alarm and monitoring system" />
                 </StackPanel>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5">
+
+                <Button
+                    Command="{Binding GenerateReportCommand}"
+                    CommandParameter="daily"
+                    Content="DAILY REPORT"
+                    Style="{StaticResource SentryDownloadButton}"
+                    Margin="0,0,5,0"/>
                 <Button
                     Grid.Column="1"
                     Command="{Binding GenerateReportCommand}"
-                    Style="{StaticResource PDFButton}" />
-            </Grid>
-
+                    CommandParameter="weekly"
+                    Content="WEEKLY REPORT"
+                    Style="{StaticResource SentryDownloadButton}"/>
+            </StackPanel>
 
             <TextBlock
                 Margin="0,20,0,10"

@@ -20,7 +20,9 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            viewModel.GenerateReport();
+            string reportType = parameter as string;
+
+            viewModel.GenerateReport(reportType);
         }
     }
 }

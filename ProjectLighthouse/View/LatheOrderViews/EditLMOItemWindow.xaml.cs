@@ -242,7 +242,10 @@ namespace ProjectLighthouse.View
                     IsDelivered = false,
                     MaterialBatch = BatchTextBox.Text.Trim(),
                     FromMachine = ProducedOnMachine,
-                    Remarks = RemarksTextBox.Text.Trim()
+                    Remarks = RemarksTextBox.Text.Trim(),
+                    DateProduced = DateTime.Now.Hour >= 8 
+                        ? DateTime.Now.Date.AddHours(12) 
+                        : DateTime.Now.Date.AddHours(-12)
                 };
 
                 newLot.DateProduced = newLot.Date;

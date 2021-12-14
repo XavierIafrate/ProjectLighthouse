@@ -39,7 +39,6 @@ namespace ProjectLighthouse.View
 
             NewOrderItems = new List<LatheManufactureOrderItem>();
             
-
             List<BarStock> bars = DatabaseHelper.Read<BarStock>();
 
             RequiredTurnedProduct = allProducts.First(p => p.ProductName == approvedRequest.Product);
@@ -62,48 +61,6 @@ namespace ProjectLighthouse.View
             RefreshView();
             CalculateInsights();
         }
-
-
-        //public static LatheManufactureOrderItem TurnedProductToLMOItem(TurnedProduct product, int requiredQuantity, DateTime dateRequired, bool cleaning)
-        //{
-        //    // TODO: move to requests engine
-
-        //    int MOQ = product.MajorDiameter switch
-        //    {
-        //        > 35 => 10,
-        //        > 30 => 50,
-        //        > 25 => 100,
-        //        > 20 => 200,
-        //        > 15 => 300,
-        //        _ => 500,
-        //    };
-
-        //    int recommendedQuantity = product.GetRecommendedQuantity();
-        //    int target = recommendedQuantity + requiredQuantity > MOQ
-        //        ? (int)Math.Ceiling((double)(recommendedQuantity + requiredQuantity) / 100) * 100
-        //        : MOQ;
-
-
-        //    LatheManufactureOrderItem newItem = new()
-        //    {
-        //        ProductName = product.ProductName,
-        //        RequiredQuantity = requiredQuantity,
-        //        TargetQuantity = target,
-        //        DateRequired = dateRequired,
-        //        CycleTime = product.CycleTime,
-        //        MajorLength = product.MajorLength,
-        //        MajorDiameter = product.MajorDiameter,
-        //        IsSpecialPart = product.isSpecialPart,
-        //        NeedsCleaning = cleaning,
-        //    };
-
-        //    if (newItem.CycleTime == 0)
-        //    {
-        //        newItem.CycleTime = 120;
-        //    }
-
-        //    return newItem;
-        //}
 
         public void RefreshView()
         {
@@ -131,11 +88,15 @@ namespace ProjectLighthouse.View
 
             foreach (LatheManufactureOrderItem item in NewOrderItems)
             {
-                totaltime += item.CycleTime * item.TargetQuantity;
+                int cycleTime = item.CycleTime == 0 
+                    ? 120
+                    : item.CycleTime;
+
+                totaltime += cycleTime * item.TargetQuantity;
                 bars += item.TargetQuantity * (item.MajorLength + 2) / 2700;
                 if (item.RequiredQuantity > 0)
                 {
-                    requiredtime += item.RequiredQuantity * item.CycleTime;
+                    requiredtime += item.RequiredQuantity * cycleTime;
                 }
             }
 
@@ -179,6 +140,7 @@ namespace ProjectLighthouse.View
             NewOrder.BarIsAllocated = false;
             NewOrder.MajorDiameter = RequiredTurnedProduct.MajorDiameter;
             NewOrder.BarsInStockAtCreation = OrderBar.InStock;
+            NewOrder.BarID = OrderBar.Id;
 
             // Add order & items to database
             _ = DatabaseHelper.Insert(NewOrder);

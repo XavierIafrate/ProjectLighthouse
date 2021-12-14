@@ -19,7 +19,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         public void Add(Section section, PerformanceReportData data)
         {
             section.AddParagraph("Performance Report", StyleNames.Heading1);
-            section.AddParagraph($"From {data.FromDate:d} to {data.ToDate:d}", StyleNames.Heading2);
+            section.AddParagraph($"From {data.FromDate:ddd dd/MM/yyyy HH:mm} to {data.ToDate:ddd dd/MM/yyyy HH:mm}", StyleNames.Heading2);
 
             //Table table = AddMetadataTable(section);
 

@@ -92,6 +92,7 @@ namespace ProjectLighthouse.Model
             }
 
             List<string> errors = GetErrors();
+
             foreach (string error in errors)
             {
                 if (error.ToUpper().Contains("SETTING"))
@@ -119,13 +120,13 @@ namespace ProjectLighthouse.Model
                 return;
             }
 
-
             if (Availability == "AVAILABLE" && ControllerMode == "AUTOMATIC" && EmergencyStop == "ARMED")
             {
                 Status = "Running";
                 return;
             }
             return;
+
 
         }
 

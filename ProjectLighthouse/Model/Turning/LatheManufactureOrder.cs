@@ -116,7 +116,9 @@ namespace ProjectLighthouse.Model
                 || BarIsVerified != OtherOrder.BarIsVerified
                 || HasProgram != OtherOrder.HasProgram
                 || IsReady != OtherOrder.IsReady
-                || POReference != OtherOrder.POReference;
+                || POReference != OtherOrder.POReference
+                || NumberOfBars != OtherOrder.NumberOfBars
+                || TimeToComplete != OtherOrder.TimeToComplete;
         }
     }
 }

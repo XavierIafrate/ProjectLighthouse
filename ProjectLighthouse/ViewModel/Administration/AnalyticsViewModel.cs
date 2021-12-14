@@ -99,15 +99,33 @@ namespace ProjectLighthouse.ViewModel
             LoadData();
         }
 
-        public void GenerateReport()
+        public void GenerateReport(string type = null)
         {
-            List<MachineOperatingBlock> segmentedData = MachinePerformanceHelper.SplitBlocksIntoDays(MachineStatistics);
+            List<MachineOperatingBlock> segmentedData = MachinePerformanceHelper.SplitBlocksIntoDays(MachineStatistics, 8, 0);
 
-            DateTime reportStartDate = DateTime.Now.AddDays(-7).AddDays((((int)DateTime.Now.DayOfWeek) * -1) + 1).Date;
-            DateTime reportEndDate = reportStartDate.AddDays(7);
+            DateTime reportStartDate;
+            DateTime reportEndDate;
+            
+            switch (type)
+            {
+                case "daily":
+                    reportStartDate = DateTime.Now.AddDays(-1).Date.AddHours(8);
+                    reportEndDate = reportStartDate.AddDays(1);
+                    break;
+                case "weekly":
+                    reportStartDate = DateTime.Now.AddDays(-7).AddDays((((int)DateTime.Now.DayOfWeek) * -1) + 1).Date.AddHours(8);
+                    reportEndDate = reportStartDate.AddDays(7);
+                    break;
+                default:
+                    reportStartDate = DateTime.Now.AddDays(-7).AddDays((((int)DateTime.Now.DayOfWeek) * -1) + 1).Date.AddHours(8);
+                    reportEndDate = reportStartDate.AddDays(7);
+                    break;
+            }
+
+            int days = (reportEndDate - reportStartDate).Days;
 
             segmentedData = segmentedData
-                .Where(d => d.StateEntered.Date >= reportStartDate && d.StateEntered.Date < reportEndDate)
+                .Where(d => d.StateEntered >= reportStartDate && d.StateEntered < reportEndDate)
                 .ToList();
 
             ReportPdf reportService = new();
@@ -115,16 +133,16 @@ namespace ProjectLighthouse.ViewModel
             {
                 FromDate = reportStartDate,
                 ToDate = reportEndDate,
-                Days = new(7),
+                Days = new(days),
             };
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < days; i++)
             {
                 DateTime _date = reportStartDate.AddDays(i);
                 DailyPerformance _dailyPerformance = new()
                 {
                     Date = _date,
-                    Deliveries = Deliveries.Where(d => d.Header.DeliveryDate.Date == _date).ToArray(),
+                    Deliveries = Deliveries.Where(d => DateWithinRange(d.Header.DeliveryDate, _date)).ToArray(),
                     LathePerformance = new DailyPerformanceForLathe[Lathes.Count]
                 };
 
@@ -136,14 +154,14 @@ namespace ProjectLighthouse.ViewModel
                     {
                         Lathe = Lathes[j],
                         Lots = Lots
-                            .Where(l => l.Date.Date == _date
+                            .Where(l => DateWithinRange(l.Date.Date, _date)
                                 && l.FromMachine == Lathes[j].Id).ToArray(),
                         OperatingBlocks = segmentedData
                             .Where(d => d.MachineID == Lathes[j].Id
-                                && d.StateEntered.Date == _date).ToArray(),
+                                && DateWithinRange(d.StateEntered, _date)).ToArray(),
                         Orders = LatheOrders
                             .Where(o => o.AllocatedMachine == Lathes[j].Id 
-                                && o.StartDate.Date == _date).ToArray()
+                                && o.StartDate.Date == _date.Date).ToArray()
 
                     };
 
@@ -158,6 +176,12 @@ namespace ProjectLighthouse.ViewModel
 
             reportService.Export(path, reportData);
             reportService.OpenPdf(path);
+        }
+
+        private static bool DateWithinRange(DateTime inputDate, DateTime startingDate)
+        {
+            double diff = (inputDate - startingDate).TotalHours;
+            return diff >= 0 && diff < 24;
         }
 
         private static string GetTempPdfPath()
@@ -180,9 +204,34 @@ namespace ProjectLighthouse.ViewModel
             Lots = DatabaseHelper.Read<Lot>().ToList();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
-            MachineStatistics = DatabaseHelper.Read<MachineOperatingBlock>().ToList();
+            
+            MachineStatistics = DatabaseHelper.Read<MachineOperatingBlock>().OrderBy(s=>s.StateEntered).ToList();
+
+            // MachineStatistics will be incomplete, need to calculate the incomplete stuff
+            List<MachineStatistics> lastKnownStates = new();
+            lastKnownStates = MachineStatsHelper.GetStats() ?? new();
+
+            List<MachineOperatingBlock> incompleteBlocks = new();
+            DateTime now = DateTime.Now;
+            foreach (MachineStatistics state in lastKnownStates)
+            {
+                MachineOperatingBlock lastCompleteBlock = MachineStatistics.Last(s => s.MachineID == state.MachineID);
+                incompleteBlocks.Add(new()
+                {
+                    MachineID = state.MachineID,
+                    MachineName = state.MachineName,
+                    State = state.Status,
+                    StateEntered = lastCompleteBlock.StateLeft,
+                    StateLeft = now,
+                    SecondsElapsed = (now - lastCompleteBlock.StateLeft).TotalSeconds,
+                });
+            }
+
+            MachineStatistics.AddRange(incompleteBlocks);
+
             List<DeliveryNote> deliveryHeaders = DatabaseHelper.Read<DeliveryNote>().ToList();
             List<DeliveryItem> deliveryItems = DatabaseHelper.Read<DeliveryItem>().ToList();
+
             Deliveries = new();
 
             foreach (DeliveryNote deliveryNote in deliveryHeaders)

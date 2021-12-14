@@ -230,7 +230,10 @@ namespace ProjectLighthouse.View
             int estimatedTimeSeconds = 0;
             foreach (LatheManufactureOrderItem item in items)
             {
-                estimatedTimeSeconds += item.CycleTime * item.TargetQuantity;
+                int cycleTime = item.CycleTime == 0
+                    ? 120
+                    : item.CycleTime;
+                estimatedTimeSeconds += cycleTime * item.TargetQuantity;
             }
 
             order.TimeToComplete = estimatedTimeSeconds;
@@ -239,19 +242,24 @@ namespace ProjectLighthouse.View
         private void CalculateBarRequirements()
         {
             List<BarStock> barStock = DatabaseHelper.Read<BarStock>();
-            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>();
             double totalLengthRequired = 0;
+            BarStock bar = barStock.First(b=>b.Id == order.BarID);
+            double partOff = 2;
+
+            if (!string.IsNullOrEmpty(order.AllocatedMachine))
+            {
+                List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
+                Lathe runningOnLathe = lathes.First(l => l.Id == order.AllocatedMachine);
+                partOff = runningOnLathe.PartOff;
+            }
 
             foreach (LatheManufactureOrderItem item in items)
             {
-                TurnedProduct _p = products.Where(n => n.ProductName == item.ProductName).Single();
-                totalLengthRequired += (_p.MajorLength + 2) * item.TargetQuantity;
+                totalLengthRequired += (item.MajorLength + partOff) * item.TargetQuantity * 1.02;
             }
 
             order.NumberOfBars = Math.Ceiling(totalLengthRequired / 2700);
         }
-
-
 
         #endregion
 
@@ -278,7 +286,7 @@ namespace ProjectLighthouse.View
                 : Visibility.Hidden;
         }
 
-        public void AddNewNote(string note)
+        public void AddNewNote(string note) // Factor in edits
         {
             Note newNote = new()
             {
@@ -297,6 +305,7 @@ namespace ProjectLighthouse.View
             NotesDisplay.ItemsSource = new List<Note>();
             NotesDisplay.ItemsSource = Notes;
             Message.Text = "";
+            SaveExit = true;
 
             FormatNoteDisplay();
         }

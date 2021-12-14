@@ -235,7 +235,6 @@ namespace ProjectLighthouse.ViewModel
         {
             MachineStatistics = null;
             MachineStatistics = MachineStatsHelper.GetStats() ?? new();
-            //MachineStatistics ??= new List<MachineStatistics>();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
             if (MachineStatistics.Count == 0)
                 return;
@@ -555,10 +554,5 @@ namespace ProjectLighthouse.ViewModel
                 _ => "th",
             };
         }
-
-        //private void DebugWriteFile()
-        //{
-        //    CSVHelper.WriteListToCSV(LatheManufactureOrders, "test");
-        //}
     }
 }

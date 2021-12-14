@@ -36,8 +36,55 @@
 
     <!--  Don't touch  -->
     <Style BasedOn="{StaticResource Default}" TargetType="Button" />
+    
+    
 
     <!--  Sub Styles  -->
+
+    <Style x:Key="SentryDownloadButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource materialError}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="35"
+                        Padding="20,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        x:Name="border">
+                        <StackPanel Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Margin="0,0,5,0"
+                                Data="M19.92,12.08L12,20L4.08,12.08L5.5,10.67L11,16.17V2H13V16.17L18.5,10.66L19.92,12.08M12,20H2V22H22V20H12Z"
+                                Fill="{StaticResource materialOnPrimary}"
+                                Stretch="Uniform" />
+                            <ContentPresenter
+                                Margin="0,0,0,2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource materialErrorVar}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="LightGray" />
+                <Setter Property="Foreground" Value="Gray" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style
         x:Key="GreenButton"
         BasedOn="{StaticResource Default}"

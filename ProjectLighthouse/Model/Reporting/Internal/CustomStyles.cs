@@ -7,8 +7,29 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         public const string GeneratedAtStyle = "GeneratedAtStyle";
         public const string OrderName = "OrderName";
         public const string ColumnHeader = "ColumnHeader";
+
+        public const string LotQuarantined = "LotQuarantined";
+        public const string LotAccepted = "LotAccepted";
+        public const string LotRejected = "LotRejected";
+
         public static void Define(Document doc)
         {
+            Style LotQuarantinedStyle = doc.Styles.AddStyle(LotQuarantined, StyleNames.Normal);
+            LotQuarantinedStyle.BaseStyle = StyleNames.Normal;
+            LotQuarantinedStyle.ParagraphFormat.Font.Size = 8;
+            LotQuarantinedStyle.ParagraphFormat.Font.Color = Colors.DarkOrange;
+
+            Style LotAcceptedStyle = doc.Styles.AddStyle(LotAccepted, StyleNames.Normal);
+            LotAcceptedStyle.BaseStyle = StyleNames.Normal;
+            LotAcceptedStyle.ParagraphFormat.Font.Size = 8;
+            LotAcceptedStyle.ParagraphFormat.Font.Color = Colors.DarkGreen;
+
+            Style LotRejectedStyle = doc.Styles.AddStyle(LotRejected, StyleNames.Normal);
+            LotRejectedStyle.BaseStyle = StyleNames.Normal;
+            LotRejectedStyle.ParagraphFormat.Font.Size = 8;
+            LotRejectedStyle.ParagraphFormat.Font.Color = Colors.DarkRed;
+
+
             Style genStyle = doc.Styles.AddStyle(GeneratedAtStyle, StyleNames.Normal);
             genStyle.BaseStyle = StyleNames.Normal;
             genStyle.ParagraphFormat.Font.Size = 8;

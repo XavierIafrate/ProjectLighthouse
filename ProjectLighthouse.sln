@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31105.61
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectLighthouse", "ProjectLighthouse\ProjectLighthouse.csproj", "{66EFF667-6CA2-4C96-BBA9-C05134C0CC75}"
 EndProject
@@ -38,7 +38,6 @@ Global
 		{A293B101-F5CA-40BA-9107-411462FCEBA1}.Release|x86.ActiveCfg = Release|Any CPU
 		{A293B101-F5CA-40BA-9107-411462FCEBA1}.Release|x86.Build.0 = Release|Any CPU
 		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|x86.Build.0 = Debug|Any CPU
 		{F65152BA-902B-4770-BAB8-BDC741302D15}.Release|Any CPU.ActiveCfg = Release|Any CPU

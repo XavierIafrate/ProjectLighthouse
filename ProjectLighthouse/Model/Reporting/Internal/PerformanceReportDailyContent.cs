@@ -35,7 +35,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddItemRows(table, day);
 
             AddLastRowBorder(table);
-            AlternateRowShading(table);
+            //AlternateRowShading(table);
         }
 
         private static void FormatTable(Table table)
@@ -53,8 +53,8 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             Unit width = Size.GetWidth(table.Section);
             table.AddColumn(width * 0.1);
             table.AddColumn(width * 0.2);
-            table.AddColumn(width * 0.4);
             table.AddColumn(width * 0.3);
+            table.AddColumn(width * 0.4);
 
             Row headerRow = table.AddRow();
             headerRow.Borders.Bottom.Width = 1;
@@ -73,22 +73,99 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 
         private void AddItemRows(Table table, DailyPerformance days)
         {
+            int rowCursor = 1;
+
             foreach (DailyPerformanceForLathe lathe in days.LathePerformance)
             {
-                Row row = table.AddRow();
-                row.VerticalAlignment = VerticalAlignment.Center;
+                Tuple<List<Paragraph>, List<Paragraph>> content = GetOperatingPerformanceSegments(lathe.OperatingBlocks);
+                List<Paragraph> lotsContent = GetLotsParagraphs(lathe.Lots);
 
-                row.Cells[0].AddParagraph(lathe.Lathe.Id);
-                Tuple<Paragraph, Paragraph> content = GetOperatingPerformanceSegments(lathe.OperatingBlocks);
-                row.Cells[1].Add(content.Item1);
-                row.Cells[2].Add(content.Item2);
+                int numRowsRequired = Math.Max(content.Item1.Count, content.Item2.Count);
+                numRowsRequired = Math.Max(numRowsRequired, lotsContent.Count);
+                numRowsRequired = Math.Max(numRowsRequired, 1);
+                AllocateRows(table, numRowsRequired);
+                
+                AddParagraphsToColumn(table, content.Item1, rowCursor, 1);
+                AddParagraphsToColumn(table, content.Item2, rowCursor, 2);
+                AddParagraphsToColumn(table, lotsContent, rowCursor, 3);
+
+                Paragraph LatheTitle = new();
+                LatheTitle.AddText(lathe.Lathe.FullName);
+                table.Rows[rowCursor].Cells[0].Add(LatheTitle);
+
+                rowCursor += numRowsRequired;
             }
         }
 
-        private Tuple<Paragraph, Paragraph> GetOperatingPerformanceSegments(MachineOperatingBlock[] blocks)
+        private void AllocateRows(Table table, int numRows)
         {
-            Paragraph percentages = new();
-            Paragraph verbose = new();
+            for (int i = 0; i < numRows; i++)
+            {
+                Row row = table.AddRow();
+                row.VerticalAlignment = VerticalAlignment.Center;
+            }
+
+            UnderlineRow(table.Rows[^1]);
+        }
+
+        private void AddParagraphsToColumn(Table table, List<Paragraph> content, int fromRow, int col)
+        {
+            if (content.Count == 0)
+            {
+                Row row = table.Rows[fromRow];
+                Paragraph nothing = new();
+                nothing.AddFormattedText("-no entries-", CustomStyles.GeneratedAtStyle);
+                row.Cells[col].Add(nothing);
+            }
+            else
+            {
+                for (int i = 0; i < content.Count; i++)
+                {
+                    Row row = table.Rows[i + fromRow];
+                    row.Cells[col].Add(content[i]);
+                }
+            }
+        }
+
+        private List<Paragraph> GetLotsParagraphs(Lot[] lots)
+        {
+            List<Paragraph> paragraphs = new();
+            Paragraph paragraph;
+
+            for (int i = 0; i < lots.Length; i++)
+            {
+                paragraph = new();
+                Lot lot = lots[i];
+                if (lot.IsAccepted || lot.IsDelivered)
+                {
+                    paragraph.AddFormattedText($"[ACC] {lot.ProductName}, {lot.Quantity:#,##0} pcs", CustomStyles.LotAccepted);
+                }
+                else if (lot.IsDelivered)
+                {
+                    paragraph.AddFormattedText($"[DEL] {lot.ProductName}, {lot.Quantity:#,##0} pcs", CustomStyles.LotAccepted);
+                }
+                else if (lot.IsReject)
+                {
+                    paragraph.AddFormattedText($"[REJ] {lot.ProductName}, {lot.Quantity:#,##0} pcs", CustomStyles.LotRejected);
+                }
+                else
+                {
+                    paragraph.AddFormattedText($"[QUA] {lot.ProductName}, {lot.Quantity:#,##0} pcs", CustomStyles.LotQuarantined);
+                }
+
+                paragraphs.Add(paragraph);
+            }
+
+            return paragraphs;
+        }
+
+        private Tuple<List<Paragraph>, List<Paragraph>> GetOperatingPerformanceSegments(MachineOperatingBlock[] blocks)
+        {
+            List<Paragraph> percentages = new();
+            List<Paragraph> verbose = new();
+
+            Paragraph tmp;
+
             Dictionary<string, double> summary = new();
 
             foreach (MachineOperatingBlock.States state in Enum.GetValues(typeof(MachineOperatingBlock.States)))
@@ -111,11 +188,9 @@ namespace ProjectLighthouse.Model.Reporting.Internal
                     continue;
                 }
 
-                verbose.AddText($"[{block.State}] {block.StateEntered:HH:mm}->{block.StateLeft:HH:mm} ({Math.Round(TimeSpan.FromSeconds(block.SecondsElapsed).TotalHours*2) / 2:N1}h)");
-                if (i < blocks.Length - 1)
-                {
-                    verbose.AddLineBreak();
-                }
+                tmp = new();
+                tmp.AddText($"[{block.State}] {block.StateEntered:HH:mm}->{block.StateLeft:HH:mm} ({Math.Round(TimeSpan.FromSeconds(block.SecondsElapsed).TotalHours * 2) / 2:N1}h)");
+                verbose.Add(tmp);
             }
 
             summary[MachineOperatingBlock.States.Unknown.ToString()] = unknown;
@@ -124,15 +199,15 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             {
                 KeyValuePair<string, double> item = summary.ElementAt(i);
                 double percentage = item.Value / secondsInDay * 100;
+
                 if (percentage < 0.5)
                 {
                     continue;
                 }
-                percentages.AddText($"{item.Key}: {percentage:N1}%");
-                if (i < summary.Count - 1)
-                {
-                    percentages.AddLineBreak();
-                }
+
+                tmp = new();
+                tmp.AddText($"{item.Key}: {percentage:N1}%");
+                percentages.Add(tmp);
             }
 
             return new(percentages, verbose);
@@ -142,6 +217,11 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         {
             Row lastRow = table.Rows[^1];
             lastRow.Borders.Bottom.Width = 2;
+        }
+
+        private void UnderlineRow(Row row)
+        {
+            row.Borders.Bottom.Width = 1;
         }
 
         private void AlternateRowShading(Table table)
