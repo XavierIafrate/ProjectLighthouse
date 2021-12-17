@@ -154,7 +154,7 @@ namespace ProjectLighthouse.ViewModel
                     {
                         Lathe = Lathes[j],
                         Lots = Lots
-                            .Where(l => DateWithinRange(l.Date.Date, _date)
+                            .Where(l => DateWithinRange(l.DateProduced, _date)
                                 && l.FromMachine == Lathes[j].Id).ToArray(),
                         OperatingBlocks = segmentedData
                             .Where(d => d.MachineID == Lathes[j].Id

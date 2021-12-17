@@ -31,7 +31,8 @@
                 FontSize="16"
                 Foreground="White" />
             <Button Click="Button_Click_1" Content="Export Stats" />
-            <Button Click="Button_Click_2" Content="Test PDF" />
+            <!--<Button Click="Button_Click_2" Content="Test PDF" />-->
+            <Button x:Name="UpdateButton" Content="Update TurnedProduct Sales stats" Click="UpdateButton_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>

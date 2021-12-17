@@ -69,7 +69,7 @@ namespace ProjectLighthouse.Model
             return result;
         }
 
-        private List<string> GetErrors()
+        public List<string> GetErrors()
         {
             List<string> results = new();
 

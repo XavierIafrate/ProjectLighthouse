@@ -79,5 +79,36 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             return Lots;
         }
+
+        public static List<TurnedProduct> LoadSalesStatsFromCSV(string path)
+        {
+            List<TurnedProduct> products = new();
+
+            try
+            {
+                using StreamReader reader = new(path);
+                using CsvReader csv = new(reader, CultureInfo.InvariantCulture);
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
+                {
+                    TurnedProduct record = new()
+                    {
+                        ProductName = csv.GetField<string>("ProductName"),
+                        QuantitySold = csv.GetField<int>("QuantitySold"),
+                        NumberOfOrders = csv.GetField<int>("NumberOfOrders"),
+                        
+                    };
+
+                    products.Add(record);
+                }
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show(e.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return products;
+        }
     }
 }

@@ -243,12 +243,11 @@ namespace ProjectLighthouse.View
                     MaterialBatch = BatchTextBox.Text.Trim(),
                     FromMachine = ProducedOnMachine,
                     Remarks = RemarksTextBox.Text.Trim(),
-                    DateProduced = DateTime.Now.Hour >= 8 
+                    DateProduced = DateTime.Now.Hour >= 9
                         ? DateTime.Now.Date.AddHours(12) 
                         : DateTime.Now.Date.AddHours(-12)
                 };
 
-                newLot.DateProduced = newLot.Date;
                 newLot.SetExcelDateTime();
 
                 if (!DatabaseHelper.Insert(newLot))
