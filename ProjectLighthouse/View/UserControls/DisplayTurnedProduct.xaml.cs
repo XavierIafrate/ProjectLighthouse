@@ -31,7 +31,7 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.ProductName.Text = control.Product.ProductName;
                 control.MaterialTextBlock.Text = control.Product.Material;
-                control.HotFlag.Visibility = control.Product.QuantitySold > 10000
+                control.HotFlag.Visibility = control.Product.QuantitySold > 8000
                     ? Visibility.Visible
                     : Visibility.Hidden;
 

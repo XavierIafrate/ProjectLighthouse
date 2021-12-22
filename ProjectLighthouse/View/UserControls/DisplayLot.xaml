@@ -89,7 +89,7 @@
                 Grid.Column="1"
                 FontStyle="Italic"
                 Foreground="{StaticResource materialOffBlack}"
-                Text="{Binding DateProduced, StringFormat='{}produced {0:dd/MM/yy}', FallbackValue='produced 01/01/1970'}" />
+                Text="{Binding DateProduced, StringFormat='{}produced {0:dd/MM/yy HH:mm}', FallbackValue='produced 01/01/1970'}" />
 
             <TextBlock
                 Grid.Row="2"

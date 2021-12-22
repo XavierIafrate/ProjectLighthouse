@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.Model;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -44,7 +45,10 @@ namespace ProjectLighthouse.View.UserControls
 
             if (control.Lot.IsDelivered || control.Lot.Date.AddDays(14) < DateTime.Now)
             {
-                control.EditButton.Visibility = Visibility.Collapsed;
+                if (!Debugger.IsAttached)
+                {
+                    control.EditButton.Visibility = Visibility.Collapsed;
+                }
             }
         }
 

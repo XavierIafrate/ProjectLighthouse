@@ -125,7 +125,7 @@ namespace ProjectLighthouse.ViewModel
             int days = (reportEndDate - reportStartDate).Days;
 
             segmentedData = segmentedData
-                .Where(d => d.StateEntered >= reportStartDate && d.StateEntered < reportEndDate)
+                .Where(d => d.StateLeft >= reportStartDate && d.StateEntered < reportEndDate)
                 .ToList();
 
             ReportPdf reportService = new();
