@@ -9,6 +9,9 @@ namespace ProjectLighthouse.ViewModel
 {
     public class ScheduleViewModel : BaseViewModel
     {
+        public List<MachineService> PlannedServices { get; set; }
+        public List<ResearchTime> PlannedResearch { get; set; }
+
         public List<LatheManufactureOrder> OrderHeaders;
         public List<LatheManufactureOrderItem> OrderItems;
         public List<Lathe> Lathes;
@@ -16,16 +19,16 @@ namespace ProjectLighthouse.ViewModel
         public string ViewTitle { get; set; }
         public Lathe SelectedLathe { get; set; }
 
-        public List<CompleteOrder> ActiveOrders = new();
-        private List<CompleteOrder> filteredOrders;
+        public List<LatheManufactureOrder> ActiveOrders = new();
 
-        public List<CompleteOrder> FilteredOrders
+        private List<ScheduleItem> _filteredItems;
+        public List<ScheduleItem> FilteredItems
         {
-            get { return filteredOrders; }
+            get { return _filteredItems; }
             set
             {
-                filteredOrders = value;
-                OnPropertyChanged("FilteredOrders");
+                _filteredItems = value;
+                OnPropertyChanged("FilteredItems");
             }
         }
 
@@ -53,10 +56,9 @@ namespace ProjectLighthouse.ViewModel
         public string BookedUntilInsights { get; set; }
         public string WorkloadInsights { get; set; }
 
-
         public ScheduleViewModel()
         {
-            FilteredOrders = new();
+            FilteredItems = new();
             filterOptions = new();
 
             PrintScheduleCommand = new(this);
@@ -68,20 +70,21 @@ namespace ProjectLighthouse.ViewModel
             //SetView();
         }
 
-
         private void LoadData()
         {
             OrderHeaders = DatabaseHelper.Read<LatheManufactureOrder>();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
+
+            PlannedServices = DatabaseHelper.Read<MachineService>();
+            PlannedResearch = DatabaseHelper.Read<ResearchTime>();
 
             foreach (LatheManufactureOrder order in OrderHeaders)
             {
                 if (order.State < OrderState.Complete)
                 {
                     List<LatheManufactureOrderItem> items = OrderItems.Where(i => i.AssignedMO == order.Name).ToList();
-                    ActiveOrders.Add(new(
-                        order: order,
-                        items: items));
+                    order.OrderItems = items;
+                    ActiveOrders.Add(order);
                 }
             }
 
@@ -93,6 +96,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 filterOptions.Add(lathe.FullName);
             }
+
             OnPropertyChanged("filterOptions");
         }
 
@@ -112,17 +116,23 @@ namespace ProjectLighthouse.ViewModel
             }
             OnPropertyChanged("PrintButtonVis");
 
-            FilteredOrders = ActiveOrders
-                .Where(o => o.Order.AllocatedMachine == searchString)
-                .OrderBy(o => o.Order.StartDate)
-                .ToList();
+            FilteredItems.Clear();
 
-            foreach (CompleteOrder order in FilteredOrders)
+            FilteredItems.AddRange(
+                    ActiveOrders
+                        .Where(o => o.AllocatedMachine == searchString)
+                        .OrderBy(o => o.StartDate)
+                        .ToList());
+
+            FilteredItems.AddRange(PlannedServices);
+            FilteredItems.AddRange(PlannedResearch);
+
+            foreach (ScheduleItem order in FilteredItems)
             {
                 order.EditMade += SetView;
             }
 
-            NoneFoundVis = FilteredOrders.Count == 0
+            NoneFoundVis = FilteredItems.Count == 0
                 ? Visibility.Visible
                 : Visibility.Hidden;
             OnPropertyChanged("NoneFoundVis");
@@ -143,23 +153,23 @@ namespace ProjectLighthouse.ViewModel
             MachineInfoInsights = $"{SelectedLathe.Make} {SelectedLathe.Model} [ID: {SelectedLathe.Id}]";
             MachineCapabilitiesInsights = $"Max part length: {SelectedLathe.MaxLength}mm\nMax part diameter: {SelectedLathe.MaxDiameter}mm";
 
-            if (FilteredOrders.Count == 0)
+            if (FilteredItems.Count == 0)
             {
                 NumberOfOrdersInsights = "No orders assigned.";
             }
-            else if (FilteredOrders.Count == 1)
+            else if (FilteredItems.Count == 1)
             {
                 NumberOfOrdersInsights = "1 order assigned";
             }
             else
             {
-                NumberOfOrdersInsights = $"{FilteredOrders.Count} orders assigned";
+                NumberOfOrdersInsights = $"{FilteredItems.Count} orders assigned";
             }
 
-            System.Tuple<System.TimeSpan, System.DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredOrders);
+            //System.Tuple<System.TimeSpan, System.DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredItems);
 
-            WorkloadInsights = $"{workload.Item1.TotalDays:N0} days work";
-            BookedUntilInsights = $"Booked until {workload.Item2:dddd, dd MMMM}";
+            //WorkloadInsights = $"{workload.Item1.TotalDays:N0} days work";
+            //BookedUntilInsights = $"Booked until {workload.Item2:dddd, dd MMMM}";
 
             OnPropertyChanged("MachineInfoInsights");
             OnPropertyChanged("MachineCapabilitiesInsights");

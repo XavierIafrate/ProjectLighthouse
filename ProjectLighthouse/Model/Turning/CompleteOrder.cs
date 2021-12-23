@@ -7,7 +7,6 @@ namespace ProjectLighthouse.Model
         public LatheManufactureOrder Order { get; set; }
         public List<LatheManufactureOrderItem> OrderItems { get; set; }
 
-        public event System.Action EditMade;
 
         public CompleteOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
         {
@@ -15,6 +14,7 @@ namespace ProjectLighthouse.Model
             OrderItems = items;
         }
 
+        public event System.Action EditMade;
         public void NotifyEditMade()
         {
             if (EditMade != null)

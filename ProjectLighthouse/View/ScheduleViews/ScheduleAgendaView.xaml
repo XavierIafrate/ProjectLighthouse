@@ -13,6 +13,8 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <viewModel:ScheduleViewModel x:Key="vm" />
+        <local:ScheduleTemplateSelector x:Key="templateSelector"/>
+        <userControls:DisplayLMOScheduling x:Key="DisplayLMOScheduling"/>
     </UserControl.Resources>
     <Grid Margin="10" DataContext="{StaticResource vm}">
         <Grid.RowDefinitions>
@@ -101,12 +103,12 @@
                 VerticalAlignment="Stretch"
                 Background="{StaticResource materialBackground}" />
 
-            <ListView Grid.Column="2" ItemsSource="{Binding FilteredOrders}">
-                <ListView.ItemTemplate>
+            <ListView Grid.Column="2" ItemsSource="{Binding FilteredItems}" ItemTemplateSelector="{StaticResource templateSelector}">
+                <!--<ListView.ItemTemplate>
                     <DataTemplate>
                         <userControls:DisplayLMOScheduling orderObject="{Binding Path=., Mode=TwoWay}" />
                     </DataTemplate>
-                </ListView.ItemTemplate>
+                </ListView.ItemTemplate>-->
             </ListView>
             <TextBlock
                 Grid.Column="2"
