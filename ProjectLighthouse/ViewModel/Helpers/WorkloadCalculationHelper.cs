@@ -7,50 +7,54 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class WorkloadCalculationHelper
     {
-        public static Tuple<TimeSpan, DateTime> GetMachineWorkload(List<CompleteOrder> orders)
+        public static Tuple<TimeSpan, DateTime> GetMachineWorkload(List<ScheduleItem> items)
         {
             double secondsOfRuntime = 0;
-            DateTime lastOrderFinished = DateTime.MinValue;
+            DateTime lastItemFinished = DateTime.MinValue;
 
-            orders = orders.OrderBy(x => x.Order.StartDate).ToList(); //otherwise bad things happen
+            items = items.OrderBy(x => x.StartDate).ToList(); //otherwise bad things happen
 
-            for (int i = 0; i < orders.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                LatheManufactureOrder order = orders[i].Order;
-                List<LatheManufactureOrderItem> items = orders[i].OrderItems;
+                ScheduleItem item = items[i];
 
-                if (order.State == OrderState.Running || order.Status == "Running")
+                if (item is LatheManufactureOrder)
                 {
-                    foreach (LatheManufactureOrderItem item in items)
+                    LatheManufactureOrder order = item as LatheManufactureOrder;
+
+                    if (order.State == OrderState.Running)
                     {
-                        secondsOfRuntime += Math.Max(item.TargetQuantity - item.QuantityMade, 0) * item.CycleTime;
+                        foreach (LatheManufactureOrderItem orderItem in order.OrderItems)
+                        {
+                            secondsOfRuntime += Math.Max(orderItem.TargetQuantity - orderItem.QuantityMade, 0) * orderItem.CycleTime;
+                        }
                     }
                 }
                 else
                 {
                     if (i == 0)
                     {
-                        lastOrderFinished = DateTime.Now;
+                        lastItemFinished = DateTime.Now;
                     }
 
-                    secondsOfRuntime += Math.Abs((order.StartDate - lastOrderFinished).TotalSeconds);
-                    secondsOfRuntime += order.TimeToComplete;
+                    secondsOfRuntime += Math.Abs((item.StartDate - lastItemFinished).TotalSeconds);
+                    secondsOfRuntime += item.TimeToComplete;
                     secondsOfRuntime += 86400 / 2; // Setting Time
                 }
 
                 if (i == 0)
                 {
-                    lastOrderFinished = DateTime.Now.AddSeconds(secondsOfRuntime);
+                    lastItemFinished = DateTime.Now.AddSeconds(secondsOfRuntime);
                 }
                 else
                 {
-                    lastOrderFinished = order.StartDate.AddSeconds(order.TimeToComplete);
+                    lastItemFinished = item.StartDate.AddSeconds(item.TimeToComplete);
                 }
 
             }
 
 
-            return new(lastOrderFinished - DateTime.Now, lastOrderFinished);
+            return new(lastItemFinished - DateTime.Now, lastItemFinished);
         }
 
     }

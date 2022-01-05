@@ -2,7 +2,7 @@
 
 namespace ProjectLighthouse.Model
 {
-    public class CompleteOrder
+    public class CompleteOrder : ScheduleItem
     {
         public LatheManufactureOrder Order { get; set; }
         public List<LatheManufactureOrderItem> OrderItems { get; set; }
@@ -12,15 +12,6 @@ namespace ProjectLighthouse.Model
         {
             Order = order;
             OrderItems = items;
-        }
-
-        public event System.Action EditMade;
-        public void NotifyEditMade()
-        {
-            if (EditMade != null)
-            {
-                EditMade();
-            }
         }
     }
 }

@@ -73,7 +73,7 @@
                 SelectionChanged="ProductsListBox_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayTurnedProduct Product="{Binding}" />
+                        <uc:DisplayTurnedProduct Product="{Binding}" Margin="10,2"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

@@ -32,7 +32,7 @@
             SelectionChanged="requests_ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayRequest Request="{Binding}" />
+                    <uc:DisplayRequest Request="{Binding}" Margin="10,2"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -222,7 +222,7 @@
                             <ListView ItemsSource="{Binding RecommendedManifest}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <uc:DisplayManifestItem Item="{Binding}" />
+                                        <uc:DisplayManifestItem Item="{Binding}" Margin="10,2"/>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>

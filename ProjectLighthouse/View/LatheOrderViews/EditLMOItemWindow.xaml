@@ -162,7 +162,7 @@
                 HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type mdl:Lot}">
-                        <uc:DisplayLot Lot="{Binding}" />
+                        <uc:DisplayLot Lot="{Binding}" Margin="10,2"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

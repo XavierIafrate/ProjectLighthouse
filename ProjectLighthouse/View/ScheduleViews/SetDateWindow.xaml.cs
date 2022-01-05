@@ -4,36 +4,33 @@ using System.Windows;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for SetDateWindow.xaml
-    /// </summary>
     public partial class SetDateWindow : Window
     {
-        private LatheManufactureOrder Order { get; set; }
+        private ScheduleItem Item { get; set; }
         public DateTime SelectedDate;
         public string AllocatedMachine;
         public bool SaveExit = false;
 
-        public SetDateWindow(LatheManufactureOrder order)
+        public SetDateWindow(ScheduleItem item)
         {
             InitializeComponent();
-            Order = order;
-            TitleText.Text = string.Format($"Editing: {order.Name}");
+            Item = item;
+            TitleText.Text = $"Editing: {Item.Name}";
 
-            if (Order.StartDate == DateTime.MinValue)
+            if (Item.StartDate == DateTime.MinValue)
             {
                 calendar.SelectedDate = DateTime.Today.AddDays(1);
             }
             else
             {
-                calendar.SelectedDate = order.StartDate;
+                calendar.SelectedDate = Item.StartDate;
             }
 
-            AllocatedMachine = order.AllocatedMachine;
+            AllocatedMachine = Item.AllocatedMachine;
             machine.Text = AllocatedMachine;
         }
 
-        private void confirmButton_Click(object sender, RoutedEventArgs e)
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             SelectedDate = calendar.SelectedDate ?? DateTime.Today;
             SelectedDate.AddHours(8);

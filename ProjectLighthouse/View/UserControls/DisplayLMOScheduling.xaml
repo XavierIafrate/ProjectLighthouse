@@ -16,14 +16,13 @@
         <converters:StartDateToEndDate x:Key="startToFinish" />
         <converters:orderItemToRequirementText x:Key="requirementText" />
     </UserControl.Resources>
-    <Grid>
+    <Grid Margin="7">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="12" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Border
             x:Name="bg"
-            Margin="0,5"
             Background="{StaticResource materialError}"
             CornerRadius="5,0,0,5" />
 
@@ -40,7 +39,7 @@
                     FontSize="25"
                     FontWeight="Bold"
                     Foreground="{StaticResource materialOnBackground}"
-                    Text="{Binding Order.Name, FallbackValue='M00001', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding Name, FallbackValue='%Order.Name%', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
@@ -57,7 +56,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{StaticResource materialOnPrimary}"
-                        Text="{Binding Order.State, FallbackValue='Ready', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding State, FallbackValue='Ready', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
                 <Border
                     x:Name="LargeDiameterIndicator"
@@ -117,7 +116,7 @@
                     HorizontalAlignment="Right"
                     FontWeight="SemiBold"
                     Text="Start" />
-                <TextBlock Grid.Column="1" Text="{Binding Order.StartDate, StringFormat='{}{0:ddd, dd MMM}'}" />
+                <TextBlock Grid.Column="1" Text="{Binding StartDate, StringFormat='{}{0:ddd, dd MMM}'}" />
 
                 <TextBlock
                     Grid.Row="1"
@@ -128,7 +127,7 @@
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"
-                    Text="{Binding Order, Converter='{StaticResource startToFinish}', StringFormat='{}{0:ddd, dd MMM}'}" />
+                    Text="{Binding Path=., Converter='{StaticResource startToFinish}', StringFormat='{}{0:ddd, dd MMM}'}" />
 
                 <TextBlock
                     Grid.Row="2"
@@ -139,7 +138,7 @@
                 <TextBlock
                     Grid.Row="2"
                     Grid.Column="1"
-                    Text="{Binding Order.TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}{0} days'}" />
+                    Text="{Binding TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}{0} days'}" />
 
                 <TextBlock
                     Grid.Row="3"
@@ -150,7 +149,7 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="1"
-                    Text="{Binding Order.BarID}" />
+                    Text="{Binding BarID}" />
 
                 <TextBlock
                     Grid.Row="4"
@@ -161,11 +160,11 @@
                 <TextBlock
                     Grid.Row="4"
                     Grid.Column="1"
-                    Text="{Binding Order.NumberOfBars}" />
+                    Text="{Binding NumberOfBars}" />
 
             </Grid>
 
-            <StackPanel Grid.Column="2" Margin="0,10,20,10">
+            <StackPanel Grid.Column="2" Margin="0,10,20,0">
                 <TextBlock
                     Margin="5"
                     FontSize="15"
@@ -175,7 +174,7 @@
                 <ItemsControl
                     HorizontalContentAlignment="Stretch"
                     Grid.IsSharedSizeScope="True"
-                    ItemsSource="{Binding OrderItems}">
+                    x:Name="orderItems">
 
                     <!--<HeaderedItemsControl.Header>
                         <Grid>

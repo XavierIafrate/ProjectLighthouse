@@ -116,6 +116,7 @@ namespace ProjectLighthouse.ViewModel
             }
             OnPropertyChanged("PrintButtonVis");
 
+            FilteredItems = new();
             FilteredItems.Clear();
 
             FilteredItems.AddRange(
@@ -124,13 +125,17 @@ namespace ProjectLighthouse.ViewModel
                         .OrderBy(o => o.StartDate)
                         .ToList());
 
-            FilteredItems.AddRange(PlannedServices);
-            FilteredItems.AddRange(PlannedResearch);
+            FilteredItems.AddRange(PlannedServices.Where(s => s.AllocatedMachine == searchString));
+            FilteredItems.AddRange(PlannedResearch.Where(r => r.AllocatedMachine == searchString));
+
+            FilteredItems = FilteredItems.OrderBy(i => i.StartDate).ToList();
 
             foreach (ScheduleItem order in FilteredItems)
             {
                 order.EditMade += SetView;
             }
+
+            OnPropertyChanged("FilteredItems");
 
             NoneFoundVis = FilteredItems.Count == 0
                 ? Visibility.Visible
@@ -166,10 +171,10 @@ namespace ProjectLighthouse.ViewModel
                 NumberOfOrdersInsights = $"{FilteredItems.Count} orders assigned";
             }
 
-            //System.Tuple<System.TimeSpan, System.DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredItems);
+            System.Tuple<System.TimeSpan, System.DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredItems);
 
-            //WorkloadInsights = $"{workload.Item1.TotalDays:N0} days work";
-            //BookedUntilInsights = $"Booked until {workload.Item2:dddd, dd MMMM}";
+            WorkloadInsights = $"{workload.Item1.TotalDays:N0} days work";
+            BookedUntilInsights = $"Booked until {workload.Item2:dddd, dd MMMM}";
 
             OnPropertyChanged("MachineInfoInsights");
             OnPropertyChanged("MachineCapabilitiesInsights");

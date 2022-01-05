@@ -84,10 +84,6 @@
                         TextWrapping="Wrap" />
                 </Grid>
 
-
-
-
-
             </Grid>
 
             <Grid HorizontalAlignment="Center">

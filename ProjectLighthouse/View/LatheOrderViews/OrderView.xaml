@@ -114,7 +114,7 @@
             SelectionChanged="ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}" />
+                    <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}" Margin="10,2"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -512,7 +512,7 @@
                                     <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" />
+                                                <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" Margin="10,2"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -530,7 +530,7 @@
                                 <ItemsControl MinHeight="100" ItemsSource="{Binding FilteredNotes}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <uc:DisplayNote Note="{Binding}" />
+                                            <uc:DisplayNote Note="{Binding}"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

@@ -196,7 +196,7 @@
             <ListView x:Name="ItemsListBox" MinHeight="50">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" />
+                        <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" Margin="10,2"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

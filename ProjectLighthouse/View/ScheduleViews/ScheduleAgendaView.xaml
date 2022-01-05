@@ -36,7 +36,15 @@
                     FontSize="18"
                     ItemsSource="{Binding filterOptions}"
                     SelectedValue="{Binding Filter, Mode=TwoWay}"
-                    SelectionMode="Single" />
+                    SelectionMode="Single">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="10,3">
+                                <TextBlock Text="{Binding}" FontWeight="SemiBold"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
                 <Border
                     Margin="5"
                     Padding="15"
@@ -103,12 +111,22 @@
                 VerticalAlignment="Stretch"
                 Background="{StaticResource materialBackground}" />
 
-            <ListView Grid.Column="2" ItemsSource="{Binding FilteredItems}" ItemTemplateSelector="{StaticResource templateSelector}">
-                <!--<ListView.ItemTemplate>
-                    <DataTemplate>
-                        <userControls:DisplayLMOScheduling orderObject="{Binding Path=., Mode=TwoWay}" />
+            <ListView ItemsSource="{Binding FilteredItems}" ItemTemplateSelector="{DynamicResource templateSelector}" Grid.Column="2" HorizontalAlignment="Stretch">
+                <ItemsControl.Resources>
+                    
+                    <DataTemplate x:Key="LatheManufactureOrder">
+                        <userControls:DisplayLMOScheduling orderObject="{Binding Path=., Mode=TwoWay}"/>
                     </DataTemplate>
-                </ListView.ItemTemplate>-->
+
+                    <DataTemplate x:Key="ResearchTime">
+                        <userControls:DisplayResearch Research="{Binding Path=., Mode=TwoWay}"/>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="MachineService">
+                        <userControls:DisplayMachineService Service="{Binding Path=., Mode=TwoWay}"/>
+                    </DataTemplate>
+                    
+                </ItemsControl.Resources>
             </ListView>
             <TextBlock
                 Grid.Column="2"

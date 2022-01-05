@@ -114,6 +114,7 @@ namespace ProjectLighthouse.ViewModel
 
         private void PopulateMachineInsights()
         {
+            return;
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
             Snippets = new List<MachineInfoSnippet>();
 
@@ -129,36 +130,36 @@ namespace ProjectLighthouse.ViewModel
             TimeSpan L20_leadTimes = TimeSpan.Zero;
             int num_L20s = 0;
 
-            for (int i = 0; i < lathes.Count; i++)
-            {
-                List<CompleteOrder> ordersForLathe = completeOrders.Where(o => o.Order.AllocatedMachine == lathes[i].Id).ToList();
-                Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
+            //for (int i = 0; i < lathes.Count; i++)
+            //{
+            //    List<CompleteOrder> ordersForLathe = completeOrders.Where(o => o.Order.AllocatedMachine == lathes[i].Id).ToList();
+            //    Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload((List<ScheduleItem>)ordersForLathe);
 
-                MachineInfoSnippet tmpSnippet = new()
-                {
-                    MachineID = lathes[i].Id,
-                    MachineFullName = lathes[i].FullName,
-                    LeadTime = workload.Item1
-                };
+            //    MachineInfoSnippet tmpSnippet = new()
+            //    {
+            //        MachineID = lathes[i].Id,
+            //        MachineFullName = lathes[i].FullName,
+            //        LeadTime = workload.Item1
+            //    };
 
-                if (lathes[i].Model.StartsWith("L20"))
-                {
-                    num_L20s++;
-                    L20_leadTimes += tmpSnippet.LeadTime;
-                }
+            //    if (lathes[i].Model.StartsWith("L20"))
+            //    {
+            //        num_L20s++;
+            //        L20_leadTimes += tmpSnippet.LeadTime;
+            //    }
 
-                Snippets.Add(tmpSnippet);
-            }
+            //    Snippets.Add(tmpSnippet);
+            //}
 
-            if (num_L20s > 0)
-            {
-                L20_leadTimes /= num_L20s;
-                HighLeadTimeVisibility = L20_leadTimes.TotalDays > 33
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
+            //if (num_L20s > 0)
+            //{
+            //    L20_leadTimes /= num_L20s;
+            //    HighLeadTimeVisibility = L20_leadTimes.TotalDays > 33
+            //        ? Visibility.Visible
+            //        : Visibility.Collapsed;
 
-                OnPropertyChanged("HighLeadTimeVisibility");
-            }
+            //    OnPropertyChanged("HighLeadTimeVisibility");
+            //}
             
             OnPropertyChanged("Snippets");
         }

@@ -48,7 +48,7 @@
                 SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayDeliveryNote deliveryNote="{Binding}" />
+                        <uc:DisplayDeliveryNote deliveryNote="{Binding}" Margin="10,2" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

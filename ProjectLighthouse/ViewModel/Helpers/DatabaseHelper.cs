@@ -31,7 +31,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
                 catch (SQLiteException sqle)
                 {
-                    MessageBox.Show(sqle.Message.ToString());
+                    MessageBox.Show($"Lighthouse encountered an error trying to add to the database.\nError message: {sqle.Message}", "Insert Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     result = false;
                 }
             }
@@ -55,7 +55,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
                 catch (SQLiteException ex)
                 {
-                    MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Lighthouse encountered an error trying to update the database.\nError message: {ex.Message}", "Update Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             return result;
@@ -92,7 +92,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Lighthouse encountered an error trying to read the database.\nError message: {ex.Message}", "Read Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }

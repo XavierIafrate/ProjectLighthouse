@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayMachineService"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+             xmlns:core="clr-namespace:ProjectLighthouse.Model"
+             xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+             mc:Ignorable="d" d:DesignWidth="576.507" >
+    <UserControl.Resources>
+        <converters:intToHours x:Key="inttohours" />
+    </UserControl.Resources>
+    <Grid>
+        <Border Background="{StaticResource materialYellow}" CornerRadius="10" BorderThickness="3" BorderBrush="{StaticResource materialOffBlack}" Grid.ColumnSpan="2"/>
+        <Grid Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="25,15">
+                <Path 
+                Stretch="Uniform"
+                Height="30"
+                Width="30"
+                Margin="0,0,10,0"
+                Data="M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z" Fill="{StaticResource materialOffBlack}"/>
+                <TextBlock Text="Maintenance" FontWeight="Bold" FontSize="25" Foreground="{StaticResource materialOffBlack}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding StartDate}" FontWeight="Bold" FontSize="18" VerticalAlignment="Center" Foreground="{StaticResource materialOffBlack}" Margin="10,3,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" TextElement.Foreground="{StaticResource materialOffBlack}" VerticalAlignment="Center" Margin="0,15,25,15">
+                <TextBlock Text="{Binding Name}" HorizontalAlignment="Right" FontStyle="Italic" FontWeight="SemiBold" FontSize="20"/>
+                <TextBlock Text="{Binding TimeToComplete, StringFormat='{}estimated time: {0}h', Converter='{StaticResource inttohours}'}" HorizontalAlignment="Right" FontStyle="Italic" FontSize="16"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

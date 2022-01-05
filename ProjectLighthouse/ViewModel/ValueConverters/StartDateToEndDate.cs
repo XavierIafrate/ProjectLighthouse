@@ -10,6 +10,11 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             LatheManufactureOrder order = value as LatheManufactureOrder;
+
+            if (value == null)
+            {
+                return null;
+            }
             return order.StartDate.AddSeconds(order.TimeToComplete);
         }
 

@@ -4,18 +4,18 @@ using System.Windows.Data;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
 {
-    public class intToDays : IValueConverter
+    public class intToHours : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int seconds = (int)value;
+            double hours = TimeSpan.FromSeconds(seconds).TotalHours;
 
-            double days = TimeSpan.FromSeconds(seconds).TotalDays;
-            days *= 4;
-            days = Math.Round(days, 0);
-            days /= 4;
+            hours *= 2;
+            hours = Math.Round(hours);
+            hours /= 2;
 
-            return $"{days:0.00}";
+            return $"{hours:0.0}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

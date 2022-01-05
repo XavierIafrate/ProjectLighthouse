@@ -314,7 +314,7 @@ namespace ProjectLighthouse.ViewModel
                 if (WeekLabels.Contains(weekNum.ToString()))
                 {
                     double value = product.SellPrice * l.Quantity / 100;
-                    ValueByWeekNumber tmp = new(value, order.AllocatedMachine, weekNum);
+                    ValueByWeekNumber tmp = new(value, order.AllocatedMachine, weekNum, l.Date.Year);
                     assortedValues.Add(tmp);
                 }
             }
@@ -324,7 +324,7 @@ namespace ProjectLighthouse.ViewModel
 
             foreach (Lathe lathe in Lathes)
             {
-                List<ValueByWeekNumber> latheDataSet = assortedValues.Where(n => n.MachineID == lathe.Id).OrderBy(x => x.Week).ToList();
+                List<ValueByWeekNumber> latheDataSet = assortedValues.Where(n => n.MachineID == lathe.Id).OrderBy(x => x.Week).ThenBy(x => x.Year).ToList();
                 if (latheDataSet.Count == 0)
                     continue;
 
@@ -496,6 +496,10 @@ namespace ProjectLighthouse.ViewModel
             }
 
             OverallOperating = Math.Round((OverallRuntime / OverallTime) * 100, 2);
+            if (double.IsNaN(OverallOperating))
+            {
+                OverallOperating = 0;
+            }
             OnPropertyChanged("OverallOperating");
 
             //SecondsToDaysFormatter = value => string.Format("{0:d}", TimeSpan.FromSeconds(value));
@@ -545,12 +549,14 @@ namespace ProjectLighthouse.ViewModel
             public double Value { get; set; }
             public string MachineID { get; set; }
             public int Week { get; set; }
+            public int Year { get; set; }
 
-            public ValueByWeekNumber(double value, string machine, int week)
+            public ValueByWeekNumber(double value, string machine, int week, int year)
             {
                 Value = value;
                 MachineID = machine;
                 Week = week;
+                Year = year;
             }
         }
         #endregion

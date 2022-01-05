@@ -24,7 +24,7 @@
                 <ComboBoxItem Content="C04"/>
             </ComboBox>
             <Grid HorizontalAlignment="Right">
-                <Button Content="Save" Style="{StaticResource GreenButton}" x:Name="confirmButton" Click="confirmButton_Click"/>
+                <Button Content="Save" Style="{StaticResource GreenButton}" x:Name="ConfirmButton" Click="ConfirmButton_Click"/>
             </Grid>
             
         </StackPanel>
