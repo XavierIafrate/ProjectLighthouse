@@ -8,9 +8,6 @@ using System.Windows.Documents;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for NewRequestView.xaml
-    /// </summary>
     public partial class NewRequestView : UserControl
     {
         private NewRequestViewModel viewModel;
@@ -23,10 +20,14 @@ namespace ProjectLighthouse.View
 
         private void EnableSubmit()
         {
-            submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate.HasValue &&
-                                     viewModel.NewRequest.QuantityRequired > 0 &&
-                                     productsListBox.SelectedItem != null &&
-                                     App.CurrentUser.CanRaiseRequest;
+            if (viewModel != null)
+            {
+                submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate > DateTime.Now &&
+                    DateRequiredCalendarView.SelectedDate < DateTime.Now.AddMonths(13) &&
+                        viewModel.NewRequest.QuantityRequired > 0 &&
+                        productsListBox.SelectedItem != null &&
+                        App.CurrentUser.CanRaiseRequest;
+            }
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
@@ -34,37 +35,18 @@ namespace ProjectLighthouse.View
             if (viewModel.SubmitRequest())
             {
                 quantityBox.Text = "";
-                date_display.Text = "";
                 notesTextBox.Document.Blocks.Clear();
             }
         }
 
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DateRequiredCalendarView.SelectedDate == null)
-            {
-                return;
-            }
-
-            date_display.Text = DateRequiredCalendarView.SelectedDate.Value.ToString("dd/MM/yyyy");
-            DateGhost.Visibility = string.IsNullOrEmpty(date_display.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
-            viewModel.NewRequest.DateRequired = DateRequiredCalendarView.SelectedDate.Value;
             EnableSubmit();
         }
 
         private void QuantityBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textbox = sender as TextBox;
-            if (string.IsNullOrEmpty(textbox.Text))
-            {
-                QuantityGhost.Visibility = Visibility.Visible;
-                return;
-            }
-
-            QuantityGhost.Visibility = Visibility.Hidden;
-
             if (int.TryParse(textbox.Text, out int j))
             {
                 if (j > 0)

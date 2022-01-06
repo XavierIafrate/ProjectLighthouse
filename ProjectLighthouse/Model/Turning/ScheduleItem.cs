@@ -17,5 +17,11 @@ namespace ProjectLighthouse.Model
         {
             EditMade?.Invoke();
         }
+
+        public event Action RequestToEdit;
+        public void RequestEdit()
+        {
+            RequestToEdit?.Invoke();
+        }
     }
 }

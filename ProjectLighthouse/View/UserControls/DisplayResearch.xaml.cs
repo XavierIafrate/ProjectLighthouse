@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.View.ScheduleViews;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;
@@ -17,6 +18,11 @@ namespace ProjectLighthouse.View.UserControls
         // Using a DependencyProperty as the backing store for Research.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ResearchProperty =
             DependencyProperty.Register("Research", typeof(ResearchTime), typeof(DisplayResearch), new PropertyMetadata(null, SetValues));
+        
+        public DisplayResearch()
+        {
+            InitializeComponent();
+        }
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -24,23 +30,18 @@ namespace ProjectLighthouse.View.UserControls
             {
                 return;
             }
+            control.Edit_Button.Visibility = App.CurrentUser.UserRole is "admin" or "Scheduling"
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
         }
 
-        public DisplayResearch()
+        private void Edit_Button_Click(object sender, RoutedEventArgs e)
         {
-            InitializeComponent();
-        }
+            CreateResearch editWindow = new(Research, null);
+            editWindow.ShowDialog();
 
-        private void EditButton_Click(object sender, RoutedEventArgs e)
-        {
-            SetDateWindow dateWindow = new(Research as ScheduleItem);
-            dateWindow.ShowDialog();
-
-            if (dateWindow.SaveExit)
+            if (editWindow.Saved)
             {
-                Research.StartDate = dateWindow.SelectedDate;
-                Research.AllocatedMachine = dateWindow.AllocatedMachine;
-                DatabaseHelper.Update(Research);
                 Research.NotifyEditMade();
             }
         }

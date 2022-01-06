@@ -1,6 +1,9 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.View.ScheduleViews;
 using ProjectLighthouse.ViewModel.Commands.Printing;
+using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -19,7 +22,7 @@ namespace ProjectLighthouse.ViewModel
         public string ViewTitle { get; set; }
         public Lathe SelectedLathe { get; set; }
 
-        public List<LatheManufactureOrder> ActiveOrders = new();
+        public List<LatheManufactureOrder> ActiveOrders;
 
         private List<ScheduleItem> _filteredItems;
         public List<ScheduleItem> FilteredItems
@@ -35,9 +38,12 @@ namespace ProjectLighthouse.ViewModel
         public Visibility NoneFoundVis { get; set; }
         public Visibility InsightsVis { get; set; }
         public Visibility PrintButtonVis { get; set; }
+        public Visibility AddButtonsVis { get; set; }
         public PrintScheduleCommand PrintScheduleCommand { get; set; }
+        public AddResearchCommand AddResearchCommand { get; set; }
+        public AddServiceCommand AddServiceCommand { get; set; }
 
-        public List<string> filterOptions { get; set; }
+        public List<string> FilterOptions { get; set; }
 
         private string filter;
         public string Filter
@@ -59,24 +65,31 @@ namespace ProjectLighthouse.ViewModel
         public ScheduleViewModel()
         {
             FilteredItems = new();
-            filterOptions = new();
+            FilterOptions = new();
+
+            AddResearchCommand = new(this);
+            AddServiceCommand = new(this);
+            AddButtonsVis = App.CurrentUser.UserRole is "admin" or "Scheduling"
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            OnPropertyChanged("AddButtonsVis");
 
             PrintScheduleCommand = new(this);
 
             LoadData();
-            Filter = filterOptions.Count > 1
-                ? filterOptions[1]
-                : filterOptions[0];
-            //SetView();
+            Filter = FilterOptions.Count > 1
+                ? FilterOptions[1]
+                : FilterOptions[0];
         }
 
         private void LoadData()
         {
+            ActiveOrders = new();
             OrderHeaders = DatabaseHelper.Read<LatheManufactureOrder>();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
 
-            PlannedServices = DatabaseHelper.Read<MachineService>();
-            PlannedResearch = DatabaseHelper.Read<ResearchTime>();
+            PlannedServices = DatabaseHelper.Read<MachineService>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > System.DateTime.Now).ToList();
+            PlannedResearch = DatabaseHelper.Read<ResearchTime>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > System.DateTime.Now).ToList();
 
             foreach (LatheManufactureOrder order in OrderHeaders)
             {
@@ -89,12 +102,12 @@ namespace ProjectLighthouse.ViewModel
             }
 
             Lathes = DatabaseHelper.Read<Lathe>();
-            filterOptions = new();
-            filterOptions.Add("Unallocated");
+            FilterOptions = new();
+            FilterOptions.Add("Unallocated");
 
             foreach (Lathe lathe in Lathes)
             {
-                filterOptions.Add(lathe.FullName);
+                FilterOptions.Add(lathe.FullName);
             }
 
             OnPropertyChanged("filterOptions");
@@ -173,7 +186,7 @@ namespace ProjectLighthouse.ViewModel
 
             System.Tuple<System.TimeSpan, System.DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredItems);
 
-            WorkloadInsights = $"{workload.Item1.TotalDays:N0} days work";
+            WorkloadInsights = $"~{Math.Ceiling(2 * ((workload.Item1.TotalDays + 1) / 7)) / 2:N1} weeks [{Math.Ceiling(workload.Item1.TotalDays) + 1} days]";
             BookedUntilInsights = $"Booked until {workload.Item2:dddd, dd MMMM}";
 
             OnPropertyChanged("MachineInfoInsights");
@@ -181,6 +194,32 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged("NumberOfOrdersInsights");
             OnPropertyChanged("BookedUntilInsights");
             OnPropertyChanged("WorkloadInsights");
+        }
+
+        public void AddResearch()
+        {
+            CreateResearch window = new(new ResearchTime(), Lathes);
+
+            window.ShowDialog();
+
+            if (window.Saved)
+            {
+                LoadData();
+                SetView();
+            }
+        }
+
+        public void AddMaintenance()
+        {
+            CreateService window = new(new MachineService(), Lathes);
+
+            window.ShowDialog();
+
+            if (window.Saved)
+            {
+                LoadData();
+                SetView();
+            }
         }
 
         public void PrintSchedule()

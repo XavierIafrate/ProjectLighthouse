@@ -42,6 +42,8 @@
         <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
         <Setter Property="TextElement.Foreground" Value="Black" />
         <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="BorderBrush" Value="#f0f0f0" />
+        <Setter Property="BorderThickness" Value="2" />
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
@@ -53,8 +55,8 @@
                         <Border
                             Grid.ColumnSpan="2"
                             Background="{StaticResource materialSurface}"
-                            BorderBrush="#f0f0f0"
-                            BorderThickness="1"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="5" />
                         <ToggleButton
                             Name="ToggleButton"

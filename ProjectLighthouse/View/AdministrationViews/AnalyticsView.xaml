@@ -210,25 +210,26 @@
                         Foreground="White"
                         Text="alarm and monitoring system" />
                 </StackPanel>
-            </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,5">
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5">
-
-                <Button
+                    <Button
                     Command="{Binding GenerateReportCommand}"
                     CommandParameter="daily"
                     Content="DAILY REPORT"
                     Style="{StaticResource SentryDownloadButton}"
                     Margin="0,0,5,0"/>
-                <Button
+                    <Button
                     Grid.Column="1"
                     Command="{Binding GenerateReportCommand}"
                     CommandParameter="weekly"
                     Content="WEEKLY REPORT"
                     Style="{StaticResource SentryDownloadButton}"/>
-            </StackPanel>
+                </StackPanel>
+            </Grid>
 
-            <TextBlock
+            
+
+            <!--<TextBlock
                 Margin="0,20,0,10"
                 HorizontalAlignment="Center"
                 FontSize="18"
@@ -240,11 +241,11 @@
                 <lvc:CartesianChart.AxisY>
                     <lvc:Axis Title="Machine" Labels="{Binding LatheLabels}" />
                 </lvc:CartesianChart.AxisY>
-                <!--<lvc:CartesianChart.AxisX>
+                --><!--<lvc:CartesianChart.AxisX>
                 -->
                 <!--<lvc:Axis LabelFormatter="{Binding SecondsToDaysFormatter}"/>-->
                 <!--
-                </lvc:CartesianChart.AxisX>-->
+                </lvc:CartesianChart.AxisX>--><!--
 
             </lvc:CartesianChart>
 
@@ -256,14 +257,14 @@
                 Value="{Binding OverallOperating}"
                 From="0"
                 To="100">
-                <!--<lvc:Gauge.Sections>
+                --><!--<lvc:Gauge.Sections>
                     <lvc:AngularSection FromValue="0" ToValue="80"/>
                     <lvc:AngularSection FromValue="80" ToValue="100"
                                         Fill="{StaticResource materialPrimaryGreen}"/>
-                </lvc:Gauge.Sections>-->
+                </lvc:Gauge.Sections>--><!--
 
-            </lvc:Gauge>
-            <Grid Height="300" />
+            </lvc:Gauge>-->
+            <Grid Height="200" />
 
             <!--<lvc:CartesianChart Series="{Binding OperatingByMachineSeriesCollection}" LegendLocation="Top">
                 <lvc:CartesianChart.AxisY>

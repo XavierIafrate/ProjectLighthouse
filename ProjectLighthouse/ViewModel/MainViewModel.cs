@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
+using System;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -41,6 +42,11 @@ namespace ProjectLighthouse.ViewModel
             get { return _selectedViewModel; }
             set
             {
+                if (_selectedViewModel is IDisposable viewModel)
+                {
+                    viewModel.Dispose();
+                }
+
                 _selectedViewModel = value;
                 OnPropertyChanged("SelectedViewModel");
             }

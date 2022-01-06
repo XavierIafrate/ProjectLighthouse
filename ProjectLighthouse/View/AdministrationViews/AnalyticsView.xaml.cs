@@ -3,9 +3,6 @@ using System.Windows.Controls;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for AnalyticsView.xaml
-    /// </summary>
     public partial class AnalyticsView : UserControl
     {
         public Func<double, string> TimeFormatter = value => new DateTime((long)value).ToString("dd MMMM yyyy");
@@ -17,7 +14,6 @@ namespace ProjectLighthouse.View
         public AnalyticsView()
         {
             InitializeComponent();
-
         }
 
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -25,7 +21,7 @@ namespace ProjectLighthouse.View
             totalParts_X.LabelFormatter = TimeFormatter;
             totalParts_Y.LabelFormatter = QuantityFormatter;
             Value_Y.LabelFormatter = ThousandPoundFormatter;
-            Gauge.LabelFormatter = PercantageStringFormat;
+            //Gauge.LabelFormatter = PercantageStringFormat;
         }
     }
 }

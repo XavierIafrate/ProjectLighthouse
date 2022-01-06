@@ -9,6 +9,7 @@ namespace ProjectLighthouse
     {
         public static User CurrentUser { get; set; }
         public static string ROOT_PATH { get; set; }
+        public static string ActiveViewModel { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {

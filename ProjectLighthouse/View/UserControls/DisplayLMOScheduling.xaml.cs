@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -88,6 +89,20 @@ namespace ProjectLighthouse.View.UserControls
                 orderObject.AllocatedMachine = dateWindow.AllocatedMachine;
                 DatabaseHelper.Update(orderObject);
                 orderObject.NotifyEditMade();
+            }
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (MainCanvas.ColumnDefinitions[2].ActualWidth >= 470)
+            {
+                Grid.SetColumn(OrderItemsSubControl, 2);
+                Grid.SetRow(OrderItemsSubControl, 0);
+            }
+            else
+            {
+                Grid.SetColumn(OrderItemsSubControl, 0);
+                Grid.SetRow(OrderItemsSubControl, 1);
             }
         }
     }

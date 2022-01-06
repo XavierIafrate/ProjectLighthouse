@@ -21,6 +21,8 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
+            App.ActiveViewModel = parameter.ToString();
+
             if (parameter.ToString() == "Schedule")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
@@ -86,6 +88,10 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new AnalyticsViewModel();
                 viewModel.NavText = "Analytics";
+            }
+            else
+            {
+                App.ActiveViewModel = "";
             }
 
             viewModel.MainWindow.SelectButton(parameter.ToString());

@@ -8,10 +8,10 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.4.6</FileVersion>
-    <AssemblyVersion>1.4.6</AssemblyVersion>
+    <FileVersion>1.4.7</FileVersion>
+    <AssemblyVersion>1.4.7</AssemblyVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.4.6</Version>
+    <Version>1.4.7</Version>
     <Product>ProjectLighthouse</Product>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -113,6 +113,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="View\ScheduleViews\CreateResearch.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -131,6 +134,10 @@
 
   <ItemGroup>
     <Page Update="Themes\GlobalColours.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ScheduleViews\CreateResearch.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

@@ -15,5 +15,10 @@ namespace ProjectLighthouse.Model
         public int MaxDiameter { get; set; }
         public int MaxLength { get; set; }
         public double PartOff { get; set; }
+
+        public override string ToString()
+        {
+            return FullName;
+        }
     }
 }

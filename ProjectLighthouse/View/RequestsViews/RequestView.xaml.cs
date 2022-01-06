@@ -40,10 +40,6 @@ namespace ProjectLighthouse.View
 
             notesTextBox.Document.Blocks.Clear();
             notesTextBox.AppendText(request.Notes);
-            if (date_display == null)
-                return;
-
-            date_display.Text = request.DateRequired.ToString("dd/MM/yyyy");
         }
 
         private void requests_ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -82,33 +78,6 @@ namespace ProjectLighthouse.View
             }
 
             viewModel.UpdateRequirements(notes, j);
-        }
-
-        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (EditDate_DatePicker.SelectedDate == null)
-            {
-                return;
-            }
-
-            if (date_display == null)
-            {
-                return;
-            }
-
-            date_display.Text = EditDate_DatePicker.SelectedDate.Value.ToString("dd/MM/yyyy");
-            DateGhost.Visibility = string.IsNullOrEmpty(date_display.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
-        }
-
-        private void quantityTextbox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (QuantityGhost == null)
-                return;
-            QuantityGhost.Visibility = string.IsNullOrEmpty(quantityTextbox.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
         }
     }
 }

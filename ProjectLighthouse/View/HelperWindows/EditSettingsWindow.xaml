@@ -5,8 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:ProjectLighthouse.Model"
-    MinWidth="250"
     Title="Lighthouse User Settings"
+    MinWidth="250"
     d:DataContext="{d:DesignInstance Type=model:User}"
     ResizeMode="NoResize"
     SizeToContent="WidthAndHeight"
@@ -28,13 +28,24 @@
             Text="Settings" />
         <StackPanel Grid.Row="1">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource subtitle}" Foreground="{StaticResource materialPrimaryBlue}" VerticalAlignment="Center">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource materialPrimaryBlue}"
+                    Style="{StaticResource subtitle}">
                     <Run Text="{Binding FirstName, FallbackValue='Randy'}" />
                     <Run Text="{Binding LastName, FallbackValue='Marsh'}" />
                 </TextBlock>
                 <Grid Margin="10,0">
-                    <Border Background="{StaticResource materialPrimaryBlue}" CornerRadius="10" Height="25"/>
-                    <TextBlock Text="{Binding UserRole, FallbackValue='Viewer'}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10,10,10,11" Foreground="White"/>
+                    <Border
+                        Height="25"
+                        Background="{StaticResource materialPrimaryBlue}"
+                        CornerRadius="10" />
+                    <TextBlock
+                        Padding="10,10,10,11"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="{Binding UserRole, FallbackValue='Viewer'}" />
                 </Grid>
             </StackPanel>
 
@@ -111,10 +122,10 @@
                 x:Name="defaultViewComboBox"
                 Margin="0,5,0,0"
                 SelectionChanged="defaultViewComboBox_SelectionChanged">
+                <ComboBoxItem Content="New Request" />
                 <ComboBoxItem Content="View Requests" />
                 <ComboBoxItem Content="Orders" />
                 <ComboBoxItem Content="Schedule" />
-                <!--<ComboBoxItem Content="Assembly Orders" />-->
             </ComboBox>
         </StackPanel>
         <StackPanel

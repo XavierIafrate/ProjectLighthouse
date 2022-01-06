@@ -59,10 +59,22 @@
             </Grid.RowDefinitions>
             <StackPanel>
                 <TextBlock Style="{StaticResource section}" Text="Select Part Number" />
-                <ComboBox
-                    Margin="5"
-                    ItemsSource="{Binding Families}"
-                    SelectedValue="{Binding SelectedGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox
+                        Margin="5"
+                        ItemsSource="{Binding Families}"
+                        SelectedValue="{Binding SelectedGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        Command="{Binding AddSpecialCommand}"
+                        Visibility="{Binding AddSpecialVisibility}"
+                        Grid.Column="1"
+                        Content="+ new"
+                        Style="{StaticResource SubtleButtonTemplate}" />
+                </Grid>
             </StackPanel>
 
             <ListView
@@ -73,38 +85,18 @@
                 SelectionChanged="ProductsListBox_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayTurnedProduct Product="{Binding}" Margin="10,2"/>
+                        <uc:DisplayTurnedProduct Margin="10,2" Product="{Binding}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
             <StackPanel Grid.Row="2">
-
-
-
                 <!--  Date Picker  -->
-
-                <Grid Margin="0,5">
-                    <DatePicker
-                        x:Name="DateRequiredCalendarView"
-                        DisplayDateStart="{x:Static sys:DateTime.Now}"
-                        SelectedDateChanged="DateRequiredCalendarView_SelectedDatesChanged" />
-                    <TextBlock
-                        x:Name="date_display"
-                        Padding="15,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        FontSize="18" />
-                    <TextBlock
-                        x:Name="DateGhost"
-                        Margin="20,0"
-                        VerticalAlignment="Center"
-                        FontSize="18"
-                        FontStyle="Italic"
-                        Foreground="#aaa"
-                        IsHitTestVisible="False"
-                        Text="Select Date Required" />
-                </Grid>
+                <DatePicker
+                    x:Name="DateRequiredCalendarView"
+                    Margin="0,5"
+                    DisplayDateStart="{x:Static sys:DateTime.Now}"
+                    SelectedDateChanged="DateRequiredCalendarView_SelectedDatesChanged" />
 
                 <!--  Quantity Input  -->
                 <Grid Margin="0,5">
@@ -112,22 +104,12 @@
                     <TextBox
                         x:Name="quantityBox"
                         Margin="0"
+                        Tag="Enter Quantity Required"
                         PreviewKeyDown="QuantityBox_PreviewKeyDown"
-                        Style="{StaticResource UsernameTextBox}"
+                        Style="{StaticResource DefaultTextBox}"
                         Text="{Binding RequiredQtyPrefill, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         TextChanged="QuantityBox_TextChanged" />
-                    <TextBlock
-                        x:Name="QuantityGhost"
-                        Margin="20,0"
-                        VerticalAlignment="Center"
-                        FontSize="18"
-                        FontStyle="Italic"
-                        Foreground="#aaa"
-                        IsHitTestVisible="False"
-                        Text="Enter Quantity Required" />
                 </Grid>
-
-
 
                 <Grid Margin="0,5">
                     <Border Background="{StaticResource materialSurface}" CornerRadius="10" />

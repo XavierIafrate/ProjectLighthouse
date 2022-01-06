@@ -59,7 +59,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 machineRuntimeCollection = value;
-                OnPropertyChanged("MachineRuntimeCollection");
+                //OnPropertyChanged("MachineRuntimeCollection");
             }
         }
         public double OverallOperating { get; set; }
@@ -388,6 +388,7 @@ namespace ProjectLighthouse.ViewModel
 
         private void GetDataForMachineRuntime()
         {
+            return;
             string[] StateLabels = new[] { "Running", "Setting", "Breakdown", "Idle", "Offline" };
             List<string> lathe_labels = new();
             MachineRuntimeCollection = new();
@@ -495,11 +496,10 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
 
-            OverallOperating = Math.Round((OverallRuntime / OverallTime) * 100, 2);
-            if (double.IsNaN(OverallOperating))
-            {
-                OverallOperating = 0;
-            }
+            double overall = Math.Round((OverallRuntime / OverallTime) * 100, 2);
+            OverallOperating = double.IsNaN(overall)
+                ? 0
+                :overall;
             OnPropertyChanged("OverallOperating");
 
             //SecondsToDaysFormatter = value => string.Format("{0:d}", TimeSpan.FromSeconds(value));

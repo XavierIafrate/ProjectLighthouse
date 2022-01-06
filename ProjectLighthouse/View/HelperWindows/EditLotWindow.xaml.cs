@@ -113,8 +113,10 @@ namespace ProjectLighthouse.View
         private void ProducedDatePicker_SelectedDateChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             System.Windows.Controls.DatePicker picker = sender as System.Windows.Controls.DatePicker;
-            EditLot.DateProduced = picker.SelectedDate.Value.AddHours(12);
-            ProducedDateGhost.Text = picker.SelectedDate.Value.ToString("d");
+            if (EditLot != null)
+            {
+                EditLot.DateProduced = picker.SelectedDate.Value.AddHours(12);
+            }
         }
     }
 }

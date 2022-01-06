@@ -18,17 +18,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 ScheduleItem item = items[i];
 
-                if (item is LatheManufactureOrder)
+                if (item is LatheManufactureOrder order)
                 {
-                    LatheManufactureOrder order = item as LatheManufactureOrder;
-
-                    if (order.State == OrderState.Running)
-                    {
-                        foreach (LatheManufactureOrderItem orderItem in order.OrderItems)
-                        {
-                            secondsOfRuntime += Math.Max(orderItem.TargetQuantity - orderItem.QuantityMade, 0) * orderItem.CycleTime;
-                        }
-                    }
+                    secondsOfRuntime += GetTimeToMakeOrder(order, includeSetting: true);
                 }
                 else
                 {
@@ -37,9 +29,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         lastItemFinished = DateTime.Now;
                     }
 
-                    secondsOfRuntime += Math.Abs((item.StartDate - lastItemFinished).TotalSeconds);
                     secondsOfRuntime += item.TimeToComplete;
-                    secondsOfRuntime += 86400 / 2; // Setting Time
                 }
 
                 if (i == 0)
@@ -50,11 +40,28 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 {
                     lastItemFinished = item.StartDate.AddSeconds(item.TimeToComplete);
                 }
-
             }
 
+            return new(TimeSpan.FromSeconds(secondsOfRuntime), lastItemFinished);
+        }
 
-            return new(lastItemFinished - DateTime.Now, lastItemFinished);
+        public static int GetTimeToMakeOrder(LatheManufactureOrder order, bool includeSetting)
+        {
+            const int settingTime = 86400 / 2;
+            int runtime = 0;
+            if (includeSetting)
+            {
+                runtime += settingTime;
+            }
+
+            for (int i = 0; i < order.OrderItems.Count; i++)
+            {
+                LatheManufactureOrderItem item = order.OrderItems[i];
+                int cycleTime = item.CycleTime > 0 ? item.CycleTime : 120;
+                runtime += cycleTime * (item.TargetQuantity - item.QuantityMade);
+            }
+
+            return runtime;
         }
 
     }

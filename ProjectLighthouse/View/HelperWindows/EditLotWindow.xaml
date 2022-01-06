@@ -27,7 +27,6 @@
         <TextBlock Text="Date Produced"/>
         <Grid>
             <DatePicker x:Name="ProducedDatePicker" SelectedDateChanged="ProducedDatePicker_SelectedDateChanged"/>
-            <TextBlock Text="01/01/1970" x:Name="ProducedDateGhost" VerticalAlignment="Center" Padding="10,5" HorizontalAlignment="Left"/>
         </Grid>
         
         <TextBlock Text="Remarks" />

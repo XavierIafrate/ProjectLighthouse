@@ -88,7 +88,7 @@ namespace ProjectLighthouse.ViewModel
         public Visibility NotEnoughDataVis { get; set; }
         public Visibility GraphVis { get; set; }
         public Visibility GIFVis { get; set; }
-
+        public Visibility AddSpecialVisibility { get; set; }
         public Visibility HighLeadTimeVisibility { get; set; }
 
         #endregion
@@ -114,53 +114,58 @@ namespace ProjectLighthouse.ViewModel
 
         private void PopulateMachineInsights()
         {
-            return;
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
             Snippets = new List<MachineInfoSnippet>();
 
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(x => x.State < OrderState.Complete).ToList();
             List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
-            List<CompleteOrder> completeOrders = new();
+            List<MachineService> servicing = DatabaseHelper.Read<MachineService>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > DateTime.Now).ToList();
+            List<ResearchTime> research = DatabaseHelper.Read<ResearchTime>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > DateTime.Now).ToList();
+
+            List<ScheduleItem> CompleteOrders = new();
+            CompleteOrders.AddRange(research);
+            CompleteOrders.AddRange(servicing);
             foreach (LatheManufactureOrder order in orders)
             {
-                completeOrders.Add(new(order: order, items: items.Where(i => i.AssignedMO == order.Name).ToList()));
+                order.OrderItems = items.Where(i => i.AssignedMO == order.Name).ToList();
+                CompleteOrders.Add(order);
             }
 
             TimeSpan L20_leadTimes = TimeSpan.Zero;
             int num_L20s = 0;
 
-            //for (int i = 0; i < lathes.Count; i++)
-            //{
-            //    List<CompleteOrder> ordersForLathe = completeOrders.Where(o => o.Order.AllocatedMachine == lathes[i].Id).ToList();
-            //    Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload((List<ScheduleItem>)ordersForLathe);
+            for (int i = 0; i < lathes.Count; i++)
+            {
+                List<ScheduleItem> ordersForLathe = CompleteOrders.Where(o => o.AllocatedMachine == lathes[i].Id).ToList();
+                Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
 
-            //    MachineInfoSnippet tmpSnippet = new()
-            //    {
-            //        MachineID = lathes[i].Id,
-            //        MachineFullName = lathes[i].FullName,
-            //        LeadTime = workload.Item1
-            //    };
+                MachineInfoSnippet tmpSnippet = new()
+                {
+                    MachineID = lathes[i].Id,
+                    MachineFullName = lathes[i].FullName,
+                    LeadTime = workload.Item1
+                };
 
-            //    if (lathes[i].Model.StartsWith("L20"))
-            //    {
-            //        num_L20s++;
-            //        L20_leadTimes += tmpSnippet.LeadTime;
-            //    }
+                if (lathes[i].Model.StartsWith("L20"))
+                {
+                    num_L20s++;
+                    L20_leadTimes += tmpSnippet.LeadTime;
+                }
 
-            //    Snippets.Add(tmpSnippet);
-            //}
+                Snippets.Add(tmpSnippet);
+            }
 
-            //if (num_L20s > 0)
-            //{
-            //    L20_leadTimes /= num_L20s;
-            //    HighLeadTimeVisibility = L20_leadTimes.TotalDays > 33
-            //        ? Visibility.Visible
-            //        : Visibility.Collapsed;
+            if (num_L20s > 0)
+            {
+                L20_leadTimes /= num_L20s;
+                HighLeadTimeVisibility = L20_leadTimes.TotalDays > 33
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
 
-            //    OnPropertyChanged("HighLeadTimeVisibility");
-            //}
-            
+                OnPropertyChanged("HighLeadTimeVisibility");
+            }
+
             OnPropertyChanged("Snippets");
         }
 
@@ -189,6 +194,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void PopulateListBox()
         {
+            AddSpecialVisibility = Visibility.Collapsed;
             if (TurnedProducts.Count == 0) // called before loading
             {
                 return;
@@ -201,6 +207,11 @@ namespace ProjectLighthouse.ViewModel
             FilteredList.Clear();
             if (SelectedGroup == "Specials")
             {
+                //if (App.CurrentUser.CanCreateSpecial)
+                //{
+                //    AddSpecialVisibility = Visibility.Visible;
+                //}
+
                 FilteredList.AddRange(TurnedProducts.Where(p => p.isSpecialPart));
             }
             else if (SelectedGroup == "Live")
@@ -270,6 +281,7 @@ namespace ProjectLighthouse.ViewModel
 
             FilteredList = new(FilteredList.OrderBy(n => n.Material).ThenBy(n => n.ProductName));
             OnPropertyChanged("FilteredList");
+            OnPropertyChanged("AddSpecialVisibility");
             LoadGraph();
         }
 
@@ -481,26 +493,26 @@ namespace ProjectLighthouse.ViewModel
         {
             AddSpecialPartWindow window = new();
             window.ShowDialog();
-            if (!string.IsNullOrWhiteSpace(window.filename) &&
-               !string.IsNullOrWhiteSpace(window.productName) &&
-               !string.IsNullOrWhiteSpace(window.customerName) &&
-               window.submitted)
-            {
-                TurnedProduct newSpecial = new()
-                {
-                    ProductName = window.productName,
-                    isSpecialPart = true,
-                    CustomerRef = window.customerName,
-                    DrawingFilePath = window.filename,
-                    AddedBy = App.CurrentUser.UserName,
-                    AddedDate = DateTime.Now,
-                    ProductGroup = "Specials"
-                };
+            //if (!string.IsNullOrWhiteSpace(window.filename) &&
+            //   !string.IsNullOrWhiteSpace(window.productName) &&
+            //   !string.IsNullOrWhiteSpace(window.customerName) &&
+            //   window.submitted)
+            //{
+            //    TurnedProduct newSpecial = new()
+            //    {
+            //        ProductName = window.productName,
+            //        isSpecialPart = true,
+            //        CustomerRef = window.customerName,
+            //        DrawingFilePath = window.filename,
+            //        AddedBy = App.CurrentUser.UserName,
+            //        AddedDate = DateTime.Now,
+            //        ProductGroup = "Specials"
+            //    };
 
-                DatabaseHelper.Insert<TurnedProduct>(newSpecial);
-                ClearScreen();
-                SelectedGroup = "Specials";
-            }
+            //    DatabaseHelper.Insert<TurnedProduct>(newSpecial);
+            //    ClearScreen();
+            //    SelectedGroup = "Specials";
+            //}
         }
 
         public class MachineInfoSnippet

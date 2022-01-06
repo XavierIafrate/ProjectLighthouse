@@ -32,7 +32,7 @@
             SelectionChanged="requests_ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayRequest Request="{Binding}" Margin="10,2"/>
+                    <uc:DisplayRequest Margin="10,2" Request="{Binding}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -208,8 +208,8 @@
                                 IsSnapToTickEnabled="True"
                                 Maximum="14"
                                 Minimum="1"
-                                TickPlacement="BottomRight" 
-                                Value="{Binding TargetRuntime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                TickPlacement="BottomRight"
+                                Value="{Binding TargetRuntime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             <TextBlock
                                 Grid.Column="3"
                                 Padding="10,0"
@@ -222,7 +222,7 @@
                             <ListView ItemsSource="{Binding RecommendedManifest}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <uc:DisplayManifestItem Item="{Binding}" Margin="10,2"/>
+                                        <uc:DisplayManifestItem Margin="10,2" Item="{Binding}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -357,20 +357,9 @@
                                 x:Name="quantityTextbox"
                                 Margin="0"
                                 IsEnabled="{Binding CanEditRequirements}"
-                                Style="{StaticResource UsernameTextBox}"
-                                Text="{Binding SelectedRequest.QuantityRequired, UpdateSourceTrigger=PropertyChanged}"
-                                TextChanged="quantityTextbox_TextChanged" />
-                            <TextBlock
-                                x:Name="QuantityGhost"
-                                Margin="30,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                FontSize="18"
-                                FontStyle="Italic"
-                                Foreground="#aaaaaa"
-                                IsHitTestVisible="False"
-                                Text="Quantity Required"
-                                Visibility="Hidden" />
+                                Style="{StaticResource DefaultTextBox}"
+                                Tag="Quantity Required"
+                                Text="{Binding SelectedRequest.QuantityRequired, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
 
                         <Grid Margin="10">
@@ -378,26 +367,7 @@
                                 x:Name="EditDate_DatePicker"
                                 DisplayDateStart="{x:Static sys:DateTime.Now}"
                                 IsEnabled="{Binding CanEditRequirements}"
-                                SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}"
-                                SelectedDateChanged="DatePicker_SelectedDateChanged" />
-                            <TextBlock
-                                x:Name="date_display"
-                                Padding="15,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                FontSize="18"
-                                Text="" />
-                            <TextBlock
-                                x:Name="DateGhost"
-                                Margin="30,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                FontSize="18"
-                                FontStyle="Italic"
-                                Foreground="#aaaaaa"
-                                IsHitTestVisible="False"
-                                Text="Quantity Required"
-                                Visibility="Hidden" />
+                                SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}" />
                         </Grid>
 
                         <CheckBox

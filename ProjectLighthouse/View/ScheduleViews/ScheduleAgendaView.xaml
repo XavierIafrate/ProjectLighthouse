@@ -34,7 +34,7 @@
             <StackPanel>
                 <ListView
                     FontSize="18"
-                    ItemsSource="{Binding filterOptions}"
+                    ItemsSource="{Binding FilterOptions}"
                     SelectedValue="{Binding Filter, Mode=TwoWay}"
                     SelectionMode="Single">
                     <ListView.ItemTemplate>
@@ -102,6 +102,12 @@
                     Command="{Binding PrintScheduleCommand}"
                     Style="{StaticResource PDFButton}"
                     Visibility="{Binding PrintButtonVis}" />
+                <Button Command="{Binding AddResearchCommand}"
+                        Content="+ Research"
+                        Visibility="{Binding AddButtonsVis}"/>
+                <Button Command="{Binding AddServiceCommand}"
+                        Content="+ Service"
+                        Visibility="{Binding AddButtonsVis}"/>
             </StackPanel>
 
             <GridSplitter

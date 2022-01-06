@@ -78,7 +78,6 @@ namespace ProjectLighthouse.View
             QuantityRequiredTextbox.Text = Item.RequiredQuantity.ToString();
             QuantityTargetTextbox.Text = Item.TargetQuantity.ToString();
             DateRequiredPicker.SelectedDate = Item.DateRequired;
-            DateDisplay.Text = Item.DateRequired.ToString("dd/MM/yy");
 
             ProductNameTextBlock.Text = Item.ProductName;
             ManufactureOrderTextBlock.Text = Item.AssignedMO;
@@ -318,12 +317,6 @@ namespace ProjectLighthouse.View
             QuantityGhost.Visibility = string.IsNullOrEmpty(QuantityNewLotTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Hidden;
-        }
-
-        private void DateRequiredPicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            DateTime SelectedDate = (DateTime)DateRequiredPicker.SelectedDate;
-            DateDisplay.Text = SelectedDate.ToString("dd/MM/yy");
         }
 
         private void RejectCheckBox_Checked(object sender, RoutedEventArgs e)

@@ -5,6 +5,7 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -13,7 +14,7 @@ using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class OrderViewModel : BaseViewModel
+    public class OrderViewModel : BaseViewModel, IDisposable
     {
         #region Variables
 
@@ -224,6 +225,12 @@ namespace ProjectLighthouse.ViewModel
             GetLatestStats();
         }
 
+        ~OrderViewModel()
+        {
+            liveTimer.Stop();
+            Debug.WriteLine("Timer Stopped.");
+        }
+
         #region MachineStats Display
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -233,6 +240,13 @@ namespace ProjectLighthouse.ViewModel
 
         private void GetLatestStats()
         {
+            Debug.WriteLine("updating live stats");
+            if (App.ActiveViewModel != "Orders")
+            {
+                Debug.WriteLine("cancelled");
+                return;
+            }
+
             MachineStatistics = null;
             MachineStatistics = MachineStatsHelper.GetStats() ?? new();
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
@@ -260,8 +274,16 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
 
+            try
+            {
+                DisplayStats = MachineStatistics.First(n => n.MachineID == latheName);
+            }
+            catch(Exception ex)
+            {
+                LiveInfoVis = Visibility.Collapsed;
+                return;
+            }
 
-            DisplayStats = MachineStatistics.First(n => n.MachineID == latheName);
 
             if (DisplayStats == null)
             {
@@ -553,6 +575,18 @@ namespace ProjectLighthouse.ViewModel
                 3 or 23 => "rd",
                 _ => "th",
             };
+        }
+
+        public void Dispose()
+        {
+            Products = null;
+            MachineStatistics = null;
+
+            liveTimer.Stop();
+
+            GC.Collect();
+            Debug.WriteLine("Timer Stopped.");
+            Debug.WriteLine("Disposing");
         }
     }
 }

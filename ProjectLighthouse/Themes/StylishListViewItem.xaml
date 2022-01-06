@@ -12,7 +12,8 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="12">
-                        <ContentPresenter  /> <!--Margin="10,2"-->
+                        <ContentPresenter />
+                        <!--  Margin="10,2"  -->
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

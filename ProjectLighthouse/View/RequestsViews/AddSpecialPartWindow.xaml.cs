@@ -1,31 +1,25 @@
 ﻿using Microsoft.Win32;
+using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.View
 {
     public partial class AddSpecialPartWindow : Window
     {
-
-        public string filename { get; set; }
-        public string productName { get; set; }
-        public string customerName { get; set; }
-        public bool submitted { get; set; }
+        public TurnedProduct NewProduct;
+        public bool SaveExit;
+        private string drawingFile = "";
 
         public AddSpecialPartWindow()
         {
-            submitted = false;
             InitializeComponent();
-            SetValues();
-            fileWarning.Visibility = Visibility.Collapsed;
-        }
-
-        private void CreateProduct_Click(object sender, RoutedEventArgs e)
-        {
-            submitted = true;
-            Close();
+            NewProduct = new();
         }
 
         private void SelectFile_Click(object sender, RoutedEventArgs e)
@@ -35,48 +29,210 @@ namespace ProjectLighthouse.View
                 Filter = "PDF Files (*.pdf)|*.pdf"
             };
 
-            string openDir = "H:\\Sales Office";
-
-            if (!Directory.Exists(openDir))
-                openDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
+            string openDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             openFileDialog.InitialDirectory = openDir;
 
             if (openFileDialog.ShowDialog() == true)
             {
-                filename = openFileDialog.FileName;
-                fileWarning.Visibility = filename[0] != 'H' ? Visibility.Visible : Visibility.Collapsed;
-                drawingFileText.Text = Path.GetFileName(openFileDialog.FileName);
-                EnableSubmit();
+                string newDrawingPath = @"Drawings\Specials\" + Path.GetFileName(openFileDialog.FileName);
+
+                string fullDrawingPath = Path.Join(App.ROOT_PATH, newDrawingPath);
+                if (File.Exists(fullDrawingPath))
+                {
+                    MessageBox.Show($"A Document called '{Path.GetFileName(openFileDialog.FileName)}' already exists in the library.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    try
+                    {
+                        File.Copy(openFileDialog.FileName, fullDrawingPath);
+                        drawingFile = newDrawingPath;
+                        DrawingFile.Text = Path.GetFileName(openFileDialog.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+                    }
+                }
+                //drawingFileText.Text = Path.GetFileName(openFileDialog.FileName);
             }
         }
 
-        private void productNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private bool ValidateFields()
         {
-            TextBox textBox = sender as TextBox;
-            productName = textBox.Text.ToUpper().Trim();
-            SetValues();
+            bool valid = true;
+
+            if (string.IsNullOrEmpty(productNameTextBox.Text))
+            {
+                valid = false;
+                MarkControl(productNameTextBox, valid: false);
+            }
+            else
+            {
+                MarkControl(productNameTextBox, valid: true);
+            }
+
+            if (string.IsNullOrEmpty(materialComboBox.Text))
+            {
+                valid = false;
+                MarkControl(materialComboBox, valid: false);
+            }
+            else
+            {
+                MarkControl(materialComboBox, valid: true);
+            }
+
+            if (string.IsNullOrEmpty(threadSizeComboBox.Text))
+            {
+                valid = false;
+                MarkControl(threadSizeComboBox, valid: false);
+            }
+            else
+            {
+                MarkControl(threadSizeComboBox, valid: true);
+            }
+
+            if ((bool)hex.IsChecked)
+            {
+                MarkControl(TorxSize, valid: true);
+
+                if (string.IsNullOrEmpty(HexSize.Text))
+                {
+                    valid = false;
+                    MarkControl(HexSize, valid: false);
+                }
+                else
+                {
+                    MarkControl(HexSize, valid: true);
+                }
+            }
+            else if ((bool)torx.IsChecked)
+            {
+                MarkControl(HexSize, valid: true);
+
+                if (string.IsNullOrEmpty(TorxSize.Text))
+                {
+                    valid = false;
+                    MarkControl(TorxSize, valid: false);
+                }
+                else
+                {
+                    MarkControl(TorxSize, valid: true);
+                }
+            }
+            else
+            {
+                MarkControl(HexSize, valid: true);
+                MarkControl(TorxSize, valid: true);
+            }
+
+            if (string.IsNullOrEmpty(customerNameTextBox.Text))
+            {
+                valid = false;
+                MarkControl(customerNameTextBox, valid: false);
+            }
+            else
+            {
+                MarkControl(customerNameTextBox, valid: true);
+            }
+
+            if (string.IsNullOrEmpty(majorDiameter.Text))
+            {
+                MarkControl(majorDiameter, valid: false);
+                valid = false;
+            }
+            else
+            {
+                if (CheckTextIsFullDouble(majorDiameter.Text))
+                {
+                    MarkControl(majorDiameter, valid: true);
+                }
+                else
+                {
+                    MarkControl(majorDiameter, valid: false);
+                    valid = false;
+                }
+            }
+
+            if (string.IsNullOrEmpty(majorLength.Text))
+            {
+                MarkControl(majorLength, valid: false);
+                valid = false;
+            }
+            else
+            {
+                if (CheckTextIsFullDouble(majorLength.Text))
+                {
+                    MarkControl(majorLength, valid: true);
+                }
+                else
+                {
+                    MarkControl(majorLength, valid: false);
+                    valid = false;
+                }
+            }
+
+            if (DrawingFile.Text == "<pdf_drawing>")
+            {
+                DrawingFile.Foreground = Brushes.Red;
+                valid = false;
+            }
+            else
+            {
+                DrawingFile.Foreground = Brushes.Black;
+            }
+
+            return valid;
         }
 
-        private void customerNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private bool CheckTextIsFullDouble(string text)
         {
-            TextBox textBox = sender as TextBox;
-            customerName = textBox.Text.Trim();
-            SetValues();
+            bool valid = false;
+            
+            if (text.Length > 3)
+            {
+                if (double.TryParse(text, out double val))
+                {
+                    if (text[^3] == '.')
+                    {
+                        valid = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show($"It looks like '{text}' is not to two decimal places.");
+                    }
+                }
+            }
+
+            return valid;
         }
 
-        private void SetValues()
+        private void MarkControl(Control control, bool valid)
         {
-            prodNameText.Text = productName;
-            custNameText.Text = customerName;
-            EnableSubmit();
+            BrushConverter converter = new();
+            control.BorderBrush = valid
+                ? (Brush)converter.ConvertFromString("#f0f0f0")
+                : Brushes.Red;
         }
 
-        private void EnableSubmit()
+        private void ImprintData()
         {
-            createProductButton.IsEnabled = !String.IsNullOrWhiteSpace(productName) &&
-                                            !String.IsNullOrWhiteSpace(customerName) &&
-                                            !String.IsNullOrWhiteSpace(filename);
+
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            ValidateFields();
+            ImprintData();
+
+            //SaveExit = true;
+            //Close();
+        }
+
+        private void ValidateDouble(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            TextBox textbox = sender as TextBox;
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersAndPeriod(textbox.Text, e);
         }
     }
 }

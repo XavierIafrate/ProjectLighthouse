@@ -9,6 +9,7 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:Background="White"
     d:DesignWidth="692.307"
+    SizeChanged="UserControl_SizeChanged"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -27,12 +28,16 @@
             CornerRadius="5,0,0,5" />
 
 
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" x:Name="MainCanvas">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" MinWidth="130" />
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
 
             <StackPanel Margin="20,10">
                 <TextBlock
@@ -90,13 +95,6 @@
                     Click="EditButton_Click"
                     Content="edit"
                     Style="{StaticResource SubtleButtonTemplate}" />
-
-                <!--
-                    Command="{Binding UpdateCommand}"
-                    CommandParameter="{Binding Order, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                -->
-
-
             </StackPanel>
 
             <Grid Grid.Column="1" Margin="10">
@@ -164,7 +162,15 @@
 
             </Grid>
 
-            <StackPanel Grid.Column="2" Margin="0,10,20,0">
+            <StackPanel
+                x:Name="OrderItemsSubControl"
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                MaxWidth="600"
+                Margin="0,10,20,0"
+                HorizontalAlignment="Stretch"
+                Visibility="Visible">
                 <TextBlock
                     Margin="5"
                     FontSize="15"
@@ -172,9 +178,9 @@
                     Text="Order Items" />
 
                 <ItemsControl
+                    x:Name="orderItems"
                     HorizontalContentAlignment="Stretch"
-                    Grid.IsSharedSizeScope="True"
-                    x:Name="orderItems">
+                    Grid.IsSharedSizeScope="True">
 
                     <!--<HeaderedItemsControl.Header>
                         <Grid>
@@ -208,33 +214,39 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="0,1">
+                            <Grid
+                                
+                                Margin="0,1"
+                                HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition
-                                        Width="auto"
-                                        MinWidth="100"
-                                        SharedSizeGroup="a" />
+                                    <ColumnDefinition />
                                     <ColumnDefinition
                                         Width="*"
-                                        MinWidth="100"
+                                        MaxWidth="20"
                                         SharedSizeGroup="b" />
+                                    <ColumnDefinition/>
                                     <ColumnDefinition
-                                        Width="auto"
-                                        MinWidth="140"
-                                        SharedSizeGroup="c" />
+                                        Width="*"
+                                        MaxWidth="20"
+                                        SharedSizeGroup="b" />
+                                    <ColumnDefinition/>
                                     <ColumnDefinition
-                                        Width="auto"
-                                        MinWidth="100"
-                                        SharedSizeGroup="d" />
+                                        Width="*"
+                                        MaxWidth="20"
+                                        SharedSizeGroup="b" />
+                                    <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock FontWeight="SemiBold" Text="{Binding Path=ProductName}" />
                                 <TextBlock
-                                    Grid.Column="1"
-                                    Padding="10,0,0,0"
+                                    Padding="0,0,10,0"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding Path=ProductName}" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Padding="0,0,10,0"
                                     HorizontalAlignment="Center"
                                     Text="{Binding Path=TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" />
                                 <TextBlock
-                                    Grid.Column="2"
+                                    Grid.Column="4"
                                     Padding="0,0,10,0"
                                     HorizontalAlignment="Right"
                                     FontStyle="Italic"
@@ -242,7 +254,7 @@
                                     Foreground="{StaticResource materialPrimaryBlueVar}"
                                     Text="{Binding Converter='{StaticResource requirementText}'}" />
                                 <TextBlock
-                                    Grid.Column="3"
+                                    Grid.Column="6"
                                     HorizontalAlignment="Right"
                                     FontStyle="Italic"
                                     Text="{Binding Path=QuantityMade, StringFormat='{}{0:#,##0} pcs made'}" />

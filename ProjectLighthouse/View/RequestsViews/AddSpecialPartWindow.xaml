@@ -6,85 +6,282 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Lighthouse Requests"
-    Width="300"
-    Height="450"
+    Width="600"
     ResizeMode="NoResize"
+    SizeToContent="Height"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
 
-    <StackPanel Margin="20" VerticalAlignment="Center">
+    <StackPanel Margin="40,20" VerticalAlignment="Center">
         <TextBlock
-            Margin="0,0,0,10"
-            FontSize="30"
+            Margin="0,0,0,15"
+            FontSize="40"
             FontWeight="Bold"
-            Foreground="{StaticResource materialOnBackground}"
-            Text="New Special" />
-        <TextBlock FontSize="13" Text="Name of special part" />
-        <TextBox
-            x:Name="productNameTextBox"
-            Margin="0,2,0,10"
-            MaxLength="16"
-            TextChanged="productNameTextBox_TextChanged" />
+            Text="New Special Part" />
 
-        <TextBlock FontSize="13" Text="Customer Name" />
-        <TextBox
-            x:Name="customerNameTextBox"
-            Margin="0,2,0,10"
-            MaxLength="25"
-            TextChanged="customerNameTextBox_TextChanged" />
+        <Grid Margin="0,5">
+            <StackPanel>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource section}"
+                    Text="Product Name:" />
+                <TextBlock Style="{StaticResource statement}" Text="This needs to match Opera to sync" />
+            </StackPanel>
 
-
-        <Button
-            x:Name="SelectFile"
-            Click="SelectFile_Click"
-            Content="Select Drawing file" />
-        <Grid
-            x:Name="fileWarning"
-            Margin="0,5"
-            HorizontalAlignment="Center">
-            <TextBlock
-                Margin="12,2"
-                FontStyle="Italic"
-                Foreground="{StaticResource materialError}"
-                Text="Make sure the drawing is on the server!" />
+            <TextBox
+                x:Name="productNameTextBox"
+                Margin="0,2,0,10"
+                HorizontalAlignment="Right"
+                MaxLength="16"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="eg P0130.100-050-A2" />
         </Grid>
 
-        <Separator Margin="0,10" />
+        <Grid Margin="20,0,20,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Border
+                Grid.RowSpan="3"
+                BorderBrush="{StaticResource materialError}"
+                BorderThickness="3"
+                CornerRadius="10" />
+            <TextBlock
+                Margin="10,10,10,0"
+                HorizontalAlignment="Center"
+                FontSize="20"
+                FontWeight="Bold"
+                Foreground="{StaticResource materialError}"
+                Text="CRITICAL DATA" />
+            <TextBlock
+                Grid.Row="1"
+                Margin="30,0"
+                FontStyle="Italic"
+                Foreground="{StaticResource materialOffBlack}"
+                Text="These numbers are critical for the requests engine- it dictates raw material budgets and therefore cost to us."
+                TextWrapping="Wrap" />
+            <StackPanel Grid.Row="2" Margin="20,5">
+                <Grid Margin="0,3">
+                    <StackPanel>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Style="{StaticResource section}"
+                            Text="Overall Length:" />
+                        <TextBlock Style="{StaticResource statement}" Text="Correct to two decimal places" />
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <TextBox
+                            x:Name="majorLength"
+                            Margin="0,2,0,10"
+                            MaxLength="6"
+                            PreviewKeyDown="ValidateDouble"
+                            Style="{StaticResource DefaultTextBox}"
+                            Tag="0.00" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource section}"
+                            Text="mm" />
+                    </StackPanel>
 
-        <Grid Margin="10,5,10,0">
-            <Rectangle RadiusX="10" RadiusY="10">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="DodgerBlue" />
-                </Rectangle.Fill>
-            </Rectangle>
-            <StackPanel Margin="10">
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Text="New Product" />
-                <TextBlock
-                    x:Name="prodNameText"
-                    FontSize="16"
-                    Foreground="White" />
-                <TextBlock
-                    x:Name="custNameText"
-                    FontSize="16"
-                    Foreground="White" />
-                <TextBlock
-                    x:Name="drawingFileText"
-                    FontSize="16"
-                    Foreground="White" />
+                </Grid>
 
+                <Grid Margin="0,3">
+                    <StackPanel>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Style="{StaticResource section}"
+                            Text="Largest Diameter:" />
+                        <TextBlock Style="{StaticResource statement}" Text="Correct to two decimal places" />
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <TextBox
+                            x:Name="majorDiameter"
+                            Margin="0,2,0,10"
+                            HorizontalAlignment="Right"
+                            MaxLength="6"
+                            PreviewKeyDown="ValidateDouble"
+                            Style="{StaticResource DefaultTextBox}"
+                            Tag="0.00" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource section}"
+                            Text="mm" />
+                    </StackPanel>
+
+                </Grid>
             </StackPanel>
         </Grid>
 
 
+
+        <Grid Margin="0,5">
+            <TextBlock
+                VerticalAlignment="Center"
+                Style="{StaticResource section}"
+                Text="Material:" />
+            <ComboBox
+                x:Name="materialComboBox"
+                Width="280"
+                HorizontalAlignment="Right">
+                <ComboBoxItem Content="AISI 303 [A2]" Tag="A2" />
+                <ComboBoxItem Content="AISI 304 [True A2]" Tag="304" />
+                <ComboBoxItem Content="AISI 316 [A4]" Tag="A4" />
+                <ComboBoxItem Content="Mild Steel [EN1A]" Tag="EN1A" />
+                <ComboBoxItem Content="Grade 2 Titanium [T2]" Tag="T2" />
+                <ComboBoxItem Content="Grade 5 Titanium [T5]" Tag="T5" />
+                <ComboBoxItem Content="Other (specify in request comments)" Tag="n/a" />
+            </ComboBox>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <TextBlock
+                VerticalAlignment="Center"
+                Style="{StaticResource section}"
+                Text="Thread Size:" />
+            <ComboBox
+                x:Name="threadSizeComboBox"
+                Width="100"
+                HorizontalAlignment="Right">
+                <ComboBoxItem Content="M2" />
+                <ComboBoxItem Content="M2,5" />
+                <ComboBoxItem Content="M3" />
+                <ComboBoxItem Content="M3,5" />
+                <ComboBoxItem Content="M4" />
+                <ComboBoxItem Content="M5" />
+                <ComboBoxItem Content="M6" />
+                <ComboBoxItem Content="M8" />
+                <ComboBoxItem Content="M10" />
+                <ComboBoxItem Content="M12" />
+                <ComboBoxItem Content="M14" />
+                <ComboBoxItem Content="M16" />
+                <ComboBoxItem Content="N/A" />
+            </ComboBox>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <TextBlock
+                VerticalAlignment="Center"
+                Style="{StaticResource section}"
+                Text="Thread Type:" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+                <RadioButton
+                    x:Name="hex"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="Hex"
+                    GroupName="Drive"
+                    IsChecked="True" />
+                <RadioButton
+                    x:Name="torx"
+                    Margin="10,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="Torx"
+                    GroupName="Drive" />
+                <RadioButton
+                    x:Name="thumb"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="Thumb"
+                    GroupName="Drive" />
+
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="hexSocketOpts" Margin="0,5">
+            <TextBlock
+                VerticalAlignment="Center"
+                Style="{StaticResource section}"
+                Text="Hex Socket Size:" />
+            <ComboBox
+                x:Name="HexSize"
+                Width="100"
+                HorizontalAlignment="Right">
+                <ComboBoxItem Content="1,5mm" />
+                <ComboBoxItem Content="2,5mm" />
+                <ComboBoxItem Content="3mm" />
+                <ComboBoxItem Content="3,5mm" />
+                <ComboBoxItem Content="4mm" />
+                <ComboBoxItem Content="4,5mm" />
+                <ComboBoxItem Content="5mm" />
+                <ComboBoxItem Content="5,5mm" />
+                <ComboBoxItem Content="6mm" />
+                <ComboBoxItem Content="7mm" />
+                <ComboBoxItem Content="8mm" />
+                <ComboBoxItem Content="9mm" />
+                <ComboBoxItem Content="10mm" />
+                <ComboBoxItem Content="N/A" />
+            </ComboBox>
+        </Grid>
+
+
+        <Grid x:Name="torxDriveOpts" Margin="0,5">
+            <TextBlock
+                VerticalAlignment="Center"
+                Style="{StaticResource section}"
+                Text="Torx Drive Size:" />
+            <ComboBox
+                x:Name="TorxSize"
+                Width="100"
+                HorizontalAlignment="Right">
+                <ComboBoxItem Content="TX-3" />
+                <ComboBoxItem Content="TX-4" />
+                <ComboBoxItem Content="TX-5" />
+                <ComboBoxItem Content="TX-6" />
+                <ComboBoxItem Content="TX-7" />
+                <ComboBoxItem Content="TX-8" />
+                <ComboBoxItem Content="TX-9" />
+                <ComboBoxItem Content="TX-10" />
+                <ComboBoxItem Content="TX-15" />
+                <ComboBoxItem Content="TX-20" />
+                <ComboBoxItem Content="TX-25" />
+                <ComboBoxItem Content="TX-27" />
+                <ComboBoxItem Content="TX-30" />
+                <ComboBoxItem Content="TX-40" />
+                <ComboBoxItem Content="N/A" />
+            </ComboBox>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <TextBlock
+                Margin="0,0,0,5"
+                VerticalAlignment="Center"
+                Style="{StaticResource section}"
+                Text="Customer:" />
+            <TextBox
+                x:Name="customerNameTextBox"
+                Width="300"
+                Margin="0,2,0,10"
+                HorizontalAlignment="Right"
+                MaxLength="50"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="eg. Doofenshmirtz Evil, Inc." />
+        </Grid>
+        <Grid>
+            <Button
+                x:Name="SelectFile"
+                HorizontalAlignment="Left"
+                Click="SelectFile_Click"
+                Content="Select Drawing file" />
+            <TextBlock
+                x:Name="DrawingFile"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="&lt;pdf_drawing&gt;" />
+
+        </Grid>
+
         <Button
-            x:Name="createProductButton"
-            Click="CreateProduct_Click"
-            Content="Create Product"
+            x:Name="SaveButton"
+            HorizontalAlignment="Right"
+            Click="SaveButton_Click"
+            Content="Create"
             Style="{StaticResource GreenButton}" />
 
     </StackPanel>

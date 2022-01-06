@@ -36,8 +36,8 @@
 
     <!--  Don't touch  -->
     <Style BasedOn="{StaticResource Default}" TargetType="Button" />
-    
-    
+
+
 
     <!--  Sub Styles  -->
 
@@ -47,16 +47,16 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Foreground" Value="{StaticResource materialOnPrimary}" />
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
+                        x:Name="border"
                         Height="35"
                         Padding="20,0"
                         Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        x:Name="border">
+                        BorderThickness="0">
                         <StackPanel Orientation="Horizontal">
                             <Path
                                 Width="12"
@@ -121,6 +121,40 @@
         </Style.Triggers>
     </Style>
 
+    <Style
+        x:Key="Inverting"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource materialOffBlack}" />
+        <Setter Property="Background" Value="{StaticResource materialYellow}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Height="26"
+                        Padding="10,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="13">
+                        <ContentPresenter
+                            x:Name="content"
+                            Margin="3,3,3,4"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource materialOnPrimary}" />
+                            <Setter TargetName="border" Property="Background" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <Style x:Key="SubtleButtonTemplate" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
@@ -132,13 +166,13 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
-                        Height="18"
-                        Padding="10,0"
+                        Height="24"
+                        Padding="5,0,7,0"
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
-                        CornerRadius="9">
+                        CornerRadius="12">
                         <ContentPresenter
-                            Margin="0,0,0,1"
+                            Margin="0,0,0,2"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center" />
                     </Border>

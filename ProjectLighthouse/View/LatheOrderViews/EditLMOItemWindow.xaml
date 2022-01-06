@@ -290,14 +290,7 @@
                 <DatePicker
                     x:Name="DateRequiredPicker"
                     Width="150"
-                    HorizontalAlignment="Stretch"
-                    SelectedDateChanged="DateRequiredPicker_SelectedDateChanged" />
-                <TextBlock
-                    x:Name="DateDisplay"
-                    Margin="20,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="DateDisplay" />
+                    HorizontalAlignment="Stretch" />
             </Grid>
 
             <!--<Button Style="{StaticResource ButtonTemplate}" Content="Clear Date" x:Name="ClearDateButton" Click="ClearDateButton_Click"/>-->
