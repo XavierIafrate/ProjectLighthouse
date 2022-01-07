@@ -584,7 +584,7 @@ namespace ProjectLighthouse.ViewModel
 
             liveTimer.Stop();
 
-            GC.Collect();
+            //GC.Collect();
             Debug.WriteLine("Timer Stopped.");
             Debug.WriteLine("Disposing");
         }

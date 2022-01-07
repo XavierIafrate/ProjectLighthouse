@@ -41,6 +41,11 @@ namespace ProjectLighthouse.View
 
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
+            DatePicker control = sender as DatePicker;
+            if (viewModel != null)
+            {
+                viewModel.NewRequest.DateRequired = control.SelectedDate.Value;
+            }
             EnableSubmit();
         }
 

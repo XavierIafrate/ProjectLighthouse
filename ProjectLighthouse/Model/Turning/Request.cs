@@ -3,7 +3,7 @@ using System;
 
 namespace ProjectLighthouse.Model
 {
-    public class Request
+    public class Request : ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -27,6 +27,31 @@ namespace ProjectLighthouse.Model
         public string Notes { get; set; }
 
         public bool CleanCustomerRequirement { get; set; }
+
+        public object Clone()
+        {
+            return new Request()
+            {
+                Id = Id,
+                Product = Product,
+                POReference = POReference,
+                QuantityRequired = QuantityRequired,   
+                DateRequired = DateRequired,
+                RaisedBy = RaisedBy,
+                DateRaised = DateRaised,
+                ModifiedBy = ModifiedBy,
+                LastModified = LastModified,
+                IsDeclined = IsDeclined,
+                IsAccepted = IsAccepted,
+                AcceptedBy = AcceptedBy,
+                DeclinedReason = DeclinedReason,
+                ResultingLMO = ResultingLMO,
+                Status = Status,
+                Likeliness = Likeliness,
+                Notes = Notes,
+                CleanCustomerRequirement = CleanCustomerRequirement,
+            };
+        }
 
         public void MarkAsAccepted()
         {

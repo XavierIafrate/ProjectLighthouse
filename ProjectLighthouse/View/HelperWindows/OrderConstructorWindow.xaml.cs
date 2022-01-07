@@ -42,7 +42,12 @@ namespace ProjectLighthouse.View
             List<BarStock> bars = DatabaseHelper.Read<BarStock>();
 
             RequiredTurnedProduct = allProducts.First(p => p.ProductName == approvedRequest.Product);
-            ProductPool = allProducts.Where(p => RequiredTurnedProduct.IsScheduleCompatible(p) && p.CanBeManufactured() && !p.isSpecialPart).ToList();
+
+            ProductPool = RequiredTurnedProduct.isSpecialPart
+                ? allProducts.Where(p => RequiredTurnedProduct.IsScheduleCompatible(p) && p.CanBeManufactured()).ToList()
+                : allProducts.Where(p => RequiredTurnedProduct.IsScheduleCompatible(p) && p.CanBeManufactured() && !p.isSpecialPart).ToList();
+
+
             ListboxProducts = new List<TurnedProduct>(ProductPool);
             OrderBar = bars.First(b => b.Id == RequiredTurnedProduct.BarID);
 

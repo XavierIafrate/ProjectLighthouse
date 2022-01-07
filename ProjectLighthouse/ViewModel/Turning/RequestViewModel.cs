@@ -5,6 +5,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -376,11 +377,14 @@ namespace ProjectLighthouse.ViewModel
 
             SelectedRequest.ResultingLMO = creationWindow.NewOrder.Name;
             SelectedRequest.MarkAsAccepted();
+            Debug.WriteLine($"Requested Product: {SelectedRequest.Product}");
+
 
             if (DatabaseHelper.Update(SelectedRequest))
             {
-                Task.Run(() => EmailHelper.NotifyRequestApproved(SelectedRequest));
-                Task.Run(() => EmailHelper.NotifyNewOrder(creationWindow.NewOrder, creationWindow.NewOrderItems));
+                Debug.WriteLine($"Emailing about: {SelectedRequest.Product}");
+                //Task.Run(() => EmailHelper.NotifyRequestApproved((Request)SelectedRequest.Clone()));
+                //Task.Run(() => EmailHelper.NotifyNewOrder(creationWindow.NewOrder, creationWindow.NewOrderItems));
 
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");
@@ -393,6 +397,7 @@ namespace ProjectLighthouse.ViewModel
                 MessageBox.Show("Failed to update the request.", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         public void DeclineRequest()
         {
@@ -412,7 +417,7 @@ namespace ProjectLighthouse.ViewModel
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                Task.Run(() => EmailHelper.NotifyRequestDeclined(SelectedRequest));
+                //Task.Run(() => EmailHelper.NotifyRequestDeclined(SelectedRequest));
 
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");

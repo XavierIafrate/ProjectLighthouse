@@ -207,10 +207,10 @@ namespace ProjectLighthouse.ViewModel
             FilteredList.Clear();
             if (SelectedGroup == "Specials")
             {
-                //if (App.CurrentUser.CanCreateSpecial)
-                //{
-                //    AddSpecialVisibility = Visibility.Visible;
-                //}
+                if (App.CurrentUser.CanCreateSpecial && App.CurrentUser.UserName == "xav")
+                {
+                    AddSpecialVisibility = Visibility.Visible;
+                }
 
                 FilteredList.AddRange(TurnedProducts.Where(p => p.isSpecialPart));
             }

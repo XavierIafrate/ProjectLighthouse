@@ -1,6 +1,7 @@
 ﻿using IO.ClickSend.ClickSend.Api;
 using IO.ClickSend.ClickSend.Model;
 using IO.ClickSend.Client;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
@@ -47,12 +48,10 @@ namespace ProjectLighthouse.Model
                     subject: subject,
                     body: body
                     ));
-
-                //object test = JsonConvert.DeserializeObject(response);
             }
-            catch
+            catch(Exception ex)
             {
-                MessageBox.Show("Failed to send email");
+                MessageBox.Show($"Failed to send email\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }

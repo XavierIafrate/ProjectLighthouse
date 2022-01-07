@@ -32,7 +32,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 ));
 
             string subject = "Request Approved";
-
+            Debug.WriteLine($"EmailHelper: {approvedRequest.Product}");
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#00695C'>Request approved!</h2>" +
