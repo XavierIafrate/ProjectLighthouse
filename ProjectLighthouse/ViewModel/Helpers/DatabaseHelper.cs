@@ -11,7 +11,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             return Environment.UserName == "xavier"
                                ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
-                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
+                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB_debug.db3";
         }
 
         public static bool Insert<T>(T item)

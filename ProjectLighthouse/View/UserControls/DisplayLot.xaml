@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
     Background="#01ffffff"
-    mc:Ignorable="d">
+    mc:Ignorable="d" d:DesignWidth="311.747">
 
     <UserControl.Resources>
         <Style x:Key="text" TargetType="TextBlock">
@@ -32,7 +32,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" MaxWidth="350" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
@@ -92,6 +92,7 @@
                 Text="{Binding DateProduced, StringFormat='{}produced {0:dd/MM/yy HH:mm}', FallbackValue='produced 01/01/1970'}" />
 
             <TextBlock
+                
                 Grid.Row="2"
                 Grid.Column="1"
                 FontStyle="Italic"
@@ -103,11 +104,17 @@
                 ToolTipService.ShowDuration="10000" />
 
             <TextBlock
+                HorizontalAlignment="Left"
+                MaxWidth="230"
+                MaxHeight="50"
                 Grid.Row="3"
                 Grid.Column="1"
+                Grid.ColumnSpan="2"
                 FontStyle="Italic"
-                Foreground="{StaticResource materialOffBlack}"
-                Text="{Binding Remarks, FallbackValue='remarks'}" />
+                TextWrapping="Wrap"
+                TextTrimming="WordEllipsis"
+                Foreground="{StaticResource materialPrimary}"
+                Text="{Binding Remarks, FallbackValue='lorem ipsum dolor sit amet'}" />
         </Grid>
     </Grid>
 </UserControl>

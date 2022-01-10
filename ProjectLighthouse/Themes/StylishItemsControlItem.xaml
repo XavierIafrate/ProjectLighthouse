@@ -14,18 +14,18 @@
             </Setter.Value>
         </Setter>
 
-    -->
-    <!--<Style.Triggers>
+    
+    --><!--<Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="{StaticResource materialSelectedColour}" />
                 <Setter Property="BorderThickness" Value="2" />
             </Trigger>
-        </Style.Triggers>-->
-    <!--
+        </Style.Triggers>--><!--
+    
     </Style>
 
-    -->
-    <!--  Don't touch  -->
-    <!--
+    
+    --><!--  Don't touch  --><!--
+    
     <Style BasedOn="{StaticResource Default}" TargetType="ItemsPresenter" />-->
 </ResourceDictionary>

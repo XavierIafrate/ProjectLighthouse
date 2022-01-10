@@ -396,6 +396,34 @@
     </Style>
 
     <Style
+        x:Key="Calibration_MenuItem"
+        BasedOn="{StaticResource MenuItem}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid Margin="30,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Path
+                            Width="18"
+                            Margin="0,3,8,0"
+                            Data="M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                        <TextBlock
+                            Grid.Column="1"
+                            FontSize="{TemplateBinding FontSize}"
+                            Text="Calibration" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
         x:Key="Analytics_MenuItem"
         BasedOn="{StaticResource MenuItem}"
         TargetType="ToggleButton">

@@ -60,6 +60,10 @@
                 <views:DeliveriesView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type vms:CalibrationViewModel}">
+                <views:CalibrationView />
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type vms:AnalyticsViewModel}">
                 <views:AnalyticsView />
             </DataTemplate>

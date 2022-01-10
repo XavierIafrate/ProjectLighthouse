@@ -88,6 +88,14 @@ namespace ProjectLighthouse
                 : Visibility.Collapsed;
 
             debug_button.Visibility = App.CurrentUser.UserName == "xav"
+                ? Visibility.Collapsed
+                : Visibility.Collapsed;
+
+            calibration_button.Visibility = App.CurrentUser.UserName == "xav"
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            drawings_button.Visibility = App.CurrentUser.UserName == "xav"
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 

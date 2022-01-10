@@ -108,12 +108,12 @@
                             Content="Bar Stock"
                             Style="{StaticResource BarStock_MenuItem}" />
 
-                        <!--<ToggleButton
+                        <ToggleButton
                             x:Name="drawings_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Drawings"
                             Content="Drawings"
-                            Style="{StaticResource Drawings_MenuItem}" />-->
+                            Style="{StaticResource Drawings_MenuItem}" />
                     </StackPanel>
 
                     <StackPanel Margin="0,20">
@@ -127,6 +127,12 @@
                     </StackPanel>
 
                     <StackPanel Margin="0,20">
+                        <ToggleButton
+                            x:Name="calibration_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Calibration"
+                            Content="Calibration"
+                            Style="{StaticResource Calibration_MenuItem}" />
                         <ToggleButton
                             x:Name="analytics_button"
                             Command="{Binding UpdateViewCommand}"
@@ -144,6 +150,7 @@
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Dev Area / Debug"
                             Content="Dev Area"
+                            Visibility="Collapsed"
                             Style="{StaticResource Debug_MenuItem}" />
                     </StackPanel>
 
@@ -201,7 +208,7 @@
                         FontSize="15"
                         FontStyle="Italic"
                         Opacity="0.5"
-                        Text="This part of Lighthouse is in Beta testing" />
+                        Text="This module of Lighthouse is in Beta trials" />
                     <TextBlock
                         FontSize="15"
                         FontStyle="Italic"

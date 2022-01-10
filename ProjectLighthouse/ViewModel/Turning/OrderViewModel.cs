@@ -583,9 +583,9 @@ namespace ProjectLighthouse.ViewModel
             MachineStatistics = null;
 
             liveTimer.Stop();
+            liveTimer.Dispose();
 
-            //GC.Collect();
-            Debug.WriteLine("Timer Stopped.");
+            Debug.WriteLine($"Timer Disposed.");
             Debug.WriteLine("Disposing");
         }
     }
