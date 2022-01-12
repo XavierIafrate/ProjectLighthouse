@@ -22,6 +22,10 @@ namespace ProjectLighthouse.Model.Administration
         public DateTime EnteredSystem { get; set; }
         public DateTime LastVisualCheck { get; set; }
         public DateTime LastCalibrated { get; set; }
+        public DateTime NextDue
+        {
+            get { return LastCalibrated.AddMonths(CalibrationIntervalMonths); }
+        }
         public int CalibrationIntervalMonths { get; set; }
         public string CalibrationHouse { get; set; }
         public bool UKAS { get; set; }
@@ -31,7 +35,14 @@ namespace ProjectLighthouse.Model.Administration
 
         public enum CalibrationStatus { Indication, Regular, Failed } // or two bools?
 
-        public List<CalibrationCertificate> Certificates;
+        public List<CalibrationCertificate> Certificates = new();
+
+        public event Action RequestToEdit;
+
+        public void Edit()
+        {
+            RequestToEdit?.Invoke();
+        }
 
         public override string ToString()
         {

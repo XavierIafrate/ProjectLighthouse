@@ -7,37 +7,40 @@
              xmlns:local="clr-namespace:ProjectLighthouse.View"
              xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="724" d:DesignWidth="1324"
+             d:Background="White">
     <UserControl.Resources>
         <vm:CalibrationViewModel x:Key="vm"/>
     </UserControl.Resources>
-    
-    <Grid Background="{StaticResource materialYellow}" DataContext="{StaticResource vm}">
+
+    <Grid DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <ListView ItemsSource="{Binding Equipment}">
+        <ListView ItemsSource="{Binding Equipment}" SelectedItem="{Binding SelectedEquipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <uc:DisplayCalibratedEquipment Equipment="{Binding}" Margin="10,5"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1">
-            <Path HorizontalAlignment="Center"
-                  Height="50" Width="50" Stretch="Uniform"
-                  Margin="20"
-                Fill="{StaticResource materialOffBlack}" Data="M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"
-                            />
-            <TextBlock
-                FontWeight="SemiBold"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Foreground="{StaticResource materialOffBlack}"
-            FontSize="50"
-            Text="Calibration" />
-        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="10">
+            <TextBlock Text="{Binding SelectedEquipment.Name}" Style="{StaticResource title}"/>
 
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding SelectedEquipment.Make}" Style="{StaticResource subtitle}"/>
+                <TextBlock Text="{Binding SelectedEquipment.Model, StringFormat='{} {0}'}" Style="{StaticResource subtitle}"/>
+                <TextBlock Text="{Binding SelectedEquipment.SerialNumber, StringFormat='{}, S/N: {0}'}" Style="{StaticResource subtitle}"/>
+            </StackPanel>
+
+            <TextBlock Text="{Binding SelectedEquipment.LastCalibrated, StringFormat='{}Last Calibration: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
+            <TextBlock Text="{Binding SelectedEquipment.NextDue, StringFormat='{}Next Calibration Due: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
+            <TextBlock Text="{Binding SelectedEquipment.LastVisualCheck, StringFormat='{}Last Visual Check: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
+            <TextBlock Text="{Binding SelectedEquipment.CalibrationIntervalMonths, StringFormat='{}Interval: {0:0}mo'}" Style="{StaticResource subtitle}"/>
+            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Interval"/>
+            <TextBlock Text="Certificates" Style="{StaticResource subsubtitle}"/>
+            <ListView ItemsSource="{Binding Certificates}"/>
+        </StackPanel>
     </Grid>
 </UserControl>

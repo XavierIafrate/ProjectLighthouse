@@ -509,6 +509,13 @@ namespace ProjectLighthouse.ViewModel
 
         }
 
+        public static void GetCostingReport()
+        {
+            //List<PartsMadeRecord> reportData = new();
+
+            //foreach()
+        }
+
         public static int GetIso8601WeekOfYear(DateTime time) // shamelessly stolen
         {
             DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);

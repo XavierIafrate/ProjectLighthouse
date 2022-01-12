@@ -4,11 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <TextBlock Text="{Binding Name}"/>
-        <TextBlock Text="{Binding Make}"/>
-        
-    </StackPanel>
+             mc:Ignorable="d" d:DesignWidth="167.093" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Name, FallbackValue='CE0'}" VerticalAlignment="Center" Padding="5" FontWeight="Bold" FontSize="22"/>
+        <StackPanel Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center">
+            <TextBlock Text="{Binding Make}" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding Model}" FontStyle="Italic" Foreground="{StaticResource materialPrimary}"/>
+        </StackPanel>
+
+        <Border Grid.Column="2" Background="{StaticResource materialError}" VerticalAlignment="Center" CornerRadius="8">
+            <TextBlock Text="{Binding Status}" Foreground="{StaticResource materialOnPrimary}" FontWeight="SemiBold" Padding="10,5"/>
+        </Border>
+    </Grid>
 </UserControl>
