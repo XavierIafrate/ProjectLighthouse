@@ -5,12 +5,13 @@ using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class ScheduleViewModel : BaseViewModel
+    public class ScheduleViewModel : BaseViewModel, IRefreshableViewModel
     {
         public List<MachineService> PlannedServices { get; set; }
         public List<ResearchTime> PlannedResearch { get; set; }
@@ -61,6 +62,7 @@ namespace ProjectLighthouse.ViewModel
         public string NumberOfOrdersInsights { get; set; }
         public string BookedUntilInsights { get; set; }
         public string WorkloadInsights { get; set; }
+        public bool StopRefresh { get; set; }
 
         public ScheduleViewModel()
         {
@@ -225,6 +227,11 @@ namespace ProjectLighthouse.ViewModel
         public void PrintSchedule()
         {
             PDFHelper.PrintSchedule(OrderHeaders.ToList(), OrderItems.ToList(), Lathes);
+        }
+
+        public void Refresh()
+        {
+            Debug.WriteLine("Refreshing Schedule");
         }
     }
 }

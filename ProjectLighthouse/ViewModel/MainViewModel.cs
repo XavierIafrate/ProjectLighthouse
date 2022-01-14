@@ -1,7 +1,8 @@
 ﻿using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using System;
-using System.Threading;
+using System.Diagnostics;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 
@@ -52,6 +53,20 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public Timer DataRefreshTimer;
+        private string lastDataRefresh;
+
+        public string LastDataRefresh
+        {
+            get { return lastDataRefresh; }
+            set 
+            { 
+                lastDataRefresh = value;
+                OnPropertyChanged("LastDataRefresh");
+            }
+        }
+
+
         public ICommand UpdateViewCommand { get; set; }
         public ICommand EditCommand { get; set; }
 
@@ -69,6 +84,28 @@ namespace ProjectLighthouse.ViewModel
         {
             EditCommand = new EditSettingsCommand(this);
             UpdateViewCommand = new UpdateViewCommand(this);
+
+            DataRefreshTimer = new();
+
+            DataRefreshTimer.Elapsed += OnDataRefresh;
+            DataRefreshTimer.Interval = 60000;
+            DataRefreshTimer.Enabled = true;
+            DataRefreshTimer.Start();
+        }
+
+        private void OnDataRefresh(object source, ElapsedEventArgs e)
+        {
+            if (SelectedViewModel is IRefreshableViewModel refreshableViewModel)
+            {
+                if (!refreshableViewModel.StopRefresh) // && DateTime.Now > App.LastDataRefresh.AddMinutes(2)
+                {
+                    Debug.WriteLine("Refreshing Data");
+                    refreshableViewModel.Refresh();
+                }
+            }
+            App.LastDataRefresh = DateTime.Now;
+
+            LastDataRefresh = App.LastDataRefresh.ToString("s");
         }
 
         public void LoginRoutine()

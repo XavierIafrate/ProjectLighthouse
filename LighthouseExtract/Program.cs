@@ -52,6 +52,11 @@ namespace LighthouseExtract
             List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>();
             CSVHelper.WriteCsv(products, Repo, "Products");
 
+            // Logins
+            Console.WriteLine("Fetching Logins...");
+            List<Login> logins = DatabaseHelper.Read<Login>();
+            CSVHelper.WriteCsv(logins, Repo, "Logins");
+
             Console.WriteLine("\n[    PROCESS COMPLETE    ]");
             Console.ReadLine();
         }

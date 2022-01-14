@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class OrderViewModel : BaseViewModel, IDisposable
+    public class OrderViewModel : BaseViewModel, IDisposable, IRefreshableViewModel
     {
         #region Variables
 
@@ -182,6 +182,7 @@ namespace ProjectLighthouse.ViewModel
         public Brush ProgramIconBrush { get; set; }
         public Brush BarVerifiedIconBrush { get; set; }
         public Brush BarAllocatedIconBrush { get; set; }
+        public bool StopRefresh { get; set; } = false;
 
         public Timer liveTimer;
 
@@ -228,7 +229,7 @@ namespace ProjectLighthouse.ViewModel
         ~OrderViewModel()
         {
             liveTimer.Stop();
-            Debug.WriteLine("Timer Stopped.");
+            Debug.WriteLine("Timer Stopped through destructor.");
         }
 
         #region MachineStats Display
@@ -587,6 +588,13 @@ namespace ProjectLighthouse.ViewModel
 
             Debug.WriteLine($"Timer Disposed.");
             Debug.WriteLine("Disposing");
+        }
+
+        public void Refresh()
+        {
+            GetLatheManufactureOrders();
+            FilterOrders("All Active");
+            GetLatheManufactureOrderItems();
         }
     }
 }

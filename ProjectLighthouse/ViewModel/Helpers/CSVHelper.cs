@@ -39,7 +39,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             using (StreamWriter writer = new(filename))
             using (CsvWriter csv = new(writer, CultureInfo.InvariantCulture))
             {
-                TypeConverterOptions options = new TypeConverterOptions { Formats = new[] { "s" } };
+                TypeConverterOptions options = new() { Formats = new[] { "s" } };
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
                 csv.WriteRecords(stuff);
             }
