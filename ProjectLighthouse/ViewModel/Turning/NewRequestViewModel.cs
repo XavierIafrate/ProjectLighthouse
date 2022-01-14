@@ -207,7 +207,7 @@ namespace ProjectLighthouse.ViewModel
             FilteredList.Clear();
             if (SelectedGroup == "Specials")
             {
-                if (App.CurrentUser.CanCreateSpecial && App.CurrentUser.UserName == "xav")
+                if (App.CurrentUser.CanCreateSpecial)
                 {
                     AddSpecialVisibility = Visibility.Visible;
                 }
@@ -331,7 +331,6 @@ namespace ProjectLighthouse.ViewModel
                 _series.Values.Add(Convert.ToDouble(sumSold));
                 totalSold += sumSold;
             }
-
 
             SeriesCollection.Add(_series);
 
@@ -458,15 +457,15 @@ namespace ProjectLighthouse.ViewModel
                 {
                     LikelinessText = "1000yr lead time";
                 }
-                else if (hypothetical > 50000)
+                else if (hypothetical > 40000)
                 {
                     LikelinessText = "Seriously?";
                 }
-                else if (hypothetical > 5000)
+                else if (hypothetical > 3000)
                 {
                     LikelinessText = "Strong";
                 }
-                else if (hypothetical > 2000)
+                else if (hypothetical > 1500)
                 {
                     LikelinessText = "Good";
                 }
@@ -493,26 +492,15 @@ namespace ProjectLighthouse.ViewModel
         {
             AddSpecialPartWindow window = new();
             window.ShowDialog();
-            //if (!string.IsNullOrWhiteSpace(window.filename) &&
-            //   !string.IsNullOrWhiteSpace(window.productName) &&
-            //   !string.IsNullOrWhiteSpace(window.customerName) &&
-            //   window.submitted)
-            //{
-            //    TurnedProduct newSpecial = new()
-            //    {
-            //        ProductName = window.productName,
-            //        isSpecialPart = true,
-            //        CustomerRef = window.customerName,
-            //        DrawingFilePath = window.filename,
-            //        AddedBy = App.CurrentUser.UserName,
-            //        AddedDate = DateTime.Now,
-            //        ProductGroup = "Specials"
-            //    };
 
-            //    DatabaseHelper.Insert<TurnedProduct>(newSpecial);
-            //    ClearScreen();
-            //    SelectedGroup = "Specials";
-            //}
+            if (window.SaveExit)
+            {
+                if (DatabaseHelper.Insert(window.NewProduct))
+                {
+                    MessageBox.Show($"Successfully added {window.NewProduct.ProductName} to Specials.", "Success");
+                    ClearScreen();
+                }
+            }
         }
 
         public class MachineInfoSnippet

@@ -30,7 +30,7 @@ namespace ProjectLighthouse.Model
 
         public object Clone()
         {
-            return new Request()
+            return new Request
             {
                 Id = Id,
                 Product = Product,

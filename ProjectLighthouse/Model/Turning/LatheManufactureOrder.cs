@@ -56,7 +56,6 @@ namespace ProjectLighthouse.Model
         public string Status { get; set; }
 
         public bool IsUrgent { get; set; }
-        public DateTime SettingFinished { get; set; }
         public DateTime CompletedAt { get; set; }
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
@@ -85,7 +84,6 @@ namespace ProjectLighthouse.Model
                 State = State,
                 AllocatedMachine = AllocatedMachine,
                 StartDate = StartDate,
-                SettingFinished = SettingFinished,
                 CompletedAt = CompletedAt,
                 IsReady = IsReady,
                 HasProgram = HasProgram,

@@ -38,6 +38,8 @@ namespace ProjectLighthouse.Model
 
             TransactionalEmailApi API = new(config);
 
+
+
             try
             {
                 _ = API.EmailSendPost(new IO.ClickSend.ClickSend.Model.Email(

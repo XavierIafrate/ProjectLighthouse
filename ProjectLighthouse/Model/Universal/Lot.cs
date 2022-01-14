@@ -23,7 +23,7 @@ namespace ProjectLighthouse.Model
         public string FromMachine { get; set; }
         public string Remarks { get; set; }
 
-        [Ignore]
+        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public Action<Lot> RequestToEdit { get; set; }
 
         public void NotifyRequestToEdit()

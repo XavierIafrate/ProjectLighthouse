@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using System;
+using CsvHelper;
 
 namespace ProjectLighthouse.Model
 {
@@ -32,7 +33,7 @@ namespace ProjectLighthouse.Model
         public bool ShowEdit;
         public int RecommendedQuantity;
 
-        [Ignore]
+        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public Action<LatheManufactureOrderItem> RequestToEdit { get; set; }
 
         public void NotifyRequestToEdit()

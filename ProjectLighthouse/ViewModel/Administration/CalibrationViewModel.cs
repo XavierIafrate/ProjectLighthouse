@@ -51,8 +51,10 @@ namespace ProjectLighthouse.ViewModel
         {
             LoadData();
             LoadCommands();
-
-            SelectedEquipment = Equipment.First();
+            if (Equipment.Count > 0)
+            {
+                SelectedEquipment = Equipment.First();
+            }
         }
 
         private void LoadCommands()

@@ -383,7 +383,8 @@ namespace ProjectLighthouse.ViewModel
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 Debug.WriteLine($"Emailing about: {SelectedRequest.Product}");
-                //Task.Run(() => EmailHelper.NotifyRequestApproved((Request)SelectedRequest.Clone()));
+                Request tmp = (Request)SelectedRequest.Clone();
+                Task.Run(() => EmailHelper.NotifyRequestApproved(tmp));
                 //Task.Run(() => EmailHelper.NotifyNewOrder(creationWindow.NewOrder, creationWindow.NewOrderItems));
 
                 FilterRequests(SelectedFilter);
@@ -417,7 +418,8 @@ namespace ProjectLighthouse.ViewModel
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                //Task.Run(() => EmailHelper.NotifyRequestDeclined(SelectedRequest));
+                Request tmp = (Request)SelectedRequest.Clone();
+                Task.Run(() => EmailHelper.NotifyRequestDeclined(tmp));
 
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");

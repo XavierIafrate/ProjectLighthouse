@@ -2,8 +2,10 @@
 using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -14,6 +16,8 @@ namespace ProjectLighthouse.View
     {
         public TurnedProduct NewProduct;
         public bool SaveExit;
+        private string targetDrawing = "";
+        private string destinationDrawing = "";
         private string drawingFile = "";
 
         public AddSpecialPartWindow()
@@ -45,8 +49,10 @@ namespace ProjectLighthouse.View
                 {
                     try
                     {
-                        File.Copy(openFileDialog.FileName, fullDrawingPath);
+                        //File.Copy(openFileDialog.FileName, fullDrawingPath);
                         drawingFile = newDrawingPath;
+                        destinationDrawing = fullDrawingPath;
+                        targetDrawing = openFileDialog.FileName;
                         DrawingFile.Text = Path.GetFileName(openFileDialog.FileName);
                     }
                     catch (Exception ex)
@@ -54,7 +60,6 @@ namespace ProjectLighthouse.View
                         MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
                     }
                 }
-                //drawingFileText.Text = Path.GetFileName(openFileDialog.FileName);
             }
         }
 
@@ -145,7 +150,15 @@ namespace ProjectLighthouse.View
             {
                 if (CheckTextIsFullDouble(majorDiameter.Text))
                 {
-                    MarkControl(majorDiameter, valid: true);
+                    if (double.Parse(majorDiameter.Text) <= TurnedProduct.MaxDiameter && double.Parse(majorDiameter.Text) > 0)
+                    {
+                        MarkControl(majorDiameter, valid: true);
+                    }
+                    else
+                    {
+                        MarkControl(majorDiameter, valid: false);
+                        valid = false;
+                    }
                 }
                 else
                 {
@@ -163,7 +176,15 @@ namespace ProjectLighthouse.View
             {
                 if (CheckTextIsFullDouble(majorLength.Text))
                 {
-                    MarkControl(majorLength, valid: true);
+                    if (double.Parse(majorLength.Text) <= TurnedProduct.MaxLength && double.Parse(majorLength.Text) > 0)
+                    {
+                        MarkControl(majorLength, valid: true);
+                    }
+                    else
+                    {
+                        MarkControl(majorLength, valid: false);
+                        valid = false;
+                    }
                 }
                 else
                 {
@@ -215,18 +236,85 @@ namespace ProjectLighthouse.View
                 : Brushes.Red;
         }
 
-        private void ImprintData()
+        private bool ImprintData()
         {
+            ComboBoxItem selectedMaterial = materialComboBox.SelectedItem as ComboBoxItem;
+            //ComboBoxItem selectedThread = threadSizeComboBox.SelectedItem as ComboBoxItem;
+            ComboBoxItem selectedDriveSize = (bool)hex.IsChecked
+                ? HexSize.SelectedItem as ComboBoxItem
+                : (bool)torx.IsChecked
+                        ? TorxSize.SelectedItem as ComboBoxItem
+                        : null;
+
+            try
+            {
+                NewProduct = new()
+                {
+                    AddedBy = App.CurrentUser.UserName,
+                    AddedDate = DateTime.Now,
+                    isSpecialPart = true,
+                    DrawingFilePath = drawingFile,
+                    ProductName = productNameTextBox.Text,
+                    CustomerRef = customerNameTextBox.Text,
+                    Material = selectedMaterial.Tag.ToString(),
+                    BarID = GetBarSizeFromDiameter(double.Parse(majorDiameter.Text), selectedMaterial.Tag.ToString(), "round"),
+                    MajorLength = double.Parse(majorLength.Text),
+                    MajorDiameter = double.Parse(majorDiameter.Text),
+                    ThreadSize = threadSizeComboBox.Text,
+                    DriveType = (bool)hex.IsChecked ? "hex" : (bool)torx.IsChecked ? "torx" : "thumb",
+                    DriveSize = selectedDriveSize.Tag.ToString() ?? Math.Ceiling(double.Parse(majorDiameter.Text)).ToString("0"),
+                    ProductGroup = productNameTextBox.Text[..9]
+                };
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+                return false;
+            }
+
+            try
+            {
+                File.Copy(targetDrawing, destinationDrawing);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+                return false;
+            }
+
+            return true;
+        }
+
+        private string GetBarSizeFromDiameter(double diameter, string material, string profile)
+        {
+            List<BarStock> bars = DatabaseHelper.Read<BarStock>();
+
+            bars = bars.Where(b => (double)b.Size >= diameter && material == b.Material && profile == b.Form).OrderBy(b => b.Size).ToList();
+
+
+            if (bars.Count > 0)
+            {
+                return bars.First().Id;
+            }
+            else
+            {
+                throw new InvalidOperationException("Could not find a suitable bar for this product. Contact the administrator."); ;
+            }
 
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            ValidateFields();
-            ImprintData();
+            if (!ValidateFields())
+            {
+                return;
+            }
 
-            //SaveExit = true;
-            //Close();
+            if (ImprintData())
+            {
+                SaveExit = true;
+                Close();
+            }
         }
 
         private void ValidateDouble(object sender, System.Windows.Input.KeyEventArgs e)

@@ -375,6 +375,8 @@ namespace ProjectLighthouse.ViewModel
 
             _data_point = new(_date, newStats.TotalPartsMade);
 
+            //newStats.TotalPartsMade = 1000001;
+
             CelebrationVisibility = (newStats.TotalPartsMade is >= 1000000 and <= 1015000)
                 ? Visibility.Visible
                 : Visibility.Collapsed;

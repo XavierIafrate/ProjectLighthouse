@@ -21,7 +21,9 @@
             <converters:boolToHasProgram x:Key="boolToHasProgram" />
             <converters:boolToIsReady x:Key="boolToIsReady" />
             <converters:intToDays x:Key="intToDays" />
+            <converters:DateToSettingDate x:Key="settingTime" />
             <converters:intToStringCycleTime x:Key="intToStringCycleTime" />
+            <converters:stringToAssignedLathe x:Key="stringToAssignedLathe" />
 
             <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
                 <DoubleAnimation
@@ -443,63 +445,88 @@
                             <Separator/>
 
                             <Grid Margin="15,10">
+
+                                <Grid.Resources>
+                                    <Style x:Key="widgetBox" TargetType="Border">
+                                        <Setter Property="Background" Value="{StaticResource materialSurface}"/>
+                                        <Setter Property="Padding" Value="10"/>
+                                        <Setter Property="Margin" Value="10,5"/>
+                                        <Setter Property="CornerRadius" Value="20"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource disabledGray}"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource materialPrimary}"/>
+                                                <Setter Property="TextElement.Foreground" Value="{StaticResource materialPrimary}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+                                
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontSize="16"
-                                    Text="Setting" />
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Style="{StaticResource hero}"
-                                    Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine}" />
-                                <TextBlock
-                                    Grid.Row="2"
-                                    HorizontalAlignment="Center"
-                                    FontStyle="Italic"
-                                    Text="{Binding SelectedLatheManufactureOrder.StartDate, StringFormat='{}{0:ddd, dd MMMM}'}" />
 
-                                <TextBlock
-                                    Grid.Column="1"
-                                    HorizontalAlignment="Center"
-                                    FontSize="16"
-                                    Text="Timing" />
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Style="{StaticResource hero}"
-                                    Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    HorizontalAlignment="Center"
-                                    FontStyle="Italic"
-                                    Text="{Binding SelectedLatheManufactureOrder.HasProgram, Converter={StaticResource boolToHasProgram}}" />
+                                <Border Grid.Column="0" Style="{StaticResource widgetBox}">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            FontSize="14"
+                                            Text="SETTING"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource materialOffBlack}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Style="{StaticResource hero}"
+                                            Text="{Binding SelectedLatheManufactureOrder.StartDate, Converter={StaticResource settingTime}}" />
+                                        <TextBlock
+                                            FontStyle="Italic"
+                                            Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine, Converter={StaticResource stringToAssignedLathe}}" 
+                                            HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
 
-                                <TextBlock
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Center"
-                                    FontSize="16"
-                                    Text="Material" />
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Style="{StaticResource hero}"
-                                    Text="{Binding SelectedLatheManufactureOrder.BarID}" />
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Center"
-                                    FontStyle="Italic"
-                                    Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}{0} bars'}" />
+
+                                <Border Style="{StaticResource widgetBox}"
+                                    Grid.Column="1">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            FontSize="14"
+                                            Text="ESTIMATED TIME"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource materialOffBlack}" />
+                                        <TextBlock
+                                            Style="{StaticResource hero}"
+                                            Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border  Style="{StaticResource widgetBox}"
+                                    Grid.Column="2">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            FontSize="14"
+                                            Text="MATERIAL"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource materialOffBlack}" />
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            Grid.Column="2"
+                                            Style="{StaticResource hero}"
+                                            Text="{Binding SelectedLatheManufactureOrder.BarID}" />
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Center"
+                                            FontStyle="Italic"
+                                            Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}{0} bars required'}" />
+                                    </StackPanel>
+                                </Border>
+                                
 
                             </Grid>
 
@@ -521,6 +548,7 @@
 
                             </StackPanel>
                             <!--#endregion-->
+                            
                             <!--#region Notes-->
                             <TextBlock
                                 Margin="0,15,0,5"

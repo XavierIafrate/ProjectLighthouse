@@ -5,8 +5,8 @@ namespace ProjectLighthouse.Model
 {
     public class TurnedProduct
     {
-        private const double MaxDiameter = 38;
-        private const double MaxLength = 150;
+        public const double MaxDiameter = 38;
+        public const double MaxLength = 150;
 
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }

@@ -92,11 +92,11 @@ namespace ProjectLighthouse
                 : Visibility.Collapsed;
 
             calibration_button.Visibility = App.CurrentUser.UserName == "xav"
-                ? Visibility.Visible
+                ? Visibility.Collapsed
                 : Visibility.Collapsed;
 
             drawings_button.Visibility = App.CurrentUser.UserName == "xav"
-                ? Visibility.Visible
+                ? Visibility.Collapsed
                 : Visibility.Collapsed;
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();

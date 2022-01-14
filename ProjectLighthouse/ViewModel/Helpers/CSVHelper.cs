@@ -12,6 +12,25 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class CSVHelper
     {
+
+        public static void WriteCsv<T>(List<T> list, string destinationDir, string fileNameNoExt)
+        {
+            string filename = Path.Join(destinationDir, $"{fileNameNoExt}.csv");
+
+            using (StreamWriter writer = new(filename))
+            using (CsvWriter csv = new(writer, CultureInfo.InvariantCulture))
+            {
+                TypeConverterOptions options = new() { Formats = new[] { "s" } };
+                csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
+                csv.WriteRecords(list);
+            }
+
+            ConsoleColor initialColour = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Written to '{filename}'\n\t\t{typeof(T).FullName}\n\t\t{list.Count:#,##0} records.\n");
+            Console.ForegroundColor = initialColour;
+        }
+
         public static void WriteListToCSV<T>(List<T> stuff, string filePrefix)
         {
             string filename = $"{filePrefix}_{DateTime.Now:ddMMyy_HHmmss}.csv";
