@@ -50,6 +50,7 @@
                         FontSize="30"
                         FontWeight="SemiBold"
                         Text="PRB000-0000-000" />
+                    <TextBlock Text="[10]" x:Name="currStock" Foreground="{StaticResource disabledGray}" FontSize="20" Margin="10,0" VerticalAlignment="Center" FontStyle="Italic"/>
                     <!--<Button
                         x:Name="ClipboardButton"
                         VerticalAlignment="Center"

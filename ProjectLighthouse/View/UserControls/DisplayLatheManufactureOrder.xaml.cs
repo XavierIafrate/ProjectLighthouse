@@ -53,6 +53,11 @@ namespace ProjectLighthouse.View.UserControls
                     break;
             }
 
+            if (control.LatheManufactureOrder.State == OrderState.Cancelled)
+            {
+                control.MOTextBlock.TextDecorations = TextDecorations.Strikethrough;
+            }
+
         }
 
         public DisplayLatheManufactureOrder()

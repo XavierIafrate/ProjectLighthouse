@@ -52,6 +52,7 @@ namespace ProjectLighthouse.Model
         public bool BarIsVerified { get; set; }
         public bool IsComplete { get; set; }
         public bool IsCancelled { get; set; }
+        public bool IsClosed { get; set; }
 
         public string Status { get; set; }
 
@@ -78,6 +79,7 @@ namespace ProjectLighthouse.Model
                 ModifiedBy = ModifiedBy,
                 TimeToComplete = TimeToComplete,
                 IsComplete = IsComplete,
+                IsClosed = IsClosed,
                 Status = Status,
                 IsUrgent = IsUrgent,
                 IsCancelled = IsCancelled,
@@ -107,6 +109,7 @@ namespace ProjectLighthouse.Model
         {
             return IsCancelled != OtherOrder.IsCancelled
                 || IsComplete != OtherOrder.IsComplete
+                || IsClosed != OtherOrder.IsClosed
                 || HasStarted != OtherOrder.HasStarted
                 || BarIsAllocated != OtherOrder.BarIsAllocated
                 || BarIsVerified != OtherOrder.BarIsVerified

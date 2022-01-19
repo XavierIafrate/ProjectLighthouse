@@ -32,6 +32,7 @@ namespace ProjectLighthouse.View.UserControls
             control.BarID.Text = control.Bar.BarStock.Id;
             control.InStockText.Text = $"{control.Bar.BarStock.InStock} in Kasto"; // (appx. {mass:#,##0kg})
             control.OnOrderText.Text = $"{control.Bar.BarStock.OnOrder} on order";
+            control.currStock.Text = $"[{control.Bar.BarStock.InStock} in stock]";
 
             if (control.Bar.Orders.Count > 0)
             {
@@ -39,12 +40,14 @@ namespace ProjectLighthouse.View.UserControls
                 control.OrdersListBox.Visibility = Visibility.Visible;
                 control.OrdersListBox.ItemsSource = control.Bar.Orders;
                 control.ExtraInfo.Visibility = Visibility.Visible;
+                control.currStock.Visibility = Visibility.Collapsed;
             }
             else
             {
                 control.NoneText.Visibility = Visibility.Visible;
                 control.OrdersListBox.Visibility = Visibility.Collapsed;
                 control.ExtraInfo.Visibility = Visibility.Collapsed;
+                control.currStock.Visibility = Visibility.Visible;
             }
 
             if (control.Bar.FreeBar >= 0)

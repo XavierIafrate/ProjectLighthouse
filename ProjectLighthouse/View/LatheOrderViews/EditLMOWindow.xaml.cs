@@ -197,6 +197,23 @@ namespace ProjectLighthouse.View
         {
             CalculateTime();
             CalculateBarRequirements();
+            CheckIfOrderIsClosed();
+        }
+
+        private void CheckIfOrderIsClosed()
+        {
+            if (order.State > OrderState.Running)
+            {
+                var itemsWithBadCycleTimes = items.Where(i => i.CycleTime == 0 && i.QuantityMade > 0).ToList();
+                var unresolvedLots = lots.Where(l => l.Quantity != 0 && !l.IsDelivered && !l.IsReject).ToList();
+
+                order.IsClosed = itemsWithBadCycleTimes.Count == 0 // ensure cycle time is updated
+                    && unresolvedLots.Count == 0; // ensure lots are fully processed
+            }
+            else
+            {
+                order.IsClosed = false;
+            }
         }
 
         private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)

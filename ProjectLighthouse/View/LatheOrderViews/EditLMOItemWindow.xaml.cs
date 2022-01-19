@@ -100,24 +100,24 @@ namespace ProjectLighthouse.View
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             #region Check numerical inputs
-            if (!Int32.TryParse(CycleTime_Min.Text, out int min))
+            if (!int.TryParse(CycleTime_Min.Text, out int min))
             {
                 MessageBox.Show("Invalid cycle time entered.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (!Int32.TryParse(CycleTime_Sec.Text, out int sec))
+            if (!int.TryParse(CycleTime_Sec.Text, out int sec))
             {
                 MessageBox.Show("Invalid cycle time entered.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (!Int32.TryParse(QuantityRequiredTextbox.Text, out int reqqty))
+            if (!int.TryParse(QuantityRequiredTextbox.Text, out int reqqty))
             {
                 MessageBox.Show("Invalid Quantity Required entered.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (!Int32.TryParse(QuantityTargetTextbox.Text, out int tarqty))
+            if (!int.TryParse(QuantityTargetTextbox.Text, out int tarqty))
             {
                 MessageBox.Show("Invalid Quantity Target entered.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -137,6 +137,7 @@ namespace ProjectLighthouse.View
 
             //Update master cycle time record
             List<TurnedProduct> product = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductName == Item.ProductName).ToList();
+
             //should return only one!
             if (product != null)
             {
