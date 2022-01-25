@@ -6,159 +6,145 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:ProjectLighthouse.Model"
     Title="Lighthouse User Settings"
-    MinWidth="250"
+    Width="500"
     d:DataContext="{d:DesignInstance Type=model:User}"
     ResizeMode="NoResize"
-    SizeToContent="WidthAndHeight"
+    SizeToContent="Height"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
-    <Grid Margin="30">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" MaxWidth="300" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <TextBlock
-            Grid.ColumnSpan="2"
-            Style="{StaticResource title}"
-            Text="Settings" />
-        <StackPanel Grid.Row="1">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock
+    <StackPanel Margin="30">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                VerticalAlignment="Center"
+                Style="{StaticResource title}"
+                Text="Settings" />
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
                     VerticalAlignment="Center"
                     Foreground="{StaticResource materialPrimaryBlue}"
                     Style="{StaticResource subtitle}">
                     <Run Text="{Binding FirstName, FallbackValue='Randy'}" />
                     <Run Text="{Binding LastName, FallbackValue='Marsh'}" />
-                </TextBlock>
-                <Grid Margin="10,0">
-                    <Border
+                    </TextBlock>
+                    <Grid Margin="10,0">
+                        <Border
                         Height="25"
                         Background="{StaticResource materialPrimaryBlue}"
                         CornerRadius="10" />
-                    <TextBlock
+                        <TextBlock
                         Padding="10,10,10,11"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Foreground="White"
                         Text="{Binding UserRole, FallbackValue='Viewer'}" />
-                </Grid>
+                    </Grid>
+                </StackPanel>
             </StackPanel>
+        </Grid>
+                <Separator Margin="0,10" />
+        <ScrollViewer MaxHeight="400">
+            <StackPanel>
+                
+                <TextBlock Style="{StaticResource section}" Text="Your Permissions" />
+                <TextBlock Text="An administrator is required to modify these." FontStyle="Italic"/>
+                <StackPanel Margin="30,10">
 
-            <Separator Margin="0,10" />
-
-            <TextBlock Style="{StaticResource section}" Text="Your Permissions" />
-            <TextBlock Text="An administrator is required to modify these." />
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-                <TextBlock
+                    <TextBlock
                     Grid.Row="0"
                     FontStyle="Italic"
                     Text="Raise Requests" />
-                <TextBlock
+                    <TextBlock
                     Grid.Row="0"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Text="{Binding CanRaiseRequest}" />
 
-                <TextBlock
+                    <TextBlock
                     Grid.Row="1"
                     FontStyle="Italic"
                     Text="Approve Requests" />
-                <TextBlock
+                    <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Text="{Binding CanApproveRequests}" />
 
-                <TextBlock
+                    <TextBlock
                     Grid.Row="2"
                     FontStyle="Italic"
                     Text="Edit Orders" />
-                <TextBlock
+                    <TextBlock
                     Grid.Row="2"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Text="{Binding CanEditLMOs}" />
 
-                <TextBlock
+                    <TextBlock
                     Grid.Row="3"
                     FontStyle="Italic"
                     Text="Update Orders" />
-                <TextBlock
+                    <TextBlock
                     Grid.Row="3"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Text="{Binding CanUpdateLMOs}" />
 
-                <TextBlock
+                    <TextBlock
                     Grid.Row="4"
                     FontStyle="Italic"
                     Text="Create Products" />
-                <TextBlock
+                    <TextBlock
                     Grid.Row="4"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Text="{Binding CanCreateAssemblyProducts}" />
-            </Grid>
+                </StackPanel>
 
-            <TextBlock Style="{StaticResource section}" Text="Default View" />
-            <TextBlock Text="This is the view that will be loaded on login." />
-            <ComboBox
+                <TextBlock Style="{StaticResource section}" Text="Default View" />
+                <TextBlock FontStyle="Italic" Text="This is the view that will be loaded on login." />
+                <ComboBox
                 x:Name="defaultViewComboBox"
-                Margin="0,5,0,0"
+                Margin="30,10"
                 SelectionChanged="defaultViewComboBox_SelectionChanged">
-                <ComboBoxItem Content="New Request" />
-                <ComboBoxItem Content="View Requests" />
-                <ComboBoxItem Content="Orders" />
-                <ComboBoxItem Content="Schedule" />
-            </ComboBox>
-        </StackPanel>
-        <StackPanel
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="20,0,0,0">
-            <TextBlock Style="{StaticResource section}" Text="Change Password" />
-            <Grid Margin="0,10">
-                <Rectangle
+                    <ComboBoxItem Content="New Request" />
+                    <ComboBoxItem Content="View Requests" />
+                    <ComboBoxItem Content="Orders" />
+                    <ComboBoxItem Content="Schedule" />
+                </ComboBox>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource section}" Text="Change Password" />
+                    <Grid Margin="0,10" HorizontalAlignment="Center">
+                        <Rectangle
                     Fill="{StaticResource materialError}"
                     RadiusX="10"
                     RadiusY="10" />
-                <TextBlock
-                    Margin="12,6"
-                    HorizontalAlignment="Center"
-                    FontStyle="Italic"
-                    Foreground="{StaticResource materialOnError}"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap">
-                    Please don't use your bank password.<LineBreak />
-                    There is no security in this app</TextBlock>
-            </Grid>
-            <StackPanel />
+                        <TextBlock
+                        Margin="20,6"
+                        HorizontalAlignment="Center"
+                        FontStyle="Italic"
+                        Foreground="{StaticResource materialOnError}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap">
+                        Please don't use your bank password.<LineBreak />
+                        There is no security in this app</TextBlock>
+                    </Grid>
+                    <StackPanel />
 
-            <Grid Width="250">
-                <PasswordBox
+                    <Grid Width="250">
+                        <PasswordBox
                     x:Name="current"
                     Focusable="True"
                     KeyDown="current_KeyDown"
                     PasswordChanged="current_PasswordChanged"
                     Style="{StaticResource PasswordBox}" />
-                <Grid>
-                    <TextBlock
+                        <Grid>
+                            <TextBlock
                         x:Name="current_password_ghost"
                         Margin="24,0,0,0"
                         Padding="8"
@@ -168,17 +154,17 @@
                         Foreground="#888888"
                         IsHitTestVisible="False"
                         Text="current password" />
-                </Grid>
-            </Grid>
-            <Grid Width="250">
-                <PasswordBox
+                        </Grid>
+                    </Grid>
+                    <Grid Width="250">
+                        <PasswordBox
                     x:Name="newPwd"
                     Focusable="True"
                     KeyDown="current_KeyDown"
                     PasswordChanged="newPwd_PasswordChanged"
                     Style="{StaticResource PasswordBox}" />
-                <Grid>
-                    <TextBlock
+                        <Grid>
+                            <TextBlock
                         x:Name="new_password_ghost"
                         Margin="24,0,0,0"
                         Padding="8"
@@ -188,17 +174,17 @@
                         Foreground="#888888"
                         IsHitTestVisible="False"
                         Text="new password" />
-                </Grid>
-            </Grid>
-            <Grid Width="250">
-                <PasswordBox
+                        </Grid>
+                    </Grid>
+                    <Grid Width="250">
+                        <PasswordBox
                     x:Name="confirmPwd"
                     Focusable="True"
                     KeyDown="current_KeyDown"
                     PasswordChanged="confirmPwd_PasswordChanged"
                     Style="{StaticResource PasswordBox}" />
-                <Grid>
-                    <TextBlock
+                        <Grid>
+                            <TextBlock
                         x:Name="confirm_password_ghost"
                         Margin="24,0,0,0"
                         Padding="8"
@@ -208,10 +194,10 @@
                         Foreground="#888888"
                         IsHitTestVisible="False"
                         Text="confirm new" />
-                </Grid>
-            </Grid>
+                        </Grid>
+                    </Grid>
 
-            <TextBlock
+                    <TextBlock
                 x:Name="helperText"
                 HorizontalAlignment="Center"
                 FontStyle="Italic"
@@ -219,13 +205,17 @@
                 Text="Helper Text" />
 
 
-            <Button
+                    <Button
                 x:Name="ChangePasswordButton"
                 Width="150"
                 HorizontalAlignment="Right"
                 Click="ChangePasswordButton_Click"
                 Content="Change Password"
                 Style="{StaticResource GreenButton}" />
-        </StackPanel>
-    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        
+        
+    </StackPanel>
 </Window>

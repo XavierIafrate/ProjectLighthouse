@@ -27,6 +27,10 @@ namespace ProjectLighthouse.View.UserControls
 
             control.DataContext = control.LatheManufactureOrder;
             control.BadgeText.Text = control.LatheManufactureOrder.State.ToString();
+            if (control.LatheManufactureOrder.State == OrderState.Complete && !control.LatheManufactureOrder.IsClosed)
+            {
+                control.BadgeText.Text += "*";
+            }
             control.OldInfo.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddDays(3) < DateTime.Now
                     && control.LatheManufactureOrder.State == OrderState.Problem
                     && control.LatheManufactureOrder.CreatedAt.AddDays(3) < DateTime.Now)
@@ -53,10 +57,10 @@ namespace ProjectLighthouse.View.UserControls
                     break;
             }
 
-            if (control.LatheManufactureOrder.State == OrderState.Cancelled)
-            {
-                control.MOTextBlock.TextDecorations = TextDecorations.Strikethrough;
-            }
+            //if (control.LatheManufactureOrder.State == OrderState.Cancelled)
+            //{
+            //    control.MOTextBlock.TextDecorations = TextDecorations.Strikethrough;
+            //}
 
         }
 

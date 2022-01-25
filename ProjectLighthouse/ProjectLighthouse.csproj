@@ -8,15 +8,16 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.4.7</FileVersion>
-    <AssemblyVersion>1.4.7</AssemblyVersion>
+    <FileVersion>1.4.8</FileVersion>
+    <AssemblyVersion>1.4.8</AssemblyVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.4.7</Version>
+    <Version>1.4.8</Version>
     <Product>ProjectLighthouse</Product>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <StartupObject></StartupObject>
+    <Description>Wixroyd Ltd custom manufacturing pipeline.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

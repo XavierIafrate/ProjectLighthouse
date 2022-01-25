@@ -110,10 +110,12 @@
         </Grid>
 
         <ListView
+            HorizontalContentAlignment="Stretch"
             Grid.Row="1"
-            ItemsSource="{Binding FilteredOrders}"
-            SelectedItem="{Binding SelectedLatheManufactureOrder}"
+            ItemsSource="{Binding Path=FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SelectedValue="{Binding Path=SelectedLatheManufactureOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             SelectionChanged="ListView_SelectionChanged">
+
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}" Margin="10,2"/>
@@ -137,6 +139,7 @@
                 <ComboBoxItem Content="Not Ready" />
                 <ComboBoxItem Content="Ready" />
                 <ComboBoxItem Content="Complete" />
+                <ComboBoxItem Content="All" />
             </ComboBox>
         </StatusBar>
 
@@ -284,10 +287,15 @@
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
-                                        <TextBlock Style="{StaticResource title}" Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{StaticResource title}" Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}" />
+                                            <Path Visibility="{Binding ArchiveVis}" Margin="5,4,5,0" Width="30" Height="25"    VerticalAlignment="Center" Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
+                                                Stretch="Uniform" Fill="{StaticResource materialPrimaryBlue}" ToolTip="This order is closed."/>
+                                        </StackPanel>
                                         <TextBlock Style="{StaticResource subtitle}" Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}" />
                                     </StackPanel>
 
+                                    
 
                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                         <Button

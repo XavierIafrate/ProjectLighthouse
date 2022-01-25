@@ -18,13 +18,24 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <ListView ItemsSource="{Binding Equipment}" SelectedItem="{Binding SelectedEquipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <uc:DisplayCalibratedEquipment Equipment="{Binding}" Margin="10,5"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <ListView ItemsSource="{Binding Equipment}" SelectedItem="{Binding SelectedEquipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <uc:DisplayCalibratedEquipment Equipment="{Binding}" Margin="10,5"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
+                <Button Content="Add Equipment" Command="{Binding AddNewEquipmentCmd}"/>
+                <Button Content="Download Report" Command="{Binding GenerateReportCmd}"/>
+            </StackPanel>
+        </Grid>
+        
         <StackPanel Grid.Column="1" Margin="10">
             <TextBlock Text="{Binding SelectedEquipment.Name}" Style="{StaticResource title}"/>
 
@@ -38,9 +49,22 @@
             <TextBlock Text="{Binding SelectedEquipment.NextDue, StringFormat='{}Next Calibration Due: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
             <TextBlock Text="{Binding SelectedEquipment.LastVisualCheck, StringFormat='{}Last Visual Check: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
             <TextBlock Text="{Binding SelectedEquipment.CalibrationIntervalMonths, StringFormat='{}Interval: {0:0}mo'}" Style="{StaticResource subtitle}"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Interval"/>
+            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Interval" Visibility="{Binding EditControlsVis}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
             <TextBlock Text="Certificates" Style="{StaticResource subsubtitle}"/>
             <ListView ItemsSource="{Binding Certificates}"/>
+
+
+            <TextBox Style="{StaticResource DefaultTextBox}" MaxLength="1024" AcceptsReturn="True" Tag="Remarks" Visibility="{Binding EditControlsVis}"/>
+            <TextBox Style="{StaticResource DefaultTextBox}" MaxLength="50" AcceptsReturn="True" Tag="Calibration House" Visibility="{Binding EditControlsVis}"/>
+            <ComboBox Visibility="{Binding EditControlsVis}">
+                <ComboBoxItem Content="For Indication Only" Tag="indication"/>
+                <ComboBoxItem Content="In Regular Calibration" Tag="regular" IsSelected="True"/>
+                <ComboBoxItem Content="Failed Calibration" Tag="fail"/>
+            </ComboBox>
+            <CheckBox Content="UKAS" Visibility="{Binding EditControlsVis}"/>
+            <Button Content="Record Visual Check" Command="{Binding RecordVisualCheckCmd}"/>
+            <Button Content="Add Certificate" Command="{Binding AddCertificateCmd}"/>
+            <Button Content="Edit" Command="{Binding EditEquipmentCmd}"/>
         </StackPanel>
     </Grid>
 </UserControl>

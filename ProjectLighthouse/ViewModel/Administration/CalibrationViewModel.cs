@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class CalibrationViewModel : BaseViewModel
+    public class CalibrationViewModel : BaseViewModel, IRefreshableViewModel
     {
         #region Variables
         private List<CalibratedEquipment> equipment;
@@ -40,10 +40,15 @@ namespace ProjectLighthouse.ViewModel
 
         #region Commands
         public EditEquipmentCommand EditEquipmentCmd { get; set; }
+        public AddCertificateCommand AddCertificateCmd { get; set; }
+        public AddNewEquipmentCommand AddNewEquipmentCmd { get; set; }
+        public GenerateReportCommand GenerateReportCmd { get; set; }
+        public RecordVisualCheckCommand RecordVisualCheckCmd { get; set; }
         #endregion
 
         #region Visibilities
-        public Visibility EditControlsVis { get; set; } = Visibility.Visible;
+        public Visibility EditControlsVis { get; set; } = Visibility.Collapsed;
+        public bool StopRefresh { get; set; }
         #endregion
 
         #endregion
@@ -60,6 +65,10 @@ namespace ProjectLighthouse.ViewModel
         private void LoadCommands()
         {
             EditEquipmentCmd = new(this);
+            AddCertificateCmd = new(this);
+            AddNewEquipmentCmd = new(this);
+            GenerateReportCmd = new(this);
+            RecordVisualCheckCmd = new(this);
         }
 
 
@@ -79,6 +88,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void AddNewEquipment()
         {
+            MessageBox.Show("Add New Equipment");
             // CanEditCalibration level
 
             // New Window
@@ -86,6 +96,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void AddCertificate()
         {
+            MessageBox.Show("Add New Certificate");
             // CanEditCalibration level
 
             // New Window
@@ -95,6 +106,7 @@ namespace ProjectLighthouse.ViewModel
         {
             EditControlsVis = Visibility.Visible;
             OnPropertyChanged(nameof(EditControlsVis));
+            MessageBox.Show("Edit Equipment");
 
             /*
              * 
@@ -109,6 +121,8 @@ namespace ProjectLighthouse.ViewModel
 
         public void CreateReport()
         {
+            MessageBox.Show("Generate Report");
+
             /*
              * 
              *  Get .csv of items
@@ -118,8 +132,12 @@ namespace ProjectLighthouse.ViewModel
 
         public void RecordVisualCheck()
         {
-
+            MessageBox.Show("Record Visual Check");
         }
 
+        public void Refresh()
+        {
+            LoadData();
+        }
     }
 }

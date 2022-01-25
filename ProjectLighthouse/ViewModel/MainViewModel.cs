@@ -85,12 +85,12 @@ namespace ProjectLighthouse.ViewModel
             EditCommand = new EditSettingsCommand(this);
             UpdateViewCommand = new UpdateViewCommand(this);
 
-            DataRefreshTimer = new();
+            //DataRefreshTimer = new();
 
-            DataRefreshTimer.Elapsed += OnDataRefresh;
-            DataRefreshTimer.Interval = 60000;
-            DataRefreshTimer.Enabled = true;
-            DataRefreshTimer.Start();
+            //DataRefreshTimer.Elapsed += OnDataRefresh;
+            //DataRefreshTimer.Interval = 5000;
+            //DataRefreshTimer.Enabled = true;
+            //DataRefreshTimer.Start();
         }
 
         private void OnDataRefresh(object source, ElapsedEventArgs e)
