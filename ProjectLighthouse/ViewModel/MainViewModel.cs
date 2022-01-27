@@ -88,7 +88,7 @@ namespace ProjectLighthouse.ViewModel
             DataRefreshTimer = new();
 
             DataRefreshTimer.Elapsed += OnDataRefresh;
-            DataRefreshTimer.Interval = 60000;
+            DataRefreshTimer.Interval = 10000;
             DataRefreshTimer.Enabled = true;
             DataRefreshTimer.Start();
         }

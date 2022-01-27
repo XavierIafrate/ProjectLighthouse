@@ -11,7 +11,9 @@
 
             <!--#region Themes-->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="./Themes/GlobalColours.xaml" />
+                <!--<local:SkinResourceDictionary ClassicSource="./Themes/ClassicTheme.xaml"
+                                              DarkSource="./Themes/DarkTheme.xaml"/>-->
+                <ResourceDictionary Source="./Themes/DarkTheme.xaml" />
                 <ResourceDictionary Source="./Themes/StylishScrollBar.xaml" />
                 <ResourceDictionary Source="./Themes/StylishButtons.xaml" />
                 <ResourceDictionary Source="./Themes/StylishText.xaml" />

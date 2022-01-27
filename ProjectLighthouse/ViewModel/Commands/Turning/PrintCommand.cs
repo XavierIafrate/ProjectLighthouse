@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
-    class PrintCommand : ICommand
+    public class PrintCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
         public OrderViewModel viewModel;

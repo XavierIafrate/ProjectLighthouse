@@ -6,12 +6,14 @@ using System.Windows;
 
 namespace ProjectLighthouse
 {
+    public enum Skin { Classic, Dark }
     public partial class App : Application
     {
         public static User CurrentUser { get; set; }
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
         public static DateTime LastDataRefresh { get; set; } = DateTime.MinValue;
+        public static Skin Skin { get; set; } = Skin.Dark;
 
         protected override void OnStartup(StartupEventArgs e)
         {

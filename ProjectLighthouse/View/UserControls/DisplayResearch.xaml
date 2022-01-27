@@ -14,7 +14,7 @@
     <Grid>
         <Border
             Grid.ColumnSpan="2"
-            Background="{StaticResource gradBlue}"
+            Background="{StaticResource materialPrimaryBlue}"
             CornerRadius="10" />
         <Grid>
             <StackPanel Margin="25,15" Orientation="Horizontal">
@@ -42,10 +42,10 @@
                 </StackPanel>
                 <Button
                     x:Name="Edit_Button"
-                    Background="{StaticResource materialPrimaryBlue}"
+                    Background="{StaticResource materialOnPrimary}"
                     Click="Edit_Button_Click"
                     Content="edit"
-                    Foreground="{StaticResource materialOnPrimary}"
+                    Foreground="{StaticResource materialPrimaryBlue}"
                     Style="{StaticResource Inverting}" />
             </StackPanel>
             <StackPanel
