@@ -102,12 +102,17 @@
                     Command="{Binding PrintScheduleCommand}"
                     Style="{StaticResource PDFButton}"
                     Visibility="{Binding PrintButtonVis}" />
-                <Button Command="{Binding AddResearchCommand}"
+                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Command="{Binding AddResearchCommand}"
                         Content="+ Research"
+                            Style="{StaticResource BlueButton}"
                         Visibility="{Binding AddButtonsVis}"/>
-                <Button Command="{Binding AddServiceCommand}"
-                        Content="+ Service"
+                    <Button Command="{Binding AddServiceCommand}"
+                        Content="+ Maintenance"
+                            Style="{StaticResource BlueButton}"
                         Visibility="{Binding AddButtonsVis}"/>
+                </StackPanel>
+                
             </StackPanel>
 
             <GridSplitter

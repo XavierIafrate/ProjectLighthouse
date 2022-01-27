@@ -63,7 +63,10 @@ namespace ProjectLighthouse.ViewModel
         private void LoadDeliveryNotes()
         {
             DeliveryNotes.Clear();
-            DeliveryNotes = DatabaseHelper.Read<DeliveryNote>().OrderByDescending(n => n.DeliveryDate).ToList();
+            DeliveryNotes = DatabaseHelper.Read<DeliveryNote>()
+                .Where(d => d.DeliveryDate.AddDays(30) > System.DateTime.Now)
+                .OrderByDescending(n => n.DeliveryDate)
+                .ToList();
 
             if (deliveryNotes.Count != 0)
                 SelectedDeliveryNote = DeliveryNotes.First();

@@ -112,7 +112,7 @@ namespace ProjectLighthouse.ViewModel
                 FilterOptions.Add(lathe.FullName);
             }
 
-            OnPropertyChanged("filterOptions");
+            OnPropertyChanged("filterOptions"); // Is this right
         }
 
         private void SetView()
@@ -159,7 +159,7 @@ namespace ProjectLighthouse.ViewModel
 
             InsightsVis = !string.IsNullOrEmpty(searchString)
                 ? Visibility.Visible
-                : Visibility.Hidden;
+                : Visibility.Collapsed;
             OnPropertyChanged("InsightsVis");
 
             ViewTitle = $"Schedule for {Filter}";

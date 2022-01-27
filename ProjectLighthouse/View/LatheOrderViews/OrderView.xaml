@@ -14,6 +14,7 @@
     Background="{StaticResource materialBackground}"
     mc:Ignorable="d">
 
+
     <UserControl.Resources>
         <ResourceDictionary>
             <vm:OrderViewModel x:Key="vm" />
@@ -97,7 +98,6 @@
             </Grid.ColumnDefinitions>
             <TextBox
                 x:Name="SearchBox"
-                Foreground="{StaticResource materialOnSurface}"
                 Style="{StaticResource SearchTextBox}"
                 Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -110,13 +110,15 @@
         </Grid>
 
         <ListView
+            HorizontalContentAlignment="Stretch"
             Grid.Row="1"
-            ItemsSource="{Binding FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            SelectedValue="{Binding SelectedLatheManufactureOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ItemsSource="{Binding Path=FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SelectedValue="{Binding Path=SelectedLatheManufactureOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             SelectionChanged="ListView_SelectionChanged">
+
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding}" />
+                    <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding}" Margin="10,2"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -126,18 +128,18 @@
             Margin="10,5"
             HorizontalAlignment="Left"
             Background="Transparent">
-            <TextBlock Foreground="{StaticResource materialOnBackground}" Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
+            <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
             <Separator Margin="5,0" Background="LightGray" />
             <TextBlock
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
-                Foreground="{StaticResource materialOnBackground}"
                 Text="Filter by:" />
             <ComboBox Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="All Active" IsSelected="True" />
                 <ComboBoxItem Content="Not Ready" />
                 <ComboBoxItem Content="Ready" />
                 <ComboBoxItem Content="Complete" />
+                <ComboBoxItem Content="All" />
             </ComboBox>
         </StatusBar>
 
@@ -170,7 +172,7 @@
                     <Grid Visibility="Hidden">
                         <Border
                             Name="Mask"
-                            Background="{StaticResource materialPrimary}"
+                            Background="{StaticResource materialPrimaryBlue}"
                             CornerRadius="20" />
                         <StackPanel x:Name="image">
                             <Image
@@ -270,13 +272,12 @@
                     </Grid>
                     <Grid x:Name="OrderCardGrid" MaxWidth="700">
                         <Rectangle
-                            Fill="{StaticResource materialSurface}"
                             RadiusX="5"
                             RadiusY="5"
-                            Stroke="{StaticResource materialPrimary}"
-                            StrokeThickness="1" />
+                            Stroke="{StaticResource materialPrimaryBlue}"
+                            StrokeThickness="2" />
                         <StackPanel Margin="20">
-
+                            
                             <!--#region Header Data-->
                             <StackPanel>
                                 <Grid Margin="0,0,0,10">
@@ -286,16 +287,15 @@
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
-                                        <TextBlock
-                                            Foreground="{StaticResource materialOnSurface}"
-                                            Style="{StaticResource title}"
-                                            Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}" />
-                                        <TextBlock
-                                            Foreground="{StaticResource materialOnSurface}"
-                                            Style="{StaticResource subtitle}"
-                                            Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{StaticResource title}" Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}" />
+                                            <Path Visibility="{Binding ArchiveVis}" Margin="5,4,5,0" Width="30" Height="25"    VerticalAlignment="Center" Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
+                                                Stretch="Uniform" Fill="{StaticResource materialPrimaryBlue}" ToolTip="This order is closed."/>
+                                        </StackPanel>
+                                        <TextBlock Style="{StaticResource subtitle}" Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}" />
                                     </StackPanel>
 
+                                    
 
                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                         <Button
@@ -396,8 +396,9 @@
                                     Grid.Column="0"
                                     Height="30"
                                     Data="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M6.12,15.5L9.86,19.24L11.28,17.83L8.95,15.5L11.28,13.17L9.86,11.76L6.12,15.5M17.28,15.5L13.54,11.76L12.12,13.17L14.45,15.5L12.12,17.83L13.54,19.24L17.28,15.5Z"
-                                    Fill="{Binding ProgramIconBrush}"
-                                    Stretch="Uniform" />
+                                    Stretch="Uniform"
+                                    Fill="{Binding ProgramIconBrush}">
+                                </Path>
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="0"
@@ -449,27 +450,27 @@
                                     Text="Bar Prepared" />
                             </Grid>
 
-                            <Separator />
+                            <Separator/>
 
                             <Grid Margin="15,10">
 
                                 <Grid.Resources>
                                     <Style x:Key="widgetBox" TargetType="Border">
-                                        <Setter Property="Background" Value="{StaticResource materialSurface}" />
-                                        <Setter Property="Padding" Value="10" />
-                                        <Setter Property="Margin" Value="10,5" />
-                                        <Setter Property="CornerRadius" Value="20" />
-                                        <Setter Property="BorderThickness" Value="2" />
-                                        <Setter Property="BorderBrush" Value="{StaticResource disabledGray}" />
+                                        <Setter Property="Background" Value="{StaticResource materialSurface}"/>
+                                        <Setter Property="Padding" Value="10"/>
+                                        <Setter Property="Margin" Value="10,5"/>
+                                        <Setter Property="CornerRadius" Value="20"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource disabledGray}"/>
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="BorderBrush" Value="{StaticResource materialPrimary}" />
-                                                <Setter Property="TextElement.Foreground" Value="{StaticResource materialPrimary}" />
+                                                <Setter Property="BorderBrush" Value="{StaticResource materialPrimary}"/>
+                                                <Setter Property="TextElement.Foreground" Value="{StaticResource materialPrimary}"/>
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Resources>
-
+                                
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
@@ -481,41 +482,45 @@
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             FontSize="14"
+                                            Text="SETTING"
                                             FontWeight="SemiBold"
-                                            Foreground="{StaticResource materialOffBlack}"
-                                            Text="SETTING" />
+                                            Foreground="{StaticResource materialOffBlack}" />
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             Style="{StaticResource hero}"
                                             Text="{Binding SelectedLatheManufactureOrder.StartDate, Converter={StaticResource settingTime}}" />
                                         <TextBlock
-                                            HorizontalAlignment="Center"
                                             FontStyle="Italic"
-                                            Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine, Converter={StaticResource stringToAssignedLathe}}" />
+                                            Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine, Converter={StaticResource stringToAssignedLathe}}" 
+                                            HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
 
 
-                                <Border Grid.Column="1" Style="{StaticResource widgetBox}">
+                                <Border Style="{StaticResource widgetBox}"
+                                    Grid.Column="1">
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             FontSize="14"
+                                            Text="ESTIMATED TIME"
                                             FontWeight="SemiBold"
-                                            Foreground="{StaticResource materialOffBlack}"
-                                            Text="ESTIMATED TIME" />
-                                        <TextBlock Style="{StaticResource hero}" Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
+                                            Foreground="{StaticResource materialOffBlack}" />
+                                        <TextBlock
+                                            Style="{StaticResource hero}"
+                                            Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
                                     </StackPanel>
                                 </Border>
 
-                                <Border Grid.Column="2" Style="{StaticResource widgetBox}">
+                                <Border  Style="{StaticResource widgetBox}"
+                                    Grid.Column="2">
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             FontSize="14"
+                                            Text="MATERIAL"
                                             FontWeight="SemiBold"
-                                            Foreground="{StaticResource materialOffBlack}"
-                                            Text="MATERIAL" />
+                                            Foreground="{StaticResource materialOffBlack}" />
                                         <TextBlock
                                             Grid.Row="1"
                                             Grid.Column="2"
@@ -529,7 +534,7 @@
                                             Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}{0} bars required'}" />
                                     </StackPanel>
                                 </Border>
-
+                                
 
                             </Grid>
 
@@ -542,7 +547,7 @@
                                     <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <uc:DisplayLMOItems Margin="10,2" LatheManufactureOrderItem="{Binding}" />
+                                                <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" Margin="10,2"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -551,7 +556,7 @@
 
                             </StackPanel>
                             <!--#endregion-->
-
+                            
                             <!--#region Notes-->
                             <TextBlock
                                 Margin="0,15,0,5"
@@ -561,7 +566,7 @@
                                 <ItemsControl MinHeight="100" ItemsSource="{Binding FilteredNotes}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <uc:DisplayNote Note="{Binding}" />
+                                            <uc:DisplayNote Note="{Binding}"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -571,22 +576,24 @@
                         </StackPanel>
                     </Grid>
                 </StackPanel>
+                <!--<WebBrowser Source="https://www.automotioncomponents.co.uk/media/files/datasheet/P0130.A2-Shoulder-screws-hex-socket-head-stainless-303.pdf" MaxWidth="700" Height="500" />-->
+                <!--<uc:DisplayProductRangeSnippet
+                    Width="{Binding ActualWidth, ElementName=OrderCardGrid}"
+                    MaxWidth="700"
+                    Info="{Binding SelectedProductGroup}"
+                    Items="{Binding SelectedProducts}" />-->
                 <Grid Height="100" />
             </StackPanel>
         </ScrollViewer>
 
-        <Border
-            x:Name="grad"
-            Grid.Column="1"
-            Height="20">
-            <Border.Background>
-                <LinearGradientBrush ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="RelativeToBoundingBox" StartPoint="0,1" EndPoint="0,0">
-                    <GradientStop Offset="1" Color="Red" />
-                    <GradientStop Offset="0" Color="Blue" />
-
+        <Rectangle x:Name="grad" Grid.Column="1">
+            <Rectangle.Fill>
+                <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Gray" />
                 </LinearGradientBrush>
-            </Border.Background>
-        </Border>
+            </Rectangle.Fill>
+        </Rectangle>
         <!--#endregion-->
 
     </Grid>
