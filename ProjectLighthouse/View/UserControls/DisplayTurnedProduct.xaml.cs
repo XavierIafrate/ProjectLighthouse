@@ -5,20 +5,14 @@ using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DisplayTurnedProduct.xaml
-    /// </summary>
     public partial class DisplayTurnedProduct : UserControl
     {
-
-
         public TurnedProduct Product
         {
             get { return (TurnedProduct)GetValue(ProductProperty); }
             set { SetValue(ProductProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ProductProperty =
             DependencyProperty.Register("Product", typeof(TurnedProduct), typeof(DisplayTurnedProduct), new PropertyMetadata(null, SetValues));
 
@@ -55,7 +49,21 @@ namespace ProjectLighthouse.View.UserControls
                 {
                     if (control.Product.IsAlreadyOnOrder)
                     {
-                        control.CouldBeAddedFlag.Text = $"{control.Product.QuantityOnOrder:#,##0}pcs on order {control.Product.OrderReference}";
+                        int numberNeeded = control.Product.QuantityInStock + control.Product.QuantityOnPO - control.Product.QuantityOnSO;
+                        numberNeeded *= -1;
+                        int differential = (numberNeeded + control.Product.QuantityOnPO) - control.Product.QuantityOnOrder;
+                        if (differential == 0) // Order has already been created/updated
+                        {
+                            control.CouldBeAddedFlag.Text = $"Order {control.Product.OrderReference} has matching requirements";
+                        }
+                        else if (differential > 0)
+                        {
+                            control.CouldBeAddedFlag.Text = $"{control.Product.OrderReference} need requirements increased";
+                        }
+                        else
+                        {
+                            control.CouldBeAddedFlag.Text = $"{control.Product.OrderReference} will cover this";
+                        }
                         control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryGreen"];
                     }
                     else
