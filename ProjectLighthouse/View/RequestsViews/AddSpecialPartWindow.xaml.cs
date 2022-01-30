@@ -36,30 +36,10 @@ namespace ProjectLighthouse.View
             string openDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             openFileDialog.InitialDirectory = openDir;
 
-            if (openFileDialog.ShowDialog() == true)
+            if ((bool)openFileDialog.ShowDialog())
             {
-                string newDrawingPath = @"Drawings\Specials\" + Path.GetFileName(openFileDialog.FileName);
-
-                string fullDrawingPath = Path.Join(App.ROOT_PATH, newDrawingPath);
-                if (File.Exists(fullDrawingPath))
-                {
-                    MessageBox.Show($"A Document called '{Path.GetFileName(openFileDialog.FileName)}' already exists in the library.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                else
-                {
-                    try
-                    {
-                        //File.Copy(openFileDialog.FileName, fullDrawingPath);
-                        drawingFile = newDrawingPath;
-                        destinationDrawing = fullDrawingPath;
-                        targetDrawing = openFileDialog.FileName;
-                        DrawingFile.Text = Path.GetFileName(openFileDialog.FileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
-                    }
-                }
+                targetDrawing = openFileDialog.FileName;
+                DrawingFile.Text = Path.GetFileName(openFileDialog.FileName);
             }
         }
 
@@ -239,12 +219,15 @@ namespace ProjectLighthouse.View
         private bool ImprintData()
         {
             ComboBoxItem selectedMaterial = materialComboBox.SelectedItem as ComboBoxItem;
-            //ComboBoxItem selectedThread = threadSizeComboBox.SelectedItem as ComboBoxItem;
             ComboBoxItem selectedDriveSize = (bool)hex.IsChecked
                 ? HexSize.SelectedItem as ComboBoxItem
                 : (bool)torx.IsChecked
                         ? TorxSize.SelectedItem as ComboBoxItem
                         : null;
+
+            string driveSize = selectedDriveSize != null ? selectedDriveSize.Tag.ToString() : Math.Ceiling(double.Parse(majorDiameter.Text)).ToString("0");
+            drawingFile = @"Drawings\Specials\" + $"{productNameTextBox.Text.Trim().ToUpperInvariant()}_R1.pdf";
+            destinationDrawing = Path.Combine(App.ROOT_PATH, drawingFile);
 
             try
             {
@@ -253,16 +236,15 @@ namespace ProjectLighthouse.View
                     AddedBy = App.CurrentUser.UserName,
                     AddedDate = DateTime.Now,
                     isSpecialPart = true,
-                    DrawingFilePath = drawingFile,
-                    ProductName = productNameTextBox.Text,
-                    CustomerRef = customerNameTextBox.Text,
+                    ProductName = productNameTextBox.Text.Trim(),
+                    CustomerRef = customerNameTextBox.Text.Trim(),
                     Material = selectedMaterial.Tag.ToString(),
                     BarID = GetBarSizeFromDiameter(double.Parse(majorDiameter.Text), selectedMaterial.Tag.ToString(), "round"),
                     MajorLength = double.Parse(majorLength.Text),
                     MajorDiameter = double.Parse(majorDiameter.Text),
                     ThreadSize = threadSizeComboBox.Text,
                     DriveType = (bool)hex.IsChecked ? "hex" : (bool)torx.IsChecked ? "torx" : "thumb",
-                    DriveSize = selectedDriveSize.Tag.ToString() ?? Math.Ceiling(double.Parse(majorDiameter.Text)).ToString("0"),
+                    DriveSize = driveSize,
                     ProductGroup = productNameTextBox.Text[..9]
                 };
             }
@@ -282,7 +264,18 @@ namespace ProjectLighthouse.View
                 return false;
             }
 
-            return true;
+            TechnicalDrawing technicalDrawing = new()
+            {
+                Customer = customerNameTextBox.Text.Trim(),
+                Product = productNameTextBox.Text.Trim(),
+                Revision = 1,
+                URL = drawingFile,
+                Created = DateTime.Now,
+                CreatedBy = App.CurrentUser.GetFullName(),
+                IsArchetype = false,
+            };
+
+            return DatabaseHelper.Insert(technicalDrawing);
         }
 
         private string GetBarSizeFromDiameter(double diameter, string material, string profile)

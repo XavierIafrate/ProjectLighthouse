@@ -203,8 +203,8 @@
                 Width="130"
                 HorizontalAlignment="Right">
                 <ComboBoxItem Content="1,5mm" Tag="1.5"/>
-                <ComboBoxItem Content="2,5mm" Tag="2"/>
-                <ComboBoxItem Content="2,5mm" Tag="1"/>
+                <ComboBoxItem Content="2mm" Tag="2"/>
+                <ComboBoxItem Content="2,5mm" Tag="2.5"/>
                 <ComboBoxItem Content="3mm" Tag="3"/>
                 <ComboBoxItem Content="3,5mm" Tag="3.5"/>
                 <ComboBoxItem Content="4mm" Tag="4"/>

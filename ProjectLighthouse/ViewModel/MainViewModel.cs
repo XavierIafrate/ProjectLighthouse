@@ -93,6 +93,11 @@ namespace ProjectLighthouse.ViewModel
             //DataRefreshTimer.Start();
         }
 
+        /*
+         * 
+         *  Some day...
+         * 
+         * 
         private void OnDataRefresh(object source, ElapsedEventArgs e)
         {
             if (SelectedViewModel is IRefreshableViewModel refreshableViewModel)
@@ -107,6 +112,7 @@ namespace ProjectLighthouse.ViewModel
 
             LastDataRefresh = App.LastDataRefresh.ToString("s");
         }
+        */
 
         public void LoginRoutine()
         {

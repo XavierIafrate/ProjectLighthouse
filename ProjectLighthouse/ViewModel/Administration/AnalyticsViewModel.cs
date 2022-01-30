@@ -391,123 +391,123 @@ namespace ProjectLighthouse.ViewModel
         private void GetDataForMachineRuntime()
         {
             return;
-            string[] StateLabels = new[] { "Running", "Setting", "Breakdown", "Idle", "Offline" };
-            List<string> lathe_labels = new();
-            MachineRuntimeCollection = new();
+            //string[] StateLabels = new[] { "Running", "Setting", "Breakdown", "Idle", "Offline" };
+            //List<string> lathe_labels = new();
+            //MachineRuntimeCollection = new();
 
-            List<StackedRowSeries> temporal = new();
+            //List<StackedRowSeries> temporal = new();
 
-            // Create Series
-            for (int i = 0; i < StateLabels.Length; i++)
-            {
-                StackedRowSeries stateSummary = new()
-                {
-                    Title = StateLabels[i],
-                    Values = new ChartValues<double>() { },
-                    StackMode = StackMode.Percentage,
-                    RowPadding = 5,
-                };
-                temporal.Add(stateSummary);
-            }
+            //// Create Series
+            //for (int i = 0; i < StateLabels.Length; i++)
+            //{
+            //    StackedRowSeries stateSummary = new()
+            //    {
+            //        Title = StateLabels[i],
+            //        Values = new ChartValues<double>() { },
+            //        StackMode = StackMode.Percentage,
+            //        RowPadding = 5,
+            //    };
+            //    temporal.Add(stateSummary);
+            //}
 
-            // Get Data
+            //// Get Data
 
-            double OverallRuntime = 0;
-            double OverallTime = 0;
+            //double OverallRuntime = 0;
+            //double OverallTime = 0;
 
-            double startTimeSpan = 24 * 7; // hours ago
+            //double startTimeSpan = 24 * 7; // hours ago
 
-            for (int lathe = Lathes.Count - 1; lathe >= 0; lathe--)
-            {
-                List<MachineOperatingBlock> data = MachineStatistics.Where(n => n.MachineID == Lathes[lathe].Id && n.StateLeft.AddHours(startTimeSpan) > DateTime.Now).OrderBy(x => x.StateEntered).ToList();
-                if (data.Count == 0)
-                    continue;
+            //for (int lathe = Lathes.Count - 1; lathe >= 0; lathe--)
+            //{
+            //    List<MachineOperatingBlock> data = MachineStatistics.Where(n => n.MachineID == Lathes[lathe].Id && n.StateLeft.AddHours(startTimeSpan) > DateTime.Now).OrderBy(x => x.StateEntered).ToList();
+            //    if (data.Count == 0)
+            //        continue;
 
-                lathe_labels.Add(Lathes[lathe].FullName);
+            //    lathe_labels.Add(Lathes[lathe].FullName);
 
-                double sRunning = 0;
-                double sSetting = 0;
-                double sBreakdown = 0;
-                double sIdle = 0;
-                double sOffline = 0;
+            //    double sRunning = 0;
+            //    double sSetting = 0;
+            //    double sBreakdown = 0;
+            //    double sIdle = 0;
+            //    double sOffline = 0;
 
-                for (int i = 1; i < data.Count; i++)
-                {
-                    DateTime last_time;
+            //    for (int i = 1; i < data.Count; i++)
+            //    {
+            //        DateTime last_time;
 
-                    if (i == 0)
-                    {
-                        last_time = DateTime.Now.AddHours(-startTimeSpan) > data[i].StateEntered
-                            ? DateTime.Now.AddHours(-startTimeSpan)
-                            : data[i].StateEntered;
-                    }
-                    else
-                    {
-                        last_time = data[i].StateEntered;
-                    }
+            //        if (i == 0)
+            //        {
+            //            last_time = DateTime.Now.AddHours(-startTimeSpan) > data[i].StateEntered
+            //                ? DateTime.Now.AddHours(-startTimeSpan)
+            //                : data[i].StateEntered;
+            //        }
+            //        else
+            //        {
+            //            last_time = data[i].StateEntered;
+            //        }
 
-                    switch (data[i].State)
-                    {
-                        case "Running":
-                            sRunning += (data[i].StateLeft - last_time).TotalSeconds;
-                            break;
-                        case "Setting":
-                            sSetting += (data[i].StateLeft - last_time).TotalSeconds;
-                            break;
-                        case "Breakdown":
-                            sBreakdown += (data[i].StateLeft - last_time).TotalSeconds;
-                            break;
-                        case "Idle":
-                            sIdle += (data[i].StateLeft - last_time).TotalSeconds;
-                            break;
-                        case "Offline":
-                            sOffline += (data[i].StateLeft - last_time).TotalSeconds;
-                            break;
-                    }
-                }
+            //        switch (data[i].State)
+            //        {
+            //            case "Running":
+            //                sRunning += (data[i].StateLeft - last_time).TotalSeconds;
+            //                break;
+            //            case "Setting":
+            //                sSetting += (data[i].StateLeft - last_time).TotalSeconds;
+            //                break;
+            //            case "Breakdown":
+            //                sBreakdown += (data[i].StateLeft - last_time).TotalSeconds;
+            //                break;
+            //            case "Idle":
+            //                sIdle += (data[i].StateLeft - last_time).TotalSeconds;
+            //                break;
+            //            case "Offline":
+            //                sOffline += (data[i].StateLeft - last_time).TotalSeconds;
+            //                break;
+            //        }
+            //    }
 
-                OverallTime += sRunning + sSetting + sBreakdown + sIdle + sOffline;
+            //    OverallTime += sRunning + sSetting + sBreakdown + sIdle + sOffline;
 
-                BrushConverter converter = new();
-                foreach (StackedRowSeries state in temporal)
-                {
-                    switch (state.Title)
-                    {
-                        case "Running":
-                            state.Values.Add(sRunning);
-                            OverallRuntime += sRunning;
-                            state.Fill = (Brush)converter.ConvertFromString("#009688");
-                            break;
-                        case "Setting":
-                            state.Values.Add(sSetting);
-                            state.Fill = (Brush)converter.ConvertFromString("#0277BD");
-                            break;
-                        case "Breakdown":
-                            state.Values.Add(sBreakdown);
-                            state.Fill = (Brush)converter.ConvertFromString("#B00020");
-                            break;
-                        case "Idle":
-                            state.Values.Add(sIdle);
-                            state.Fill = (Brush)converter.ConvertFromString("#ffff71");
-                            break;
-                        case "Offline":
-                            state.Values.Add(sOffline);
-                            state.Fill = (Brush)converter.ConvertFromString("#000000");
-                            break;
-                    }
-                }
-            }
+            //    BrushConverter converter = new();
+            //    foreach (StackedRowSeries state in temporal)
+            //    {
+            //        switch (state.Title)
+            //        {
+            //            case "Running":
+            //                state.Values.Add(sRunning);
+            //                OverallRuntime += sRunning;
+            //                state.Fill = (Brush)converter.ConvertFromString("#009688");
+            //                break;
+            //            case "Setting":
+            //                state.Values.Add(sSetting);
+            //                state.Fill = (Brush)converter.ConvertFromString("#0277BD");
+            //                break;
+            //            case "Breakdown":
+            //                state.Values.Add(sBreakdown);
+            //                state.Fill = (Brush)converter.ConvertFromString("#B00020");
+            //                break;
+            //            case "Idle":
+            //                state.Values.Add(sIdle);
+            //                state.Fill = (Brush)converter.ConvertFromString("#ffff71");
+            //                break;
+            //            case "Offline":
+            //                state.Values.Add(sOffline);
+            //                state.Fill = (Brush)converter.ConvertFromString("#000000");
+            //                break;
+            //        }
+            //    }
+            //}
 
-            double overall = Math.Round((OverallRuntime / OverallTime) * 100, 2);
-            OverallOperating = double.IsNaN(overall)
-                ? 0
-                :overall;
-            OnPropertyChanged("OverallOperating");
+            //double overall = Math.Round((OverallRuntime / OverallTime) * 100, 2);
+            //OverallOperating = double.IsNaN(overall)
+            //    ? 0
+            //    :overall;
+            //OnPropertyChanged("OverallOperating");
 
-            //SecondsToDaysFormatter = value => string.Format("{0:d}", TimeSpan.FromSeconds(value));
-            LatheLabels = lathe_labels.ToArray();
-            OnPropertyChanged("LatheLabels");
-            MachineRuntimeCollection.AddRange(temporal);
+            ////SecondsToDaysFormatter = value => string.Format("{0:d}", TimeSpan.FromSeconds(value));
+            //LatheLabels = lathe_labels.ToArray();
+            //OnPropertyChanged("LatheLabels");
+            //MachineRuntimeCollection.AddRange(temporal);
 
         }
 

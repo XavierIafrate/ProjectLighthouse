@@ -2,27 +2,207 @@
     x:Class="ProjectLighthouse.View.DrawingBrowserView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:viewModel="clr-namespace:ProjectLighthouse.ViewModel"
+    d:Background="White"
+    d:DesignHeight="746"
+    d:DesignWidth="1350"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource materialYellow}">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Path HorizontalAlignment="Center"
-                  Height="50" Width="50" Stretch="Uniform"
-                  Margin="20"
-                Fill="{StaticResource materialOffBlack}" Data="M20 19.88V22L18.2 20.83L13.41 11.83A4.94 4.94 0 0 0 15.19 10.83M15 7A3 3 0 0 1 12 10A3.27 3.27 0 0 1 11.56 10L5.8 20.83L4 22V19.88L9.79 9A3 3 0 0 1 12 4V2A1 1 0 0 1 13 3V4.18A3 3 0 0 1 15 7M13 7A1 1 0 1 0 12 8A1 1 0 0 0 13 7M4.22 10L6 11.8L4.56 14.56L2.1 12.1M12 17.76L10.5 16.25L9 19L12 22L15 19L13.53 16.23M19.78 10L18 11.8L19.5 14.56L21.9 12.1Z"
-                            />
-            <TextBlock
-                FontWeight="SemiBold"
+    <UserControl.Resources>
+        <viewModel:DrawingBrowserViewModel x:Key="vm" />
+        <converters:stringCoalesce x:Key="stringCoalesce" />
+    </UserControl.Resources>
+
+    <Grid DataContext="{StaticResource vm}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="338*" />
+            <ColumnDefinition Width="1013*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                x:Name="searchBox"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Search..."
+                Text="{Binding SearchBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                TextChanged="TextBox_TextChanged" />
+
+            <Button
+                x:Name="ClearButton"
+                Grid.Column="1"
+                Click="ClearButton_Click"
+                IsEnabled="False"
+                Style="{StaticResource ClearButton}" />
+        </Grid>
+
+        <ListView
+            Grid.Row="1"
+            ItemsSource="{Binding FilteredDrawings}"
+            SelectedItem="{Binding SelectedDrawing}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="10,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Text="{Binding Product}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource materialPrimary}"
+                            Text="{Binding Created, StringFormat='{}{0:dd/MM/yyyy}'}" />
+
+
+                        <TextBlock
+                            Grid.RowSpan="2"
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Text="{Binding Revision, StringFormat='{}R{0}'}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <CheckBox
+                Margin="10"
+                Content="Show Current Only"
+                IsChecked="{Binding OnlyShowCurrentDrawings}" />
+            <Button
+                HorizontalAlignment="Right"
+                Command="{Binding AddNewCmd}"
+                Content="+ Add New"
+                Style="{StaticResource BlueButton}"
+                Visibility="{Binding EditControlsVis}" />
+        </StackPanel>
+
+        <TextBlock
+            Grid.RowSpan="3"
+            Grid.Column="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Foreground="{StaticResource materialOffBlack}"
-            FontSize="50"
-            Text="Technical Drawings" />
-        </StackPanel>
-        
+            FontSize="30"
+            FontStyle="Italic"
+            Foreground="{StaticResource disabledGray}"
+            Text="None found"
+            Visibility="{Binding NoneFoundVis}" />
+        <ScrollViewer
+            Grid.RowSpan="3"
+            Grid.Column="1"
+            MaxWidth="800"
+            Visibility="{Binding SelectedDrawingDisplayVis}">
+            <StackPanel Margin="10">
+                <TextBlock
+                    d:Text="PRODUCT_NAME"
+                    Style="{StaticResource title}"
+                    Text="{Binding SelectedDrawing.Product}" />
+                <TextBlock
+                    d:Text="REVISION NUMBER"
+                    Style="{StaticResource subtitle}"
+                    Text="{Binding SelectedDrawing.Revision, StringFormat='{}Revision {0}'}" />
+
+                <Border Margin="10"
+                    HorizontalAlignment="Center"
+                    Background="{StaticResource materialYellow}"
+                    BorderBrush="{StaticResource materialOffBlack}"
+                    BorderThickness="3"
+                    CornerRadius="10"
+                    MaxWidth="700"
+                    Visibility="{Binding ArchetypeWarningVis}">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Path
+                            Grid.RowSpan="2"
+                            Width="40"
+                            Height="35"
+                            Margin="0,2,13,0"
+                            VerticalAlignment="Center"
+                            Data="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"
+                            Fill="{StaticResource materialOffBlack}"
+                            Stretch="Uniform" />
+                        <TextBlock
+                            Grid.Column="1"
+                            FontSize="22"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource materialOffBlack}"
+                            Text="Archetype Drawing" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            MaxWidth="600"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource materialOffBlack}"
+                            Text="This drawing is intended to be characteristic of multiple products, there may be exceptions to this which do not conform. Always use in conjunction with the relevant standard."
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </Border>
+                
+                
+                <Border
+                    MaxWidth="500"
+                    Margin="10"
+                    Background="{StaticResource materialSurface}"
+                    CornerRadius="10">
+                    <StackPanel Margin="20,10">
+                        <TextBlock
+                            d:Text="UPLOADED DATE"
+                            Foreground="{StaticResource materialOffBlack}"
+                            Style="{StaticResource statement}"
+                            Text="{Binding SelectedDrawing.Created, StringFormat='{}Uploaded {0:dd MMMM yyyy HH:mm}'}" />
+
+                        <TextBlock
+                            d:Text="UPLOADED BY"
+                            Foreground="{StaticResource materialOffBlack}"
+                            Style="{StaticResource statement}"
+                            Text="{Binding SelectedDrawing.CreatedBy, StringFormat='{}Issued by {0}'}" />
+
+                        <TextBlock
+                            d:Text="CUSTOMER"
+                            Foreground="{StaticResource materialOffBlack}"
+                            Style="{StaticResource statement}"
+                            Text="{Binding SelectedDrawing.Customer, StringFormat='{}Customer: {0}', Converter='{StaticResource stringCoalesce}'}" />
+                    </StackPanel>
+                </Border>
+
+                <userControls:DisplayTechnicalDrawing
+                    MaxWidth="500"
+                    Margin="10"
+                    Drawing="{Binding SelectedDrawing}" />
+
+                
+            </StackPanel>
+        </ScrollViewer>
+
+
     </Grid>
 </UserControl>

@@ -130,6 +130,46 @@ namespace ProjectLighthouse.View
             return blank[..(6 - orderNumLen)] + strOrderNum;
         }
 
+        private void AddDrawingKeysToItems()
+        {
+            List<TechnicalDrawing> drawings = DatabaseHelper.Read<TechnicalDrawing>();
+            for (int i = 0; i < NewOrderItems.Count; i++)
+            {
+                if (NewOrderItems[i].IsSpecialPart)
+                {
+                    List<TechnicalDrawing> matches = drawings.Where(d => d.Product == NewOrderItems[i].ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
+                    if (matches.Count == 0)
+                    {
+                        NewOrderItems[i].DrawingId = 0;
+                    }
+                    else
+                    {
+                        NewOrderItems[i].DrawingId = matches.First().Id;
+                    }
+                }
+                else
+                {
+                    List<TechnicalDrawing> matches = drawings.Where(d => d.Product == NewOrderItems[i].ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
+                    if (matches.Count == 0)
+                    {
+                        matches = drawings.Where(d => d.IsArchetype && d.Product == NewOrderItems[i].ProductName[..5]).OrderByDescending(d => d.Revision).ToList();
+                        if (matches.Count == 0)
+                        {
+                            NewOrderItems[i].DrawingId = 0;
+                        }
+                        else
+                        {
+                            NewOrderItems[i].DrawingId = matches.First().Id;
+                        }
+                    }
+                    else
+                    {
+                        NewOrderItems[i].DrawingId = matches.First().Id;
+                    }
+                }
+            }
+        }
+
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             NewOrder.Name = GetNewMOName();
@@ -146,6 +186,8 @@ namespace ProjectLighthouse.View
             NewOrder.MajorDiameter = RequiredTurnedProduct.MajorDiameter;
             NewOrder.BarsInStockAtCreation = OrderBar.InStock;
             NewOrder.BarID = OrderBar.Id;
+
+            AddDrawingKeysToItems();
 
             // Add order & items to database
             _ = DatabaseHelper.Insert(NewOrder);

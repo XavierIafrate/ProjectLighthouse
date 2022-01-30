@@ -10,7 +10,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static string GetDatabaseFile()
         {
             return Environment.UserName == "xavier"
-                               ? @"C:\Users\xavie\Desktop\manufactureDB.db3"
+                               ? @"C:\Users\xavie\Documents\lighthouse_test\manufactureDB.db3"
                                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
         }
 

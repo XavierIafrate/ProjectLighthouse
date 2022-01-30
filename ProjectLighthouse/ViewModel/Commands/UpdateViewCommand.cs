@@ -31,7 +31,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Agenda")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new AgendaViewModel();
                 viewModel.NavText = "Agenda";
             }
@@ -61,7 +61,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Drawings")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new DrawingBrowserViewModel();
                 viewModel.NavText = "Technical Drawings";
             }

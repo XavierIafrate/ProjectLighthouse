@@ -11,5 +11,15 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ClearButton.IsEnabled = searchBox.Text.Length > 0;
+        }
+
+        private void ClearButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            searchBox.Text = "";
+        }
     }
 }

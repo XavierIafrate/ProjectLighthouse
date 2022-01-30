@@ -47,10 +47,11 @@ namespace ProjectLighthouse.View.UserControls
 
                 if (!string.IsNullOrEmpty(control.Product.OrderReference))
                 {
-                    if (control.Product.IsAlreadyOnOrder)
+                    int numberNeeded = control.Product.QuantityInStock + control.Product.QuantityOnPO - control.Product.QuantityOnSO;
+                    numberNeeded *= -1;
+                    if (control.Product.IsAlreadyOnOrder && numberNeeded > 0)
                     {
-                        int numberNeeded = control.Product.QuantityInStock + control.Product.QuantityOnPO - control.Product.QuantityOnSO;
-                        numberNeeded *= -1;
+
                         int differential = (numberNeeded + control.Product.QuantityOnPO) - control.Product.QuantityOnOrder;
                         if (differential == 0) // Order has already been created/updated
                         {

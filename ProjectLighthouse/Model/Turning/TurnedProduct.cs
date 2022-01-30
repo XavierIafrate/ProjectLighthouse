@@ -36,7 +36,6 @@ namespace ProjectLighthouse.Model
 
         public bool isSpecialPart { get; set; }
         public string CustomerRef { get; set; }
-        public string DrawingFilePath { get; set; }
         public string AddedBy { get; set; }
         public DateTime AddedDate { get; set; }
 

@@ -22,6 +22,8 @@ namespace ProjectLighthouse.Model
         public double MajorLength { get; set; }
         public double MajorDiameter { get; set; }
 
+        public int DrawingId { get; set; }
+
         public DateTime DateRequired { get; set; }
         public DateTime DateAdded { get; set; }
         public string AddedBy { get; set; }

@@ -129,6 +129,7 @@
 
                     <StackPanel Margin="0,20">
                         <ToggleButton
+                            Visibility="Collapsed"
                             x:Name="calibration_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Calibration"

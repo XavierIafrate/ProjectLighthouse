@@ -17,7 +17,7 @@ namespace ProjectLighthouse
         public MainWindow()
         {
             App.ROOT_PATH = Environment.UserName == "xavier"
-                ? @"C:\Users\xavie\Desktop\"
+                ? @"C:\Users\xavie\Documents\lighthouse_test\"
                 : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\";
 
             if (!Directory.Exists(App.ROOT_PATH))
@@ -91,13 +91,7 @@ namespace ProjectLighthouse
                 ? Visibility.Collapsed
                 : Visibility.Collapsed;
 
-            calibration_button.Visibility = App.CurrentUser.UserName == "xav"
-                ? Visibility.Collapsed
-                : Visibility.Collapsed;
-
-            drawings_button.Visibility = App.CurrentUser.UserName == "xav"
-                ? Visibility.Collapsed
-                : Visibility.Collapsed;
+            calibration_button.IsEnabled = App.CurrentUser.UserName == "xav";
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.UserRole;
