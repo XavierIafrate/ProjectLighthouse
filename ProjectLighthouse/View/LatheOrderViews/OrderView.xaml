@@ -112,7 +112,7 @@
         <ListView
             Grid.Row="1"
             HorizontalContentAlignment="Stretch"
-            ItemsSource="{Binding Path=FilteredOrders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ItemsSource="{Binding Path=FilteredOrders}"
             SelectedValue="{Binding Path=SelectedLatheManufactureOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             SelectionChanged="ListView_SelectionChanged">
 
