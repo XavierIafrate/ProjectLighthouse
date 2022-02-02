@@ -517,13 +517,15 @@ namespace ProjectLighthouse.ViewModel
 
             Results.AddRange(LatheManufactureOrders.Where(x => FoundOrdersByItem.Contains(x.Name)));
 
+            FilteredOrders = null;
+            FilteredOrders = new();
 
             for (int i = 0; i < Results.Count; i++)
             {
                 FilteredOrders.Add(Results[i]);
             }
-            //FilteredOrders = Results;
-            FilterOrders("Search");
+
+            OnPropertyChanged(nameof(FilteredOrders));
         }
 
         private void LoadOrderCard()

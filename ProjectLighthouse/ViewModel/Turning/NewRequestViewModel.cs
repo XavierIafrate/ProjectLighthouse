@@ -212,7 +212,7 @@ namespace ProjectLighthouse.ViewModel
                     AddSpecialVisibility = Visibility.Visible;
                 }
 
-                FilteredList.AddRange(TurnedProducts.Where(p => p.isSpecialPart));
+                FilteredList.AddRange(TurnedProducts.Where(p => p.isSpecialPart).OrderBy(x => x.ProductName).ThenBy(x => x.Material));
             }
             else if (SelectedGroup == "Live")
             {

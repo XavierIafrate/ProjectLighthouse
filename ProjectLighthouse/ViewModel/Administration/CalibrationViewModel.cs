@@ -81,7 +81,7 @@ namespace ProjectLighthouse.ViewModel
 
             for (int i = 0; i < Equipment.Count; i++)
             {
-                Equipment[i].Certificates = certs.Where(e => e.Instrument == Equipment[i].Name).ToList();
+                Equipment[i].Certificates = certs.Where(e => $"CE{e.Instrument}" == Equipment[i].Name).ToList();
                 Equipment[i].RequestToEdit += EditEquipment;
             }
         }
