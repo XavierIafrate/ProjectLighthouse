@@ -8,15 +8,18 @@
         Title="Register Calibrated Equipment" SizeToContent="Height" Width="800">
     <StackPanel Margin="30">
         <TextBlock Style="{StaticResource title}" Text="Register Calibrated Equipment" />
-        <StackPanel Margin="20">
+        <StackPanel Margin="40,20">
             <CheckBox
+                HorizontalAlignment="Right"
                 x:Name="UKAS_required"
+                Checked="UKAS_required_Checked"
+                Unchecked="UKAS_required_Unchecked"
                 Margin="0,0,0,15"
                 Content="Requires UKAS Calibration" />
 
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -27,11 +30,11 @@
                 <ComboBox
                     Grid.Column="1"
                     MaxWidth="300"/>
-                <TextBox Style="{StaticResource DefaultTextBox}" Tag="Define other" Grid.Column="2"/>
+                <TextBox Style="{StaticResource DefaultTextBox}" Tag="Define other" Grid.Column="2" x:Name="MakeTextBox" TextChanged="MakeTextBox_TextChanged"/>
             </Grid>
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -42,7 +45,7 @@
                 <ComboBox
                     Grid.Column="1"
                     MaxWidth="300"/>
-                <TextBox Style="{StaticResource DefaultTextBox}" Tag="Define other" Grid.Column="2"/>
+                <TextBox Style="{StaticResource DefaultTextBox}" Tag="Define other" Grid.Column="2" x:Name="ModelTextBox" TextChanged="ModelTextBox_TextChanged"/>
             </Grid>
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
@@ -53,7 +56,7 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource section}"
                     Text="Serial Number" />
-                <TextBox Style="{StaticResource DefaultTextBox}" Tag="Serial Number" Grid.Column="1"/>
+                <TextBox Style="{StaticResource DefaultTextBox}" Tag="Serial Number" Grid.Column="1" TextChanged="TextBox_TextChanged" x:Name="SerialNumberTextBox" Width="400" HorizontalAlignment="Right"/>
             </Grid>
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
@@ -65,8 +68,11 @@
                     Style="{StaticResource section}"
                     Text="Instrument Type" />
                 <ComboBox
+                    x:Name="InstrumentTypeComboBox"
+                    SelectionChanged="InstrumentTypeComboBox_SelectionChanged"
+                    HorizontalAlignment="Right"
                     Grid.Column="1"
-                    MaxWidth="300"/>
+                    Width="300"/>
             </Grid>
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
@@ -78,8 +84,9 @@
                     Style="{StaticResource section}"
                     Text="Location" />
                 <ComboBox
+                    HorizontalAlignment="Right"
                     Grid.Column="1"
-                    MaxWidth="300"/>
+                    Width="300"/>
             </Grid>
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
@@ -90,13 +97,14 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource section}"
                     Text="Calibration Interval" />
-                <TextBox Tag="months" Style="{StaticResource DefaultTextBox}" Grid.Column="1" Width="100" MaxLength="2"/>
+                <TextBox Tag="months" Style="{StaticResource DefaultTextBox}" Grid.Column="1" Width="100" MaxLength="2" PreviewKeyDown="NumbersOnly" HorizontalAlignment="Right" x:Name="IntervalTextBox" TextChanged="IntervalTextBox_TextChanged"/>
             </Grid>
 
             <Button
                 x:Name="AddButton"
                 HorizontalAlignment="Right"
-                Content="Add"
+                Content="Add to Registry"
+                Click="AddButton_Click"
                 Style="{StaticResource GreenButton}" />
         </StackPanel>
 

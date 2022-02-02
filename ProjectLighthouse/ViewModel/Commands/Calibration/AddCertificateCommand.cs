@@ -24,7 +24,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Calibration
 
         public void Execute(object parameter)
         {
-            viewModel.CreateReport();
+            viewModel.AddCertificate();
         }
     }
 }

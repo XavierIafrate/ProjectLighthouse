@@ -484,6 +484,14 @@
                         Style="{StaticResource CancelButton}"
                         Visibility="{Binding EditControlsVis}" />
                 </StackPanel>
+                <TextBlock Text="Logins - last 14 days" Style="{StaticResource section}" Margin="0,10"/>
+                <ListView ItemsSource="{Binding UserLogins}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Time, StringFormat='{}{0:ddd, dd MMM yyyy}'}" HorizontalAlignment="Right" Margin="15,3"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </StackPanel>
         </ScrollViewer>
     </Grid>
