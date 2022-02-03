@@ -17,6 +17,8 @@ namespace ProjectLighthouse.Model
         {
             get
             {
+                DateTime startDate = StartDate > DateTime.MinValue.AddDays(15) ? StartDate : DateTime.MinValue.AddDays(15);
+
                 if (IsCancelled)
                 {
                     return OrderState.Cancelled;
@@ -33,7 +35,7 @@ namespace ProjectLighthouse.Model
                 {
                     return OrderState.Prepared;
                 }
-                else if (BarIsVerified && HasProgram && IsReady && StartDate.AddDays(-14) > DateTime.Now)
+                else if (BarIsVerified && HasProgram && IsReady && startDate.AddDays(-14) > DateTime.Now)
                 {
                     return OrderState.Ready;
                 }

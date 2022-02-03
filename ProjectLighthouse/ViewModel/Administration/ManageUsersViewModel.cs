@@ -15,6 +15,9 @@ namespace ProjectLighthouse.ViewModel
         #region Vars
         public List<string> roles { get; set; }
         public List<string> views { get; set; }
+        public List<Login> Logins { get; set; }
+
+        public List<Login> UserLogins { get; set; }
 
         private string selectedRole;
         public string SelectedRole
@@ -70,6 +73,12 @@ namespace ProjectLighthouse.ViewModel
                         SelectedRole = roles.Where(n => n.ToString() == value.UserRole).Single();
                     if (views != null && value.DefaultView != null)
                         SelectedView = views.Where(n => n.ToString() == (string.IsNullOrEmpty(value.DefaultView) ? "Orders" : value.DefaultView)).Single();
+                    if (value.UserName != null)
+                    {
+                        UserLogins = Logins.Where(x => x.User == value.UserName && x.Time.AddDays(14) > DateTime.Now).ToList();
+                        OnPropertyChanged(nameof(UserLogins));
+                    }
+                    
                 }
 
                 OnPropertyChanged("SelectedUser");
@@ -115,6 +124,8 @@ namespace ProjectLighthouse.ViewModel
             SelectedRole = string.Empty;
             Users = new();
             SelectedUser = new();
+            Logins = new();
+            UserLogins = new();
 
             EditControlsVis = Visibility.Collapsed;
             ReadControlsVis = Visibility.Visible;
@@ -133,6 +144,7 @@ namespace ProjectLighthouse.ViewModel
         private void LoadData()
         {
             Users = DatabaseHelper.Read<User>().OrderBy(n => n.UserName).ToList();
+            Logins = DatabaseHelper.Read<Login>().OrderByDescending(x => x.Time).ToList();
         }
 
         public void EnableEdit()

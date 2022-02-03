@@ -1,11 +1,10 @@
 ﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands.Calibration;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -16,7 +15,7 @@ namespace ProjectLighthouse.ViewModel
         public List<CalibratedEquipment> Equipment
         {
             get { return equipment; }
-            set 
+            set
             {
                 equipment = value;
                 OnPropertyChanged("Equipment");
@@ -27,12 +26,16 @@ namespace ProjectLighthouse.ViewModel
         public CalibratedEquipment SelectedEquipment
         {
             get { return selectedEquipment; }
-            set 
-            { 
+            set
+            {
                 selectedEquipment = value;
-                Certificates = selectedEquipment.Certificates;
-                OnPropertyChanged("Certificates");
-                OnPropertyChanged("SelectedEquipment");
+                if (selectedEquipment != null)
+                {
+                    Certificates = selectedEquipment.Certificates;
+                    OnPropertyChanged("Certificates");
+                    OnPropertyChanged("SelectedEquipment");
+                }
+                
             }
         }
 
@@ -88,7 +91,12 @@ namespace ProjectLighthouse.ViewModel
 
         public void AddNewEquipment()
         {
-            MessageBox.Show("Add New Equipment");
+            AddNewCalibratedEquipmentWindow window = new();
+            window.ShowDialog();
+            if (window.SaveExit)
+            {
+                LoadData();
+            }
             // CanEditCalibration level
 
             // New Window

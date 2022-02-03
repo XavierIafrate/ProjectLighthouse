@@ -37,20 +37,37 @@
         </Grid>
         
         <StackPanel Grid.Column="1" Margin="10">
-            <TextBlock Text="{Binding SelectedEquipment.Name}" Style="{StaticResource title}"/>
+            <TextBlock Text="{Binding SelectedEquipment.Name}" Style="{StaticResource title}" Margin="0,0,0,30"/>
 
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding SelectedEquipment.Make}" Style="{StaticResource subtitle}"/>
-                <TextBlock Text="{Binding SelectedEquipment.Model, StringFormat='{} {0}'}" Style="{StaticResource subtitle}"/>
-                <TextBlock Text="{Binding SelectedEquipment.SerialNumber, StringFormat='{}, S/N: {0}'}" Style="{StaticResource subtitle}"/>
-            </StackPanel>
 
-            <TextBlock Text="{Binding SelectedEquipment.LastCalibrated, StringFormat='{}Last Calibration: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
+            <!--<TextBlock Text="{Binding SelectedEquipment.LastCalibrated, StringFormat='{}Last Calibration: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
             <TextBlock Text="{Binding SelectedEquipment.NextDue, StringFormat='{}Next Calibration Due: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
             <TextBlock Text="{Binding SelectedEquipment.LastVisualCheck, StringFormat='{}Last Visual Check: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
             <TextBlock Text="{Binding SelectedEquipment.CalibrationIntervalMonths, StringFormat='{}Interval: {0:0}mo'}" Style="{StaticResource subtitle}"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Interval" Visibility="{Binding EditControlsVis}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
-            <TextBlock Text="Certificates" Style="{StaticResource subsubtitle}"/>
+            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Interval" Visibility="{Binding EditControlsVis}" PreviewKeyDown="TextBox_PreviewKeyDown"/>-->
+            <TextBlock Text="Metadata" Style="{StaticResource section}"/>
+            <Border Background="{StaticResource materialSurface}" CornerRadius="10" Margin="5,5,5,20">
+                <Grid Margin="20,10" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Make"/>
+                    <TextBlock Text="{Binding SelectedEquipment.Make}" Style="{StaticResource subtitle}" Grid.Column="1"/>
+
+                    <TextBlock Text="Model" Grid.Row="1"/>
+                    <TextBlock Text="{Binding SelectedEquipment.Model}" Style="{StaticResource subtitle}" Grid.Column="1" Grid.Row="1"/>
+
+                    <TextBlock Text="Serial Number" Grid.Row="2"/>
+                    <TextBlock Text="{Binding SelectedEquipment.SerialNumber}" Style="{StaticResource subtitle}" Grid.Column="1" Grid.Row="2"/>
+                </Grid>
+            </Border>
+            <TextBlock Text="Certificates" Style="{StaticResource section}"/>
             <ListView ItemsSource="{Binding Certificates}"/>
 
 
@@ -62,9 +79,12 @@
                 <ComboBoxItem Content="Failed Calibration" Tag="fail"/>
             </ComboBox>
             <CheckBox Content="UKAS" Visibility="{Binding EditControlsVis}"/>
-            <Button Content="Record Visual Check" Command="{Binding RecordVisualCheckCmd}"/>
-            <Button Content="Add Certificate" Command="{Binding AddCertificateCmd}"/>
-            <Button Content="Edit" Command="{Binding EditEquipmentCmd}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="50">
+                <Button Content="Record Visual Check" Command="{Binding RecordVisualCheckCmd}"/>
+                <Button Content="Add Certificate" Command="{Binding AddCertificateCmd}"/>
+                <Button Content="Edit" Command="{Binding EditEquipmentCmd}"/>
+            </StackPanel>
+            
         </StackPanel>
     </Grid>
 </UserControl>
