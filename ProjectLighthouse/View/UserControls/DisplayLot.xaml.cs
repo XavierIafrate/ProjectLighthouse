@@ -29,26 +29,30 @@ namespace ProjectLighthouse.View.UserControls
             if (control.Lot.IsReject)
             {
                 control.HelperText.Text = "Rejected";
+                control.EditButton.Visibility = control.Lot.Date.AddDays(3) > DateTime.Now ? Visibility.Visible : Visibility.Collapsed;
             }
             else if (control.Lot.IsDelivered)
             {
                 control.HelperText.Text = "Delivered";
+                control.EditButton.Visibility = Visibility.Collapsed;
+
             }
             else if (control.Lot.IsAccepted)
             {
                 control.HelperText.Text = "Not Delivered";
+                control.EditButton.Visibility = control.Lot.Date.AddDays(3) > DateTime.Now ? Visibility.Visible : Visibility.Collapsed;
+
             }
             else
             {
                 control.HelperText.Text = "Quarantined";
+                control.EditButton.Visibility = Visibility.Visible;
+
             }
 
-            if (control.Lot.IsDelivered || control.Lot.Date.AddDays(14) < DateTime.Now)
+            if (App.CurrentUser.UserRole is "admin")
             {
-                if (!Debugger.IsAttached)
-                {
-                    control.EditButton.Visibility = Visibility.Collapsed;
-                }
+                control.EditButton.Visibility = Visibility.Visible;
             }
         }
 

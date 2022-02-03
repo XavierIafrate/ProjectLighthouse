@@ -6,47 +6,53 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Edit Lot"
-    Width="370"
-    MaxHeight="500"
+    Width="500"
+    MaxHeight="800"
     ResizeMode="NoResize"
     SizeToContent="Height"
     WindowStartupLocation="CenterOwner">
     <StackPanel Margin="20">
-        <TextBlock Style="{StaticResource section}" Text="Edit Lot" />
-        <Separator />
-        <TextBlock Text="Batch" />
+        <TextBlock Style="{StaticResource title}" Text="Edit Lot" />
+        <Separator Margin="0,5"/>
+        <TextBlock Text="Batch" Style="{StaticResource section}"/>
         <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Batch ID"
             x:Name="BatchTextBox"
             TextChanged="BatchTextBox_TextChanged"
             TextWrapping="Wrap" />
         <TextBlock Text="Quantity" />
         <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Quantity In Lot"
             x:Name="QuantityTextBox"
             PreviewKeyDown="QuantityTextBox_PreviewKeyDown"
             TextChanged="QuantityTextBox_TextChanged" />
         <TextBlock Text="Date Produced"/>
         <Grid>
-            <DatePicker x:Name="ProducedDatePicker" SelectedDateChanged="ProducedDatePicker_SelectedDateChanged"/>
+            <DatePicker x:Name="ProducedDatePicker" SelectedDateChanged="ProducedDatePicker_SelectedDateChanged" Margin="5"/>
         </Grid>
         
         <TextBlock Text="Remarks" />
         <TextBox
+            Style="{StaticResource DefaultTextBox}"
             x:Name="RemarksTextBox"
             MinHeight="50"
+            MaxHeight="200"
             MaxLength="512"
             TextChanged="BatchTextBox_TextChanged"
             TextWrapping="Wrap" />
 
         <CheckBox
             x:Name="RejectCheckBox"
-            Margin="10"
+            Margin="20,7"
             VerticalContentAlignment="Center"
             Checked="RejectCheckBox_Checked"
             Content="Lot is Rejects"
             FontSize="16" />
         <CheckBox
             x:Name="AcceptCheckBox"
-            Margin="10"
+            Margin="20,7"
             VerticalContentAlignment="Center"
             Checked="AcceptCheckBox_Checked"
             Content="Lot is Accepted"
