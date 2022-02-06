@@ -80,13 +80,13 @@ namespace ProjectLighthouse.ViewModel
             Drawings.Clear();
             Drawings = DatabaseHelper.Read<TechnicalDrawing>();
 
-            Drawings = Drawings.OrderBy(d => d.Product).ThenBy(d => d.Revision).ToList();
+            Drawings = Drawings.OrderBy(d => d.DrawingName).ThenBy(d => d.Revision).ToList();
 
             for (int i = 0; i < Drawings.Count; i++)
             {
                 if (i < Drawings.Count - 1)
                 {
-                    Drawings[i].IsCurrent = (Drawings[i].Product != Drawings[i + 1].Product);
+                    Drawings[i].IsCurrent = (Drawings[i].DrawingName != Drawings[i + 1].DrawingName);
                 }
                 else
                 {
@@ -110,7 +110,7 @@ namespace ProjectLighthouse.ViewModel
                 searchString = searchString.Trim().ToUpperInvariant();
                 for (int i = 0; i < Drawings.Count; i++)
                 {
-                    if (Drawings[i].Product.ToUpperInvariant().Contains(searchString))
+                    if (Drawings[i].DrawingName.ToUpperInvariant().Contains(searchString))
                     {
                         FilteredDrawings.Add(Drawings[i]);
                     }
@@ -164,7 +164,7 @@ namespace ProjectLighthouse.ViewModel
                 Refresh();
                 try
                 {
-                    SelectedDrawing = FilteredDrawings.Single(d => d.Product == window.NewDrawing.Product && d.Revision == window.NewDrawing.Revision);
+                    SelectedDrawing = FilteredDrawings.Single(d => d.DrawingName == window.NewDrawing.DrawingName && d.Revision == window.NewDrawing.Revision);
                 }
                 catch
                 {

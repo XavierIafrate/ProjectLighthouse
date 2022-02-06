@@ -53,14 +53,13 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public Timer DataRefreshTimer;
-        private string lastDataRefresh;
 
+        private string lastDataRefresh;
         public string LastDataRefresh
         {
             get { return lastDataRefresh; }
-            set 
-            { 
+            set
+            {
                 lastDataRefresh = value;
                 OnPropertyChanged("LastDataRefresh");
             }
@@ -84,35 +83,8 @@ namespace ProjectLighthouse.ViewModel
         {
             EditCommand = new EditSettingsCommand(this);
             UpdateViewCommand = new UpdateViewCommand(this);
-
-            //DataRefreshTimer = new();
-
-            //DataRefreshTimer.Elapsed += OnDataRefresh;
-            //DataRefreshTimer.Interval = 5000;
-            //DataRefreshTimer.Enabled = true;
-            //DataRefreshTimer.Start();
         }
 
-        /*
-         * 
-         *  Some day...
-         * 
-         * 
-        private void OnDataRefresh(object source, ElapsedEventArgs e)
-        {
-            if (SelectedViewModel is IRefreshableViewModel refreshableViewModel)
-            {
-                if (!refreshableViewModel.StopRefresh) // && DateTime.Now > App.LastDataRefresh.AddMinutes(2)
-                {
-                    Debug.WriteLine("Refreshing Data");
-                    refreshableViewModel.Refresh();
-                }
-            }
-            App.LastDataRefresh = DateTime.Now;
-
-            LastDataRefresh = App.LastDataRefresh.ToString("s");
-        }
-        */
 
         public void LoginRoutine()
         {

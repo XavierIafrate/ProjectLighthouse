@@ -26,6 +26,7 @@
                 <ResourceDictionary Source="./Themes/StylishComboBox.xaml" />
                 <ResourceDictionary Source="./Themes/StylishDatePicker.xaml" />
                 <ResourceDictionary Source="./Themes/StylishCheckbox.xaml" />
+                <ResourceDictionary Source="./Themes/StylishProgressBar.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--#endregion-->
 

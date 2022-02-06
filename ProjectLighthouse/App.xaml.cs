@@ -3,6 +3,7 @@ using ProjectLighthouse.ViewModel;
 using System;
 using System.Threading;
 using System.Windows;
+using System.Timers;
 
 namespace ProjectLighthouse
 {
@@ -14,6 +15,8 @@ namespace ProjectLighthouse
         public static string ActiveViewModel { get; set; }
         public static DateTime LastDataRefresh { get; set; } = DateTime.MinValue;
         public static Skin Skin { get; set; } = Skin.Dark;
+        public static System.Timers.Timer DataRefreshTimer { get; set; }
+        private static MainViewModel mvm { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -27,6 +30,8 @@ namespace ProjectLighthouse
                 MainWindow = Window
             };
 
+            mvm = VM;
+
             Window.DataContext = VM;
             Window.viewModel = VM;
 
@@ -34,6 +39,22 @@ namespace ProjectLighthouse
             Window.Show();
 
             Window.AddVersionNumber();
+
+            StartDataRefreshTimer();
+        }
+
+        private static void StartDataRefreshTimer()
+        {
+            DataRefreshTimer = new();
+            DataRefreshTimer.Elapsed += DataRefreshTimer_Elapsed;
+            DataRefreshTimer.Interval = 5000;
+            DataRefreshTimer.Enabled = true;
+            //DataRefreshTimer.Start();
+        }
+
+        private static void DataRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            mvm.LastDataRefresh = $"{DateTime.Now:s}";
         }
 
         private static void CheckForExistingInstances()

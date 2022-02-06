@@ -33,6 +33,15 @@ namespace ProjectLighthouse.View
             ProductFamilies = Products.Where(p => !p.isSpecialPart).Select(p => p.ProductName[..5]).Distinct().OrderBy(f => f).ToList();
             ProductGroupComboBox.ItemsSource = ProductFamilies;
 
+            MaterialConstraintComboBox.ItemsSource = new List<string>().Prepend("Any Material");
+            MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
+            MaterialConstraintComboBox.IsEnabled = false;
+
+            ToolingGroupConstraintComboBox.ItemsSource = new List<string>().Prepend("All Tooling Groups");
+            ToolingGroupConstraintComboBox.SelectedItem = ToolingGroupConstraintComboBox.Items[0];
+
+
+
             ChooseArchetypeControls.Visibility = Visibility.Collapsed;
         }
 
@@ -76,15 +85,20 @@ namespace ProjectLighthouse.View
         private void SetNewFileNames()
         {
             string bin = (bool)ArchetypeCheckbox.IsChecked ? @"Drawings\" : @"Drawings\Specials\";
-            int newRevision = GetRevision(NewDrawing.Product);
+            int newRevision = GetRevision(NewDrawing.DrawingName);
             NewDrawing.Revision = newRevision;
-            NewDrawing.URL = bin + $"{NewDrawing.Product.ToUpperInvariant()}_R{newRevision}.pdf";
+            NewDrawing.URL = bin + $"{MakeValidFileName(NewDrawing.DrawingName)}_R{newRevision}.pdf";
             destinationFilePath = Path.Combine(App.ROOT_PATH, NewDrawing.URL);
         }
 
         private bool ImprintData()
         {
             SetNewFileNames();
+
+            if (!NewDrawing.IsArchetype)
+            {
+                NewDrawing.MaterialConstraint = "";
+            }
 
             try
             {
@@ -104,24 +118,80 @@ namespace ProjectLighthouse.View
 
         private void ProductGroupComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox comboBox = sender as ComboBox;
-            NewDrawing.Product = comboBox.SelectedValue.ToString();
             NewDrawing.IsArchetype = true;
             NewDrawing.Customer = "";
+
+            MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
+            ToolingGroupConstraintComboBox.SelectedItem = ToolingGroupConstraintComboBox.Items[0];
+
+            SetConstraints();
+        }
+
+        private void SetConstraints()
+        {
+            if (ProductGroupComboBox.SelectedValue == null) return;
+
+            List<TurnedProduct> possibilities = Products.Where(x => x.ProductName[..5] == ProductGroupComboBox.SelectedValue.ToString() && !x.isSpecialPart).ToList();
+
+            if (ToolingGroupConstraintComboBox.SelectedValue.ToString() != "All Tooling Groups")
+            {
+                NewDrawing.ToolingGroup = ToolingGroupConstraintComboBox.SelectedValue.ToString();
+                possibilities = possibilities.Where(x => x.ProductGroup == NewDrawing.ToolingGroup).ToList();
+            }
+            else
+            {
+                NewDrawing.ToolingGroup = "";
+            }
+
+            if (MaterialConstraintComboBox.SelectedValue.ToString() != "Any Material")
+            {
+                NewDrawing.MaterialConstraint = MaterialConstraintComboBox.SelectedValue.ToString();
+                possibilities = possibilities.Where(x => x.Material == NewDrawing.MaterialConstraint).ToList();
+            }
+            else
+            {
+                NewDrawing.MaterialConstraint = "";
+            }
+
+            PreviewBox.ItemsSource = possibilities.ToList();
+            
+            NewDrawing.ProductGroup = ProductGroupComboBox.SelectedValue.ToString();
+
+            if (ToolingGroupConstraintComboBox.SelectedValue.ToString() == "All Tooling Groups")
+            {
+                ToolingGroupConstraintComboBox.ItemsSource = possibilities.Select(x => x.ProductGroup).Distinct().ToList().Prepend("All Tooling Groups");
+                NewDrawing.DrawingName = ProductGroupComboBox.SelectedValue.ToString();
+                MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
+                MaterialConstraintComboBox.IsEnabled = false;
+            }
+            else
+            {
+                NewDrawing.DrawingName = ToolingGroupConstraintComboBox.SelectedValue.ToString();
+                MaterialConstraintComboBox.IsEnabled = true;
+            }
+
+            if (MaterialConstraintComboBox.SelectedValue.ToString() == "Any Material")
+            {
+                MaterialConstraintComboBox.ItemsSource = possibilities.Select(x=>x.Material).Distinct().ToList().Prepend("Any Material");
+            }
+            else
+            {
+                NewDrawing.DrawingName += $"-{MaterialConstraintComboBox.SelectedValue}";
+            }
         }
 
         private void SearchResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListBox listBox = sender as ListBox;
             TurnedProduct selectedProduct = listBox.SelectedValue as TurnedProduct;
-            NewDrawing.Product = selectedProduct.ProductName;
+            NewDrawing.DrawingName = selectedProduct.ProductName;
             NewDrawing.IsArchetype = false;
             NewDrawing.Customer = selectedProduct.CustomerRef;
         }
 
         private int GetRevision(string product)
         {
-            List<TechnicalDrawing> otherDrawings = Drawings.Where(d => d.Product == product).ToList();
+            List<TechnicalDrawing> otherDrawings = Drawings.Where(d => d.DrawingName == product).ToList();
             if (otherDrawings.Count == 0)
             {
                 return 1;
@@ -132,21 +202,41 @@ namespace ProjectLighthouse.View
             }
         }
 
+        private static string MakeValidFileName(string name)
+        {
+            name = name.Trim().ToUpperInvariant();
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+        }
+
         private bool DataIsValid()
         {
-            return !string.IsNullOrEmpty(targetFilePath) && !string.IsNullOrEmpty(NewDrawing.Product);
+            return !string.IsNullOrEmpty(targetFilePath) && !string.IsNullOrEmpty(NewDrawing.DrawingName);
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataIsValid())
             {
-                MessageBox.Show($"Creating {NewDrawing.Product}, revision {GetRevision(NewDrawing.Product)}");
+                MessageBox.Show($"Creating {NewDrawing.DrawingName}, revision {GetRevision(NewDrawing.DrawingName)}");
                 ImprintData();
                 SaveExit = true;
                 
                 Close();
             }
         }
+
+        private void MaterialConstraintComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetConstraints();
+        }
+
+        private void ToolingGroupConstraintComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetConstraints();
+        }
+
     }
 }

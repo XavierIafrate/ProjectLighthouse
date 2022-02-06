@@ -35,6 +35,9 @@ namespace ProjectLighthouse.View.UserControls
                 control.EditButton.Visibility = control.LatheManufactureOrderItem.ShowEdit
                     ? Visibility.Visible
                     : Visibility.Collapsed;
+
+                control.ProgressBar.Maximum = control.LatheManufactureOrderItem.TargetQuantity;
+                control.ProgressBar.Value = control.LatheManufactureOrderItem.QuantityMade;
             }
         }
 

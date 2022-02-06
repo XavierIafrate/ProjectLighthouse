@@ -67,7 +67,7 @@
                         <TextBlock
                             FontSize="16"
                             FontWeight="SemiBold"
-                            Text="{Binding Product}" />
+                            Text="{Binding DrawingName}" />
                         <TextBlock
                             Grid.Row="1"
                             FontStyle="Italic"
@@ -118,7 +118,7 @@
                 <TextBlock
                     d:Text="PRODUCT_NAME"
                     Style="{StaticResource title}"
-                    Text="{Binding SelectedDrawing.Product}" />
+                    Text="{Binding SelectedDrawing.DrawingName}" />
                 <TextBlock
                     d:Text="REVISION NUMBER"
                     Style="{StaticResource subtitle}"

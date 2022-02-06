@@ -34,10 +34,30 @@
 
         <Rectangle Grid.RowSpan="2" Fill="{StaticResource materialSurface}" />
         <StackPanel VerticalAlignment="Center">
-            <Image
-                Width="150"
-                RenderOptions.BitmapScalingMode="Fant"
-                Source="/Resources/Lighthouse_dark.png" />
+            <Grid>
+                <Border
+                    x:Name="LogoFill"
+                    Visibility="Hidden"
+                    Width="34"
+                    Height="34"
+                    Background="{StaticResource materialGreen}"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform>
+                            <TranslateTransform.X>-57</TranslateTransform.X>
+                        </TranslateTransform>
+                    </Border.RenderTransform>
+                </Border>
+                <Image
+                    Width="150"
+                    RenderOptions.BitmapScalingMode="Fant"
+                    Source="/Resources/Lighthouse_dark.png" />
+                <Rectangle
+                    Width="150"
+                    Fill="#00ffffff"
+                    IsMouseDirectlyOverChanged="Image_IsMouseCapturedChanged"
+                    MouseDown="Rectangle_MouseDown" />
+            </Grid>
 
             <Grid
                 x:Name="DebugTile"
@@ -129,12 +149,12 @@
 
                     <StackPanel Margin="0,20">
                         <ToggleButton
-                            Visibility="Collapsed"
                             x:Name="calibration_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Calibration"
                             Content="Calibration"
-                            Style="{StaticResource Calibration_MenuItem}" />
+                            Style="{StaticResource Calibration_MenuItem}"
+                            Visibility="Collapsed" />
                         <ToggleButton
                             x:Name="analytics_button"
                             Command="{Binding UpdateViewCommand}"
@@ -152,13 +172,13 @@
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Dev Area / Debug"
                             Content="Dev Area"
-                            Visibility="Collapsed"
-                            Style="{StaticResource Debug_MenuItem}" />
+                            Style="{StaticResource Debug_MenuItem}"
+                            Visibility="Collapsed" />
                     </StackPanel>
 
                 </StackPanel>
             </ScrollViewer>
-            <!--Margin="5"  HorizontalAlignment="Center" CornerRadius="8"-->
+            
             <!--<Border Background="{StaticResource materialOnBackground}"  Padding="30,3" Grid.Row="1">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -171,7 +191,7 @@
                     <TextBlock Text="{Binding LastDataRefresh, FallbackValue='Test', StringFormat='{}last refresh @ {0}'}" Foreground="{StaticResource materialBackground}" HorizontalAlignment="Center" FontStyle="Italic" Opacity="0.5"/>
                 </StackPanel>
             </Border>-->
-            
+
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />

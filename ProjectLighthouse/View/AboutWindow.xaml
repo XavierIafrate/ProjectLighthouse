@@ -1,0 +1,163 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.AboutWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Title="About Project Lighthouse"
+    Width="571"
+    Height="577"
+    mc:Ignorable="d">
+    <StackPanel Margin="30" VerticalAlignment="Center">
+        <Image
+            Width="150"
+            Margin="0,0,0,20"
+            RenderOptions.BitmapScalingMode="Fant"
+            Source="/Resources/Lighthouse_dark.png" />
+        <StackPanel Margin="30,0">
+            <TextBlock
+                Margin="0,0,0,20"
+                HorizontalAlignment="Center"
+                FontSize="25"
+                FontWeight="Bold"
+                Text="About" />
+            <TextBlock
+                FontSize="20"
+                FontWeight="SemiBold"
+                Text="Project Lighthouse" />
+            <TextBlock
+                x:Name="CopyRightText"
+                FontStyle="Italic"
+                Text="Copyright Wixroyd Group " />
+            <TextBlock Foreground="{StaticResource materialPrimaryGreen}" Text="Written by Xavier Iafrate" />
+            <TextBlock Opacity="0.3" Text="Written because Excel is not a database" />
+
+            <Grid Height="20" />
+            <Separator />
+            <Grid Height="20" />
+
+            <TextBlock
+                Margin="0,0,0,10"
+                Style="{StaticResource statement}"
+                Text="Made possible by the following Open Source Libraries" />
+            <StackPanel Margin="30,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontWeight="SemiBold" Text="CsvHelper" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0"
+                        Text="MS-PL License" />
+                    <TextBlock Grid.Column="3" Text="Josh Close" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontWeight="SemiBold" Text="DbfDataReader" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0"
+                        Text="MIT License" />
+                    <TextBlock Grid.Column="3" Text="Chris Richards" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontWeight="SemiBold" Text="LiveCharts.Wpf" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0"
+                        Text="MIT License" />
+                    <TextBlock Grid.Column="3" Text="Beto Rodriguez" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontWeight="SemiBold" Text="PDFsharp" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0"
+                        Text="MIT License" />
+                    <TextBlock Grid.Column="3" Text="empira Software GmbH" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontWeight="SemiBold" Text="PDFsharp-MigraDoc" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0"
+                        Text="MIT License" />
+                    <TextBlock Grid.Column="3" Text="empira Software GmbH" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock FontWeight="SemiBold" Text="sqlite-net-pcl" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0"
+                        Text="" />
+                    <TextBlock Grid.Column="3" Text="SQLite-net" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontWeight="SemiBold" Text="WpfAnimatedGif" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0"
+                        Text="Apache-2.0" />
+                    <TextBlock Grid.Column="3" Text="Thomas Levesque" />
+                </Grid>
+
+            </StackPanel>
+            <TextBlock
+                Margin="0,30,0,5"
+                HorizontalAlignment="Center"
+                FontStyle="Italic"
+                FontWeight="SemiBold"
+                Foreground="{StaticResource materialPrimaryBlue}"
+                Text="If I have seen further, it is by standing upon the shoulders of giants" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontStyle="Italic"
+                Text="Isaac Newton" />
+        </StackPanel>
+    </StackPanel>
+</Window>

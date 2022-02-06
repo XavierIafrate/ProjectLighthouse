@@ -11,5 +11,7 @@ namespace ProjectLighthouse.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public bool NoRefresh = false;
     }
 }

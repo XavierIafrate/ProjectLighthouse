@@ -12,18 +12,27 @@
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="180" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
+            
+            <Path
+                x:Name="doneFlag" 
+                Width="18"
+                Margin="0,0,5,0"
+                Height="18"
+                Data="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"
+                Fill="{StaticResource materialPrimaryGreen}"
+                Stretch="Uniform" />
 
-
-            <StackPanel Margin="5,2,10,2" VerticalAlignment="Center">
+            <StackPanel Margin="5,2,10,2" VerticalAlignment="Center" Grid.Column="1">
                 <TextBlock
                     x:Name="productText"
                     Padding="0,2"
@@ -31,6 +40,10 @@
                     FontSize="16"
                     FontWeight="SemiBold"
                     Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
+                <ProgressBar
+                    x:Name="ProgressBar"
+                    Margin="0,0,0,7"
+                    Value="0.5" />
                 <StackPanel Orientation="Horizontal">
                     <Button
                         x:Name="EditButton"
@@ -59,19 +72,28 @@
 
             </StackPanel>
 
-            <Path
-                x:Name="doneFlag"
-                Grid.Column="1"
-                Width="25"
-                Height="25"
-                Margin="10,0"
-                Data="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"
-                Fill="{StaticResource materialPrimaryGreen}"
-                Stretch="Uniform" />
+
+            <!--<Border Background="{StaticResource materialPrimaryGreen}" Grid.Column="1" VerticalAlignment="Center" CornerRadius="10">
+                <TextBlock Text="complete" Foreground="{StaticResource materialOnPrimary}" Margin="5,5,5,6"/>
+            </Border>
+            -->
+            
+
+            <!--<Path Stroke="{StaticResource materialPrimary}" StrokeThickness="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="10,0">
+                            <ArcSegment RotationAngle="0" SweepDirection="Clockwise"
+                                        Size="10,10"
+                                        Point="5,90"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>-->
 
             <StackPanel
                 x:Name="requirements"
-                Grid.Column="2"
+                Grid.Column="3"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
@@ -104,7 +126,7 @@
             </StackPanel>
 
             <Grid
-                Grid.Column="3"
+                Grid.Column="4"
                 Margin="5"
                 VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>

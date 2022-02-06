@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.ViewModel;
+﻿using ProjectLighthouse.View;
+using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -95,6 +96,20 @@ namespace ProjectLighthouse
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.UserRole;
+        }
+
+        private void Image_IsMouseCapturedChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is System.Windows.Shapes.Rectangle rect)
+            {
+                LogoFill.Visibility = rect.IsMouseDirectlyOver ? Visibility.Visible : Visibility.Hidden;
+            }
+        }
+
+        private void Rectangle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            AboutWindow window = new();
+            window.ShowDialog();
         }
     }
 }

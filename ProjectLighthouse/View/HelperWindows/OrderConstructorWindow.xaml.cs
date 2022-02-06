@@ -3,6 +3,7 @@ using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -130,14 +131,16 @@ namespace ProjectLighthouse.View
             return blank[..(6 - orderNumLen)] + strOrderNum;
         }
 
-        private void AddDrawingKeysToItems()
+        private List<TechnicalDrawing> FindDrawings()
         {
             List<TechnicalDrawing> drawings = DatabaseHelper.Read<TechnicalDrawing>();
+
+            List<TechnicalDrawing> results = new();
             for (int i = 0; i < NewOrderItems.Count; i++)
             {
                 if (NewOrderItems[i].IsSpecialPart)
                 {
-                    List<TechnicalDrawing> matches = drawings.Where(d => d.Product == NewOrderItems[i].ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
+                    List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == NewOrderItems[i].ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
                     if (matches.Count == 0)
                     {
                         NewOrderItems[i].DrawingId = 0;
@@ -145,29 +148,66 @@ namespace ProjectLighthouse.View
                     else
                     {
                         NewOrderItems[i].DrawingId = matches.First().Id;
+                        results.Add(matches.First());
                     }
                 }
                 else
                 {
-                    List<TechnicalDrawing> matches = drawings.Where(d => d.Product == NewOrderItems[i].ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
+                    List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == NewOrderItems[i].ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
                     if (matches.Count == 0)
                     {
-                        matches = drawings.Where(d => d.IsArchetype && d.Product == NewOrderItems[i].ProductName[..5]).OrderByDescending(d => d.Revision).ToList();
-                        if (matches.Count == 0)
+                        TechnicalDrawing best = GetBestDrawingForProduct(
+                            family: NewOrderItems[i].ProductName[..5],
+                            group: RequiredTurnedProduct.ProductGroup, 
+                            material: RequiredTurnedProduct.Material, 
+                            drawings:drawings);
+
+                        if (best == null)
                         {
                             NewOrderItems[i].DrawingId = 0;
                         }
                         else
                         {
-                            NewOrderItems[i].DrawingId = matches.First().Id;
+                            NewOrderItems[i].DrawingId = best.Id;
+                            results.Add(best);
+
                         }
                     }
                     else
                     {
                         NewOrderItems[i].DrawingId = matches.First().Id;
+                        results.Add(matches.First());
                     }
                 }
             }
+
+
+            return results.Distinct().ToList();
+        }
+
+        public TechnicalDrawing? GetBestDrawingForProduct(string family, string group,string material, List<TechnicalDrawing> drawings)
+        {
+            List<TechnicalDrawing> matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group && d.MaterialConstraint == material).ToList();
+            if (matches.Count > 0)
+            {
+                matches = matches.OrderByDescending(d => d.Revision).ToList();
+                return matches.First();
+            }
+
+            matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group).ToList();
+            if (matches.Count > 0)
+            {
+                matches = matches.OrderByDescending(d => d.Revision).ToList();
+                return matches.First();
+            }
+
+            matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family).ToList();
+            if (matches.Count > 0)
+            {
+                matches = matches.OrderByDescending(d => d.Revision).ToList();
+                return matches.First();
+            }
+            return null;
         }
 
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
@@ -187,7 +227,7 @@ namespace ProjectLighthouse.View
             NewOrder.BarsInStockAtCreation = OrderBar.InStock;
             NewOrder.BarID = OrderBar.Id;
 
-            AddDrawingKeysToItems();
+            List<TechnicalDrawing> drawings = FindDrawings();
 
             // Add order & items to database
             _ = DatabaseHelper.Insert(NewOrder);
@@ -199,6 +239,12 @@ namespace ProjectLighthouse.View
                 item.DateAdded = DateTime.Now;
                 DatabaseHelper.Insert(item);
             };
+
+            foreach (TechnicalDrawing drawing in drawings)
+            {
+                OrderDrawing o = new() { DrawingId = drawing.Id, OrderId = NewOrder.Name };
+                DatabaseHelper.Insert(o);
+            }
 
             MessageBox.Show($"Created {NewOrder.Name}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             wasCancelled = false;

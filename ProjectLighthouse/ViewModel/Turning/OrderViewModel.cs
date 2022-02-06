@@ -23,6 +23,7 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrderItem> LMOItems { get; set; }
         public List<Note> Notes { get; set; }
         public List<TechnicalDrawing> Drawings { get; set; }
+        public List<OrderDrawing> OrderDrawings { get; set; }
 
 
         private ObservableCollection<LatheManufactureOrder> filteredOrders = new();
@@ -47,7 +48,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private ObservableCollection<TechnicalDrawing> filteredDrawings;
-
         public ObservableCollection<TechnicalDrawing> FilteredDrawings
         {
             get { return filteredDrawings; }
@@ -82,7 +82,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private string runInfoText;
-
         public string RunInfoText
         {
             get { return runInfoText; }
@@ -94,7 +93,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private string selectedFilter;
-
         public string SelectedFilter
         {
             get { return selectedFilter; }
@@ -130,7 +128,6 @@ namespace ProjectLighthouse.ViewModel
         #region Visibility variables
 
         private Visibility liveInfoVis;
-
         public Visibility LiveInfoVis
         {
             get { return liveInfoVis; }
@@ -142,7 +139,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility cleaningVis;
-
         public Visibility CleaningVis
         {
             get { return cleaningVis; }
@@ -155,7 +151,6 @@ namespace ProjectLighthouse.ViewModel
 
 
         private Visibility cardVis;
-
         public Visibility CardVis
         {
             get { return cardVis; }
@@ -173,7 +168,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility nothingVis;
-
         public Visibility NothingVis
         {
             get { return nothingVis; }
@@ -185,7 +179,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility modifiedVis;
-
         public Visibility ModifiedVis
         {
             get { return modifiedVis; }
@@ -197,7 +190,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility archiveVis;
-
         public Visibility ArchiveVis
         {
             get { return archiveVis; }
@@ -210,7 +202,6 @@ namespace ProjectLighthouse.ViewModel
 
 
         private Visibility drawingsFoundVis;
-
         public Visibility DrawingsFoundVis
         {
             get { return drawingsFoundVis; }
@@ -257,6 +248,7 @@ namespace ProjectLighthouse.ViewModel
             DisplayStats = new();
             FilteredDrawings = new();
             Drawings = new();
+            OrderDrawings = new();
 
             ToolingIconBrush = (Brush)Application.Current.Resources["materialError"];
             ProgramIconBrush = (Brush)Application.Current.Resources["materialError"];
@@ -273,15 +265,31 @@ namespace ProjectLighthouse.ViewModel
             liveTimer.Enabled = true;
             liveTimer.Start();
 
+            //if (!NoRefresh && App.DataRefreshTimer != null)
+            //{
+            //    App.DataRefreshTimer.Elapsed += RefreshTimer_Tick;
+            //}
+
             GetLatheManufactureOrders();
             FilterOrders("All Active");
             GetLatheManufactureOrderItems();
             GetLatestStats();
         }
 
+        private void RefreshTimer_Tick(object sender, ElapsedEventArgs e)
+        {
+            if (!StopRefresh)
+            {
+                Refresh();
+            }
+        }
+
         ~OrderViewModel()
         {
-            liveTimer.Stop();
+            if (liveTimer != null)
+            {
+                liveTimer.Stop();
+            }
             Debug.WriteLine("Timer Stopped through destructor.");
         }
 
@@ -412,6 +420,9 @@ namespace ProjectLighthouse.ViewModel
 
             Drawings.Clear();
             Drawings = DatabaseHelper.Read<TechnicalDrawing>().ToList();
+
+            OrderDrawings.Clear();
+            OrderDrawings = DatabaseHelper.Read<OrderDrawing>().ToList();
         }
 
         private void LoadLMOItems()
@@ -581,13 +592,13 @@ namespace ProjectLighthouse.ViewModel
 
             Lots = DatabaseHelper.Read<Lot>().ToList();
 
-            List<int> uniqueDrawings = FilteredLMOItems.Select(x => x.DrawingId).OrderBy(x => x).Distinct().ToList();
+            List<OrderDrawing> drawings = OrderDrawings.Where(d => d.OrderId == SelectedLatheManufactureOrder.Name).ToList(); 
             FilteredDrawings.Clear();
-            for (int i = 0; i < uniqueDrawings.Count; i++)
+            for (int i = 0; i < drawings.Count; i++)
             {
-                if (uniqueDrawings[i] != 0) // default value for no drawing
+                if (Drawings.Any(x => x.Id == drawings[i].DrawingId))
                 {
-                    FilteredDrawings.Add(Drawings.First(d => d.Id == uniqueDrawings[i]));
+                    FilteredDrawings.Add(Drawings.First(x => x.Id == drawings[i].DrawingId));
                 }
             }
 
@@ -661,8 +672,12 @@ namespace ProjectLighthouse.ViewModel
         {
             MachineStatistics = null;
 
-            liveTimer.Stop();
-            liveTimer.Dispose();
+            if (liveTimer != null)
+            {
+                liveTimer.Stop();
+                liveTimer.Dispose();
+            }
+            
 
             Debug.WriteLine($"Timer Disposed.");
             Debug.WriteLine("Disposing");
@@ -670,7 +685,9 @@ namespace ProjectLighthouse.ViewModel
 
         public void Refresh()
         {
-
+            GetLatheManufactureOrders();
+            FilterOrders(SelectedFilter);
+            GetLatheManufactureOrderItems();
         }
     }
 }

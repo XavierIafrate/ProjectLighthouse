@@ -20,22 +20,71 @@
                 Checked="ArchetypeCheckbox_Checked"
                 Content="Archetype Drawing"
                 Unchecked="ArchetypeCheckbox_Unchecked" />
+            <StackPanel x:Name="ChooseArchetypeControls" Margin="0,0,0,20">
+                <TextBlock Style="{StaticResource section}" Text="Constrain Archetype" />
+                <Grid Margin="30,3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" Text="Product Family (required)" />
+                    <ComboBox
+                        x:Name="ProductGroupComboBox"
+                        Grid.Column="1"
+                        Width="250"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="ProductGroupComboBox_SelectionChanged" />
+                </Grid>
+                
 
-            <Grid x:Name="ChooseArchetypeControls" Margin="0,0,0,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Style="{StaticResource section}"
-                    Text="Choose Product Range" />
-                <ComboBox
-                    x:Name="ProductGroupComboBox"
-                    Grid.Column="1"
-                    MaxWidth="300"
-                    SelectionChanged="ProductGroupComboBox_SelectionChanged" />
-            </Grid>
+                <Grid Margin="60,3,30,3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Path Width="20" Height="15" Stretch="Uniform" Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z" Fill="{StaticResource materialOnBackground}"/>
+                    <TextBlock VerticalAlignment="Center" Text="Tooling Group" Grid.Column="1" />
+                    <ComboBox
+                        x:Name="ToolingGroupConstraintComboBox"
+                        Grid.Column="2"
+                        Width="250"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="ToolingGroupConstraintComboBox_SelectionChanged" />
+                </Grid>
+                <Grid  Margin="90,3,30,3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Path Width="20" Height="15" Stretch="Uniform" Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z" Fill="{StaticResource materialOnBackground}"/>
+
+                    <TextBlock VerticalAlignment="Center" Text="Material" Grid.Column="1" />
+                    <ComboBox
+                        x:Name="MaterialConstraintComboBox"
+                        Grid.Column="2"
+                        Width="250"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="MaterialConstraintComboBox_SelectionChanged" />
+                </Grid>
+
+                <TextBlock Text="Preview" Style="{StaticResource section}"/>
+                <ListBox
+                    x:Name="PreviewBox"
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    MinHeight="100"
+                    MaxHeight="300"
+                    HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <userControls:DisplayTurnedProduct Product="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
             <Grid x:Name="FindProductControls" Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

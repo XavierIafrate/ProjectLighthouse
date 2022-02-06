@@ -253,11 +253,6 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
 
-            //if (request.Product == "P0130.SGMSB6")
-            //{
-            //    DeclineRequest();
-            //}
-
             CleaningVis = request.CleanCustomerRequirement
                 ? Visibility.Visible
                 : Visibility.Collapsed;

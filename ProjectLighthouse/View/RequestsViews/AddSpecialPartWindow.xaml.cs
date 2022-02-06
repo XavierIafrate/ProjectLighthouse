@@ -226,7 +226,7 @@ namespace ProjectLighthouse.View
                         : null;
 
             string driveSize = selectedDriveSize != null ? selectedDriveSize.Tag.ToString() : Math.Ceiling(double.Parse(majorDiameter.Text)).ToString("0");
-            drawingFile = @"Drawings\Specials\" + $"{productNameTextBox.Text.Trim().ToUpperInvariant()}_R1.pdf";
+            drawingFile = @"Drawings\Specials\" + @$"{MakeValidFileName(productNameTextBox.Text)}_R1.pdf";
             destinationDrawing = Path.Combine(App.ROOT_PATH, drawingFile);
 
             try
@@ -267,7 +267,7 @@ namespace ProjectLighthouse.View
             TechnicalDrawing technicalDrawing = new()
             {
                 Customer = customerNameTextBox.Text.Trim(),
-                Product = productNameTextBox.Text.Trim(),
+                DrawingName = productNameTextBox.Text.Trim(),
                 Revision = 1,
                 URL = drawingFile,
                 Created = DateTime.Now,
@@ -276,6 +276,15 @@ namespace ProjectLighthouse.View
             };
 
             return DatabaseHelper.Insert(technicalDrawing);
+        }
+
+        private static string MakeValidFileName(string name)
+        {
+            name = name.Trim().ToUpperInvariant();
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
         }
 
         private string GetBarSizeFromDiameter(double diameter, string material, string profile)

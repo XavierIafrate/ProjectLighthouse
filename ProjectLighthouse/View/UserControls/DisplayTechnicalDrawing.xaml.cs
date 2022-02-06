@@ -35,7 +35,7 @@ namespace ProjectLighthouse.View.UserControls
 
                 string filePath = Path.Join(App.ROOT_PATH, control.Drawing.URL);
                 
-                control.filename.Text = control.Drawing.Product;
+                control.filename.Text = control.Drawing.DrawingName;
                 control.rev.Text = $"Revision {control.Drawing.Revision}";
 
                 if (!File.Exists(filePath))
