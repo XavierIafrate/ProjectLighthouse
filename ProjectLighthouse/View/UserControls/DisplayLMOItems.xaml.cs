@@ -32,6 +32,10 @@ namespace ProjectLighthouse.View.UserControls
                     ? Visibility.Visible
                     : Visibility.Hidden;
 
+                control.ProgressBar.Foreground = control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity
+                    ? (LinearGradientBrush)Application.Current.Resources["gradGood"]
+                    : (LinearGradientBrush)Application.Current.Resources["primaryGradient"];
+
                 control.EditButton.Visibility = control.LatheManufactureOrderItem.ShowEdit
                     ? Visibility.Visible
                     : Visibility.Collapsed;

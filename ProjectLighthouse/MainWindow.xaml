@@ -153,8 +153,7 @@
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Calibration"
                             Content="Calibration"
-                            Style="{StaticResource Calibration_MenuItem}"
-                            Visibility="Collapsed" />
+                            Style="{StaticResource Calibration_MenuItem}" />
                         <ToggleButton
                             x:Name="analytics_button"
                             Command="{Binding UpdateViewCommand}"

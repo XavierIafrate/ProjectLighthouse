@@ -199,6 +199,7 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
 
                         <TextBlock Style="{StaticResource InsightName}" Text="Product" />
@@ -230,39 +231,49 @@
                         <TextBlock
                             Grid.Row="3"
                             Style="{StaticResource InsightName}"
-                            Text="Quantity Manufactured" />
+                            Text="Purchase Order Quantity" />
                         <TextBlock
                             Grid.Row="3"
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding SelectedProduct.QuantityOnPO, StringFormat='{}{0:#,##0} pcs'}" />
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Style="{StaticResource InsightName}"
+                            Text="Quantity Manufactured" />
+                        <TextBlock
+                            Grid.Row="4"
                             Grid.Column="2"
                             Style="{StaticResource InsightValue}"
                             Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />
 
                         <TextBlock
-                            Grid.Row="4"
+                            Grid.Row="5"
                             Style="{StaticResource InsightName}"
                             Text="Schedule Compatible" />
                         <TextBlock
-                            Grid.Row="4"
+                            Grid.Row="5"
                             Grid.Column="2"
                             Style="{StaticResource InsightValue}"
                             Text="{Binding PotentialQuantityText}" />
 
                         <TextBlock
-                            Grid.Row="5"
+                            Grid.Row="6"
                             Style="{StaticResource InsightName}"
                             Text="Recommended for Stock" />
                         <TextBlock
-                            Grid.Row="5"
+                            Grid.Row="6"
                             Grid.Column="2"
                             Style="{StaticResource InsightValue}"
                             Text="{Binding RecommendedStockText}" />
 
                         <TextBlock
-                            Grid.Row="6"
+                            Grid.Row="7"
                             Style="{StaticResource InsightName}"
                             Text="Approval Likeliness" />
                         <TextBlock
-                            Grid.Row="6"
+                            Grid.Row="7"
                             Grid.Column="2"
                             Style="{StaticResource InsightValue}"
                             Text="{Binding LikelinessText}" />

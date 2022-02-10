@@ -3,7 +3,7 @@
 
     <Style x:Key="Default" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
-        <!--<Setter Property="FontFamily" Value="Resources/Font/Roboto-Medium.ttf #Roboto" />-->
+        <!--<Setter Property="FontFamily" Value="{StaticResource Roboto}" />-->
     </Style>
     <!--  Don't touch  -->
     <Style BasedOn="{StaticResource Default}" TargetType="TextBlock" />

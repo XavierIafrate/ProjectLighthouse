@@ -9,12 +9,13 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:DataContext="{d:DesignInstance Type=vm:RequestViewModel}"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     Background="{StaticResource materialBackground}"
     mc:Ignorable="d">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="350" />
+            <ColumnDefinition Width="*" MinWidth="370" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -32,7 +33,7 @@
             SelectionChanged="requests_ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayRequest Margin="10,2" Request="{Binding}" />
+                    <uc:DisplayRequest Margin="10,5" Request="{Binding}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -56,7 +57,7 @@
                 <ComboBoxItem Content="Declined" />
                 <ComboBoxItem Content="All" />
             </ComboBox>
-            <Button Command="{Binding ExportCommand}" Style="{StaticResource CSVButton}" />
+            <Button Command="{Binding ExportCommand}" Style="{StaticResource CSVButton}" Margin="0"/>
         </StatusBar>
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
             <TextBlock
@@ -85,66 +86,19 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Rectangle
-                    RadiusX="5"
-                    RadiusY="5"
-                    Stroke="{StaticResource materialPrimaryBlue}"
-                    StrokeThickness="2" />
+                <Border
+                    CornerRadius="10"
+                    BorderBrush="{StaticResource materialPrimaryBlue}"
+                    BorderThickness="2"/>
 
                 <StackPanel Margin="20">
                     <!--  Card Header  -->
-
-                    <StackPanel Margin="0,0,0,10" HorizontalAlignment="Stretch">
-                        <TextBlock Style="{StaticResource title}" Text="{Binding SelectedRequest.Product, FallbackValue='P0XXX.123-456-A2'}" />
-
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock
-                                Foreground="{StaticResource materialError}"
-                                Style="{StaticResource subtitle}"
-                                Text="{Binding SelectedRequest.QuantityRequired, StringFormat='{}{0:#,##0} pcs required', FallbackValue='0 pcs required'}" />
-                            <TextBlock
-                                x:Name="dateRequiredTextBlock"
-                                Foreground="{StaticResource materialError}"
-                                Style="{StaticResource subtitle}"
-                                Text="{Binding SelectedRequest.DateRequired, StringFormat='{} for {0:dd/MM/yy}', FallbackValue=' for 01/01/1970'}" />
-
-                        </StackPanel>
-
-                        <Grid
-                            Margin="10,10,10,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Visibility="{Binding CleaningVis}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <Border
-                                Grid.ColumnSpan="2"
-                                Background="{StaticResource materialPrimaryBlue}"
-                                CornerRadius="10" />
-                            <Path
-                                Width="25"
-                                Height="25"
-                                Margin="10"
-                                Data="M12,20A6,6 0 0,1 6,14C6,10 12,3.25 12,3.25C12,3.25 18,10 18,14A6,6 0 0,1 12,20Z"
-                                Fill="White"
-                                Stretch="Uniform" />
-                            <TextBlock
-                                Grid.Column="1"
-                                Padding="5,5,15,5"
-                                VerticalAlignment="Center"
-                                Foreground="{StaticResource materialBackground}"
-                                Style="{StaticResource subtitle}"
-                                Text="Ultrasonic Cleaning Required" />
-                        </Grid>
-                    </StackPanel>
-
-
-
-
+                    <TextBlock Text="{Binding SelectedRequest.Id,StringFormat='{}Request #{0}', FallbackValue='Request #0'}" Style="{StaticResource title}"/>
+                    <TextBlock Text="APPROVED" FontWeight="Bold" FontSize="18" Foreground="{StaticResource materialPrimaryGreen}" Visibility="{Binding ApprovedVis}"/>
+                    <TextBlock Text="DECLINED" FontWeight="Bold" FontSize="18" Foreground="{StaticResource materialError}" Visibility="{Binding DeclinedVis}"/>
+                    <TextBlock Text="PENDING" FontWeight="Bold" FontSize="18" Foreground="{StaticResource materialPrimaryBlue}" Visibility="{Binding ApprovalControlsVis}"/>
                     <!--  MetaData Dates display grid  -->
-                    <Separator Margin="0,5" />
+                    <Separator Margin="0,15,0,5" />
                     <Grid Margin="15,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
@@ -180,6 +134,36 @@
                     <Separator Margin="0,5" />
 
                     <StackPanel Margin="10,20,10,20" Visibility="{Binding DecisionVis}">
+                        <TextBlock Style="{StaticResource section}" Text="Request Details" />
+
+                        <Grid HorizontalAlignment="Center" Margin="10">
+                            <Grid.Resources>
+                                <converters:boolToYesNo x:Key="btyn"/>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="Required Product:" Style="{StaticResource annotation}" HorizontalAlignment="Right"/>
+                            <TextBlock Padding="0,3,0,0" VerticalAlignment="Center" Text="{Binding SelectedRequest.Product,FallbackValue='REQUIRED_PRODUCT'}" Grid.Column="2" FontWeight="SemiBold"/>
+
+                            <TextBlock VerticalAlignment="Center" Text="Required Quantity:" Style="{StaticResource annotation}" Grid.Row="1" HorizontalAlignment="Right"/>
+                            <TextBlock Padding="0,3,0,0" VerticalAlignment="Center" Text="{Binding SelectedRequest.QuantityRequired,FallbackValue='REQUIRED_QUANTITY', StringFormat='{}{0:#,##0}'}" Grid.Column="2" FontWeight="SemiBold" Grid.Row="1"/>
+                            
+                            <TextBlock VerticalAlignment="Center" Text="Date Required:" Style="{StaticResource annotation}" Grid.Row="2" HorizontalAlignment="Right"/>
+                            <TextBlock Padding="0,3,0,0" VerticalAlignment="Center" Grid.Row="2" Text="{Binding SelectedRequest.DateRequired,FallbackValue='DATE_REQUIRED',StringFormat='{}{0:dd MMMM yyyy}'}" Grid.Column="2" FontWeight="SemiBold"/>
+
+                            <TextBlock VerticalAlignment="Center" Text="Ultrasonic Cleaning:" Style="{StaticResource annotation}" Grid.Row="3" HorizontalAlignment="Right"/>
+                            <TextBlock Padding="0,3,0,0"  VerticalAlignment="Center" Text="{Binding SelectedRequest.CleanCustomerRequirement,FallbackValue='CLEANING_REQ', Converter={StaticResource btyn}}" Grid.Column="2" FontWeight="SemiBold" Grid.Row="3"/>
+                        </Grid>
+                        
                         <TextBlock Style="{StaticResource section}" Text="Recommended Manifest" />
                         <Grid Margin="0,10">
                             <Grid.ColumnDefinitions>
@@ -191,7 +175,7 @@
                             <TextBlock
                                 Padding="10,0,0,0"
                                 VerticalAlignment="Center"
-                                Foreground="{StaticResource materialOnBackground}"
+                                Foreground="{StaticResource materialPrimaryBlue}"
                                 Style="{StaticResource statement}"
                                 Text="{Binding TargetRuntime, StringFormat='{}Runtime Cap [{0:N0} day(s)]'}" />
                             <TextBlock
@@ -263,11 +247,11 @@
                             Text="{Binding SelectedRequest.DeclinedReason, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             Visibility="{Binding ApprovalControlsVis}">
                             <ComboBoxItem Content="Uneconomical" />
-                            <ComboBoxItem Content="Below MOQ" />
                             <ComboBoxItem Content="No active requirement" />
                             <ComboBoxItem Content="Cannot deliver on time" />
                             <ComboBoxItem Content="Machining not possible" />
                             <ComboBoxItem Content="Duplicate request" />
+                            <ComboBoxItem Content="Merged with active order" />
                         </ComboBox>
 
                         <Grid
@@ -311,8 +295,8 @@
                     </Grid>
 
                     <StackPanel Margin="10,0" Visibility="{Binding ApprovedVis, FallbackValue=Visible}">
-                        <TextBlock Text="This request has been approved for manufacture." />
-                        <TextBlock Padding="0,5,0,4" Text="Please enter the Purchase Order reference here:" />
+                        <TextBlock Text="{Binding SelectedRequest.ResultingLMO,StringFormat='{}This request was approved for manufacture and is on order {0}'}" Style="{StaticResource annotation}" />
+                        <TextBlock Padding="0,5,0,4" Text="Please update the Purchase Order reference:" Style="{StaticResource annotation}" />
                         <TextBox Style="{StaticResource UsernameTextBox}" Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <Grid>
@@ -339,7 +323,7 @@
                             Text="Declined" />
                     </Grid>
                     <StackPanel Margin="10,0" Visibility="{Binding DeclinedVis, FallbackValue=Visible}">
-                        <TextBlock Foreground="{StaticResource materialError}" Text="Unfortunately this request has been declined, citing the reason below." />
+                        <TextBlock HorizontalAlignment="Center" Text="Unfortunately this request has been declined." Style="{StaticResource annotation}" />
                     </StackPanel>
 
                     <Separator Margin="0,5" />
@@ -371,8 +355,10 @@
                         </Grid>
 
                         <CheckBox
-                            HorizontalAlignment="Center"
-                            Content="Ultrasonic cleaning required?"
+                            HorizontalAlignment="Right"
+                            Margin="5,0"
+                            Content="Ultrasonic cleaning is required"
+                            FontWeight="Medium"
                             IsChecked="{Binding SelectedRequest.CleanCustomerRequirement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             IsEnabled="{Binding CanEditRequirements}" />
 
@@ -397,7 +383,7 @@
                                 Content="Save" />
                         </StackPanel>
                     </StackPanel>
-                    <TextBlock Text="{Binding SelectedRequest.Status, StringFormat='{}Status: {0}', FallbackValue='Status: Pending input'}" />
+                    <!--<TextBlock Text="{Binding SelectedRequest.Status, StringFormat='{}Status: {0}', FallbackValue='Status: Pending input'}" />-->
                 </StackPanel>
 
             </Grid>

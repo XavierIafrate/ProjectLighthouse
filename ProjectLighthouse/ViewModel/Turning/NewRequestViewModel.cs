@@ -212,7 +212,7 @@ namespace ProjectLighthouse.ViewModel
                     AddSpecialVisibility = Visibility.Visible;
                 }
 
-                FilteredList.AddRange(TurnedProducts.Where(p => p.isSpecialPart).OrderBy(x => x.ProductName).ThenBy(x => x.Material));
+                FilteredList.AddRange(TurnedProducts.Where(p => p.isSpecialPart));
             }
             else if (SelectedGroup == "Live")
             {
@@ -279,7 +279,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
 
-            FilteredList = new(FilteredList.OrderBy(n => n.Material).ThenBy(n => n.ProductName));
+            FilteredList = new(FilteredList.OrderBy(n => n.Material).ThenBy(x=>x.DriveType).ThenBy(n => n.ProductName));
             OnPropertyChanged("FilteredList");
             OnPropertyChanged("AddSpecialVisibility");
             LoadGraph();

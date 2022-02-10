@@ -30,8 +30,8 @@
     <SolidColorBrush x:Key="disabledGray" Color="#aaaaaa" />
 
     <LinearGradientBrush x:Key="gradGood" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Offset="0" Color="#1D976C" />
-        <GradientStop Offset="1" Color="#93F9B9" />
+        <GradientStop Offset="0" Color="#00695C" />
+        <GradientStop Offset="1" Color="#009688" />
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="gradBad" StartPoint="0,0" EndPoint="1,1">
@@ -42,6 +42,15 @@
     <LinearGradientBrush x:Key="gradBlue" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Offset="0" Color="#1e3c72" />
         <GradientStop Offset="1" Color="#2a5298" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="primaryGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Offset="0.0" Color="#6200EE" />
+                <GradientStop Offset="1.0" Color="#3700B3" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
     </LinearGradientBrush>
 
 </ResourceDictionary>

@@ -168,36 +168,9 @@ namespace ProjectLighthouse.View
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            AssignValues();
-
-            if (savedOrder.IsUpdated(order))
-            {
-                SaveExit = true;
-            }
-
-            if (SaveExit)
-            {
-                order.ModifiedBy = App.CurrentUser.GetFullName();
-                order.ModifiedAt = DateTime.Now;
-
-                order.Status = order.State.ToString();
-
-                if (savedOrder.State < OrderState.Complete && order.State >= OrderState.Complete)
-                {
-                    order.CompletedAt = order.ModifiedAt;
-                }
-
-                _ = DatabaseHelper.Update(order);
-            }
+            
 
             Close();
-        }
-
-        private void AssignValues()
-        {
-            CalculateTime();
-            CalculateBarRequirements();
-            CheckIfOrderIsClosed();
         }
 
         private void CheckIfOrderIsClosed()
@@ -335,14 +308,36 @@ namespace ProjectLighthouse.View
             }
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         private void Checkbox_Checked(object sender, RoutedEventArgs e)
         {
             SetCheckboxEnabling();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            CalculateTime();
+            CalculateBarRequirements();
+            CheckIfOrderIsClosed();
+
+            if (savedOrder.IsUpdated(order))
+            {
+                SaveExit = true;
+            }
+
+            if (SaveExit)
+            {
+                order.ModifiedBy = App.CurrentUser.GetFullName();
+                order.ModifiedAt = DateTime.Now;
+
+                order.Status = order.State.ToString();
+
+                if (savedOrder.State < OrderState.Complete && order.State >= OrderState.Complete)
+                {
+                    order.CompletedAt = order.ModifiedAt;
+                }
+
+                _ = DatabaseHelper.Update(order);
+            }
         }
     }
 }

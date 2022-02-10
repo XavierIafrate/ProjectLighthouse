@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
-    d:DesignWidth="450"
+    d:DesignWidth="610.033"
     Background="#01FFFFFF"
     mc:Ignorable="d">
     <Grid>
@@ -15,8 +15,7 @@
                 <ColumnDefinition Width="25" />
                 <ColumnDefinition Width="180" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -42,7 +41,7 @@
                     Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
                 <ProgressBar
                     x:Name="ProgressBar"
-                    Margin="0,0,0,7"
+                    Margin="0,0,0,3"
                     Value="0.5" />
                 <StackPanel Orientation="Horizontal">
                     <Button
@@ -72,29 +71,11 @@
 
             </StackPanel>
 
-
-            <!--<Border Background="{StaticResource materialPrimaryGreen}" Grid.Column="1" VerticalAlignment="Center" CornerRadius="10">
-                <TextBlock Text="complete" Foreground="{StaticResource materialOnPrimary}" Margin="5,5,5,6"/>
-            </Border>
-            -->
-            
-
-            <!--<Path Stroke="{StaticResource materialPrimary}" StrokeThickness="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Path.Data>
-                    <PathGeometry>
-                        <PathFigure StartPoint="10,0">
-                            <ArcSegment RotationAngle="0" SweepDirection="Clockwise"
-                                        Size="10,10"
-                                        Point="5,90"/>
-                        </PathFigure>
-                    </PathGeometry>
-                </Path.Data>
-            </Path>-->
-
             <StackPanel
                 x:Name="requirements"
-                Grid.Column="3"
-                HorizontalAlignment="Center"
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                Margin="0,0,20,0"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
                 <Grid>
@@ -126,13 +107,13 @@
             </StackPanel>
 
             <Grid
-                Grid.Column="4"
+                Grid.Column="3"
                 Margin="5"
                 VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" MinWidth="10" />
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="75" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -153,7 +134,7 @@
                     Grid.Row="1"
                     Grid.Column="2"
                     HorizontalAlignment="Right"
-                    Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}" />
+                    Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}"/>
 
                 <TextBlock
                     Grid.Row="2"
