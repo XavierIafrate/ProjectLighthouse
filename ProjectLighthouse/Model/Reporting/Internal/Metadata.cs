@@ -27,6 +27,29 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             //AddBorders(table);
         }
 
+        public void Add(Section section, DeliveryNote data)
+        {
+            section.AddParagraph($"Delivery Note: {data.Name}", StyleNames.Heading1);
+            //section.AddParagraph($"From {data.:ddd dd/MM/yyyy HH:mm} to {data.ToDate:ddd dd/MM/yyyy HH:mm}", StyleNames.Heading2);
+
+            //Table table = AddMetadataTable(section);
+
+            //AddDeliveryInfo(table, order);
+            //AddBorders(table);
+        }
+
+        public void Add(Section section, LoginReportData data)
+        {
+            section.AddParagraph($"Access Logs", StyleNames.Heading1);
+            section.AddParagraph($"From {data.From:g} to {data.To:g}", StyleNames.Heading2);
+            //section.AddParagraph($"From {data.:ddd dd/MM/yyyy HH:mm} to {data.ToDate:ddd dd/MM/yyyy HH:mm}", StyleNames.Heading2);
+
+            //Table table = AddMetadataTable(section);
+
+            //AddDeliveryInfo(table, order);
+            //AddBorders(table);
+        }
+
         private Table AddMetadataTable(Section section)
         {
             Table table = section.AddTable();

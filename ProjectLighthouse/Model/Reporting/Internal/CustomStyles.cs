@@ -5,8 +5,11 @@ namespace ProjectLighthouse.Model.Reporting.Internal
     internal class CustomStyles
     {
         public const string GeneratedAtStyle = "GeneratedAtStyle";
+        public const string TableTitle = "TableTitle";
+        public const string TableSubtitle = "TableSubtitle";
         public const string OrderName = "OrderName";
         public const string ColumnHeader = "ColumnHeader";
+        public const string NoRecords = "NoRecords";
 
         public const string LotQuarantined = "LotQuarantined";
         public const string LotAccepted = "LotAccepted";
@@ -58,6 +61,41 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             columnHeader.ParagraphFormat.Font.Bold = true;
             columnHeader.ParagraphFormat.LeftIndent = Size.TableCellPadding;
             columnHeader.ParagraphFormat.RightIndent = Size.TableCellPadding;
+
+            Style tableTitle = doc.Styles.AddStyle(TableTitle, StyleNames.Normal);
+            tableTitle.BaseStyle = StyleNames.Normal;
+            //heading2.ParagraphFormat.Shading.Color = Color.FromRgb(0, 0, 0);
+            tableTitle.ParagraphFormat.Font.Size = 16;
+            tableTitle.ParagraphFormat.Font.Color = Colors.DarkSlateGray;
+            tableTitle.ParagraphFormat.Font.Bold = false;
+            tableTitle.ParagraphFormat.SpaceBefore = 10;
+            tableTitle.ParagraphFormat.LeftIndent = Size.TableCellPadding;
+            tableTitle.ParagraphFormat.RightIndent = Size.TableCellPadding;
+            tableTitle.ParagraphFormat.Borders.Distance = Size.TableCellPadding;
+
+            Style tableSubtitle = doc.Styles.AddStyle(TableSubtitle, StyleNames.Normal);
+            tableSubtitle.BaseStyle = StyleNames.Normal;
+            tableSubtitle.ParagraphFormat.Font.Size = 11;
+            tableSubtitle.ParagraphFormat.Font.Color = Colors.DarkSlateGray;
+            tableSubtitle.ParagraphFormat.Font.Bold = false;
+            tableSubtitle.ParagraphFormat.Font.Italic = true;
+            tableSubtitle.ParagraphFormat.LeftIndent = Size.TableCellPadding;
+            tableSubtitle.ParagraphFormat.RightIndent = Size.TableCellPadding;
+            tableSubtitle.ParagraphFormat.SpaceAfter = 5;
+            //tableSubtitle.ParagraphFormat.Borders.Distance = Size.TableCellPadding;
+
+            Style noRecords = doc.Styles.AddStyle(NoRecords, StyleNames.Normal);
+            noRecords.BaseStyle = StyleNames.Normal;
+            noRecords.ParagraphFormat.Font.Size = 12;
+            noRecords.ParagraphFormat.Font.Color = Colors.Gray;
+            noRecords.ParagraphFormat.Font.Bold = false;
+            noRecords.ParagraphFormat.Font.Italic = true;
+            noRecords.ParagraphFormat.SpaceBefore = 10;
+            noRecords.ParagraphFormat.Alignment = ParagraphAlignment.Center;
+
+            noRecords.ParagraphFormat.LeftIndent = Size.TableCellPadding;
+            noRecords.ParagraphFormat.RightIndent = Size.TableCellPadding;
+            noRecords.ParagraphFormat.Borders.Distance = Size.TableCellPadding;
         }
     }
 }

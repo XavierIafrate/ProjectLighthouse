@@ -101,6 +101,11 @@ namespace ProjectLighthouse.Model
         [Ignore]
         public bool IsAlreadyOnOrder { get; set; }
         [Ignore]
-        public int QuantityOnOrder { get; set; }
+        public int LighthouseGuaranteedQuantity { get; set; }
+
+        public int FreeStock()
+        {
+            return QuantityInStock + LighthouseGuaranteedQuantity - QuantityOnSO;
+        }
     }
 }

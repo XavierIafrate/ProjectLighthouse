@@ -45,35 +45,33 @@ namespace ProjectLighthouse.View.UserControls
                         break;
                 }
 
-                if (!string.IsNullOrEmpty(control.Product.OrderReference))
+                if (control.Product.IsAlreadyOnOrder)
                 {
-                    int numberNeeded = control.Product.QuantityInStock + control.Product.QuantityOnPO - control.Product.QuantityOnSO;
-                    numberNeeded *= -1;
-                    if (control.Product.IsAlreadyOnOrder && numberNeeded > 0)
-                    {
+                    int numberNeeded = -control.Product.FreeStock();
 
-                        int differential = (numberNeeded + control.Product.QuantityOnPO) - control.Product.QuantityOnOrder;
-                        if (differential == 0) // Order has already been created/updated
-                        {
-                            control.CouldBeAddedFlag.Text = $"Order {control.Product.OrderReference} has matching requirements";
-                        }
-                        else if (differential > 0)
-                        {
-                            control.CouldBeAddedFlag.Text = $"{control.Product.OrderReference} need requirements increased";
-                        }
-                        else
-                        {
-                            control.CouldBeAddedFlag.Text = $"{control.Product.OrderReference} will cover this";
-                        }
-                        control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryGreen"];
+
+                    if (numberNeeded == 0)
+                    {
+                        control.CouldBeAddedFlag.Text = $"{control.Product.OrderReference} matches demand";
+                    }
+                    else if (numberNeeded > 0)
+                    {
+                        control.CouldBeAddedFlag.Text = $"Append {control.Product.OrderReference}: +{numberNeeded:#,##0} pcs";
                     }
                     else
                     {
-                        control.CouldBeAddedFlag.Text = $"could add to {control.Product.OrderReference}";
-                        control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryBlue"];
+                        control.CouldBeAddedFlag.Text =  control.Product.LighthouseGuaranteedQuantity == 0
+                            ? $"Uncommitted on {control.Product.OrderReference}"
+                            : $"{control.Product.OrderReference} guarantees {control.Product.LighthouseGuaranteedQuantity:#,##0}";
                     }
 
+                    control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryGreen"];
                     control.CouldBeAddedFlag.Visibility = Visibility.Visible;
+                }
+                else if (!string.IsNullOrEmpty(control.Product.OrderReference))
+                {
+                    control.CouldBeAddedFlag.Text = $"Compatible with {control.Product.OrderReference}";
+                    control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryBlue"];
                 }
                 else
                 {

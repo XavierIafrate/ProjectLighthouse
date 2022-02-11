@@ -1,5 +1,7 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.ViewModel.Commands;
+using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -115,6 +117,7 @@ namespace ProjectLighthouse.ViewModel
         public SaveUserEditCommand saveCommand { get; set; }
         public DeleteUserCommand deleteUserCommand { get; set; }
         public ResetUserPasswordCommand resetPasswordCommand { get; set; }
+        public GetLoginReportCommand getLoginReportCommand { get; set; }
         #endregion
         public ManageUsersViewModel()
         {
@@ -134,6 +137,7 @@ namespace ProjectLighthouse.ViewModel
             saveCommand = new(this);
             deleteUserCommand = new(this);
             resetPasswordCommand = new(this);
+            getLoginReportCommand = new(this);
 
             LoadData();
 
@@ -248,6 +252,17 @@ namespace ProjectLighthouse.ViewModel
             {
                 return false;
             }
+        }
+
+        public void GenerateReport()
+        {
+            ReportPdf reportService = new();
+            List<User> reportUsers = Users.Where(u => u.UserRole is "admin" or "Purchasing" or "Production" or "Scheduling").ToList();
+            LoginReportData reportData = new(reportUsers, Logins, DateTime.Today.AddDays(-7), DateTime.Now);
+            string path = @"C:\Users\x.iafrate\Documents\LoginReport.pdf";
+
+            reportService.Export(path, reportData);
+            reportService.OpenPdf(path);
         }
     }
 }

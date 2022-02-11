@@ -110,11 +110,15 @@ namespace ProjectLighthouse.View
             Login login = new()
             {
                 User = User.UserName,
-                Host = User.computerUsername,
+                Host = Environment.MachineName,
+                ADUser = User.computerUsername,
                 Role = User.UserRole,
                 Time = User.LastLogin,
                 Version = versionInfo.FileVersion
             };
+
+            App.Login = login;
+
             if (!Debugger.IsAttached)
             {
                 _ = DatabaseHelper.Insert(login);

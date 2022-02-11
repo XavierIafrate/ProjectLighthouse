@@ -9,7 +9,7 @@
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:DesignWidth="800"
     Background="White"
-    mc:Ignorable="d">
+    mc:Ignorable="d" d:DesignHeight="832.899">
 
     <UserControl.Resources>
         <vm:ManageUsersViewModel x:Key="vm" />
@@ -27,43 +27,51 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListView
-            Grid.RowSpan="2"
+        
+        <Grid Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <ListView
             BorderThickness="0"
             ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
             ScrollViewer.CanContentScroll="False"
             SelectedValue="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="7,2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="7,2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
                             x:Name="name"
                             FontSize="16"
                             FontWeight="SemiBold">
                             <Run Text="{Binding FirstName}" />
                             <Run Text="{Binding LastName}" />
-                        </TextBlock>
-                        <TextBlock
+                            </TextBlock>
+                            <TextBlock
                             x:Name="role"
                             Grid.Row="1"
                             FontStyle="Italic"
                             Foreground="{StaticResource materialPrimaryBlue}"
                             Text="{Binding UserRole}" />
-                    </Grid>
+                        </Grid>
 
-                    <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding IsBlocked}" Value="true">
-                            <Setter TargetName="name" Property="Foreground" Value="{StaticResource materialError}" />
-                            <Setter TargetName="role" Property="Foreground" Value="{StaticResource materialError}" />
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsBlocked}" Value="true">
+                                <Setter TargetName="name" Property="Foreground" Value="{StaticResource materialError}" />
+                                <Setter TargetName="role" Property="Foreground" Value="{StaticResource materialError}" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Command="{Binding getLoginReportCommand}" Style="{StaticResource BlueButton}" Grid.Row="1" HorizontalAlignment="Right" Content="Download Report"/>
+        </Grid>
+        
 
         <StackPanel
             Grid.Column="1"

@@ -10,6 +10,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    Loaded="UserControl_Loaded"
     d:Background="White"
     d:DesignHeight="758.58"
     d:DesignWidth="1179.077"
@@ -200,6 +201,7 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
 
                         <TextBlock Style="{StaticResource InsightName}" Text="Product" />
@@ -271,9 +273,19 @@
                         <TextBlock
                             Grid.Row="7"
                             Style="{StaticResource InsightName}"
-                            Text="Approval Likeliness" />
+                            Text="Lighthouse Guaranteed" />
                         <TextBlock
                             Grid.Row="7"
+                            Grid.Column="2"
+                            Style="{StaticResource InsightValue}"
+                            Text="{Binding SelectedProduct.LighthouseGuaranteedQuantity, StringFormat='{}{0:#,##0} pcs'}" />
+
+                        <TextBlock
+                            Grid.Row="8"
+                            Style="{StaticResource InsightName}"
+                            Text="Approval Likeliness" />
+                        <TextBlock
+                            Grid.Row="8"
                             Grid.Column="2"
                             Style="{StaticResource InsightValue}"
                             Text="{Binding LikelinessText}" />

@@ -96,7 +96,6 @@ namespace ProjectLighthouse.ViewModel
         public NewRequestViewModel()
         {
             NewRequest = new();
-
             SubmitRequestCommand = new(this);
             AddSpecialCommand = new(this);
 
@@ -108,6 +107,7 @@ namespace ProjectLighthouse.ViewModel
             HighLeadTimeVisibility = Visibility.Collapsed;
 
             ClearScreen();
+            SelectedProduct = new();
             SelectedGroup = "Live";
             PopulateMachineInsights();
         }
@@ -216,7 +216,7 @@ namespace ProjectLighthouse.ViewModel
             }
             else if (SelectedGroup == "Live")
             {
-                FilteredList.AddRange(TurnedProducts.Where(p => (p.QuantityInStock + p.QuantityOnPO) < p.QuantityOnSO));
+                FilteredList.AddRange(TurnedProducts.Where(p => p.FreeStock() < 0));
             }
             else
             {
@@ -241,7 +241,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 TurnedProduct productOnOrder = TurnedProducts.Single(p => p.ProductName == activeOrderItems[i].ProductName);
                 productOnOrder.OrderReference = activeOrderItems[i].AssignedMO;
-                productOnOrder.QuantityOnOrder = activeOrderItems[i].RequiredQuantity;
+                productOnOrder.LighthouseGuaranteedQuantity = activeOrderItems[i].RequiredQuantity;
                 ItemsOnOrder.Add(productOnOrder);
             }
 
@@ -260,7 +260,7 @@ namespace ProjectLighthouse.ViewModel
                     if (item.ProductName == orderItem.ProductName)
                     {
                         item.IsAlreadyOnOrder = true;
-                        item.QuantityOnOrder = orderItem.QuantityOnOrder;
+                        item.LighthouseGuaranteedQuantity = orderItem.LighthouseGuaranteedQuantity;
                     }
                 }
 
@@ -279,7 +279,24 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
 
-            FilteredList = new(FilteredList.OrderBy(n => n.Material).ThenBy(x=>x.DriveType).ThenBy(n => n.ProductName));
+            if (SelectedGroup != "Live")
+            {
+                FilteredList = new(FilteredList.OrderBy(n => n.Material).ThenBy(x => x.DriveType).ThenBy(n => n.ProductName));
+            }
+            else
+            {
+                FilteredList = new(FilteredList
+                    .Where(x => x.IsAlreadyOnOrder || x.QuantityOnPO == 0)
+                    .OrderBy(n => n.Material)
+                    .ThenBy(x => x.DriveType)
+                    .ThenBy(n => n.ProductName));
+            }
+
+            if (FilteredList.Count > 0)
+            {
+                SelectedProduct = FilteredList.First();
+            }
+           
             OnPropertyChanged("FilteredList");
             OnPropertyChanged("AddSpecialVisibility");
             LoadGraph();

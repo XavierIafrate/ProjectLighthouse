@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using System.Windows;
 using System.Timers;
+using ProjectLighthouse.ViewModel.Helpers;
 
 namespace ProjectLighthouse
 {
@@ -11,6 +12,7 @@ namespace ProjectLighthouse
     public partial class App : Application
     {
         public static User CurrentUser { get; set; }
+        public static Login Login { get; set; }
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
         public static DateTime LastDataRefresh { get; set; } = DateTime.MinValue;
@@ -41,6 +43,22 @@ namespace ProjectLighthouse
             Window.AddVersionNumber();
 
             StartDataRefreshTimer();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            try
+            {
+                if (Login != null)
+                {
+                    Login.Logout = DateTime.Now;
+                    DatabaseHelper.Update(Login);
+                }
+            }
+            finally
+            {
+                base.OnExit(e);
+            }
         }
 
         private static void StartDataRefreshTimer()

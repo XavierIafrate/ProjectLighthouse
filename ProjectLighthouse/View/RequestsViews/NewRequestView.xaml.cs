@@ -65,12 +65,21 @@ namespace ProjectLighthouse.View
 
         private void ProductsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            PopulateQuantityPrefill();
+        }
+
+        void PopulateQuantityPrefill()
+        {
+            if (viewModel == null)
+            {
+                return;
+            }
+
             if (viewModel.SelectedGroup == "Live")
             {
                 if (productsListBox.SelectedValue is TurnedProduct turnedProduct)
                 {
-                    int NetStockLevel = turnedProduct.QuantityInStock + turnedProduct.QuantityOnPO - turnedProduct.QuantityOnSO;
-                    quantityBox.Text = Math.Abs(NetStockLevel).ToString();
+                    quantityBox.Text = Math.Abs(turnedProduct.FreeStock()).ToString();
                 }
             }
 
@@ -114,6 +123,11 @@ namespace ProjectLighthouse.View
                     mainGrid.ColumnDefinitions[1].Width = GridLength.Auto;
                 }
             }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            PopulateQuantityPrefill();
         }
     }
 }

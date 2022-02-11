@@ -93,7 +93,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
                 LatheTitle.AddText(lathe.Lathe.FullName);
                 table.Rows[rowCursor].Cells[0].Add(LatheTitle);
 
-                rowCursor += numRowsRequired;
+                rowCursor++;
             }
         }
 
@@ -119,7 +119,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
             else
             {
-                for (int i = 0; i < content.Count; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     Row row = table.Rows[i + fromRow];
                     row.Cells[col].Add(content[i]);

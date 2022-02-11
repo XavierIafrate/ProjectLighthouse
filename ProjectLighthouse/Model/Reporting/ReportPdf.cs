@@ -140,5 +140,91 @@ namespace ProjectLighthouse.Model.Reporting
         }
 
         #endregion
+
+        #region Delivery Note
+        public void Export(string path, DeliveryData data)
+        {
+            ExportPdf(path, CreateOrderPrintout(data));
+        }
+
+        private Document CreateOrderPrintout(DeliveryData data)
+        {
+            Document doc = new();
+            CustomStyles.Define(doc);
+            doc.Add(CreateMainSection(data));
+            return doc;
+        }
+
+        private Section CreateMainSection(DeliveryData data)
+        {
+            Section section = new();
+            SetUpPage(section);
+            AddHeaderAndFooter(section);
+            AddContents(section, data);
+            return section;
+        }
+
+
+        private void AddContents(Section section, DeliveryData data)
+        {
+            AddOrderMetadata(section, data.Header);
+            AddDeliveryItems(section, data.Lines);
+        }
+
+        private void AddOrderMetadata(Section section, DeliveryNote delivery)
+        {
+            new Metadata().Add(section, delivery);
+        }
+
+        private void AddDeliveryItems(Section section, DeliveryItem[] items)
+        {
+            new DeliveryItemsContent().Add(section, items);
+        }
+
+        #endregion
+
+        #region Logins
+        public void Export(string path, LoginReportData data)
+        {
+            ExportPdf(path, CreateLoginReport(data));
+        }
+
+        private Document CreateLoginReport(LoginReportData data)
+        {
+            Document doc = new();
+            CustomStyles.Define(doc);
+            doc.Add(CreateMainSection(data));
+            return doc;
+        }
+
+        private Section CreateMainSection(LoginReportData data)
+        {
+            Section section = new();
+            SetUpPage(section);
+            AddHeaderAndFooter(section);
+            AddContents(section, data);
+            return section;
+        }
+
+        private void AddContents(Section section, LoginReportData data)
+        {
+            AddReportMetadata (section, data);
+            AddLogins(section, data.UserLogins);
+        }
+
+        private void AddReportMetadata(Section section, LoginReportData data)
+        {
+            new Metadata().Add(section, data);
+        }
+
+        private void AddLogins(Section section, List<UserLoginRecords> items)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                new LoginsContent().Add(section, items[i]);
+            }
+        }
+
+        #endregion
     }
 }
