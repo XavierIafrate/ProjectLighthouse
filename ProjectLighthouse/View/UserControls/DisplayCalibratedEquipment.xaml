@@ -4,21 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" d:DesignWidth="167.093" >
+             mc:Ignorable="d" d:DesignWidth="167.093"
+             d:Background="White">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Name, FallbackValue='CE0'}" VerticalAlignment="Center" Padding="5" FontWeight="Bold" FontSize="22"/>
+        <TextBlock Text="{Binding EquipmentId, FallbackValue='CE0'}"  VerticalAlignment="Center" Padding="5" FontWeight="Bold" FontSize="22"/>
         <StackPanel Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center">
-            <TextBlock Text="{Binding Make}" FontWeight="SemiBold"/>
-            <TextBlock Text="{Binding Model}" FontStyle="Italic" Foreground="{StaticResource materialPrimary}"/>
+            <TextBlock Text="{Binding Make}" FontWeight="SemiBold" d:Text="MAKE" FontSize="18"/>
+            <TextBlock Text="{Binding Model}" FontStyle="Italic" FontSize="13" Opacity="0.8" d:Text="MODEL"/>
         </StackPanel>
 
-        <Border Grid.Column="2" Background="{StaticResource materialError}" VerticalAlignment="Center" CornerRadius="8">
+        <!--<Border Grid.Column="2" Background="{StaticResource materialOnBackground}" VerticalAlignment="Center" CornerRadius="8">
             <TextBlock Text="{Binding Status}" Foreground="{StaticResource materialOnPrimary}" FontWeight="SemiBold" Padding="10,5"/>
-        </Border>
+        </Border>-->
     </Grid>
 </UserControl>

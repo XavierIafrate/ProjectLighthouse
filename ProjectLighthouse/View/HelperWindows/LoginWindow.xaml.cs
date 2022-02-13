@@ -25,7 +25,7 @@ namespace ProjectLighthouse.View
 
             if (Environment.UserName == "xavier" || Debugger.IsAttached)
             {
-                User user = Users.SingleOrDefault(u => u.UserName == "xav");
+                User user = Users.Find(u => u.UserName == "xav");
                 if (user == null)
                 {
                     return;
@@ -33,17 +33,23 @@ namespace ProjectLighthouse.View
                 UsernameTextBox.Text = user.UserName;
                 PasswordBox.Password = user.Password;
                 _ = PasswordBox.Focus();
-                _ = PasswordBox.GetType().GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(PasswordBox, new object[] { user.Password.Length, 0 });
+                _ = PasswordBox.GetType()
+                    .GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(PasswordBox, new object[] { user.Password.Length, 0 });
                 return;
             }
 
-            List<User> UsersOfThisComputer = Users.Where(u => u.computerUsername == Environment.UserName).ToList();
+            string[] UsersOfThisComputer = Users.Where(u => u.computerUsername == Environment.UserName).Select(x => x.UserName).ToArray();
 
-            if (UsersOfThisComputer.Count == 1)
+            if (UsersOfThisComputer.Length == 1)
             {
-                UsernameTextBox.Text = UsersOfThisComputer.Single().UserName;
+                UsernameTextBox.Text = UsersOfThisComputer[0];
                 _ = PasswordBox.Focus();
                 return;
+            }
+            else
+            {
+                UsernameTextBox.Focus();
             }
         }
 
@@ -79,6 +85,7 @@ namespace ProjectLighthouse.View
 
         private void Login()
         {
+            Users = DatabaseHelper.Read<User>().ToList();
             User User = Users.FirstOrDefault(u => u.UserName == UsernameTextBox.Text);
 
             if (User == null)
@@ -133,13 +140,6 @@ namespace ProjectLighthouse.View
             PasswordGhost.Visibility = string.IsNullOrEmpty(PasswordBox.Password)
                ? Visibility.Visible
                : Visibility.Hidden;
-        }
-
-        private void UsernameText_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            UsernameGhost.Visibility = string.IsNullOrEmpty(UsernameTextBox.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
         }
     }
 }

@@ -11,7 +11,7 @@ using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class ScheduleViewModel : BaseViewModel, IRefreshableViewModel
+    public class ScheduleViewModel : BaseViewModel
     {
         public List<MachineService> PlannedServices { get; set; }
         public List<ResearchTime> PlannedResearch { get; set; }

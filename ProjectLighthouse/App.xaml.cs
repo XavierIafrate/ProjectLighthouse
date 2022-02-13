@@ -18,7 +18,8 @@ namespace ProjectLighthouse
         public static DateTime LastDataRefresh { get; set; } = DateTime.MinValue;
         public static Skin Skin { get; set; } = Skin.Dark;
         public static System.Timers.Timer DataRefreshTimer { get; set; }
-        private static MainViewModel mvm { get; set; }
+
+        public static MainViewModel MainViewModel { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -32,7 +33,7 @@ namespace ProjectLighthouse
                 MainWindow = Window
             };
 
-            mvm = VM;
+            MainViewModel = VM;
 
             Window.DataContext = VM;
             Window.viewModel = VM;
@@ -41,8 +42,6 @@ namespace ProjectLighthouse
             Window.Show();
 
             Window.AddVersionNumber();
-
-            StartDataRefreshTimer();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -59,20 +58,6 @@ namespace ProjectLighthouse
             {
                 base.OnExit(e);
             }
-        }
-
-        private static void StartDataRefreshTimer()
-        {
-            DataRefreshTimer = new();
-            DataRefreshTimer.Elapsed += DataRefreshTimer_Elapsed;
-            DataRefreshTimer.Interval = 5000;
-            DataRefreshTimer.Enabled = true;
-            //DataRefreshTimer.Start();
-        }
-
-        private static void DataRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            mvm.LastDataRefresh = $"{DateTime.Now:s}";
         }
 
         private static void CheckForExistingInstances()

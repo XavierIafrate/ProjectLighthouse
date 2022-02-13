@@ -11,21 +11,10 @@ namespace ProjectLighthouse.View
         public EditSettingsWindow()
         {
             InitializeComponent();
-            user = App.CurrentUser ?? new User()
-            {
-                FirstName = "Randy",
-                LastName = "Marsh",
-                UserName = "randy",
-                UserRole = "debug_placeholder",
-                CanApproveRequests = true,
-                CanEditLMOs = true,
-                CanCreateAssemblyProducts = true,
-                CanRaiseDelivery = true,
-                CanUpdateLMOs = true,
-                DefaultView = "Schedule"
-            };
             helperText.Visibility = Visibility.Collapsed;
-            DataContext = App.CurrentUser;
+            user = App.CurrentUser;
+            DataContext = user;
+
             foreach (ComboBoxItem item in defaultViewComboBox.Items)
             {
                 if ((string)item.Content == user.DefaultView)

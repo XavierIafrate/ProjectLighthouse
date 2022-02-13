@@ -50,7 +50,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (parameter.ToString() == "Orders")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new OrderViewModel() { NoRefresh = true };
+                viewModel.SelectedViewModel = new OrderViewModel();
                 viewModel.NavText = "Manufacture Orders";
             }
             else if (parameter.ToString() == "Bar Stock")

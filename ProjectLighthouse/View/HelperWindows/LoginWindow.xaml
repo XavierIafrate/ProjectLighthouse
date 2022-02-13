@@ -74,50 +74,32 @@
                         Text="Username Not Found debug" />
                 </Grid>
 
-                <!--<TextBox
-                    x:Name="usernameText"
+                <TextBox
+                    x:Name="UsernameTextBox"
                     Focusable="True"
-                    KeyDown="PasswordText_KeyDown" />-->
+                    KeyDown="PasswordText_KeyDown"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="username"/>
 
-                <Grid Width="250">
-                    <TextBox
-                        x:Name="UsernameTextBox"
-                        Focusable="True"
-                        KeyDown="PasswordText_KeyDown"
-                        Style="{StaticResource UsernameTextBox}"
-                        Foreground="{StaticResource materialOnSurface}"
-                        TextChanged="UsernameText_TextChanged" />
-                    <TextBlock
-                        x:Name="UsernameGhost"
-                        Margin="24,0,0,0"
-                        Padding="8"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        FontSize="20"
-                        Foreground="#888888"
-                        IsHitTestVisible="False"
-                        Text="username" />
-                </Grid>
-
-                <Grid Width="250">
+                    <Grid Width="250">
                     <PasswordBox
+                        Height="40.6"
                         x:Name="PasswordBox"
                         Focusable="True"
                         KeyDown="PasswordText_KeyDown"
-                        Foreground="{StaticResource materialOnSurface}"
                         PasswordChanged="PasswordTextBox_PasswordChanged"
-                        Style="{StaticResource PasswordBox}" />
+                        Style="{StaticResource PasswordBox}"
+                        Tag="password"/>
                     <Grid>
                         <TextBlock
-                            x:Name="PasswordGhost"
-                            Margin="24,0,0,0"
-                            Padding="8"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            FontSize="20"
-                            Foreground="#888888"
-                            IsHitTestVisible="False"
-                            Text="password" />
+                                x:Name="PasswordGhost"
+                                Text="password"
+                                Margin="21,10"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource GhostText}"
+                                TextWrapping="Wrap"
+                                Visibility="Visible"
+                            IsHitTestVisible="False"/>
                     </Grid>
                 </Grid>
 

@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using ProjectLighthouse.Model.Administration;
+using SQLite;
 using System;
 
 namespace ProjectLighthouse.Model
@@ -13,11 +14,10 @@ namespace ProjectLighthouse.Model
         public string UserName { get; set; }
         public string EmailAddress { get; set; }
         public string Password { get; set; }
-        public string UserRole { get; set; }
         public string computerUsername { get; set; }
+        public string UserRole { get; set; }    
 
         private DateTime lastLogin;
-
         public DateTime LastLogin
         {
             get { return lastLogin; }
@@ -38,12 +38,30 @@ namespace ProjectLighthouse.Model
         public bool CanCreateAssemblyProducts { get; set; }
         public bool CanRaiseRequest { get; set; }
         public bool CanCreateSpecial { get; set; }
+        public bool EnableDataSync { get; set; }
 
         public string DefaultView { get; set; }
 
         public string GetFullName()
         {
             return $"{FirstName} {LastName}";
+        }
+
+        public UserRole Role
+        {
+            get
+            {
+                return UserRole switch
+                {
+                    "Viewer" => Model.UserRole.Viewer,
+                    "Purchasing" => Model.UserRole.Purchasing,
+                    "Production" => Model.UserRole.Production,
+                    "Scheduling" => Model.UserRole.Scheduling,
+                    "admin" => Model.UserRole.Administrator,
+                    _ => Model.UserRole.Viewer,
+                };
+            }
+            set { }
         }
     }
 }

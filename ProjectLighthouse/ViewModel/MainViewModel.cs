@@ -20,21 +20,22 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 navText = value;
-                OnPropertyChanged("NavText");
+                OnPropertyChanged();
             }
         }
 
         private Visibility betaWarningVis = Visibility.Collapsed;
-
         public Visibility BetaWarningVis
         {
             get { return betaWarningVis; }
             set
             {
                 betaWarningVis = value;
-                OnPropertyChanged("BetaWarningVis");
+                OnPropertyChanged();
             }
         }
+
+        public Visibility DataRefreshBadgeVis { get; set; }
 
         private BaseViewModel _selectedViewModel;
 
@@ -49,19 +50,25 @@ namespace ProjectLighthouse.ViewModel
                 }
 
                 _selectedViewModel = value;
-                OnPropertyChanged("SelectedViewModel");
+
+                DataRefreshBadgeVis = (_selectedViewModel is IRefreshableViewModel) && App.CurrentUser.EnableDataSync
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+                OnPropertyChanged(nameof(DataRefreshBadgeVis));
+
+                OnPropertyChanged();
             }
         }
 
 
-        private string lastDataRefresh;
-        public string LastDataRefresh
+        private DateTime lastDataRefresh;
+        public DateTime LastDataRefresh
         {
             get { return lastDataRefresh; }
             set
             {
                 lastDataRefresh = value;
-                OnPropertyChanged("LastDataRefresh");
+                OnPropertyChanged();
             }
         }
 

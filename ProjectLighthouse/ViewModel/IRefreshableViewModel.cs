@@ -1,8 +1,9 @@
-﻿namespace ProjectLighthouse.ViewModel
+﻿using System.Timers;
+
+namespace ProjectLighthouse.ViewModel
 {
     public interface IRefreshableViewModel
     {
-        bool StopRefresh { get; set; }
-        public void Refresh();
+        public void Refresh(bool silent = false);
     }
 }

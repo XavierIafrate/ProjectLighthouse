@@ -58,6 +58,7 @@ namespace ProjectLighthouse.View.UserControls
             fileopener.StartInfo.Arguments = "\"" + Path.Join(App.ROOT_PATH, Drawing.URL) + "\"";
             _ = fileopener.Start();
         }
+
         public DisplayTechnicalDrawing()
         {
             InitializeComponent();

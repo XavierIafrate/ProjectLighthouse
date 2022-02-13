@@ -37,11 +37,11 @@
             <Grid>
                 <Border
                     x:Name="LogoFill"
-                    Visibility="Hidden"
                     Width="34"
                     Height="34"
                     Background="{StaticResource materialGreen}"
-                    CornerRadius="4">
+                    CornerRadius="4"
+                    Visibility="Hidden">
                     <Border.RenderTransform>
                         <TranslateTransform>
                             <TranslateTransform.X>-57</TranslateTransform.X>
@@ -177,19 +177,42 @@
 
                 </StackPanel>
             </ScrollViewer>
-            
-            <!--<Border Background="{StaticResource materialOnBackground}"  Padding="30,3" Grid.Row="1">
+
+            <Border
+                Visibility="{Binding DataRefreshBadgeVis}"
+                Grid.Row="1"
+                Padding="30,3"
+                Background="{StaticResource materialOnBackground}">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Path Data="M21,10.12H14.22L16.96,7.3C14.23,4.6 9.81,4.5 7.08,7.2C4.35,9.91 4.35,14.28 7.08,17C9.81,19.7 14.23,19.7 16.96,17C18.32,15.65 19,14.08 19,12.1H21C21,14.08 20.12,16.65 18.36,18.39C14.85,21.87 9.15,21.87 5.64,18.39C2.14,14.92 2.11,9.28 5.62,5.81C9.13,2.34 14.76,2.34 18.27,5.81L21,3V10.12M12.5,8V12.25L16,14.33L15.28,15.54L11,13V8H12.5Z"
-                          Fill="{StaticResource materialOnPrimary}"
-                          Height="13"
-                          Stretch="Uniform"/>
-                        <TextBlock Text="Refreshing Data" Foreground="{StaticResource materialOnPrimary}" Margin="7,0,0,2"/>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <Path
+                            Height="13"
+                            Data="M2 12A10 10 0 1 0 12 2A10 10 0 0 0 2 12M15.6 13.72A4 4 0 0 0 16 12A4 4 0 0 0 12 8V10L8.88 7L12 4V6A6 6 0 0 1 18 12A5.9 5.9 0 0 1 17.07 15.19M6 12A5.9 5.9 0 0 1 6.93 8.81L8.4 10.28A4 4 0 0 0 8 12A4 4 0 0 0 12 16V14L15 17L12 20V18A6 6 0 0 1 6 12Z"
+                            Fill="{StaticResource materialOnPrimary}"
+                            Stretch="Uniform" />
+                        <TextBlock
+                            Margin="7,0,0,2"
+                            Foreground="{StaticResource materialOnPrimary}"
+                            Text="Data Synchronising" />
                     </StackPanel>
-                    <TextBlock Text="{Binding LastDataRefresh, FallbackValue='Test', StringFormat='{}last refresh @ {0}'}" Foreground="{StaticResource materialBackground}" HorizontalAlignment="Center" FontStyle="Italic" Opacity="0.5"/>
+                    <TextBlock
+                        x:Name="refreshTime"
+                        HorizontalAlignment="Center"
+                        FontStyle="Italic"
+                        Foreground="{StaticResource materialBackground}"
+                        Opacity="0.5"
+                        Text="{Binding LastDataRefresh, FallbackValue='Test', StringFormat='{}last refreshed at {0:HH:mm:ss}'}" />
                 </StackPanel>
-            </Border>-->
+                <!--<Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="refreshTime.TextChanged">
+                                <Se
+                            </EventTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>-->
+            </Border>
 
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>

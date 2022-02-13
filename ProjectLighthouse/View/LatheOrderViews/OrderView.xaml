@@ -17,7 +17,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <vm:OrderViewModel x:Key="vm" />
             <converters:boolToHasProgram x:Key="boolToHasProgram" />
             <converters:boolToIsReady x:Key="boolToIsReady" />
             <converters:intToDays x:Key="intToDays" />
@@ -80,7 +79,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid DataContext="{StaticResource vm}">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="280" />
             <ColumnDefinition Width="3*" />
@@ -99,8 +98,7 @@
             <TextBox
                 x:Name="SearchBox"
                 Style="{StaticResource SearchTextBox}"
-                Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
+                Text="{Binding Path=SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Button
                 x:Name="ClearButton"
@@ -113,12 +111,11 @@
             Grid.Row="1"
             HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding Path=FilteredOrders}"
-            SelectedValue="{Binding Path=SelectedLatheManufactureOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SelectedValue="{Binding Path=SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             SelectionChanged="ListView_SelectionChanged">
-
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding}" />
+                    <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding }" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -134,7 +131,7 @@
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
                 Text="Filter by:" />
-            <ComboBox Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="All Active" IsSelected="True" />
                 <ComboBoxItem Content="Not Ready" />
                 <ComboBoxItem Content="Ready" />
@@ -201,17 +198,17 @@
             Grid.RowSpan="3"
             Grid.Column="1"
             ScrollChanged="ScrollViewer_ScrollChanged"
-            Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
+            Visibility="{Binding Path=CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel>
                 <StackPanel Margin="25,10">
                     <Grid
                         MaxWidth="700"
                         Margin="0,0,0,10"
-                        Visibility="{Binding LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
-                        <Rectangle
-                            Fill="{StaticResource materialError}"
-                            RadiusX="5"
-                            RadiusY="5" />
+                        Visibility="{Binding Path=LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
+                        <Border
+                            Background="{StaticResource materialError}"
+                            CornerRadius="10" />
+                        
                         <Grid Margin="0,5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
@@ -234,14 +231,14 @@
                                     FontSize="18"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource materialOnError}"
-                                    Text="{Binding DisplayStats.MachineName, StringFormat='{}LIVE on {0}'}" />
+                                    Text="{Binding Path=DisplayStats.MachineName, StringFormat='{}LIVE on {0}'}" />
                                 <TextBlock
                                     Grid.RowSpan="2"
                                     Padding="8,0,0,4"
                                     FontSize="12"
                                     FontStyle="Italic"
                                     Foreground="{StaticResource materialOnError}"
-                                    Text="{Binding DisplayStats.DataTime, StringFormat='{}at {0:HH:mm:ss}'}" />
+                                    Text="{Binding Path=DisplayStats.DataTime, StringFormat='{}at {0:HH:mm:ss}'}" />
                             </StackPanel>
 
                             <TextBlock
@@ -251,9 +248,9 @@
                                 VerticalAlignment="Center"
                                 Foreground="{StaticResource materialOnError}">
                                 <Run Text="Part counter:" />
-                                <Run FontWeight="Bold" Text="{Binding DisplayStats.PartCountAll, StringFormat='{}{0:#,##0}'}" />
+                                <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.PartCountAll, StringFormat='{}{0:#,##0}'}" />
                                 <Run Text="of target" />
-                                <Run FontWeight="Bold" Text="{Binding DisplayStats.PartCountTarget, StringFormat='{}{0:#,##0}'}" />
+                                <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.PartCountTarget, StringFormat='{}{0:#,##0}'}" />
                                 <Run Text="pcs" />
                             </TextBlock>
                             <TextBlock
@@ -264,18 +261,17 @@
                                 VerticalAlignment="Center"
                                 Foreground="{StaticResource materialOnError}">
                                 <Run Text="Execution" />
-                                <Run FontWeight="Bold" Text="{Binding DisplayStats.Execution}" />
+                                <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.Execution}" />
                                 <Run Text="- Cycle time" />
-                                <Run FontWeight="Bold" Text="{Binding DisplayStats.CycleTime, Converter='{StaticResource intToStringCycleTime}', StringFormat='{}{0:mm}'}" />
+                                <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.CycleTime, Converter='{StaticResource intToStringCycleTime}', StringFormat='{}{0:mm}'}" />
                             </TextBlock>
                         </Grid>
                     </Grid>
                     <Grid x:Name="OrderCardGrid" MaxWidth="700">
-                        <Rectangle
-                            RadiusX="5"
-                            RadiusY="5"
-                            Stroke="{StaticResource materialPrimaryBlue}"
-                            StrokeThickness="2" />
+                        <Border
+                            CornerRadius="10"
+                            BorderBrush="{StaticResource materialPrimaryBlue}"
+                            BorderThickness="2" />
                         <StackPanel Margin="20">
 
                             <!--#region Header Data-->
@@ -288,7 +284,7 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Style="{StaticResource title}" Text="{Binding SelectedLatheManufactureOrder.Name, FallbackValue='M00000'}" />
+                                            <TextBlock Style="{StaticResource title}" Text="{Binding Path=SelectedOrder.Name, FallbackValue='M00000'}" />
                                             <Path
                                                 Width="30"
                                                 Height="25"
@@ -300,7 +296,7 @@
                                                 ToolTip="This order is closed."
                                                 Visibility="{Binding ArchiveVis}" />
                                         </StackPanel>
-                                        <TextBlock Style="{StaticResource subtitle}" Text="{Binding SelectedLatheManufactureOrder.POReference, FallbackValue='POR123456'}" />
+                                        <TextBlock Style="{StaticResource subtitle}" Text="{Binding Path=SelectedOrder.POReference, FallbackValue='POR123456'}" />
                                     </StackPanel>
 
 
@@ -308,12 +304,12 @@
                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                         <Button
                                             Command="{Binding EditCommand}"
-                                            CommandParameter="{Binding SelectedLatheManufactureOrder.Status}"
+                                            CommandParameter="{Binding Path=SelectedOrder.Status}"
                                             Style="{StaticResource EditButton}" />
                                         <Button
                                             x:Name="printButton"
                                             Grid.Column="3"
-                                            Command="{Binding PrintOrderCommand}"
+                                            Command="{Binding Path=PrintOrderCommand}"
                                             Style="{StaticResource PDFButton}" />
                                     </StackPanel>
 
@@ -336,23 +332,23 @@
                                         FontStyle="Italic"
                                         Style="{StaticResource statement}">
                                         <Run Text="Created by" />
-                                        <Run Text="{Binding SelectedLatheManufactureOrder.CreatedBy, FallbackValue='Kyle Brovloski'}" />
+                                        <Run Text="{Binding Path=SelectedOrder.CreatedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
                                     <TextBlock
                                         Grid.Column="2"
                                         HorizontalAlignment="Right"
                                         FontStyle="Italic"
                                         Style="{StaticResource statement}"
-                                        Text="{Binding SelectedLatheManufactureOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
+                                        Text="{Binding Path=SelectedOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
 
                                     <TextBlock
                                         x:Name="ModifiedTextBlock"
                                         Grid.Row="1"
                                         FontStyle="Italic"
                                         Style="{StaticResource statement}"
-                                        Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
+                                        Visibility="{Binding Path=ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
                                         <Run Text="Modified by" />
-                                        <Run Text="{Binding SelectedLatheManufactureOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}" />
+                                        <Run Text="{Binding Path=SelectedOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
                                     <TextBlock
                                         Grid.Row="1"
@@ -360,8 +356,8 @@
                                         HorizontalAlignment="Right"
                                         FontStyle="Italic"
                                         Style="{StaticResource statement}"
-                                        Text="{Binding SelectedLatheManufactureOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
-                                        Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
+                                        Text="{Binding Path=SelectedOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
+                                        Visibility="{Binding Path=ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
                                 </Grid>
                                 <Separator Margin="0,5" />
                             </StackPanel>
@@ -369,7 +365,7 @@
 
                             <!--#region Metadata-->
 
-                            <Grid Margin="10" Visibility="{Binding CleaningVis}">
+                            <Grid Margin="10" Visibility="{Binding Path=CleaningVis}">
                                 <Border Background="{StaticResource materialPrimaryBlue}" CornerRadius="10" />
                                 <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                     <Path Style="{StaticResource lighthouse}" />
@@ -496,11 +492,11 @@
                                             HorizontalAlignment="Center"
                                             FontSize="18"
                                             Style="{StaticResource hero}"
-                                            Text="{Binding SelectedLatheManufactureOrder.StartDate, Converter={StaticResource settingTime}}" />
+                                            Text="{Binding SelectedOrder.StartDate, Converter={StaticResource settingTime}}" />
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             FontStyle="Italic"
-                                            Text="{Binding SelectedLatheManufactureOrder.AllocatedMachine, Converter={StaticResource stringToAssignedLathe}}" />
+                                            Text="{Binding SelectedOrder.AllocatedMachine, Converter={StaticResource stringToAssignedLathe}}" />
                                     </StackPanel>
                                 </Border>
 
@@ -513,7 +509,7 @@
                                             FontWeight="SemiBold"
                                             Foreground="{StaticResource materialOffBlack}"
                                             Text="ESTIMATED TIME" />
-                                        <TextBlock Style="{StaticResource hero}" Text="{Binding SelectedLatheManufactureOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
+                                        <TextBlock Style="{StaticResource hero}" Text="{Binding SelectedOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
                                     </StackPanel>
                                 </Border>
 
@@ -530,13 +526,13 @@
                                             Grid.Column="2"
                                             FontSize="16"
                                             Style="{StaticResource hero}"
-                                            Text="{Binding SelectedLatheManufactureOrder.BarID}" />
+                                            Text="{Binding SelectedOrder.BarID}" />
                                         <TextBlock
                                             Grid.Row="2"
                                             Grid.Column="2"
                                             HorizontalAlignment="Center"
                                             FontStyle="Italic"
-                                            Text="{Binding SelectedLatheManufactureOrder.NumberOfBars, StringFormat='{}{0} bars required'}" />
+                                            Text="{Binding SelectedOrder.NumberOfBars, StringFormat='{}{0} bars required'}" />
                                     </StackPanel>
                                 </Border>
 
@@ -547,9 +543,9 @@
                                 <TextBlock
                                     Margin="0,15,0,5"
                                     Style="{StaticResource section}"
-                                    Text="{Binding FilteredLMOItems.Count, StringFormat='{}Items ({0})', FallbackValue='Items (0)'}" />
+                                    Text="{Binding FilteredOrderItems.Count, StringFormat='{}Items ({0})', FallbackValue='Items (0)'}" />
                                 <Grid>
-                                    <ItemsControl ItemsSource="{Binding FilteredLMOItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <ItemsControl ItemsSource="{Binding FilteredOrderItems}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <uc:DisplayLMOItems Margin="10,2" LatheManufactureOrderItem="{Binding}" />
@@ -604,12 +600,6 @@
                         </StackPanel>
                     </Grid>
                 </StackPanel>
-                <!--<WebBrowser Source="https://www.automotioncomponents.co.uk/media/files/datasheet/P0130.A2-Shoulder-screws-hex-socket-head-stainless-303.pdf" MaxWidth="700" Height="500" />-->
-                <!--<uc:DisplayProductRangeSnippet
-                    Width="{Binding ActualWidth, ElementName=OrderCardGrid}"
-                    MaxWidth="700"
-                    Info="{Binding SelectedProductGroup}"
-                    Items="{Binding SelectedProducts}" />-->
                 <Grid Height="100" />
             </StackPanel>
         </ScrollViewer>

@@ -13,11 +13,10 @@
     d:DesignWidth="1350"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <viewModel:DrawingBrowserViewModel x:Key="vm" />
         <converters:stringCoalesce x:Key="stringCoalesce" />
     </UserControl.Resources>
 
-    <Grid DataContext="{StaticResource vm}">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="300" />
             <ColumnDefinition Width="3*" />
@@ -124,13 +123,14 @@
                     Style="{StaticResource subtitle}"
                     Text="{Binding SelectedDrawing.Revision, StringFormat='{}Revision {0}'}" />
 
-                <Border Margin="10"
+                <Border
+                    MaxWidth="700"
+                    Margin="10"
                     HorizontalAlignment="Center"
                     Background="{StaticResource materialYellow}"
                     BorderBrush="{StaticResource materialOffBlack}"
                     BorderThickness="3"
                     CornerRadius="10"
-                    MaxWidth="700"
                     Visibility="{Binding ArchetypeWarningVis}">
                     <Grid Margin="10">
                         <Grid.ColumnDefinitions>
@@ -166,8 +166,8 @@
                             TextWrapping="Wrap" />
                     </Grid>
                 </Border>
-                
-                
+
+
                 <Border
                     MaxWidth="500"
                     Margin="10"
@@ -199,7 +199,7 @@
                     Margin="10"
                     Drawing="{Binding SelectedDrawing}" />
 
-                
+
             </StackPanel>
         </ScrollViewer>
 

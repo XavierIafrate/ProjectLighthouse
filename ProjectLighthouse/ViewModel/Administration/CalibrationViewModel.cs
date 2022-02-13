@@ -8,19 +8,11 @@ using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class CalibrationViewModel : BaseViewModel, IRefreshableViewModel
+    public class CalibrationViewModel : BaseViewModel
     {
         #region Variables
-        private List<CalibratedEquipment> equipment;
-        public List<CalibratedEquipment> Equipment
-        {
-            get { return equipment; }
-            set
-            {
-                equipment = value;
-                OnPropertyChanged("Equipment");
-            }
-        }
+        public List<CalibratedEquipment> Equipment { get; set; }
+        public List<CalibrationCertificate> Certificates { get; set; }
 
         private CalibratedEquipment selectedEquipment;
         public CalibratedEquipment SelectedEquipment
@@ -29,17 +21,40 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedEquipment = value;
-                if (selectedEquipment != null)
-                {
-                    Certificates = selectedEquipment.Certificates;
-                    OnPropertyChanged("Certificates");
-                    OnPropertyChanged("SelectedEquipment");
-                }
-                
+                LoadSelectedEquipment();
+                OnPropertyChanged();
             }
         }
 
-        public List<CalibrationCertificate> Certificates { get; set; }
+        public List<CalibratedEquipment> FilteredEquipment { get; set; }
+        public List<CalibrationCertificate> FilteredCertificates { get; set; }
+
+
+        private string searchTerm;
+        public string SearchTerm
+        {
+            get { return searchTerm; }
+            set
+            {
+                searchTerm = value;
+                Search();
+            }
+        }
+
+        private string selectedFilter = "Active";
+
+        public string SelectedFilter
+        {
+            get { return selectedFilter; }
+            set
+            {
+                selectedFilter = value;
+                FilterEquipment();
+                OnPropertyChanged();
+            }
+        }
+
+
 
         #region Commands
         public EditEquipmentCommand EditEquipmentCmd { get; set; }
@@ -50,52 +65,209 @@ namespace ProjectLighthouse.ViewModel
         #endregion
 
         #region Visibilities
-        public Visibility EditControlsVis { get; set; } = Visibility.Collapsed;
-        public bool StopRefresh { get; set; }
+        private Visibility noCertsVis;
+
+        public Visibility NoCertsVis
+        {
+            get { return noCertsVis; }
+            set
+            {
+                noCertsVis = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility certsFound;
+
+        public Visibility CertsFound
+        {
+            get { return certsFound; }
+            set
+            {
+                certsFound = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility cardVis;
+
+        public Visibility CardVis
+        {
+            get { return cardVis; }
+            set
+            {
+                cardVis = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility nothingVis;
+        public Visibility NothingVis
+        {
+            get { return nothingVis; }
+            set
+            {
+                nothingVis = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility regularCalVis;
+        public Visibility RegularCalVis
+        {
+            get { return regularCalVis; }
+            set
+            {
+                regularCalVis = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility calLapsedVis;
+        public Visibility CalLapsedVis
+        {
+            get { return calLapsedVis; }
+            set
+            {
+                calLapsedVis = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility indicationOnlyVis;
+        public Visibility IndicationOnlyVis
+        {
+            get { return indicationOnlyVis; }
+            set
+            {
+                indicationOnlyVis = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility outOfServiceVis;
+        public Visibility OutOfServiceVis
+        {
+            get { return outOfServiceVis; }
+            set
+            {
+                outOfServiceVis = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #endregion
         public CalibrationViewModel()
         {
-            LoadData();
-            LoadCommands();
-            if (Equipment.Count > 0)
-            {
-                SelectedEquipment = Equipment.First();
-            }
+            InitialiseVariables();
+            Refresh();
         }
 
-        private void LoadCommands()
+        private void InitialiseVariables()
         {
             EditEquipmentCmd = new(this);
             AddCertificateCmd = new(this);
             AddNewEquipmentCmd = new(this);
             GenerateReportCmd = new(this);
             RecordVisualCheckCmd = new(this);
+
+            Certificates = new();
+            Equipment = new();
+            FilteredCertificates = new();
+            FilteredEquipment = new();
         }
 
 
         private void LoadData()
         {
-            Certificates = new();
-
             Equipment = DatabaseHelper.Read<CalibratedEquipment>();
-            List<CalibrationCertificate> certs = DatabaseHelper.Read<CalibrationCertificate>();
+            Certificates = DatabaseHelper.Read<CalibrationCertificate>();
+        }
 
-            for (int i = 0; i < Equipment.Count; i++)
+        private void LoadSelectedEquipment()
+        {
+            if (SelectedEquipment == null)
             {
-                Equipment[i].Certificates = certs.Where(e => $"CE{e.Instrument}" == Equipment[i].Name).ToList();
-                Equipment[i].RequestToEdit += EditEquipment;
+                CardVis = Visibility.Hidden;
+                NothingVis = Visibility.Visible;
+                return;
+            }
+
+            NothingVis = Visibility.Hidden;
+            CardVis = Visibility.Visible;
+
+            RegularCalVis = Visibility.Collapsed;
+            CalLapsedVis = Visibility.Collapsed;
+            OutOfServiceVis = Visibility.Collapsed;
+            IndicationOnlyVis = Visibility.Collapsed;
+
+            if (SelectedEquipment.IsOutOfService)
+            {
+                OutOfServiceVis = Visibility.Visible;
+            }
+            else if (!SelectedEquipment.RequiresCalibration)
+            {
+                IndicationOnlyVis = Visibility.Visible;
+            }
+            else if (SelectedEquipment.LastCalibrated.AddMonths(SelectedEquipment.CalibrationIntervalMonths) < SelectedEquipment.NextDue
+                || SelectedEquipment.LastCalibrated == System.DateTime.MinValue)
+            {
+                CalLapsedVis = Visibility.Visible;
+            }
+            else
+            {
+                RegularCalVis = Visibility.Visible;
+            }
+
+            FilteredCertificates = Certificates.Where(x => x.Instrument == SelectedEquipment.EquipmentId).OrderByDescending(x => x.DateIssued).ToList();
+
+            OnPropertyChanged(nameof(FilteredCertificates));
+
+            if (FilteredCertificates.Count > 0)
+            {
+                CertsFound = Visibility.Visible;
+                NoCertsVis = Visibility.Collapsed;
+            }
+            else
+            {
+                CertsFound = Visibility.Collapsed;
+                NoCertsVis = Visibility.Visible;
+            }
+        }
+
+        private void FilterEquipment()
+        {
+            switch (selectedFilter)
+            {
+                case "Active":
+                    FilteredEquipment = Equipment.Where(x => !x.IsOutOfService).ToList();
+                    break;
+
+                case "Out of Service":
+                    FilteredEquipment = Equipment.Where(x => x.IsOutOfService).ToList();
+                    break;
+
+                case "All Items":
+                    FilteredEquipment = Equipment;
+                    break;
+            }
+
+            OnPropertyChanged(nameof(FilteredEquipment));
+            if (FilteredEquipment.Count > 0)
+            {
+                SelectedEquipment = FilteredEquipment[0];
             }
         }
 
         public void AddNewEquipment()
         {
-            AddNewCalibratedEquipmentWindow window = new();
+            AddNewCalibratedEquipmentWindow window = new(Equipment);
             window.ShowDialog();
             if (window.SaveExit)
             {
-                LoadData();
+                Refresh();
             }
             // CanEditCalibration level
 
@@ -104,16 +276,19 @@ namespace ProjectLighthouse.ViewModel
 
         public void AddCertificate()
         {
-            MessageBox.Show("Add New Certificate");
             // CanEditCalibration level
 
-            // New Window
+            AddNewCalibrationCertificateWindow window = new(SelectedEquipment, Certificates);
+            window.ShowDialog();
+
+            if (window.SaveExit)
+            {
+                Refresh();
+            }
         }
 
         public void EditEquipment()
         {
-            EditControlsVis = Visibility.Visible;
-            OnPropertyChanged(nameof(EditControlsVis));
             MessageBox.Show("Edit Equipment");
 
             /*
@@ -143,9 +318,49 @@ namespace ProjectLighthouse.ViewModel
             MessageBox.Show("Record Visual Check");
         }
 
+        private void Search()
+        {
+            if (string.IsNullOrEmpty(SearchTerm))
+            {
+                FilterEquipment();
+                return;
+            }
+            string searchFor = SearchTerm.ToUpperInvariant();
+
+            List<string> matches = new();
+
+            matches.AddRange(Equipment
+                       .Where(e => e.EquipmentId.Contains(searchFor)
+                    || e.SerialNumber.Contains(searchFor)
+                    || e.Make.ToUpperInvariant().Contains(searchFor)
+                    || e.Model.ToUpperInvariant().Contains(searchFor)
+                    || e.Location.ToUpperInvariant().Contains(searchFor)
+                    || e.Type.ToUpperInvariant().Contains(searchFor)
+                    )
+                .Select(e => e.EquipmentId));
+
+
+            matches.AddRange(Certificates
+                       .Where(c => c.CertificateNumber.ToUpperInvariant().Contains(searchFor)
+                    || c.CalibrationHouse.ToUpperInvariant().Contains(searchFor)
+                )
+                .Select(c => c.Instrument));
+
+            matches = matches.Distinct().ToList();
+
+            FilteredEquipment = Equipment.Where(x => matches.Contains(x.EquipmentId)).ToList();
+            OnPropertyChanged(nameof(FilteredEquipment));
+
+            if (FilteredEquipment.Count > 0)
+            {
+                SelectedEquipment = FilteredEquipment[0];
+            }
+        }
+
         public void Refresh()
         {
             LoadData();
+            FilterEquipment();
         }
     }
 }

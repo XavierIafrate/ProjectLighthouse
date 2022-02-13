@@ -41,6 +41,7 @@
     <None Remove="Resources\snowdonia.jpg" />
     <None Remove="Resources\SplashScreen.png" />
     <None Remove="Resources\teignmouth.jpg" />
+    <None Remove="Resources\UKAS-calibration-logo.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -115,6 +116,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\StartPoint.png" />
+    <Resource Include="Resources\UKAS-calibration-logo.jpg" />
   </ItemGroup>
 
   <ItemGroup>

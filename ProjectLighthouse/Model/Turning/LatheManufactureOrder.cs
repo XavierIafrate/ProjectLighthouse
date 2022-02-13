@@ -119,7 +119,31 @@ namespace ProjectLighthouse.Model
                 || IsReady != OtherOrder.IsReady
                 || POReference != OtherOrder.POReference
                 || NumberOfBars != OtherOrder.NumberOfBars
-                || TimeToComplete != OtherOrder.TimeToComplete;
+                || TimeToComplete != OtherOrder.TimeToComplete
+                || ModifiedAt != OtherOrder.ModifiedAt;
+        }
+
+        public void Update(LatheManufactureOrder otherOrder)
+        {
+            if (otherOrder.Name != Name)
+            {
+                throw new InvalidOperationException($"Cannot update order {Name} with record {otherOrder.Name}");
+            }
+
+            IsCancelled = otherOrder.IsCancelled;
+            IsComplete = otherOrder.IsComplete;
+            IsClosed = otherOrder.IsClosed;
+            HasStarted = otherOrder.HasStarted;
+            BarIsAllocated = otherOrder.BarIsAllocated;
+            BarIsVerified = otherOrder.BarIsVerified;
+            HasProgram = otherOrder.HasProgram;
+            IsReady = otherOrder.IsReady;
+            POReference = otherOrder.POReference;
+            NumberOfBars = otherOrder.NumberOfBars;
+            TimeToComplete = otherOrder.TimeToComplete;
+            ModifiedAt = otherOrder.ModifiedAt;
+            ModifiedBy = otherOrder.ModifiedBy;
+            POReference = otherOrder.POReference;
         }
     }
 }

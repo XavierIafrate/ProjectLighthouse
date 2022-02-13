@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class DrawingBrowserViewModel : BaseViewModel, IRefreshableViewModel
+    public class DrawingBrowserViewModel : BaseViewModel
     {
         public List<TechnicalDrawing> Drawings { get; set; }
         public List<TechnicalDrawing> FilteredDrawings { get; set; }

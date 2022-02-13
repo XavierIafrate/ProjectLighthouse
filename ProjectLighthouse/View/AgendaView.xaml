@@ -11,16 +11,15 @@
     d:DesignHeight="906"
     d:DesignWidth="1546"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <vm:AgendaViewModel x:Key="vm" />
-    </UserControl.Resources>
-    <Grid Margin="20" DataContext="{StaticResource vm}">
+
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ListView
             Grid.Row="1"
+            MaxWidth="700"
             Margin="20"
             ItemsSource="{Binding Days}">
             <ListView.ItemTemplate>

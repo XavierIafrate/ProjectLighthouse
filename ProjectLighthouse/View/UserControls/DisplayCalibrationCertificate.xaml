@@ -1,0 +1,113 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.DisplayCalibrationCertificate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="83.437"
+    d:DesignWidth="550.625"
+    mc:Ignorable="d">
+    <Grid>
+        <Border
+            Grid.ColumnSpan="3"
+            Background="{StaticResource materialSurface}"
+            CornerRadius="10" />
+        <Grid Margin="15,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="{Binding Path=CertificateNumber, FallbackValue='CERT_NUM'}" />
+                <Path
+                    x:Name="ukasBadge"
+                    Width="18"
+                    Height="18"
+                    Margin="7,2,3,0"
+                    HorizontalAlignment="Left"
+                    Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"
+                    Fill="{StaticResource materialPrimaryBlue}"
+                    ToolTip="UKAS Accredited Certificate"
+                    Stretch="Uniform" />
+                <TextBlock Text="UKAS" Foreground="{StaticResource materialPrimaryBlue}" FontWeight="SemiBold" Margin="0,1,0,0" VerticalAlignment="Center" x:Name="ukasText"/>
+            </StackPanel>
+
+            <TextBlock
+                Grid.Row="1"
+                VerticalAlignment="Center"
+                FontSize="16"
+                FontStyle="Italic"
+                Foreground="{StaticResource materialPrimary}"
+                Text="{Binding Path=CalibrationHouse, FallbackValue='CAL_HOUSE'}" />
+            <TextBlock
+                Grid.Row="2"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Foreground="{StaticResource materialOnBackground}"
+                Text="{Binding Path=DateIssued, FallbackValue='Issued 01/01/1970', StringFormat='{}Issued {0:dd/MM/yyyy}'}" />
+
+
+
+            <StackPanel
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                VerticalAlignment="Center">
+                <StackPanel
+                    x:Name="pass"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Path
+                        Width="15"
+                        Height="15"
+                        Margin="0,2,0,0"
+                        Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
+                        Fill="{StaticResource materialPrimaryGreen}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        Margin="7,0,0,0"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource materialPrimaryGreen}"
+                        Text="PASS" />
+                </StackPanel>
+                <StackPanel
+                    x:Name="fail"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Path
+                        Width="15"
+                        Height="15"
+                        Margin="0,3,0,0"
+                        Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
+                        Fill="{StaticResource materialError}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        Margin="7,0,0,0"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource materialError}"
+                        Text="FAIL" />
+                </StackPanel>
+
+            </StackPanel>
+
+            <Button
+                x:Name="openButton"
+                Grid.RowSpan="3"
+                Grid.Column="2"
+                Click="OpenButton_Click"
+                Content="Open" />
+        </Grid>
+    </Grid>
+</UserControl>

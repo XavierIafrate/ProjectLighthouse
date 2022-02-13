@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,6 +10,8 @@ namespace ProjectLighthouse.View
         public OrderView()
         {
             InitializeComponent();
+
+            
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -21,6 +24,7 @@ namespace ProjectLighthouse.View
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             SearchBox.Text = "";
+            Debug.WriteLine($"{this.DataContext}");
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)

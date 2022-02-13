@@ -15,7 +15,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            return viewModel.SelectedDeliveryNote != null && viewModel.filteredDeliveryItems != null;
+            return viewModel.SelectedDeliveryNote != null && viewModel.FilteredDeliveryItems != null;
         }
 
         public void Execute(object parameter)

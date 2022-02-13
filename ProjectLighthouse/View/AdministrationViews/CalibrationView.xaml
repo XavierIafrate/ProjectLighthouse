@@ -1,90 +1,332 @@
-﻿<UserControl x:Class="ProjectLighthouse.View.CalibrationView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-             xmlns:local="clr-namespace:ProjectLighthouse.View"
-             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="724" d:DesignWidth="1324"
-             d:Background="White">
-    <UserControl.Resources>
-        <vm:CalibrationViewModel x:Key="vm"/>
-    </UserControl.Resources>
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.CalibrationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:valueConverter="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    d:Background="White"
+    d:DesignHeight="724"
+    d:DesignWidth="1324"
+    mc:Ignorable="d">
 
-    <Grid DataContext="{StaticResource vm}">
+    <Grid>
+        <Grid.Resources>
+            <valueConverter:boolToVisibleOrCollapsed x:Key="visibleConverter" />
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*" MinWidth="300" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-            <ListView ItemsSource="{Binding Equipment}" SelectedItem="{Binding SelectedEquipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="search..."
+                Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <ListView
+                Grid.Row="1"
+                ItemsSource="{Binding FilteredEquipment}"
+                SelectedItem="{Binding SelectedEquipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayCalibratedEquipment Equipment="{Binding}" Margin="10,5"/>
+                        <uc:DisplayCalibratedEquipment Margin="10,5" Equipment="{Binding}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
-                <Button Content="Add Equipment" Command="{Binding AddNewEquipmentCmd}"/>
-                <Button Content="Download Report" Command="{Binding GenerateReportCmd}"/>
+            <StackPanel
+                Grid.Row="2"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <TextBlock Text="Filter by " Margin="10,0,0,0" VerticalAlignment="Center"/>
+                <ComboBox
+                    MinWidth="150"
+                    Margin="5"
+                    Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="Active" IsSelected="True" />
+                    <ComboBoxItem Content="Out of Service" />
+                    <ComboBoxItem Content="All Items" />
+                </ComboBox>
+                <Button Command="{Binding AddNewEquipmentCmd}" Content="+New" />
+                <!--<Button
+                    Command="{Binding GenerateReportCmd}"
+                    Content="Download Report"
+                    Style="{StaticResource BlueButton}" />-->
             </StackPanel>
         </Grid>
-        
-        <StackPanel Grid.Column="1" Margin="10" MaxWidth="700">
-            <TextBlock Text="{Binding SelectedEquipment.Name}" Style="{StaticResource title}" Margin="0,0,0,30"/>
 
+        <TextBlock
+            Grid.Column="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Style="{StaticResource GhostText}"
+            Text="No Equipment Found"
+            Visibility="{Binding NothingVis}" />
+        <ScrollViewer Grid.Column="1">
+            <StackPanel
+            MaxWidth="700"
+            Margin="10"
+            Visibility="{Binding CardVis}">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock
+                        Margin="0,0,0,5"
+                        d:Text="CE0"
+                        FontSize="45"
+                        Style="{StaticResource title}"
+                        Text="{Binding SelectedEquipment.EquipmentId}" />
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding RegularCalVis}">
+                            <Path
+                            Width="20"
+                            Height="20"
+                            Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
+                            Fill="{StaticResource materialPrimaryGreen}"
+                            Stretch="Uniform" />
+                            <TextBlock
+                            Margin="7,0,0,0"
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource materialPrimaryGreen}"
+                            Text="IN REGULAR CALIBRATION" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding CalLapsedVis}">
+                            <Path
+                            Width="20"
+                            Height="20"
+                            Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
+                            Fill="{StaticResource materialError}"
+                            Stretch="Uniform" />
+                            <TextBlock
+                            Margin="7,0,0,0"
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource materialError}"
+                            Text="CERTIFICATE HAS LAPSED" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding OutOfServiceVis}">
+                            <Path
+                            Width="20"
+                            Height="20"
+                            Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
+                            Fill="{StaticResource materialError}"
+                            Stretch="Uniform" />
+                            <TextBlock
+                            Margin="7,0,0,0"
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource materialError}"
+                            Text="OUT OF SERVICE" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding IndicationOnlyVis}">
+                            <Path
+                            Width="20"
+                            Height="20"
+                            Data="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5M11,7H13V13H11M11,15H13V17H11"
+                            Fill="{StaticResource materialPrimary}"
+                            Stretch="Uniform" />
+                            <TextBlock
+                            Margin="7,0,0,0"
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource materialPrimary}"
+                            Text="FOR INDICATION ONLY" />
+                        </StackPanel>
+                    </StackPanel>
 
-            <!--<TextBlock Text="{Binding SelectedEquipment.LastCalibrated, StringFormat='{}Last Calibration: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
-            <TextBlock Text="{Binding SelectedEquipment.NextDue, StringFormat='{}Next Calibration Due: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
-            <TextBlock Text="{Binding SelectedEquipment.LastVisualCheck, StringFormat='{}Last Visual Check: {0:dd/MM/yyyy}'}" Style="{StaticResource subtitle}"/>
-            <TextBlock Text="{Binding SelectedEquipment.CalibrationIntervalMonths, StringFormat='{}Interval: {0:0}mo'}" Style="{StaticResource subtitle}"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Interval" Visibility="{Binding EditControlsVis}" PreviewKeyDown="TextBox_PreviewKeyDown"/>-->
-            <TextBlock Text="Metadata" Style="{StaticResource section}"/>
-            <Border Background="{StaticResource materialSurface}" CornerRadius="10" Margin="5,5,5,20">
-                <Grid Margin="20,10" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Make"/>
-                    <TextBlock Text="{Binding SelectedEquipment.Make}" Style="{StaticResource subtitle}" Grid.Column="1"/>
-
-                    <TextBlock Text="Model" Grid.Row="1"/>
-                    <TextBlock Text="{Binding SelectedEquipment.Model}" Style="{StaticResource subtitle}" Grid.Column="1" Grid.Row="1"/>
-
-                    <TextBlock Text="Serial Number" Grid.Row="2"/>
-                    <TextBlock Text="{Binding SelectedEquipment.SerialNumber}" Style="{StaticResource subtitle}" Grid.Column="1" Grid.Row="2"/>
+                    <Image
+                    Height="130"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    Source="/Resources/UKAS-calibration-logo.jpg"
+                    ToolTip="UKAS Accredited Calibration is required for this equipment."
+                    Visibility="{Binding SelectedEquipment.UKAS, Converter={StaticResource visibleConverter}}" />
                 </Grid>
-            </Border>
-            <TextBlock Text="Certificates" Style="{StaticResource section}"/>
-            <ListView ItemsSource="{Binding Certificates}"/>
 
 
-            <TextBox Style="{StaticResource DefaultTextBox}" MaxLength="1024" AcceptsReturn="True" Tag="Remarks" Visibility="{Binding EditControlsVis}"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" MaxLength="50" AcceptsReturn="True" Tag="Calibration House" Visibility="{Binding EditControlsVis}"/>
-            <ComboBox Visibility="{Binding EditControlsVis}">
-                <ComboBoxItem Content="For Indication Only" Tag="indication"/>
-                <ComboBoxItem Content="In Regular Calibration" Tag="regular" IsSelected="True"/>
-                <ComboBoxItem Content="Failed Calibration" Tag="fail"/>
-            </ComboBox>
-            <CheckBox Content="UKAS" Visibility="{Binding EditControlsVis}"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="50">
-                <Button Content="Record Visual Check" Command="{Binding RecordVisualCheckCmd}"/>
-                <Button Content="Add Certificate" Command="{Binding AddCertificateCmd}"/>
-                <Button Content="Edit" Command="{Binding EditEquipmentCmd}"/>
+
+
+                <TextBlock
+                Margin="0,20,0,10"
+                Style="{StaticResource section}"
+                Text="Instrument Details" />
+                <Border
+                Margin="25,5,25,20"
+                Background="{StaticResource materialSurface}"
+                CornerRadius="10">
+                    <Grid Margin="20,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontStyle="Italic"
+                        Text="Make" />
+                        <TextBlock
+                        Grid.Column="2"
+                        Style="{StaticResource subtitle}"
+                        Text="{Binding SelectedEquipment.Make}" />
+
+                        <TextBlock
+                        Grid.Row="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontStyle="Italic"
+                        Text="Model" />
+                        <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Style="{StaticResource subtitle}"
+                        Text="{Binding SelectedEquipment.Model}" />
+
+                        <TextBlock
+                        Grid.Row="2"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontStyle="Italic"
+                        Text="Serial Number" />
+                        <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Style="{StaticResource subtitle}"
+                        Text="{Binding SelectedEquipment.SerialNumber}" />
+
+                        <TextBlock
+                        Grid.Row="3"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontStyle="Italic"
+                        Text="Entered System" />
+                        <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        Style="{StaticResource subtitle}"
+                        Text="{Binding SelectedEquipment.EnteredSystem, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}" />
+
+                        <TextBlock
+                        Grid.Row="4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontStyle="Italic"
+                        Text="Instrument Type" />
+                        <TextBlock
+                        Grid.Row="4"
+                        Grid.Column="2"
+                        Style="{StaticResource subtitle}"
+                        Text="{Binding SelectedEquipment.Type}" />
+
+                        <TextBlock
+                        Grid.Row="5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontStyle="Italic"
+                        Text="Location" />
+                        <TextBlock
+                        Grid.Row="5"
+                        Grid.Column="2"
+                        Style="{StaticResource subtitle}"
+                        Text="{Binding SelectedEquipment.Location}" />
+                    </Grid>
+                </Border>
+
+                <Grid Margin="0,0,0,20" Visibility="{Binding SelectedEquipment.RequiresCalibration, Converter={StaticResource visibleConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="{StaticResource materialSurface}" CornerRadius="10" BorderThickness="2" BorderBrush="{StaticResource disabledGray}" Margin="5">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="LAST CALIBRATED" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="16"/>
+                            <TextBlock Text="{Binding SelectedEquipment.LastCalibrated, StringFormat='{}{0:dd/MM/yyyy}'}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="{StaticResource materialSurface}" CornerRadius="10" BorderThickness="2" BorderBrush="{StaticResource disabledGray}" Grid.Column="1" Margin="5">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="CALIBRATION INTERVAL" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="16"/>
+                            <TextBlock Text="{Binding SelectedEquipment.CalibrationIntervalMonths, StringFormat='{}{0} months'}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="{StaticResource materialSurface}" CornerRadius="10" BorderThickness="2" BorderBrush="{StaticResource disabledGray}" Grid.Column="2" Margin="5">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="NEXT CALIBRATION" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="16"/>
+                            <TextBlock Text="{Binding SelectedEquipment.NextDue, StringFormat='{}{0:dd/MM/yyyy}'}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+
+
+                <Grid>
+                    <TextBlock Style="{StaticResource section}" Text="Certificates" />
+                    <Button
+                    HorizontalAlignment="Right"
+                    Command="{Binding AddCertificateCmd}"
+                    Content="+ New"
+                    Style="{StaticResource GreenButton}" Margin="0,5,25,5"/>
+                </Grid>
+                <ListView ItemsSource="{Binding FilteredCertificates}" Visibility="{Binding CertsFound}" Margin="25,10">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <uc:DisplayCalibrationCertificate Certificate="{Binding}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource GhostText}"
+                Text="None Found"
+                Visibility="{Binding NoCertsVis}" />
+
+
+                <!--<TextBlock
+                Margin="0,20,0,5"
+                Style="{StaticResource section}"
+                Text="Remarks" />
+
+            <TextBox
+                AcceptsReturn="True"
+                MaxLength="1024"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Add notes here"
+                TextWrapping="Wrap" />
+
+            <StackPanel
+                Margin="50"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                -->
+                <!--<Button Command="{Binding RecordVisualCheckCmd}" Content="Record Visual Check" />-->
+                <!--<Button Command="{Binding EditEquipmentCmd}" Content="Edit" />-->
+                <!--
+            </StackPanel>-->
+
             </StackPanel>
-            
-        </StackPanel>
+        </ScrollViewer>
+        
     </Grid>
 </UserControl>
