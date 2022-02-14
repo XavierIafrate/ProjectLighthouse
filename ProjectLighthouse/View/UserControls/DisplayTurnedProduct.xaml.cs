@@ -60,7 +60,7 @@ namespace ProjectLighthouse.View.UserControls
                     }
                     else
                     {
-                        control.CouldBeAddedFlag.Text =  control.Product.LighthouseGuaranteedQuantity == 0
+                        control.CouldBeAddedFlag.Text = control.Product.LighthouseGuaranteedQuantity == 0
                             ? $"Uncommitted on {control.Product.OrderReference}"
                             : $"{control.Product.OrderReference} guarantees {control.Product.LighthouseGuaranteedQuantity:#,##0}";
                     }

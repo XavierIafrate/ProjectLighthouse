@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.TypeConversion;
 using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -128,6 +129,103 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
 
             return products;
+        }
+
+        public static List<CalibrationCertificate> LoadCertificatesFromCSV(string path)
+        {
+            List<CalibrationCertificate> records = new();
+
+            try
+            {
+                using StreamReader reader = new(path);
+                using CsvReader csv = new(reader, CultureInfo.InvariantCulture);
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
+                {
+                    DateTime lastCal = DateTime.MinValue;
+                    if (DateTime.TryParse(csv.GetField<string>("DateIssued"), out DateTime tmpDate))
+                    {
+                        lastCal = tmpDate;
+                    }
+
+                    CalibrationCertificate record = new()
+                    {
+                        Id = csv.GetField<int>("Id"),
+                        Instrument = csv.GetField<string>("Instrument"),
+                        UKAS = csv.GetField<bool>("UKAS"),
+                        CalibrationHouse = csv.GetField<string>("CalibrationHouse"),
+                        CertificateNumber = csv.GetField<string>("CertificateNumber"),
+                        DateIssued = lastCal,
+                        IsPass = csv.GetField<bool>("IsPass"),
+                        Url = csv.GetField<string>("Url"),
+                        AddedAt = DateTime.Now,
+                        AddedBy = "system"
+                    };
+
+                    records.Add(record);
+                }
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show(e.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return records;
+        }
+
+        public static List<CalibratedEquipment> LoadInstrumentsFromCSV(string path)
+        {
+            List<CalibratedEquipment> records = new();
+
+            try
+            {
+                using StreamReader reader = new(path);
+                using CsvReader csv = new(reader, CultureInfo.InvariantCulture);
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
+                {
+                    DateTime lastCal = DateTime.MinValue;
+                    if (DateTime.TryParse(csv.GetField<string>("LastCalibrated"), out DateTime tmpDate))
+                    {
+                        lastCal = tmpDate;
+                    }
+
+                    int calInterval = 0;
+                    if(int.TryParse(csv.GetField<string>("LastCalibrated"), out int tmp))
+                    {
+                        calInterval = tmp;
+                    }
+                    
+                    CalibratedEquipment record = new()
+                    {
+                        Id = csv.GetField<int>("Id"),
+                        EquipmentId = csv.GetField<string>("EquipmentId"),
+                        Make = csv.GetField<string>("Make"),
+                        Model = csv.GetField<string>("Model"),
+                        SerialNumber = csv.GetField<string>("SerialNumber"),
+                        Type = csv.GetField<string>("Type"),
+                        Location = csv.GetField<string>("Location"),
+                        EnteredSystem = DateTime.Now,
+                        LastCalibrated = lastCal,
+                        CalibrationIntervalMonths = calInterval,
+                        CalibrationHouse = csv.GetField<string>("CalibrationHouse"),
+                        UKAS = csv.GetField<bool>("UKAS"),
+                        AddedBy = "system",
+                        RequiresCalibration = csv.GetField<bool>("RequiresCalibration"),
+                        IsOutOfService = csv.GetField<bool>("IsOutOfService"),
+                    };
+
+                    records.Add(record);
+                }
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show(e.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return records;
         }
     }
 }

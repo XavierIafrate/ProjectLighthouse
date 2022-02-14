@@ -438,8 +438,8 @@ namespace ProjectLighthouse.ViewModel
                 CardVis = Visibility.Visible;
             }
 
-            SetUiElements();
             LoadOrderObjects();
+            SetUiElements();
         }
 
         private void SetUiElements()

@@ -33,6 +33,8 @@
             <Button Click="Button_Click_1" Content="Export Stats" />
             <!--<Button Click="Button_Click_2" Content="Test PDF" />-->
             <Button x:Name="UpdateButton" Content="Update TurnedProduct Sales stats" Click="UpdateButton_Click"/>
+            <Button Content="Import Certs" Click="ImportCertificates_Click"/>
+            <Button Content="Import Equipment" Click="ImportEquipment_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>

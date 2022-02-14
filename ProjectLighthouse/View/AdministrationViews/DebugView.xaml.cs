@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -89,6 +90,73 @@ namespace ProjectLighthouse.View
 
                         DatabaseHelper.Update(currentProduct);
                     }
+                }
+
+            }
+        }
+
+        private void ImportCertificates_Click(object sender, RoutedEventArgs e)
+        {
+            
+
+            OpenFileDialog openFileDialog1 = new()
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Title = "Browse CSV Files",
+
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "txt",
+                Filter = "CSV files (*.csv)|*.csv",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+            };
+
+            if ((bool)openFileDialog1.ShowDialog())
+            {
+                List<CalibrationCertificate> updates = CSVHelper.LoadCertificatesFromCSV(openFileDialog1.FileName);
+
+                foreach (CalibrationCertificate certificate in updates)
+                {
+                    DatabaseHelper.Insert(certificate);
+                }
+
+            }
+        }
+
+        private void ImportEquipment_Click(object sender, RoutedEventArgs e)
+        {
+
+
+            OpenFileDialog openFileDialog1 = new()
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Title = "Browse CSV Files",
+
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "txt",
+                Filter = "CSV files (*.csv)|*.csv",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+            };
+
+            if ((bool)openFileDialog1.ShowDialog())
+            {
+                List<CalibratedEquipment> updates = CSVHelper.LoadInstrumentsFromCSV(openFileDialog1.FileName);
+
+                foreach (CalibratedEquipment equipment in updates)
+                {
+                    DatabaseHelper.Insert(equipment);
+
                 }
 
             }
