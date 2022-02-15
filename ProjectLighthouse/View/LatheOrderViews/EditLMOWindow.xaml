@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:model="clr-namespace:ProjectLighthouse.Model"
     Title="Edit Order"
     Width="700"
     MinHeight="600"
@@ -188,7 +189,7 @@
 
             <!--  Items List  -->
             <TextBlock Style="{StaticResource section}" Text="Items" />
-            <ListView x:Name="ItemsListBox" MinHeight="50">
+            <ListView x:Name="ItemsListBox" MinHeight="50" MaxHeight="350">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" Margin="10,2"/>
@@ -204,19 +205,23 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <TextBlock Style="{StaticResource section}" Text="Notes" />
-            <ItemsControl
-                x:Name="NotesDisplay"
-                Grid.Row="1"
+            <ScrollViewer x:Name="NotesScroller"
+                          Grid.Row="1"
                 MinHeight="50"
-                MaxHeight="400"
+                MaxHeight="400">
+                <ItemsControl
+                x:Name="NotesDisplay"
+                
                 HorizontalContentAlignment="Stretch"
                 ScrollViewer.CanContentScroll="False">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <uc:DisplayNote Note="{Binding}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <uc:DisplayNote Note="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            
             <Grid Grid.Row="2" Margin="5">
                 <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
                 <Grid Margin="10,5">

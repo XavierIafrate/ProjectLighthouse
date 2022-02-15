@@ -81,8 +81,8 @@ namespace ProjectLighthouse.View
             ListboxProducts = ProductPool.Where(p => !onOrder.Contains(p.ProductName)).ToList();
 
             poolListBox.ItemsSource = ListboxProducts;
-            poolListBox.IsEnabled = NewOrderItems.Count != 4;
-            AddButton.IsEnabled = NewOrderItems.Count != 4;
+            //poolListBox.IsEnabled = NewOrderItems.Count != 4;
+            //AddButton.IsEnabled = NewOrderItems.Count != 4;
             RemoveButton.IsEnabled = NewOrderItems.Count != 1;
         }
 
@@ -271,11 +271,11 @@ namespace ProjectLighthouse.View
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (NewOrderItems.Count >= 4)
-            {
-                _ = MessageBox.Show("Max Items reached", "Order Full", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
+            //if (NewOrderItems.Count >= 4)
+            //{
+            //    _ = MessageBox.Show("Max Items reached", "Order Full", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            //    return;
+            //}
 
             if (poolListBox.SelectedValue is not TurnedProduct selectedProduct)
             {
@@ -292,7 +292,7 @@ namespace ProjectLighthouse.View
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
 
-        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        private void Upda-teButton_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(UpdateQty.Text, out int j))
             {

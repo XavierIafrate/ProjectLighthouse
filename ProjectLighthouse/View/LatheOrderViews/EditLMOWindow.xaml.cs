@@ -99,6 +99,7 @@ namespace ProjectLighthouse.View
         {
             ItemsListBox.ItemsSource = items;
             NotesDisplay.ItemsSource = Notes;
+            NotesScroller.ScrollToBottom();
 
             PORef.IsEnabled = App.CurrentUser.CanUpdateLMOs;
 
@@ -129,7 +130,7 @@ namespace ProjectLighthouse.View
                 case OrderState.Prepared:
                     tier1 = false;
                     tier2 = true;
-                    tier3 = true;
+                    tier3 = order.StartDate.Date <= DateTime.Today;
                     tier4 = false;
                     break;
                 case OrderState.Problem or OrderState.Ready:
