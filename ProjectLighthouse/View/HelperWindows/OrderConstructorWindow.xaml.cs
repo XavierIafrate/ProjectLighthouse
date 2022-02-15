@@ -292,7 +292,7 @@ namespace ProjectLighthouse.View
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
 
-        private void Upda-teButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(UpdateQty.Text, out int j))
             {
