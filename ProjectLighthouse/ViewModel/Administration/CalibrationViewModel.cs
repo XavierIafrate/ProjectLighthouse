@@ -211,8 +211,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 IndicationOnlyVis = Visibility.Visible;
             }
-            else if (SelectedEquipment.LastCalibrated.AddMonths(SelectedEquipment.CalibrationIntervalMonths) < SelectedEquipment.NextDue
-                || SelectedEquipment.LastCalibrated == System.DateTime.MinValue)
+            else if (SelectedEquipment.CalibrationHasLapsed())
             {
                 CalLapsedVis = Visibility.Visible;
             }
@@ -247,6 +246,10 @@ namespace ProjectLighthouse.ViewModel
 
                 case "Out of Service":
                     FilteredEquipment = Equipment.Where(x => x.IsOutOfService).ToList();
+                    break;
+
+                case "Calibration Lapsed":
+                    FilteredEquipment = Equipment.Where(x => x.CalibrationHasLapsed()).ToList();
                     break;
 
                 case "All Items":
@@ -290,27 +293,12 @@ namespace ProjectLighthouse.ViewModel
         public void EditEquipment()
         {
             MessageBox.Show("Edit Equipment");
-
-            /*
-             * 
-             *  Admin and CanEditCalibration different priviledges
-             *  
-             *  admin only: edit SN, Make, Model, CalInterval, Type, RequiresCalibration, UKAS
-             *  
-             *  remaining: Location, LastVisualCheck, LastCalibrated, CalibrationHouse, MarkFailed, Notes
-             * 
-             */
         }
 
         public void CreateReport()
         {
-            MessageBox.Show("Generate Report");
-
-            /*
-             * 
-             *  Get .csv of items
-             * 
-             */
+            List<CalibratedEquipment> requiresRecal = Equipment.Where(x => x.NextDue < System.DateTime.Now.AddMonths(2) && x.RequiresCalibration && !x.IsOutOfService).ToList();
+            CSVHelper.WriteListToCSV(requiresRecal, "RequiresCal");
         }
 
         public void RecordVisualCheck()

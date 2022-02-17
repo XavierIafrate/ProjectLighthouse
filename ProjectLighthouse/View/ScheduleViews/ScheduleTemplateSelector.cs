@@ -1,5 +1,4 @@
-﻿//using ProjectLighthouse.Model;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace ProjectLighthouse.View
@@ -16,24 +15,6 @@ namespace ProjectLighthouse.View
 
             var key = item.GetType().Name;
             return (DataTemplate)element.FindResource(key);
-
-
-            //if (item is LatheManufactureOrder)
-            //{
-            //    return element.FindResource("DisplayLMOScheduling") as DataTemplate;
-            //}
-            //else if (item is MachineService)
-            //{
-            //    return element.FindResource("DisplayLMOScheduling") as DataTemplate;
-            //}
-            //else if (item is ResearchTime)
-            //{
-            //    return element.FindResource("DisplayLMOScheduling") as DataTemplate;
-            //}
-            //else
-            //{
-            //    return null;
-            //}
         }
     }
 }

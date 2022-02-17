@@ -38,5 +38,16 @@ namespace ProjectLighthouse.Model.Administration
         {
             return EquipmentId;
         }
+
+        public bool CalibrationHasLapsed()
+        {
+            if (!RequiresCalibration || IsOutOfService)
+            {
+                return false;
+            }
+
+            return LastCalibrated.AddMonths(CalibrationIntervalMonths) < NextDue
+                || LastCalibrated == DateTime.MinValue;
+        }
     }
 }

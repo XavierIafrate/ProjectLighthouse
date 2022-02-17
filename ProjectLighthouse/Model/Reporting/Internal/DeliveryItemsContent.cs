@@ -10,9 +10,17 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 {
     internal class DeliveryItemsContent
     {
+        const string Address = "Automotion Components Ltd.\nAlexia House\nGlenmore Business Park\nChichester\nPO19 7BJ";
+
         public void Add(Section section, DeliveryItem[] items)
         {
+            AddDeliveryInfo(section);
             AddItems(section, items);
+        }
+
+        private void AddDeliveryInfo(Section section)
+        {
+            section.AddParagraph(Address, CustomStyles.TableSubtitle);
         }
 
         private void AddItems(Section section, DeliveryItem[] items)
@@ -23,7 +31,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 
         private void AddTableTitle(Section section, string title)
         {
-            Paragraph p = section.AddParagraph(title, StyleNames.Heading2);
+            Paragraph p = section.AddParagraph(title, CustomStyles.TableTitle);
             p.Format.KeepWithNext = true;
         }
 
@@ -52,18 +60,18 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         private void AddColumnsAndHeaders(Table table)
         {
             Unit width = Size.GetWidth(table.Section);
-            table.AddColumn(width * 0.25);
-            table.AddColumn(width * 0.25);
-            table.AddColumn(width * 0.25);
-            table.AddColumn(width * 0.25);
+            table.AddColumn(width * 0.1);
+            table.AddColumn(width * 0.3);
+            table.AddColumn(width * 0.3);
+            table.AddColumn(width * 0.3);
 
             Row headerRow = table.AddRow();
             headerRow.Borders.Bottom.Width = 1;
 
-            AddHeader(headerRow.Cells[0], "Product");
-            AddHeader(headerRow.Cells[1], "Required");
-            AddHeader(headerRow.Cells[2], "Due Date");
-            AddHeader(headerRow.Cells[3], "Target");
+            AddHeader(headerRow.Cells[0], "Line #");
+            AddHeader(headerRow.Cells[1], "Product");
+            AddHeader(headerRow.Cells[2], "Purchase Order Ref.");
+            AddHeader(headerRow.Cells[3], "Quantity");
         }
 
         private void AddHeader(Cell cell, string header)
@@ -74,24 +82,15 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 
         private void AddItemRows(Table table, DeliveryItem[] items)
         {
-            foreach (DeliveryItem item in items)
+            for(int i = 0; i < items.Length; i++)
             {
                 Row row = table.AddRow();
                 row.VerticalAlignment = VerticalAlignment.Center;
 
-                row.Cells[0].AddParagraph(item.Product);
-                row.Cells[1].AddParagraph($"{item.QuantityThisDelivery:#,##0}");
-
-                //if (item.RequiredQuantity > 0)
-                //{
-                //    row.Cells[2].AddParagraph($"{item.DateRequired:d}");
-                //}
-                //else
-                //{
-                //    row.Cells[2].AddParagraph("-");
-                //}
-
-                row.Cells[3].AddParagraph($"{item.PurchaseOrderReference:#,##0}");
+                row.Cells[0].AddParagraph((i + 1).ToString("0"));
+                row.Cells[1].AddParagraph(items[i].Product);
+                row.Cells[2].AddParagraph($"{items[i].PurchaseOrderReference}");
+                row.Cells[3].AddParagraph($"{items[i].QuantityThisDelivery:#,##0}");
             }
         }
 

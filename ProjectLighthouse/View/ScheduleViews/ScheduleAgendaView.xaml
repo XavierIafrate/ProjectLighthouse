@@ -12,16 +12,15 @@
     d:DesignWidth="1111.297"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <viewModel:ScheduleViewModel x:Key="vm" />
         <local:ScheduleTemplateSelector x:Key="templateSelector"/>
         <userControls:DisplayLMOScheduling x:Key="DisplayLMOScheduling"/>
     </UserControl.Resources>
-    <Grid Margin="10" DataContext="{StaticResource vm}">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Style="{StaticResource title}" Text="{Binding ViewTitle}" />
+        <TextBlock Style="{StaticResource title}" Text="{Binding ViewTitle, FallbackValue='Schedule for C00'}" />
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition

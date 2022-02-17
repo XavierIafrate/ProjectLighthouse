@@ -65,7 +65,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedRequest = value;
-                OnPropertyChanged("SelectedRequest");
+                OnPropertyChanged();
 
                 LoadRequestCard(value);
             }
@@ -86,7 +86,7 @@ namespace ProjectLighthouse.ViewModel
                 }
                 UpdateButtonEnabled = App.CurrentUser.UserRole is "Purchasing" or "admin";
                 OnPropertyChanged("UpdateButtonEnabled");
-                OnPropertyChanged("PurchaseRef");
+                OnPropertyChanged();
             }
         }
 
@@ -231,18 +231,21 @@ namespace ProjectLighthouse.ViewModel
         public RequestViewModel()
         {
             RecommendedManifest = new();
-            Requests = new List<Request>();
-            FilteredRequests = new ObservableCollection<Request>();
-            ApproveCommand = new ApproveRequestCommand(this);
-            DeclineCommand = new DeclineRequestCommand(this);
-            UpdateOrderCommand = new UpdatePORefCommand(this);
-            ExportCommand = new RequestsToCSVCommand(this);
-            SelectedRequest = new Request();
+            Requests = new();
+            FilteredRequests = new();
+            ApproveCommand = new(this);
+            DeclineCommand = new(this);
+            UpdateOrderCommand = new(this);
+            ExportCommand = new(this);
+            SelectedRequest = new();
             Products = DatabaseHelper.Read<TurnedProduct>();
 
             TargetRuntime = 5;
 
-            approvalControlsVis = App.CurrentUser.CanApproveRequests ? Visibility.Visible : Visibility.Collapsed;
+            approvalControlsVis = App.CurrentUser.CanApproveRequests 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
+
             GetRequests();
         }
 
@@ -436,32 +439,36 @@ namespace ProjectLighthouse.ViewModel
         public void GetRequests()
         {
             Requests.Clear();
-            Requests = DatabaseHelper.Read<Request>().OrderByDescending(n => n.DateRaised).ToList();
+            Requests = DatabaseHelper.Read<Request>().ToList();
         }
 
         public void FilterRequests(string filter)
         {
+            List<Request> requests = new(Requests);
             switch (filter)
             {
                 case "Last 14 Days":
-                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.DateRaised.AddDays(14) > DateTime.Now));
+                    requests = requests.Where(n => n.DateRaised.AddDays(14) > DateTime.Now).ToList();
                     break;
                 case "All":
-                    FilteredRequests = new ObservableCollection<Request>(Requests);
+                    // no filter
                     break;
                 case "Pending":
-                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => !n.IsAccepted && !n.IsDeclined));
+                    requests = requests.Where(n => !n.IsAccepted && !n.IsDeclined).ToList();
                     break;
                 case "Accepted":
-                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.IsAccepted));
+                    requests = requests.Where(n => n.IsAccepted).ToList();
                     break;
                 case "Declined":
-                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.IsDeclined));
+                    requests = requests.Where(n => n.IsDeclined).ToList();
                     break;
                 case "My Requests":
-                    FilteredRequests = new ObservableCollection<Request>(Requests.Where(n => n.RaisedBy == App.CurrentUser.GetFullName()));
+                    requests = requests.Where(n => n.RaisedBy == App.CurrentUser.GetFullName()).ToList();
                     break;
             }
+
+            FilteredRequests = new ObservableCollection<Request>(requests.OrderByDescending(x => x.DateRaised));
+
             if (FilteredRequests.Count > 0)
             {
                 SelectedRequest = FilteredRequests.First();
