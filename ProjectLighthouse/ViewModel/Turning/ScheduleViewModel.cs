@@ -112,7 +112,7 @@ namespace ProjectLighthouse.ViewModel
                 FilterOptions.Add(lathe.FullName);
             }
 
-            OnPropertyChanged("filterOptions"); // Is this right
+            OnPropertyChanged("FilterOptions"); // Is this right
         }
 
         private void SetView()

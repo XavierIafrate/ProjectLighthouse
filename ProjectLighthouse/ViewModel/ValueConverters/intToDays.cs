@@ -11,11 +11,8 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             int seconds = (int)value;
 
             double days = TimeSpan.FromSeconds(seconds).TotalDays;
-            days *= 4;
-            days = Math.Round(days, 0);
-            days /= 4;
 
-            return $"{days:0.00}";
+            return $"{days:N1}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

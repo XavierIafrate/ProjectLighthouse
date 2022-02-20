@@ -34,6 +34,7 @@ namespace ProjectLighthouse.Model
 
         public bool ShowEdit;
         public int RecommendedQuantity;
+        public int SellPrice;
 
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public Action<LatheManufactureOrderItem> RequestToEdit { get; set; }
@@ -41,6 +42,12 @@ namespace ProjectLighthouse.Model
         public void NotifyRequestToEdit()
         {
             RequestToEdit?.Invoke(this);
+        }
+
+        public event Action EditMade;
+        public void NotifyEditMade()
+        {
+            EditMade?.Invoke();
         }
 
         public LatheManufactureOrderItem()
@@ -59,8 +66,9 @@ namespace ProjectLighthouse.Model
             IsSpecialPart = fromProduct.isSpecialPart;
 
             RequiredQuantity = 0;
-            TargetQuantity = fromProduct.GetRecommendedQuantity();
+            TargetQuantity = fromProduct.GetRecommendedQuantity( forManufacture:true );
             RecommendedQuantity = TargetQuantity;
+            SellPrice = fromProduct.SellPrice;
         }
 
         public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity)
@@ -74,8 +82,10 @@ namespace ProjectLighthouse.Model
             IsSpecialPart = fromProduct.isSpecialPart;
 
             RequiredQuantity = requiredQuantity;
-            TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity();
+            TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity(forManufacture: true);
             RecommendedQuantity = TargetQuantity - RequiredQuantity;
+            SellPrice = fromProduct.SellPrice;
+
         }
 
         public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity, DateTime dateRequired, bool needsCleaning = false)
@@ -89,9 +99,11 @@ namespace ProjectLighthouse.Model
             IsSpecialPart = fromProduct.isSpecialPart;
 
             RequiredQuantity = requiredQuantity;
-            TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity();
+            TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity(forManufacture: true);
             DateRequired = dateRequired;
             RecommendedQuantity = TargetQuantity - RequiredQuantity;
+            SellPrice = fromProduct.SellPrice;
+
         }
 
         public override string ToString()

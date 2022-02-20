@@ -8,7 +8,16 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double dPrice = System.Convert.ToDouble((int)value) / 100;
+            double dPrice = 0;
+            if (value is double val)
+            {
+                dPrice = val / 100;
+            }
+            else if (value is int intVal)
+            {
+
+               dPrice = System.Convert.ToDouble((int)intVal) / 100;
+            }
             return $"£{dPrice:0.00}";
         }
 

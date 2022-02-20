@@ -190,8 +190,10 @@ namespace ProjectLighthouse.ViewModel
         #endregion Visibility variables
 
         #region Commands
-        public ICommand PrintOrderCommand { get; set; }
-        public ICommand EditCommand { get; set; }
+        public PrintCommand PrintOrderCommand { get; set; }
+        public EditManufactureOrderCommand EditCommand { get; set; }
+
+        public CreateNewOrderCommand NewOrderCommand { get; set; }
         #endregion
 
         #region Icon Brushes
@@ -234,8 +236,9 @@ namespace ProjectLighthouse.ViewModel
             BarVerifiedIconBrush = (Brush)Application.Current.Resources["materialError"];
             BarAllocatedIconBrush = (Brush)Application.Current.Resources["materialError"];
 
-            PrintOrderCommand = new PrintCommand(this);
-            EditCommand = new EditManufactureOrderCommand(this);
+            PrintOrderCommand = new(this);
+            EditCommand = new(this);
+            NewOrderCommand = new(this);
         }
 
         private void CreateTimer()
@@ -620,12 +623,25 @@ namespace ProjectLighthouse.ViewModel
                     }
                 }   
             }
-
-            
-
             editWindow = null;
 
             DataRefreshTimer.Enabled = true;
+        }
+
+        public void CreateNewOrder()
+        {
+            LMOContructorWindow window = new(null, null);
+            window.Owner = Application.Current.MainWindow;
+            window.ShowDialog();
+
+            if (window.Cancelled)
+            {
+                return;
+            }
+            else
+            {
+                Refresh(silent:false);
+            }
         }
 
         private static string GetDaySuffix(int day)

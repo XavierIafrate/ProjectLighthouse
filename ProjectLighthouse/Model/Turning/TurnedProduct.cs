@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using ProjectLighthouse.ViewModel;
+using SQLite;
 using System;
 
 namespace ProjectLighthouse.Model
@@ -39,13 +40,23 @@ namespace ProjectLighthouse.Model
         public string AddedBy { get; set; }
         public DateTime AddedDate { get; set; }
 
-        public int GetRecommendedQuantity()
+        public int GetRecommendedQuantity(bool forManufacture = false)
         {
-            const int targetMonthsStock = 12;
-            double scaleFactor = Convert.ToDouble(targetMonthsStock) / 18;
-            double toMake = Math.Max((QuantitySold * scaleFactor) - QuantityInStock, 0);
+            
+                const int targetMonthsStock = 12;
+                double scaleFactor = Convert.ToDouble(targetMonthsStock) / 18;
+                double toMake = Math.Max((QuantitySold * scaleFactor) - QuantityInStock, 0);
 
-            return Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
+            int qty = Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
+            if (forManufacture)
+            {
+                return Math.Max(qty, RequestsEngine.GetMiniumumOrderQuantity(this));
+            }
+            else
+            {
+                return qty;
+            }
+            
         }
 
         public TimeSpan GetTimeToMake(int quantity)

@@ -10,8 +10,6 @@ namespace ProjectLighthouse.View
         public OrderView()
         {
             InitializeComponent();
-
-            
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)

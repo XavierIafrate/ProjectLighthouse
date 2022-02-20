@@ -293,7 +293,8 @@ namespace ProjectLighthouse.ViewModel
             RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(Products,
                 requiredProduct,
                 SelectedRequest.QuantityRequired,
-                TimeSpan.FromDays(Math.Round(TargetRuntime)));
+                TimeSpan.FromDays(Math.Round(TargetRuntime)),
+                SelectedRequest.DateRequired);
             OnPropertyChanged("RecommendedManifest");
         }
 
@@ -369,11 +370,11 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
 
-            LMOContructorWindow creationWindow = new(SelectedRequest, TargetRuntime, Products);
+            LMOContructorWindow creationWindow = new(request:SelectedRequest, preselectedItems:RecommendedManifest);
             creationWindow.Owner = Application.Current.MainWindow;
             creationWindow.ShowDialog();
 
-            if (creationWindow.wasCancelled)
+            if (creationWindow.Cancelled)
             {
                 return;
             }
@@ -388,7 +389,6 @@ namespace ProjectLighthouse.ViewModel
                 Debug.WriteLine($"Emailing about: {SelectedRequest.Product}");
                 Request tmp = (Request)SelectedRequest.Clone();
                 Task.Run(() => EmailHelper.NotifyRequestApproved(tmp));
-                //Task.Run(() => EmailHelper.NotifyNewOrder(creationWindow.NewOrder, creationWindow.NewOrderItems));
 
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");

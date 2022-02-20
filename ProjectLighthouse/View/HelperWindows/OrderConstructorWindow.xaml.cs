@@ -1,126 +1,336 @@
 ﻿using ProjectLighthouse.Model;
-using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.View
 {
-    public partial class LMOContructorWindow : Window
+    public partial class LMOContructorWindow : Window, INotifyPropertyChanged
     {
-        public bool wasCancelled;
-        public Request ApprovedRequest;
-        public LatheManufactureOrder NewOrder;
-        public List<LatheManufactureOrderItem> NewOrderItems;
-        bool IgnoreRuntiumeCap;
-        double TargetRuntime;
+        private List<TurnedProduct> Products;
+        public string[] ToolingGroups { get; set; }
+        private string selectedToolingGroup;
 
-        BarStock OrderBar;
-        public List<TurnedProduct> ListboxProducts;
-        public TurnedProduct RequiredTurnedProduct;
-        public List<TurnedProduct> ProductPool;
-
-        public LMOContructorWindow(Request approvedRequest, double targetRuntime, List<TurnedProduct> allProducts)
+        public string SelectedToolingGroup
         {
-            InitializeComponent();
-            TargetRuntime = targetRuntime;
-            TargetRuntimeSlider.Value = TargetRuntime;
-            ApprovedRequest = approvedRequest;
-            wasCancelled = true;
-
-            NewOrder = new LatheManufactureOrder()
-            {
-                ItemNeedsCleaning = ApprovedRequest.CleanCustomerRequirement
-            };
-
-            NewOrderItems = new List<LatheManufactureOrderItem>();
-            
-            List<BarStock> bars = DatabaseHelper.Read<BarStock>();
-
-            RequiredTurnedProduct = allProducts.First(p => p.ProductName == approvedRequest.Product);
-
-            ProductPool = RequiredTurnedProduct.isSpecialPart
-                ? allProducts.Where(p => RequiredTurnedProduct.IsScheduleCompatible(p) && p.CanBeManufactured()).ToList()
-                : allProducts.Where(p => RequiredTurnedProduct.IsScheduleCompatible(p) && p.CanBeManufactured() && !p.isSpecialPart).ToList();
-
-
-            ListboxProducts = new List<TurnedProduct>(ProductPool);
-            OrderBar = bars.First(b => b.Id == RequiredTurnedProduct.BarID);
-
-            NewOrderItems = RequestsEngine.GetRecommendedOrderItems(ProductPool, 
-                RequiredTurnedProduct, 
-                ApprovedRequest.QuantityRequired, 
-                TimeSpan.FromDays(targetRuntime), 
-                approvedRequest.DateRequired);
-
-            LMOItemsListBox.ItemsSource = NewOrderItems;
-
-            requiredProductTextBlock.Text = RequiredTurnedProduct.ProductName;
-            requiredQuantityTextBlock.Text = $"{approvedRequest.QuantityRequired:#,##0} pcs";
-            requiredDateTextBlock.Text = $"Delivery required by {approvedRequest.DateRequired:dd/MM/yy}";
-
-            RefreshView();
-            CalculateInsights();
+            get { return selectedToolingGroup; }
+            set 
+            { 
+                selectedToolingGroup = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ProductsInToolingGroup)));
+                NewOrderItems.Clear();
+                RefreshView();
+            }
         }
 
-        public void RefreshView()
+        private ObservableCollection<TurnedProduct> productsInToolingGroup = new();
+        public ObservableCollection<TurnedProduct> ProductsInToolingGroup
         {
-            ListboxProducts.Clear();
-            string[] onOrder = new string[NewOrderItems.Count];
-
-            for (int i = 0; i < NewOrderItems.Count; i++)
+            get { return productsInToolingGroup; }
+            set
             {
-                onOrder[i] = NewOrderItems[i].ProductName;
+                productsInToolingGroup = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ProductsInToolingGroup)));
+            }
+        }
+
+        private ObservableCollection<LatheManufactureOrderItem> newOrderItems = new();
+        public ObservableCollection<LatheManufactureOrderItem> NewOrderItems
+        {
+            get { return newOrderItems; }
+            set 
+            { 
+                newOrderItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewOrderItems)));
+            }
+        }
+
+        public LatheManufactureOrder NewOrder { get; set; } = new();
+        
+        private NewOrderInsights insights = new();
+        public NewOrderInsights Insights
+        {
+            get { return insights; }
+            set 
+            { 
+                insights = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Insights)));
+            }
+        }
+
+
+        private Request Request;
+        private TurnedProduct RequiredProduct;
+        public bool Cancelled = true;
+        private bool RequestlessMode = false;
+        private List<BarStock> Bars;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public LMOContructorWindow(Request? request, List<LatheManufactureOrderItem>? preselectedItems)
+        {
+            InitializeComponent();
+            
+            DataContext = this;
+            Products = DatabaseHelper.Read<TurnedProduct>();
+            Bars = DatabaseHelper.Read<BarStock>();
+
+            ProductsInToolingGroup = new(Products);
+
+            ToolingGroups = Products
+                .Where(x => !x.isSpecialPart)
+                .Select(x => x.ProductGroup)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToArray();
+
+            if (request != null)
+            {
+                Request = request;
+                RequiredProduct = Products.Find(x => x.ProductName == Request.Product);
+                if (!RequiredProduct.isSpecialPart)
+                {
+                    Products = Products.Where(x => !x.isSpecialPart).ToList();
+                }
+
+                SelectedToolingGroup = RequiredProduct.ProductGroup;
+
+                if (preselectedItems != null)
+                {
+                    for (int i = 0; i < preselectedItems.Count; i++)
+                    {
+                        LatheManufactureOrderItem newItem = preselectedItems[i];
+                        newItem.EditMade += CalculateInsights;
+                        NewOrderItems.Add(newItem);
+                    }
+                }
+                else
+                {
+                    NewOrderItems.Add(new LatheManufactureOrderItem(RequiredProduct));
+                }
+                NewOrder.BarID = RequiredProduct.BarID;
+                ChooseToolingGroupControls.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Products = Products.Where(x => !x.isSpecialPart).ToList();
+                if (ToolingGroups.Length > 0)
+                {
+                    SelectedToolingGroup = ToolingGroups[0];
+                }
+                RequestlessMode = true;
+                ChooseToolingGroupControls.Visibility = Visibility.Visible;
             }
 
-            ListboxProducts = ProductPool.Where(p => !onOrder.Contains(p.ProductName)).ToList();
+            RefreshView();
+        }
 
-            poolListBox.ItemsSource = ListboxProducts;
-            //poolListBox.IsEnabled = NewOrderItems.Count != 4;
-            //AddButton.IsEnabled = NewOrderItems.Count != 4;
-            RemoveButton.IsEnabled = NewOrderItems.Count != 1;
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (AvailableProductsListView.SelectedValue is not TurnedProduct product)
+            {
+                return;
+            }
+            LatheManufactureOrderItem newItem = new(product);
+            newItem.EditMade += CalculateInsights;
+            NewOrderItems.Add(newItem);
+            ProductsInToolingGroup.Remove(product);
+
+            if (NewOrderItems.Count == 1)
+            {
+                NewOrder.BarID = product.BarID;
+                RequiredProduct = product;
+            }
+
+            RefreshView();
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (NewOrderItemsListView.SelectedValue is not LatheManufactureOrderItem item)
+            {
+                return;
+            }
+
+            if (item.RequiredQuantity > 0)
+            {
+                return;
+            }
+
+            NewOrderItems.Remove(item);
+
+            RefreshView();
+        }
+
+        private void RefreshView()
+        {
+            string[] selectedForOrder = NewOrderItems.Select(x => x.ProductName).ToArray();
+            List<TurnedProduct> products;
+            if (NewOrderItems.Count > 0)
+            {
+                products = Products
+                    .Where(x => x.BarID == NewOrder.BarID
+                        && x.ProductGroup == SelectedToolingGroup
+                        && !selectedForOrder.Contains(x.ProductName))
+                    .ToList();
+            }
+            else
+            {
+                products = Products
+                    .Where(x => x.ProductGroup == SelectedToolingGroup)
+                    .ToList();
+            }
+
+            products = products.OrderBy(x => x.Material).ThenBy(x => x.ProductName).ToList();
+
+            ProductsInToolingGroup.Clear();
+            for (int i = 0; i < products.Count; i++)
+            {
+                ProductsInToolingGroup.Add(products[i]);
+            }
+
+            CalculateInsights();
         }
 
         private void CalculateInsights()
         {
-            int totaltime = 0;
-            int requiredtime = 0;
-            double bars = 0;
-
-            foreach (LatheManufactureOrderItem item in NewOrderItems)
+            if (NewOrderItems.Count == 0)
             {
-                int cycleTime = item.CycleTime == 0 
-                    ? 120
-                    : item.CycleTime;
+                InsightsStackPanel.Visibility = Visibility.Collapsed;
+                NoInsights.Visibility = Visibility.Visible;
+                return;
+            }
+            else
+            {
+                InsightsStackPanel.Visibility = Visibility.Visible;
+                NoInsights.Visibility = Visibility.Collapsed;
+            }
 
-                totaltime += cycleTime * item.TargetQuantity;
-                bars += item.TargetQuantity * (item.MajorLength + 2) / 2700;
-                if (item.RequiredQuantity > 0)
+            Insights.BarId = NewOrder.BarID;
+            BarStock bar = Bars.Find(x => x.Id == NewOrder.BarID);
+            Insights.BarPrice = bar.Cost;
+
+            double numBars = 0;
+            int time = 3600 * 4;
+            int value = 0;  
+            Insights.TimeIsEstimate = false;
+
+            int appxCycleTime = 120;
+            List<LatheManufactureOrderItem> itemsWithCycleTime = NewOrderItems.Where(x => x.CycleTime != 0).ToList();
+            if (itemsWithCycleTime.Count > 0)
+            {
+                appxCycleTime = itemsWithCycleTime[0].CycleTime;
+            }
+
+            for (int i = 0; i < NewOrderItems.Count; i++)
+            {
+                double partBudget = NewOrderItems[i].MajorLength + 2;
+                double availablePerBar = bar.Length - 300;
+                double partsPerBar = Math.Floor(availablePerBar / partBudget);
+                numBars += NewOrderItems[i].TargetQuantity / partsPerBar;
+
+                value += (int)(NewOrderItems[i].SellPrice * NewOrderItems[i].TargetQuantity * 0.7);
+
+                if (NewOrderItems[i].CycleTime > 0)
                 {
-                    requiredtime += item.RequiredQuantity * cycleTime;
+                    time += NewOrderItems[i].CycleTime * NewOrderItems[i].TargetQuantity;
+                }
+                else
+                {
+                    time += appxCycleTime * NewOrderItems[i].TargetQuantity;
+                    Insights.TimeIsEstimate = true;
                 }
             }
 
-            bars = Math.Ceiling(bars);
+            Insights.TimeToComplete = time;
+            Insights.NumberOfBarsRequired = numBars;
+            Insights.TotalBarCost = numBars * bar.Cost;
 
-            int costPerBar = OrderBar.Cost;
-            double dblmaterialCost = Math.Round(Convert.ToDouble(costPerBar) / 100 * bars, 2);
+            time = Math.Max(time, 3600 * 24);
 
-            nBars.Text = $"{bars}";
+            TimeSpan timeToComplete = TimeSpan.FromSeconds(time);
+            Insights.CostOfMachineTime = timeToComplete.TotalMinutes * 0.45;
 
-            NewOrder.NumberOfBars = bars;
-            materialCost.Text = $"£{Math.Round(dblmaterialCost, 0)}";
-            reqTime.Text = $"{Math.Round(requiredtime / (double)86400, 2)} day(s)";
-            totalTime.Text = $"{Math.Round(totaltime / (double)86400, 2)} day(s)";
-            NewOrder.TimeToComplete = totaltime;
+            Insights.CostOfOrder = Insights.CostOfMachineTime + (Insights.TotalBarCost / 100);
+            Insights.ValueProduced = value / 100;
+            Insights.NetProfit = Insights.ValueProduced - Insights.CostOfOrder;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Insights)));
         }
 
-        private static string GetNewMOName()
+
+        public class NewOrderInsights
+        {
+            public bool TimeIsEstimate { get; set; }
+            public int TimeToComplete { get; set; }
+            public string BarId { get; set; }
+            public double BarPrice { get; set; }
+            public double NumberOfBarsRequired { get; set; }
+            public double TotalBarCost { get; set; }
+            public double CostOfOrder { get; set; }
+            public double CostOfMachineTime { get; set; }
+            public double NetProfit { get; set; }
+            public double ValueProduced { get; set; }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (NewOrderItems.Count == 0)
+            {
+                return;
+            }
+            CreateManufactureOrder();
+        }
+
+        private void CreateManufactureOrder()
+        {
+            NewOrder.Name = GetNewOrderId();
+            NewOrder.CreatedAt = DateTime.Now;
+            NewOrder.CreatedBy = App.CurrentUser.GetFullName();
+            NewOrder.State = OrderState.Problem;
+            NewOrder.MajorDiameter = NewOrderItems.First().MajorDiameter;
+            NewOrder.BarsInStockAtCreation = Bars.Find(x => x.Id == NewOrder.BarID).InStock;
+
+            List<TechnicalDrawing> drawings = FindDrawings();
+
+            _ = DatabaseHelper.Insert(NewOrder);
+            foreach (LatheManufactureOrderItem item in NewOrderItems)
+            {
+                if (item.TargetQuantity == 0)
+                {
+                    continue;
+                }
+                if (Request != null)
+                {
+                    item.NeedsCleaning = Request.CleanCustomerRequirement && item.RequiredQuantity > 0;
+                }
+                item.AssignedMO = NewOrder.Name;
+                item.AddedBy = App.CurrentUser.GetFullName();
+                item.DateAdded = DateTime.Now;
+                DatabaseHelper.Insert(item);
+            };
+
+            foreach (TechnicalDrawing drawing in drawings)
+            {
+                OrderDrawing o = new() { DrawingId = drawing.Id, OrderId = NewOrder.Name };
+                DatabaseHelper.Insert(o);
+            }
+
+            MessageBox.Show($"Order {NewOrder.Name} has successfully been issued.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            Cancelled = false;
+            Close();
+        }
+
+        private static string GetNewOrderId()
         {
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>();
             int nOrders = orders.Count;
@@ -158,9 +368,9 @@ namespace ProjectLighthouse.View
                     {
                         TechnicalDrawing best = GetBestDrawingForProduct(
                             family: NewOrderItems[i].ProductName[..5],
-                            group: RequiredTurnedProduct.ProductGroup, 
-                            material: RequiredTurnedProduct.Material, 
-                            drawings:drawings);
+                            group: RequiredProduct.ProductGroup,
+                            material: RequiredProduct.Material,
+                            drawings: drawings);
 
                         if (best == null)
                         {
@@ -185,7 +395,7 @@ namespace ProjectLighthouse.View
             return results.Distinct().ToList();
         }
 
-        public TechnicalDrawing? GetBestDrawingForProduct(string family, string group,string material, List<TechnicalDrawing> drawings)
+        public TechnicalDrawing? GetBestDrawingForProduct(string family, string group, string material, List<TechnicalDrawing> drawings)
         {
             List<TechnicalDrawing> matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group && d.MaterialConstraint == material).ToList();
             if (matches.Count > 0)
@@ -208,152 +418,6 @@ namespace ProjectLighthouse.View
                 return matches.First();
             }
             return null;
-        }
-
-        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
-        {
-            NewOrder.Name = GetNewMOName();
-            NewOrder.CreatedAt = DateTime.Now;
-            NewOrder.CreatedBy = App.CurrentUser.GetFullName();
-            NewOrder.IsComplete = false;
-            NewOrder.Status = "Problem";
-            NewOrder.State = OrderState.Problem;
-            NewOrder.IsReady = false;
-            NewOrder.IsUrgent = false;
-            NewOrder.HasProgram = false;
-            NewOrder.HasStarted = false;
-            NewOrder.BarIsAllocated = false;
-            NewOrder.MajorDiameter = RequiredTurnedProduct.MajorDiameter;
-            NewOrder.BarsInStockAtCreation = OrderBar.InStock;
-            NewOrder.BarID = OrderBar.Id;
-
-            List<TechnicalDrawing> drawings = FindDrawings();
-
-            // Add order & items to database
-            _ = DatabaseHelper.Insert(NewOrder);
-            foreach (LatheManufactureOrderItem item in NewOrderItems)
-            {
-                item.NeedsCleaning = ApprovedRequest.CleanCustomerRequirement && item.RequiredQuantity > 0;
-                item.AssignedMO = NewOrder.Name;
-                item.AddedBy = App.CurrentUser.GetFullName();
-                item.DateAdded = DateTime.Now;
-                DatabaseHelper.Insert(item);
-            };
-
-            foreach (TechnicalDrawing drawing in drawings)
-            {
-                OrderDrawing o = new() { DrawingId = drawing.Id, OrderId = NewOrder.Name };
-                DatabaseHelper.Insert(o);
-            }
-
-            MessageBox.Show($"Created {NewOrder.Name}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            wasCancelled = false;
-            Close();
-        }
-
-        private void RemoveButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (LMOItemsListBox.SelectedValue is not LatheManufactureOrderItem selectedLMOItem)
-            {
-                return;
-            }
-
-            if (selectedLMOItem.RequiredQuantity > 0)
-            {
-                _ = MessageBox.Show("This product is a requirement for the request!", "Cannot remove.", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
-
-            NewOrderItems.Remove(selectedLMOItem);
-
-            CapTime();
-        }
-
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            //if (NewOrderItems.Count >= 4)
-            //{
-            //    _ = MessageBox.Show("Max Items reached", "Order Full", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            //    return;
-            //}
-
-            if (poolListBox.SelectedValue is not TurnedProduct selectedProduct)
-            {
-                return;
-            }
-
-            NewOrderItems.Add(new(selectedProduct));
-
-            CapTime();
-        }
-
-        private void UpdateQty_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
-        }
-
-        private void UpdateButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!int.TryParse(UpdateQty.Text, out int j))
-            {
-                return;
-            }
-
-            List<LatheManufactureOrderItem> items = (List<LatheManufactureOrderItem>)LMOItemsListBox.ItemsSource;
-            LatheManufactureOrderItem selected = (LatheManufactureOrderItem)LMOItemsListBox.SelectedValue;
-
-            foreach (LatheManufactureOrderItem i in items)
-            {
-                if (i.ProductName == selected.ProductName)
-                {
-                    i.TargetQuantity = Math.Max(j, i.RequiredQuantity);
-                }
-            }
-
-            LMOItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
-            CalculateInsights();
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void TargetRuntimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            Slider slider = sender as Slider;
-            TargetRuntime = Math.Round(slider.Value);
-            TargetRuntimeText.Text = $"Runtime Cap [{TargetRuntime:N0} days]";
-            CapTime();
-        }
-
-        private void CapTime()
-        {
-            if (NewOrderItems == null)
-            {
-                return;
-            }
-            
-            NewOrderItems = IgnoreRuntiumeCap 
-                ? NewOrderItems.ToList()
-                : RequestsEngine.CapQuantitiesForTimeSpan(NewOrderItems, TimeSpan.FromDays(TargetRuntime), true).ToList();
-
-            LMOItemsListBox.ItemsSource = NewOrderItems;
-            RefreshView();
-            CalculateInsights();
-        }
-
-        private void Override_Checked(object sender, RoutedEventArgs e)
-        {
-            IgnoreRuntiumeCap = true;
-            TargetRuntimeSlider.IsEnabled = false;
-        }
-
-        private void Override_Unchecked(object sender, RoutedEventArgs e)
-        {
-            IgnoreRuntiumeCap = false;
-            TargetRuntimeSlider.IsEnabled = true;
-            CapTime();
         }
     }
 }
