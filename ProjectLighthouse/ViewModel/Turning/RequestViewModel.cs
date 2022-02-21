@@ -18,6 +18,8 @@ namespace ProjectLighthouse.ViewModel
         public List<Request> Requests { get; set; }
         public ObservableCollection<Request> FilteredRequests { get; set; }
         public List<TurnedProduct> Products { get; set; }
+        public List<LatheManufactureOrder> ActiveOrders { get; set; }
+        public List<LatheManufactureOrderItem> ActiveOrderItems { get; set; }
         public List<LatheManufactureOrderItem> RecommendedManifest { get; set; }
         private double targetRuntime;
 
@@ -27,7 +29,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 targetRuntime = value;
-                OnPropertyChanged("TargetRuntime");
+                OnPropertyChanged();
 
                 if (SelectedRequest.Status == "Pending approval" && SelectedRequest.Product != null)
                 {
@@ -97,7 +99,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 dropboxEnabled = value;
-                OnPropertyChanged("DropboxEnabled");
+                OnPropertyChanged();
             }
         }
 
@@ -108,9 +110,10 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 canEditRequirements = value;
-                OnPropertyChanged("CanEditRequirements");
+                OnPropertyChanged();
             }
         }
+        #region Visibilities
 
         private Visibility approvalControlsVis;
         public Visibility ApprovalControlsVis
@@ -119,7 +122,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 approvalControlsVis = value;
-                OnPropertyChanged("ApprovalControlsVis");
+                OnPropertyChanged();
             }
         }
 
@@ -130,7 +133,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 editcontrolsVis = value;
-                OnPropertyChanged("EditControlsVis");
+                OnPropertyChanged();
             }
         }
 
@@ -141,7 +144,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 modifiedVis = value;
-                OnPropertyChanged("ModifiedVis");
+                OnPropertyChanged();
             }
         }
 
@@ -153,7 +156,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 cleaningVis = value;
-                OnPropertyChanged("CleaningVis");
+                OnPropertyChanged();
             }
         }
 
@@ -165,7 +168,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 cardVis = value;
-                OnPropertyChanged("CardVis");
+                OnPropertyChanged();
                 if (value == Visibility.Visible)
                 {
                     NothingVis = Visibility.Hidden;
@@ -182,7 +185,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 nothingVis = value;
-                OnPropertyChanged("NothingVis");
+                OnPropertyChanged();
             }
         }
 
@@ -193,7 +196,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 decisionVis = value;
-                OnPropertyChanged("DecisionVis");
+                OnPropertyChanged();
             }
         }
 
@@ -204,7 +207,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 approvedVis = value;
-                OnPropertyChanged("ApprovedVis");
+                OnPropertyChanged();
             }
         }
 
@@ -215,9 +218,21 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 declinedVis = value;
-                OnPropertyChanged("DeclinedVis");
+                OnPropertyChanged();
             }
         }
+
+        private Visibility mergeVis;
+        public Visibility MergeVis
+        {
+            get { return mergeVis; }
+            set
+            {
+                mergeVis = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
 
         public event EventHandler SelectedRequestChanged;
 
@@ -225,6 +240,8 @@ namespace ProjectLighthouse.ViewModel
         public ApproveRequestCommand ApproveCommand { get; set; }
         public DeclineRequestCommand DeclineCommand { get; set; }
         public RequestsToCSVCommand ExportCommand { get; set; }
+        public MergeRequestToOrderCommand MergeCommand { get; set; }
+        public ViewMakeOrBuyCommand ViewMakeOrBuyCommand { get; set; }
 
         #endregion
 
@@ -237,16 +254,71 @@ namespace ProjectLighthouse.ViewModel
             DeclineCommand = new(this);
             UpdateOrderCommand = new(this);
             ExportCommand = new(this);
+            MergeCommand = new(this);
+            ViewMakeOrBuyCommand = new(this);
+
             SelectedRequest = new();
-            Products = DatabaseHelper.Read<TurnedProduct>();
 
             TargetRuntime = 5;
 
-            approvalControlsVis = App.CurrentUser.CanApproveRequests 
-                ? Visibility.Visible 
+            approvalControlsVis = App.CurrentUser.CanApproveRequests
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             GetRequests();
+
+            Products = DatabaseHelper.Read<TurnedProduct>();
+
+            ActiveOrders = DatabaseHelper.Read<LatheManufactureOrder>()
+                .Where(x => x.State < OrderState.Complete)
+                .ToList();
+            string[] activeOrders = ActiveOrders.Select(x => x.Name).ToArray();
+            ActiveOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>()
+                .Where(x => activeOrders.Contains(x.AssignedMO))
+                .ToList();
+
+            for (int i = 0; i < ActiveOrders.Count; i++)
+            {
+                ActiveOrders[i].OrderItems = ActiveOrderItems.Where(x => x.AssignedMO == ActiveOrders[i].Name).ToList();
+            }
+
+            CheckForAppendOppurtunities();
+        }
+
+        private void CheckForAppendOppurtunities()
+        {
+            List<TurnedProduct> productsOnOrder = new();
+            for (int i = 0; i < ActiveOrderItems.Count; i++)
+            {
+                TurnedProduct product = Products.Find(x => x.ProductName == ActiveOrderItems[i].ProductName);
+                if (product != null)
+                {
+                    product.IsAlreadyOnOrder = true;
+                    product.OrderReference = ActiveOrderItems[i].AssignedMO;
+                    productsOnOrder.Add(product);
+                }
+            }
+
+            for (int i = 0; i < Requests.Count; i++)
+            {
+                if (Requests[i].Status != "Pending approval")
+                {
+                    continue;
+                }
+                TurnedProduct requestedProduct = Products.Find(x => x.ProductName == Requests[i].Product);
+                for (int j = 0; j < productsOnOrder.Count; j++)
+                {
+                    if (requestedProduct.IsScheduleCompatible(productsOnOrder[j]))
+                    {
+                        Requests[i].CanAppend = true;
+                        Requests[i].ExistingOrder = productsOnOrder[j].OrderReference;
+                    }
+                    if (requestedProduct.ProductName == productsOnOrder[j].ProductName)
+                    {
+                        Requests[i].UpdateOrder = true;
+                    }
+                }
+            }
         }
 
         public void LoadRequestCard(Request request)
@@ -263,6 +335,10 @@ namespace ProjectLighthouse.ViewModel
             ModifiedVis = string.IsNullOrEmpty(request.ModifiedBy)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
+
+            MergeVis = request.CanAppend
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
             ApprovalControlsVis = (App.CurrentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
             EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy || App.CurrentUser.CanApproveRequests) ? Visibility.Visible : Visibility.Collapsed;
@@ -359,39 +435,43 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public void ApproveRequest()
+        public void ShowMakeOrBuy()
         {
-            if (!App.CurrentUser.CanApproveRequests)
-            {
-                MessageBox.Show("You do not have permission to authorise requests.\nHow can you even see the buttons??",
-                    "Access Denied",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Exclamation);
-                return;
-            }
-
-            LMOContructorWindow creationWindow = new(request:SelectedRequest, preselectedItems:RecommendedManifest);
+            LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest, withAuthority:false);
             creationWindow.Owner = Application.Current.MainWindow;
             creationWindow.ShowDialog();
+        }
 
-            if (creationWindow.Cancelled)
+        public void ApproveRequest(bool merge = false)
+        {
+            if (!merge)
             {
+                LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest);
+                creationWindow.Owner = Application.Current.MainWindow;
+                creationWindow.ShowDialog();
+
+                if (creationWindow.Cancelled)
+                {
+                    return;
+                }
+                SelectedRequest.ResultingLMO = creationWindow.NewOrder.Name;
+            }
+            else
+            {
+                MessageBox.Show("Merging not implemented yet", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            
 
-            SelectedRequest.ResultingLMO = creationWindow.NewOrder.Name;
             SelectedRequest.MarkAsAccepted();
-            Debug.WriteLine($"Requested Product: {SelectedRequest.Product}");
-
-
+            
             if (DatabaseHelper.Update(SelectedRequest))
             {
-                Debug.WriteLine($"Emailing about: {SelectedRequest.Product}");
                 Request tmp = (Request)SelectedRequest.Clone();
                 Task.Run(() => EmailHelper.NotifyRequestApproved(tmp));
 
                 FilterRequests(SelectedFilter);
-                OnPropertyChanged("SelectedRequest");
+                OnPropertyChanged(nameof(SelectedRequest));
 
                 SelectedRequestChanged?.Invoke(this, new EventArgs());
                 SelectedRequest = Requests.First();

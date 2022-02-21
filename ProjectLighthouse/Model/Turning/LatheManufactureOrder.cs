@@ -112,6 +112,7 @@ namespace ProjectLighthouse.Model
             return IsCancelled != OtherOrder.IsCancelled
                 || IsComplete != OtherOrder.IsComplete
                 || IsClosed != OtherOrder.IsClosed
+                || State != OtherOrder.State
                 || HasStarted != OtherOrder.HasStarted
                 || BarIsAllocated != OtherOrder.BarIsAllocated
                 || BarIsVerified != OtherOrder.BarIsVerified

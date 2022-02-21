@@ -71,7 +71,7 @@ namespace ProjectLighthouse.View
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public LMOContructorWindow(Request? request, List<LatheManufactureOrderItem>? preselectedItems)
+        public LMOContructorWindow(Request? request, List<LatheManufactureOrderItem>? preselectedItems, bool withAuthority = true)
         {
             InitializeComponent();
             
@@ -87,6 +87,14 @@ namespace ProjectLighthouse.View
                 .Distinct()
                 .OrderBy(x => x)
                 .ToArray();
+
+            ApproveButton.IsEnabled = withAuthority;
+            Footer.Visibility = withAuthority ? Visibility.Visible : Visibility.Collapsed;
+            if (!withAuthority)
+            {
+                TitleText.Text = $"Request #{request.Id}: Make or Buy";
+                this.Title= $"Make or Buy Helper";
+            }
 
             if (request != null)
             {
@@ -299,6 +307,14 @@ namespace ProjectLighthouse.View
             NewOrder.State = OrderState.Problem;
             NewOrder.MajorDiameter = NewOrderItems.First().MajorDiameter;
             NewOrder.BarsInStockAtCreation = Bars.Find(x => x.Id == NewOrder.BarID).InStock;
+            NewOrder.NumberOfBars = Math.Ceiling(Insights.NumberOfBarsRequired);
+
+            int time = 0;
+            for (int i = 0; i < NewOrderItems.Count; i++)
+            {
+                time += (NewOrderItems[i].CycleTime == 0 ? 120 : NewOrderItems[i].CycleTime) * NewOrderItems[i].TargetQuantity;
+            }
+            NewOrder.TimeToComplete = time;
 
             List<TechnicalDrawing> drawings = FindDrawings();
 

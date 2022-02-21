@@ -232,7 +232,9 @@ namespace ProjectLighthouse.ViewModel
             List<LatheManufactureOrder> activeOrders = DatabaseHelper.Read<LatheManufactureOrder>()
                 .Where(o => o.State < OrderState.Complete)
                 .ToList();
-            List<LatheManufactureOrderItem> activeOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(i => activeOrders.Any(o => i.AssignedMO == o.Name)).ToList();
+            List<LatheManufactureOrderItem> activeOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>()
+                .Where(i => activeOrders.Any(o => i.AssignedMO == o.Name))
+                .ToList();
 
             activeOrders = null;
             ItemsOnOrder = new();

@@ -26,6 +26,10 @@ namespace ProjectLighthouse.Model
         public string Likeliness { get; set; }
         public string Notes { get; set; }
 
+        public bool CanAppend;
+        public string ExistingOrder;
+        public bool UpdateOrder;
+
         public bool CleanCustomerRequirement { get; set; }
 
         public object Clone()

@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
         <!--#region Header-->
         <Grid>
-            <TextBlock Style="{StaticResource title}" Text="New Manufacture Order" />
+            <TextBlock Style="{StaticResource title}" Text="New Manufacture Order" x:Name="TitleText"/>
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <TextBlock
                     VerticalAlignment="Center"
@@ -181,7 +181,7 @@
                             <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.CostOfMachineTime, StringFormat='{}£{0:N2}'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="COST OF MACHINE TIME" />
 
-                            <TextBlock Style="{StaticResource ClusterHeading}" Text="MACHINE TIME" />
+                            <TextBlock Style="{StaticResource ClusterHeading}" Text="SUMMARY" />
 
                             <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.CostOfOrder, StringFormat='{}£{0:N2}'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="COST OF ORDER" />
@@ -201,7 +201,7 @@
         <!--#endregion-->
 
         <!--#region Footer Controls-->
-        <Grid Grid.Row="2">
+        <Grid x:Name="Footer" Grid.Row="2">
             <StackPanel x:Name="ChooseToolingGroupControls" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource section}" Text="Choose a Tooling Group:" />
                 <ComboBox
@@ -212,9 +212,16 @@
                     SelectedValue="{Binding Path=SelectedToolingGroup}" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="Cancel" Style="{StaticResource CancelButton}" Click="CancelButton_Click"/>
-                <Button Content="Confirm Order" Style="{StaticResource GreenButton}" Click="ConfirmButton_Click"/>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    Click="CancelButton_Click"
+                    Content="Cancel"
+                    Style="{StaticResource CancelButton}" />
+                <Button
+                    x:Name="ApproveButton"
+                    Click="ConfirmButton_Click"
+                    Content="Confirm Order"
+                    Style="{StaticResource GreenButton}" />
             </StackPanel>
         </Grid>
         <!--#endregion-->
