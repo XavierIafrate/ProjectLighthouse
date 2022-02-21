@@ -8,9 +8,6 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for CreateNewDeliveryWindow.xaml
-    /// </summary>
     public partial class CreateNewDeliveryWindow : Window
     {
         private List<DeliveryItem> allUndeliveredItems { get; set; }

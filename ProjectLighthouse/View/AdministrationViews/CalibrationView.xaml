@@ -76,7 +76,7 @@
                 <Button
                     Command="{Binding GenerateReportCmd}"
                     Content="Download Report"
-                    Style="{StaticResource BlueButton}" />
+                    Style="{StaticResource CSVButton}" />
             </StackPanel>
         </Grid>
 

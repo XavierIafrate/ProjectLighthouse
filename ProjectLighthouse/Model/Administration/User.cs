@@ -38,6 +38,8 @@ namespace ProjectLighthouse.Model
         public bool CanCreateAssemblyProducts { get; set; }
         public bool CanRaiseRequest { get; set; }
         public bool CanCreateSpecial { get; set; }
+        public bool CanModifyCalibration { get; set; }
+        public bool CanAddCalibrationCertificates { get; set; }
         public bool EnableDataSync { get; set; }
 
         public string DefaultView { get; set; }

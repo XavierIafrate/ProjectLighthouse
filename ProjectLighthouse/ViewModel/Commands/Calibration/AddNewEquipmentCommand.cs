@@ -15,7 +15,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Calibration
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return App.CurrentUser.CanModifyCalibration;
         }
 
         public void Execute(object parameter)

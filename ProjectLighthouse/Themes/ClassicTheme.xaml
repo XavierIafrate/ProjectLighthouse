@@ -10,7 +10,7 @@
     <SolidColorBrush x:Key="materialPrimaryBlueVar" Color="#01579B" />
 
     <SolidColorBrush x:Key="materialBackground" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="materialSurface" Color="#f3f3f3" />
+    <SolidColorBrush x:Key="materialSurface" Color="#f1f1f1" />
 
     <SolidColorBrush x:Key="materialError" Color="#B00020" />
     <SolidColorBrush x:Key="materialErrorVar" Color="#e5002a" />

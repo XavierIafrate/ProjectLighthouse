@@ -21,6 +21,12 @@ namespace ProjectLighthouse.View.UserControls
                 return;
 
             control.DataContext = control.LatheManufactureOrder;
+
+            control.RecentUpdateFlag.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddHours(5) > System.DateTime.Now)
+                && control.LatheManufactureOrder.State < OrderState.Running
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            
         }
 
         public DisplayLatheManufactureOrder()

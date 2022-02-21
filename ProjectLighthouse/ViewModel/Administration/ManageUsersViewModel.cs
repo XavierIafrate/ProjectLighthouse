@@ -257,9 +257,9 @@ namespace ProjectLighthouse.ViewModel
         public void GenerateReport()
         {
             ReportPdf reportService = new();
-            List<User> reportUsers = Users.Where(u => u.UserRole is "admin" or "Purchasing" or "Production" or "Scheduling").ToList();
+            List<User> reportUsers = Users.Where(u => u.UserRole is "Purchasing" or "Production" or "Scheduling").ToList();
             LoginReportData reportData = new(reportUsers, Logins, DateTime.Today.AddDays(-7), DateTime.Now);
-            string path = @"C:\Users\x.iafrate\Documents\LoginReport.pdf";
+            string path = $@"C:\Users\x.iafrate\Documents\LoginReport_{DateTime.Now:yyMMdd_HHmmss}.pdf";
 
             reportService.Export(path, reportData);
             reportService.OpenPdf(path);

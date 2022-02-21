@@ -74,13 +74,13 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         private void AddColumnsAndHeaders(Table table)
         {
             Unit width = Size.GetWidth(table.Section);
-            table.AddColumn(width * 0.15);
-            table.AddColumn(width * 0.1);
-            table.AddColumn(width * 0.1);
-            table.AddColumn(width * 0.15);
-            table.AddColumn(width * 0.15);
-            table.AddColumn(width * 0.15);
             table.AddColumn(width * 0.2);
+            table.AddColumn(width * 0.15);
+            table.AddColumn(width * 0.08);
+            table.AddColumn(width * 0.12);
+            table.AddColumn(width * 0.15);
+            table.AddColumn(width * 0.15);
+            table.AddColumn(width * 0.15);
 
             Row headerRow = table.AddRow();
             headerRow.Borders.Bottom.Width = 1;
@@ -107,7 +107,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             int numRowsRequired = logins.Count;
             AllocateRows(table, numRowsRequired);
 
-            table.Rows[0].KeepWith = Math.Min(numRowsRequired, 1);
+            table.Rows[0].KeepWith = Math.Min(numRowsRequired, 5);
 
             foreach (Login login in logins)
             { 

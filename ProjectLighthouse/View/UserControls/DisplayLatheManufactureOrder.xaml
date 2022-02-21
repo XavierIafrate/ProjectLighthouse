@@ -9,7 +9,7 @@
     MinWidth="200"
     MinHeight="50"
     d:Background="White"
-    d:DesignWidth="280"
+    d:DesignWidth="359"
     mc:Ignorable="d">
     <Grid>
         <Grid.Resources>
@@ -35,10 +35,21 @@
                 Foreground="{StaticResource materialOffBlack}"
                 Text="{Binding AllocatedMachine, FallbackValue='C00'}" />
         </StackPanel>
+        <Border Grid.Column="1" Background="{StaticResource materialPrimaryBlue}" Width="10" Height="10" CornerRadius="5" Margin="8,0" HorizontalAlignment="Left" x:Name="RecentUpdateFlag" Opacity="0.7"/>
         <StackPanel
             Grid.Column="1"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
+            <Path
+                Width="20"
+                Height="20"
+                Margin="5,0"
+                VerticalAlignment="Center"
+                Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
+                Fill="{StaticResource materialPrimaryBlue}"
+                Stretch="Uniform"
+                ToolTip="This order is closed."
+                Visibility="{Binding IsClosed, Converter={StaticResource boolToHide}}" />
             <Grid x:Name="CleaningRequired" ToolTip="An item requires ultrasonic cleaning"
                   Visibility="{Binding ItemNeedsCleaning, Converter={StaticResource boolToHide}}">
                 <Path
@@ -57,7 +68,7 @@
                     Stretch="Uniform" />
             </Grid>
             <Path
-                Visibility="{Binding Path=., Converter={StaticResource  staleVis}}"
+                Visibility="{Binding Path=., Converter={StaticResource staleVis}}"
                 Width="20"
                 Height="20"
                 Margin="5"
@@ -74,10 +85,12 @@
             <Border
                 x:Name="badgeBackground"
                 Height="20"
+                Width="90"
                 Background="{Binding State, Converter={StaticResource stateToBrush}}"
                 d:Background="{StaticResource materialPrimary}"
                 CornerRadius="10">
                 <TextBlock
+                    HorizontalAlignment="Center"
                     x:Name="BadgeText"
                     Padding="15,0,15,2"
                     FontSize="14"
