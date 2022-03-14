@@ -7,31 +7,36 @@ namespace ProjectLighthouse.ViewModel
 {
     public class RequestsEngine
     {
-        public static List<LatheManufactureOrderItem> GetRecommendedOrderItems(List<TurnedProduct> turnedProducts, TurnedProduct requiredProduct, int qtyOfRequired, TimeSpan maxRuntime, DateTime? RequiredProductDueDate = null)
+        public static List<LatheManufactureOrderItem> GetRecommendedOrderItems(List<TurnedProduct> turnedProducts, TurnedProduct requiredProduct, int qtyOfRequired, TimeSpan maxRuntime, DateTime? RequiredProductDueDate = null, int numberOfItems = 4)
         {
-            List<LatheManufactureOrderItem> unfilteredItems = new();
+            List<LatheManufactureOrderItem> recommendedItems = new();
             if (RequiredProductDueDate != null)
             {
-                unfilteredItems.Add(new(requiredProduct, qtyOfRequired) { DateRequired = (DateTime)RequiredProductDueDate });
+                recommendedItems.Add(new(requiredProduct, qtyOfRequired) { DateRequired = (DateTime)RequiredProductDueDate });
             }
             else
             {
-                unfilteredItems.Add(new(requiredProduct, qtyOfRequired));
+                recommendedItems.Add(new(requiredProduct, qtyOfRequired));
             }
 
-            turnedProducts = turnedProducts
-                .Where(p => p.IsScheduleCompatible(requiredProduct) && Math.Abs(p.MajorLength - requiredProduct.MajorLength) <= 40)
+            List<TurnedProduct> compatibleProducts = new();
+            
+            compatibleProducts.AddRange(turnedProducts
+                .Where(p => p.IsScheduleCompatible(requiredProduct) 
+                    && Math.Abs(p.MajorLength - requiredProduct.MajorLength) <= 40 
+                    && p.ProductName != requiredProduct.ProductName)
                 .OrderByDescending(p => p.GetRecommendedQuantity())
-                .Take(3) // Max other products on order
-                .ToList();
+                );
 
-            foreach (TurnedProduct product in turnedProducts)
+            foreach (TurnedProduct product in compatibleProducts)
             {
                 LatheManufactureOrderItem newItem = new(product);
-                unfilteredItems.Add(newItem);
+                recommendedItems.Add(newItem);
             }
 
-            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(unfilteredItems, maxRuntime, enforceMOQs:true);
+            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendedItems, maxRuntime, enforceMOQs:true);
+
+            filteredItems = filteredItems.Take(numberOfItems).ToList();
 
             return filteredItems;
         }

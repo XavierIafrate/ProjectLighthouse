@@ -39,7 +39,7 @@
                     x:Name="LogoFill"
                     Width="34"
                     Height="34"
-                    Background="{StaticResource materialGreen}"
+                    Background="#ec1c24"
                     CornerRadius="4"
                     Visibility="Hidden">
                     <Border.RenderTransform>

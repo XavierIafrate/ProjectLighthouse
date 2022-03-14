@@ -75,8 +75,8 @@ namespace ProjectLighthouse.View
                 CalHouseTextBox.BorderBrush = okBrush;
             }
 
-            if (NewCertificate.DateIssued < DateTime.Today.AddMonths(-Equipment.CalibrationIntervalMonths -1 ) || NewCertificate.DateIssued > DateTime.Today
-                || NewCertificate.DateIssued < Equipment.LastCalibrated)
+            if (NewCertificate.DateIssued > DateTime.Today
+                || NewCertificate.DateIssued < Equipment.LastCalibrated) //NewCertificate.DateIssued < DateTime.Today.AddMonths(-Equipment.CalibrationIntervalMonths -1 ) || 
             {
                 NoErrors = false;
                 datePicker.BorderBrush = (Brush)Application.Current.Resources["materialError"];

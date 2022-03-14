@@ -37,6 +37,7 @@
     <None Remove="Resources\Font\Roboto-Thin.ttf" />
     <None Remove="Resources\Font\Roboto-ThinItalic.ttf" />
     <None Remove="Resources\GIF\fireworks.gif" />
+    <None Remove="Resources\hartland.jpg" />
     <None Remove="Resources\Lighthouse_dark_PDF.png" />
     <None Remove="Resources\snowdonia.jpg" />
     <None Remove="Resources\SplashScreen.png" />
@@ -103,6 +104,7 @@
     <Resource Include="Resources\GIF\moderate.gif" />
     <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\GIF\travolta.gif" />
+    <Resource Include="Resources\hartland.jpg" />
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

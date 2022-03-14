@@ -119,7 +119,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
             else
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < content.Count; i++)
                 {
                     Row row = table.Rows[i + fromRow];
                     row.Cells[col].Add(content[i]);

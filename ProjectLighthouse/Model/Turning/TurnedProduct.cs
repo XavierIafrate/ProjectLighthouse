@@ -40,6 +40,8 @@ namespace ProjectLighthouse.Model
         public string AddedBy { get; set; }
         public DateTime AddedDate { get; set; }
 
+        public bool Retired { get; set; }
+
         public int GetRecommendedQuantity(bool forManufacture = false)
         {
             
@@ -100,8 +102,7 @@ namespace ProjectLighthouse.Model
                 otherProduct.DriveType == DriveType &&
                 otherProduct.ThreadSize == ThreadSize &&
                 otherProduct.ProductGroup == ProductGroup &&
-                otherProduct.Material == Material &&
-                otherProduct.ProductName != ProductName;
+                otherProduct.Material == Material;
         }
 
         // For requests engine

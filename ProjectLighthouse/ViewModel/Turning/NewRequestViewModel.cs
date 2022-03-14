@@ -171,7 +171,9 @@ namespace ProjectLighthouse.ViewModel
 
         private void PopulateComboBox()
         {
-            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().OrderBy(x => x.ProductName).ToList();
+            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>()
+                .Where(x => !x.Retired)
+                .OrderBy(x => x.ProductName).ToList();
             TurnedProducts.Clear();
             Families.Clear();
             Families.Add("Live");
@@ -262,7 +264,7 @@ namespace ProjectLighthouse.ViewModel
                     if (item.ProductName == orderItem.ProductName)
                     {
                         item.IsAlreadyOnOrder = true;
-                        item.LighthouseGuaranteedQuantity = orderItem.LighthouseGuaranteedQuantity;
+                        item.LighthouseGuaranteedQuantity += orderItem.LighthouseGuaranteedQuantity;
                     }
                 }
 

@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Lighthouse Login"
-    Width="800"
+    Width="750"
     Height="400"
     AllowsTransparency="True"
     Background="Transparent"
@@ -18,9 +18,37 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="450" />
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="280" />
         </Grid.ColumnDefinitions>
-        <Rectangle
+        <Border
+            Name="ReceiverColor"
+            Grid.ColumnSpan="2"
+            CornerRadius="20"
+            >
+            <Grid>
+                <Border
+                        Name="Mask"
+                        Background="{StaticResource materialPrimaryBlue}"
+                        CornerRadius="20,0,0,20" />
+                <Grid x:Name="image">
+                    <Image 
+                        Name="Receiver"
+                        Source="/Resources/StartPoint.png"
+                        Stretch="UniformToFill" />
+                    <!--<Image 
+                        VerticalAlignment="Bottom"
+                        Name="Receiver"
+                        Source="/Resources/hartland.jpg"
+                        Stretch="UniformToFill" >-->
+                    <!--</Image>-->
+                    <Grid.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{Binding ElementName=Mask}" />
+                    </Grid.OpacityMask>
+                </Grid>
+            </Grid>
+        </Border>
+        <!--<Rectangle
             Grid.ColumnSpan="2"
             RadiusX="20"
             RadiusY="20">
@@ -35,8 +63,8 @@
                     </ImageBrush.RelativeTransform>
                 </ImageBrush>
             </Rectangle.Fill>
-        </Rectangle>
-        <Grid Grid.Column="1" Width="300">
+        </Rectangle>-->
+        <Grid Grid.Column="1" Width="300" Grid.ColumnSpan="2">
             <Rectangle
                 Fill="{StaticResource materialBackground}"
                 RadiusX="20"

@@ -27,6 +27,7 @@
 
             <Style x:Key="InsightName" TargetType="TextBlock">
                 <Setter Property="Padding" Value="0,2" />
+                <Setter Property="FontStyle" Value="Italic"/>
                 <Setter Property="FontSize" Value="14" />
             </Style>
 
@@ -211,10 +212,12 @@
                             Text="{Binding SelectedProduct.ProductName, FallbackValue='Nothing selected'}" />
 
                         <TextBlock
+                            Margin="0,10,0,0"
                             Grid.Row="1"
                             Style="{StaticResource InsightName}"
                             Text="Quantity in Stock" />
                         <TextBlock
+                            Margin="0,10,0,0"
                             Grid.Row="1"
                             Grid.Column="2"
                             Style="{StaticResource InsightValue}"
@@ -251,10 +254,12 @@
                             Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />
 
                         <TextBlock
+                            Margin="0,10,0,0"
                             Grid.Row="5"
                             Style="{StaticResource InsightName}"
                             Text="Schedule Compatible" />
                         <TextBlock
+                            Margin="0,10,0,0"
                             Grid.Row="5"
                             Grid.Column="2"
                             Style="{StaticResource InsightValue}"
@@ -283,12 +288,14 @@
                         <TextBlock
                             Grid.Row="8"
                             Style="{StaticResource InsightName}"
-                            Text="Approval Likeliness" />
+                            Text="Approval Likeliness" 
+                            Margin="0,10,0,0"/>
                         <TextBlock
                             Grid.Row="8"
                             Grid.Column="2"
                             Style="{StaticResource InsightValue}"
-                            Text="{Binding LikelinessText}" />
+                            Text="{Binding LikelinessText}"
+                            Margin="0,10,0,0"/>
                     </Grid>
 
                     <Grid Grid.Row="2" Height="10" />

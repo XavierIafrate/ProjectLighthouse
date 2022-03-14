@@ -357,7 +357,7 @@ namespace ProjectLighthouse.ViewModel
                     break;
 
                 case "Complete":
-                    orders = Orders.Where(n => n.State > OrderState.Running && n.IsClosed).OrderByDescending(n => n.CreatedAt).ToList();
+                    orders = Orders.Where(n => n.State > OrderState.Running && n.IsClosed).OrderByDescending(n => n.ModifiedAt).ToList();
                     break;
 
                 case "All":

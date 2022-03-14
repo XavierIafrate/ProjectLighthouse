@@ -54,8 +54,6 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-                <!--</Border>-->
-
 
                 <TextBlock
                     Grid.ColumnSpan="3"
