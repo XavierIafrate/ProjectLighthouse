@@ -13,6 +13,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class ScheduleViewModel : BaseViewModel
     {
+        public List<ScheduleWarning> Problems { get; set; }
         public List<MachineService> PlannedServices { get; set; }
         public List<ResearchTime> PlannedResearch { get; set; }
 
@@ -32,7 +33,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 _filteredItems = value;
-                OnPropertyChanged("FilteredItems");
+                OnPropertyChanged();
             }
         }
 
@@ -87,6 +88,8 @@ namespace ProjectLighthouse.ViewModel
         private void LoadData()
         {
             ActiveOrders = new();
+            Problems = new();
+
             OrderHeaders = DatabaseHelper.Read<LatheManufactureOrder>();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
 
@@ -129,6 +132,7 @@ namespace ProjectLighthouse.ViewModel
                 searchString = SelectedLathe.Id;
                 PrintButtonVis = Visibility.Visible;
             }
+
             OnPropertyChanged("PrintButtonVis");
 
             FilteredItems = new();
@@ -143,6 +147,13 @@ namespace ProjectLighthouse.ViewModel
             FilteredItems.AddRange(PlannedServices.Where(s => s.AllocatedMachine == searchString));
             FilteredItems.AddRange(PlannedResearch.Where(r => r.AllocatedMachine == searchString));
 
+            FilteredItems = FilteredItems.OrderBy(i => i.StartDate).ToList();
+            if (App.CurrentUser.Role >= UserRole.Scheduling)
+            {
+                GetProblems();
+            }
+
+            FilteredItems.AddRange(Problems);
             FilteredItems = FilteredItems.OrderBy(i => i.StartDate).ToList();
 
             foreach (ScheduleItem order in FilteredItems)
@@ -162,10 +173,40 @@ namespace ProjectLighthouse.ViewModel
                 : Visibility.Collapsed;
             OnPropertyChanged("InsightsVis");
 
-            ViewTitle = $"Schedule for {Filter}";
+
+            ViewTitle = Filter == "Unallocated" ? "Unscheduled Orders" : $"Schedule for {Filter}";
             OnPropertyChanged("ViewTitle");
 
             GetInsights();
+        }
+
+        private void GetProblems()
+        {
+            // TODO: 
+            // Factor in required product times
+
+            Problems.Clear();
+            for (int i = 0; i < FilteredItems.Count - 1; i++)
+            {
+                DateTime starting = FilteredItems[i].StartDate;
+                DateTime ending = starting.AddSeconds(FilteredItems[i].TimeToComplete);
+                DateTime nextStarting = FilteredItems[i + 1].StartDate;
+                if (starting == nextStarting)
+                {
+                    Problems.Add(new() { WarningText = $"{FilteredItems[i].Name} and {FilteredItems[i + 1].Name} have the same start date", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = true });
+                }
+                else if (nextStarting < ending)
+                {
+                    Problems.Add(new() { WarningText = $"{FilteredItems[i].Name} will overflow by {(ending - nextStarting).TotalHours:0} hours", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = true });
+                }
+                else
+                {
+                    if ((nextStarting - ending).TotalHours >= 12)
+                    {
+                        Problems.Add(new() { WarningText = $"Downtime of {(nextStarting - ending).TotalHours:0} hours anticipated", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = false });
+                    }
+                }
+            }
         }
 
         private void GetInsights()

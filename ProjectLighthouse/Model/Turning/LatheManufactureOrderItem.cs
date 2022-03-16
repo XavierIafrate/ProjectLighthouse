@@ -110,5 +110,22 @@ namespace ProjectLighthouse.Model
         {
             return ProductName;
         }
+
+        public int GetCycleTime()
+        {
+            if (CycleTime != 0)
+            {
+                return CycleTime;
+            }
+            else
+            {
+                return MajorDiameter switch
+                {
+                    < 15 => 120,
+                    < 24 => 180,
+                    _ => 240
+                };
+            }
+        }
     }
 }

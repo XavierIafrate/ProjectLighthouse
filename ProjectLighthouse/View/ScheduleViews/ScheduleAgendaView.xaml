@@ -135,7 +135,11 @@
                     <DataTemplate x:Key="MachineService">
                         <userControls:DisplayMachineService Service="{Binding Path=., Mode=TwoWay}"/>
                     </DataTemplate>
-                    
+
+                    <DataTemplate x:Key="ScheduleWarning">
+                        <userControls:DisplayScheduleWarning Warning="{Binding Path=., Mode=OneWay}"/>
+                    </DataTemplate>
+
                 </ItemsControl.Resources>
             </ListView>
             <TextBlock

@@ -1,7 +1,8 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,50 +28,86 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DisplayLMOScheduling control = d as DisplayLMOScheduling;
-
-
-            if (control != null)
+            if (d is DisplayLMOScheduling control)
             {
-                if (control.orderObject != null)
+                if (control.orderObject == null)
                 {
-                    control.DataContext = control.orderObject;
+                    return;
+                }
 
-                    switch (control.orderObject.State)
-                    {
-                        case OrderState.Problem:
-                            control.bg.Background = (Brush)Application.Current.Resources["materialError"];
-                            control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
-                            break;
-                        case OrderState.Ready:
-                            control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                            control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                            break;
-                        case OrderState.Prepared:
-                            control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                            control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                            break;
-                        case OrderState.Running:
-                            control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryBlue"];
-                            control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryBlue"];
-                            break;
-                        default:
-                            control.bg.Background = (Brush)Application.Current.Resources["materialError"];
-                            control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
-                            break;
-                    }
-                    control.orderItems.ItemsSource = control.orderObject.OrderItems;
+                control.DataContext = control.orderObject;
 
-                    control.LargeDiameterIndicator.Visibility = control.orderObject.OrderItems.First().MajorLength > 90 || control.orderObject.OrderItems.First().MajorDiameter > 20
+                switch (control.orderObject.State)
+                {
+                    case OrderState.Problem:
+                        control.bg.Background = (Brush)Application.Current.Resources["materialError"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
+                        break;
+                    case OrderState.Ready:
+                        control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                        break;
+                    case OrderState.Prepared:
+                        control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                        break;
+                    case OrderState.Running:
+                        control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryBlue"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryBlue"];
+                        break;
+                    default:
+                        control.bg.Background = (Brush)Application.Current.Resources["materialError"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
+                        break;
+                }
+                control.orderItems.ItemsSource = control.orderObject.OrderItems;
+
+                control.LargeDiameterIndicator.Visibility = control.orderObject.OrderItems.First().MajorLength > 90 || control.orderObject.OrderItems.First().MajorDiameter > 20
                     ? Visibility.Visible
                     : Visibility.Collapsed;
-                }
+
                 control.editButton.Visibility = App.CurrentUser.UserRole is "Scheduling" or "admin"
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
+
+                control.WarningBanner.Visibility = Visibility.Collapsed;
+                int secondsBudgeted = 0;
+
+                DateTime startDate = control.orderObject.StartDate;
+                List<LatheManufactureOrderItem> orderedItems = control.orderObject.OrderItems.OrderBy(x => x.DateRequired).ToList();
+
+                for (int i = 0; i < orderedItems.Count; i++)
+                {
+                    LatheManufactureOrderItem item = orderedItems[i];
+                    if (item.RequiredQuantity == 0)
+                    {
+                        continue;
+                    }
+
+                    int secondsToRequirement = item.RequiredQuantity * item.GetCycleTime();
+
+                    int diff = (int)(item.DateRequired.Date - startDate.Date.AddSeconds(secondsBudgeted)).TotalSeconds;
+
+                    if (diff < secondsToRequirement)
+                    {
+                        control.WarningBanner.Visibility = Visibility.Visible;
+                        control.WarningText.Text = "A delivery target will be missed with high confidence";
+                        break;
+                    }
+                    else if (diff * 0.9 < secondsToRequirement || diff <= 86400)
+                    {
+                        control.WarningBanner.Visibility = Visibility.Visible;
+                        control.WarningText.Text = "A delivery target is at risk";
+                    }
+                    else
+                    {
+                        control.WarningBanner.Visibility = Visibility.Collapsed;
+                    }
+
+                    secondsBudgeted += secondsToRequirement;
+                }
             }
-            
         }
 
         public DisplayLMOScheduling()
@@ -97,12 +134,12 @@ namespace ProjectLighthouse.View.UserControls
             if (MainCanvas.ColumnDefinitions[2].ActualWidth >= 470)
             {
                 Grid.SetColumn(OrderItemsSubControl, 2);
-                Grid.SetRow(OrderItemsSubControl, 0);
+                Grid.SetRow(OrderItemsSubControl, 1);
             }
             else
             {
                 Grid.SetColumn(OrderItemsSubControl, 0);
-                Grid.SetRow(OrderItemsSubControl, 1);
+                Grid.SetRow(OrderItemsSubControl, 2);
             }
         }
     }

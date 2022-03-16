@@ -18,6 +18,9 @@
         <converters:orderItemToRequirementText x:Key="requirementText" />
     </UserControl.Resources>
     <Grid Margin="7">
+        <Grid.ToolTip>
+            <local:OrderStatusTooltip Order="{Binding}" ToolTipService.ShowDuration="60" Margin="0"/>
+        </Grid.ToolTip>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="12" />
             <ColumnDefinition Width="*" />
@@ -37,9 +40,19 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel Margin="20,10">
+            <Border Grid.ColumnSpan="3" Background="{StaticResource materialError}" Margin="10,0,0,0" CornerRadius="10" Height="26" x:Name="WarningBanner" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,3">
+                    <Path Data="M12,2C16.46,2 20.26,4.95 21.54,9H18V20C16.33,21.25 14.25,22 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M16.2,16.2L17,14.9L12.5,12.2V7H11V13L16.2,16.2M20,11H22V18H20V11M20,20H22V22H20V20Z"
+                          Width="15" Height="15" Stretch="UniformToFill" Fill="{StaticResource materialOnError}" Margin="0,0,5,0"/>
+                    <TextBlock Text="WARNING" Foreground="{StaticResource materialOnError}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Text="This order is at risk of not meeting delivery target" Margin="5,0,0,0" Foreground="{StaticResource materialOnError}" FontStyle="Italic" x:Name="WarningText"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Row="1" Margin="20,10">
                 <TextBlock
                     FontSize="25"
                     FontWeight="Bold"
@@ -97,7 +110,7 @@
                     Style="{StaticResource SubtleButtonTemplate}" />
             </StackPanel>
 
-            <Grid Grid.Column="1" Margin="10">
+            <Grid Grid.Column="1" Margin="10" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
@@ -164,7 +177,7 @@
 
             <StackPanel
                 x:Name="OrderItemsSubControl"
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 MaxWidth="600"

@@ -98,9 +98,7 @@ namespace ProjectLighthouse.ViewModel
                     cleanedItems.Add(item);
                 }
 
-                int cycleTime = item.CycleTime == 0 ? 120 : item.CycleTime;
-                permittedSeconds -= cycleTime * item.TargetQuantity;
-
+                permittedSeconds -= item.GetCycleTime() * item.TargetQuantity;
             }
 
             return cleanedItems;

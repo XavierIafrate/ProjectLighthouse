@@ -57,8 +57,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             for (int i = 0; i < order.OrderItems.Count; i++)
             {
                 LatheManufactureOrderItem item = order.OrderItems[i];
-                int cycleTime = item.CycleTime > 0 ? item.CycleTime : 120;
-                runtime += cycleTime * (item.TargetQuantity - item.QuantityMade);
+                runtime += item.GetCycleTime() * (item.TargetQuantity - item.QuantityMade);
             }
 
             return runtime;

@@ -227,12 +227,7 @@ namespace ProjectLighthouse.View
             int value = 0;  
             Insights.TimeIsEstimate = false;
 
-            int appxCycleTime = 120;
             List<LatheManufactureOrderItem> itemsWithCycleTime = NewOrderItems.Where(x => x.CycleTime != 0).ToList();
-            if (itemsWithCycleTime.Count > 0)
-            {
-                appxCycleTime = itemsWithCycleTime[0].CycleTime;
-            }
 
             for (int i = 0; i < NewOrderItems.Count; i++)
             {
@@ -249,7 +244,7 @@ namespace ProjectLighthouse.View
                 }
                 else
                 {
-                    time += appxCycleTime * NewOrderItems[i].TargetQuantity;
+                    time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
                     Insights.TimeIsEstimate = true;
                 }
             }
@@ -312,7 +307,7 @@ namespace ProjectLighthouse.View
             int time = 0;
             for (int i = 0; i < NewOrderItems.Count; i++)
             {
-                time += (NewOrderItems[i].CycleTime == 0 ? 120 : NewOrderItems[i].CycleTime) * NewOrderItems[i].TargetQuantity;
+                time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
             }
             NewOrder.TimeToComplete = time;
 

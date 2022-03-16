@@ -219,10 +219,7 @@ namespace ProjectLighthouse.View
             int estimatedTimeSeconds = 0;
             foreach (LatheManufactureOrderItem item in items)
             {
-                int cycleTime = item.CycleTime == 0
-                    ? 120
-                    : item.CycleTime;
-                estimatedTimeSeconds += cycleTime * item.TargetQuantity;
+                estimatedTimeSeconds += item.GetCycleTime() * item.TargetQuantity;
             }
 
             order.TimeToComplete = estimatedTimeSeconds;

@@ -123,6 +123,7 @@
                 <DataTemplate>
                     <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding }" />
                 </DataTemplate>
+                
             </ListView.ItemTemplate>
         </ListView>
 

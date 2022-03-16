@@ -42,6 +42,23 @@ namespace ProjectLighthouse.Model
 
         public bool Retired { get; set; }
 
+        public int GetCycleTime()
+        {
+            if (CycleTime != 0)
+            {
+                return CycleTime;
+            }
+            else
+            {
+                return MajorDiameter switch
+                {
+                    < 15 => 120,
+                    < 24 => 180,
+                    _ => 240
+                };
+            }
+        }
+
         public int GetRecommendedQuantity(bool forManufacture = false)
         {
             
@@ -63,9 +80,7 @@ namespace ProjectLighthouse.Model
 
         public TimeSpan GetTimeToMake(int quantity)
         {
-            return CycleTime == 0
-                ? TimeSpan.FromSeconds(quantity * 120)
-                : TimeSpan.FromSeconds(quantity * CycleTime);
+            return TimeSpan.FromSeconds(quantity * GetCycleTime());
         }
 
         public bool CanBeManufactured()
