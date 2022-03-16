@@ -11,7 +11,7 @@
                         x:Name="rectangle"
                         Width="{TemplateBinding Width}"
                         Height="{TemplateBinding Height}"
-                        Background="{StaticResource materialPrimaryBlueVar}"
+                        Background="{StaticResource Blue}"
                         CornerRadius="4"
                         Opacity="0.4"
                         SnapsToDevicePixels="True" />

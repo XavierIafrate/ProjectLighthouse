@@ -28,17 +28,17 @@
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <Grid Margin="0,10" Visibility="{Binding QuickOrderVis}">
-                        <Border Background="{StaticResource materialPrimary}" CornerRadius="10" />
+                        <Border Background="{StaticResource Purple}" CornerRadius="10" />
                         <StackPanel Orientation="Horizontal">
                             <Path
                                 Margin="15,0,0,0"
                                 Height="30"
                                 Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
-                                Fill="{StaticResource materialOnError}"
+                                Fill="{StaticResource OnRed}"
                                 Stretch="UniformToFill" />
                             <StackPanel Margin="10,10,15,10" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding NumberOfBars, StringFormat='{}{0:#,##0} more bars required to cover active orders'}" Foreground="{StaticResource materialOnPrimary}" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding CostOfNewBar, StringFormat='{}Approximately £{0:N0}'}" Foreground="{StaticResource materialOnPrimary}" FontStyle="Italic" Opacity="0.8"/>
+                                <TextBlock Text="{Binding NumberOfBars, StringFormat='{}{0:#,##0} more bars required to cover active orders'}" Foreground="{StaticResource Purple}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding CostOfNewBar, StringFormat='{}Approximately £{0:N0}'}" Foreground="{StaticResource OnPurple}" FontStyle="Italic" Opacity="0.8"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>

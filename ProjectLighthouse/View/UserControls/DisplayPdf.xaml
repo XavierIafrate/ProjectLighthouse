@@ -12,7 +12,7 @@
     <Grid>
         <Border
             Grid.ColumnSpan="3"
-            Background="{StaticResource materialSurface}"
+            Background="{StaticResource Surface}"
             CornerRadius="10" />
         <Grid Margin="15,5">
             <Grid.ColumnDefinitions>

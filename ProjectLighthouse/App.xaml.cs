@@ -18,6 +18,7 @@ namespace ProjectLighthouse
         public static DateTime LastDataRefresh { get; set; } = DateTime.MinValue;
         public static Skin Skin { get; set; } = Skin.Dark;
         public static System.Timers.Timer DataRefreshTimer { get; set; }
+        public static bool DevMode { get; set; }
 
         public static MainViewModel MainViewModel { get; set; }
 
@@ -25,7 +26,11 @@ namespace ProjectLighthouse
         {
             base.OnStartup(e);
 
-            CheckForExistingInstances();
+            DatabaseHelper.DatabasePath = Environment.UserName == "xavier"
+                               ? @"C:\Users\xavie\Documents\lighthouse_test\manufactureDB.db3"
+                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
+
+            DevMode = Environment.UserName == "xavier" || DatabaseHelper.DatabasePath.Contains("debug");
 
             MainWindow Window = new();
             MainViewModel VM = new()

@@ -53,10 +53,10 @@
             Margin="10,10,10,5"
             Grid.Row="1"
             Grid.ColumnSpan="3"
-            Background="{StaticResource materialError}"
+            Background="{StaticResource Red}"
             CornerRadius="10"
             Padding="10,5"
-            TextElement.Foreground="{StaticResource materialOnError}">
+            TextElement.Foreground="{StaticResource OnRed}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <TextBlock Text="{Binding RequiredQuantity,StringFormat='{}{0:#,##0} pcs'}" />
                 <TextBlock Text=" guaranteed for " />

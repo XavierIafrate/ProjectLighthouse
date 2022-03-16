@@ -11,7 +11,7 @@
         <TextBlock Text="{Binding ProductName}" Margin="5" FontWeight="SemiBold" VerticalAlignment="Center" FontSize="16"/>
         <StackPanel HorizontalAlignment="Right" Margin="5">
             <TextBlock Text="{Binding RequiredQuantity, StringFormat='{}Required: {0} pcs'}" HorizontalAlignment="Right" x:Name="RequiredText" FontStyle="Italic" FontWeight="DemiBold"/>
-            <TextBlock Text="{Binding TargetQuantity, StringFormat='{}Target for Stock: {0} pcs'}" HorizontalAlignment="Right" Foreground="{StaticResource materialPrimaryGreen}" FontWeight="DemiBold"/>
+            <TextBlock Text="{Binding TargetQuantity, StringFormat='{}Target for Stock: {0} pcs'}" HorizontalAlignment="Right" Foreground="{StaticResource Green}" FontWeight="DemiBold"/>
         </StackPanel>
     </Grid>
 </UserControl>

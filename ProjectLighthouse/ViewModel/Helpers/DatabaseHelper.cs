@@ -7,18 +7,14 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class DatabaseHelper
     {
-        public static string GetDatabaseFile()
-        {
-            return Environment.UserName == "xavier"
-                               ? @"C:\Users\xavie\Documents\lighthouse_test\manufactureDB.db3"
-                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
-        }
+
+        public static string DatabasePath;
 
         public static bool Insert<T>(T item)
         {
             bool result = false;
 
-            using (SQLiteConnection conn = new(GetDatabaseFile()))
+            using (SQLiteConnection conn = new(DatabasePath))
             {
                 conn.CreateTable<T>();
                 try
@@ -42,7 +38,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
 
-            using (SQLiteConnection conn = new(GetDatabaseFile()))
+            using (SQLiteConnection conn = new(DatabasePath))
             {
                 try
                 {
@@ -65,7 +61,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             bool result = false;
 
-            using (SQLiteConnection conn = new(GetDatabaseFile()))
+            using (SQLiteConnection conn = new(DatabasePath))
             {
                 conn.CreateTable<T>();
                 int rows = conn.Delete(item);
@@ -82,7 +78,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             List<T> items;
             try
             {
-                using (SQLiteConnection conn = new(GetDatabaseFile()))
+                using (SQLiteConnection conn = new(DatabasePath))
                 {
                     conn.CreateTable<T>();
                     items = conn.Table<T>().ToList();

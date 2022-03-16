@@ -18,21 +18,32 @@
             <converters:intToDays x:Key="intToDaysConverter" />
         </Grid.Resources>
 
-        <Border x:Name="Warning" Background="Black" Width="5" Margin="0,0,5,0"/>
+        <Border
+            x:Name="Warning"
+            Width="5"
+            Margin="0,0,5,0"
+            Background="Black" />
         <StackPanel Grid.Column="1">
-            <TextBlock
-                x:Name="DateText"
-                FontSize="16"
-                FontWeight="SemiBold"
-                Text="Monday 1st" />
-            <ItemsControl x:Name="orderList" ItemsSource="{Binding Orders}" Margin="0">
+            <Grid>
+                <TextBlock
+                    x:Name="DateText"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="Monday 1st" />
+                <TextBlock x:Name="Counter" Text="{Binding Orders.Count, StringFormat='{}{0}x'}" FontFamily="Consolas" HorizontalAlignment="Right"/>
+            </Grid>
+
+            <ItemsControl
+                x:Name="orderList"
+                Margin="0"
+                ItemsSource="{Binding Orders}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type core:LatheManufactureOrder}">
                         <Grid Margin="5,2">
                             <Grid>
                                 <Border
                                     Grid.ColumnSpan="5"
-                                    Background="{StaticResource materialBackground}"
+                                    Background="{StaticResource Background}"
                                     CornerRadius="10" />
                                 <Grid Margin="5" TextElement.FontSize="13">
                                     <Grid.ColumnDefinitions>
@@ -60,7 +71,7 @@
                 HorizontalAlignment="Center"
                 FontSize="12"
                 FontStyle="Italic"
-                Foreground="{StaticResource disabledGray}"
+                Foreground="{StaticResource DisabledElement}"
                 Text="None" />
         </StackPanel>
     </Grid>

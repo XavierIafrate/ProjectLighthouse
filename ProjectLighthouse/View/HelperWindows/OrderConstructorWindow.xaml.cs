@@ -18,8 +18,8 @@ namespace ProjectLighthouse.View
         public string SelectedToolingGroup
         {
             get { return selectedToolingGroup; }
-            set 
-            { 
+            set
+            {
                 selectedToolingGroup = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ProductsInToolingGroup)));
                 NewOrderItems.Clear();
@@ -42,21 +42,21 @@ namespace ProjectLighthouse.View
         public ObservableCollection<LatheManufactureOrderItem> NewOrderItems
         {
             get { return newOrderItems; }
-            set 
-            { 
+            set
+            {
                 newOrderItems = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewOrderItems)));
             }
         }
 
         public LatheManufactureOrder NewOrder { get; set; } = new();
-        
+
         private NewOrderInsights insights = new();
         public NewOrderInsights Insights
         {
             get { return insights; }
-            set 
-            { 
+            set
+            {
                 insights = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Insights)));
             }
@@ -74,7 +74,7 @@ namespace ProjectLighthouse.View
         public LMOContructorWindow(Request? request, List<LatheManufactureOrderItem>? preselectedItems, bool withAuthority = true)
         {
             InitializeComponent();
-            
+
             DataContext = this;
             Products = DatabaseHelper.Read<TurnedProduct>();
             Bars = DatabaseHelper.Read<BarStock>();
@@ -93,7 +93,7 @@ namespace ProjectLighthouse.View
             if (!withAuthority)
             {
                 TitleText.Text = $"Request #{request.Id}: Make or Buy";
-                this.Title= $"Make or Buy Helper";
+                this.Title = $"Make or Buy Helper";
             }
 
             if (request != null)
@@ -224,7 +224,7 @@ namespace ProjectLighthouse.View
 
             double numBars = 0;
             int time = 3600 * 4;
-            int value = 0;  
+            int value = 0;
             Insights.TimeIsEstimate = false;
 
             List<LatheManufactureOrderItem> itemsWithCycleTime = NewOrderItems.Where(x => x.CycleTime != 0).ToList();

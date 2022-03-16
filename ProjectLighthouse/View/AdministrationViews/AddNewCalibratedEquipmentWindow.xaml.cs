@@ -68,7 +68,7 @@ namespace ProjectLighthouse.View
             bool noErrors = true;
             if (string.IsNullOrEmpty(NewEquipment.Make))
             {
-                MakeTextBox.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                MakeTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
                 noErrors = false;
             }
             else
@@ -78,7 +78,7 @@ namespace ProjectLighthouse.View
 
             if (string.IsNullOrEmpty(NewEquipment.Model))
             {
-                ModelTextBox.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                ModelTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
                 noErrors = false;
             }
             else
@@ -88,7 +88,7 @@ namespace ProjectLighthouse.View
 
             if (string.IsNullOrEmpty(NewEquipment.SerialNumber))
             {
-                SerialNumberTextBox.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                SerialNumberTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
                 noErrors = false;
             }
             else
@@ -98,7 +98,7 @@ namespace ProjectLighthouse.View
 
             if (string.IsNullOrEmpty(NewEquipment.Type))
             {
-                TypeTextBox.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                TypeTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
                 noErrors = false;
             }
             else
@@ -108,7 +108,7 @@ namespace ProjectLighthouse.View
 
             if (string.IsNullOrEmpty(NewEquipment.Location))
             {
-                LocationTextBox.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                LocationTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
                 noErrors = false;
             }
             else
@@ -118,7 +118,7 @@ namespace ProjectLighthouse.View
 
             if (NewEquipment.UKAS && NewEquipment.CalibrationIntervalMonths == 0)
             {
-                IntervalTextBox.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                IntervalTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
                 noErrors = false;
             }
             else

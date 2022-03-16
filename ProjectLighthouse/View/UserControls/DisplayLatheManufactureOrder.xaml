@@ -9,7 +9,7 @@
     MinWidth="200"
     MinHeight="50"
     d:Background="White"
-    d:DesignWidth="359"
+    d:DesignWidth="398.187"
     mc:Ignorable="d">
     <Grid>
 
@@ -27,16 +27,16 @@
                 x:Name="MOTextBlock"
                 FontSize="22"
                 FontWeight="Bold"
-                Foreground="{StaticResource materialOnBackground}"
+                Foreground="{StaticResource OnBackground}"
                 Text="{Binding Name, FallbackValue='M00001'}" />
             <TextBlock
                 x:Name="PORTextBlock"
                 FontSize="14"
                 FontWeight="SemiBold"
-                Foreground="{StaticResource materialOffBlack}"
+                Foreground="{StaticResource OnBackground}"
                 Text="{Binding AllocatedMachine, FallbackValue='C00'}" />
         </StackPanel>
-        <Border Grid.Column="1" Background="{StaticResource materialPrimaryBlue}" Width="10" Height="10" CornerRadius="5" Margin="8,0" HorizontalAlignment="Left" x:Name="RecentUpdateFlag" Opacity="0.7"/>
+        <Border Grid.Column="1" Background="{StaticResource Blue}" Width="10" Height="10" CornerRadius="5" Margin="8,0" HorizontalAlignment="Left" x:Name="RecentUpdateFlag" Opacity="0.7"/>
         <StackPanel
             Grid.Column="1"
             HorizontalAlignment="Right"
@@ -47,7 +47,7 @@
                 Margin="5,0"
                 VerticalAlignment="Center"
                 Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
-                Fill="{StaticResource materialPrimaryBlue}"
+                Fill="{StaticResource Blue}"
                 Stretch="Uniform"
                 ToolTip="This order is closed."
                 Visibility="{Binding IsClosed, Converter={StaticResource boolToHide}}" />
@@ -58,14 +58,14 @@
                     Height="25"
                     Margin="5"
                     Data="M12,20A6,6 0 0,1 6,14C6,10 12,3.25 12,3.25C12,3.25 18,10 18,14A6,6 0 0,1 12,20Z"
-                    Fill="{StaticResource materialPrimaryBlue}"
+                    Fill="{StaticResource Blue}"
                     Stretch="Uniform" />
                 <Path
                     Width="20"
                     Height="12"
                     Margin="5,23,5,19"
                     Data="M10 3H14V14H10V3M10 21V17H14V21H10Z"
-                    Fill="{StaticResource materialOnPrimary}"
+                    Fill="{StaticResource OnBlue}"
                     Stretch="Uniform" />
             </Grid>
             <Path
@@ -75,7 +75,7 @@
                 Margin="5"
                 HorizontalAlignment="Right"
                 Data="M12,2C16.46,2 20.26,4.95 21.54,9H18V20C16.33,21.25 14.25,22 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M16.2,16.2L17,14.9L12.5,12.2V7H11V13L16.2,16.2M20,11H22V18H20V11M20,20H22V22H20V20Z"
-                Fill="{StaticResource materialError}"
+                Fill="{StaticResource Red}"
                 Stretch="Uniform"
                 ToolTip="Last update on problem was over 3 days ago" />
         </StackPanel>
@@ -88,7 +88,7 @@
                 Height="20"
                 Width="90"
                 Background="{Binding State, Converter={StaticResource stateToBrush}}"
-                d:Background="{StaticResource materialPrimary}"
+                d:Background="{StaticResource Purple}"
                 CornerRadius="10">
                 <Border.ToolTip>
                     <local:OrderStatusTooltip Order="{Binding}" ToolTipService.ShowDuration="60" Margin="0"/>
@@ -98,7 +98,7 @@
                     x:Name="BadgeText"
                     Padding="15,0,15,2"
                     FontSize="14"
-                    Foreground="{StaticResource materialOnPrimary}"
+                    Foreground="{StaticResource OnPurple}"
                     Text="{Binding State, FallbackValue='ORDER_STATE'}" />
             </Border>
         </Grid>

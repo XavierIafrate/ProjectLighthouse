@@ -48,10 +48,11 @@ namespace ProjectLighthouse
 
             Title += $" v.{versionInfo.FileVersion}";
 
-#if DEBUG
-            Title += $" - {DatabaseHelper.GetDatabaseFile()}";
-            DebugTile.Visibility = Visibility.Visible;
-#endif
+            #if DEBUG
+            Title += $" - {DatabaseHelper.DatabasePath}";
+            #endif
+
+            DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject

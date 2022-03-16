@@ -24,7 +24,7 @@
             VerticalAlignment="Center"
             FontSize="22"
             FontWeight="Bold"
-            Foreground="{StaticResource materialOnBackground}"
+            Foreground="{StaticResource OnBackground}"
             Text="{Binding EquipmentId, FallbackValue='CE000'}" />
         <StackPanel
             Grid.Column="1"
@@ -55,7 +55,7 @@
             Width="20"
             Height="20"
             Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
-            Fill="{StaticResource materialPrimaryGreen}"
+            Fill="{StaticResource Green}"
             Stretch="Uniform" />
 
     </Grid>

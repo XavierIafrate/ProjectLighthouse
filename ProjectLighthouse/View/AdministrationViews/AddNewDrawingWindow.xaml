@@ -43,7 +43,7 @@
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Path Width="20" Height="15" Stretch="Uniform" Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z" Fill="{StaticResource materialOnBackground}"/>
+                    <Path Width="20" Height="15" Stretch="Uniform" Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z" Fill="{StaticResource OnBackground}"/>
                     <TextBlock VerticalAlignment="Center" Text="Tooling Group" Grid.Column="1" />
                     <ComboBox
                         x:Name="ToolingGroupConstraintComboBox"
@@ -58,7 +58,7 @@
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Path Width="20" Height="15" Stretch="Uniform" Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z" Fill="{StaticResource materialOnBackground}"/>
+                    <Path Width="20" Height="15" Stretch="Uniform" Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z" Fill="{StaticResource OnBackground}"/>
 
                     <TextBlock VerticalAlignment="Center" Text="Material" Grid.Column="1" />
                     <ComboBox
@@ -131,7 +131,7 @@
 
             <Border
                 Margin="0,20"
-                Background="{StaticResource materialSurface}"
+                Background="{StaticResource Surface}"
                 CornerRadius="10">
                 <Grid>
                     <Grid.ColumnDefinitions>

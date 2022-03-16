@@ -27,7 +27,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock
                     VerticalAlignment="Center"
-                    Foreground="{StaticResource materialPrimaryBlue}"
+                    Foreground="{StaticResource Blue}"
                     Style="{StaticResource subtitle}">
                     <Run Text="{Binding FirstName, FallbackValue='Randy'}" />
                     <Run Text="{Binding LastName, FallbackValue='Marsh'}" />
@@ -35,7 +35,7 @@
                     <Grid Margin="10,0">
                         <Border
                         Height="25"
-                        Background="{StaticResource materialPrimaryBlue}"
+                        Background="{StaticResource Blue}"
                         CornerRadius="10" />
                         <TextBlock
                         Padding="10,10,10,11"
@@ -121,14 +121,14 @@
                     <TextBlock Style="{StaticResource section}" Text="Change Password" />
                     <Grid Margin="0,10" HorizontalAlignment="Center">
                         <Rectangle
-                    Fill="{StaticResource materialError}"
+                    Fill="{StaticResource Red}"
                     RadiusX="10"
                     RadiusY="10" />
                         <TextBlock
                         Margin="20,6"
                         HorizontalAlignment="Center"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialOnError}"
+                        Foreground="{StaticResource OnRed}"
                         TextAlignment="Center"
                         TextWrapping="Wrap">
                         Please don't use your bank password.<LineBreak />
@@ -201,7 +201,7 @@
                 x:Name="helperText"
                 HorizontalAlignment="Center"
                 FontStyle="Italic"
-                Foreground="{StaticResource materialError}"
+                Foreground="{StaticResource Red}"
                 Text="Helper Text" />
 
 

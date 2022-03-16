@@ -7,8 +7,8 @@
                         <Grid Width="18" Height="18">
                             <Border
                                 x:Name="box"
-                                Background="{StaticResource materialSurface}"
-                                BorderBrush="{StaticResource disabledGray}"
+                                Background="{StaticResource Surface}"
+                                BorderBrush="{StaticResource DisabledElement}"
                                 BorderThickness="1"
                                 CornerRadius="9" />
                             <Path
@@ -24,18 +24,18 @@
                             Margin="5,0,5,1"
                             VerticalAlignment="Center"
                             TextElement.FontSize="15"
-                            TextElement.Foreground="{StaticResource materialOffBlack}" />
+                            TextElement.Foreground="{StaticResource OnBackground}" />
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="checkmark" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="box" Property="Background" Value="{StaticResource materialPrimaryGreen}" />
+                            <Setter TargetName="box" Property="Background" Value="{StaticResource Green}" />
                             <Setter TargetName="box" Property="BorderThickness" Value="0" />
-                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource materialPrimaryGreen}" />
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource Green}" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource disabledGray}" />
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource DisabledElement}" />
                         </Trigger>
 
                     </ControlTemplate.Triggers>

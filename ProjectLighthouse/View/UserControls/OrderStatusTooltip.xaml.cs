@@ -12,7 +12,6 @@ namespace ProjectLighthouse.View.UserControls
             set { SetValue(OrderProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Order.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OrderProperty =
             DependencyProperty.Register("Order", typeof(LatheManufactureOrder), typeof(OrderStatusTooltip), new PropertyMetadata(null, SetValues));
 
@@ -24,12 +23,6 @@ namespace ProjectLighthouse.View.UserControls
             }
 
             control.DataContext = control.Order;
-
-
-
-
-
-
         }
 
         public OrderStatusTooltip()

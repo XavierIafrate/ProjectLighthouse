@@ -21,12 +21,12 @@
                 x:Name="MOTextBlock"
                 FontSize="22"
                 FontWeight="Bold"
-                Foreground="{StaticResource materialOnBackground}"
+                Foreground="{StaticResource OnBackground}"
                 Text="{Binding Name, FallbackValue='M00001'}" />
             <TextBlock
                 x:Name="PORTextBlock"
                 FontSize="12"
-                Foreground="{StaticResource materialPrimaryBlue}"
+                Foreground="{StaticResource Blue}"
                 Text="{Binding DeliveryDate, FallbackValue='01/01/1970', StringFormat='{}Delivered {0:dd/MM/yy HH:mm}'}" />
         </StackPanel>
     </Grid>

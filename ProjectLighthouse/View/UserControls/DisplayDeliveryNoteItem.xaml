@@ -26,15 +26,15 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBlock
                 FontSize="14"
-                Foreground="{StaticResource materialPrimaryBlue}"
+                Foreground="{StaticResource Blue}"
                 Text="{Binding ItemManufactureOrderNumber, FallbackValue='M00001'}" />
             <TextBlock
                 FontSize="14"
-                Foreground="{StaticResource materialPrimaryBlue}"
+                Foreground="{StaticResource Blue}"
                 Text=" • " />
             <TextBlock
                 FontSize="14"
-                Foreground="{StaticResource materialPrimaryBlue}"
+                Foreground="{StaticResource Blue}"
                 Text="{Binding PurchaseOrderReference, FallbackValue='P012345'}" />
         </StackPanel>
 

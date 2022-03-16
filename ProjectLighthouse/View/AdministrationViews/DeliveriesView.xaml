@@ -55,7 +55,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Stretch"
             Background="White" />
-        <Grid Grid.Column="2" Background="{StaticResource materialBackground}">
+        <Grid Grid.Column="2" Background="{StaticResource Background}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid
                     MaxWidth="700"
@@ -64,7 +64,7 @@
                     <Rectangle
                         RadiusX="5"
                         RadiusY="5"
-                        Stroke="{StaticResource materialPrimaryBlue}"
+                        Stroke="{StaticResource Blue}"
                         StrokeThickness="2" />
                     <Grid Margin="30">
                         <StackPanel>
@@ -86,7 +86,7 @@
                                     Style="{StaticResource PDFButton}" />
                                 <TextBlock
                                     Grid.Row="1"
-                                    Foreground="{StaticResource materialPrimaryBlue}"
+                                    Foreground="{StaticResource Blue}"
                                     Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}'}" />
                                 <TextBlock Grid.Row="2" Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{}Delivered by {0}'}" />
                             </Grid>

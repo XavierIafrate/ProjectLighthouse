@@ -12,7 +12,7 @@
     mc:Ignorable="d">
     <StackPanel Margin="30">
         <TextBlock Text="Record Calibration Certificate" Style="{StaticResource title}"/>
-        <TextBlock Text="{Binding Instrument, StringFormat='{}FOR EQUIPMENT {0}'}" Style="{StaticResource subtitle}" Foreground="{StaticResource materialPrimary}"/>
+        <TextBlock Text="{Binding Instrument, StringFormat='{}FOR EQUIPMENT {0}'}" Style="{StaticResource subtitle}" Foreground="{StaticResource Purple}"/>
         <StackPanel Margin="40,20">
             <CheckBox Content="UKAS Accredited" IsChecked="{Binding UKAS}"/>
             <CheckBox Content="Passed" IsChecked="{Binding IsPass}"/>

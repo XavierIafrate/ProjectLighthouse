@@ -13,7 +13,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid>
-                        <Border Background="{StaticResource materialSurface}" />
+                        <Border Background="{StaticResource Surface}" />
                         <Path
                             Margin="3"
                             HorizontalAlignment="Center"
@@ -27,7 +27,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlueVar}" />
+                <Setter Property="Foreground" Value="{StaticResource Blue}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -52,7 +52,7 @@
                 <ControlTemplate TargetType="{x:Type DatePicker}">
                     <Border
                         Padding="{TemplateBinding Padding}"
-                        Background="{StaticResource materialSurface}"
+                        Background="{StaticResource Surface}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="10">

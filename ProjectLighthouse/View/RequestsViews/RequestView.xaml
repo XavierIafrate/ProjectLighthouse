@@ -10,7 +10,7 @@
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:DataContext="{d:DesignInstance Type=vm:RequestViewModel}"
     xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
-    Background="{StaticResource materialBackground}"
+    Background="{StaticResource Background}"
     mc:Ignorable="d">
 
     <Grid>
@@ -88,15 +88,15 @@
 
                 <Border
                     CornerRadius="10"
-                    BorderBrush="{StaticResource materialPrimaryBlue}"
+                    BorderBrush="{StaticResource Blue}"
                     BorderThickness="2"/>
 
                 <StackPanel Margin="20">
                     <!--  Card Header  -->
                     <TextBlock Text="{Binding SelectedRequest.Id,StringFormat='{}Request #{0}', FallbackValue='Request #0'}" Style="{StaticResource title}"/>
-                    <TextBlock Text="APPROVED" FontWeight="Bold" FontSize="18" Foreground="{StaticResource materialPrimaryGreen}" Visibility="{Binding ApprovedVis}"/>
-                    <TextBlock Text="DECLINED" FontWeight="Bold" FontSize="18" Foreground="{StaticResource materialError}" Visibility="{Binding DeclinedVis}"/>
-                    <TextBlock Text="PENDING" FontWeight="Bold" FontSize="18" Foreground="{StaticResource materialPrimaryBlue}" Visibility="{Binding ApprovalControlsVis}"/>
+                    <TextBlock Text="APPROVED" FontWeight="Bold" FontSize="18" Foreground="{StaticResource Green}" Visibility="{Binding ApprovedVis}"/>
+                    <TextBlock Text="DECLINED" FontWeight="Bold" FontSize="18" Foreground="{StaticResource Red}" Visibility="{Binding DeclinedVis}"/>
+                    <TextBlock Text="PENDING" FontWeight="Bold" FontSize="18" Foreground="{StaticResource Blue}" Visibility="{Binding ApprovalControlsVis}"/>
                     <!--  MetaData Dates display grid  -->
                     <Separator Margin="0,15,0,5" />
                     <Grid Margin="15,0">
@@ -176,14 +176,14 @@
                             <TextBlock
                                 Padding="10,0,0,0"
                                 VerticalAlignment="Center"
-                                Foreground="{StaticResource materialPrimaryBlue}"
+                                Foreground="{StaticResource Blue}"
                                 Style="{StaticResource statement}"
                                 Text="{Binding TargetRuntime, StringFormat='{}Runtime Cap [{0:N0} day(s)]'}" />
                             <TextBlock
                                 Grid.Column="1"
                                 Padding="10,0"
                                 VerticalAlignment="Center"
-                                Foreground="{StaticResource materialOnBackground}"
+                                Foreground="{StaticResource OnBackground}"
                                 Style="{StaticResource statement}"
                                 Text="1 day" />
                             <Slider
@@ -199,7 +199,7 @@
                                 Grid.Column="3"
                                 Padding="10,0"
                                 VerticalAlignment="Center"
-                                Foreground="{StaticResource materialOnBackground}"
+                                Foreground="{StaticResource OnBackground}"
                                 Style="{StaticResource statement}"
                                 Text="14 days" />
                             <Button Content="Make/Buy" Command="{Binding ViewMakeOrBuyCommand}"  Grid.Column="4"/>
@@ -289,13 +289,13 @@
                         </Grid>
                     </StackPanel>
                     <Grid Margin="10" Visibility="{Binding ApprovedVis, FallbackValue=Visible}">
-                        <Rectangle Fill="{StaticResource materialPrimaryGreen}" />
+                        <Rectangle Fill="{StaticResource Green}" />
                         <TextBlock
                             Padding="10,5"
                             HorizontalAlignment="Center"
                             FontSize="16"
                             FontWeight="SemiBold"
-                            Foreground="{StaticResource materialOnPrimary}"
+                            Foreground="{StaticResource OnGreen}"
                             Text="Approved" />
                     </Grid>
 
@@ -318,13 +318,13 @@
                     </StackPanel>
 
                     <Grid Margin="10" Visibility="{Binding DeclinedVis, FallbackValue=Visible}">
-                        <Rectangle Fill="{StaticResource materialError}" />
+                        <Rectangle Fill="{StaticResource Red}" />
                         <TextBlock
                             Padding="10,5"
                             HorizontalAlignment="Center"
                             FontSize="16"
                             FontWeight="SemiBold"
-                            Foreground="{StaticResource materialOnError}"
+                            Foreground="{StaticResource OnRed}"
                             Text="Declined" />
                     </Grid>
                     <StackPanel Margin="10,0" Visibility="{Binding DeclinedVis, FallbackValue=Visible}">
@@ -370,7 +370,7 @@
 
                         <TextBlock Style="{StaticResource section}" Text="Notes" />
                         <Grid Margin="10">
-                            <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
+                            <Border Background="{StaticResource Surface}" CornerRadius="10" />
                             <RichTextBox
                                 x:Name="notesTextBox"
                                 MinHeight="50"

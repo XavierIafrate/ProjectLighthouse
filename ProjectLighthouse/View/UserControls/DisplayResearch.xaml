@@ -14,7 +14,7 @@
     <Grid>
         <Border
             Grid.ColumnSpan="2"
-            Background="{StaticResource materialPrimaryBlue}"
+            Background="{StaticResource Blue}"
             CornerRadius="10" />
         <Grid>
             <StackPanel Margin="25,15" Orientation="Horizontal">
@@ -23,36 +23,36 @@
                     Height="30"
                     Margin="0,0,10,0"
                     Data="M7,2V4H8V18A4,4 0 0,0 12,22A4,4 0 0,0 16,18V4H17V2H7M11,16C10.4,16 10,15.6 10,15C10,14.4 10.4,14 11,14C11.6,14 12,14.4 12,15C12,15.6 11.6,16 11,16M13,12C12.4,12 12,11.6 12,11C12,10.4 12.4,10 13,10C13.6,10 14,10.4 14,11C14,11.6 13.6,12 13,12M14,7H10V4H14V7Z"
-                    Fill="{StaticResource materialOnPrimary}"
+                    Fill="{StaticResource OnBlue}"
                     Stretch="Uniform" />
                 <StackPanel>
                     <TextBlock
                         VerticalAlignment="Center"
                         FontSize="25"
                         FontWeight="Bold"
-                        Foreground="{StaticResource materialOnPrimary}"
+                        Foreground="{StaticResource OnBlue}"
                         Text="Research &amp; Development" />
                     <TextBlock
                         Margin="0,3,0,0"
                         VerticalAlignment="Center"
                         FontSize="17"
                         FontWeight="Bold"
-                        Foreground="{StaticResource materialOnPrimary}"
+                        Foreground="{StaticResource OnBlue}"
                         Text="{Binding StartDate, StringFormat='{}{0:dd/MM/yy} at {0:h:mm tt}', FallbackValue='01/01/70 at 0:00 AM'}" />
                 </StackPanel>
                 <Button
                     x:Name="Edit_Button"
-                    Background="{StaticResource materialOnPrimary}"
+                    Background="{StaticResource OnBlue}"
                     Click="Edit_Button_Click"
                     Content="edit"
-                    Foreground="{StaticResource materialPrimaryBlue}"
+                    Foreground="{StaticResource Blue}"
                     Style="{StaticResource Inverting}" />
             </StackPanel>
             <StackPanel
                 Grid.Column="1"
                 Margin="0,15,25,15"
                 VerticalAlignment="Center"
-                TextElement.Foreground="{StaticResource materialOnPrimary}">
+                TextElement.Foreground="{StaticResource OnBlue}">
                 <TextBlock
                     HorizontalAlignment="Right"
                     FontSize="20"

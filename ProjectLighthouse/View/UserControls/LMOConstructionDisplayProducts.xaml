@@ -38,7 +38,7 @@
             VerticalAlignment="Center"
             FontSize="16"
             FontWeight="SemiBold"
-            Foreground="{StaticResource materialOnBackground}"
+            Foreground="{StaticResource OnBackground}"
             Text="{Binding ProductName, FallbackValue='PRODUCT_NAME'}" />
 
         <TextBlock
@@ -47,7 +47,7 @@
             VerticalAlignment="Center"
             FontSize="12"
             FontStyle="Italic"
-            Foreground="{StaticResource disabledGray}"
+            Foreground="{StaticResource DisabledElement}"
             Text="{Binding QuantityInStock, FallbackValue='1,000 pcs in stock', StringFormat='{}{0:#,##0} pcs in stock'}" />
 
         <TextBlock

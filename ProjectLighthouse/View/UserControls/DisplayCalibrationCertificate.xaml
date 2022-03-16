@@ -11,7 +11,7 @@
     <Grid>
         <Border
             Grid.ColumnSpan="3"
-            Background="{StaticResource materialSurface}"
+            Background="{StaticResource Surface}"
             CornerRadius="10" />
         <Grid Margin="15,5">
             <Grid.RowDefinitions>
@@ -37,10 +37,10 @@
                     Margin="7,2,3,0"
                     HorizontalAlignment="Left"
                     Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"
-                    Fill="{StaticResource materialPrimaryBlue}"
+                    Fill="{StaticResource Blue}"
                     ToolTip="UKAS Accredited Certificate"
                     Stretch="Uniform" />
-                <TextBlock Text="UKAS" Foreground="{StaticResource materialPrimaryBlue}" FontWeight="SemiBold" Margin="0,1,0,0" VerticalAlignment="Center" x:Name="ukasText"/>
+                <TextBlock Text="UKAS" Foreground="{StaticResource Blue}" FontWeight="SemiBold" Margin="0,1,0,0" VerticalAlignment="Center" x:Name="ukasText"/>
             </StackPanel>
 
             <TextBlock
@@ -48,13 +48,13 @@
                 VerticalAlignment="Center"
                 FontSize="16"
                 FontStyle="Italic"
-                Foreground="{StaticResource materialPrimary}"
+                Foreground="{StaticResource Purple}"
                 Text="{Binding Path=CalibrationHouse, FallbackValue='CAL_HOUSE'}" />
             <TextBlock
                 Grid.Row="2"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Foreground="{StaticResource materialOnBackground}"
+                Foreground="{StaticResource OnBackground}"
                 Text="{Binding Path=DateIssued, FallbackValue='Issued 01/01/1970', StringFormat='{}Issued {0:dd/MM/yyyy}'}" />
 
 
@@ -72,13 +72,13 @@
                         Height="15"
                         Margin="0,2,0,0"
                         Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
-                        Fill="{StaticResource materialPrimaryGreen}"
+                        Fill="{StaticResource Green}"
                         Stretch="Uniform" />
                     <TextBlock
                         Margin="7,0,0,0"
                         FontSize="20"
                         FontWeight="SemiBold"
-                        Foreground="{StaticResource materialPrimaryGreen}"
+                        Foreground="{StaticResource Green}"
                         Text="PASS" />
                 </StackPanel>
                 <StackPanel
@@ -90,13 +90,13 @@
                         Height="15"
                         Margin="0,3,0,0"
                         Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
-                        Fill="{StaticResource materialError}"
+                        Fill="{StaticResource Red}"
                         Stretch="Uniform" />
                     <TextBlock
                         Margin="7,0,0,0"
                         FontSize="20"
                         FontWeight="SemiBold"
-                        Foreground="{StaticResource materialError}"
+                        Foreground="{StaticResource Red}"
                         Text="FAIL" />
                 </StackPanel>
 

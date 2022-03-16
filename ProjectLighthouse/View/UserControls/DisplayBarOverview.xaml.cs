@@ -53,7 +53,7 @@ namespace ProjectLighthouse.View.UserControls
             if (control.Bar.FreeBar >= 0)
             {
                 control.SuggestionText.Visibility = Visibility.Collapsed;
-                control.StatusBackground.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                control.StatusBackground.Background = (Brush)Application.Current.Resources["Green"];
                 control.StatusText.Text = $"Stock level OK. {control.Bar.FreeBar} free bars.";
                 if (control.Bar.BarStock.InStock < control.Bar.BarsRequiredForOrders)
                 {
@@ -70,7 +70,7 @@ namespace ProjectLighthouse.View.UserControls
             }
             else
             {
-                control.StatusBackground.Background = (Brush)Application.Current.Resources["materialError"];
+                control.StatusBackground.Background = (Brush)Application.Current.Resources["Red"];
                 control.StatusText.Text = $"Stock level warning. {control.Bar.FreeBar} free bars.";
                 if (control.Bar.BarStock.SuggestedStock > 0)
                 {

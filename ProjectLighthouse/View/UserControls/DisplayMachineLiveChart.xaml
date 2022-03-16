@@ -36,8 +36,7 @@
                 <RowDefinition Height=".5*"></RowDefinition>
             </Grid.RowDefinitions>
             <Border x:Name="Border1" Grid.Row="0" Grid.RowSpan="4" CornerRadius="5" Background="White" />
-            <Border Grid.Row="0" Grid.RowSpan="3" Background="{StaticResource materialPrimary}" ></Border>
-            <!--#CE2156-->
+            <Border Grid.Row="0" Grid.RowSpan="3" Background="{StaticResource Purple}"/>
             <TextBlock Grid.Row="0" TextAlignment="Center" Padding="10, 10, 0, 5" Foreground="White" FontSize="18" Text="{Binding title}"/>
             <TextBlock Grid.Row="1" TextAlignment="Center" Foreground="#59FFFFFF" Padding="0,0,0,20" Text="{Binding dataReadAt,StringFormat='{}{0:dd/MM HH:mm:ss}'}"/>
 

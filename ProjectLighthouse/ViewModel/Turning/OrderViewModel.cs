@@ -231,10 +231,10 @@ namespace ProjectLighthouse.ViewModel
             FilteredOrderItems = new();
             FilteredOrders = new();
 
-            ToolingIconBrush = (Brush)Application.Current.Resources["materialError"];
-            ProgramIconBrush = (Brush)Application.Current.Resources["materialError"];
-            BarVerifiedIconBrush = (Brush)Application.Current.Resources["materialError"];
-            BarAllocatedIconBrush = (Brush)Application.Current.Resources["materialError"];
+            ToolingIconBrush = (Brush)Application.Current.Resources["Red"];
+            ProgramIconBrush = (Brush)Application.Current.Resources["Red"];
+            BarVerifiedIconBrush = (Brush)Application.Current.Resources["Red"];
+            BarAllocatedIconBrush = (Brush)Application.Current.Resources["Red"];
 
             PrintOrderCommand = new(this);
             EditCommand = new(this);
@@ -453,16 +453,16 @@ namespace ProjectLighthouse.ViewModel
             }
 
             // Quick indicator icons
-            ProgramIconBrush = (Brush)Application.Current.Resources[SelectedOrder.HasProgram ? "materialPrimaryGreen" : "materialError"];
+            ProgramIconBrush = (Brush)Application.Current.Resources[SelectedOrder.HasProgram ? "Green" : "Red"];
             OnPropertyChanged(nameof(ProgramIconBrush));
 
-            ToolingIconBrush = (Brush)Application.Current.Resources[SelectedOrder.IsReady ? "materialPrimaryGreen" : "materialError"];
+            ToolingIconBrush = (Brush)Application.Current.Resources[SelectedOrder.IsReady ? "Green" : "Red"];
             OnPropertyChanged(nameof(ToolingIconBrush));
 
-            BarVerifiedIconBrush = (Brush)Application.Current.Resources[SelectedOrder.BarIsVerified ? "materialPrimaryGreen" : "materialError"];
+            BarVerifiedIconBrush = (Brush)Application.Current.Resources[SelectedOrder.BarIsVerified ? "Green" : "Red"];
             OnPropertyChanged(nameof(BarVerifiedIconBrush));
 
-            BarAllocatedIconBrush = (Brush)Application.Current.Resources[SelectedOrder.BarIsAllocated ? "materialPrimaryGreen" : "materialError"];
+            BarAllocatedIconBrush = (Brush)Application.Current.Resources[SelectedOrder.BarIsAllocated ? "Green" : "Red"];
             OnPropertyChanged(nameof(BarAllocatedIconBrush));
 
 

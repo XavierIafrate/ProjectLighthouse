@@ -8,10 +8,10 @@
     mc:Ignorable="d">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Rectangle
-            Fill="{StaticResource materialYellow}"
+            Fill="{StaticResource Yellow}"
             RadiusX="8"
             RadiusY="8"
-            Stroke="{StaticResource materialOnBackground}"
+            Stroke="{StaticResource OnYellow}"
             StrokeThickness="2" />
         <StackPanel Margin="10,5" Orientation="Horizontal">
             <Path
@@ -19,7 +19,7 @@
                 Height="22"
                 Margin="0,0,12,0"
                 Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
-                Fill="{StaticResource materialOnBackground}"
+                Fill="{StaticResource OnYellow}"
                 Stretch="Fill" />
             <TextBlock
                 x:Name="message"

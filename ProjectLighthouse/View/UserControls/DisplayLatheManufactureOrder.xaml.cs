@@ -26,6 +26,11 @@ namespace ProjectLighthouse.View.UserControls
                 && control.LatheManufactureOrder.State < OrderState.Running
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+
+            if (control.LatheManufactureOrder.State != OrderState.Running && control.LatheManufactureOrder.State != OrderState.Problem)
+            {
+                control.badgeBackground.Visibility = Visibility.Collapsed;
+            }
             
         }
 

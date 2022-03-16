@@ -11,7 +11,7 @@
     <Grid>
         <Border
             Grid.ColumnSpan="3"
-            Background="{StaticResource materialSurface}"
+            Background="{StaticResource Surface}"
             CornerRadius="10" />
         <Grid Margin="15,5">
             <Grid.RowDefinitions>
@@ -35,7 +35,7 @@
                 VerticalAlignment="Center"
                 FontSize="16"
                 FontStyle="Italic"
-                Foreground="{StaticResource materialPrimary}"
+                Foreground="{StaticResource Purple}"
                 Text="Revision 0" />
 
             <Button

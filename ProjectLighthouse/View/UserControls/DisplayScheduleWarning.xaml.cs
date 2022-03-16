@@ -26,20 +26,20 @@ namespace ProjectLighthouse.View.UserControls
             control.DataContext = control.Warning;
             if (control.Warning.Important)
             {
-                control.Background.Background = (Brush)Application.Current.Resources["materialError"];
+                control.Background.Background = (Brush)Application.Current.Resources["Red"];
                 control.Background.BorderThickness = new Thickness(2);
-                control.WarningText.Foreground = (Brush)Application.Current.Resources["materialOnError"];
-                control.title.Foreground = (Brush)Application.Current.Resources["materialOnError"];
-                control.icon.Fill = (Brush)Application.Current.Resources["materialOnError"];
+                control.WarningText.Foreground = (Brush)Application.Current.Resources["OnRed"];
+                control.title.Foreground = (Brush)Application.Current.Resources["OnRed"];
+                control.icon.Fill = (Brush)Application.Current.Resources["OnRed"];
 
             }
             else
             {
-                control.Background.Background = (Brush)Application.Current.Resources["materialYellow"];
+                control.Background.Background = (Brush)Application.Current.Resources["Yellow"];
                 control.Background.BorderThickness = new Thickness(2);
-                control.WarningText.Foreground = (Brush)Application.Current.Resources["materialOffBlack"];
-                control.title.Foreground = (Brush)Application.Current.Resources["materialOffBlack"];
-                control.icon.Fill = (Brush)Application.Current.Resources["materialOffBlack"];
+                control.WarningText.Foreground = (Brush)Application.Current.Resources["OnYellow"];
+                control.title.Foreground = (Brush)Application.Current.Resources["OnYellow"];
+                control.icon.Fill = (Brush)Application.Current.Resources["OnYellow"];
             }
         }
 

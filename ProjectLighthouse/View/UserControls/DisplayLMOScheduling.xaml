@@ -27,7 +27,7 @@
         </Grid.ColumnDefinitions>
         <Border
             x:Name="bg"
-            Background="{StaticResource materialError}"
+            Background="{StaticResource Red}"
             CornerRadius="5,0,0,5" />
 
 
@@ -43,12 +43,12 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Border Grid.ColumnSpan="3" Background="{StaticResource materialError}" Margin="10,0,0,0" CornerRadius="10" Height="26" x:Name="WarningBanner" HorizontalAlignment="Left">
+            <Border Grid.ColumnSpan="3" Background="{StaticResource Red}" Margin="10,0,0,0" CornerRadius="10" Height="26" x:Name="WarningBanner" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,3">
                     <Path Data="M12,2C16.46,2 20.26,4.95 21.54,9H18V20C16.33,21.25 14.25,22 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M16.2,16.2L17,14.9L12.5,12.2V7H11V13L16.2,16.2M20,11H22V18H20V11M20,20H22V22H20V20Z"
-                          Width="15" Height="15" Stretch="UniformToFill" Fill="{StaticResource materialOnError}" Margin="0,0,5,0"/>
-                    <TextBlock Text="WARNING" Foreground="{StaticResource materialOnError}" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                    <TextBlock Text="This order is at risk of not meeting delivery target" Margin="5,0,0,0" Foreground="{StaticResource materialOnError}" FontStyle="Italic" x:Name="WarningText"/>
+                          Width="15" Height="15" Stretch="UniformToFill" Fill="{StaticResource OnRed}" Margin="0,0,5,0"/>
+                    <TextBlock Text="WARNING" Foreground="{StaticResource OnRed}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Text="This order is at risk of not meeting delivery target" Margin="5,0,0,0" Foreground="{StaticResource OnRed}" FontStyle="Italic" x:Name="WarningText"/>
                 </StackPanel>
             </Border>
 
@@ -56,7 +56,7 @@
                 <TextBlock
                     FontSize="25"
                     FontWeight="Bold"
-                    Foreground="{StaticResource materialOnBackground}"
+                    Foreground="{StaticResource OnBackground}"
                     Text="{Binding Name, FallbackValue='%Order.Name%', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -66,22 +66,22 @@
                     <Rectangle
                         x:Name="statusBadgeText"
                         Height="24"
-                        Fill="{StaticResource materialError}"
+                        Fill="{StaticResource Red}"
                         RadiusX="12"
                         RadiusY="12" />
                     <TextBlock
                         Padding="10,0,10,2"
                         VerticalAlignment="Center"
                         FontSize="14"
-                        Foreground="{StaticResource materialOnPrimary}"
+                        Foreground="{StaticResource OnPurple}"
                         Text="{Binding State, FallbackValue='Ready', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
                 <Border
                     x:Name="LargeDiameterIndicator"
                     Margin="0,5,0,0"
                     HorizontalAlignment="Left"
-                    Background="{StaticResource materialYellow}"
-                    BorderBrush="{StaticResource materialOffBlack}"
+                    Background="{StaticResource Yellow}"
+                    BorderBrush="{StaticResource OnYellow}"
                     BorderThickness="2"
                     CornerRadius="10">
                     <StackPanel Margin="5,2" Orientation="Horizontal">
@@ -90,13 +90,13 @@
                             Height="15"
                             Margin="0,0,3,0"
                             Data="M4.15,21.46L5.47,19.58C3.35,17.74 2,15.03 2,12A10,10 0 0,1 12,2C13.78,2 15.44,2.46 16.89,3.27L18.21,1.39L19.85,2.54L18.53,4.42C20.65,6.26 22,8.97 22,12A10,10 0 0,1 12,22C10.22,22 8.56,21.54 7.11,20.73L5.79,22.61L4.15,21.46M12,4A8,8 0 0,0 4,12C4,14.35 5,16.46 6.63,17.93L15.73,4.92C14.62,4.33 13.35,4 12,4M12,20A8,8 0 0,0 20,12C20,9.65 19,7.54 17.37,6.07L8.27,19.08C9.38,19.67 10.65,20 12,20Z"
-                            Fill="{StaticResource materialOffBlack}"
+                            Fill="{StaticResource OnYellow}"
                             Stretch="Uniform" />
                         <TextBlock
                             Margin="0,0,0,1"
                             VerticalAlignment="Center"
                             FontSize="12"
-                            Foreground="{StaticResource materialOffBlack}"
+                            Foreground="{StaticResource OnYellow}"
                             Text="Large Diameter" />
                     </StackPanel>
 
@@ -264,7 +264,7 @@
                                     HorizontalAlignment="Right"
                                     FontStyle="Italic"
                                     FontWeight="DemiBold"
-                                    Foreground="{StaticResource materialPrimaryBlueVar}"
+                                    Foreground="{StaticResource Blue}"
                                     Text="{Binding Converter='{StaticResource requirementText}'}" />
                                 <TextBlock
                                     Grid.Column="6"

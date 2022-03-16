@@ -46,7 +46,7 @@
             </Grid.RowDefinitions>
             <Border
                 Grid.RowSpan="3"
-                BorderBrush="{StaticResource materialError}"
+                BorderBrush="{StaticResource Red}"
                 BorderThickness="3"
                 CornerRadius="10" />
             <TextBlock
@@ -54,13 +54,13 @@
                 HorizontalAlignment="Center"
                 FontSize="20"
                 FontWeight="Bold"
-                Foreground="{StaticResource materialError}"
+                Foreground="{StaticResource Red}"
                 Text="CRITICAL DATA" />
             <TextBlock
                 Grid.Row="1"
                 Margin="30,0"
                 FontStyle="Italic"
-                Foreground="{StaticResource materialOffBlack}"
+                Foreground="{StaticResource OnBackground}"
                 Text="These numbers are critical for the requests engine- it dictates raw material budgets and therefore cost to us."
                 TextWrapping="Wrap" />
             <StackPanel Grid.Row="2" Margin="20,5">

@@ -28,7 +28,7 @@
                 Margin="0,0,5,0"
                 Height="18"
                 Data="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"
-                Fill="{StaticResource materialPrimaryGreen}"
+                Fill="{StaticResource Green}"
                 Stretch="Uniform" />
 
             <StackPanel Margin="5,2,10,2" VerticalAlignment="Center" Grid.Column="1">
@@ -60,11 +60,11 @@
                         </Grid.ColumnDefinitions>
                         <Border
                             Height="20"
-                            Background="{StaticResource materialPrimary}"
+                            Background="{StaticResource Purple}"
                             CornerRadius="10" />
                         <TextBlock
                             Padding="10,0,10,2"
-                            Foreground="{StaticResource materialOnPrimary}"
+                            Foreground="{StaticResource OnPurple}"
                             Text="Special" />
                     </Grid>
                 </StackPanel>
@@ -85,7 +85,7 @@
                     </Grid.RowDefinitions>
                     <Rectangle
                         x:Name="requirementsBadge"
-                        Fill="{StaticResource materialError}"
+                        Fill="{StaticResource Red}"
                         RadiusX="5"
                         RadiusY="5" />
                     <StackPanel Margin="10,0">
@@ -94,13 +94,13 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             FontSize="12"
-                            Foreground="{StaticResource materialOnError}"
+                            Foreground="{StaticResource OnRed}"
                             Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='100 pcs'}" />
                         <TextBlock
                             x:Name="daterequired"
                             HorizontalAlignment="Right"
                             FontSize="12"
-                            Foreground="{StaticResource materialOnError}"
+                            Foreground="{StaticResource OnRed}"
                             Text="{Binding DateRequired, StringFormat='{}{0:dd/MM/yy}', FallbackValue='01/01/1970'}" />
                     </StackPanel>
                 </Grid>

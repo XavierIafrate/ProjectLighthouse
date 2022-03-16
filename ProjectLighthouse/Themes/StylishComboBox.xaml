@@ -12,7 +12,7 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="1" Background="{StaticResource materialSurface}" />
+            <Border Grid.Column="1" Background="{StaticResource Surface}" />
 
             <Path
                 Name="Arrow"
@@ -25,7 +25,7 @@
         <ControlTemplate.Triggers>
 
             <Trigger Property="ToggleButton.IsChecked" Value="True">
-                <Setter TargetName="Arrow" Property="Shape.Fill" Value="{StaticResource materialPrimary}" />
+                <Setter TargetName="Arrow" Property="Shape.Fill" Value="{StaticResource Purple}" />
             </Trigger>
             <Trigger Property="UIElement.IsEnabled" Value="False">
                 <Setter Property="TextElement.Foreground" Value="{StaticResource ComboBoxDisabledForegroundBrush}" />
@@ -54,7 +54,7 @@
                         </Grid.ColumnDefinitions>
                         <Border
                             Grid.ColumnSpan="2"
-                            Background="{StaticResource materialSurface}"
+                            Background="{StaticResource Surface}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="5" />

@@ -58,7 +58,7 @@ namespace ProjectLighthouse.View
             if (string.IsNullOrEmpty(NewCertificate.CertificateNumber))
             {
                 NoErrors = false;
-                CertNumTextBox.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                CertNumTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
             }
             else
             {
@@ -68,7 +68,7 @@ namespace ProjectLighthouse.View
             if (string.IsNullOrEmpty(NewCertificate.CalibrationHouse))
             {
                 NoErrors = false;
-                CalHouseTextBox.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                CalHouseTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
             }
             else
             {
@@ -79,7 +79,7 @@ namespace ProjectLighthouse.View
                 || NewCertificate.DateIssued < Equipment.LastCalibrated) //NewCertificate.DateIssued < DateTime.Today.AddMonths(-Equipment.CalibrationIntervalMonths -1 ) || 
             {
                 NoErrors = false;
-                datePicker.BorderBrush = (Brush)Application.Current.Resources["materialError"];
+                datePicker.BorderBrush = (Brush)Application.Current.Resources["Red"];
             }
             else
             {
@@ -89,11 +89,11 @@ namespace ProjectLighthouse.View
             if (string.IsNullOrEmpty(targetPdf))
             {
                 NoErrors = false;
-                fileDisplay.Foreground = (Brush)Application.Current.Resources["materialError"];
+                fileDisplay.Foreground = (Brush)Application.Current.Resources["Red"];
             }
             else
             {
-                fileDisplay.Foreground = (Brush)Application.Current.Resources["materialOnBackground"];
+                fileDisplay.Foreground = (Brush)Application.Current.Resources["OnBackground"];
             }
 
             return NoErrors;

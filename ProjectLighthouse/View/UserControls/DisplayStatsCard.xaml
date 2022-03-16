@@ -17,7 +17,7 @@
         <Style TargetType="TextBlock" x:Key="Subtitle">
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="Padding" Value="0,0,0,5"/>
-            <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
+            <Setter Property="Foreground" Value="{StaticResource Purple}"/>
         </Style>
         <Style TargetType="TextBlock" x:Key="ParameterText">
             <Setter Property="FontSize" Value="16"/>
@@ -27,7 +27,7 @@
             <Setter Property="FontSize" Value="16"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource materialPrimary}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Purple}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -115,7 +115,7 @@
                    Grid.RowSpan="2"
                    x:Name="controlBackground"
                    StrokeThickness="5"
-                   Fill="{StaticResource materialSurface}"
+                   Fill="{StaticResource Surface}"
                    Stroke="{StaticResource materialPrimaryGreen}"/>
         <Grid Margin="20,20,20,0" Grid.Row="0">
             <Grid.RowDefinitions>

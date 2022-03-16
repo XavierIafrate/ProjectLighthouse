@@ -17,7 +17,7 @@
     <Grid DataContext="{StaticResource vm}">
         <Border
             Margin="20"
-            Background="{StaticResource materialSurface}"
+            Background="{StaticResource Surface}"
             CornerRadius="20" />
         <StackPanel Margin="20">
             <Button Click="Button_Click" Content="Imprint Dates" />

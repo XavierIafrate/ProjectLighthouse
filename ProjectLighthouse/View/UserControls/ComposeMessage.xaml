@@ -9,7 +9,7 @@
     d:DesignWidth="273"
     mc:Ignorable="d">
     <Grid Margin="5">
-        <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
+        <Border Background="{StaticResource Surface}" CornerRadius="10" />
         <Grid Margin="10,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -18,7 +18,7 @@
             <TextBox
                 VerticalContentAlignment="Center"
                 x:Name="Message"
-                Foreground="{StaticResource materialOffBlack}"
+                Foreground="{StaticResource OnBackground}"
                 Background="Transparent"
                 BorderThickness="0"
                 Text="Test" />

@@ -7,18 +7,17 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    d:DesignHeight="832.899"
     d:DesignWidth="800"
     Background="White"
-    mc:Ignorable="d" d:DesignHeight="832.899">
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <vm:ManageUsersViewModel x:Key="vm" />
         <converters:boolToYesNo x:Key="boolConverter" />
-
     </UserControl.Resources>
 
-
-    <Grid DataContext="{StaticResource vm}">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="200" />
             <ColumnDefinition Width="2*" />
@@ -27,17 +26,17 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.RowSpan="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <ListView
-            BorderThickness="0"
-            ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-            ScrollViewer.CanContentScroll="False"
-            SelectedValue="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                BorderThickness="0"
+                ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                ScrollViewer.CanContentScroll="False"
+                SelectedValue="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="7,2">
@@ -46,32 +45,35 @@
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
                             <TextBlock
-                            x:Name="name"
-                            FontSize="16"
-                            FontWeight="SemiBold">
-                            <Run Text="{Binding FirstName}" />
-                            <Run Text="{Binding LastName}" />
+                                x:Name="name"
+                                FontSize="16"
+                                FontWeight="SemiBold">
+                                <Run Text="{Binding FirstName}" />
+                                <Run Text="{Binding LastName}" />
                             </TextBlock>
                             <TextBlock
-                            x:Name="role"
-                            Grid.Row="1"
-                            FontStyle="Italic"
-                            Foreground="{StaticResource materialPrimaryBlue}"
-                            Text="{Binding UserRole}" />
+                                x:Name="role"
+                                Grid.Row="1"
+                                FontStyle="Italic"
+                                Foreground="{StaticResource Blue}"
+                                Text="{Binding UserRole}" />
                         </Grid>
-
                         <DataTemplate.Triggers>
                             <DataTrigger Binding="{Binding IsBlocked}" Value="true">
-                                <Setter TargetName="name" Property="Foreground" Value="{StaticResource materialError}" />
-                                <Setter TargetName="role" Property="Foreground" Value="{StaticResource materialError}" />
+                                <Setter TargetName="name" Property="Foreground" Value="{StaticResource Red}" />
+                                <Setter TargetName="role" Property="Foreground" Value="{StaticResource Red}" />
                             </DataTrigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button Command="{Binding getLoginReportCommand}" Style="{StaticResource BlueButton}" Grid.Row="1" HorizontalAlignment="Right" Content="Download Report"/>
+            <Button
+                Grid.Row="1"
+                HorizontalAlignment="Right"
+                Command="{Binding getLoginReportCommand}"
+                Content="Download Report"
+                Style="{StaticResource BlueButton}" />
         </Grid>
-        
 
         <StackPanel
             Grid.Column="1"
@@ -85,7 +87,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid VerticalAlignment="Center" Visibility="{Binding EditControlsVis}">
                     <Rectangle
-                        Fill="{StaticResource materialPrimaryBlue}"
+                        Fill="{StaticResource Blue}"
                         RadiusX="5"
                         RadiusY="5" />
                     <TextBlock
@@ -93,7 +95,7 @@
                         HorizontalAlignment="Center"
                         FontSize="20"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialOnPrimary}"
+                        Foreground="{StaticResource OnBlue}"
                         Text="editing" />
                 </Grid>
                 <StackPanel Grid.Column="2">
@@ -108,11 +110,10 @@
                         HorizontalAlignment="Right"
                         FontSize="22"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialPrimaryBlue}"
+                        Foreground="{StaticResource Blue}"
                         Text="{Binding SelectedUser.UserRole, FallbackValue='debug_placeholder'}" />
                 </StackPanel>
             </Grid>
-
             <Separator Margin="0,20,0,0" />
         </StackPanel>
         <ScrollViewer Grid.Row="1" Grid.Column="1">
@@ -143,22 +144,19 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-
                     <TextBlock
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         Style="{StaticResource section}"
                         Text="Email Address" />
                     <TextBox
-                        Margin="0"
                         Grid.Column="3"
                         MinWidth="300"
+                        Margin="0"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource UsernameTextBox}"
                         Text="{Binding SelectedUser.EmailAddress}" />
                 </Grid>
-
-
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
@@ -166,7 +164,6 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-
                     <TextBlock
                         Grid.Column="1"
                         Style="{StaticResource section}"
@@ -183,7 +180,6 @@
                         SelectedItem="{Binding SelectedView, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                         Visibility="{Binding EditControlsVis}" />
                 </Grid>
-
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
@@ -208,7 +204,6 @@
                         SelectedItem="{Binding SelectedRole, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                         Visibility="{Binding EditControlsVis}" />
                 </Grid>
-
                 <Grid HorizontalAlignment="Center">
                     <Button
                         Margin="0,5"
@@ -216,13 +211,11 @@
                         Content="Reset Password"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
-
                 <TextBlock
                     Margin="0,20,0,0"
                     Style="{StaticResource section}"
                     Text="Permissions" />
                 <Separator Margin="0,5,0,15" />
-
                 <Grid>
                     <!--  Raise Request  -->
                     <Grid.ColumnDefinitions>
@@ -254,10 +247,9 @@
                         Grid.ColumnSpan="4"
                         Margin="20,1,20,6"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialPrimaryBlue}"
+                        Foreground="{StaticResource Blue}"
                         Text="User can create requests for turned parts" />
                 </Grid>
-
                 <Grid>
                     <!--  Approve Request  -->
                     <Grid.ColumnDefinitions>
@@ -289,10 +281,9 @@
                         Grid.ColumnSpan="4"
                         Margin="20,1,20,6"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialPrimaryBlue}"
+                        Foreground="{StaticResource Blue}"
                         Text="User can approve or decline requests for turned parts" />
                 </Grid>
-
                 <Grid>
                     <!--  Update Orders  -->
                     <Grid.ColumnDefinitions>
@@ -324,10 +315,9 @@
                         Grid.ColumnSpan="4"
                         Margin="20,1,20,6"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialPrimaryBlue}"
+                        Foreground="{StaticResource Blue}"
                         Text="User can update notes and production information" />
                 </Grid>
-
                 <Grid>
                     <!--  Edit Orders  -->
                     <Grid.ColumnDefinitions>
@@ -359,12 +349,9 @@
                         Grid.ColumnSpan="4"
                         Margin="20,1,20,6"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialPrimaryBlue}"
+                        Foreground="{StaticResource Blue}"
                         Text="User can edit all parts of a manufacture order" />
                 </Grid>
-
-
-
                 <Grid>
                     <!--  Raise Delivery  -->
                     <Grid.ColumnDefinitions>
@@ -396,10 +383,9 @@
                         Grid.ColumnSpan="4"
                         Margin="20,1,20,6"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialPrimaryBlue}"
+                        Foreground="{StaticResource Blue}"
                         Text="User can create deliveries from completed lots" />
                 </Grid>
-
                 <Grid>
                     <!--  Create Specials  -->
                     <Grid.ColumnDefinitions>
@@ -426,20 +412,12 @@
                         FontSize="16"
                         FontWeight="Bold"
                         Text="{Binding SelectedUser.CanCreateSpecial, Converter='{StaticResource boolConverter}'}" />
-                    <!--<TextBlock
-                        Grid.Row="1"
-                        Grid.ColumnSpan="4"
-                        Margin="20,1,20,6"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource materialPrimaryBlue}"
-                        Text="User can create deliveries from completed lots" />-->
                 </Grid>
-
                 <Grid Margin="0,20,0,5">
                     <Rectangle
                         Grid.RowSpan="2"
                         Grid.ColumnSpan="4"
-                        Fill="{StaticResource materialError}"
+                        Fill="{StaticResource Red}"
                         RadiusX="10"
                         RadiusY="10" />
                     <Grid Margin="20,10">
@@ -459,17 +437,16 @@
                             Grid.Column="1"
                             Margin="0"
                             FontWeight="Bold"
-                            Foreground="{StaticResource materialOnError}"
+                            Foreground="{StaticResource OnRed}"
                             Text="Block Sign In" />
                         <TextBlock
                             Grid.Column="3"
                             FontSize="16"
                             FontWeight="Bold"
-                            Foreground="{StaticResource materialOnError}"
+                            Foreground="{StaticResource OnRed}"
                             Text="{Binding SelectedUser.IsBlocked, Converter='{StaticResource boolConverter}'}" />
                     </Grid>
                 </Grid>
-
                 <StackPanel
                     Margin="0,20"
                     HorizontalAlignment="Center"
@@ -492,11 +469,17 @@
                         Style="{StaticResource CancelButton}"
                         Visibility="{Binding EditControlsVis}" />
                 </StackPanel>
-                <TextBlock Text="Logins - last 14 days" Style="{StaticResource section}" Margin="0,10"/>
+                <TextBlock
+                    Margin="0,10"
+                    Style="{StaticResource section}"
+                    Text="Logins - last 14 days" />
                 <ListView ItemsSource="{Binding UserLogins}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Time, StringFormat='{}{0:ddd, dd MMM yyyy}'}" HorizontalAlignment="Right" Margin="15,3"/>
+                            <TextBlock
+                                Margin="15,3"
+                                HorizontalAlignment="Right"
+                                Text="{Binding Time, StringFormat='{}{0:ddd, dd MMM yyyy}'}" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

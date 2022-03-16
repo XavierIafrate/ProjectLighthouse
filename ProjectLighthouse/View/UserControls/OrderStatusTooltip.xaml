@@ -9,7 +9,7 @@
         <vc:boolToBrush x:Key="BrushConverter"/>
     </UserControl.Resources>
     <Grid>
-        <Border Background="{StaticResource materialSurface}" BorderBrush="{StaticResource disabledGray}" BorderThickness="2" CornerRadius="10"/>
+        <Border Background="{StaticResource Surface}" BorderBrush="{StaticResource DisabledElement}" BorderThickness="2" CornerRadius="10"/>
         <StackPanel Margin="20,10">
         <TextBlock Text="{Binding Name, FallbackValue='M01234',StringFormat='{}SitRep: {0}'}" FontSize="18" FontWeight="SemiBold"/>
         <Grid Margin="0,10,0,0">

@@ -244,7 +244,7 @@ namespace ProjectLighthouse.View
                     FromMachine = ProducedOnMachine,
                     Remarks = RemarksTextBox.Text.Trim(),
                     DateProduced = DateTime.Now.Hour >= 9
-                        ? DateTime.Now.Date.AddHours(12) 
+                        ? DateTime.Now.Date.AddHours(12)
                         : DateTime.Now.Date.AddHours(-12)
                 };
 

@@ -26,15 +26,15 @@ namespace ProjectLighthouse.View.UserControls
                 control.requirements.Visibility = (control.LatheManufactureOrderItem.RequiredQuantity == 0) ? Visibility.Collapsed : Visibility.Visible;
 
                 control.requirementsBadge.Fill = (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
-                    (Brush)Application.Current.Resources["materialPrimaryGreen"] : (Brush)Application.Current.Resources["materialError"];
+                    (Brush)Application.Current.Resources["Green"] : (Brush)Application.Current.Resources["Red"];
 
                 control.doneFlag.Visibility = control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity
                     ? Visibility.Visible
                     : Visibility.Hidden;
 
                 control.ProgressBar.Foreground = control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity
-                    ? (LinearGradientBrush)Application.Current.Resources["gradGood"]
-                    : (LinearGradientBrush)Application.Current.Resources["primaryGradient"];
+                    ? (Brush)Application.Current.Resources["Green"]
+                    : (Brush)Application.Current.Resources["Purple"];
 
                 control.EditButton.Visibility = control.LatheManufactureOrderItem.ShowEdit
                     ? Visibility.Visible

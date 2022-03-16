@@ -1,6 +1,60 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="materialPrimary" Color="#6200EE" />
+    <!--<SolidColorBrush x:Key="Background" Color="#263238"/>
+    <SolidColorBrush x:Key="OnBackground" Color="#eeeeee"/>
+
+    <SolidColorBrush x:Key="Surface" Color="#4f5b62"/>
+    <SolidColorBrush x:Key="OnSurface" Color="#eeeeee"/>
+
+    <SolidColorBrush x:Key="Purple" Color="#b39ddb"/>
+    <SolidColorBrush x:Key="OnPurple" Color="#000000"/>
+
+    <SolidColorBrush x:Key="Red" Color="#ef9a9a"/>
+    <SolidColorBrush x:Key="OnRed" Color="#000000"/>
+
+    <SolidColorBrush x:Key="Green" Color="#a5d6a7"/>
+    <SolidColorBrush x:Key="OnGreen" Color="#000000"/>
+
+    <SolidColorBrush x:Key="Blue" Color="#90caf9"/>
+    <SolidColorBrush x:Key="OnBlue" Color="#000000"/>
+
+    <SolidColorBrush x:Key="Yellow" Color="#fff59d"/>
+    <SolidColorBrush x:Key="OnYellow" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="Orange" Color="#ff8a65"/>
+    <SolidColorBrush x:Key="OnOrange" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="DisabledElement" Color="#616161"/>
+    <SolidColorBrush x:Key="SelectedElement" Color="#0277bd"/>-->
+
+    <SolidColorBrush x:Key="Background" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="OnBackground" Color="#000000"/>
+    
+    <SolidColorBrush x:Key="Surface" Color="#ECEFF1"/>
+    <SolidColorBrush x:Key="OnSurface" Color="#000000"/>
+
+    <SolidColorBrush x:Key="Purple" Color="#512DA8"/>
+    <SolidColorBrush x:Key="OnPurple" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="Red" Color="#b71c1c"/>
+    <SolidColorBrush x:Key="OnRed" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="Green" Color="#1B5E20"/>
+    <SolidColorBrush x:Key="OnGreen" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="Blue" Color="#1565C0"/>
+    <SolidColorBrush x:Key="OnBlue" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="Yellow" Color="#ffee58"/>
+    <SolidColorBrush x:Key="OnYellow" Color="#000000"/>
+
+    <SolidColorBrush x:Key="Orange" Color="#F57C00"/>
+    <SolidColorBrush x:Key="OnOrange" Color="#000000"/>
+
+    <SolidColorBrush x:Key="DisabledElement" Color="#BDBDBD"/>
+    <SolidColorBrush x:Key="SelectedElement" Color="#e3f2fd"/>
+
+    <!--<SolidColorBrush x:Key="materialPrimary" Color="#6200EE" />
     <SolidColorBrush x:Key="materialPrimaryVar" Color="#3700B3" />
     <SolidColorBrush x:Key="materialSecondary" Color="#03DAC6" />
     <SolidColorBrush x:Key="materialSecondaryVar" Color="#018786" />
@@ -10,7 +64,7 @@
     <SolidColorBrush x:Key="materialPrimaryBlueVar" Color="#01579B" />
 
     <SolidColorBrush x:Key="materialBackground" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="materialSurface" Color="#f1f1f1" />
+    <SolidColorBrush x:Key="Surface" Color="#f1f1f1" />
 
     <SolidColorBrush x:Key="materialError" Color="#B00020" />
     <SolidColorBrush x:Key="materialErrorVar" Color="#e5002a" />
@@ -27,7 +81,7 @@
     <SolidColorBrush x:Key="materialSelectedColour" Color="#d9effd" />
     <SolidColorBrush x:Key="materialGreen" Color="#03DAC6" />
 
-    <SolidColorBrush x:Key="disabledGray" Color="#aaaaaa" />
+    <SolidColorBrush x:Key="DisabledElement" Color="#aaaaaa" />
 
     <LinearGradientBrush x:Key="gradGood" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Offset="0" Color="#00695C" />
@@ -51,6 +105,6 @@
                 <GradientStop Offset="1.0" Color="#3700B3" />
             </GradientStopCollection>
         </GradientBrush.GradientStops>
-    </LinearGradientBrush>
+    </LinearGradientBrush>-->
 
 </ResourceDictionary>

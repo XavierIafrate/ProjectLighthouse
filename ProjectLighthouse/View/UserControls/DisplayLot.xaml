@@ -14,10 +14,10 @@
         <Style x:Key="text" TargetType="TextBlock">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=IsReject}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource materialError}" />
+                    <Setter Property="Foreground" Value="{StaticResource Red}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Path=IsDelivered}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource materialPrimaryGreenVar}" />
+                    <Setter Property="Foreground" Value="{StaticResource Green}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -60,7 +60,7 @@
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <TextBlock
                     FontWeight="SemiBold"
-                    Foreground="{StaticResource materialPrimaryBlue}"
+                    Foreground="{StaticResource Blue}"
                     Text="{Binding Date, StringFormat='dd/MM/yyyy HH:mm', FallbackValue='01/01/1970 00:00'}" />
                 <TextBlock Text=" · " />
                 <TextBlock FontWeight="SemiBold" Text="{Binding AddedBy, FallbackValue='randy'}" />
@@ -88,7 +88,7 @@
                 Grid.Row="1"
                 Grid.Column="1"
                 FontStyle="Italic"
-                Foreground="{StaticResource materialOffBlack}"
+                Foreground="{StaticResource OnBackground}"
                 Text="{Binding DateProduced, StringFormat='{}produced {0:dd/MM/yy HH:mm}', FallbackValue='produced 01/01/1970'}" />
 
             <TextBlock
@@ -96,7 +96,7 @@
                 Grid.Row="2"
                 Grid.Column="1"
                 FontStyle="Italic"
-                Foreground="{StaticResource materialOffBlack}"
+                Foreground="{StaticResource OnBackground}"
                 Text="{Binding MaterialBatch, FallbackValue='batch 123456789 test'}"
                 ToolTip="{Binding MaterialBatch}"
                 ToolTipService.BetweenShowDelay="1000"
@@ -113,7 +113,7 @@
                 FontStyle="Italic"
                 TextWrapping="Wrap"
                 TextTrimming="WordEllipsis"
-                Foreground="{StaticResource materialPrimary}"
+                Foreground="{StaticResource Purple}"
                 Text="{Binding Remarks, FallbackValue='lorem ipsum dolor sit amet'}" />
         </Grid>
     </Grid>

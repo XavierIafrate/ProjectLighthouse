@@ -35,7 +35,7 @@
                 <Setter Property="Padding" Value="0,2" />
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="TextAlignment" Value="Right" />
-                <Setter Property="Foreground" Value="{StaticResource materialPrimaryBlueVar}" />
+                <Setter Property="Foreground" Value="{StaticResource Blue}" />
             </Style>
 
         </ResourceDictionary>
@@ -114,7 +114,7 @@
                 </Grid>
 
                 <Grid Margin="0,5">
-                    <Border Background="{StaticResource materialSurface}" CornerRadius="10" />
+                    <Border Background="{StaticResource Surface}" CornerRadius="10" />
                     <RichTextBox
                         x:Name="notesTextBox"
                         MinHeight="50"
@@ -177,15 +177,15 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <Border Background="{StaticResource materialPrimaryGreen}" CornerRadius="10,10,0,0" />
+                    <Border Background="{StaticResource Green}" CornerRadius="10,10,0,0" />
                     <Border
                         Grid.Row="1"
-                        Background="{StaticResource materialSurface}"
+                        Background="{StaticResource Surface}"
                         CornerRadius="0,0,10,10" />
                     <TextBlock
                         Margin="15,8"
                         FontSize="22"
-                        Foreground="{StaticResource materialOnPrimary}"
+                        Foreground="{StaticResource OnGreen}"
                         Text="Insights" />
                     <Grid Grid.Row="1" Margin="20,10">
                         <Grid.ColumnDefinitions>
@@ -301,18 +301,18 @@
                     <Grid Grid.Row="2" Height="10" />
                     <Border
                         Grid.Row="3"
-                        Background="{StaticResource materialPrimaryBlueVar}"
+                        Background="{StaticResource Blue}"
                         CornerRadius="10,10,0,0" />
                     <TextBlock
                         Grid.Row="3"
                         Margin="15,8"
                         FontSize="22"
-                        Foreground="{StaticResource materialOnPrimary}"
+                        Foreground="{StaticResource OnBlue}"
                         Text="Machine Workload" />
 
                     <Border
                         Grid.Row="4"
-                        Background="{StaticResource materialSurface}"
+                        Background="{StaticResource Surface}"
                         CornerRadius="0,0,10,10" />
 
 
@@ -377,7 +377,7 @@
                 </Grid.RowDefinitions>
                 <Rectangle
                     Grid.RowSpan="2"
-                    Fill="{StaticResource materialPrimaryBlueVar}"
+                    Fill="{StaticResource Blue}"
                     RadiusX="20"
                     RadiusY="20" />
                 <Border Grid.ColumnSpan="2" />
@@ -453,7 +453,7 @@
                             <Grid>
                                 <Border
                                     Name="Mask"
-                                    Background="{StaticResource materialPrimaryBlue}"
+                                    Background="{StaticResource Blue}"
                                     CornerRadius="20" />
                                 <StackPanel x:Name="image">
                                     <Image

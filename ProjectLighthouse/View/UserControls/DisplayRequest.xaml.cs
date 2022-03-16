@@ -48,19 +48,19 @@ namespace ProjectLighthouse.View.UserControls
 
             if (requestControl.Request.IsAccepted)
             {
-                requestControl.statusBadge.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                requestControl.statusBadge.Background = (Brush)Application.Current.Resources["Green"];
                 g = Geometry.Parse("M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z");
                 requestControl.statusText.Text = "Approved";
             }
             else if (requestControl.Request.IsDeclined)
             {
-                requestControl.statusBadge.Background = (Brush)Application.Current.Resources["materialError"];
+                requestControl.statusBadge.Background = (Brush)Application.Current.Resources["Red"];
                 g = Geometry.Parse("M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z");
                 requestControl.statusText.Text = "Declined";
             }
             else
             {
-                requestControl.statusBadge.Background = (Brush)Application.Current.Resources["materialPrimaryBlue"];
+                requestControl.statusBadge.Background = (Brush)Application.Current.Resources["Blue"];
                 g = Geometry.Parse("M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z");
                 requestControl.statusText.Text = "Pending";
 

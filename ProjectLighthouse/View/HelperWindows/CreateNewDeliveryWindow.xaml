@@ -51,7 +51,7 @@
                                 FontWeight="SemiBold"
                                 Grid.Row="1"
                                 Grid.Column="1"
-                                Foreground="{StaticResource materialPrimaryBlue}"
+                                Foreground="{StaticResource Blue}"
                                 Text="{Binding ItemManufactureOrderNumber}" />
 
                             <TextBlock
@@ -87,7 +87,7 @@
                     <Path
                         Margin="0,0,5,0"
                         Data="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"
-                        Fill="{StaticResource materialOnPrimary}" />
+                        Fill="{StaticResource OnPurple}" />
                 </Button.Content>
             </Button>
             <Button
@@ -98,7 +98,7 @@
                     <Path
                         Margin="0,0,5,0"
                         Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"
-                        Fill="{StaticResource materialOnPrimary}" />
+                        Fill="{StaticResource OnPurple}" />
                 </Button.Content>
             </Button>
         </StackPanel>
@@ -122,7 +122,7 @@
                             <TextBlock
                                 FontSize="16"
                                 FontWeight="Bold"
-                                Foreground="{StaticResource materialPrimaryBlue}"
+                                Foreground="{StaticResource Blue}"
                                 Text="{Binding ItemManufactureOrderNumber}" />
                             <TextBlock
                                 Grid.Column="1"

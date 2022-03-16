@@ -47,21 +47,21 @@
                 Padding="10,0"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Foreground="{StaticResource materialOnPrimary}"
+                Foreground="{StaticResource OnBackground}"
                 Text="A0" />
         </Grid>
         <TextBlock
             x:Name="RecentlyDeclined"
             Grid.Row="1"
             FontStyle="Italic"
-            Foreground="{StaticResource materialError}"
+            Foreground="{StaticResource Red}"
             Text="recently declined"
             Visibility="Collapsed" />
         <TextBlock
             x:Name="CouldBeAddedFlag"
             Grid.Row="1"
             FontStyle="Italic"
-            Foreground="{StaticResource materialPrimaryBlue}"
+            Foreground="{StaticResource Blue}"
             Text="could add to M12345"
             Visibility="Visible" />
     </Grid>

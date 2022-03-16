@@ -5,7 +5,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border Background="{StaticResource materialSurface}" CornerRadius="10">
+                    <Border Background="{StaticResource Surface}" CornerRadius="10">
                         <ScrollViewer
                             x:Name="PART_ContentHost"
                             Margin="10"

@@ -40,24 +40,24 @@ namespace ProjectLighthouse.View.UserControls
                 switch (control.orderObject.State)
                 {
                     case OrderState.Problem:
-                        control.bg.Background = (Brush)Application.Current.Resources["materialError"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
+                        control.bg.Background = (Brush)Application.Current.Resources["Red"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Red"];
                         break;
                     case OrderState.Ready:
-                        control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                        control.bg.Background = (Brush)Application.Current.Resources["Green"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Green"];
                         break;
                     case OrderState.Prepared:
-                        control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                        control.bg.Background = (Brush)Application.Current.Resources["Green"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Green"];
                         break;
                     case OrderState.Running:
-                        control.bg.Background = (Brush)Application.Current.Resources["materialPrimaryBlue"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialPrimaryBlue"];
+                        control.bg.Background = (Brush)Application.Current.Resources["Blue"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Blue"];
                         break;
                     default:
-                        control.bg.Background = (Brush)Application.Current.Resources["materialError"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["materialError"];
+                        control.bg.Background = (Brush)Application.Current.Resources["OnBackground"];
+                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Background"];
                         break;
                 }
                 control.orderItems.ItemsSource = control.orderObject.OrderItems;

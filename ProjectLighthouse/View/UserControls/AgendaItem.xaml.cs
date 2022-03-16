@@ -33,25 +33,28 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.orderList.Visibility = Visibility.Collapsed;
                 control.NoneIndicator.Visibility = Visibility.Visible;
-                control.DateText.Foreground = (Brush)App.Current.Resources["disabledGray"];
+                control.DateText.Foreground = (Brush)App.Current.Resources["DisabledElement"];
+                control.Counter.Foreground = (Brush)App.Current.Resources["DisabledElement"];
             }
             else
             {
                 control.orderList.Visibility = Visibility.Visible;
                 control.NoneIndicator.Visibility = Visibility.Collapsed;
+                control.DateText.Foreground = (Brush)App.Current.Resources["OnSurface"];
+                control.Counter.Foreground = (Brush)App.Current.Resources["OnSurface"];
             }
 
             if (control.Day.Orders.Count <= 1)
             {
-                control.Warning.Background = (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                control.Warning.Background = (Brush)Application.Current.Resources["Green"];
             }
             else if (control.Day.Orders.Count == 2)
             {
-                control.Warning.Background = (Brush)Application.Current.Resources["materialYellow"];
+                control.Warning.Background = (Brush)Application.Current.Resources["Yellow"];
             }
             else
             {
-                control.Warning.Background = (Brush)Application.Current.Resources["materialError"];
+                control.Warning.Background = (Brush)Application.Current.Resources["Red"];
             }
 
             //if (control.Day.Date.DayOfWeek is DayOfWeek.Sunday or DayOfWeek.Saturday && control.Day.Orders.Count is 0)

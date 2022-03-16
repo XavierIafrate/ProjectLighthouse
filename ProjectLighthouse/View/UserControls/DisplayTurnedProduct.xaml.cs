@@ -32,16 +32,16 @@ namespace ProjectLighthouse.View.UserControls
                 switch (control.Product.Material)
                 {
                     case "A2":
-                        control.Badge.Fill = (Brush)App.Current.Resources["materialPrimaryBlue"];
+                        control.Badge.Fill = (Brush)App.Current.Resources["Blue"];
                         break;
                     case "A4":
-                        control.Badge.Fill = (Brush)App.Current.Resources["materialPrimary"];
+                        control.Badge.Fill = (Brush)App.Current.Resources["Purple"];
                         break;
                     case "EN1A":
-                        control.Badge.Fill = (Brush)App.Current.Resources["materialPrimaryGreen"];
+                        control.Badge.Fill = (Brush)App.Current.Resources["Green"];
                         break;
                     case "TI":
-                        control.Badge.Fill = (Brush)App.Current.Resources["materialError"];
+                        control.Badge.Fill = (Brush)App.Current.Resources["Red"];
                         break;
                 }
 
@@ -65,13 +65,13 @@ namespace ProjectLighthouse.View.UserControls
                             : $"{control.Product.OrderReference} guarantees {control.Product.LighthouseGuaranteedQuantity:#,##0}";
                     }
 
-                    control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryGreen"];
+                    control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["Green"];
                     control.CouldBeAddedFlag.Visibility = Visibility.Visible;
                 }
                 else if (!string.IsNullOrEmpty(control.Product.OrderReference))
                 {
                     control.CouldBeAddedFlag.Text = $"Compatible with {control.Product.OrderReference}";
-                    control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["materialPrimaryBlue"];
+                    control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["Blue"];
                 }
                 else
                 {

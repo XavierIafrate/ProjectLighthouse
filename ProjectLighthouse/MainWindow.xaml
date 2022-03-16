@@ -12,7 +12,7 @@
     MinWidth="1200"
     MinHeight="700"
     MaxWidth="2000"
-    Background="{StaticResource materialBackground}"
+    Background="{StaticResource Background}"
     Loaded="Window_Loaded"
     ResizeMode="CanResize"
     WindowStartupLocation="CenterScreen"
@@ -32,7 +32,7 @@
             <RowDefinition Height="6*" />
         </Grid.RowDefinitions>
 
-        <Rectangle Grid.RowSpan="2" Fill="{StaticResource materialSurface}" />
+        <Rectangle Grid.RowSpan="2" Fill="{StaticResource Surface}" />
         <StackPanel VerticalAlignment="Center">
             <Grid>
                 <Border
@@ -61,17 +61,15 @@
 
             <Grid
                 x:Name="DebugTile"
-                Margin="10"
-                Visibility="Visible">
-                <Border Background="{StaticResource materialError}" CornerRadius="10" />
+                Margin="10">
                 <TextBlock
                     Margin="0,5"
                     HorizontalAlignment="Center"
                     FontSize="20"
+                    FontFamily="Consolas"
                     FontWeight="Bold"
-                    Foreground="{StaticResource materialOnError}"
-                    Text="DEBUG VERSION"
-                    Visibility="Collapsed" />
+                    Foreground="{StaticResource Red}"
+                    Text="DEV BUILD" />
             </Grid>
         </StackPanel>
 
@@ -138,7 +136,6 @@
                     </StackPanel>
 
                     <StackPanel Margin="0,20">
-
                         <ToggleButton
                             x:Name="deliveries_button"
                             Command="{Binding UpdateViewCommand}"
@@ -148,6 +145,12 @@
                     </StackPanel>
 
                     <StackPanel Margin="0,20">
+                        <ToggleButton
+                            x:Name="checksheet_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Check Sheet"
+                            Content="Check Sheet"
+                            Style="{StaticResource CheckSheet_MenuItem}" />
                         <ToggleButton
                             x:Name="calibration_button"
                             Command="{Binding UpdateViewCommand}"
@@ -182,24 +185,24 @@
                 Visibility="{Binding DataRefreshBadgeVis}"
                 Grid.Row="1"
                 Padding="30,3"
-                Background="{StaticResource materialOnBackground}">
+                Background="{StaticResource OnBackground}">
                 <StackPanel>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                         <Path
                             Height="13"
                             Data="M2 12A10 10 0 1 0 12 2A10 10 0 0 0 2 12M15.6 13.72A4 4 0 0 0 16 12A4 4 0 0 0 12 8V10L8.88 7L12 4V6A6 6 0 0 1 18 12A5.9 5.9 0 0 1 17.07 15.19M6 12A5.9 5.9 0 0 1 6.93 8.81L8.4 10.28A4 4 0 0 0 8 12A4 4 0 0 0 12 16V14L15 17L12 20V18A6 6 0 0 1 6 12Z"
-                            Fill="{StaticResource materialOnPrimary}"
+                            Fill="{StaticResource OnPurple}"
                             Stretch="Uniform" />
                         <TextBlock
                             Margin="7,0,0,2"
-                            Foreground="{StaticResource materialOnPrimary}"
+                            Foreground="{StaticResource OnPurple}"
                             Text="Data Synchronising" />
                     </StackPanel>
                     <TextBlock
                         x:Name="refreshTime"
                         HorizontalAlignment="Center"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialBackground}"
+                        Foreground="{StaticResource Background}"
                         Opacity="0.5"
                         Text="{Binding LastDataRefresh, FallbackValue='Test', StringFormat='{}last refreshed at {0:HH:mm:ss}'}" />
                 </StackPanel>
@@ -219,17 +222,17 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource materialPrimaryBlue}" />
+                <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource Blue}" />
                 <StackPanel Margin="20,10" VerticalAlignment="Center">
                     <TextBlock
                         x:Name="LoggedInUserName"
                         FontSize="20"
-                        Foreground="{StaticResource materialOnPrimary}"
+                        Foreground="{StaticResource OnBlue}"
                         Text="Randy Marsh" />
                     <TextBlock
                         x:Name="LoggedInUserRole"
                         FontStyle="Italic"
-                        Foreground="{StaticResource materialOnPrimary}"
+                        Foreground="{StaticResource OnBlue}"
                         Text="Viewer" />
                 </StackPanel>
 
@@ -250,7 +253,7 @@
 
                 <Grid Margin="30,5,10,5">
                     <Rectangle
-                        Fill="{StaticResource materialError}"
+                        Fill="{StaticResource Red}"
                         RadiusX="5"
                         RadiusY="5" />
                     <TextBlock
@@ -258,7 +261,7 @@
                         VerticalAlignment="Center"
                         FontSize="18"
                         FontWeight="Bold"
-                        Foreground="{StaticResource materialOnError}"
+                        Foreground="{StaticResource OnRed}"
                         Text="BETA" />
                 </Grid>
                 <StackPanel VerticalAlignment="Center">
@@ -282,7 +285,7 @@
                 <TextBlock
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Foreground="{StaticResource materialOnBackground}"
+                    Foreground="{StaticResource OnBackground}"
                     Text="{Binding NavText, FallbackValue=CURR_VIEW}" />
             </Viewbox>
 

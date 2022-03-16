@@ -29,7 +29,7 @@
             <Grid>
                 <Border
                         Name="Mask"
-                        Background="{StaticResource materialPrimaryBlue}"
+                        Background="{StaticResource Blue}"
                         CornerRadius="20,0,0,20" />
                 <Grid x:Name="image">
                     <Image 
@@ -66,7 +66,7 @@
         </Rectangle>-->
         <Grid Grid.Column="1" Width="300" Grid.ColumnSpan="2">
             <Rectangle
-                Fill="{StaticResource materialBackground}"
+                Fill="{StaticResource Background}"
                 RadiusX="20"
                 RadiusY="20" />
             <StackPanel
@@ -91,14 +91,14 @@
                     Visibility="Hidden">
                     <Rectangle
                         Height="26"
-                        Fill="{StaticResource materialError}"
+                        Fill="{StaticResource Red}"
                         RadiusX="13"
                         RadiusY="13" />
                     <TextBlock
                         x:Name="message"
                         Padding="15,5,15,7"
                         HorizontalAlignment="Center"
-                        Foreground="{StaticResource materialOnError}"
+                        Foreground="{StaticResource OnRed}"
                         Text="Username Not Found debug" />
                 </Grid>
 

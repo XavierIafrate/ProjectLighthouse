@@ -18,20 +18,20 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
 
             if (state == OrderState.Problem)
             {
-                return (Brush)Application.Current.Resources["materialError"];
+                return (Brush)Application.Current.Resources["Red"];
             }
             else if (state is OrderState.Ready or OrderState.Prepared)
             {
-                return (Brush)Application.Current.Resources["materialPrimaryGreen"];
+                return (Brush)Application.Current.Resources["Green"];
 
             }
             else if (state is OrderState.Running)
             {
-                return (Brush)Application.Current.Resources["materialPrimaryBlue"];
+                return (Brush)Application.Current.Resources["Blue"];
             }
             else
             {
-                return (Brush)Application.Current.Resources["materialOnBackground"];
+                return (Brush)Application.Current.Resources["OnBackground"];
             }
         }
 

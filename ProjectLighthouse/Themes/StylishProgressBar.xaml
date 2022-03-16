@@ -2,9 +2,8 @@
     <Style x:Key="Default" TargetType="ProgressBar">
         <Setter Property="Maximum" Value="1" />
         <Setter Property="Minimum" Value="0" />
-        <Setter Property="Background" Value="{StaticResource disabledGray}" />
-        <Setter Property="Foreground" Value="{StaticResource primaryGradient}" />
-
+        <Setter Property="Background" Value="{StaticResource DisabledElement}" />
+        <Setter Property="Foreground" Value="{StaticResource Blue}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ProgressBar">
@@ -18,13 +17,7 @@
                             HorizontalAlignment="Left"
                             Background="{TemplateBinding Foreground}"
                             CornerRadius="2" />
-                        <!--<TextBlock Text="{Binding Value, StringFormat='{}{0:0}%'}" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
                     </Grid>
-                    <!--<ControlTemplate.Triggers>
-                        <Trigger Property="Value" Value="1">
-                            <Setter TargetName="PART_Indicator" Property="Background" Value="{StaticResource materialPrimaryGreen}"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>-->
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

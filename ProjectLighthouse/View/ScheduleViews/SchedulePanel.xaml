@@ -64,13 +64,13 @@
             HorizontalAlignment="Left">
             <Border
                 Height="40"
-                Background="{StaticResource materialPrimary}"
+                Background="{StaticResource Purple}"
                 BorderThickness="0"
                 CornerRadius="20" />
             <Grid
                 Margin="50,5,50,6"
                 VerticalAlignment="Center"
-                TextElement.Foreground="{StaticResource materialOnPrimary}">
+                TextElement.Foreground="{StaticResource OnPurple}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />

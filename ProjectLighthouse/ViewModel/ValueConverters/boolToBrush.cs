@@ -14,7 +14,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
                 return null;
             }
 
-            return b ? (Brush)App.Current.Resources["materialPrimaryGreen"] : (Brush)App.Current.Resources["materialError"];
+            return b ? (Brush)App.Current.Resources["Green"] : (Brush)App.Current.Resources["Red"];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
