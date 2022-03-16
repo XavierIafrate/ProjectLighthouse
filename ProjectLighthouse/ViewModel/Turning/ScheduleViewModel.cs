@@ -21,6 +21,8 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrderItem> OrderItems;
         public List<Lathe> Lathes;
 
+        public List<CalendarDay> Agenda { get; set; }
+
         public string ViewTitle { get; set; }
         public Lathe SelectedLathe { get; set; }
 
@@ -89,6 +91,7 @@ namespace ProjectLighthouse.ViewModel
         {
             ActiveOrders = new();
             Problems = new();
+            Agenda = new();
 
             OrderHeaders = DatabaseHelper.Read<LatheManufactureOrder>();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
@@ -148,7 +151,9 @@ namespace ProjectLighthouse.ViewModel
             FilteredItems.AddRange(PlannedResearch.Where(r => r.AllocatedMachine == searchString));
 
             FilteredItems = FilteredItems.OrderBy(i => i.StartDate).ToList();
-            if (App.CurrentUser.Role >= UserRole.Scheduling)
+
+            Problems.Clear();
+            if (App.CurrentUser.Role >= UserRole.Scheduling && Filter != "Unallocated")
             {
                 GetProblems();
             }
@@ -178,6 +183,23 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged("ViewTitle");
 
             GetInsights();
+            SetAgenda();
+        }
+
+        private void SetAgenda()
+        {
+            Agenda = new();
+            List<LatheManufactureOrder> ordersOnAgenda = ActiveOrders
+                .Where(x => x.StartDate < DateTime.Now.AddDays(14))
+                .ToList();
+
+            for (int i = 0; i < 14; i++)
+            {
+                DateTime date = DateTime.Today.AddDays(i);
+                Agenda.Add(new CalendarDay(date, ordersOnAgenda.Where(x => x.StartDate.Date == date).ToList()));
+            }
+
+            OnPropertyChanged(nameof(Agenda));
         }
 
         private void GetProblems()
@@ -185,7 +207,6 @@ namespace ProjectLighthouse.ViewModel
             // TODO: 
             // Factor in required product times
 
-            Problems.Clear();
             for (int i = 0; i < FilteredItems.Count - 1; i++)
             {
                 DateTime starting = FilteredItems[i].StartDate;
