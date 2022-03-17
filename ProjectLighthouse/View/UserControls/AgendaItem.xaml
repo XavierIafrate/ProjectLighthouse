@@ -44,8 +44,11 @@
                                 <Border
                                     Grid.ColumnSpan="5"
                                     Background="{StaticResource Background}"
-                                    CornerRadius="10" />
-                                <Grid Margin="5" TextElement.FontSize="13">
+                                    CornerRadius="3"
+                                    BorderThickness="1"
+                                    BorderBrush="{StaticResource Teal}"
+                                    SnapsToDevicePixels="True"/>
+                                <Grid Margin="10,4" TextElement.FontSize="13">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="*" />
@@ -54,9 +57,11 @@
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         FontWeight="SemiBold"
+                                        FontFamily="Consolas"
                                         Text="{Binding Name}" />
                                     <TextBlock
                                         Grid.Column="2"
+                                        FontFamily="Consolas"
                                         VerticalAlignment="Center"
                                         FontWeight="SemiBold"
                                         Text="{Binding AllocatedMachine}" />

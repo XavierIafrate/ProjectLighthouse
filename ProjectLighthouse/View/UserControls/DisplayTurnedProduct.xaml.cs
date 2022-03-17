@@ -33,15 +33,19 @@ namespace ProjectLighthouse.View.UserControls
                 {
                     case "A2":
                         control.Badge.Fill = (Brush)App.Current.Resources["Blue"];
+                        control.MaterialTextBlock.Foreground = (Brush)App.Current.Resources["OnBlue"];
                         break;
                     case "A4":
                         control.Badge.Fill = (Brush)App.Current.Resources["Purple"];
+                        control.MaterialTextBlock.Foreground = (Brush)App.Current.Resources["OnPurple"];
                         break;
                     case "EN1A":
                         control.Badge.Fill = (Brush)App.Current.Resources["Green"];
+                        control.MaterialTextBlock.Foreground = (Brush)App.Current.Resources["OnGreen"];
                         break;
                     case "TI":
                         control.Badge.Fill = (Brush)App.Current.Resources["Red"];
+                        control.MaterialTextBlock.Foreground = (Brush)App.Current.Resources["OnRed"];
                         break;
                 }
 

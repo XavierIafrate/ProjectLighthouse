@@ -27,6 +27,7 @@ namespace ProjectLighthouse.View
             SaveExit = false;
             Item = item;
             Lots = lots;
+
             foreach (Lot lot in Lots)
             {
                 lot.RequestToEdit += EditLot;

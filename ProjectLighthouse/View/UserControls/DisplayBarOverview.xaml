@@ -83,7 +83,7 @@
                             VerticalAlignment="Center"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource OnRed}"
-                            Text="Warning!" />
+                            Text="Warning" />
                     </StackPanel>
                 </Grid>
 

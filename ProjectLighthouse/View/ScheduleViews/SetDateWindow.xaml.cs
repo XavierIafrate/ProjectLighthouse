@@ -42,7 +42,7 @@ namespace ProjectLighthouse.View
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             SelectedDate = calendar.SelectedDate ?? DateTime.Today;
-            SelectedDate.AddHours(8);
+            SelectedDate.AddHours(12);
             AllocatedMachine = machine.Text;
             SaveExit = true;
             Close();

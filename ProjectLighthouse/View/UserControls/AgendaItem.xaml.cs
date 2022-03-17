@@ -50,17 +50,20 @@ namespace ProjectLighthouse.View.UserControls
             }
             else if (control.Day.Orders.Count == 2)
             {
-                control.Warning.Background = (Brush)Application.Current.Resources["Yellow"];
+                control.Warning.Background = (Brush)Application.Current.Resources["Orange"];
             }
             else
             {
                 control.Warning.Background = (Brush)Application.Current.Resources["Red"];
             }
 
-            //if (control.Day.Date.DayOfWeek is DayOfWeek.Sunday or DayOfWeek.Saturday && control.Day.Orders.Count is 0)
-            //{
-            //    control.Visibility = Visibility.Collapsed;
-            //}
+            if (control.Day.Date.DayOfWeek == DayOfWeek.Saturday || control.Day.Date.DayOfWeek == DayOfWeek.Sunday)
+            {
+                if (control.Day.Orders.Count > 0)
+                {
+                    control.Warning.Background = (Brush)Application.Current.Resources["Red"];
+                }
+            }
         }
 
         private static string GetDaySuffix(int day)

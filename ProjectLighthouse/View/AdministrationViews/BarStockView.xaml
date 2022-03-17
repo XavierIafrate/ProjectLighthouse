@@ -11,10 +11,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <vm:BarStockViewModel x:Key="vm" />
-    </UserControl.Resources>
-    <Grid DataContext="{StaticResource vm}">
+    <Grid>
         <ScrollViewer>
             <Grid MaxWidth="700">
                 <Grid.RowDefinitions>
@@ -37,7 +34,7 @@
                                 Fill="{StaticResource OnRed}"
                                 Stretch="UniformToFill" />
                             <StackPanel Margin="10,10,15,10" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding NumberOfBars, StringFormat='{}{0:#,##0} more bars required to cover active orders'}" Foreground="{StaticResource Purple}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding NumberOfBars, StringFormat='{}{0:#,##0} more bars required to cover active orders'}" Foreground="{StaticResource OnPurple}" FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding CostOfNewBar, StringFormat='{}Approximately £{0:N0}'}" Foreground="{StaticResource OnPurple}" FontStyle="Italic" Opacity="0.8"/>
                             </StackPanel>
                         </StackPanel>

@@ -14,6 +14,7 @@
                 <!--<local:SkinResourceDictionary ClassicSource="./Themes/ClassicTheme.xaml"
                                               DarkSource="./Themes/DarkTheme.xaml"/>-->
                 <ResourceDictionary Source="./Themes/ClassicTheme.xaml" />
+                <ResourceDictionary Source="./Themes/GlobalColours.xaml" />
                 <ResourceDictionary Source="./Themes/StylishScrollBar.xaml" />
                 <ResourceDictionary Source="./Themes/StylishButtons.xaml" />
                 <ResourceDictionary Source="./Themes/StylishText.xaml" />

@@ -210,19 +210,51 @@ namespace ProjectLighthouse.ViewModel
             for (int i = 0; i < FilteredItems.Count - 1; i++)
             {
                 DateTime starting = FilteredItems[i].StartDate;
+                if (FilteredItems[i] is ResearchTime)
+                {
+                    starting = starting.Date;
+                }
                 DateTime ending = starting.AddSeconds(FilteredItems[i].TimeToComplete);
-                DateTime nextStarting = FilteredItems[i + 1].StartDate;
-                if (starting == nextStarting)
+                DateTime nextStarting = FilteredItems[i + 1].StartDate.AddHours(-4); //factor in setting
+
+                if (FilteredItems[i + 1] is MachineService)
+                {
+                    continue;
+                }
+
+                if (starting == nextStarting.AddHours(4)) // factor out setting again
                 {
                     Problems.Add(new() { WarningText = $"{FilteredItems[i].Name} and {FilteredItems[i + 1].Name} have the same start date", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = true });
                 }
                 else if (nextStarting < ending)
                 {
-                    Problems.Add(new() { WarningText = $"{FilteredItems[i].Name} will overflow by {(ending - nextStarting).TotalHours:0} hours", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = true });
+                    var resolution = (nextStarting - DateTime.Today).TotalDays switch
+                    {
+                        < 2 => 3,
+                        < 7 => 6,
+                        < 14 => 12,
+                        < 28 => 24,
+                        _ => 48,
+                    };
+
+                    if ((nextStarting - ending).TotalHours >= resolution)
+                    {
+                        Problems.Add(new() { WarningText = $"{FilteredItems[i].Name} will overflow by {(ending - nextStarting).TotalHours:0} hours", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = true });
+
+                    }
                 }
                 else
                 {
-                    if ((nextStarting - ending).TotalHours >= 12)
+                    var resolution = (nextStarting - DateTime.Today).TotalDays switch
+                    {
+                        < 2 => 3,
+                        < 7 => 6,
+                        < 14 => 12,
+                        < 28 => 24,
+                        _ => 36,
+                    };
+
+                    if ((nextStarting - ending).TotalHours >= resolution)
                     {
                         Problems.Add(new() { WarningText = $"Downtime of {(nextStarting - ending).TotalHours:0} hours anticipated", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = false });
                     }

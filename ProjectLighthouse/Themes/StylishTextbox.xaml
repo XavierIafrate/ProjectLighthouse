@@ -99,6 +99,7 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8" />
                             <ScrollViewer
+                                TextElement.Foreground="{StaticResource OnSurface}"
                                 x:Name="PART_ContentHost"
                                 Margin="12,7"
                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -107,6 +108,8 @@
                                 Margin="16,5"
                                 VerticalAlignment="Center"
                                 Style="{StaticResource GhostText}"
+                                Foreground="{StaticResource OnSurface}"
+                                Opacity="0.6"
                                 Text="{TemplateBinding Tag}"
                                 TextWrapping="Wrap"
                                 Visibility="Hidden" />

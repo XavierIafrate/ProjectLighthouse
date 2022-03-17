@@ -127,7 +127,7 @@
                     HorizontalAlignment="Right"
                     FontWeight="SemiBold"
                     Text="Start" />
-                <TextBlock Grid.Column="1" Text="{Binding StartDate, StringFormat='{}{0:ddd, dd MMM}'}" />
+                <TextBlock Grid.Column="1" Text="{Binding StartDate, StringFormat='{}{0:ddd, dd MMM HHmm}h'}" />
 
                 <TextBlock
                     Grid.Row="1"
@@ -138,7 +138,7 @@
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"
-                    Text="{Binding Path=., Converter='{StaticResource startToFinish}', StringFormat='{}{0:ddd, dd MMM}'}" />
+                    Text="{Binding Path=., Converter='{StaticResource startToFinish}', StringFormat='{}{0:ddd, dd MMM HHmm}h'}" />
 
                 <TextBlock
                     Grid.Row="2"
@@ -162,7 +162,7 @@
                     Grid.Column="1"
                     Text="{Binding BarID}" />
 
-                <TextBlock
+                <!--<TextBlock
                     Grid.Row="4"
                     Margin="0,0,15,0"
                     HorizontalAlignment="Right"
@@ -171,7 +171,7 @@
                 <TextBlock
                     Grid.Row="4"
                     Grid.Column="1"
-                    Text="{Binding NumberOfBars}" />
+                    Text="{Binding NumberOfBars}" />-->
 
             </Grid>
 

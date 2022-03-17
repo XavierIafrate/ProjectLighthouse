@@ -47,7 +47,6 @@
                 Padding="10,0"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Foreground="{StaticResource OnBackground}"
                 Text="A0" />
         </Grid>
         <TextBlock

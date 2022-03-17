@@ -94,9 +94,9 @@
                 <StackPanel Margin="20">
                     <!--  Card Header  -->
                     <TextBlock Text="{Binding SelectedRequest.Id,StringFormat='{}Request #{0}', FallbackValue='Request #0'}" Style="{StaticResource title}"/>
-                    <TextBlock Text="APPROVED" FontWeight="Bold" FontSize="18" Foreground="{StaticResource Green}" Visibility="{Binding ApprovedVis}"/>
+                    <TextBlock Text="APPROVED FOR MANUFACTURE" FontWeight="Bold" FontSize="18" Foreground="{StaticResource Green}" Visibility="{Binding ApprovedVis}"/>
                     <TextBlock Text="DECLINED" FontWeight="Bold" FontSize="18" Foreground="{StaticResource Red}" Visibility="{Binding DeclinedVis}"/>
-                    <TextBlock Text="PENDING" FontWeight="Bold" FontSize="18" Foreground="{StaticResource Blue}" Visibility="{Binding ApprovalControlsVis}"/>
+                    <TextBlock Text="PENDING APPROVAL" FontWeight="Bold" FontSize="18" Foreground="{StaticResource Blue}" Visibility="{Binding ApprovalControlsVis}"/>
                     <!--  MetaData Dates display grid  -->
                     <Separator Margin="0,15,0,5" />
                     <Grid Margin="15,0">
@@ -133,7 +133,7 @@
                     <!--  Controls area  -->
                     <Separator Margin="0,5" />
 
-                    <StackPanel Margin="10,20,10,20" Visibility="{Binding DecisionVis}">
+                    <StackPanel Margin="10,20,10,20">
                         <TextBlock Style="{StaticResource section}" Text="Request Details" />
 
                         <Grid HorizontalAlignment="Center" Margin="10">
@@ -163,9 +163,9 @@
                             <TextBlock VerticalAlignment="Center" Text="Ultrasonic Cleaning:" Style="{StaticResource annotation}" Grid.Row="3" HorizontalAlignment="Right"/>
                             <TextBlock Padding="0,3,0,0"  VerticalAlignment="Center" Text="{Binding SelectedRequest.CleanCustomerRequirement,FallbackValue='CLEANING_REQ', Converter={StaticResource btyn}}" Grid.Column="2" FontWeight="SemiBold" Grid.Row="3"/>
                         </Grid>
-                        
-                        <TextBlock Style="{StaticResource section}" Text="Recommended Manifest" />
-                        <Grid Margin="0,10">
+
+                        <TextBlock Style="{StaticResource section}" Text="Recommended Manifest"  Visibility="{Binding DecisionVis}" />
+                        <Grid Margin="0,10"  Visibility="{Binding DecisionVis}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
@@ -205,7 +205,7 @@
                             <Button Content="Make/Buy" Command="{Binding ViewMakeOrBuyCommand}"  Grid.Column="4"/>
 
                         </Grid>
-                        <Grid>
+                        <Grid  Visibility="{Binding DecisionVis}">
                             <ListView ItemsSource="{Binding RecommendedManifest}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
@@ -216,7 +216,7 @@
                             <Rectangle Fill="#01ffffff" />
                         </Grid>
 
-                        <StackPanel
+                        <StackPanel  Visibility="{Binding DecisionVis}"
                             Margin="10,0"
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
@@ -296,11 +296,11 @@
                             FontSize="16"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource OnGreen}"
-                            Text="Approved" />
+                            Text="REQUEST APPROVED" />
                     </Grid>
 
                     <StackPanel Margin="10,0" Visibility="{Binding ApprovedVis, FallbackValue=Visible}">
-                        <TextBlock Text="{Binding SelectedRequest.ResultingLMO,StringFormat='{}This request was approved for manufacture and is on order {0}'}" Style="{StaticResource annotation}" />
+                        <TextBlock Text="{Binding SelectedRequest.ResultingLMO, StringFormat='{}This request was approved for manufacture and is on order {0}'}" Style="{StaticResource annotation}" />
                         <TextBlock Padding="0,5,0,4" Text="Please update the Purchase Order reference:" Style="{StaticResource annotation}" />
                         <TextBox Style="{StaticResource UsernameTextBox}" Text="{Binding PurchaseRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -325,18 +325,19 @@
                             FontSize="16"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource OnRed}"
-                            Text="Declined" />
+                            Text="{Binding SelectedRequest.DeclinedReason, StringFormat='{}DECLINED - {0}'}" />
                     </Grid>
                     <StackPanel Margin="10,0" Visibility="{Binding DeclinedVis, FallbackValue=Visible}">
                         <TextBlock HorizontalAlignment="Center" Text="Unfortunately this request has been declined." Style="{StaticResource annotation}" />
                     </StackPanel>
 
-                    <Separator Margin="0,5" />
+                    
 
                     <StackPanel
                         Grid.Row="2"
                         Margin="10"
                         Visibility="{Binding EditControlsVis, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
+                        <Separator Margin="0,5" />
                         <TextBlock
                             Margin="0,5"
                             Style="{StaticResource section}"

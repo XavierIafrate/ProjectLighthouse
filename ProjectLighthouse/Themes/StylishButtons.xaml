@@ -25,7 +25,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Purple}" />
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="LightGray" />
@@ -76,7 +76,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Red}" />
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="LightGray" />
@@ -92,7 +92,7 @@
         <Setter Property="Background" Value="{StaticResource Green}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Green}" />
+                <Setter Property="Background" Value="{StaticResource GreenDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -104,7 +104,7 @@
         <Setter Property="Background" Value="{StaticResource Blue}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Blue}" />
+                <Setter Property="Background" Value="{StaticResource BlueDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -116,7 +116,7 @@
         <Setter Property="Background" Value="{StaticResource Red}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Red}" />
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -283,7 +283,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Blue}" />
+                <Setter Property="Foreground" Value="{StaticResource BlueDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -436,7 +436,6 @@
                                 Fill="{StaticResource OnPurple}"
                                 Stretch="Uniform" />
                         </StackPanel>
-
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -502,7 +501,6 @@
                                 VerticalAlignment="Center"
                                 Text="PDF" />
                         </StackPanel>
-
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -531,7 +529,6 @@
                             Data="M19.92,12.08L12,20L4.08,12.08L5.5,10.67L11,16.17V2H13V16.17L18.5,10.66L19.92,12.08M12,20H2V22H22V20H12Z"
                             Fill="{StaticResource OnPurple}"
                             Stretch="Uniform" />
-
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -595,7 +592,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="#aaaaaa" />
+                <Setter Property="Foreground" Value="{StaticResource BlueLight}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -751,7 +748,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Blue}" />
+                <Setter Property="Background" Value="{StaticResource BlueDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -794,7 +791,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Red}" />
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>

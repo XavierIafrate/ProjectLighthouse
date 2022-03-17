@@ -132,9 +132,11 @@
             Margin="10,5"
             HorizontalAlignment="Left"
             Background="Transparent">
-            <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
-            <Separator Margin="5,0" Background="LightGray" />
+            <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" Foreground="{StaticResource OnBackground}" />
+            <Separator Margin="5,0" Background="{StaticResource OnBackground}" />
             <TextBlock
+                
+                                            Foreground="{StaticResource OnBackground}"
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
                 Text="Filter by:" />
@@ -291,7 +293,7 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Style="{StaticResource title}" Text="{Binding Path=SelectedOrder.Name, FallbackValue='M00000'}" />
+                                            <TextBlock Style="{StaticResource title}" Text="{Binding Path=SelectedOrder.Name, FallbackValue='M00000'}" Foreground="{StaticResource OnSurface}" />
                                             <Path
                                                 Width="30"
                                                 Height="25"
@@ -303,7 +305,7 @@
                                                 ToolTip="This order is closed."
                                                 Visibility="{Binding ArchiveVis}" />
                                         </StackPanel>
-                                        <TextBlock Style="{StaticResource subtitle}" Text="{Binding Path=SelectedOrder.POReference, FallbackValue='POR123456'}" />
+                                        <TextBlock Style="{StaticResource subtitle}" Text="{Binding Path=SelectedOrder.POReference, FallbackValue='POR123456'}" Foreground="{StaticResource OnSurface}"/>
                                     </StackPanel>
 
 
@@ -337,12 +339,13 @@
                                     <TextBlock
                                         x:Name="CreatedTextBlock"
                                         FontStyle="Italic"
-                                        Style="{StaticResource statement}">
+                                        Style="{StaticResource statement}" Foreground="{StaticResource OnSurface}">
                                         <Run Text="Created by" />
                                         <Run Text="{Binding Path=SelectedOrder.CreatedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
                                     <TextBlock
                                         Grid.Column="2"
+                                         Foreground="{StaticResource OnSurface}"
                                         HorizontalAlignment="Right"
                                         FontStyle="Italic"
                                         Style="{StaticResource statement}"
@@ -351,6 +354,7 @@
                                     <TextBlock
                                         x:Name="ModifiedTextBlock"
                                         Grid.Row="1"
+                                         Foreground="{StaticResource OnSurface}"
                                         FontStyle="Italic"
                                         Style="{StaticResource statement}"
                                         Visibility="{Binding Path=ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
@@ -362,6 +366,7 @@
                                         Grid.Column="2"
                                         HorizontalAlignment="Right"
                                         FontStyle="Italic"
+                                         Foreground="{StaticResource OnSurface}"
                                         Style="{StaticResource statement}"
                                         Text="{Binding Path=SelectedOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
                                         Visibility="{Binding Path=ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
@@ -411,6 +416,7 @@
                                     Stretch="Uniform" />
                                 <TextBlock
                                     Grid.Row="1"
+                                     Foreground="{StaticResource OnSurface}"
                                     Grid.Column="0"
                                     Padding="0,5,0,0"
                                     HorizontalAlignment="Center"
@@ -427,6 +433,7 @@
                                     Grid.Row="1"
                                     Grid.Column="1"
                                     Padding="0,5,0,0"
+                                     Foreground="{StaticResource OnSurface}"
                                     HorizontalAlignment="Center"
                                     FontStyle="Italic"
                                     Text="Tooling" />
@@ -441,6 +448,7 @@
                                     Grid.Row="1"
                                     Grid.Column="2"
                                     Padding="0,5,0,0"
+                                     Foreground="{StaticResource OnSurface}"
                                     HorizontalAlignment="Center"
                                     FontStyle="Italic"
                                     Text="Bar Verified" />
@@ -455,6 +463,7 @@
                                     Grid.Row="1"
                                     Grid.Column="3"
                                     Padding="0,5,0,0"
+                                     Foreground="{StaticResource OnSurface}"
                                     HorizontalAlignment="Center"
                                     FontStyle="Italic"
                                     Text="Bar Prepared" />
@@ -493,16 +502,18 @@
                                             HorizontalAlignment="Center"
                                             FontSize="14"
                                             FontWeight="SemiBold"
-                                            Foreground="{StaticResource OnBackground}"
+                                            Foreground="{StaticResource OnSurface}"
                                             Text="SETTING" />
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             FontSize="18"
+                                            Foreground="{StaticResource OnSurface}"
                                             Style="{StaticResource hero}"
                                             Text="{Binding SelectedOrder.StartDate, Converter={StaticResource settingTime}}" />
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             FontStyle="Italic"
+                                            Foreground="{StaticResource OnSurface}"
                                             Text="{Binding SelectedOrder.AllocatedMachine, Converter={StaticResource stringToAssignedLathe}}" />
                                     </StackPanel>
                                 </Border>
@@ -514,9 +525,10 @@
                                             HorizontalAlignment="Center"
                                             FontSize="14"
                                             FontWeight="SemiBold"
-                                            Foreground="{StaticResource OnBackground}"
+                                            Foreground="{StaticResource OnSurface}"
                                             Text="ESTIMATED TIME" />
-                                        <TextBlock Style="{StaticResource hero}" Text="{Binding SelectedOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
+                                        <TextBlock Style="{StaticResource hero}" 
+                                            Foreground="{StaticResource OnSurface}" Text="{Binding SelectedOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
                                     </StackPanel>
                                 </Border>
 
@@ -526,12 +538,13 @@
                                             HorizontalAlignment="Center"
                                             FontSize="14"
                                             FontWeight="SemiBold"
-                                            Foreground="{StaticResource OnBackground}"
+                                            Foreground="{StaticResource OnSurface}"
                                             Text="MATERIAL" />
                                         <TextBlock
                                             Grid.Row="1"
                                             Grid.Column="2"
                                             FontSize="16"
+                                            Foreground="{StaticResource OnSurface}"
                                             Style="{StaticResource hero}"
                                             Text="{Binding SelectedOrder.BarID}" />
                                         <TextBlock
@@ -539,6 +552,7 @@
                                             Grid.Column="2"
                                             HorizontalAlignment="Center"
                                             FontStyle="Italic"
+                                            Foreground="{StaticResource OnSurface}"
                                             Text="{Binding SelectedOrder.NumberOfBars, StringFormat='{}{0} bars required'}" />
                                     </StackPanel>
                                 </Border>
