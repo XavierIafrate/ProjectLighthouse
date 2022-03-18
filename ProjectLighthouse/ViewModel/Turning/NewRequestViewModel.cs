@@ -264,7 +264,7 @@ namespace ProjectLighthouse.ViewModel
                     if (item.ProductName == orderItem.ProductName)
                     {
                         item.IsAlreadyOnOrder = true;
-                        item.LighthouseGuaranteedQuantity += orderItem.LighthouseGuaranteedQuantity;
+                        //item.LighthouseGuaranteedQuantity += orderItem.LighthouseGuaranteedQuantity;
                     }
                 }
 
