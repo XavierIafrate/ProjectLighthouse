@@ -48,8 +48,8 @@
                 <views:ScheduleAgendaView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:AgendaViewModel}">
-                <views:AgendaView />
+            <DataTemplate DataType="{x:Type vms:CheckSheetsViewModel}">
+                <views:CheckSheetsView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type vms:BarStockViewModel}">

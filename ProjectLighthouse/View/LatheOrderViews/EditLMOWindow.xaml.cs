@@ -217,9 +217,17 @@ namespace ProjectLighthouse.View
         private void CalculateTime()
         {
             int estimatedTimeSeconds = 0;
-            foreach (LatheManufactureOrderItem item in items)
+            int cycleTime = 0;
+            foreach (LatheManufactureOrderItem item in items.OrderByDescending(x => x.CycleTime))
             {
-                estimatedTimeSeconds += item.GetCycleTime() * item.TargetQuantity;
+                if (item.CycleTime == 0 && cycleTime > 0) // uses better cycle time if available
+                {
+                    estimatedTimeSeconds += item.GetCycleTime() * item.TargetQuantity;
+                }
+                else
+                {
+                    estimatedTimeSeconds += item.GetCycleTime() * item.TargetQuantity;
+                }
             }
 
             order.TimeToComplete = estimatedTimeSeconds;
@@ -313,7 +321,7 @@ namespace ProjectLighthouse.View
         {
             CalculateTime();
             CalculateBarRequirements();
-            CheckIfOrderIsClosed();
+            CheckIfOrderIsClosed(); // running to closed is broken
 
             if (savedOrder.IsUpdated(order))
             {
