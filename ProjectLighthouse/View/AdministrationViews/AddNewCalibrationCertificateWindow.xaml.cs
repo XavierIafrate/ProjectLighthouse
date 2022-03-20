@@ -55,6 +55,14 @@ namespace ProjectLighthouse.View
                 }
             }
 
+            if (!NewCertificate.IsPass)
+            {
+                if (MessageBox.Show("Are you sure the equipment has failed calibration?" + Environment.NewLine + "It will be removed from service.", "Confirm Result", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                {
+                    NoErrors = false;
+                }
+            }
+
             if (string.IsNullOrEmpty(NewCertificate.CertificateNumber))
             {
                 NoErrors = false;

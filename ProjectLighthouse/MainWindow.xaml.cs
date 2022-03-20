@@ -89,9 +89,9 @@ namespace ProjectLighthouse
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            //debug_button.Visibility = App.CurrentUser.UserName == "xav"
-            //    ? Visibility.Visible
-            //    : Visibility.Collapsed;
+            checksheet_button.Visibility = App.CurrentUser.UserName == "xav"
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.UserRole;

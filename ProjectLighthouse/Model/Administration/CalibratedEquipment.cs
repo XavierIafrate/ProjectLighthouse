@@ -27,6 +27,7 @@ namespace ProjectLighthouse.Model.Administration
         public string CalibrationHouse { get; set; }
         public bool UKAS { get; set; }
         public bool RequiresCalibration { get; set; }
+        public bool RequiresInternalChecks { get; set; }
         public bool IsOutOfService { get; set; }
         public string AddedBy { get; set; }
 

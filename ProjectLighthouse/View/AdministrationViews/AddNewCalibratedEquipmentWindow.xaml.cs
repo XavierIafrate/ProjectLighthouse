@@ -86,15 +86,15 @@ namespace ProjectLighthouse.View
                 ModelTextBox.BorderBrush = validBorder;
             }
 
-            if (string.IsNullOrEmpty(NewEquipment.SerialNumber))
-            {
-                SerialNumberTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
-                noErrors = false;
-            }
-            else
-            {
-                SerialNumberTextBox.BorderBrush = validBorder;
-            }
+            //if (string.IsNullOrEmpty(NewEquipment.SerialNumber))
+            //{
+            //    SerialNumberTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
+            //    noErrors = false;
+            //}
+            //else
+            //{
+            //    SerialNumberTextBox.BorderBrush = validBorder;
+            //}
 
             if (string.IsNullOrEmpty(NewEquipment.Type))
             {
@@ -143,7 +143,6 @@ namespace ProjectLighthouse.View
             NewEquipment.EquipmentId = $"CE{sequence.seq + 1:0}";
             NewEquipment.EnteredSystem = System.DateTime.Now;
             NewEquipment.AddedBy = App.CurrentUser.UserName;
-            NewEquipment.RequiresCalibration = true;
             if (DatabaseHelper.Insert(NewEquipment))
             {
                 SaveExit = true;

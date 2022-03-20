@@ -15,6 +15,10 @@
             <StackPanel HorizontalAlignment="Right">
                 <CheckBox
                 Margin="0,0,0,15"
+                Content="Requires Internal Checks"
+                IsChecked="{Binding Path=RequiresInternalChecks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <CheckBox
+                Margin="0,0,0,15"
                 Content="Requires Calibration"
                 IsChecked="{Binding Path=RequiresCalibration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <CheckBox
