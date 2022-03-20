@@ -193,7 +193,7 @@ namespace ProjectLighthouse.ViewModel
                 .Where(x => x.StartDate < DateTime.Now.AddDays(14))
                 .ToList();
 
-            for (int i = 0; i < 14; i++)
+            for (int i = 0; i < 15; i++)
             {
                 DateTime date = DateTime.Today.AddDays(i);
                 Agenda.Add(new CalendarDay(date, ordersOnAgenda.Where(x => x.StartDate.Date == date).ToList()));

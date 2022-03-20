@@ -65,6 +65,12 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new DrawingBrowserViewModel();
                 viewModel.NavText = "Technical Drawings";
             }
+            else if (parameter.ToString() == "Check Sheets")
+            {
+                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new CheckSheetsViewModel();
+                viewModel.NavText = "Part Check Sheets";
+            }
             else if (parameter.ToString() == "Calibration")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;

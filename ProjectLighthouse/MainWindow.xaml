@@ -148,8 +148,8 @@
                         <ToggleButton
                             x:Name="checksheet_button"
                             Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Check Sheet"
-                            Content="Check Sheet"
+                            CommandParameter="Check Sheets"
+                            Content="Check Sheets"
                             Style="{StaticResource CheckSheet_MenuItem}" />
                         <ToggleButton
                             x:Name="calibration_button"
