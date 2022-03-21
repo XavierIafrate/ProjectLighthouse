@@ -22,7 +22,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
                 return "Pending";
             }
 
-            return (double)(Math.Ceiling((date - DateTime.Now.Date).TotalDays)) switch
+            return (double)(Math.Ceiling((date.Date - DateTime.Now.Date).TotalDays)) switch
             {
                 -1 => "Yesterday",
                 0 => "Today",

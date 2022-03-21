@@ -150,6 +150,7 @@
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Check Sheets"
                             Content="Check Sheets"
+                            Visibility="Collapsed"
                             Style="{StaticResource CheckSheet_MenuItem}" />
                         <ToggleButton
                             x:Name="calibration_button"
