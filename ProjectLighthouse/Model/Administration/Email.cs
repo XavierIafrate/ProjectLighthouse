@@ -18,7 +18,7 @@ namespace ProjectLighthouse.Model
 
         private Configuration config = new()
         {
-            Username = "x.iafrate@wixroydgroup.com",
+            Username = ClickSendCreds.USERNAME,
             Password = ClickSendCreds.API_KEY
         };
 
