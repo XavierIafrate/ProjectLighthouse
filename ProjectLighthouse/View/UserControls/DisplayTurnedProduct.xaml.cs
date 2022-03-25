@@ -43,7 +43,7 @@ namespace ProjectLighthouse.View.UserControls
                         control.Badge.Fill = (Brush)App.Current.Resources["Green"];
                         control.MaterialTextBlock.Foreground = (Brush)App.Current.Resources["OnGreen"];
                         break;
-                    case "TI":
+                    case "T5" or "T2":
                         control.Badge.Fill = (Brush)App.Current.Resources["Red"];
                         control.MaterialTextBlock.Foreground = (Brush)App.Current.Resources["OnRed"];
                         break;

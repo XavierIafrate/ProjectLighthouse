@@ -3,14 +3,16 @@ using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.View
 {
-    public partial class EditLMOWindow : Window
+    public partial class EditLMOWindow : Window, INotifyPropertyChanged
     {
         #region Variables
 
@@ -22,19 +24,24 @@ namespace ProjectLighthouse.View
             {
                 _order = value;
                 SetCheckboxEnabling();
+                OnPropertyChanged();
             }
         }
 
         public LatheManufactureOrder savedOrder;
 
-        public List<LatheManufactureOrderItem> items;
+        public List<LatheManufactureOrderItem> items { get; set; }
         public List<Lot> lots;
         public bool SaveExit { get; set; }
-        public List<Note> Notes;
+        public List<Note> Notes { get; set; }   
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public List<BarStock> BarStock { get; set; }
 
         #endregion
 
-        public EditLMOWindow(LatheManufactureOrder o, List<LatheManufactureOrderItem> i, List<Lot> l, List<Note> n)
+        public EditLMOWindow(LatheManufactureOrder o, List<LatheManufactureOrderItem> i, List<Lot> l, List<Note> n, List<BarStock> b)
         {
             InitializeComponent();
 
@@ -50,15 +57,22 @@ namespace ProjectLighthouse.View
 
             lots = new(l);
             Notes = n;
+            BarStock = b;
+            OnPropertyChanged(nameof(BarStock));
 
             FormatNoteDisplay();
 
             savedOrder = o;
             order = (LatheManufactureOrder)o.Clone(); // break the reference
 
-            DataContext = this.order;
+            DataContext = this;
 
             UpdateControls();
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void EditItem(LatheManufactureOrderItem item)
@@ -74,6 +88,8 @@ namespace ProjectLighthouse.View
                 RefreshItems();
             }
             ShowDialog();
+            items = new(items);
+            OnPropertyChanged(nameof(items));
         }
 
         private void FormatNoteDisplay()
@@ -97,8 +113,8 @@ namespace ProjectLighthouse.View
 
         private void UpdateControls()
         {
-            ItemsListBox.ItemsSource = items;
-            NotesDisplay.ItemsSource = Notes;
+            //ItemsListBox.ItemsSource = items;
+            //NotesDisplay.ItemsSource = Notes;
             NotesScroller.ScrollToBottom();
 
             PORef.IsEnabled = App.CurrentUser.CanUpdateLMOs;
@@ -210,7 +226,7 @@ namespace ProjectLighthouse.View
                 item.RequestToEdit += EditItem;
             }
 
-            ItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
+            //ItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
         }
 
         #region Helpers

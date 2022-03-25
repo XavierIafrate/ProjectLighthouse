@@ -23,6 +23,11 @@ namespace ProjectLighthouse.Model
             mass *= 8050;
             return mass;
         }
+
+        public override string ToString()
+        {
+            return Id;
+        }
     }
 
 }

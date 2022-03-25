@@ -189,9 +189,12 @@ namespace ProjectLighthouse.ViewModel
         private void SetAgenda()
         {
             Agenda = new();
-            List<LatheManufactureOrder> ordersOnAgenda = ActiveOrders
+            List<ScheduleItem> ordersOnAgenda = new();
+            ordersOnAgenda.AddRange(ActiveOrders
                 .Where(x => x.StartDate < DateTime.Now.AddDays(14))
-                .ToList();
+                .ToList());
+            ordersOnAgenda.AddRange(PlannedResearch);
+            ordersOnAgenda.AddRange(PlannedServices);
 
             for (int i = 0; i < 15; i++)
             {

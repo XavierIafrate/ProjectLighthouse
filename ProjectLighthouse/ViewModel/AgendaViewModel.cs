@@ -32,39 +32,39 @@ namespace ProjectLighthouse.ViewModel
 
         public AgendaViewModel()
         {
-            LoadData();
+            //LoadData();
         }
 
-        public void LoadData()
-        {
-            Orders = DatabaseHelper.Read<LatheManufactureOrder>();
-            Days = new();
+        //public void LoadData()
+        //{
+        //    Orders = DatabaseHelper.Read<LatheManufactureOrder>();
+        //    Days = new();
 
-            List<LatheManufactureOrder> activeOrders = Orders
-                .Where(o => o.State < OrderState.Complete)
-                .OrderBy(o => o.StartDate)
-                .ToList();
+        //    List<LatheManufactureOrder> activeOrders = Orders
+        //        .Where(o => o.State < OrderState.Complete)
+        //        .OrderBy(o => o.StartDate)
+        //        .ToList();
 
-            DateTime startDate = DateTime.Today.Date;
-            DateTime endDate = activeOrders.Last().StartDate;
+        //    DateTime startDate = DateTime.Today.Date;
+        //    DateTime endDate = activeOrders.Last().StartDate;
 
-            for (int i = 0; i < (endDate - startDate).Days; i++)
-            {
-                List<LatheManufactureOrder> ordersOnDay = activeOrders.Where(o => o.StartDate.Date == startDate.AddDays(i)).ToList();
-                DateTime day = startDate.AddDays(i);
-                if (day.DayOfWeek is not DayOfWeek.Sunday and not DayOfWeek.Saturday)
-                {
-                    Days.Add(new(
-                           startDate.AddDays(i),
-                           ordersOnDay));
-                }
-                else if (ordersOnDay.Count > 0)
-                {
-                    Days.Add(new(
-                           startDate.AddDays(i),
-                           ordersOnDay));
-                }
-            }
-        }
+        //    for (int i = 0; i < (endDate - startDate).Days; i++)
+        //    {
+        //        List<LatheManufactureOrder> ordersOnDay = activeOrders.Where(o => o.StartDate.Date == startDate.AddDays(i)).ToList();
+        //        DateTime day = startDate.AddDays(i);
+        //        if (day.DayOfWeek is not DayOfWeek.Sunday and not DayOfWeek.Saturday)
+        //        {
+        //            Days.Add(new(
+        //                   startDate.AddDays(i),
+        //                   ordersOnDay));
+        //        }
+        //        else if (ordersOnDay.Count > 0)
+        //        {
+        //            Days.Add(new(
+        //                   startDate.AddDays(i),
+        //                   ordersOnDay));
+        //        }
+        //    }
+        //}
     }
 }

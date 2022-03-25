@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Timers;
 using ProjectLighthouse.ViewModel.Helpers;
+using System.Diagnostics;
 
 namespace ProjectLighthouse
 {
@@ -30,7 +31,7 @@ namespace ProjectLighthouse
                                ? @"C:\Users\xavie\Documents\lighthouse_test\manufactureDB.db3"
                                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
 
-            DevMode = Environment.UserName == "xavier" || DatabaseHelper.DatabasePath.Contains("debug");
+            DevMode = Debugger.IsAttached;
 
             MainWindow Window = new();
             MainViewModel VM = new()

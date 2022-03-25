@@ -6,10 +6,10 @@ namespace ProjectLighthouse.Model
     public class CalendarDay
     {
         public DateTime Date { get; set; }
-        public List<LatheManufactureOrder> Orders { get; set; }
+        public List<ScheduleItem> Orders { get; set; }
         public List<LatheManufactureOrderItem> OrderItems { get; set; }
 
-        public CalendarDay(DateTime date, List<LatheManufactureOrder> orders)
+        public CalendarDay(DateTime date, List<ScheduleItem> orders)
         {
             Date = date;
             if (orders != null)
