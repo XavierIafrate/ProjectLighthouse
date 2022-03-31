@@ -12,10 +12,7 @@
     Background="{StaticResource Background}"
     Loaded="UserControl_Loaded"
     mc:Ignorable="d">
-
-    <UserControl.DataContext>
-        <vm:AnalyticsViewModel />
-    </UserControl.DataContext>
+    
     <ScrollViewer HorizontalAlignment="Stretch">
         <StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
 
@@ -249,7 +246,7 @@
 
             
 
-            <!--<TextBlock
+            <TextBlock
                 Margin="0,20,0,10"
                 HorizontalAlignment="Center"
                 FontSize="18"
@@ -261,11 +258,11 @@
                 <lvc:CartesianChart.AxisY>
                     <lvc:Axis Title="Machine" Labels="{Binding LatheLabels}" />
                 </lvc:CartesianChart.AxisY>
-                --><!--<lvc:CartesianChart.AxisX>
-                -->
-                <!--<lvc:Axis LabelFormatter="{Binding SecondsToDaysFormatter}"/>-->
-                <!--
-                </lvc:CartesianChart.AxisX>--><!--
+                <lvc:CartesianChart.AxisX>
+                
+                <lvc:Axis LabelFormatter="{Binding SecondsToDaysFormatter}"/>
+                
+                </lvc:CartesianChart.AxisX>
 
             </lvc:CartesianChart>
 
@@ -277,13 +274,13 @@
                 Value="{Binding OverallOperating}"
                 From="0"
                 To="100">
-                --><!--<lvc:Gauge.Sections>
+                <!--<lvc:Gauge.Sections>
                     <lvc:AngularSection FromValue="0" ToValue="80"/>
                     <lvc:AngularSection FromValue="80" ToValue="100"
                                         Fill="{StaticResource materialPrimaryGreen}"/>
-                </lvc:Gauge.Sections>--><!--
+                </lvc:Gauge.Sections>-->
 
-            </lvc:Gauge>-->
+            </lvc:Gauge>
             <Grid Height="200" />
 
             <!--<lvc:CartesianChart Series="{Binding OperatingByMachineSeriesCollection}" LegendLocation="Top">

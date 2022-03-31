@@ -29,6 +29,7 @@ namespace ProjectLighthouse.ViewModel
         public List<Lathe> Lathes { get; set; }
         public List<MachineStatistics> MachineStatistics { get; set; }
         public List<Lot> Lots { get; set; }
+        public List<BarStock> BarStock { get; set; }
         #endregion
 
         #region Observable
@@ -225,6 +226,7 @@ namespace ProjectLighthouse.ViewModel
             OrderDrawings = new();
             Lathes = new();
             Lots = new();
+            BarStock = new();
 
             FilteredDrawings = new();
             FilteredNotes = new();
@@ -321,6 +323,9 @@ namespace ProjectLighthouse.ViewModel
 
             Lots.Clear();
             Lots = DatabaseHelper.Read<Lot>().ToList();
+
+            BarStock.Clear();
+            BarStock = DatabaseHelper.Read<BarStock>().ToList();
 
             MachineStatistics = MachineStatsHelper.GetStats();
         }
@@ -606,7 +611,8 @@ namespace ProjectLighthouse.ViewModel
                 o: SelectedOrder,
                 i: FilteredOrderItems.ToList(),
                 l: Lots.Where(n => n.Order == SelectedOrder.Name).ToList(),
-                n: FilteredNotes.ToList()
+                n: FilteredNotes.ToList(),
+                b: BarStock
                 );
 
             editWindow.Owner = Application.Current.MainWindow;

@@ -8,7 +8,7 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
-    mc:Ignorable="d">
+    mc:Ignorable="d" d:DesignWidth="172.327" d:DesignHeight="77.746">
     <Grid x:Name="ControlGrid" Margin="0,5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -58,6 +58,8 @@
                                         VerticalAlignment="Center"
                                         FontWeight="SemiBold"
                                         FontFamily="Consolas"
+                                        MaxWidth="110"
+                                        TextTrimming="CharacterEllipsis"
                                         Text="{Binding Name}" />
                                     <TextBlock
                                         Grid.Column="2"

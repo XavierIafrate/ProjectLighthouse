@@ -179,7 +179,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 $"<p>Major length: {turnedProduct.MajorLength}mm</p>" +
                 $"<p>Major diameter: {turnedProduct.MajorDiameter}mm</p>" +
                 $"<p>Thread: {turnedProduct.ThreadSize}</p>" +
-                $"<p>Drive: '{turnedProduct.DriveType}', size '{turnedProduct.DriveSize}'</p>";
+                $"<p>Drive: '{turnedProduct.DriveType}', size '{turnedProduct.DriveSize}'</p>" +
+                $"<p>Date Required: {request.DateRequired:d}</p>";
 
 
             if (turnedProduct.QuantityManufactured > 0)

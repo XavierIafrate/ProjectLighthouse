@@ -5,19 +5,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:model="clr-namespace:ProjectLighthouse.Model"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Edit Order"
     Width="700"
     MinHeight="600"
     MaxHeight="1000"
-    d:DataContext="{Binding Path=order}"
+    Background="{StaticResource Background}"
+    Closed="Window_Closed"
     ResizeMode="NoResize"
     SizeToContent="Height"
-    WindowStartupLocation="CenterScreen"
-    Background="{StaticResource Background}"
     TextElement.Foreground="{StaticResource OnBackground}"
-    Closed="Window_Closed"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
     <Grid Margin="25">
@@ -42,7 +41,7 @@
             <TextBlock
                 x:Name="nameText"
                 Style="{StaticResource title}"
-                Text="{Binding Name}" />
+                Text="{Binding order}" />
             <StackPanel Grid.Column="2">
                 <Button
                     x:Name="SaveButton"
@@ -70,15 +69,17 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBlock Text="Purchase Order:" Style="{StaticResource section}"
-                           VerticalAlignment="Center"
-                           FontStyle="Italic"/>
-                <Grid Margin="0,5" Grid.Column="1">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontStyle="Italic"
+                    Style="{StaticResource section}"
+                    Text="Purchase Order:" />
+                <Grid Grid.Column="1" Margin="0,5">
                     <TextBox
                         x:Name="PORef"
                         Width="200"
                         Style="{StaticResource UsernameTextBox}"
-                        Text="{Binding POReference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding order.POReference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="PORef_TextChanged" />
                     <TextBlock
                         x:Name="poRefGhostText"
@@ -114,19 +115,19 @@
                             x:Name="Tooling_Checkbox"
                             Checked="Checkbox_Checked"
                             Content="Tooling"
-                            IsChecked="{Binding IsReady, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsChecked="{Binding order.IsReady, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Unchecked="Checkbox_Checked" />
                         <CheckBox
                             x:Name="Program_Checkbox"
                             Checked="Checkbox_Checked"
                             Content="Program"
-                            IsChecked="{Binding HasProgram, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsChecked="{Binding order.HasProgram, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Unchecked="Checkbox_Checked" />
                         <CheckBox
                             x:Name="BarVerified_Checkbox"
                             Checked="Checkbox_Checked"
                             Content="Bar Settings"
-                            IsChecked="{Binding BarIsVerified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsChecked="{Binding order.BarIsVerified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Unchecked="Checkbox_Checked" />
                     </StackPanel>
 
@@ -143,7 +144,7 @@
                             x:Name="BarAllocated_Checkbox"
                             Checked="Checkbox_Checked"
                             Content="Bar Allocated"
-                            IsChecked="{Binding BarIsAllocated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsChecked="{Binding order.BarIsAllocated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Unchecked="Checkbox_Checked" />
                     </StackPanel>
 
@@ -160,7 +161,7 @@
                             x:Name="Running_Checkbox"
                             Checked="Checkbox_Checked"
                             Content="Running"
-                            IsChecked="{Binding HasStarted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsChecked="{Binding order.HasStarted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Unchecked="Checkbox_Checked" />
                     </StackPanel>
 
@@ -177,24 +178,49 @@
                             x:Name="Complete_Checkbox"
                             Checked="Checkbox_Checked"
                             Content="Complete"
-                            IsChecked="{Binding IsComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsChecked="{Binding order.IsComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Unchecked="Checkbox_Checked" />
                         <CheckBox
                             x:Name="Cancelled_Checkbox"
                             Checked="Checkbox_Checked"
                             Content="Cancelled"
-                            IsChecked="{Binding IsCancelled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsChecked="{Binding order.IsCancelled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Unchecked="Checkbox_Checked" />
                     </StackPanel>
                 </Grid>
             </Grid>
 
+            <TextBlock Style="{StaticResource section}" Text="Configuration" />
+            <StackPanel>
+                <Grid Margin="10,0">
+                    <TextBlock Text="Bar ID" VerticalAlignment="Center" FontSize="16" />
+                    <ComboBox
+                        Width="200"
+                        HorizontalAlignment="Right"
+                        ItemsSource="{Binding BarStock}"
+                        Text="{Binding order.BarID}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type model:BarStock}">
+                                <TextBlock Text="{Binding Id}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+            </StackPanel>
+
+
             <!--  Items List  -->
             <TextBlock Style="{StaticResource section}" Text="Items" />
-            <ListView x:Name="ItemsListBox" MinHeight="50" MaxHeight="350">
+            <ListView
+                MinHeight="50"
+                MaxHeight="350"
+                ItemsSource="{Binding items}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" Margin="10,2"/>
+                        <uc:DisplayLMOItems
+                            Margin="10,2"
+                            LatheManufactureOrderItem="{Binding}"
+                            MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -207,15 +233,16 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <TextBlock Style="{StaticResource section}" Text="Notes" />
-            <ScrollViewer x:Name="NotesScroller"
-                          Grid.Row="1"
+            <ScrollViewer
+                x:Name="NotesScroller"
+                Grid.Row="1"
                 MinHeight="50"
                 MaxHeight="400">
                 <ItemsControl
-                x:Name="NotesDisplay"
-                
-                HorizontalContentAlignment="Stretch"
-                ScrollViewer.CanContentScroll="False">
+                    x:Name="NotesDisplay"
+                    HorizontalContentAlignment="Stretch"
+                    ItemsSource="{Binding Notes}"
+                    ScrollViewer.CanContentScroll="False">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <uc:DisplayNote Note="{Binding}" />
@@ -223,7 +250,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            
+
             <Grid Grid.Row="2" Margin="5">
                 <Border Background="{StaticResource Surface}" CornerRadius="10" />
                 <Grid Margin="10,5">
