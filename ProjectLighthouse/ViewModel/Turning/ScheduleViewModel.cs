@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.View;
 using ProjectLighthouse.View.ScheduleViews;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
@@ -46,6 +47,7 @@ namespace ProjectLighthouse.ViewModel
         public PrintScheduleCommand PrintScheduleCommand { get; set; }
         public AddResearchCommand AddResearchCommand { get; set; }
         public AddServiceCommand AddServiceCommand { get; set; }
+        public AutoScheduleCommand AutoScheduleCommand { get; set; }
 
         public List<string> FilterOptions { get; set; }
 
@@ -74,6 +76,8 @@ namespace ProjectLighthouse.ViewModel
 
             AddResearchCommand = new(this);
             AddServiceCommand = new(this);
+            AutoScheduleCommand = new(this);
+
             AddButtonsVis = App.CurrentUser.UserRole is "admin" or "Scheduling"
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -326,6 +330,13 @@ namespace ProjectLighthouse.ViewModel
         public void Refresh()
         {
             Debug.WriteLine("Refreshing Schedule");
+        }
+
+        public void AutoSchedule()
+        {
+            List<BarStock> Bar = DatabaseHelper.Read<BarStock>();
+            ScheduleEngineDebugWindow window = new(ActiveOrders, Lathes, Bar);
+            window.ShowDialog();
         }
     }
 }

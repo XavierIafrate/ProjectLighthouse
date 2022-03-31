@@ -127,5 +127,10 @@ namespace ProjectLighthouse.Model
                 };
             }
         }
+
+        public int GetTimeToMakeRequired()
+        {
+            return GetCycleTime() * RequiredQuantity;
+        }
     }
 }

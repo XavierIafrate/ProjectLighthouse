@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace ProjectLighthouse.ViewModel.Commands
+namespace ProjectLighthouse.ViewModel.Commands.Scheduling
 {
     public class AutoScheduleCommand : ICommand
     {
@@ -17,13 +17,11 @@ namespace ProjectLighthouse.ViewModel.Commands
         public bool CanExecute(object parameter)
         {
             return true;
-            //ScheduleViewModel.TabInfo tab = viewModel.SelectedTab;
-            //return tab.Orders.Count > 1;
         }
 
         public void Execute(object parameter)
         {
-            //viewModel.AutoSchedule();
+            viewModel.AutoSchedule();
         }
     }
 }
