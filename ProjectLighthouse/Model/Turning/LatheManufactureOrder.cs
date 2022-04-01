@@ -66,7 +66,11 @@ namespace ProjectLighthouse.Model
         public double MajorDiameter { get; set; }
         public bool ItemNeedsCleaning { get; set; }
 
+        public string ToolingGroup { get; set; }
+
+        public BarStock Bar;
         public List<LatheManufactureOrderItem> OrderItems;
+        public DateTime Deadline;
 
         public object Clone()
         {
@@ -145,6 +149,25 @@ namespace ProjectLighthouse.Model
             ModifiedAt = otherOrder.ModifiedAt;
             ModifiedBy = otherOrder.ModifiedBy;
             POReference = otherOrder.POReference;
+        }
+
+        public DateTime GetStartDeadline()
+        {
+            DateTime dateTime = DateTime.MaxValue;
+            
+            for (int i = 0; i < OrderItems.Count; i++)
+            {
+                if (OrderItems[i].RequiredQuantity == 0)
+                {
+                    continue;
+                }
+                DateTime deadline = OrderItems[i].DateRequired.AddSeconds(OrderItems[i].GetTimeToMakeRequired());
+                dateTime = dateTime > deadline
+                    ? deadline
+                    : dateTime;
+            }
+
+            return dateTime;
         }
     }
 }

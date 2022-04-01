@@ -30,7 +30,11 @@
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
             <StackPanel Orientation="Horizontal">
-
+                <Button
+                    Command="{Binding AutoScheduleCommand}"
+                    Content="Auto Schedule"
+                    Style="{StaticResource BlueButton}"
+                    Visibility="{Binding AddButtonsVis}" />
                 <Button
                     Command="{Binding AddResearchCommand}"
                     Content="+ Research"

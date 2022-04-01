@@ -6,6 +6,7 @@ using System.Windows;
 using System.Timers;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Diagnostics;
+using ProjectLighthouse.View;
 
 namespace ProjectLighthouse
 {
@@ -26,6 +27,8 @@ namespace ProjectLighthouse
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            
+            this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 
             DatabaseHelper.DatabasePath = Environment.UserName == "xavier"
                                ? @"C:\Users\xavie\Documents\lighthouse_test\manufactureDB.db3"
@@ -82,6 +85,17 @@ namespace ProjectLighthouse
 
                 Application.Current.Shutdown();
             }
+        }
+
+        void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (e.Handled)
+            {
+                return;
+            }
+            ShowError errorWindow = new() { Error = e };
+            errorWindow.NotifyPropertyChanged();
+            errorWindow.ShowDialog();
         }
     }
 }
