@@ -153,7 +153,7 @@ namespace ProjectLighthouse.ViewModel
             FilteredItems = FilteredItems.OrderBy(i => i.StartDate).ToList();
 
             Problems.Clear();
-            if (App.CurrentUser.Role >= UserRole.Scheduling && Filter != "Unallocated")
+            if (Filter != "Unallocated")
             {
                 GetProblems();
             }
@@ -240,7 +240,7 @@ namespace ProjectLighthouse.ViewModel
                         _ => 48,
                     };
 
-                    if ((nextStarting - ending).TotalHours >= resolution)
+                    if (Math.Abs((nextStarting - ending).TotalHours) >= resolution)
                     {
                         Problems.Add(new() { WarningText = $"{FilteredItems[i].Name} will overflow by {(ending - nextStarting).TotalHours:0} hours", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = true });
 

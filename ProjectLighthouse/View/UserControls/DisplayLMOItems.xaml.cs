@@ -25,14 +25,14 @@ namespace ProjectLighthouse.View.UserControls
                 control.specialFlag.Visibility = (control.LatheManufactureOrderItem.IsSpecialPart) ? Visibility.Visible : Visibility.Collapsed;
                 control.requirements.Visibility = (control.LatheManufactureOrderItem.RequiredQuantity == 0) ? Visibility.Collapsed : Visibility.Visible;
 
-                control.requirementsBadge.Fill = (control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
+                control.requirementsBadge.Fill = (control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
                     (Brush)Application.Current.Resources["Green"] : (Brush)Application.Current.Resources["Red"];
 
-                control.doneFlag.Visibility = control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity
+                control.doneFlag.Visibility = control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.TargetQuantity
                     ? Visibility.Visible
                     : Visibility.Hidden;
 
-                control.ProgressBar.Foreground = control.LatheManufactureOrderItem.QuantityMade >= control.LatheManufactureOrderItem.TargetQuantity
+                control.ProgressBar.Foreground = control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.TargetQuantity
                     ? (Brush)Application.Current.Resources["Green"]
                     : (Brush)Application.Current.Resources["Purple"];
 

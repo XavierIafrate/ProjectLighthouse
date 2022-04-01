@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <converters:intToDays x:Key="inttoday" />
         <converters:StartDateToEndDate x:Key="startToFinish" />
-        <converters:orderItemToRequirementText x:Key="requirementText" />
+        <converters:OrderItemToRequirementVis x:Key="requirementVis" />
     </UserControl.Resources>
     <Grid Margin="7">
         <Grid.ToolTip>
@@ -161,18 +161,6 @@
                     Grid.Row="3"
                     Grid.Column="1"
                     Text="{Binding BarID}" />
-
-                <!--<TextBlock
-                    Grid.Row="4"
-                    Margin="0,0,15,0"
-                    HorizontalAlignment="Right"
-                    FontWeight="SemiBold"
-                    Text="# Bars" />
-                <TextBlock
-                    Grid.Row="4"
-                    Grid.Column="1"
-                    Text="{Binding NumberOfBars}" />-->
-
             </Grid>
 
             <StackPanel
@@ -258,14 +246,15 @@
                                     Padding="0,0,10,0"
                                     HorizontalAlignment="Center"
                                     Text="{Binding Path=TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" />
-                                <TextBlock
-                                    Grid.Column="4"
-                                    Padding="0,0,10,0"
-                                    HorizontalAlignment="Right"
-                                    FontStyle="Italic"
-                                    FontWeight="DemiBold"
-                                    Foreground="{StaticResource Blue}"
-                                    Text="{Binding Converter='{StaticResource requirementText}'}" />
+                                <StackPanel Orientation="Horizontal" Grid.Column="4"
+                                            HorizontalAlignment="Right"
+                                            TextElement.Foreground="{StaticResource Blue}"
+                                            TextElement.FontWeight="SemiBold"
+                                            Visibility="{Binding Path=., Converter={StaticResource requirementVis}}">
+                                    <TextBlock Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}"/>
+                                    <Path Margin="5,0" Data="M2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12M17,12L12,7V10H8V14H12V17L17,12Z" Fill="{StaticResource Blue}" Stretch="Uniform" Height="14" Width="14"/>
+                                    <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dd/MM}'}"/>
+                                </StackPanel>
                                 <TextBlock
                                     Grid.Column="6"
                                     HorizontalAlignment="Right"
