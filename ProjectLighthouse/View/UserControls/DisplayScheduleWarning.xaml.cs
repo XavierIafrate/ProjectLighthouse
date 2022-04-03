@@ -26,8 +26,8 @@ namespace ProjectLighthouse.View.UserControls
             control.DataContext = control.Warning;
             if (control.Warning.Important)
             {
-                control.Background.Background = (Brush)Application.Current.Resources["Red"];
-                control.Background.BorderThickness = new Thickness(2);
+                control.elementBackground.Background = (Brush)Application.Current.Resources["Red"];
+                control.elementBackground.BorderThickness = new Thickness(2);
                 control.WarningText.Foreground = (Brush)Application.Current.Resources["OnRed"];
                 control.title.Foreground = (Brush)Application.Current.Resources["OnRed"];
                 control.icon.Fill = (Brush)Application.Current.Resources["OnRed"];
@@ -35,8 +35,8 @@ namespace ProjectLighthouse.View.UserControls
             }
             else
             {
-                control.Background.Background = (Brush)Application.Current.Resources["Yellow"];
-                control.Background.BorderThickness = new Thickness(2);
+                control.elementBackground.Background = (Brush)Application.Current.Resources["Yellow"];
+                control.elementBackground.BorderThickness = new Thickness(2);
                 control.WarningText.Foreground = (Brush)Application.Current.Resources["OnYellow"];
                 control.title.Foreground = (Brush)Application.Current.Resources["OnYellow"];
                 control.icon.Fill = (Brush)Application.Current.Resources["OnYellow"];

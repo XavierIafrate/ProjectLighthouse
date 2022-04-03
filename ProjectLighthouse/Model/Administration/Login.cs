@@ -15,7 +15,9 @@ namespace ProjectLighthouse.Model
         public string Version { get; set; }
         public DateTime Logout { get; set; }
 
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? GetSessionDuration()
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             if (Logout > Time)
             {
