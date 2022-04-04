@@ -20,9 +20,15 @@
     <Description>Wixroyd Ltd custom manufacturing pipeline.</Description>
     <PlatformTarget>x64</PlatformTarget>
     <PackageIcon>package_icon.png</PackageIcon>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;NU1701</NoWarn>
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <NoWarn>1701;1702;NU1701</NoWarn>
     <Optimize>False</Optimize>
   </PropertyGroup>
@@ -31,43 +37,17 @@
     <Optimize>True</Optimize>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
-    <None Remove="Resources\Font\Roboto-Black.ttf" />
-    <None Remove="Resources\Font\Roboto-BlackItalic.ttf" />
-    <None Remove="Resources\Font\Roboto-Thin.ttf" />
-    <None Remove="Resources\Font\Roboto-ThinItalic.ttf" />
     <None Remove="Resources\GIF\fireworks.gif" />
-    <None Remove="Resources\hartland.jpg" />
     <None Remove="Resources\Lighthouse_dark_PDF.png" />
     <None Remove="Resources\snowdonia.jpg" />
     <None Remove="Resources\SplashScreen.png" />
     <None Remove="Resources\teignmouth.jpg" />
     <None Remove="Resources\UKAS-calibration-logo.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Font\Roboto-Bold.ttf" />
-    <EmbeddedResource Include="Resources\Font\Roboto-BoldItalic.ttf" />
-    <EmbeddedResource Include="Resources\Font\Roboto-Italic.ttf" />
-    <EmbeddedResource Include="Resources\Font\Roboto-Light.ttf" />
-    <EmbeddedResource Include="Resources\Font\Roboto-LightItalic.ttf" />
-    <EmbeddedResource Include="Resources\Font\Roboto-Black.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Font\Roboto-BlackItalic.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Font\Roboto-Medium.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-	<EmbeddedResource Include="Resources\Font\Roboto-MediumItalic.ttf" />
-	<EmbeddedResource Include="Resources\Font\Roboto-Regular.ttf" />
-	<EmbeddedResource Include="Resources\Font\Roboto-Thin.ttf">
-	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</EmbeddedResource>
-	<EmbeddedResource Include="Resources\Font\Roboto-ThinItalic.ttf">
-	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</EmbeddedResource>
   </ItemGroup>
    
   <ItemGroup>
@@ -104,7 +84,6 @@
     <Resource Include="Resources\GIF\moderate.gif" />
     <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\GIF\travolta.gif" />
-    <Resource Include="Resources\hartland.jpg" />
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

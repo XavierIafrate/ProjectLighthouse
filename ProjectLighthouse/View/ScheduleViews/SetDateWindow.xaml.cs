@@ -16,7 +16,7 @@ namespace ProjectLighthouse.View
         public DateTime SelectedDate;
         public string AllocatedMachine;
         public bool SaveExit = false;
-        private List<DateTime> significantDates;
+        private List<DateTime> significantDates { get; set;}
 
         public SetDateWindow(ScheduleItem item, HashSet<DateTime> setDates = null)
         {

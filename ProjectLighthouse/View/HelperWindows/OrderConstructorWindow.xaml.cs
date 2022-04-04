@@ -66,12 +66,13 @@ namespace ProjectLighthouse.View
         private Request Request;
         private TurnedProduct RequiredProduct;
         public bool Cancelled = true;
-        private bool RequestlessMode = false;
         private List<BarStock> Bars;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public LMOContructorWindow(Request? request, List<LatheManufactureOrderItem>? preselectedItems, bool withAuthority = true)
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             InitializeComponent();
 
@@ -130,7 +131,6 @@ namespace ProjectLighthouse.View
                 {
                     SelectedToolingGroup = ToolingGroups[0];
                 }
-                RequestlessMode = true;
                 ChooseToolingGroupControls.Visibility = Visibility.Visible;
             }
 
@@ -406,7 +406,9 @@ namespace ProjectLighthouse.View
             return results.Distinct().ToList();
         }
 
-        public TechnicalDrawing? GetBestDrawingForProduct(string family, string group, string material, List<TechnicalDrawing> drawings)
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+        public static TechnicalDrawing? GetBestDrawingForProduct(string family, string group, string material, List<TechnicalDrawing> drawings)
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             List<TechnicalDrawing> matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group && d.MaterialConstraint == material).ToList();
             if (matches.Count > 0)

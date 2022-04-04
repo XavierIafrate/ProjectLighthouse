@@ -34,7 +34,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 seriesCollection = value;
-                OnPropertyChanged("SeriesCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -46,7 +46,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 fiveWeekValueCollection = value;
-                OnPropertyChanged("FiveWeekValueCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -73,7 +73,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 stats = value;
-                OnPropertyChanged("Stats");
+                OnPropertyChanged();
             }
         }
 
@@ -84,7 +84,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 celebrationVisibility = value;
-                OnPropertyChanged("CelebrationVisibility");
+                OnPropertyChanged();
             }
         }
 
@@ -189,16 +189,15 @@ namespace ProjectLighthouse.ViewModel
             return System.IO.Path.GetTempFileName() + ".pdf";
         }
 
-        private async void LoadData()
+        private void LoadData()
         {
-            DateTime start = DateTime.Now;
-            await Task.Run(function: () => GetData());
-
+            //await Task.Run(function: () => GetData());
+            GetData();
             Stats = new();
             Stats = ComputeDashboard();
         }
 
-        public async Task GetData()
+        public void GetData()
         {
             LatheOrders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             Lots = DatabaseHelper.Read<Lot>().ToList();
@@ -319,7 +318,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
 
-            OnPropertyChanged("WeekLabels");
+            OnPropertyChanged(nameof(WeekLabels));
             FiveWeekValueCollection = new();
 
             foreach (Lathe lathe in Lathes)
@@ -500,11 +499,11 @@ namespace ProjectLighthouse.ViewModel
             OverallOperating = double.IsNaN(overall)
                 ? 0
                 : overall;
-            OnPropertyChanged("OverallOperating");
+            OnPropertyChanged(nameof(OverallOperating));
 
             //SecondsToDaysFormatter = value => string.Format("{0:d}", TimeSpan.FromSeconds(value));
             LatheLabels = lathe_labels.ToArray();
-            OnPropertyChanged("LatheLabels");
+            OnPropertyChanged(nameof(LatheLabels));
             MachineRuntimeCollection.AddRange(temporal);
 
             OnPropertyChanged(nameof(MachineRuntimeCollection));
