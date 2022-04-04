@@ -169,7 +169,7 @@ namespace ProjectLighthouse.View.ScheduleViews
             }
             else
             {
-                if (datePicker.SelectedDate > System.DateTime.Now && datePicker.SelectedDate < System.DateTime.Now.AddMonths(13))
+                if (datePicker.SelectedDate > DateTime.Today.AddDays(-1) && datePicker.SelectedDate < DateTime.Now.AddMonths(13))
                 {
                     MarkControl(datePicker, valid: true);
                 }

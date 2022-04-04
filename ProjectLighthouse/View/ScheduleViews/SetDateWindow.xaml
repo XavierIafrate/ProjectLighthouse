@@ -31,6 +31,7 @@
                 <ComboBoxItem Content="C02"/>
                 <ComboBoxItem Content="C03"/>
                 <ComboBoxItem Content="C04"/>
+                <ComboBoxItem Content=""/>
             </ComboBox>
             <Grid HorizontalAlignment="Right">
                 <Button Content="Save" Style="{StaticResource GreenButton}" x:Name="ConfirmButton" Click="ConfirmButton_Click"/>

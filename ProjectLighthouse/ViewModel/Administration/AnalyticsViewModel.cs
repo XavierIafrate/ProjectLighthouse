@@ -388,6 +388,7 @@ namespace ProjectLighthouse.ViewModel
 
         private void GetDataForMachineRuntime()
         {
+            return;
             string[] StateLabels = new[] { "Running", "Setting", "Breakdown", "Idle", "Offline" };
             List<string> lathe_labels = new();
             MachineRuntimeCollection = new();

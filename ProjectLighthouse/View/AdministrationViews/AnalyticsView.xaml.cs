@@ -21,7 +21,7 @@ namespace ProjectLighthouse.View
             totalParts_X.LabelFormatter = TimeFormatter;
             totalParts_Y.LabelFormatter = QuantityFormatter;
             Value_Y.LabelFormatter = ThousandPoundFormatter;
-            Gauge.LabelFormatter = PercantageStringFormat;
+            //Gauge.LabelFormatter = PercantageStringFormat;
         }
     }
 }

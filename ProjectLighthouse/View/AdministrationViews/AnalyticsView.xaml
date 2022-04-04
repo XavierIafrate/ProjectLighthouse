@@ -246,7 +246,7 @@
 
             
 
-            <TextBlock
+            <!--<TextBlock
                 Margin="0,20,0,10"
                 HorizontalAlignment="Center"
                 FontSize="18"
@@ -274,13 +274,13 @@
                 Value="{Binding OverallOperating}"
                 From="0"
                 To="100">
-                <!--<lvc:Gauge.Sections>
+                --><!--<lvc:Gauge.Sections>
                     <lvc:AngularSection FromValue="0" ToValue="80"/>
                     <lvc:AngularSection FromValue="80" ToValue="100"
                                         Fill="{StaticResource materialPrimaryGreen}"/>
-                </lvc:Gauge.Sections>-->
+                </lvc:Gauge.Sections>--><!--
 
-            </lvc:Gauge>
+            </lvc:Gauge>-->
             <Grid Height="200" />
 
             <!--<lvc:CartesianChart Series="{Binding OperatingByMachineSeriesCollection}" LegendLocation="Top">

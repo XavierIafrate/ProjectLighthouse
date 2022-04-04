@@ -28,7 +28,7 @@ namespace ProjectLighthouse
         {
             base.OnStartup(e);
             
-            this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
+            //this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 
             DatabaseHelper.DatabasePath = Environment.UserName == "xavier"
                                ? @"C:\Users\xavie\Documents\lighthouse_test\manufactureDB.db3"
