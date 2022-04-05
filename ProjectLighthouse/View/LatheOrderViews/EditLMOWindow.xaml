@@ -195,6 +195,7 @@
                 <Grid Margin="10,0">
                     <TextBlock Text="Bar ID" VerticalAlignment="Center" FontSize="16" />
                     <ComboBox
+                        x:Name="BarStockComboBox"
                         Width="200"
                         HorizontalAlignment="Right"
                         ItemsSource="{Binding BarStock}"

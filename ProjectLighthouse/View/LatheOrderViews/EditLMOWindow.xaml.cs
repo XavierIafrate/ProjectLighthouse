@@ -133,6 +133,7 @@ namespace ProjectLighthouse.View
             NotesScroller.ScrollToBottom();
 
             PORef.IsEnabled = App.CurrentUser.CanUpdateLMOs;
+            BarStockComboBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && !order.BarIsVerified;
 
             SetCheckboxEnabling();
         }

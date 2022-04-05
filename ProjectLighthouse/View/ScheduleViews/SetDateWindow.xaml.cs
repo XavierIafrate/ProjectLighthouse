@@ -44,6 +44,11 @@ namespace ProjectLighthouse.View
             SelectedDate = calendar.SelectedDate ?? DateTime.Today;
             SelectedDate.AddHours(12);
             AllocatedMachine = machine.Text;
+            if (string.IsNullOrEmpty(AllocatedMachine))
+            {
+                SelectedDate = DateTime.MinValue;
+                AllocatedMachine = null;
+            }
             SaveExit = true;
             Close();
         }
