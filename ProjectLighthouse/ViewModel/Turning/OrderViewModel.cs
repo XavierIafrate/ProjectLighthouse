@@ -616,7 +616,7 @@ namespace ProjectLighthouse.ViewModel
                 );
 
             editWindow.Owner = Application.Current.MainWindow;
-            _ = editWindow.ShowDialog();
+            editWindow.ShowDialog();
 
             if (editWindow.SaveExit)
             {
@@ -629,7 +629,7 @@ namespace ProjectLighthouse.ViewModel
                     }
                 }   
             }
-            editWindow = null;
+            //editWindow = null;
 
             DataRefreshTimer.Enabled = true;
         }

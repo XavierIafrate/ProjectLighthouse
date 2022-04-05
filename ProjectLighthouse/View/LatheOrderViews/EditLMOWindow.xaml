@@ -12,7 +12,7 @@
     MinHeight="600"
     MaxHeight="1000"
     Background="{StaticResource Background}"
-    Closed="Window_Closed"
+    Closing="Window_Closing"
     ResizeMode="NoResize"
     SizeToContent="Height"
     TextElement.Foreground="{StaticResource OnBackground}"

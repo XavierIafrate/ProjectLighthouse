@@ -4,6 +4,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -50,7 +51,10 @@ namespace ProjectLighthouse.View
             items = new();
             foreach (LatheManufactureOrderItem item in i)
             {
-                item.RequestToEdit += EditItem;
+                if (item.RequestToEdit == null)
+                {
+                    item.RequestToEdit += EditItem;
+                }
                 items.Add(item);
                 item.ShowEdit = App.CurrentUser.CanUpdateLMOs;
             }
@@ -78,6 +82,16 @@ namespace ProjectLighthouse.View
         private void EditItem(LatheManufactureOrderItem item)
         {
             EditLMOItemWindow editWindow = new(item, lots, order.AllocatedMachine ?? "");
+            //if (item.RequestToEdit != null)
+            //{
+            //    // or the event-name for field-like events
+            //    // or your own event-type in place of EventHandler
+            //    foreach (var subscriber in item.RequestToEdit.GetInvocationList())
+            //    {
+            //        // etc
+            //        Debug.WriteLine(subscriber.ToString());
+            //    }
+            //}
             Hide();
             editWindow.ShowDialog();
 
@@ -87,7 +101,8 @@ namespace ProjectLighthouse.View
                 lots = new List<Lot>(editWindow.Lots);
                 RefreshItems();
             }
-            ShowDialog();
+            editWindow = null;
+            Show();
             items = new(items);
             OnPropertyChanged(nameof(items));
         }
@@ -223,7 +238,10 @@ namespace ProjectLighthouse.View
             foreach (LatheManufactureOrderItem item in items)
             {
                 item.ShowEdit = true;
-                item.RequestToEdit += EditItem;
+                if (item.RequestToEdit == null)
+                {
+                    item.RequestToEdit += EditItem;
+                }
             }
 
             //ItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
@@ -333,7 +351,7 @@ namespace ProjectLighthouse.View
             SetCheckboxEnabling();
         }
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             CalculateTime();
             CalculateBarRequirements();
