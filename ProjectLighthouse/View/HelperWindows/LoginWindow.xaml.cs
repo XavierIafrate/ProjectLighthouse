@@ -16,12 +16,16 @@ namespace ProjectLighthouse.View
         public User auth_user;
 
         public List<User> Users;
-        public LoginWindow()
+
+
+        public LoginWindow(bool logistics = false)
         {
             InitializeComponent();
             AddVersionNumber();
 
             Users = DatabaseHelper.Read<User>().ToList();
+
+            LogisticsWarning.Visibility = logistics ? Visibility.Visible : Visibility.Hidden;
 
             if (Environment.UserName == "xavier" || Debugger.IsAttached)
             {

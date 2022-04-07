@@ -7,6 +7,8 @@ using System.Timers;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Diagnostics;
 using ProjectLighthouse.View;
+using System.IO;
+using System.Collections.Generic;
 
 namespace ProjectLighthouse
 {
@@ -36,21 +38,58 @@ namespace ProjectLighthouse
 
             DevMode = Debugger.IsAttached;
 
-            MainWindow Window = new();
-            MainViewModel VM = new()
+            ROOT_PATH = Environment.UserName == "xavier"
+                ? @"C:\Users\xavie\Documents\lighthouse_test\"
+                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\";
+
+            if (!Directory.Exists(ROOT_PATH))
             {
-                MainWindow = Window
-            };
+                MessageBox.Show("Could not locate root directory.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+                return;
+            }
 
-            MainViewModel = VM;
+            string workstation = GetWorkstationLogistics();
+            if (string.IsNullOrEmpty(workstation))
+            {
+                MainWindow Window = new();
+                MainViewModel VM = new()
+                {
+                    MainWindow = Window
+                };
 
-            Window.DataContext = VM;
-            Window.viewModel = VM;
+                MainViewModel = VM;
 
-            VM.LoginRoutine();
-            Window.Show();
+                Window.DataContext = VM;
+                Window.viewModel = VM;
 
-            Window.AddVersionNumber();
+                VM.LoginRoutine();
+                Window.Show();
+
+                Window.AddVersionNumber();
+            }
+            else
+            {
+
+                LogisticsKioskWindow window = new();
+                window.WorkStation = workstation;
+                window.LoginRoutine();
+            }
+        }
+
+        private string? GetWorkstationLogistics()
+        {
+            string jsonLogisticsMachines = File.ReadAllText($"{ROOT_PATH}/PackingStations.json");
+            Dictionary<string, string> machines = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonLogisticsMachines);
+            foreach (string key in machines.Keys)
+            {
+                if (key.ToUpper() == Environment.MachineName.ToUpper())
+                {
+                    return machines[key];
+                }
+            }
+
+            return null;
         }
 
         protected override void OnExit(ExitEventArgs e)

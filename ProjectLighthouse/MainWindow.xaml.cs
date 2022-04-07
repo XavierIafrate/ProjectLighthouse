@@ -17,17 +17,6 @@ namespace ProjectLighthouse
 
         public MainWindow()
         {
-            App.ROOT_PATH = Environment.UserName == "xavier"
-                ? @"C:\Users\xavie\Documents\lighthouse_test\"
-                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\";
-
-            if (!Directory.Exists(App.ROOT_PATH))
-            {
-                MessageBox.Show("Could not locate root directory.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-                return;
-            }
-
             InitializeComponent();
 
             if (App.CurrentUser == null)
