@@ -10,7 +10,7 @@ namespace ProjectLighthouse.Model
         public string Material { get; set; }
         public string Form { get; set; }
         public int Length { get; set; }
-        public int Size { get; set; }
+        public double Size { get; set; }
         public double InStock { get; set; }
         public double OnOrder { get; set; }
         public int Cost { get; set; }

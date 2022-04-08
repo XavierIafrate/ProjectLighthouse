@@ -24,7 +24,7 @@ namespace ProjectLighthouse.ViewModel
                 Orders[i].Deadline = Orders[i].GetStartDeadline();
             }
 
-            IEnumerable<IGrouping<int, LatheManufactureOrder>> groups = Orders.GroupBy(x => x.Bar.Size);
+            IEnumerable<IGrouping<double, LatheManufactureOrder>> groups = Orders.GroupBy(x => x.Bar.Size);
             Random random = new();
             for (int i = 0; i < groups.Count(); i++)
             {
