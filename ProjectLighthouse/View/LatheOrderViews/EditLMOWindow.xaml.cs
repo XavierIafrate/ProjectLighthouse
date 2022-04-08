@@ -82,16 +82,6 @@ namespace ProjectLighthouse.View
         private void EditItem(LatheManufactureOrderItem item)
         {
             EditLMOItemWindow editWindow = new(item, lots, order.AllocatedMachine ?? "");
-            //if (item.RequestToEdit != null)
-            //{
-            //    // or the event-name for field-like events
-            //    // or your own event-type in place of EventHandler
-            //    foreach (var subscriber in item.RequestToEdit.GetInvocationList())
-            //    {
-            //        // etc
-            //        Debug.WriteLine(subscriber.ToString());
-            //    }
-            //}
             Hide();
             editWindow.ShowDialog();
 

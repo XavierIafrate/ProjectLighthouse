@@ -1,0 +1,74 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.AdministrationViews.AnalyticsComponents.DisplayDaysPerformance"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectLighthouse.View.AdministrationViews.AnalyticsComponents"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="20,10" HorizontalAlignment="Stretch">
+        <Border Background="{StaticResource Background}" CornerRadius="10"/>
+        <StackPanel Margin="15,7">
+            <TextBlock Text="{Binding Date,StringFormat='{}{0:dddd, dd MMMM}'}" FontSize="32"/>
+            <ItemsControl ItemsSource="{Binding OverallRuntimeByLatheModel}" Margin="15">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Model}"/>
+                            <TextBlock Text="{Binding AverageRuntime, StringFormat='{}{0:N1}%'}" HorizontalAlignment="Right"/>
+                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding AverageRuntime}" Grid.Column="2"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ItemsControl ItemsSource="{Binding LatheData}" HorizontalAlignment="Stretch" Margin="15">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel HorizontalAlignment="Stretch">
+                            <TextBlock Text="{Binding Lathe.FullName}" FontSize="28" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding TotalScrap, StringFormat='{}Scrap: {0:#,##0} pcs'}" FontSize="16" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding TotalGood, StringFormat='{}Accepted: {0:#,##0} pcs'}" FontSize="16" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding TotalQuarantined, StringFormat='{}Quarantined: {0:#,##0} pcs'}" FontSize="16" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding TotalRecorded, StringFormat='{}Recorded: {0:#,##0} pcs'}" FontSize="16" FontWeight="SemiBold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding ProjectedQuantity, StringFormat='{}Calculated: {0:#,##0} pcs'}" FontSize="16" FontWeight="SemiBold"/>
+                            <Grid>
+                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding OperatingData.Breakdown}" Height="10" Width="300" Margin="10" Foreground="{StaticResource Red}" FlowDirection="RightToLeft"/>
+                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding OperatingData.Running}" Background="Transparent" Height="10" Width="300" Margin="10" Foreground="{StaticResource Green}"/>
+                            </Grid>
+                            
+                            
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding OperatingData.Running,StringFormat='{}Runtime: {0:N1}%'}" FontSize="16" FontWeight="SemiBold" x:Name="runtimePercent" HorizontalAlignment="Left" Grid.Column="1"/>
+                                <TextBlock Text="{Binding OperatingData.Setting,StringFormat='{}Setting: {0:N1}%'}" FontSize="16" FontWeight="SemiBold" x:Name="settingPercent" HorizontalAlignment="Center" Grid.Column="1"/>
+                                <TextBlock Text="{Binding OperatingData.Breakdown,StringFormat='{}Breakdown: {0:N1}%'}" FontSize="16" FontWeight="SemiBold" x:Name="breakdownPercent" HorizontalAlignment="Right" Grid.Column="1"/>
+                            </Grid>
+
+                            <TextBlock Text="{Binding Lots.Count,StringFormat='{}Lots: {0}'}"/>
+                            <TextBlock Text="{Binding Orders.Count, StringFormat='{}Orders: {0}'}"/>
+                            <Expander HorizontalAlignment="Stretch" Header="Operating Details">
+                                <ItemsControl ItemsSource="{Binding OperatingData.MajorSegments}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <local:DisplayMachineOperatingBlock Block="{Binding}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Expander>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Grid>
+</UserControl>

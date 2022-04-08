@@ -13,5 +13,10 @@ namespace ProjectLighthouse.Model
         public int CycleTime { get; set; }
 
         public enum States { Running, Setting, Breakdown, Idle, Offline, Unknown}
+
+        public int GetCalculatedPartsProduced()
+        {
+            return State != "Running" ? 0 : (int)Math.Floor(SecondsElapsed / CycleTime);
+        }
     }
 }

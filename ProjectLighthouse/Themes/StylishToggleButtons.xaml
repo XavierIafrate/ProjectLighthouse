@@ -45,7 +45,7 @@
         <Setter Property="Foreground" Value="#888888" />
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Background" Value="{StaticResource Surface}" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
 
 
         <Style.Triggers>
@@ -228,7 +228,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style
         x:Key="BarStock_MenuItem"
         BasedOn="{StaticResource MenuItem}"

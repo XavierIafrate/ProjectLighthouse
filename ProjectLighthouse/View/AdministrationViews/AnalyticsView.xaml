@@ -7,16 +7,45 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel" xmlns:analyticscomponents="clr-namespace:ProjectLighthouse.View.AdministrationViews.AnalyticsComponents"
     d:DesignWidth="989"
     Background="{StaticResource Background}"
-    Loaded="UserControl_Loaded"
     mc:Ignorable="d">
-    
-    <ScrollViewer HorizontalAlignment="Stretch">
-        <StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
 
-            <Grid Margin="20" Visibility="{Binding CelebrationVisibility}">
+    <ScrollViewer HorizontalAlignment="Stretch">
+        <StackPanel MaxWidth="900" HorizontalAlignment="Stretch" DataContext="{Binding Analytics}">
+
+            <!--#region total parts made-->
+            <TextBlock Text="{Binding Hero.TotalPartsMade}" />
+            <StackPanel DataContext="{Binding PartsMadeAllTime}">
+                <TextBlock Text="{Binding Title}" />
+
+                <lvc:CartesianChart
+                Height="400"
+                Series="{Binding Path=Series}">
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis LabelFormatter="{Binding Path=X_Formatter}"/>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis MinValue="0" />
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </StackPanel>
+            <!--#endregion-->
+            
+            
+            <StackPanel DataContext="{Binding Performance}">
+                <ItemsControl ItemsSource="{Binding Performance}" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <analyticscomponents:DisplayDaysPerformance Performance="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+
+                <!--<Grid Margin="20" Visibility="{Binding CelebrationVisibility}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="4*" />
@@ -133,7 +162,7 @@
                     Text="Manufacture Orders" />
                     </StackPanel>
                 </Border>
-                
+
                 <Border Style="{StaticResource widget}" Grid.Column="1">
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Style="{StaticResource dataHero}" Text="{Binding Stats.TotalPartsMade, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
@@ -160,24 +189,7 @@
                         <TextBlock Text="THIS YEAR" Style="{StaticResource statName2}"/>
                     </StackPanel>
                 </Border>
-
-                
-
-
-
-
-
-
-                <!--<TextBlock Text="{Binding Stats.TotalValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}£{0:#,##0}'}"
-                           Grid.Row="3"
-                           Style="{StaticResource dataHero}"/>
-                <TextBlock Text="total sales value*"
-                           Grid.Row="3"
-                           Grid.Column="2"
-                           Style="{StaticResource statName}"/>-->
             </Grid>
-
-            <!--  MinValue="{Binding InitialDateTime.Ticks}"  -->
             <TextBlock
                 Margin="0,20,0,10"
                 HorizontalAlignment="Center"
@@ -242,65 +254,8 @@
                     Content="WEEKLY REPORT"
                     Style="{StaticResource SentryDownloadButton}"/>
                 </StackPanel>
-            </Grid>
-
-            
-
-            <!--<TextBlock
-                Margin="0,20,0,10"
-                HorizontalAlignment="Center"
-                FontSize="18"
-                Text="Machine Performance (T-7d)" />
-            <lvc:CartesianChart
-                Height="400"
-                LegendLocation="Top"
-                Series="{Binding MachineRuntimeCollection}">
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Machine" Labels="{Binding LatheLabels}" />
-                </lvc:CartesianChart.AxisY>
-                <lvc:CartesianChart.AxisX>
-                
-                <lvc:Axis LabelFormatter="{Binding SecondsToDaysFormatter}"/>
-                
-                </lvc:CartesianChart.AxisX>
-
-            </lvc:CartesianChart>
-
-            <lvc:Gauge
-                x:Name="Gauge"
-                Height="200"
-                FontSize="16"
-                FontWeight="Bold"
-                Value="{Binding OverallOperating}"
-                From="0"
-                To="100">
-                --><!--<lvc:Gauge.Sections>
-                    <lvc:AngularSection FromValue="0" ToValue="80"/>
-                    <lvc:AngularSection FromValue="80" ToValue="100"
-                                        Fill="{StaticResource materialPrimaryGreen}"/>
-                </lvc:Gauge.Sections>--><!--
-
-            </lvc:Gauge>-->
+            </Grid>-->
             <Grid Height="200" />
-
-            <!--<lvc:CartesianChart Series="{Binding OperatingByMachineSeriesCollection}" LegendLocation="Top">
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Browser" Labels="{Binding Labels}" />
-                </lvc:CartesianChart.AxisY>
-                <lvc:CartesianChart.AxisX>
-                    <lvc:Axis LabelFormatter="{Binding Formatter}" />
-                </lvc:CartesianChart.AxisX>
-                <lvc:CartesianChart.DataTooltip>
-                    <lvc:DefaultTooltip SelectionMode="SharedYValues"></lvc:DefaultTooltip>
-                </lvc:CartesianChart.DataTooltip>
-            </lvc:CartesianChart>-->
-
-            <!--<TextBlock Text="*as calculated by a non-accountant. Probably accurate to +-50%. Maybe."
-                       FontSize="10"
-                       FontStyle="Italic"
-                       HorizontalAlignment="Right"
-                       Margin="0,10"/>-->
-
         </StackPanel>
     </ScrollViewer>
 </UserControl>

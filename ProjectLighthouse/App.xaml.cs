@@ -49,7 +49,16 @@ namespace ProjectLighthouse
                 return;
             }
 
-            string workstation = GetWorkstationLogistics();
+            string workstation = String.Empty;
+            try
+            {
+                workstation = GetWorkstationLogistics();
+            }
+            catch
+            {
+                // Nothing
+            }
+
             if (string.IsNullOrEmpty(workstation))
             {
                 MainWindow Window = new();

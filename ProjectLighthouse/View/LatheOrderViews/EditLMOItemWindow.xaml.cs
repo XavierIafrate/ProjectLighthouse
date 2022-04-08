@@ -31,7 +31,10 @@ namespace ProjectLighthouse.View
 
             foreach (Lot lot in Lots)
             {
-                lot.RequestToEdit += EditLot;
+                if (lot.RequestToEdit == null)
+                {
+                    lot.RequestToEdit += EditLot;
+                }
             }
 
             ProducedOnMachine = MachineID;
@@ -275,7 +278,10 @@ namespace ProjectLighthouse.View
 
                 foreach (Lot lot in refreshedLots)
                 {
-                    lot.RequestToEdit += EditLot;
+                    if (lot.RequestToEdit == null)
+                    {
+                        lot.RequestToEdit += EditLot;
+                    }
                 }
 
                 LotsListBox.ItemsSource = refreshedLots;
@@ -302,7 +308,10 @@ namespace ProjectLighthouse.View
             Lots = DatabaseHelper.Read<Lot>().Where(n => n.Order == Item.AssignedMO).ToList();
             foreach (Lot lot in Lots)
             {
-                lot.RequestToEdit += EditLot;
+                if (lot.RequestToEdit == null)
+                {
+                    lot.RequestToEdit += EditLot;
+                }
             }
 
             LoadUI();

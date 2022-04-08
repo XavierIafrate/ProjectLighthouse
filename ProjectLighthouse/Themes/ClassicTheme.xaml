@@ -30,7 +30,7 @@
     <!--<SolidColorBrush x:Key="Background" Color="{StaticResource Background}"/>-->
     <!--<SolidColorBrush x:Key="Background" Color="{StaticResource Background}"/>-->
     <!--<SolidColorBrush x:Key="OnBackground" Color="#000000"/>
-    
+
     <SolidColorBrush x:Key="Surface" Color="#ECEFF1"/>
     <SolidColorBrush x:Key="OnSurface" Color="#000000"/>
 

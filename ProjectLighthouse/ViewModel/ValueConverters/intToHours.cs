@@ -8,7 +8,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int seconds = (int)value;
+            double seconds = (double)value;
             double hours = TimeSpan.FromSeconds(seconds).TotalHours;
 
             hours *= 2;

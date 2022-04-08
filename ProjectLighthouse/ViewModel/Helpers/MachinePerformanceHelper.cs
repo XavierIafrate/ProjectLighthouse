@@ -40,6 +40,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     MachineID = block.MachineID,
                     MachineName = block.MachineName,
                     StateEntered = newBlockStarts,
+                    CycleTime = block.CycleTime,
                 };
 
                 if (i == numberOfDays)
@@ -59,6 +60,22 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 newBlock.StateLeft = newBlock.StateLeft.AddHours(hour).AddMinutes(minute);
 
                 result.Add(newBlock);
+            }
+
+            return result;
+        }
+
+        public static List<MachineOperatingBlock> Convolute(List<MachineOperatingBlock> input, int minSeconds)
+        {
+            List<MachineOperatingBlock> result = new();
+
+            for (int i = 1; i < input.Count; i++)
+            {
+                if (input[i].SecondsElapsed < minSeconds)
+                {
+                    input[i - 1].StateLeft.AddSeconds(input[i].SecondsElapsed);
+                    input[i - 1].SecondsElapsed += input[i].SecondsElapsed;
+                }
             }
 
             return result;
