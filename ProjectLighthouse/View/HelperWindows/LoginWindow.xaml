@@ -24,19 +24,18 @@
         <Border
             Name="ReceiverColor"
             Grid.ColumnSpan="2"
-            CornerRadius="20"
-            >
+            CornerRadius="20">
             <Grid>
                 <Border
-                        Name="Mask"
-                        Background="{StaticResource Blue}"
-                        CornerRadius="20,0,0,20" />
+                    Name="Mask"
+                    Background="{StaticResource Blue}"
+                    CornerRadius="20,0,0,20" />
                 <Grid x:Name="image">
-                    <Image 
+                    <Image
                         Name="Receiver"
                         Source="/Resources/StartPoint.png"
                         Stretch="UniformToFill" />
-                    <!--<Image 
+                    <!--<Image
                         VerticalAlignment="Bottom"
                         Name="Receiver"
                         Source="/Resources/hartland.jpg"
@@ -47,6 +46,32 @@
                     </Grid.OpacityMask>
                 </Grid>
             </Grid>
+        </Border>
+        <Border
+            x:Name="LogisticsWarning"
+            Margin="20"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Background="{StaticResource Blue}"
+            CornerRadius="5">
+            <StackPanel
+                Margin="7,3"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <Path
+                    Width="12"
+                    Height="12"
+                    Margin="0,0,5,0"
+                    VerticalAlignment="Center"
+                    Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                    Fill="{StaticResource OnBlue}"
+                    Stretch="Uniform" />
+                <TextBlock
+                    FontSize="10"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource OnBlue}"
+                    Text="Lighthouse will open as a Logistics Station" />
+            </StackPanel>
         </Border>
         <!--<Rectangle
             Grid.ColumnSpan="2"
@@ -64,7 +89,10 @@
                 </ImageBrush>
             </Rectangle.Fill>
         </Rectangle>-->
-        <Grid Grid.Column="1" Width="300" Grid.ColumnSpan="2">
+        <Grid
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Width="300">
             <Rectangle
                 Fill="{StaticResource Background}"
                 RadiusX="20"
@@ -84,7 +112,8 @@
                     HorizontalAlignment="Center"
                     FontSize="10"
                     FontStyle="Italic"
-                    Foreground="#b1b1b1" />
+                    Foreground="#b1b1b1"
+                    Text="v0.0.0" />
                 <Grid
                     x:Name="MessageBadge"
                     Margin="10,5"
@@ -107,27 +136,27 @@
                     Focusable="True"
                     KeyDown="PasswordText_KeyDown"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="username"/>
+                    Tag="username" />
 
-                    <Grid Width="250">
+                <Grid Width="250">
                     <PasswordBox
-                        Height="40.6"
                         x:Name="PasswordBox"
+                        Height="40.6"
                         Focusable="True"
                         KeyDown="PasswordText_KeyDown"
                         PasswordChanged="PasswordTextBox_PasswordChanged"
                         Style="{StaticResource PasswordBox}"
-                        Tag="password"/>
+                        Tag="password" />
                     <Grid>
                         <TextBlock
-                                x:Name="PasswordGhost"
-                                Text="password"
-                                Margin="21,10"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource GhostText}"
-                                TextWrapping="Wrap"
-                                Visibility="Visible"
-                            IsHitTestVisible="False"/>
+                            x:Name="PasswordGhost"
+                            Margin="21,10"
+                            VerticalAlignment="Center"
+                            IsHitTestVisible="False"
+                            Style="{StaticResource GhostText}"
+                            Text="password"
+                            TextWrapping="Wrap"
+                            Visibility="Visible" />
                     </Grid>
                 </Grid>
 
