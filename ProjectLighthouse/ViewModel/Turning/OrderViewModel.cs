@@ -350,7 +350,15 @@ namespace ProjectLighthouse.ViewModel
             switch (filter)
             {
                 case "All Active":
-                    orders = Orders.Where(n => n.State < OrderState.Complete || n.ModifiedAt.AddDays(1) > DateTime.Now || !n.IsClosed).ToList();
+                    orders = Orders.Where(x => x.State == OrderState.Running)
+                        .OrderBy(x => x.AllocatedMachine)
+                        .ToList();
+                    orders.AddRange(
+                        Orders.Where(n => n.State < OrderState.Complete 
+                        || n.ModifiedAt.AddDays(1) > DateTime.Now 
+                        || !n.IsClosed)
+                        .Where(o => o.State != OrderState.Running)
+                        .ToList());
                     break;
 
                 case "Not Ready":
