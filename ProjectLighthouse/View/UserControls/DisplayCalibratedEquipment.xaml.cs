@@ -22,7 +22,10 @@ namespace ProjectLighthouse.View.UserControls
             {
                 return;
             }
-
+            if (control.Equipment == null)
+            {
+                return;
+            }
             control.DataContext = control.Equipment;
 
             Geometry g;

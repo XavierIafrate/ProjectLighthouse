@@ -47,8 +47,7 @@ namespace ProjectLighthouse.Model.Administration
                 return false;
             }
 
-            return LastCalibrated.AddMonths(CalibrationIntervalMonths) < NextDue
-                || LastCalibrated == DateTime.MinValue;
+            return NextDue < DateTime.Now;
         }
     }
 }

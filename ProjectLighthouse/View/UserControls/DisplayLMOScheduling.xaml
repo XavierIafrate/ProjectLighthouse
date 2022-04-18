@@ -121,6 +121,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <TextBlock
                     Margin="0,0,15,0"
@@ -161,6 +162,20 @@
                     Grid.Row="3"
                     Grid.Column="1"
                     Text="{Binding BarID}" />
+
+                <TextBlock
+                    Grid.Row="4"
+                    Margin="0,0,15,0"
+                    HorizontalAlignment="Right"
+                    FontWeight="SemiBold"
+                    Text="Firebase ID" 
+                    Opacity="0.3"/>
+                <TextBlock
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Text="{Binding Path=FirebaseId}"
+                    FontStyle="Italic"
+                    Opacity="0.3"/>
             </Grid>
 
             <StackPanel

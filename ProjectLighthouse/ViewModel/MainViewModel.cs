@@ -97,8 +97,7 @@ namespace ProjectLighthouse.ViewModel
         {
             if (App.CurrentUser == null)
             {
-                LoginWindow login = new();
-
+                LoginWindow login = new(); 
                 login.ShowDialog();
 
                 if (login.auth_user == null)

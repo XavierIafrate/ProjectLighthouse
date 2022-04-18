@@ -252,6 +252,14 @@ namespace ProjectLighthouse.ViewModel
                     FilteredEquipment = Equipment.Where(x => x.CalibrationHasLapsed()).ToList();
                     break;
 
+                case "Near Expiry":
+                    FilteredEquipment = Equipment
+                        .Where(x => x.CalibrationHasLapsed() 
+                                || System.DateTime.Now.AddMonths(1) > x.NextDue 
+                                && x.RequiresCalibration)
+                        .ToList();
+                    break;
+
                 case "All Items":
                     FilteredEquipment = Equipment;
                     break;

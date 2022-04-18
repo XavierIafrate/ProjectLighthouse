@@ -10,14 +10,10 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
         <TextBlock
             Grid.RowSpan="2"
             Padding="5"
@@ -26,31 +22,36 @@
             FontWeight="Bold"
             Foreground="{StaticResource OnBackground}"
             Text="{Binding EquipmentId, FallbackValue='CE000'}" />
-        <StackPanel
+        <Grid
             Grid.Column="1"
             Margin="5,0,0,0"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Left">
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
             <TextBlock
                 HorizontalAlignment="Left"
                 d:Text="MAKE"
                 FontSize="18"
                 FontWeight="SemiBold"
-                Text="{Binding Make}" 
-                TextTrimming="CharacterEllipsis"/>
+                Text="{Binding Make}"
+                TextTrimming="CharacterEllipsis" />
             <TextBlock
+                Grid.Row="1"
                 HorizontalAlignment="Left"
-                TextTrimming="CharacterEllipsis"
                 d:Text="MODEL"
                 FontSize="13"
                 FontStyle="Italic"
                 Opacity="0.8"
-                Text="{Binding Model}" />
-        </StackPanel>
+                Text="{Binding Model}"
+                TextTrimming="CharacterEllipsis" />
+        </Grid>
 
         <Path
-            Grid.RowSpan="2"
             x:Name="indicator"
+            Grid.RowSpan="2"
             Grid.Column="2"
             Width="20"
             Height="20"
