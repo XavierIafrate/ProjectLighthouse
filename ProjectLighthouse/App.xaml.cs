@@ -86,7 +86,9 @@ namespace ProjectLighthouse
             }
         }
 
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         private string? GetWorkstationLogistics()
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             string jsonLogisticsMachines = File.ReadAllText($"{ROOT_PATH}/PackingStations.json");
             Dictionary<string, string> machines = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonLogisticsMachines);
@@ -114,24 +116,6 @@ namespace ProjectLighthouse
             finally
             {
                 base.OnExit(e);
-            }
-        }
-
-        private static void CheckForExistingInstances()
-        {
-            const string appName = "ProjectLighthouse";
-            _ = new Mutex(true, appName, out bool createdNew);
-
-            if (!createdNew)
-            {
-                MessageBox.Show("An existing instance of ProjectLighthouse is running.",
-                    "Process Terminated",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error,
-                    MessageBoxResult.OK,
-                    MessageBoxOptions.DefaultDesktopOnly);
-
-                Application.Current.Shutdown();
             }
         }
 

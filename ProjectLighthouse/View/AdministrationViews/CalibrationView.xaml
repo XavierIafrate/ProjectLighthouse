@@ -51,7 +51,7 @@
                 SelectedItem="{Binding SelectedEquipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayCalibratedEquipment Margin="10" Equipment="{Binding}" />
+                        <uc:DisplayCalibratedEquipment Margin="10"  Equipment="{Binding}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -70,6 +70,7 @@
                     <ComboBoxItem Content="Active" IsSelected="True" />
                     <ComboBoxItem Content="Out of Service" />
                     <ComboBoxItem Content="Calibration Lapsed" />
+                    <ComboBoxItem Content="Near Expiry" />
                     <ComboBoxItem Content="All Items" />
                 </ComboBox>
                 <Button Command="{Binding AddNewEquipmentCmd}" Content="+New" />
@@ -309,7 +310,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
-                                Text="CALIBRATION INTERVAL" />
+                                Text="INTERVAL" />
                             <TextBlock
                                 Margin="0,10,0,0"
                                 HorizontalAlignment="Center"
@@ -368,29 +369,33 @@
                     Text="None Found"
                     Visibility="{Binding NoCertsVis}" />
 
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource section}" Text="Configure" />
+                        <Button
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Command="{Binding EditEquipmentCmd}"
+                        Content="Edit" />
 
-                <!--<TextBlock
-                Margin="0,20,0,5"
-                Style="{StaticResource section}"
-                Text="Remarks" />
+                    </StackPanel>
 
-            <TextBox
-                AcceptsReturn="True"
-                MaxLength="1024"
-                Style="{StaticResource DefaultTextBox}"
-                Tag="Add notes here"
-                TextWrapping="Wrap" />
+                    <CheckBox Content="Requires Calibration" IsChecked="{Binding SelectedEquipment.RequiresCalibration}"/>
+                    <CheckBox Content="Calibration must be UKAS Accredited"  IsChecked="{Binding SelectedEquipment.UKAS}"/>
+                    <CheckBox Content="Requires Internal Checks"  IsChecked="{Binding SelectedEquipment.RequiresInternalChecks}"/>
+                    <TextBox Style="{StaticResource DefaultTextBox}" Tag="interval {not done}"/>
+                    <CheckBox Content="Out of Service" IsChecked="{Binding SelectedEquipment.IsOutOfService}"/>
 
-            <StackPanel
-                Margin="50"
-                HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                -->
+                    <Button
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource GreenButton}"
+                        Command="{Binding EditEquipmentCmd}"
+                        Content="Save" />
+                </StackPanel>
+                
+
                 <!--<Button Command="{Binding RecordVisualCheckCmd}" Content="Record Visual Check" />-->
-                <!--<Button Command="{Binding EditEquipmentCmd}" Content="Edit" />-->
-                <!--
-            </StackPanel>-->
-
             </StackPanel>
         </ScrollViewer>
 

@@ -59,14 +59,12 @@
                     MouseDown="Rectangle_MouseDown" />
             </Grid>
 
-            <Grid
-                x:Name="DebugTile"
-                Margin="10">
+            <Grid x:Name="DebugTile" Margin="10">
                 <TextBlock
                     Margin="0,5"
                     HorizontalAlignment="Center"
-                    FontSize="20"
                     FontFamily="Consolas"
+                    FontSize="20"
                     FontWeight="Bold"
                     Foreground="{StaticResource Red}"
                     Text="DEV BUILD" />
@@ -150,8 +148,8 @@
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Check Sheets"
                             Content="Check Sheets"
-                            Visibility="Collapsed"
-                            Style="{StaticResource CheckSheet_MenuItem}" />
+                            Style="{StaticResource CheckSheet_MenuItem}"
+                            Visibility="Collapsed" />
                         <ToggleButton
                             x:Name="calibration_button"
                             Command="{Binding UpdateViewCommand}"
@@ -183,10 +181,10 @@
             </ScrollViewer>
 
             <Border
-                Visibility="{Binding DataRefreshBadgeVis}"
                 Grid.Row="1"
                 Padding="30,3"
-                Background="{StaticResource OnBackground}">
+                Background="{StaticResource OnBackground}"
+                Visibility="{Binding DataRefreshBadgeVis}">
                 <StackPanel>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                         <Path

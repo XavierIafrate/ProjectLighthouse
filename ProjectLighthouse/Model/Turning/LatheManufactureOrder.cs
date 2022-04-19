@@ -69,7 +69,8 @@ namespace ProjectLighthouse.Model
         public string ToolingGroup { get; set; }
 
         public BarStock Bar;
-        public List<LatheManufactureOrderItem> OrderItems;
+        [Ignore]
+        public List<LatheManufactureOrderItem> OrderItems { get; set; }
         public DateTime Deadline;
 
         public object Clone()

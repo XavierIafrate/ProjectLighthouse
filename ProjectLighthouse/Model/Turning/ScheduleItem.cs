@@ -7,6 +7,7 @@ namespace ProjectLighthouse.Model
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
+        public string FirebaseId { get; set; }
         public string Name { get; set; }
         public int TimeToComplete { get; set; }
         public DateTime StartDate { get; set; }
