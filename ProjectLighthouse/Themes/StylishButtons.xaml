@@ -680,8 +680,8 @@
                                     Stretch="Uniform" />
                                 <TextBlock
                                     Margin="5,0,0,0"
-                                    FontWeight="SemiBold"
                                     VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
                                     Foreground="{TemplateBinding Foreground}"
                                     Text="Synchronise Firebase" />
                             </StackPanel>

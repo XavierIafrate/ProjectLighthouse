@@ -7,15 +7,18 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border Background="{StaticResource Surface}" CornerRadius="10" HorizontalAlignment="Stretch">
+                    <Border
+                        HorizontalAlignment="Stretch"
+                        Background="{StaticResource Surface}"
+                        CornerRadius="10">
                         <ScrollViewer
                             x:Name="PART_ContentHost"
                             Margin="10"
+                            HorizontalContentAlignment="Left"
                             CanContentScroll="True"
                             Focusable="false"
                             HorizontalScrollBarVisibility="Hidden"
-                            VerticalScrollBarVisibility="Auto"
-                            HorizontalContentAlignment="Left">
+                            VerticalScrollBarVisibility="Auto">
                             <ItemsPresenter />
                         </ScrollViewer>
                     </Border>
