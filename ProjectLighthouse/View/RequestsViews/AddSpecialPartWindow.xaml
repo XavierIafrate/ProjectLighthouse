@@ -167,7 +167,7 @@
             <TextBlock
                 VerticalAlignment="Center"
                 Style="{StaticResource section}"
-                Text="Thread Type:" />
+                Text="Drive Type:" />
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
                 <RadioButton
@@ -202,21 +202,21 @@
                 x:Name="HexSize"
                 Width="130"
                 HorizontalAlignment="Right">
-                <ComboBoxItem Content="1,5mm" Tag="1.5"/>
-                <ComboBoxItem Content="2mm" Tag="2"/>
-                <ComboBoxItem Content="2,5mm" Tag="2.5"/>
-                <ComboBoxItem Content="3mm" Tag="3"/>
-                <ComboBoxItem Content="3,5mm" Tag="3.5"/>
-                <ComboBoxItem Content="4mm" Tag="4"/>
-                <ComboBoxItem Content="4,5mm" Tag="4.5"/>
-                <ComboBoxItem Content="5mm" Tag="5"/>
-                <ComboBoxItem Content="5,5mm" Tag="5.5"/>
-                <ComboBoxItem Content="6mm" Tag="6"/>
-                <ComboBoxItem Content="7mm" Tag="7"/>
-                <ComboBoxItem Content="8mm" Tag="8"/>
-                <ComboBoxItem Content="9mm" Tag="9"/>
-                <ComboBoxItem Content="10mm" Tag="10"/>
-                <ComboBoxItem Content="N/A" Tag="n/a"/>
+                <ComboBoxItem Content="1,5mm" Tag="1.5" />
+                <ComboBoxItem Content="2mm" Tag="2" />
+                <ComboBoxItem Content="2,5mm" Tag="2.5" />
+                <ComboBoxItem Content="3mm" Tag="3" />
+                <ComboBoxItem Content="3,5mm" Tag="3.5" />
+                <ComboBoxItem Content="4mm" Tag="4" />
+                <ComboBoxItem Content="4,5mm" Tag="4.5" />
+                <ComboBoxItem Content="5mm" Tag="5" />
+                <ComboBoxItem Content="5,5mm" Tag="5.5" />
+                <ComboBoxItem Content="6mm" Tag="6" />
+                <ComboBoxItem Content="7mm" Tag="7" />
+                <ComboBoxItem Content="8mm" Tag="8" />
+                <ComboBoxItem Content="9mm" Tag="9" />
+                <ComboBoxItem Content="10mm" Tag="10" />
+                <ComboBoxItem Content="N/A" Tag="n/a" />
             </ComboBox>
         </Grid>
 
@@ -230,20 +230,20 @@
                 x:Name="TorxSize"
                 Width="130"
                 HorizontalAlignment="Right">
-                <ComboBoxItem Content="TX-3" Tag="TX-3"/>
-                <ComboBoxItem Content="TX-4" Tag="TX-4"/>
-                <ComboBoxItem Content="TX-5" Tag="TX-5"/>
-                <ComboBoxItem Content="TX-6" Tag="TX-6"/>
-                <ComboBoxItem Content="TX-7" Tag="TX-7"/>
-                <ComboBoxItem Content="TX-8" Tag="TX-8"/>
-                <ComboBoxItem Content="TX-9" Tag="TX-9"/>
+                <ComboBoxItem Content="TX-3" Tag="TX-3" />
+                <ComboBoxItem Content="TX-4" Tag="TX-4" />
+                <ComboBoxItem Content="TX-5" Tag="TX-5" />
+                <ComboBoxItem Content="TX-6" Tag="TX-6" />
+                <ComboBoxItem Content="TX-7" Tag="TX-7" />
+                <ComboBoxItem Content="TX-8" Tag="TX-8" />
+                <ComboBoxItem Content="TX-9" Tag="TX-9" />
                 <ComboBoxItem Content="TX-10" Tag="TX-10" />
-                <ComboBoxItem Content="TX-15" Tag="TX-15"/>
-                <ComboBoxItem Content="TX-20" Tag="TX-20"/>
-                <ComboBoxItem Content="TX-25" Tag="TX-25"/>
-                <ComboBoxItem Content="TX-27" Tag="TX-27"/>
-                <ComboBoxItem Content="TX-30" Tag="TX-30"/>
-                <ComboBoxItem Content="TX-40" Tag="TX-40"/>
+                <ComboBoxItem Content="TX-15" Tag="TX-15" />
+                <ComboBoxItem Content="TX-20" Tag="TX-20" />
+                <ComboBoxItem Content="TX-25" Tag="TX-25" />
+                <ComboBoxItem Content="TX-27" Tag="TX-27" />
+                <ComboBoxItem Content="TX-30" Tag="TX-30" />
+                <ComboBoxItem Content="TX-40" Tag="TX-40" />
                 <ComboBoxItem Content="N/A" Tag="n/a" />
             </ComboBox>
         </Grid>
