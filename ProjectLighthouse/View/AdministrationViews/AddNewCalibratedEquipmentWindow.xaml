@@ -14,20 +14,20 @@
         <StackPanel Margin="40,20">
             <StackPanel HorizontalAlignment="Right">
                 <CheckBox
-                Margin="0,0,0,15"
-                Content="Requires Internal Checks"
-                IsChecked="{Binding Path=RequiresInternalChecks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Margin="0,0,0,15"
+                    Content="Requires Internal Checks"
+                    IsChecked="{Binding Path=RequiresInternalChecks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <CheckBox
-                Margin="0,0,0,15"
-                Content="Requires Calibration"
-                IsChecked="{Binding Path=RequiresCalibration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Margin="0,0,0,15"
+                    Content="Requires Calibration"
+                    IsChecked="{Binding Path=RequiresCalibration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <CheckBox
-                x:Name="UKAS_required"
-                Margin="0,0,0,15"
-                Content="Requires UKAS Calibration"
-                IsChecked="{Binding Path=UKAS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    x:Name="UKAS_required"
+                    Margin="0,0,0,15"
+                    Content="Requires UKAS Calibration"
+                    IsChecked="{Binding Path=UKAS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
-            
+
 
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
@@ -122,7 +122,8 @@
                 <ComboBox
                     x:Name="InstrumentTypeComboBox"
                     Grid.Column="2"
-                    HorizontalAlignment="Stretch" />
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="TypeTextBox"
                     Grid.Row="1"
@@ -149,7 +150,8 @@
                 <ComboBox
                     x:Name="LocationComboBox"
                     Grid.Column="2"
-                    HorizontalAlignment="Stretch" />
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding Location}" />
                 <TextBox
                     x:Name="LocationTextBox"
                     Grid.Row="1"
