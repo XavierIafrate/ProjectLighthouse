@@ -1,4 +1,4 @@
-﻿using SQLite;
+﻿using CsvHelper.Configuration.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace ProjectLighthouse.Model.Logistics
 {
-    public class PackageRecord
+    public class PackageRecord : IHasFirebaseId
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-
+        [Ignore]
+        public string FirebaseId { get; set; }
         private DateTime timeStamp;
         public DateTime TimeStamp
         {
@@ -22,16 +21,15 @@ namespace ProjectLighthouse.Model.Logistics
                 StrTimeStamp = $"{value:s}"; 
             }
         }
-
+        [Ignore]
         public string StrTimeStamp { get; set; }
-
-        public string PackedBy { get; set; }
+        public string User { get; set; }
+        public string User_FirstName { get; set; }
+        public string User_LastName { get; set; }
         public string WorkStation { get; set; }
         public string MachineName { get; set; }
         public string DomainUser { get; set; }  
-        [NotNull]
         public string OrderReference { get; set; }
         public int NumPackages { get; set; }
-
     }
 }

@@ -2,29 +2,60 @@
     x:Class="ProjectLighthouse.View.AnalyticsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:analyticscomponents="clr-namespace:ProjectLighthouse.View.AdministrationViews.AnalyticsComponents"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel" xmlns:analyticscomponents="clr-namespace:ProjectLighthouse.View.AdministrationViews.AnalyticsComponents"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:DesignWidth="989"
     Background="{StaticResource Background}"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <Style x:Key="analyticsValue" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="40" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{StaticResource Purple}" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+        <Style x:Key="analyticsKey" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource Purple}" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+            <Setter Property="Opacity" Value="0.6" />
+        </Style>
+        <Style x:Key="AnalyticsGroupContainer" TargetType="StackPanel">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Orientation" Value="Horizontal" />
+        </Style>
+    </UserControl.Resources>
+
     <ScrollViewer HorizontalAlignment="Stretch">
-        <StackPanel MaxWidth="900" HorizontalAlignment="Stretch" DataContext="{Binding Analytics}">
+        <StackPanel
+            MaxWidth="900"
+            HorizontalAlignment="Stretch">
 
             <!--#region total parts made-->
-            <TextBlock Text="{Binding Hero.TotalPartsMade}" />
-            <StackPanel DataContext="{Binding PartsMadeAllTime}">
+
+            <StackPanel HorizontalAlignment="Center" Style="{StaticResource AnalyticsGroupContainer}">
+                <TextBlock
+                    d:Text="1,000,000"
+                    Style="{StaticResource analyticsValue}"
+                    Text="{Binding Analytics.Hero.TotalPartsMade, StringFormat='{}{0:#,##0}'}" />
+                <TextBlock Style="{StaticResource analyticsKey}" Text=" ALL TIME PARTS MADE" />
+            </StackPanel>
+            <StackPanel DataContext="{Binding Analytics.PartsMadeAllTime, StringFormat='{}{0:#,##0}'}">
                 <TextBlock Text="{Binding Title}" />
 
-                <lvc:CartesianChart
-                Height="400"
-                Series="{Binding Path=Series}">
+                <lvc:CartesianChart Height="400" Series="{Binding Path=Series}">
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis LabelFormatter="{Binding Path=X_Formatter}"/>
+                        <lvc:Axis LabelFormatter="{Binding Path=X_Formatter}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis MinValue="0" />
@@ -32,230 +63,71 @@
                 </lvc:CartesianChart>
             </StackPanel>
             <!--#endregion-->
-            
-            
-            <StackPanel DataContext="{Binding Performance}">
-                <ItemsControl ItemsSource="{Binding Performance}" HorizontalAlignment="Stretch">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <analyticscomponents:DisplayDaysPerformance Performance="{Binding}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-
-
-                <!--<Grid Margin="20" Visibility="{Binding CelebrationVisibility}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="4*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-                <Border
-                    Name="ReceiverColor"
-                    Grid.RowSpan="2"
-                    Grid.ColumnSpan="3"
-                    CornerRadius="15">
-                    <Grid>
-                        <Border
-                            Name="Mask"
-                            Background="{StaticResource Blue}"
-                            CornerRadius="50" />
-                        <StackPanel x:Name="image">
-                            <Image
-                                Name="Receiver"
-                                Height="200"
-                                gif:ImageBehavior.AnimateInDesignMode="True"
-                                gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/fireworks.gif"
-                                gif:ImageBehavior.RepeatBehavior="3"
-                                RenderOptions.BitmapScalingMode="HighQuality"
-                                Stretch="UniformToFill" />
-                            <StackPanel.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{Binding ElementName=Mask}" />
-                            </StackPanel.OpacityMask>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <TextBlock
-                    Grid.ColumnSpan="3"
-                    HorizontalAlignment="Center"
-                    FontSize="70"
-                    FontStyle="Italic"
-                    FontWeight="ExtraBold"
-                    Foreground="White"
-                    Text="1,000,000" />
-                <Grid
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="10">
-                    <Border Background="Black" Opacity="0.5" />
+            <Border
+                Height="80"
+                Margin="0,10"
+                Background="{StaticResource Surface}"
+                CornerRadius="20">
+                <Grid Margin="30,0" VerticalAlignment="Center">
                     <TextBlock
-                        Grid.Row="1"
-                        Grid.ColumnSpan="3"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         FontSize="25"
-                        FontStyle="Italic"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="The Production team have now delivered over one million parts from the lathes!"
-                        TextAlignment="Center"
-                        TextWrapping="Wrap" />
+                        Foreground="{StaticResource OnSurface}"
+                        Text="Packing KPI Data" />
+                    <Button
+                        HorizontalAlignment="Right"
+                        Command="{Binding Path=DownloadPackingDataCommand}"
+                        Content="Download" />
                 </Grid>
-
-            </Grid>
-
-            <Grid HorizontalAlignment="Stretch">
-                <Grid.Resources>
-                    <Style x:Key="dataHero" TargetType="TextBlock">
-                        <Setter Property="FontSize" Value="40" />
-                        <Setter Property="HorizontalAlignment" Value="Right" />
-                        <Setter Property="FontWeight" Value="SemiBold" />
-                        <Setter Property="FontStyle" Value="Italic" />
-                        <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
-                    </Style>
-                    <Style x:Key="statName" TargetType="TextBlock">
-                        <Setter Property="FontSize" Value="25" />
-                        <Setter Property="HorizontalAlignment" Value="Right" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Opacity" Value="0.7" />
-                        <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
-                    </Style>
-                    <Style x:Key="statName2" TargetType="TextBlock">
-                        <Setter Property="FontSize" Value="16" />
-                        <Setter Property="HorizontalAlignment" Value="Right" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Opacity" Value="0.5" />
-                        <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
-                    </Style>
-
-                    <Style x:Key="widget" TargetType="Border">
-                        <Setter Property="Background" Value="{StaticResource Purple}"/>
-                        <Setter Property="Margin" Value="10"/>
-                        <Setter Property="Padding" Value="25,15"/>
-                        <Setter Property="CornerRadius" Value="20"/>
-                    </Style>
-                </Grid.Resources>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-
-                <Border Style="{StaticResource widget}" Grid.Column="0">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock
-                    Grid.Row="2"
-                    Style="{StaticResource dataHero}"
-                    Text="{Binding Stats.TotalOrders, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
-                        <TextBlock
-                    Grid.Row="2"
-                    Grid.Column="2"
-                    Style="{StaticResource statName}"
-                    Text="Manufacture Orders" />
-                    </StackPanel>
-                </Border>
-
-                <Border Style="{StaticResource widget}" Grid.Column="1">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Style="{StaticResource dataHero}" Text="{Binding Stats.TotalPartsMade, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
-                        <TextBlock
-                        Grid.Column="2"
-                        Style="{StaticResource statName}"
-                        Text="Items Delivered" />
-                        <TextBlock Text="ALL TIME" Style="{StaticResource statName2}"/>
-                    </StackPanel>
-                </Border>
-
-                <Border  Style="{StaticResource widget}" Grid.Column="2">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock
-                    Grid.Row="1"
-                    Style="{StaticResource dataHero}"
-                    Text="{Binding Stats.TotalPartsMadeThisYear, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0}'}" />
-                        <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Style="{StaticResource statName}"
-                    Text="Items Delivered" />
-
-                        <TextBlock Text="THIS YEAR" Style="{StaticResource statName2}"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-            <TextBlock
-                Margin="0,20,0,10"
-                HorizontalAlignment="Center"
-                FontSize="18"
-                Text="Sum of Parts Made Over Time" />
-            <lvc:CartesianChart
-                Height="400"
-                Margin="0,0,0,30"
-                Series="{Binding SeriesCollection}">
-                <lvc:CartesianChart.AxisX>
-                    <lvc:Axis x:Name="totalParts_X" ShowLabels="False" />
-                </lvc:CartesianChart.AxisX>
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis x:Name="totalParts_Y" MinValue="0" />
-                </lvc:CartesianChart.AxisY>
-            </lvc:CartesianChart>
-
-            <TextBlock
-                Margin="0,20,0,10"
-                HorizontalAlignment="Center"
-                FontSize="18"
-                Text="Parts made, last 6 weeks" />
-            <lvc:CartesianChart
-                Height="400"
-                Margin="0,0,0,30"
-                LegendLocation="Top"
-                Series="{Binding FiveWeekValueCollection}">
-                <lvc:CartesianChart.AxisX>
-                    <lvc:Axis Title="Week" Labels="{Binding WeekLabels}" />
-                </lvc:CartesianChart.AxisX>
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis x:Name="Value_Y" Title="Value Produced" />
-                </lvc:CartesianChart.AxisY>
-            </lvc:CartesianChart>
+            </Border>
 
             <Grid>
                 <Rectangle Fill="Black" />
                 <StackPanel Margin="30,15">
                     <TextBlock
-                        FontFamily="OCR A Extended"
+                        FontFamily="Consolas"
                         FontSize="25"
                         Foreground="White"
                         Text="Sentry" />
                     <TextBlock
-                        FontFamily="OCR A Extended"
+                        FontFamily="Consolas"
                         FontSize="16"
                         Foreground="White"
-                        Text="alarm and monitoring system" />
+                        Text="citizen monitoring system" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,5">
+                <StackPanel
+                    Margin="20,5"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <!--
+                        Command="{Binding GenerateReportCommand}"
+                        CommandParameter="daily"
+                        Command="{Binding GenerateReportCommand}"
+                        CommandParameter="weekly"
+                    -->
+                    <Button
+                        Margin="0,0,5,0"
+                        Content="DAILY REPORT [coming soon]"
+                        IsEnabled="False"
+                        Style="{StaticResource SentryDownloadButton}" />
+                    <Button
+                        Grid.Column="1"
+                        Content="WEEKLY REPORT"
+                        IsEnabled="False"
+                        Style="{StaticResource SentryDownloadButton}" />
+                </StackPanel>
+            </Grid>
 
-                    <Button
-                    Command="{Binding GenerateReportCommand}"
-                    CommandParameter="daily"
-                    Content="DAILY REPORT"
-                    Style="{StaticResource SentryDownloadButton}"
-                    Margin="0,0,5,0"/>
-                    <Button
-                    Grid.Column="1"
-                    Command="{Binding GenerateReportCommand}"
-                    CommandParameter="weekly"
-                    Content="WEEKLY REPORT"
-                    Style="{StaticResource SentryDownloadButton}"/>
-                </StackPanel>
-            </Grid>-->
-            <Grid Height="200" />
+            <Grid Height="30" />
+            <TextBlock Style="{StaticResource subtitle}" Text="Machine Performance" />
+            <StackPanel DataContext="{Binding Analytics.Performance}">
+                <ItemsControl HorizontalAlignment="Stretch" ItemsSource="{Binding Performance}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <analyticscomponents:DisplayDaysPerformance Performance="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

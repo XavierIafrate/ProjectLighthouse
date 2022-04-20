@@ -78,7 +78,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        public static async Task<bool> Update<T>(T item) where T : ISchedulableObject
+        public static async Task<bool> Update<T>(T item) where T : IHasFirebaseId
         {
             string jsonBody = JsonSerializer.Serialize(item);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -96,7 +96,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        public static async Task<bool> Delete<T>(T item) where T : ISchedulableObject
+        public static async Task<bool> Delete<T>(T item) where T : IHasFirebaseId
         {
             using HttpClient client = new();
             var result = await client.DeleteAsync($"{dbPath}{item.GetType().Name.ToLower()}/{item.FirebaseId}.json");
@@ -111,7 +111,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        public static async Task<List<T>?> Read<T>() where T : ISchedulableObject
+        public static async Task<List<T>?> Read<T>() where T : IHasFirebaseId
         {
             using HttpClient client = new();
             var result = await client.GetAsync($"{dbPath}{typeof(T).Name.ToLower()}.json");

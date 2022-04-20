@@ -1,6 +1,9 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Logistics;
+using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -23,9 +26,14 @@ namespace ProjectLighthouse.ViewModel
 
         #endregion
 
+        #region Commands
+        public DownloadPackingDataCommand DownloadPackingDataCommand { get; set; }
+        #endregion
+
         public AnalyticsViewModel()
         {
             Analytics = new();
+            DownloadPackingDataCommand = new(this);
         }
 
         #region Old
@@ -107,6 +115,13 @@ namespace ProjectLighthouse.ViewModel
             //reportService.Export(path, reportData);
             //reportService.OpenPdf(path);
         }
+
+        public async void DownloadPackingData()
+        {
+            List<PackageRecord> records = await FirebaseHelper.Read<PackageRecord>();
+            CSVHelper.WriteListToCSV(records, "packing_kpi");
+        }
+
 
         private static bool DateWithinRange(DateTime inputDate, DateTime startingDate)
         {

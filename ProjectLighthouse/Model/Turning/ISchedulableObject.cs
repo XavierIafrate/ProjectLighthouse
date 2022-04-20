@@ -3,9 +3,8 @@ using System;
 
 namespace ProjectLighthouse.Model
 {
-    public interface ISchedulableObject
+    public interface ISchedulableObject : IHasFirebaseId
     {
-        string FirebaseId { get; set; }
         int Id { get; set; }
         string Name { get; set; }
         int TimeToComplete { get; set; }
