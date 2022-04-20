@@ -27,11 +27,15 @@ namespace ProjectLighthouse.View.UserControls
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
+            control.PoTextBlock.Visibility = (App.CurrentUser.Role == UserRole.Administrator || App.CurrentUser.Role == UserRole.Purchasing)
+                ?Visibility.Visible
+                :Visibility.Collapsed;
+
             //if (control.LatheManufactureOrder.State != OrderState.Running && control.LatheManufactureOrder.State != OrderState.Problem)
             //{
             //    control.badgeBackground.Visibility = Visibility.Collapsed;
             //}
-            
+
         }
 
         public DisplayLatheManufactureOrder()

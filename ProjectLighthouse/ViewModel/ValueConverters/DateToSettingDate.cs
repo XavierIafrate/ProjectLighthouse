@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
@@ -17,7 +13,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
                 return null;
             }
 
-            if (date == DateTime.MinValue)
+            if (date.Year < 1970)
             {
                 return "Pending";
             }
