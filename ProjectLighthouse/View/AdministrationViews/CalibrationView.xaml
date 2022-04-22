@@ -369,7 +369,7 @@
                     Text="None Found"
                     Visibility="{Binding NoCertsVis}" />
 
-                <StackPanel>
+                <!--<StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource section}" Text="Configure" />
                         <Button
@@ -395,7 +395,7 @@
                 </StackPanel>
                 
 
-                <!--<Button Command="{Binding RecordVisualCheckCmd}" Content="Record Visual Check" />-->
+                --><!--<Button Command="{Binding RecordVisualCheckCmd}" Content="Record Visual Check" />-->
             </StackPanel>
         </ScrollViewer>
 

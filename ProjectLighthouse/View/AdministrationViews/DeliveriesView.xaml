@@ -34,10 +34,12 @@
                     Margin="0,0,0,5"
                     Command="{Binding CreateDeliveryCommand}"
                     Content="+ New Delivery"
+                    IsEnabled="{Binding DisableControls}"
                     Style="{StaticResource GreenButton}" />
             </Grid>
             <ListView
                 Grid.Row="1"
+                IsEnabled="{Binding DisableControls}"
                 ItemsSource="{Binding DeliveryNotes}"
                 SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
@@ -72,25 +74,47 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="auto" />
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <TextBlock Style="{StaticResource title}" Text="{Binding SelectedDeliveryNote.Name}" />
-                                <Button
-                                    Grid.Column="2"
-                                    Command="{Binding GenerateDeliveryNotePDFCommand}"
-                                    Style="{StaticResource PDFButton}" />
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Foreground="{StaticResource Blue}"
-                                    Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}'}" />
-                                <TextBlock Grid.Row="2" Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{}Delivered by {0}'}" />
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource title}" Text="{Binding SelectedDeliveryNote.Name, FallbackValue='DN_REFERENCE'}" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Foreground="{StaticResource Blue}"
+                                        Text="{Binding SelectedDeliveryNote.DeliveryDate, StringFormat='{}{0:dddd, dd/MM/yy HH:mm}', FallbackValue='Monday, 01/01/1970 00:00'}" />
+                                    <TextBlock Grid.Row="2" Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{}Delivered by {0}', FallbackValue='Delivered by Randy Marsh'}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <Button
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding GenerateDeliveryNotePDFCommand}"
+                                        IsEnabled="{Binding PdfEnabled}"
+                                        Style="{StaticResource PDFButton}" />
+                                    <Button
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding VerifyCommand}"
+                                        Content="Verify"
+                                        IsEnabled="{Binding NoteIsNotVerified}"
+                                        Style="{StaticResource BlueButton}" />
+                                    <StackPanel Margin="50,10,0,0" Visibility="{Binding CheckingOperaVis}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="{StaticResource Purple}"
+                                            Style="{StaticResource statement}"
+                                            Text="Verifying information in Opera - please wait" />
+                                        <ProgressBar
+                                            Height="10"
+                                            Margin="0,5,0,0"
+                                            Foreground="{StaticResource Purple}"
+                                            IsIndeterminate="True"
+                                            Style="{x:Null}" />
+                                    </StackPanel>
+
+                                </StackPanel>
                             </Grid>
+
+
                             <Separator Margin="0,10" />
+
                             <TextBlock Style="{StaticResource section}" Text="Delivery Items" />
 
                             <ItemsControl HorizontalContentAlignment="Stretch" ItemsSource="{Binding FilteredDeliveryItems, Mode=OneWay}">

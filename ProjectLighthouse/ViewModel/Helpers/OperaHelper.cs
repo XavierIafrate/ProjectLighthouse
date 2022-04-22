@@ -2,6 +2,7 @@
 using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -10,6 +11,174 @@ namespace ProjectLighthouse.ViewModel.Helpers
     public class OperaHelper
     {
         public static readonly string dbFile = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cname.dbf";
+        public static readonly string purchaseLinesTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_doline.dbf";
+        public static readonly string purchaseHeaderTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_dohead.dbf";
+
+        public static List<string> VerifyDeliveryNote(List<DeliveryItem> items)
+        {
+            List<string> errs = new();
+
+            string[] relevantPurchases = items.Select(x => x.PurchaseOrderReference.ToUpper()).Distinct().ToArray();
+
+            List<PurchaseLine> lines = GetPurchaseLines(relevantPurchases);
+            //List<PurchaseHeader> headers = GetPurchaseHeaders(relevantPurchases);
+            
+            foreach (string order in relevantPurchases)
+            {
+                List<DeliveryItem> itemsOnPO = items.Where(x => x.PurchaseOrderReference == order).ToList();
+                string[] uniqueItems = itemsOnPO.Select(x=> x.Product).Distinct().ToArray();
+
+                foreach (string item in uniqueItems)
+                {
+                    List<DeliveryItem> targets = itemsOnPO.Where(x => x.Product == item).ToList();
+                    int qtyThisDel = targets.Sum(x => x.QuantityThisDelivery);
+                    errs.AddRange(VerifyData(item, qtyThisDel, order, lines));
+                }
+            }
+
+            return errs;
+        }
+
+        private static List<string> VerifyData(string item, int qty, string order, List<PurchaseLine> lines)
+        {
+            List<string> errs = new();
+
+            List<PurchaseLine> line = lines.Where(x => x.Product == item && x.PurchaseReference == order).ToList();
+            if (line.Count == 0)
+            {
+                errs.Add($"No lines found for {order}.");
+                return errs;
+            }
+
+            if ((line.Sum(x => x.RequiredQuantity) - line.Sum(x => x.ReceivedQuantity)) < qty)
+            {
+                string msg = $"{item}: Delivery for {qty:#,##0}pcs will not succeed." +
+                    $"{Environment.NewLine}\t{line.First().PurchaseReference}:" +
+                    $"{Environment.NewLine}\t\t{line.Sum(x => x.RequiredQuantity):#,##0}pcs Listed" +
+                    $"{Environment.NewLine}\t\t{line.Sum(x => x.ReceivedQuantity):#,##0}pcs Received";
+                Debug.WriteLine(msg);
+
+                errs.Add(msg);
+            }
+            
+            return errs;
+        }
+
+        //private static List<PurchaseHeader> GetPurchaseHeaders(string[] refs)
+        //{
+        //    List<PurchaseHeader> results = new();
+        //    using DbfTable dbfTable = new(purchaseLinesTable, Encoding.UTF8);
+        //    DbfHeader tableHeader = dbfTable.Header;
+        //    Console.WriteLine($"{tableHeader.RecordCount:#,##0} records in Automotion Purchase Order Lines table.");
+
+        //    int iRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_DCREF"));
+        //    int iClosed = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_ACCOUNT"));
+        //    int iCancelled = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_ACCOUNT"));
+
+        //    DbfRecord dbfRecord = new(dbfTable);
+
+        //    int total_records = (int)tableHeader.RecordCount;
+        //    int i = 0;
+
+        //    while (dbfTable.Read(dbfRecord))
+        //    {
+        //        double percent_progress = (double)i / (double)total_records;
+        //        percent_progress *= 100;
+
+        //        Console.Write($"\rReading Opera... [  {percent_progress:#.00}%  ]");
+
+        //        i++;
+
+        //        if (dbfRecord.IsDeleted)
+        //        {
+        //            continue;
+        //        }
+
+        //        string poRef = dbfRecord.Values[iRef].ToString();
+        //        if (!refs.Contains(poRef.ToUpper()))
+        //        {
+        //            continue;
+        //        }
+
+        //        bool closed = dbfRecord.Values[iClosed].ToString() == "T";
+        //        bool cancelled = dbfRecord.Values[iCancelled].ToString() == "T";
+
+        //        PurchaseHeader record = new()
+        //        {
+
+        //            Reference = poRef,
+        //            IsClosed = closed,
+        //            IsCancelled = cancelled,
+        //        };
+
+        //        results.Add(record);
+        //    }
+        //    return results;
+        //}
+
+        private static List<PurchaseLine> GetPurchaseLines(string[] refs)
+        {
+            List<PurchaseLine> results = new();
+
+            using DbfTable dbfTable = new(purchaseLinesTable, Encoding.UTF8);
+            DbfHeader tableHeader = dbfTable.Header;
+            Console.WriteLine($"{tableHeader.RecordCount:#,##0} records in Automotion Purchase Order Lines table.");
+
+            int iRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_DCREF"));
+            int iAccount = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_ACCOUNT"));
+            int iPartNumber = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_CNREF"));
+            int iRequired = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_REQQTY"));
+            int iReceived = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_RECQTY"));
+
+            DbfRecord dbfRecord = new(dbfTable);
+
+            int total_records = (int)tableHeader.RecordCount;
+            int i = 0;
+
+            while (dbfTable.Read(dbfRecord))
+            {
+                double percent_progress = (double)i / (double)total_records;
+                percent_progress *= 100;
+
+                Console.Write($"\rReading Opera... [  {percent_progress:#.00}%  ]");
+
+                i++;
+
+                if (dbfRecord.IsDeleted)
+                {
+                    continue;
+                }
+
+                string accountRef = dbfRecord.Values[iAccount].ToString();
+                string poRef = dbfRecord.Values[iRef].ToString();
+                if (accountRef != "AUTO01" || !refs.Contains(poRef.ToUpper()))
+                {
+                    continue;
+                }
+
+                string partNum = dbfRecord.Values[iPartNumber].ToString();
+
+                _ = int.TryParse(dbfRecord.Values[iRequired].ToString(), out int required);
+                _ = int.TryParse(dbfRecord.Values[iReceived].ToString(), out int received);
+
+                required /= 100;
+                received /= 100;
+
+                PurchaseLine record = new()
+                {
+
+                    PurchaseReference = poRef,
+                    Product = partNum,
+                    Account = accountRef,
+                    RequiredQuantity = required,
+                    ReceivedQuantity = received,
+                };
+
+                results.Add(record);
+            }
+
+            return results;
+        }
 
         // int uploads = await UploadPicturesAsync(GenerateTestImages(),
         // new Progress<int>(percent => progressBar1.Value = percent));
@@ -167,6 +336,23 @@ namespace ProjectLighthouse.ViewModel.Helpers
             public int QtySalesOrder { get; set; }
             public int SellPrice { get; set; }
             public string StockReference { get; set; }
+        }
+
+        protected class PurchaseHeader
+        { 
+            public string Reference { get; set; }
+            public bool IsClosed { get; set; }
+            public bool IsCancelled { get; set; }   
+        }
+
+
+        protected class PurchaseLine
+        {
+            public string PurchaseReference { get; set; }
+            public string Account { get; set;}  
+            public string Product { get; set; }
+            public int RequiredQuantity { get; set; }
+            public int ReceivedQuantity { get; set;}
         }
     }
 }

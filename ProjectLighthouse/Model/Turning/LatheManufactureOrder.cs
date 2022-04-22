@@ -126,7 +126,8 @@ namespace ProjectLighthouse.Model
                 || POReference != OtherOrder.POReference
                 || NumberOfBars != OtherOrder.NumberOfBars
                 || TimeToComplete != OtherOrder.TimeToComplete
-                || ModifiedAt != OtherOrder.ModifiedAt;
+                || ModifiedAt != OtherOrder.ModifiedAt
+                || BarID != OtherOrder.BarID;
         }
 
         public void Update(LatheManufactureOrder otherOrder)

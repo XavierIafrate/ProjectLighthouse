@@ -474,8 +474,6 @@ namespace ProjectLighthouse.ViewModel
 
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged(nameof(SelectedRequest));
-
-                SelectedRequestChanged?.Invoke(this, new EventArgs());
                 SelectedRequest = Requests.First();
             }
             else
