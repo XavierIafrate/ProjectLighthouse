@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <StartupObject>LighthouseExtract.Program</StartupObject>
     <Platforms>AnyCPU;x64</Platforms>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

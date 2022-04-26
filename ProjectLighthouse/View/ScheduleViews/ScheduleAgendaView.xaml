@@ -77,7 +77,8 @@
                     FontSize="18"
                     ItemsSource="{Binding FilterOptions}"
                     SelectedValue="{Binding Filter, Mode=TwoWay}"
-                    SelectionMode="Single">
+                    SelectionMode="Single"
+                    SelectionChanged="ListView_SelectionChanged">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="10,3">
@@ -178,7 +179,8 @@
                 Grid.Column="2"
                 HorizontalAlignment="Stretch"
                 ItemTemplateSelector="{DynamicResource templateSelector}"
-                ItemsSource="{Binding FilteredItems}">
+                ItemsSource="{Binding FilteredItems}"
+                x:Name="mainScheduleView">
                 <ItemsControl.Resources>
 
                     <DataTemplate x:Key="LatheManufactureOrder">

@@ -11,7 +11,8 @@ namespace ProjectLighthouse.Model
         public DateTime StateLeft { get; set; }
         public double SecondsElapsed { get; set; }
         public int CycleTime { get; set; }
-
+        public string Messages { get; set; }
+        public string ErrorMessages { get; set; }
         public enum States { Running, Setting, Breakdown, Idle, Offline, Unknown}
 
         public int GetCalculatedPartsProduced()
