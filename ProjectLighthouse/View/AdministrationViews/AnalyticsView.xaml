@@ -37,9 +37,9 @@
     </UserControl.Resources>
 
     <ScrollViewer HorizontalAlignment="Stretch">
-        <StackPanel
-            MaxWidth="900"
-            HorizontalAlignment="Stretch">
+        <StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
+
+            <!--<Button Click="Button_Click">Test</Button>-->
 
             <!--#region total parts made-->
 
@@ -55,10 +55,10 @@
 
                 <lvc:CartesianChart Height="400" Series="{Binding Path=Series}">
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis LabelFormatter="{Binding Path=X_Formatter}" />
+                        <lvc:Axis x:Name="AllTimeParts_TimeAxis" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
-                        <lvc:Axis MinValue="0" />
+                        <lvc:Axis x:Name="AllTimeParts_CountAxis" MinValue="0" />
                     </lvc:CartesianChart.AxisY>
                 </lvc:CartesianChart>
             </StackPanel>

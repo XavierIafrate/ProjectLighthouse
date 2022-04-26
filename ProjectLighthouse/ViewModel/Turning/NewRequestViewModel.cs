@@ -45,7 +45,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedProduct = value;
-                OnPropertyChanged("SelectedProduct");
+                OnPropertyChanged();
 
                 if (selectedProduct != null)
                 {
@@ -70,7 +70,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedGroup = value;
-                OnPropertyChanged("SelectedGroup");
+                OnPropertyChanged();
                 PopulateListBox();
             }
         }
@@ -159,14 +159,14 @@ namespace ProjectLighthouse.ViewModel
             if (num_L20s > 0)
             {
                 L20_leadTimes /= num_L20s;
-                HighLeadTimeVisibility = L20_leadTimes.TotalDays > 33
+                HighLeadTimeVisibility = L20_leadTimes.TotalDays > 6*7
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
-                OnPropertyChanged("HighLeadTimeVisibility");
+                OnPropertyChanged(nameof(HighLeadTimeVisibility));
             }
 
-            OnPropertyChanged("Snippets");
+            OnPropertyChanged(nameof(Snippets));
         }
 
         private void PopulateComboBox()
@@ -264,7 +264,6 @@ namespace ProjectLighthouse.ViewModel
                     if (item.ProductName == orderItem.ProductName)
                     {
                         item.IsAlreadyOnOrder = true;
-                        //item.LighthouseGuaranteedQuantity += orderItem.LighthouseGuaranteedQuantity;
                     }
                 }
 
@@ -301,8 +300,8 @@ namespace ProjectLighthouse.ViewModel
                 SelectedProduct = FilteredList.First();
             }
            
-            OnPropertyChanged("FilteredList");
-            OnPropertyChanged("AddSpecialVisibility");
+            OnPropertyChanged(nameof(FilteredList));
+            OnPropertyChanged(nameof(AddSpecialVisibility));
             LoadGraph();
         }
 
@@ -431,12 +430,12 @@ namespace ProjectLighthouse.ViewModel
             TurnedProducts = new();
             FilteredList = new();
             Families = new();
-            SelectedGroup = "Live";
             SelectedProduct = new();
             RecentlyDeclinedRequests = new();
 
             PopulateComboBox();
             PopulateListBox();
+            SelectedGroup = "Live";
             OnPropertyChanged("FilteredList");
             OnPropertyChanged("SelectedGroup");
             OnPropertyChanged("SelectedProduct");

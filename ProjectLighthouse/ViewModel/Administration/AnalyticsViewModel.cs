@@ -12,6 +12,7 @@ namespace ProjectLighthouse.ViewModel
     public class AnalyticsViewModel : BaseViewModel
     {
         #region Vars
+
         private AnalyticsHelper analytics;
 
         public AnalyticsHelper Analytics

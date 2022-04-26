@@ -305,7 +305,7 @@
                                                 ToolTip="This order is closed."
                                                 Visibility="{Binding ArchiveVis}" />
                                         </StackPanel>
-                                        <TextBlock Style="{StaticResource subtitle}" Text="{Binding Path=SelectedOrder.POReference, FallbackValue='POR123456'}" Foreground="{StaticResource OnSurface}"/>
+                                        <TextBlock Style="{StaticResource subtitle}" Foreground="{StaticResource Blue}" Text="{Binding Path=SelectedOrder.POReference, FallbackValue='POR123456'}"/>
                                     </StackPanel>
 
 

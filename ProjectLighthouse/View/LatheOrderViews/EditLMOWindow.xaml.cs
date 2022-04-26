@@ -118,8 +118,6 @@ namespace ProjectLighthouse.View
 
         private void UpdateControls()
         {
-            //ItemsListBox.ItemsSource = items;
-            //NotesDisplay.ItemsSource = Notes;
             NotesScroller.ScrollToBottom();
 
             PORef.IsEnabled = App.CurrentUser.CanUpdateLMOs;
@@ -234,8 +232,6 @@ namespace ProjectLighthouse.View
                     item.RequestToEdit += EditItem;
                 }
             }
-
-            //ItemsListBox.ItemsSource = new List<LatheManufactureOrderItem>(items);
         }
 
         #region Helpers
