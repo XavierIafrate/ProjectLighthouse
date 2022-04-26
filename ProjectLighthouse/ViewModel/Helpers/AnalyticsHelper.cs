@@ -6,6 +6,8 @@ using LiveCharts;
 using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using LiveCharts.Defaults;
+using System.Windows.Media;
+using System.Diagnostics;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
@@ -56,13 +58,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 MachinePerformance.AddRange(GetLatheCurrentStates());
 
-                MachinePerformanceByDay = MachinePerformanceHelper.SplitBlocksIntoDays(MachinePerformance);
+                MachinePerformanceByDay = MachinePerformanceHelper.SplitBlocksIntoDays(MachinePerformance, 6);
 
                 MakeOrdersComplete();
                 PopulateScheduleItems();
             }
 
-            private List<MachineOperatingBlock> GetLatheCurrentStates()
+            public List<MachineOperatingBlock> GetLatheCurrentStates()
             {
                 List<MachineStatistics> lastKnownStates = new();
                 lastKnownStates = MachineStatsHelper.GetStats() ?? new();
@@ -129,9 +131,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 {
                     Date = date;
                     LatheData = new();
+                    List<MachineOperatingBlock> machineOperatingBlocks = MachinePerformanceHelper.SplitBlocksIntoDays(Data.MachinePerformance, hour: date.Hour);
                     for (int i = 0; i < Data.Lathes.Count; i++)
                     {
-                        LatheData.Add(new(Data.Lathes[i], Date));
+                        LatheData.Add(new(Data.Lathes[i], Date, machineOperatingBlocks));
                     }
 
                     OverallRuntimeByLatheModel = new();
@@ -164,13 +167,17 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public class DailyLathePerformance
                 {
-                    public DailyLathePerformance(Lathe lathe, DateTime date)
+                    public DailyLathePerformance(Lathe lathe, DateTime date, List<MachineOperatingBlock> operatingData,  bool convolve = true)
                     {
                         Lathe = lathe;
-                        Lots = Data.Lots.Where(x => x.DateProduced.Date == date && x.FromMachine == Lathe.Id).ToList();
-                        Orders = Data.ScheduleItems.Where(x => x.StartDate.Date == date && x.AllocatedMachine == Lathe.Id).ToList();
-                        MachineOperatingBlocks = Data.MachinePerformanceByDay.Where(x => x.StateEntered.Date == date && x.MachineID == lathe.Id).ToList();
-                        OperatingData = new(MachineOperatingBlocks);
+                        Lots = Data.Lots.Where(x => x.DateProduced.Date == date.Date && x.FromMachine == Lathe.Id).ToList();
+                        Orders = Data.ScheduleItems.Where(x => x.StartDate.Date == date.Date && x.AllocatedMachine == Lathe.Id).ToList();
+
+                        List<MachineOperatingBlock> relevantOperatingData = operatingData.Where(x => DateWithinRange(x.StateEntered, date) && x.MachineID == lathe.Id).ToList();
+
+                        Debug.WriteLine($"Last block recorded: {operatingData.Last().StateEntered}");
+                        MachineOperatingBlocks = convolve ? MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes:20) : relevantOperatingData;
+                        OperatingData = new(relevantOperatingData);
 
                         TotalScrap = Lots.Where(x => x.IsReject).Sum(x => x.Quantity);
                         TotalGood = Lots.Where(x => x.IsAccepted).Sum(x => x.Quantity);
@@ -194,9 +201,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     {
                         public OperatingInfo(List<MachineOperatingBlock> raw)
                         {
-                            //RawData = MachineStatsHelper.Convolute(raw);
                             RawData = raw;
-                            MajorSegments = RawData.Where(x => x.SecondsElapsed > 1200).ToList();
+                            MajorSegments = RawData.Where(x => x.SecondsElapsed >= 1200).ToList();
                             Running = (double)RawData.Where(x => x.State == nameof(Running)).Sum(x => x.SecondsElapsed)/(double)864;
                             Setting = (double)RawData.Where(x => x.State == nameof(Setting)).Sum(x => x.SecondsElapsed)/(double)864;
                             Breakdown = (double)RawData.Where(x => x.State == nameof(Breakdown)).Sum(x => x.SecondsElapsed)/(double)864;
@@ -225,9 +231,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 Performance = new();
                 for (int i = -1; i >= -7; i--)
                 {
-                    Performance.Add(new(DateTime.Today.AddDays(i)));
+                    Performance.Add(new(DateTime.Today.AddDays(i).AddHours(6)));
                 }
-
             }
         }
 
@@ -276,6 +281,235 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             public SeriesCollection Series { get; set; }
             public string Title { get; set; }
+        }
+
+        public string GetDailyEmailMessage(DateTime startingDate)
+        {
+            EmailReportPerformance helper = new();
+
+            return $"<html style='font-family: sans-serif; margin: 0;'>" +
+                $"{helper.GetEmailHeader(startingDate)}" +
+                $"{helper.GetEmailContent(startingDate)}" + 
+                $"{helper.GetEmailFooter()}" +
+                $"</html>";
+        }
+
+        public class EmailReportPerformance
+        {
+            public string GetEmailHeader(DateTime date)
+            {
+                string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
+                return $"<header style='margin: 50px 0 0 5%;'><h1> Good {greeting}," +
+                    $"</h1><p style='font-size: 16pt;'>Here is your daily machine runtime " +
+                    $"update for {FormatDateForEmailSubject(date)}:</p><p style='font-size: " +
+                    $"12pt; color: gray; font-style: italic; margin-top: 5px;'>The data shown " +
+                    $"is an evaluation of the period {date:dd/MM} at {date:HHmm}h to " +
+                    $"{date.AddDays(1):dd/MM} at {date.AddDays(1):HHmm}h</p></header>";
+            }
+
+            public string GetEmailContent(DateTime startingDate)
+            {
+                List<OperatingPerformance.DayPerformance.DailyLathePerformance> latheOverview = new();
+
+                List<MachineOperatingBlock> data = DatabaseHelper.Read<MachineOperatingBlock>().OrderBy(x => x.StateEntered).ToList();
+                data.AddRange(Data.GetLatheCurrentStates());
+                data = MachinePerformanceHelper.SplitBlocksIntoDays(Data.MachinePerformanceByDay, hour: startingDate.Hour);
+
+                string htmlContent = "<article style='margin-top: 30px;'><ul style='width: 60%; min-width: 700px; margin: auto;list-style: none;padding: 0;'>";
+
+                for (int i = 0; i < Data.Lathes.Count; i++)
+                {
+                    latheOverview.Add(new(Data.Lathes[i], startingDate, data, false));
+                }
+
+                foreach (OperatingPerformance.DayPerformance.DailyLathePerformance lathe in latheOverview)
+                {
+                    htmlContent += GetEmailContentForLathe(lathe);
+                }
+
+                htmlContent += "</ul></article>";
+
+                return htmlContent;
+            }
+
+            public string GetEmailContentForLathe(OperatingPerformance.DayPerformance.DailyLathePerformance data)
+            {
+                string result = "";
+
+                // header
+                result += GetLatheEmailContent_Header(data);
+                // badges
+                result += GetLatheEmailContent_Badges(data);
+                // timeline
+                result += GetLatheEmailContent_Timeline(data);
+                //analyis
+                result += GetLatheEmailContent_Analysis(data);
+
+                result += "</li>";
+                return result;
+            }
+
+            public string GetLatheEmailContent_Header(OperatingPerformance.DayPerformance.DailyLathePerformance data)
+            {
+                string highlightColour;
+
+                if (data.OperatingData.Running > 80)
+                {
+                    highlightColour = "#009688";
+                }
+                else if (data.OperatingData.Running > 50)
+                {
+                    highlightColour = "#F57C00";
+                }
+                else
+                {
+                    highlightColour = "#b71c1c";
+                }
+
+                return $"<li style='border: solid {highlightColour} 4px; border-radius: 15px; padding: 20px; margin-top: 10px;'><h2 style='font-size: 26pt; margin: 0;margin-bottom: 10px;'>{data.Lathe.FullName}</h2>";
+            }
+
+            public string GetLatheEmailContent_Badges(OperatingPerformance.DayPerformance.DailyLathePerformance data)
+            {
+                return $"<table style='width: 90%; margin: auto; margin-top: 12px; padding: 0;'>" +
+                    $"<tr style='font-size: 14pt; font-weight: bold; text-align: center;'>" +
+                    $"<td style='margin: 0 20px;color: #009688;display: inline-block;background: #00968822;padding: 8px 20px; border: solid #009688 3px; border-radius: 10px;'>" +
+                    $"<p style='opacity: 0.7;margin: 0;padding: 0;'>RUNNING</p>" +
+                    $"<p style='font-size: 18pt;margin: 0;padding: 0;'>{data.OperatingData.Running:N1}%</p>" +
+                    $"</td>" +
+                    $"" +
+                    $"<td style='margin: 0 20px;color: #1565C0;display: inline-block;background: #1565C022;padding: 8px 20px; border: solid #1565C0 3px; border-radius: 10px;'>" +
+                    $"<p style='opacity: 0.7;padding: 0; margin: 0;'>SETTING</p>" +
+                    $"<p style='font-size: 18pt;padding: 0; margin: 0;'>{data.OperatingData.Setting:N1}%</p>" +
+                    $"</td>" +
+                    $"" +
+                    $"<td style='margin: 0 20px;color: #b71c1c;display: inline-block;background: #b71c1c22;padding: 8px 20px; border: solid #b71c1c 3px; border-radius: 10px;'>" +
+                    $"<p style='opacity: 0.7;padding: 0; margin: 0;'>BREAKDOWN</p>" +
+                    $"<p style='font-size: 18pt;padding: 0; margin: 0;'>{data.OperatingData.Breakdown:N1}%</p>" +
+                    $"</td>" +
+                    $"</tr></table>";
+            }
+
+            public string GetLatheEmailContent_Timeline(OperatingPerformance.DayPerformance.DailyLathePerformance data)
+            {
+                string timelineHtmlContent = "<h3>Timeline</h3><div style='width: 90%; margin: auto;'>" +
+                    "<table style='width: 100%; font-family: monospace; '><tr>" +
+                    "<td><p style='margin: 0; padding: 0;'>0600h</p></td>" +
+                    "<td><p style='margin: 0; padding: 0;text-align: center;'>1800h</p></td>" +
+                    "<td><p style='margin: 0; padding: 0;text-align: right;'>0600h</p></td>" +
+                    "</tr></table><div style='padding: 0 2ex;'>" +
+                    "<table style='background-color: none; width: 100%; height: 35px; border: solid #555 2px; border-radius: 5px;'><tr>";
+
+                for (int i = 0; i < data.MachineOperatingBlocks.Count; i++)
+                {
+                    MachineOperatingBlock block = data.MachineOperatingBlocks[i];
+                    string colour = "#000";
+                    if (block.State == "Breakdown")
+                    {
+                        colour = "#b71c1c";
+                    }
+                    else if (block.State == "Setting")
+                    {
+                        colour = "#1565C0";
+                    }
+                    else if (block.State == "Running")
+                    {
+                        colour = "#009688";
+                    }
+                    double percentOfDay = block.SecondsElapsed / 864;    
+                    timelineHtmlContent += $"<td style='width: {percentOfDay:N2}%;background-color: {colour}; display: table-cell; border: none; border-radius: 2px;'></td>";
+                }
+
+                timelineHtmlContent += "</tr></table></div></div>";
+                return timelineHtmlContent;
+            }
+
+            public string GetLatheEmailContent_Analysis(OperatingPerformance.DayPerformance.DailyLathePerformance data)
+            {
+                string result = "<h3>Analysis</h3><div style='width: 90%; margin: auto;'><ul style='list-style: none; padding: 0;'>";
+                string colGood = "#009688";
+                string colWarn = "#F57C00";
+                string colBad = "#b71c1c";
+
+
+                if (data.OperatingData.Running >= 95)
+                {
+                    result += GetBasicListItem($"{data.Lathe.FullName} achieved over 95% uptime.", colGood);
+                }
+
+                if (data.OperatingData.Setting * 24 > 1.5)
+                {
+                    if (data.Orders.Count == 0)
+                    {
+                        if (data.OperatingData.Setting * 24 < 4)
+                        {
+                            result += GetBasicListItem($"A while was spent in manual mode when no order was scheduled to be set.", colWarn);
+                        }
+                        else
+                        {
+                            result += GetBasicListItem($"{data.OperatingData.Setting * 24:N1} hours were spent a while in manual mode when no order was scheduled to be set.", colBad);
+                        }
+                    }
+                    else
+                    {
+                        if (data.OperatingData.Setting * 24 <= 5)
+                        {
+                            result += GetBasicListItem($"{data.Orders.First().Name} was set.", colGood);
+                        }
+                        else if (data.OperatingData.Setting * 24 <= 8)
+                        {
+                            result += GetBasicListItem($"{data.Orders.First().Name} was set, taking an above average amount of time.", colWarn);
+                        }
+                        else
+                        {
+                            result += GetBasicListItem($"{data.Orders.First().Name} was set, taking an extreme amount of time ({data.OperatingData.Setting * 24:N0} hours).", colBad);
+                        }
+                    }
+                }
+                else if (data.Orders.Count > 0)
+                {
+                    result += GetBasicListItem($"{data.Orders.First().Name} was scheduled to be set, but the lathe did not spend very long under manual control.", colWarn);
+                }
+
+
+                List<MachineOperatingBlock> majorBreakdowns = data.MachineOperatingBlocks.Where()
+
+                result += "</ul></div>";
+                return result;
+            }
+
+            private string GetBasicListItem(string message, string hexCodeColour)
+            {
+                return $"<li style='padding: 10px; '><p style='margin: 0;padding: 0;color: {hexCodeColour};'>{message}</p></li>";
+            }
+
+            public string GetEmailFooter()
+            {
+                return $"<footer><div style='width: 100%; text-align: center; margin-top: 30px;'><p style='color: lightgray;'>Lighthouse Software &copy; Wixroyd {DateTime.Now.Year}</p></div></footer>";
+            }
+
+            private static string FormatDateForEmailSubject(DateTime date)
+            {
+                int dayOfMonth = date.Day;
+                string ordinal;
+
+                ordinal = dayOfMonth switch
+                {
+                    1 or 21 or 31 => "st",
+                    2 or 22 => "nd",
+                    3 or 23 => "rd",
+                    _ => "th",
+                };
+                ;
+
+                return $"{dayOfMonth}{ordinal} {date:MMMM}";
+            }
+        }
+
+        private static bool DateWithinRange(DateTime inputDate, DateTime startingDate)
+        {
+            double diff = (inputDate - startingDate).TotalHours;
+            return diff >= 0 && diff < 24;
         }
     }
 }

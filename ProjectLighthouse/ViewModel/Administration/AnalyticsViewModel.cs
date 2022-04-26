@@ -36,6 +36,17 @@ namespace ProjectLighthouse.ViewModel
             DownloadPackingDataCommand = new(this);
         }
 
+        public async void DownloadPackingData()
+        {
+            List<User> to = new();
+            to.Add(App.CurrentUser);
+            EmailHelper emailHelper= new();
+            emailHelper.SendDailyRuntimeReport(to, Analytics);
+
+            //List<PackageRecord> records = await FirebaseHelper.Read<PackageRecord>();
+            //CSVHelper.WriteListToCSV(records, "packing_kpi");
+        }
+
         #region Old
         public void GenerateReport(string type = null)
         {
@@ -116,11 +127,6 @@ namespace ProjectLighthouse.ViewModel
             //reportService.OpenPdf(path);
         }
 
-        public async void DownloadPackingData()
-        {
-            List<PackageRecord> records = await FirebaseHelper.Read<PackageRecord>();
-            CSVHelper.WriteListToCSV(records, "packing_kpi");
-        }
 
 
         private static bool DateWithinRange(DateTime inputDate, DateTime startingDate)

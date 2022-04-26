@@ -8,6 +8,45 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class EmailHelper
     {
+        public void SendDailyRuntimeReport(List<User> to, AnalyticsHelper data)
+        {
+            Model.Email email = new();
+            foreach (User user in to)
+            {
+                if (string.IsNullOrEmpty(user.EmailAddress))
+                {
+                    continue;
+                }
+                email.TOs.Add(new EmailRecipient(
+                    email: user.EmailAddress,
+                    name: user.GetFullName()
+                    ));
+            }
+
+            DateTime startingDate = DateTime.Today.AddDays(-1).AddHours(6);
+
+            string message = data.GetDailyEmailMessage(startingDate);
+
+            email.Send($"Machine Runtime report for {FormatDateForEmailSubject(startingDate)}", message);
+        }
+
+        private string FormatDateForEmailSubject(DateTime date)
+        {
+            int dayOfMonth = date.Day;
+            string ordinal;
+
+            ordinal = dayOfMonth switch
+            {
+                1 or 21 or 31 => "st",
+                2 or 22 => "nd",
+                3 or 23 => "rd",
+                _ => "th",
+            };
+            ;
+
+            return $"{dayOfMonth}{ordinal} {date:MMMM}";
+        }
+
         public static void NotifyRequestApproved(Request approvedRequest)
         {
             Model.Email email = new();
@@ -32,7 +71,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 ));
 
             string subject = "Request Approved";
-            Debug.WriteLine($"EmailHelper: {approvedRequest.Product}");
             string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
 
             string message = $"<html><font face='tahoma'><h2 style='color:#00695C'>Request approved!</h2>" +

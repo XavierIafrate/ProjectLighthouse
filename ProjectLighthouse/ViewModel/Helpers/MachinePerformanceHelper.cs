@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
@@ -65,16 +66,42 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return result;
         }
 
-        public static List<MachineOperatingBlock> Convolute(List<MachineOperatingBlock> input, int minSeconds)
+        public static List<MachineOperatingBlock> Convolute(List<MachineOperatingBlock> input, int resolutionMinutes)
         {
             List<MachineOperatingBlock> result = new();
 
+            input = input.Where(x => x.SecondsElapsed >= resolutionMinutes * 60).OrderBy(x => x.StateEntered).ToList();
+            if (input.Count <= 1)
+            {
+                return input;
+            }
+
+            int x = 0;
+            string lastState = input[x].State;
+            
             for (int i = 1; i < input.Count; i++)
             {
-                if (input[i].SecondsElapsed < minSeconds)
+                MachineOperatingBlock curr = input[i];
+                MachineOperatingBlock first = input[x];
+                if (curr.State != lastState)
                 {
-                    input[i - 1].StateLeft.AddSeconds(input[i].SecondsElapsed);
-                    input[i - 1].SecondsElapsed += input[i].SecondsElapsed;
+                    MachineOperatingBlock newBlock = new() {
+                        MachineID = curr.MachineID,
+                        MachineName = curr.MachineName,
+                        StateEntered = first.StateEntered,
+                        StateLeft = input[i - 1].StateLeft,
+                        State = first.State,
+                        SecondsElapsed = (input[i - 1].StateLeft - first.StateEntered).TotalSeconds,
+                        CycleTime=first.CycleTime,
+                    };
+                    result.Add(newBlock);
+                    x = i;
+                    lastState = input[x].State;
+                }
+
+                if (i == input.Count - 1)
+                {
+                    result.Add(input[i]);
                 }
             }
 
