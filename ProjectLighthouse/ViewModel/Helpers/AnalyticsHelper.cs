@@ -426,7 +426,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public string GetLatheEmailContent_Analysis(OperatingPerformance.DayPerformance.DailyLathePerformance data)
             {
-                string result = "<h3>Analysis</h3><div style='width: 90%; margin: auto;'><ul style='list-style: none; padding: 0;'>";
+                string result = "<h3>Analysis</h3><div style='width: 90%; margin: auto;'><ul style='padding: 0;'>";
                 string colGood = "#009688";
                 string colWarn = "#F57C00";
                 string colBad = "#b71c1c";
@@ -437,32 +437,32 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     result += GetBasicListItem($"{data.Lathe.FullName} achieved over 95% uptime.", colGood);
                 }
 
-                if (data.OperatingData.Setting * 24 > 1.5)
+                if (data.OperatingData.Setting * 0.24 > 1.5)
                 {
                     if (data.Orders.Count == 0)
                     {
-                        if (data.OperatingData.Setting * 24 < 4)
+                        if (data.OperatingData.Setting * 0.24 < 4)
                         {
-                            result += GetBasicListItem($"A while was spent in manual mode when no order was scheduled to be set.", colWarn);
+                            result += GetBasicListItem($"{data.OperatingData.Setting * 0.24:N1} hours were spent in manual mode when no order was scheduled to be set.", colWarn);
                         }
                         else
                         {
-                            result += GetBasicListItem($"{data.OperatingData.Setting * 24:N1} hours were spent a while in manual mode when no order was scheduled to be set.", colBad);
+                            result += GetBasicListItem($"{data.OperatingData.Setting * 0.24:N1} hours were spent a while in manual mode when no order was scheduled to be set.", colBad);
                         }
                     }
                     else
                     {
-                        if (data.OperatingData.Setting * 24 <= 5)
+                        if (data.OperatingData.Setting * 0.24 <= 5)
                         {
                             result += GetBasicListItem($"{data.Orders.First().Name} was set.", colGood);
                         }
-                        else if (data.OperatingData.Setting * 24 <= 8)
+                        else if (data.OperatingData.Setting * 0.24 <= 8)
                         {
-                            result += GetBasicListItem($"{data.Orders.First().Name} was set, taking an above average amount of time.", colWarn);
+                            result += GetBasicListItem($"{data.Orders.First().Name} was set, taking an above average amount of time - {data.OperatingData.Setting * 0.24:N1} hours.", colWarn);
                         }
                         else
                         {
-                            result += GetBasicListItem($"{data.Orders.First().Name} was set, taking an extreme amount of time ({data.OperatingData.Setting * 24:N0} hours).", colBad);
+                            result += GetBasicListItem($"{data.Orders.First().Name} was set, taking an extreme amount of time ({data.OperatingData.Setting * 0.24:N0} hours).", colBad);
                         }
                     }
                 }
@@ -471,8 +471,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     result += GetBasicListItem($"{data.Orders.First().Name} was scheduled to be set, but the lathe did not spend very long under manual control.", colWarn);
                 }
 
-
-                List<MachineOperatingBlock> majorBreakdowns = data.MachineOperatingBlocks.Where()
+                List<MachineOperatingBlock> majorBreakdowns = data.MachineOperatingBlocks.Where(x => x.State == "Breakdown" && x.SecondsElapsed > 30 * 60).ToList();
+                foreach (MachineOperatingBlock majorBreakdown in majorBreakdowns)
+                {
+                    result += GetErrorMessageListItem(majorBreakdown);
+                }
 
                 result += "</ul></div>";
                 return result;
@@ -481,6 +484,56 @@ namespace ProjectLighthouse.ViewModel.Helpers
             private string GetBasicListItem(string message, string hexCodeColour)
             {
                 return $"<li style='padding: 10px; '><p style='margin: 0;padding: 0;color: {hexCodeColour};'>{message}</p></li>";
+            }
+
+            private string GetErrorMessageListItem(MachineOperatingBlock errorBlock)
+            {
+                List<string> errors = errorBlock.ErrorMessages.Split(";").ToList();
+                string message;
+
+                if (IsOutOfHours(errorBlock.StateEntered))
+                {
+                    message = $"The machine encountered an error when outside of working hours, from {errorBlock.StateEntered:HH:mm} to {errorBlock.StateLeft:HH:mm}.";
+                }
+                else
+                {
+                    message = $"The machine encountered an error within working hours, from {errorBlock.StateEntered:HH:mm} to {errorBlock.StateLeft:HH:mm}.";
+                }
+
+                if (errors.Count > 0)
+                {
+                    message += " Here are the error messages:";
+                }
+                string result = $"<li style='padding: 10px; '><p style='margin: 0;padding: 0;color: #b71c1c;'>{message}</p>";
+                if (errors.Count > 0)
+                {
+                    result += "<div style='margin-left: 5%; width: fit-content; padding: 10px;'><ul style='list-style: square; font-size: 14pt; font-family: monospace; color: #333; margin-top: 5px;'>";
+                    foreach (string error in errors)
+                    {
+                        string errorText = error.Trim().Replace("\t", "");
+                        result += $"<li><p style='margin: 0; padding: 0;'>{errorText}</p></li>";
+                    }
+                    result += "</ul></div>";
+                }
+
+                result += "</li>";
+                return result;
+            }
+
+            public bool IsOutOfHours(DateTime date)
+            {
+                if (date.DayOfWeek >= DayOfWeek.Monday && date.DayOfWeek < DayOfWeek.Friday) // Mon-thu
+                {
+                    return date.Hour < 6 || date.Hour >= 22;
+                }
+                else if (date.DayOfWeek == DayOfWeek.Friday)
+                {
+                    return date.Hour < 6 || date.Hour >= 17;
+                }
+                else
+                {
+                    return true;
+                }
             }
 
             public string GetEmailFooter()

@@ -42,6 +42,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     MachineName = block.MachineName,
                     StateEntered = newBlockStarts,
                     CycleTime = block.CycleTime,
+                    ErrorMessages = block.ErrorMessages,
+                    Messages = block.Messages,
+                    
                 };
 
                 if (i == numberOfDays)
