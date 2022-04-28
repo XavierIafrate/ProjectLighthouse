@@ -167,7 +167,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public class DailyLathePerformance
                 {
-                    public DailyLathePerformance(Lathe lathe, DateTime date, List<MachineOperatingBlock> operatingData,  bool convolve = true)
+                    public DailyLathePerformance(Lathe lathe, DateTime date, List<MachineOperatingBlock> operatingData,  int resolution = 30)
                     {
                         Lathe = lathe;
                         Lots = Data.Lots.Where(x => x.DateProduced.Date == date.Date && x.FromMachine == Lathe.Id).ToList();
@@ -175,8 +175,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                         List<MachineOperatingBlock> relevantOperatingData = operatingData.Where(x => DateWithinRange(x.StateEntered, date) && x.MachineID == lathe.Id).ToList();
 
-                        Debug.WriteLine($"Last block recorded: {operatingData.Last().StateEntered}");
-                        MachineOperatingBlocks = convolve ? MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes:20) : relevantOperatingData;
+                        MachineOperatingBlocks = MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes:resolution);
                         OperatingData = new(relevantOperatingData);
 
                         TotalScrap = Lots.Where(x => x.IsReject).Sum(x => x.Quantity);
@@ -319,7 +318,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 for (int i = 0; i < Data.Lathes.Count; i++)
                 {
-                    latheOverview.Add(new(Data.Lathes[i], startingDate, data, false));
+                    latheOverview.Add(new(Data.Lathes[i], startingDate, data, resolution:1));
                 }
 
                 foreach (OperatingPerformance.DayPerformance.DailyLathePerformance lathe in latheOverview)
@@ -432,9 +431,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 string colBad = "#b71c1c";
 
 
-                if (data.OperatingData.Running >= 95)
+                if (data.OperatingData.Running >= 90)
                 {
-                    result += GetBasicListItem($"{data.Lathe.FullName} achieved over 95% uptime.", colGood);
+                    result += GetBasicListItem($"{data.Lathe.FullName} achieved over 90% uptime.", colGood);
                 }
 
                 if (data.OperatingData.Setting * 0.24 > 1.5)
@@ -462,7 +461,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         }
                         else
                         {
-                            result += GetBasicListItem($"{data.Orders.First().Name} was set, taking an extreme amount of time ({data.OperatingData.Setting * 0.24:N0} hours).", colBad);
+                            result += GetBasicListItem($"{data.Orders.First().Name} was set but it took an excessive amount of time ({data.OperatingData.Setting * 0.24:N0} hours).", colBad);
                         }
                     }
                 }
@@ -488,7 +487,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             private string GetErrorMessageListItem(MachineOperatingBlock errorBlock)
             {
-                List<string> errors = errorBlock.ErrorMessages.Split(";").ToList();
                 string message;
 
                 if (IsOutOfHours(errorBlock.StateEntered))
@@ -500,17 +498,23 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     message = $"The machine encountered an error within working hours, from {errorBlock.StateEntered:HH:mm} to {errorBlock.StateLeft:HH:mm}.";
                 }
 
-                if (errors.Count > 0)
+                if (!string.IsNullOrEmpty(errorBlock.ErrorMessages))
                 {
                     message += " Here are the error messages:";
                 }
                 string result = $"<li style='padding: 10px; '><p style='margin: 0;padding: 0;color: #b71c1c;'>{message}</p>";
-                if (errors.Count > 0)
+                if (!string.IsNullOrEmpty(errorBlock.ErrorMessages))
                 {
-                    result += "<div style='margin-left: 5%; width: fit-content; padding: 10px;'><ul style='list-style: square; font-size: 14pt; font-family: monospace; color: #333; margin-top: 5px;'>";
+                    List<string> errors = errorBlock.ErrorMessages.Split(";").ToList();
+
+                    result += "<div style='margin-left: 5%; width: fit-content; padding: 10px;'><ul style='list-style: square; font-size: 10pt; font-family: monospace; color: #333; margin-top: 5px;'>";
                     foreach (string error in errors)
                     {
-                        string errorText = error.Trim().Replace("\t", "");
+                        string errorText = error.Trim().Replace("\t", " ");
+                        if (string.IsNullOrWhiteSpace(errorText))
+                        {
+                            continue;
+                        }
                         result += $"<li><p style='margin: 0; padding: 0;'>{errorText}</p></li>";
                     }
                     result += "</ul></div>";
@@ -553,9 +557,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     3 or 23 => "rd",
                     _ => "th",
                 };
-                ;
 
-                return $"{dayOfMonth}{ordinal} {date:MMMM}";
+                return $"{date:dddd} {dayOfMonth}{ordinal} {date:MMMM}";
             }
         }
 

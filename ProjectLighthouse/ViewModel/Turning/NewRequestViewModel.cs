@@ -377,24 +377,23 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged("ThousandsSeparator");
         }
 
-        public bool SubmitRequest()
+        public async Task<bool> SubmitRequest()
         {
-            bool result = false;
             if (string.IsNullOrEmpty(SelectedProduct.ProductName))
             {
                 MessageBox.Show("Please select a product!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return result;
+                return false;
             }
             else if (!selectedProduct.CanBeManufactured())
             {
                 MessageBox.Show("This product can not be made on our machines!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return result;
+                return false;
             }
 
             if (newRequest.DateRequired <= DateTime.Now)
             {
                 MessageBox.Show("Please select a date!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return result;
+                return false;
             }
 
             newRequest.RaisedBy = App.CurrentUser.GetFullName();
@@ -410,17 +409,16 @@ namespace ProjectLighthouse.ViewModel
                     SMSHelper.SendText("+447979606705", message);
                 }
 
-                Task.Run(() => EmailHelper.NotifyNewRequest(newRequest, SelectedProduct, App.CurrentUser));
+                await Task.Run(() => EmailHelper.NotifyNewRequest(newRequest, SelectedProduct, App.CurrentUser));
 
                 MessageBox.Show("Your request has been submitted", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 ClearScreen();
-                result = true;
-                return result;
+                return true;
             }
             else
             {
                 MessageBox.Show("An error has occurred.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return result;
+                return false;
             }
         }
 

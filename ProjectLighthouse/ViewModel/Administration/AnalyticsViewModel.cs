@@ -29,23 +29,34 @@ namespace ProjectLighthouse.ViewModel
 
         #region Commands
         public DownloadPackingDataCommand DownloadPackingDataCommand { get; set; }
+        public SendRuntimeReportCommand RuntimeReportCommand { get; set; }
         #endregion
 
         public AnalyticsViewModel()
         {
             Analytics = new();
             DownloadPackingDataCommand = new(this);
+            RuntimeReportCommand = new(this);
         }
 
         public async void DownloadPackingData()
         {
-            List<User> to = new();
-            to.Add(App.CurrentUser);
-            EmailHelper emailHelper= new();
-            emailHelper.SendDailyRuntimeReport(to, Analytics);
+            List<PackageRecord> records = await FirebaseHelper.Read<PackageRecord>();
+            CSVHelper.WriteListToCSV(records, "packing_kpi");
+        }
 
-            //List<PackageRecord> records = await FirebaseHelper.Read<PackageRecord>();
-            //CSVHelper.WriteListToCSV(records, "packing_kpi");
+        public void SendRuntimeReport()
+        {
+            List<User> to = new();
+
+            List<User> allUsers = DatabaseHelper.Read<User>();
+
+            to.Add(allUsers.Find(x => x.UserName == "xav"));
+            to.Add(allUsers.Find(x => x.UserName == "anthony"));
+            to.Add(allUsers.Find(x => x.UserName == "richard"));
+
+            EmailHelper emailHelper = new();
+            emailHelper.SendDailyRuntimeReport(to, Analytics);
         }
 
         #region Old

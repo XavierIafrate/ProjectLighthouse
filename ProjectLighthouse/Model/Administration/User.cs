@@ -41,8 +41,8 @@ namespace ProjectLighthouse.Model
         public bool CanModifyCalibration { get; set; }
         public bool CanAddCalibrationCertificates { get; set; }
         public bool EnableDataSync { get; set; }
-
         public string DefaultView { get; set; }
+        public bool ReceivesNotifications { get; set; }
 
         public string GetFullName()
         {

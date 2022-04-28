@@ -96,6 +96,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         State = first.State,
                         SecondsElapsed = (input[i - 1].StateLeft - first.StateEntered).TotalSeconds,
                         CycleTime=first.CycleTime,
+                        Messages = first.Messages,
+                        ErrorMessages = first.ErrorMessages,
                     };
                     result.Add(newBlock);
                     x = i;

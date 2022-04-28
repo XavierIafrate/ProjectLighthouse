@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
-    public class DownloadPackingDataCommand : ICommand
+    public class SendRuntimeReportCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        public AnalyticsViewModel viewModel;
+        private AnalyticsViewModel viewModel;
 
-        public DownloadPackingDataCommand(AnalyticsViewModel vm)
+        public SendRuntimeReportCommand(AnalyticsViewModel vm)
         {
             viewModel = vm;
         }
+
         public bool CanExecute(object parameter)
         {
             return App.CurrentUser.UserName == "xav";
@@ -23,7 +20,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            viewModel.DownloadPackingData();
+            viewModel.SendRuntimeReport();
         }
     }
 }

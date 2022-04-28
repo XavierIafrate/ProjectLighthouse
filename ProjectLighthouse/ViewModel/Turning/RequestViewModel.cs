@@ -482,7 +482,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
         public void DeclineRequest()
         {
             if (!App.CurrentUser.CanApproveRequests)

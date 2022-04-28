@@ -30,7 +30,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             email.Send($"Machine Runtime report for {FormatDateForEmailSubject(startingDate)}", message);
         }
 
-        private string FormatDateForEmailSubject(DateTime date)
+        private static string FormatDateForEmailSubject(DateTime date)
         {
             int dayOfMonth = date.Day;
             string ordinal;
@@ -42,7 +42,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 3 or 23 => "rd",
                 _ => "th",
             };
-            ;
 
             return $"{dayOfMonth}{ordinal} {date:MMMM}";
         }
@@ -117,68 +116,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             email.Send(subject, message);
         }
 
-        public static void NotifyNewOrder(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
-        {
-            Model.Email email = new();
-            List<User> users = DatabaseHelper.Read<User>();
-
-            foreach (User user in users)
-            {
-                if (user.UserRole == "Production" && !string.IsNullOrEmpty(user.EmailAddress))
-                {
-                    Debug.WriteLine($"TO: {user.EmailAddress}");
-                    email.TOs.Add(new EmailRecipient(
-                        email: user.EmailAddress,
-                        name: user.GetFullName()
-                        ));
-                }
-
-                if (user.UserRole == "Scheduling" && !string.IsNullOrEmpty(user.EmailAddress))
-                {
-                    Debug.WriteLine($"TO: {user.EmailAddress}");
-                    email.TOs.Add(new EmailRecipient(
-                        email: user.EmailAddress,
-                        name: user.GetFullName()
-                        ));
-                }
-            }
-
-            email.CCs.Add(new EmailRecipient(
-                name: "Automotion Purchasing",
-                email: "purchasing@automotioncomponents.co.uk"
-                ));
-
-            email.CCs.Add(new EmailRecipient(
-                name: "Xavier Iafrate",
-                email: "x.iafrate@wixroydgroup.com"
-                ));
-
-            string subject = $"New Manufacture Order - {order.Name}";
-            Debug.WriteLine($"TO: {subject}");
-
-            string greeting = DateTime.Now.Hour < 12 ? "morning" : "afternoon";
-
-            string message = $"<html><font face='tahoma'><h2 style='color:#00695C'>New Manufacture Order</h2>" +
-                $"<p>Good {greeting}, a new Manufacture Order ({order.Name}) has been raised.</p>" +
-                $"<p>Please update the order details in Lighthouse at your earliest convenience.</p>";
-
-            foreach (LatheManufactureOrderItem item in items)
-            {
-                if (item.RequiredQuantity > 0)
-                {
-                    message += $"<p><b>Customer requirement:</b> {item.ProductName} - {item.RequiredQuantity:#,##0}pcs for {item.DateRequired:dddd d MMMM}. Target quantity: {item.TargetQuantity:#,##0}pcs</p>";
-                }
-                else
-                {
-                    message += $"<p>{item.ProductName} - {item.TargetQuantity:#,##0}pcs</p>";
-                }
-            }
-
-            message += "</font></html>";
-
-            email.Send(subject, message);
-        }
-
         public static void NotifyNewRequest(Request request, TurnedProduct turnedProduct, User personWhoRaised)
         {
             Model.Email email = new();
@@ -186,7 +123,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             foreach (User user in users)
             {
-                if ((user.UserRole == "Scheduling" || user.UserRole == "admin") && user.CanApproveRequests && !string.IsNullOrEmpty(user.EmailAddress))
+                if ((user.Role >= UserRole.Scheduling) && user.CanApproveRequests && !string.IsNullOrEmpty(user.EmailAddress) && user.ReceivesNotifications)
                 {
                     email.TOs.Add(new EmailRecipient(
                         email: user.EmailAddress,
@@ -199,7 +136,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 email: personWhoRaised.EmailAddress,
                 name: personWhoRaised.GetFullName());
 
-            if (!email.TOs.Contains(RaisedBy))
+            if (!email.TOs.Contains(RaisedBy) && personWhoRaised.ReceivesNotifications)
             {
                 email.CCs.Add(RaisedBy);
             }
@@ -228,22 +165,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             message += "</font></html>";
 
             email.Send(subject, message);
-        }
-
-
-        public static void TestEmail()
-        {
-            Model.Email email = new();
-
-            email.TOs.Add(new(
-                email: "x.iafrate@wixroydgroup.com",
-                name: "Xav"
-                ));
-
-            email.Send("Test Subject",
-                 $"<html><font face='tahoma'><h2 style='color:#00695C'>New Manufacture Order</h2>" +
-                $"<p>Good morning, a new Manufacture Order (TEST) has been raised.</p>" +
-                $"<p>Please update the order details in Lighthouse at your earliest convenience.</p>");
         }
     }
 }

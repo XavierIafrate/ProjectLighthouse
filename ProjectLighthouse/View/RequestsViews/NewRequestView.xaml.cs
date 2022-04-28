@@ -30,9 +30,10 @@ namespace ProjectLighthouse.View
             }
         }
 
-        private void SubmitButton_Click(object sender, RoutedEventArgs e)
+        private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            if (viewModel.SubmitRequest())
+            bool success = await viewModel.SubmitRequest();
+            if (success)
             {
                 quantityBox.Text = "";
                 notesTextBox.Document.Blocks.Clear();

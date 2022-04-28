@@ -10,7 +10,7 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:DesignHeight="850"
-    d:DesignWidth="869"
+    d:DesignWidth="1701"
     Background="{StaticResource Background}"
     mc:Ignorable="d">
 
@@ -23,7 +23,8 @@
             <converters:DateToSettingDate x:Key="settingTime" />
             <converters:intToStringCycleTime x:Key="intToStringCycleTime" />
             <converters:stringToAssignedLathe x:Key="stringToAssignedLathe" />
-            <converters:boolToVisibleOrCollapsed x:Key="boolToVisible"/>
+            <converters:boolToVisibleOrCollapsed x:Key="boolToVisible" />
+            <converters:StatsToLiveColour x:Key="liveBadgeColour" />
 
             <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
                 <DoubleAnimation
@@ -92,10 +93,13 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid >
-            <Button Content="+  New Order" Command="{Binding NewOrderCommand}" HorizontalAlignment="Left"/>
+        <Grid>
+            <Button
+                HorizontalAlignment="Left"
+                Command="{Binding NewOrderCommand}"
+                Content="+  New Order" />
         </Grid>
-        
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -121,9 +125,9 @@
             SelectionChanged="ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding }" />
+                    <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding}" />
                 </DataTemplate>
-                
+
             </ListView.ItemTemplate>
         </ListView>
 
@@ -132,13 +136,12 @@
             Margin="10,5"
             HorizontalAlignment="Left"
             Background="Transparent">
-            <TextBlock Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" Foreground="{StaticResource OnBackground}" />
+            <TextBlock Foreground="{StaticResource OnBackground}" Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
             <Separator Margin="5,0" Background="{StaticResource OnBackground}" />
             <TextBlock
-                
-                                            Foreground="{StaticResource OnBackground}"
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
+                Foreground="{StaticResource OnBackground}"
                 Text="Filter by:" />
             <ComboBox Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="All Active" IsSelected="True" />
@@ -212,13 +215,13 @@
                 <StackPanel Margin="25,10">
                     <Grid
                         MaxWidth="700"
-                        Margin="0,0,0,10"
                         Visibility="{Binding Path=LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
                         <Border
-                            Background="{StaticResource Red}"
+                            d:Background="Black"
+                            Background="{Binding DisplayStats, Converter={StaticResource liveBadgeColour}}"
                             CornerRadius="10" />
-                        
-                        <Grid Margin="0,5">
+
+                        <Grid Margin="25,10,25,11">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
@@ -229,58 +232,79 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
-                            <Rectangle Grid.RowSpan="2" Style="{StaticResource liveCircle}" />
+                            <Rectangle
+                                Grid.RowSpan="2"
+                                Margin="0,0,12,0"
+                                Style="{StaticResource liveCircle}" />
                             <StackPanel
                                 Grid.RowSpan="2"
                                 Grid.Column="1"
                                 VerticalAlignment="Center">
-                                <TextBlock
-                                    Padding="8,5,0,1"
-                                    VerticalAlignment="Center"
-                                    FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource OnRed}"
-                                    Text="{Binding Path=DisplayStats.MachineName, StringFormat='{}LIVE on {0}'}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="20"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource OnRed}"
+                                        Opacity="0.7"
+                                        Text="LIVE DATA: " />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="20"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource OnRed}"
+                                        Text="{Binding Path=DisplayStats.MachineName}" />
+                                </StackPanel>
+
                                 <TextBlock
                                     Grid.RowSpan="2"
-                                    Padding="8,0,0,4"
                                     FontSize="12"
                                     FontStyle="Italic"
                                     Foreground="{StaticResource OnRed}"
-                                    Text="{Binding Path=DisplayStats.DataTime, StringFormat='{}at {0:HH:mm:ss}'}" />
+                                    Text="{Binding Path=DisplayStats.DataTime, StringFormat='{}recorded at {0:HH:mm:ss}'}" />
+                            </StackPanel>
+
+                            <StackPanel
+                                Grid.Column="3"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource OnRed}"
+                                    Text="{Binding Path=DisplayStats.PartCountAll, StringFormat='{}{0:#,##0}'}" />
+                                <TextBlock
+                                    VerticalAlignment="Bottom"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource OnRed}"
+                                    Opacity="0.6"
+                                    Text="{Binding Path=DisplayStats.PartCountTarget, StringFormat='{}/{0:#,##0} PCS'}" />
                             </StackPanel>
 
                             <TextBlock
-                                Grid.Column="3"
-                                Padding="0,3,10,4"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Foreground="{StaticResource OnRed}">
-                                <Run Text="Part counter:" />
-                                <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.PartCountAll, StringFormat='{}{0:#,##0}'}" />
-                                <Run Text="of target" />
-                                <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.PartCountTarget, StringFormat='{}{0:#,##0}'}" />
-                                <Run Text="pcs" />
-                            </TextBlock>
-                            <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="3"
-                                Padding="0,3,10,4"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Foreground="{StaticResource OnRed}">
-                                <Run Text="Execution" />
-                                <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.Execution}" />
-                                <Run Text="- Cycle time" />
+                                <Run Text="Machine is in" />
+                                <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.Status}" />
+                                <Run Text="state - Cycle time" />
                                 <Run FontWeight="Bold" Text="{Binding Path=DisplayStats.CycleTime, Converter='{StaticResource intToStringCycleTime}', StringFormat='{}{0:mm}'}" />
                             </TextBlock>
                         </Grid>
                     </Grid>
-                    <Grid x:Name="OrderCardGrid" MaxWidth="700">
-                        <Border
-                            CornerRadius="10"
-                            BorderBrush="{StaticResource Blue}"
-                            BorderThickness="2" />
+                    <Grid x:Name="OrderCardGrid" MaxWidth="700" Margin="0,15,0,50">
+                        <Border CornerRadius="10" Background="White">
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="30"
+                                    Opacity="0.4"
+                                    ShadowDepth="0"
+                                    Color="Black" />
+                            </Border.Effect>
+                        </Border>
                         <StackPanel Margin="20">
 
                             <!--#region Header Data-->
@@ -293,7 +317,10 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Style="{StaticResource title}" Text="{Binding Path=SelectedOrder.Name, FallbackValue='M00000'}" Foreground="{StaticResource OnSurface}" />
+                                            <TextBlock
+                                                Foreground="{StaticResource OnSurface}"
+                                                Style="{StaticResource title}"
+                                                Text="{Binding Path=SelectedOrder.Name, FallbackValue='M00000'}" />
                                             <Path
                                                 Width="30"
                                                 Height="25"
@@ -305,7 +332,10 @@
                                                 ToolTip="This order is closed."
                                                 Visibility="{Binding ArchiveVis}" />
                                         </StackPanel>
-                                        <TextBlock Style="{StaticResource subtitle}" Foreground="{StaticResource Blue}" Text="{Binding Path=SelectedOrder.POReference, FallbackValue='POR123456'}"/>
+                                        <TextBlock
+                                            Foreground="{StaticResource Blue}"
+                                            Style="{StaticResource subtitle}"
+                                            Text="{Binding Path=SelectedOrder.POReference, FallbackValue='POR123456'}" />
                                     </StackPanel>
 
 
@@ -339,23 +369,24 @@
                                     <TextBlock
                                         x:Name="CreatedTextBlock"
                                         FontStyle="Italic"
-                                        Style="{StaticResource statement}" Foreground="{StaticResource OnSurface}">
+                                        Foreground="{StaticResource OnSurface}"
+                                        Style="{StaticResource statement}">
                                         <Run Text="Created by" />
                                         <Run Text="{Binding Path=SelectedOrder.CreatedBy, FallbackValue='Kyle Brovloski'}" />
                                     </TextBlock>
                                     <TextBlock
                                         Grid.Column="2"
-                                         Foreground="{StaticResource OnSurface}"
                                         HorizontalAlignment="Right"
                                         FontStyle="Italic"
+                                        Foreground="{StaticResource OnSurface}"
                                         Style="{StaticResource statement}"
                                         Text="{Binding Path=SelectedOrder.CreatedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
 
                                     <TextBlock
                                         x:Name="ModifiedTextBlock"
                                         Grid.Row="1"
-                                         Foreground="{StaticResource OnSurface}"
                                         FontStyle="Italic"
+                                        Foreground="{StaticResource OnSurface}"
                                         Style="{StaticResource statement}"
                                         Visibility="{Binding Path=ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
                                         <Run Text="Modified by" />
@@ -366,7 +397,7 @@
                                         Grid.Column="2"
                                         HorizontalAlignment="Right"
                                         FontStyle="Italic"
-                                         Foreground="{StaticResource OnSurface}"
+                                        Foreground="{StaticResource OnSurface}"
                                         Style="{StaticResource statement}"
                                         Text="{Binding Path=SelectedOrder.ModifiedAt, StringFormat='{}{0:dd/MM/yy HH:mm}'}"
                                         Visibility="{Binding Path=ModifiedVis, UpdateSourceTrigger=PropertyChanged}" />
@@ -416,11 +447,11 @@
                                     Stretch="Uniform" />
                                 <TextBlock
                                     Grid.Row="1"
-                                     Foreground="{StaticResource OnSurface}"
                                     Grid.Column="0"
                                     Padding="0,5,0,0"
                                     HorizontalAlignment="Center"
                                     FontStyle="Italic"
+                                    Foreground="{StaticResource OnSurface}"
                                     Text="Program" />
 
                                 <Path
@@ -433,9 +464,9 @@
                                     Grid.Row="1"
                                     Grid.Column="1"
                                     Padding="0,5,0,0"
-                                     Foreground="{StaticResource OnSurface}"
                                     HorizontalAlignment="Center"
                                     FontStyle="Italic"
+                                    Foreground="{StaticResource OnSurface}"
                                     Text="Tooling" />
 
                                 <Path
@@ -448,9 +479,9 @@
                                     Grid.Row="1"
                                     Grid.Column="2"
                                     Padding="0,5,0,0"
-                                     Foreground="{StaticResource OnSurface}"
                                     HorizontalAlignment="Center"
                                     FontStyle="Italic"
+                                    Foreground="{StaticResource OnSurface}"
                                     Text="Bar Verified" />
 
                                 <Path
@@ -463,9 +494,9 @@
                                     Grid.Row="1"
                                     Grid.Column="3"
                                     Padding="0,5,0,0"
-                                     Foreground="{StaticResource OnSurface}"
                                     HorizontalAlignment="Center"
                                     FontStyle="Italic"
+                                    Foreground="{StaticResource OnSurface}"
                                     Text="Bar Prepared" />
                             </Grid>
 
@@ -527,8 +558,10 @@
                                             FontWeight="SemiBold"
                                             Foreground="{StaticResource OnSurface}"
                                             Text="ESTIMATED TIME" />
-                                        <TextBlock Style="{StaticResource hero}" 
-                                            Foreground="{StaticResource OnSurface}" Text="{Binding SelectedOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
+                                        <TextBlock
+                                            Foreground="{StaticResource OnSurface}"
+                                            Style="{StaticResource hero}"
+                                            Text="{Binding SelectedOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
                                     </StackPanel>
                                 </Border>
 
