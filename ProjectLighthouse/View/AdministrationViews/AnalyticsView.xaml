@@ -72,10 +72,17 @@
                         FontSize="25"
                         Foreground="{StaticResource OnSurface}"
                         Text="Runtime Report" />
-                    <Button
-                        HorizontalAlignment="Right"
-                        Command="{Binding Path=RuntimeReportCommand}"
-                        Content="Send" />
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <Button
+                            Content="Send Dev Version"
+                            Command="{Binding Path=RuntimeReportCommand}"
+                            CommandParameter="test"
+                            Style="{StaticResource ModernGreenButtonTemplate}"/>
+                        <Button
+                            Command="{Binding Path=RuntimeReportCommand}"
+                            CommandParameter="all"
+                            Content="Send" />
+                    </StackPanel>
                 </Grid>
             </Border>
             

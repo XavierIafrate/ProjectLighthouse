@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectLighthouse.Model
 {
@@ -70,7 +71,17 @@ namespace ProjectLighthouse.Model
 
         public BarStock Bar;
         [Ignore]
-        public List<LatheManufactureOrderItem> OrderItems { get; set; }
+        public List<LatheManufactureOrderItem> OrderItems { get; set; } = new();
+        [Ignore]
+        public List<Note> Notes { get; set; } = new();
+        [Ignore]
+        public List<TechnicalDrawing> Drawings { get; set; } = new();
+        [Ignore]
+        public List<OrderDrawing> DrawingsReferences { get; set; } = new();
+        [Ignore]
+        public Lathe AssignedLathe { get; set; } = new();
+
+        #region Helpers
         public DateTime Deadline;
 
         public object Clone()
@@ -171,5 +182,26 @@ namespace ProjectLighthouse.Model
 
             return dateTime;
         }
+
+        public void UpdateBarRequirements(List<BarStock> barStock, List<Lathe> lathes)
+        {
+            double totalLengthRequired = 0;
+            BarStock bar = barStock.First(b => b.Id == BarID);
+            double partOff = 2;
+
+            if (!string.IsNullOrEmpty(AllocatedMachine))
+            {
+                Lathe runningOnLathe = lathes.First(l => l.Id == AllocatedMachine);
+                partOff = runningOnLathe.PartOff;
+            }
+
+            foreach (LatheManufactureOrderItem orderItem in OrderItems)
+            {
+                totalLengthRequired += (orderItem.MajorLength + partOff) * orderItem.TargetQuantity * 1.02;
+            }
+
+            NumberOfBars = Math.Ceiling(totalLengthRequired / 2700);
+        }
+        #endregion
     }
 }

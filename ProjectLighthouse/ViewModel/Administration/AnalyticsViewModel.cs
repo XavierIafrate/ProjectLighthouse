@@ -45,15 +45,18 @@ namespace ProjectLighthouse.ViewModel
             CSVHelper.WriteListToCSV(records, "packing_kpi");
         }
 
-        public void SendRuntimeReport()
+        public void SendRuntimeReport(bool test)
         {
             List<User> to = new();
 
             List<User> allUsers = DatabaseHelper.Read<User>();
 
             to.Add(allUsers.Find(x => x.UserName == "xav"));
-            to.Add(allUsers.Find(x => x.UserName == "anthony"));
-            to.Add(allUsers.Find(x => x.UserName == "richard"));
+            if (!test)
+            {
+                to.Add(allUsers.Find(x => x.UserName == "anthony"));
+                to.Add(allUsers.Find(x => x.UserName == "richard"));
+            }
 
             EmailHelper emailHelper = new();
             emailHelper.SendDailyRuntimeReport(to, Analytics);

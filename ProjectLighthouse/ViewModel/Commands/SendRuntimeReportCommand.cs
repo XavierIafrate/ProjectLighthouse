@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
@@ -20,7 +21,19 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            viewModel.SendRuntimeReport();
+            if (parameter.ToString() == "all")
+            {
+                viewModel.SendRuntimeReport(test:false);
+
+            }
+            else if (parameter.ToString() == "test")
+            {
+                viewModel.SendRuntimeReport(test:true);
+            }
+            else
+            {
+                MessageBox.Show("parameter failed");
+            }
         }
     }
 }

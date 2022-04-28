@@ -21,9 +21,9 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-            
+
             <Path
-                x:Name="doneFlag" 
+                x:Name="doneFlag"
                 Width="18"
                 Margin="0,0,5,0"
                 Height="18"
@@ -31,14 +31,28 @@
                 Fill="{StaticResource Green}"
                 Stretch="Uniform" />
 
-            <StackPanel Margin="5,2,10,2" VerticalAlignment="Center" Grid.Column="1">
-                <TextBlock
-                    x:Name="productText"
-                    Padding="0,2"
-                    VerticalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
+            <StackPanel
+                Grid.Column="1"
+                Margin="5,2,10,2"
+                VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        x:Name="productText"
+                        Padding="0,2"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
+                    <Path
+                        x:Name="cycleTimeIndicator"
+                        Width="15"
+                        Height="15"
+                        Margin="5,0,0,0"
+                        Data="M19.03 7.39L20.45 5.97C20 5.46 19.55 5 19.04 4.56L17.62 6C16.07 4.74 14.12 4 12 4C7.03 4 3 8.03 3 13S7.03 22 12 22C17 22 21 17.97 21 13C21 10.88 20.26 8.93 19.03 7.39M13 14H11V7H13V14M15 1H9V3H15V1Z"
+                        Fill="{StaticResource Orange}"
+                        Stretch="Uniform" />
+                </StackPanel>
+
                 <ProgressBar
                     x:Name="ProgressBar"
                     Margin="0,0,0,3"
@@ -124,7 +138,7 @@
                 <TextBlock
                     Grid.Column="2"
                     HorizontalAlignment="Right"
-                    Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
+                                        Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
 
                 <TextBlock
                     Grid.Row="1"

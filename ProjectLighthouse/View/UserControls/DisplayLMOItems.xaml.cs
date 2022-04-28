@@ -40,6 +40,10 @@ namespace ProjectLighthouse.View.UserControls
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
+                control.cycleTimeIndicator.Visibility = control.LatheManufactureOrderItem.QuantityMade > 0 && control.LatheManufactureOrderItem.CycleTime == 0
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+
                 control.ProgressBar.Maximum = control.LatheManufactureOrderItem.TargetQuantity;
                 control.ProgressBar.Value = control.LatheManufactureOrderItem.QuantityMade;
             }
