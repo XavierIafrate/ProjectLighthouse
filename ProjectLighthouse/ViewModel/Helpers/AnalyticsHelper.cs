@@ -440,14 +440,19 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 {
                     if (data.Orders.Count == 0)
                     {
-                        if (data.OperatingData.Setting * 0.24 < 4)
+                        List<MachineOperatingBlock> settingBlocks = data.MachineOperatingBlocks
+                            .Where(x => x.State == "Setting" && x.SecondsElapsed > 3600)
+                            .OrderByDescending(x => x.SecondsElapsed)
+                            .ToList();
+
+                        string msg = $"{data.OperatingData.Setting * 0.24:N1} hours were spent in manual mode when no order was scheduled to be set.";
+                        if (settingBlocks.Count > 0)
                         {
-                            result += GetBasicListItem($"{data.OperatingData.Setting * 0.24:N1} hours were spent in manual mode when no order was scheduled to be set.", colWarn);
+                            MachineOperatingBlock largestBlock = settingBlocks.First();
+                            msg += $" The main period of unplanned manual operation was from {largestBlock.StateEntered:HH:mm} to {largestBlock.StateLeft:HH:mm} ({TimeSpan.FromSeconds(largestBlock.SecondsElapsed).TotalHours:N1} hrs)";
                         }
-                        else
-                        {
-                            result += GetBasicListItem($"{data.OperatingData.Setting * 0.24:N1} hours were spent a while in manual mode when no order was scheduled to be set.", colBad);
-                        }
+
+                        result += GetBasicListItem(msg, data.OperatingData.Setting * 0.24 < 4 ? colWarn : colBad);
                     }
                     else
                     {
