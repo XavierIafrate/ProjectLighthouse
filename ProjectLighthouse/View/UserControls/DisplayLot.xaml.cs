@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model;
+﻿using bpac;
+using ProjectLighthouse.Model;
 using System;
 using System.Diagnostics;
 using System.Windows;
@@ -64,6 +65,33 @@ namespace ProjectLighthouse.View.UserControls
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             Lot.NotifyRequestToEdit();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string path = @"C:\Users\x.iafrate\Desktop\nameplate.lbx";
+                Document doc = new();
+                doc.Open(path);
+                bool test = doc.SetPrinter(printerName: "Brother TD-4420DN", fitPage: true);
+                doc.GetObject("productBarCode").Text = Lot.ProductName;
+                doc.GetObject("quantity").Text = $"{Lot.Quantity:#,##0} PCS";
+                doc.GetObject("orderId").Text = Lot.Order;
+                doc.GetObject("lotId").Text = $"#{Lot.ID}";
+                doc.GetObject("lotDate").Text = $"{Lot.Date:dd/MM/yyyy HH:mm}";
+                doc.GetObject("printedTime").Text = $"{DateTime.Now:dd/MM/yyyy HH:mm}";
+                doc.GetObject("printedBy").Text = $"by {App.CurrentUser.GetFullName().ToUpperInvariant()}";
+                doc.StartPrint(docName:"", PrintOptionConstants.bpoHighResolution);
+                doc.PrintOut(copyCount:1, PrintOptionConstants.bpoHighResolution);
+                doc.EndPrint();
+                doc.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            
         }
     }
 }

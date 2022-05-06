@@ -16,11 +16,30 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         {
             AddDeliveryInfo(section);
             AddItems(section, items);
+            AddSigningLine(section);
+        }
+
+
+        private void AddSigningLine(Section section)
+        {
+            Table signingLine = section.AddTable();
+
+            Unit width = Size.GetWidth(signingLine.Section);
+            signingLine.AddColumn(width*0.7);
+
+            Row headerRow = signingLine.AddRow();
+            signingLine.TopPadding = Size.TableCellPadding*20;
+            signingLine.BottomPadding = Size.TableCellPadding;
+            headerRow.Borders.Bottom.Width = 1;
+
+            AddHeader(headerRow.Cells[0], "Received By");
         }
 
         private void AddDeliveryInfo(Section section)
         {
-            section.AddParagraph(Address, CustomStyles.TableSubtitle);
+            section.AddParagraph("");
+            section.AddParagraph("Deliver To:", CustomStyles.Address);
+            section.AddParagraph(Address, CustomStyles.Address);
         }
 
         private void AddItems(Section section, DeliveryItem[] items)
@@ -97,7 +116,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         private void AddLastRowBorder(Table table)
         {
             Row lastRow = table.Rows[^1];
-            lastRow.Borders.Bottom.Width = 2;
+            lastRow.Borders.Bottom.Width = 1;
         }
 
         private void AlternateRowShading(Table table)

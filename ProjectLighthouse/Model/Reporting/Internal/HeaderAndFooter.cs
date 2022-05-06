@@ -20,7 +20,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             header.AddImage(new LogoImage().GetMigraDocFileName());
 
             header.AddTab();
-            header.AddText("Wixroyd International Ltd.");
+            header.AddText("Wixroyd Ltd.");
         }
 
         private void AddFooter(Section section)

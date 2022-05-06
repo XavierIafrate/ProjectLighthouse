@@ -30,12 +30,6 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         public void Add(Section section, DeliveryNote data)
         {
             section.AddParagraph($"Delivery Note: {data.Name}", StyleNames.Heading1);
-            //section.AddParagraph($"From {data.:ddd dd/MM/yyyy HH:mm} to {data.ToDate:ddd dd/MM/yyyy HH:mm}", StyleNames.Heading2);
-
-            //Table table = AddMetadataTable(section);
-
-            //AddDeliveryInfo(table, order);
-            //AddBorders(table);
         }
 
         public void Add(Section section, LoginReportData data)

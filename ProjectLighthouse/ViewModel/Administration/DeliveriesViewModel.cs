@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -184,17 +185,17 @@ namespace ProjectLighthouse.ViewModel
         {
             if (SelectedDeliveryNote != null && FilteredDeliveryItems != null)
             {
-                //ReportPdf reportService = new();
-                //DeliveryData reportData = new()
-                //{
-                //    Header = SelectedDeliveryNote,
-                //    Lines = FilteredDeliveryItems.ToArray()
-                //};
-                //string path = GetTempPdfPath();
+                ReportPdf reportService = new();
+                DeliveryData reportData = new()
+                {
+                    Header = SelectedDeliveryNote,
+                    Lines = FilteredDeliveryItems.ToArray()
+                };
+                string path = GetTempPdfPath();
 
-                //reportService.Export(path, reportData);
-                //reportService.OpenPdf(path);
-                PDFHelper.PrintDeliveryNote(SelectedDeliveryNote, FilteredDeliveryItems);
+                reportService.Export(path, reportData);
+                reportService.OpenPdf(path);
+                //PDFHelper.PrintDeliveryNote(SelectedDeliveryNote, FilteredDeliveryItems);
             }
         }
 

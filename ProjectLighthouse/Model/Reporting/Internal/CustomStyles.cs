@@ -15,6 +15,8 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         public const string LotAccepted = "LotAccepted";
         public const string LotRejected = "LotRejected";
 
+        public const string Address = "Address";
+
         public static void Define(Document doc)
         {
             Style LotQuarantinedStyle = doc.Styles.AddStyle(LotQuarantined, StyleNames.Normal);
@@ -96,6 +98,19 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             noRecords.ParagraphFormat.LeftIndent = Size.TableCellPadding;
             noRecords.ParagraphFormat.RightIndent = Size.TableCellPadding;
             noRecords.ParagraphFormat.Borders.Distance = Size.TableCellPadding;
+
+
+            Style address = doc.Styles.AddStyle(Address, StyleNames.Normal);
+            address.BaseStyle = StyleNames.Normal;
+            //heading2.ParagraphFormat.Shading.Color = Color.FromRgb(0, 0, 0);
+            address.ParagraphFormat.Font.Name = "Consolas";
+            address.ParagraphFormat.Font.Size = 12;
+            address.ParagraphFormat.Font.Color = Colors.Black;
+            address.ParagraphFormat.Font.Bold = false;
+            address.ParagraphFormat.SpaceBefore = 10;
+            //address.ParagraphFormat.LeftIndent = Size.TableCellPadding;
+            //address.ParagraphFormat.RightIndent = Size.TableCellPadding;
+            //address.ParagraphFormat.Borders.Distance = Size.TableCellPadding;
         }
     }
 }

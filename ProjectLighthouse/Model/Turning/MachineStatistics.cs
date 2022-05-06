@@ -82,25 +82,27 @@ namespace ProjectLighthouse.Model
 
         public void SetStatus()
         {
-
-            //Add Idle at some point
-
             if (SerialNumber == "UNAVAILABLE") // Powered down
             {
                 Status = "Offline";
                 return;
             }
 
-            List<string> errors = GetErrors();
-
-            foreach (string error in errors)
+            if (!string.IsNullOrEmpty(SystemMessages))
             {
-                if (error.ToUpper().Contains("SETTING"))
+                if (SystemMessages.ToUpper().Contains("WORK COUNTER FULL"))
+                {
+                    Status = "Idle";
+                    return;
+                }
+
+                if (SystemMessages.ToUpper().Contains("SETTING"))
                 {
                     Status = "Setting";
                     return;
                 }
-                if (error.ToUpper().Contains("ALARM"))
+
+                if (SystemMessages.ToUpper().Contains("ALARM"))
                 {
                     Status = "Breakdown";
                     return;
@@ -120,14 +122,19 @@ namespace ProjectLighthouse.Model
                 return;
             }
 
-            if (Availability == "AVAILABLE" && ControllerMode == "AUTOMATIC" && EmergencyStop == "ARMED")
+            if (Availability == "AVAILABLE" && ControllerMode == "AUTOMATIC" && EmergencyStop == "ARMED" && Execution == "ACTIVE")
             {
                 Status = "Running";
                 return;
             }
+
+            if(Block.Contains("MACHINEID"))
+            {
+                Status = "Idle";
+                return;
+            }
+
             return;
-
-
         }
 
 

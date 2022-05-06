@@ -8,7 +8,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class EmailHelper
     {
-        public void SendDailyRuntimeReport(List<User> to, AnalyticsHelper data)
+        public void SendDailyRuntimeReport(List<User> to, AnalyticsHelper data, DateTime? fromDate = null)
         {
             Model.Email email = new();
             foreach (User user in to)
@@ -23,7 +23,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     ));
             }
 
-            DateTime startingDate = DateTime.Today.AddDays(-1).AddHours(6);
+            DateTime startingDate;
+            if (fromDate != null)
+            {
+                startingDate = (DateTime)fromDate;
+            }
+            else
+            {
+                startingDate = DateTime.Today.AddDays(-1).AddHours(6);
+            }
 
             string message = data.GetDailyEmailMessage(startingDate);
 

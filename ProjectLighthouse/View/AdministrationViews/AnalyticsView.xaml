@@ -38,9 +38,6 @@
 
     <ScrollViewer HorizontalAlignment="Stretch">
         <StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
-
-            <!--<Button Click="Button_Click">Test</Button>-->
-
             <!--#region total parts made-->
 
             <StackPanel HorizontalAlignment="Center" Style="{StaticResource AnalyticsGroupContainer}">
@@ -74,10 +71,10 @@
                         Text="Runtime Report" />
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <Button
-                            Content="Send Dev Version"
                             Command="{Binding Path=RuntimeReportCommand}"
                             CommandParameter="test"
-                            Style="{StaticResource ModernGreenButtonTemplate}"/>
+                            Content="Send Dev Version"
+                            Style="{StaticResource ModernGreenButtonTemplate}" />
                         <Button
                             Command="{Binding Path=RuntimeReportCommand}"
                             CommandParameter="all"
@@ -85,7 +82,7 @@
                     </StackPanel>
                 </Grid>
             </Border>
-            
+
             <Border
                 Height="80"
                 Margin="0,10"

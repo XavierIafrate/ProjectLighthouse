@@ -44,7 +44,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     CycleTime = block.CycleTime,
                     ErrorMessages = block.ErrorMessages,
                     Messages = block.Messages,
-                    
                 };
 
                 if (i == numberOfDays)

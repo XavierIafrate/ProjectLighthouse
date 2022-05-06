@@ -56,7 +56,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 Requests = DatabaseHelper.Read<Request>();
                 MachinePerformance = DatabaseHelper.Read<MachineOperatingBlock>().OrderBy(x => x.StateEntered).ToList();
 
-                MachinePerformance.AddRange(GetLatheCurrentStates());
+                MachinePerformance.AddRange(GetLatheCurrentStates(MachinePerformance));
 
                 MachinePerformanceByDay = MachinePerformanceHelper.SplitBlocksIntoDays(MachinePerformance, 6);
 
@@ -64,7 +64,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 PopulateScheduleItems();
             }
 
-            public List<MachineOperatingBlock> GetLatheCurrentStates()
+            public List<MachineOperatingBlock> GetLatheCurrentStates(List<MachineOperatingBlock> data)
             {
                 List<MachineStatistics> lastKnownStates = new();
                 lastKnownStates = MachineStatsHelper.GetStats() ?? new();
@@ -73,7 +73,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 DateTime now = DateTime.Now;
                 foreach (MachineStatistics state in lastKnownStates)
                 {
-                    MachineOperatingBlock lastCompleteBlock = MachinePerformance.Last(s => s.MachineID == state.MachineID);
+                    MachineOperatingBlock lastCompleteBlock = data.Last(s => s.MachineID == state.MachineID);
                     incompleteBlocks.Add(new()
                     {
                         MachineID = state.MachineID,
@@ -175,7 +175,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                         List<MachineOperatingBlock> relevantOperatingData = operatingData.Where(x => DateWithinRange(x.StateEntered, date) && x.MachineID == lathe.Id).ToList();
 
-                        MachineOperatingBlocks = MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes:resolution);
+                         MachineOperatingBlocks = MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes:resolution);
                         OperatingData = new(relevantOperatingData);
 
                         TotalScrap = Lots.Where(x => x.IsReject).Sum(x => x.Quantity);
@@ -311,8 +311,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 List<OperatingPerformance.DayPerformance.DailyLathePerformance> latheOverview = new();
 
                 List<MachineOperatingBlock> data = DatabaseHelper.Read<MachineOperatingBlock>().OrderBy(x => x.StateEntered).ToList();
-                data.AddRange(Data.GetLatheCurrentStates());
-                data = MachinePerformanceHelper.SplitBlocksIntoDays(Data.MachinePerformanceByDay, hour: startingDate.Hour);
+                data.AddRange(Data.GetLatheCurrentStates(data));
+                data = MachinePerformanceHelper.SplitBlocksIntoDays(new(Data.MachinePerformanceByDay), hour: startingDate.Hour);
+
+
+                ////DEBUG ONLY
+                //data = data.Where(x => x.StateEntered.AddDays(5) > DateTime.Now).ToList();
+                //CSVHelper.WriteListToCSV(data, "split_blocks");
 
                 string htmlContent = "<article style='margin-top: 30px;'><ul style='width: 60%; min-width: 700px; margin: auto;list-style: none;padding: 0;'>";
 
@@ -425,15 +430,30 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public string GetLatheEmailContent_Analysis(OperatingPerformance.DayPerformance.DailyLathePerformance data)
             {
-                string result = "<h3>Analysis</h3><div style='width: 90%; margin: auto;'><ul style='padding: 0;'>";
+                string initialResult = "<h3>Analysis</h3><div style='width: 90%; margin: auto;'><ul style='padding: 0;'>";
+                string result = initialResult;
                 string colGood = "#009688";
                 string colWarn = "#F57C00";
                 string colBad = "#b71c1c";
 
 
-                if (data.OperatingData.Running >= 90)
+                if (data.OperatingData.Running > 99.5)
+                {
+                    result += GetBasicListItem($"{data.Lathe.FullName} had 100% runtime.", colGood);
+                }
+                else if (data.OperatingData.Running > 95)
+                {
+                    result += GetBasicListItem($"{data.Lathe.FullName} achieved over <strong>95%</strong> uptime.", colGood);
+
+                }
+                else if (data.OperatingData.Running > 90)
                 {
                     result += GetBasicListItem($"{data.Lathe.FullName} achieved over 90% uptime.", colGood);
+
+                }
+                else if (data.OperatingData.Running > 80)
+                {
+                    result += GetBasicListItem($"{data.Lathe.FullName} ran with over the 80% target.", colGood);
                 }
 
                 if (data.OperatingData.Setting * 0.24 > 1.5)
@@ -479,6 +499,48 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 foreach (MachineOperatingBlock majorBreakdown in majorBreakdowns)
                 {
                     result += GetErrorMessageListItem(majorBreakdown);
+                }
+
+                if (result == initialResult)
+                {
+                    if (data.MachineOperatingBlocks.Count == 0)
+                    {
+                        result += GetBasicListItem($"It appears there is no data to analyse...", colBad);
+                    }
+                    else if (data.MachineOperatingBlocks.Count == 1)
+                    {
+                        MachineOperatingBlock onlyData = data.MachineOperatingBlocks.First();
+                        result += GetBasicListItem($"The only state recorded was from {onlyData.StateEntered:HH:mm} to {onlyData.StateLeft:HH:mm} in state '{onlyData.State}'", colWarn);
+                    }
+                    else
+                    {
+                        if(data.OperatingData.Idle > 50)
+                        {
+                            if(data.OperatingData.Idle > 95)
+                            {
+                                result += GetBasicListItem("The machine was idle all day.", colWarn);
+                            }
+                            else
+                            {
+                                result += GetBasicListItem("The machine was idle most of the day.", colWarn);
+                            }
+                        }
+                        else if (data.OperatingData.Offline > 50)
+                        {
+                            if (data.OperatingData.Offline > 95)
+                            {
+                                result += GetBasicListItem("The machine was offline all day.", colWarn);
+                            }
+                            else
+                            {
+                                result += GetBasicListItem("The machine was offline most of the day.", colWarn);
+                            }
+                        }
+                        else
+                        {
+                            result += GetBasicListItem("No analysis available for this dataset.", colWarn);
+                        }
+                    }
                 }
 
                 result += "</ul></div>";

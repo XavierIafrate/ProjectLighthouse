@@ -3,6 +3,7 @@ using MigraDoc.Rendering;
 using ProjectLighthouse.Model.Reporting.Internal;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace ProjectLighthouse.Model.Reporting
@@ -114,7 +115,6 @@ namespace ProjectLighthouse.Model.Reporting
             return section;
         }
 
-
         private void AddContents(Section section, OrderPrintoutData data)
         {
             AddOrderMetadata(section, data.Order);
@@ -178,7 +178,16 @@ namespace ProjectLighthouse.Model.Reporting
 
         private void AddDeliveryItems(Section section, DeliveryItem[] items)
         {
-            new DeliveryItemsContent().Add(section, items);
+            //Aggregate
+            string[] unique = items.Select(x => x.Product).Distinct().ToArray();
+            DeliveryItem[] uniqueItems = new DeliveryItem[unique.Length];
+            for (int i = 0; i < unique.Length; i++)
+            {
+                uniqueItems[i] = items.Where(x => x.Product == unique[i]).First();
+                uniqueItems[i].QuantityThisDelivery = items.Where(x => x.Product == unique[i]).Sum(x => x.QuantityThisDelivery);
+            }
+
+            new DeliveryItemsContent().Add(section, uniqueItems);
         }
 
         #endregion

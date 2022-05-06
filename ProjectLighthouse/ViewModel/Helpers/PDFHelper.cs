@@ -156,7 +156,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static PdfDocument AppendScheduleForLathe(List<LatheManufactureOrder> orders, List<LatheManufactureOrderItem> items, Lathe lathe, PdfDocument doc)
         {
             items = items.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName).ToList();
-            orders = orders.OrderBy(n => n.StartDate).ToList();
+            orders = orders.OrderBy(n => n.StartDate).Take(Math.Min(4, orders.Count)).ToList();
 
             Dictionary<string, XRect> columns = new();
 
