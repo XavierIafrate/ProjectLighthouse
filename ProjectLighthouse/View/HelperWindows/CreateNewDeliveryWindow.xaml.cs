@@ -55,7 +55,6 @@ namespace ProjectLighthouse.View
                     QuantityThisDelivery = lot.Quantity,
                     LotID = lot.ID,
                     FromMachine = lot.FromMachine
-                    //QuantityToFollow = Math.Max(item.TargetQuantity - item.QuantityDelivered - item.Quantiy, (int)0)
                 });
             }
 
@@ -75,11 +74,11 @@ namespace ProjectLighthouse.View
 
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
-            if (itemsOnNewNote.Count == 8)
-            {
-                MessageBox.Show("Max 8 items on a delivery", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            //if (itemsOnNewNote.Count == 8)
+            //{
+            //    MessageBox.Show("Max 8 items on a delivery", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return;
+            //}
 
 
             if (undeliveredList.SelectedValue is not DeliveryItem move_item)

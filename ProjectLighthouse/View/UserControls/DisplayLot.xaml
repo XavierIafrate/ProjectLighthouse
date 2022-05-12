@@ -55,11 +55,11 @@
                     x:Name="EditButton"
                     Click="EditButton_Click"
                     Style="{StaticResource IconEditButton}" />
-                <Button Click="Button_Click"  Margin="0,2">
+                <!--<Button Click="Button_Click"  Margin="0,2">
                     <Button.Content>
                         <TextBlock Text="PRINT" FontSize="6"/>
                     </Button.Content>
-                </Button>
+                </Button>-->
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">

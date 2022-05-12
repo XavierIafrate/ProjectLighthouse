@@ -38,7 +38,7 @@ namespace ProjectLighthouse.Model
         public int CycleTime { get; set; }
         public int CuttingTime { get; set; }
 
-        public string SystemMessages { get; set; }
+        public string SystemMessages { get; set; } = "";
         private string status;
 
         public string Status
@@ -86,6 +86,11 @@ namespace ProjectLighthouse.Model
             {
                 Status = "Offline";
                 return;
+            }
+
+            if (SystemMessages == null)
+            {
+                SystemMessages = "";
             }
 
             if (!string.IsNullOrEmpty(SystemMessages))
