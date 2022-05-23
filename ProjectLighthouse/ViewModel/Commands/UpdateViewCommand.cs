@@ -26,72 +26,84 @@ namespace ProjectLighthouse.ViewModel.Commands
             if (parameter.ToString() == "Schedule")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new ScheduleViewModel();
                 viewModel.NavText = "Schedule";
             }
             else if (parameter.ToString() == "View Requests")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new RequestViewModel();
                 viewModel.NavText = "Requests";
             }
             else if (parameter.ToString() == "New Request")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new NewRequestViewModel();
                 viewModel.NavText = "New Request";
             }
             else if (parameter.ToString() == "Orders")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new OrderViewModel();
                 viewModel.NavText = "Manufacture Orders";
             }
             else if (parameter.ToString() == "Bar Stock")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new BarStockViewModel();
                 viewModel.NavText = "Bar Stock";
             }
             else if (parameter.ToString() == "Drawings")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new DrawingBrowserViewModel();
                 viewModel.NavText = "Technical Drawings";
             }
             else if (parameter.ToString() == "Check Sheets")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new CheckSheetsViewModel();
                 viewModel.NavText = "Part Check Sheets";
             }
             else if (parameter.ToString() == "Calibration")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new CalibrationViewModel();
                 viewModel.NavText = "Calibration";
             }
             else if (parameter.ToString() == "Deliveries")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new DeliveriesViewModel();
                 viewModel.NavText = "Deliveries";
             }
             else if (parameter.ToString() == "Dev Area / Debug")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DebugViewModel();
                 viewModel.NavText = "Dev Area";
             }
             else if (parameter.ToString() == "Manage Users")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ManageUsersViewModel();
                 viewModel.NavText = "Manage Users";
             }
             else if (parameter.ToString() == "Analytics")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new AnalyticsViewModel();
                 viewModel.NavText = "Analytics";
             }

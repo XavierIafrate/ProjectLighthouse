@@ -53,7 +53,7 @@
                         <lvc:Axis x:Name="AllTimeParts_TimeAxis" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
-                        <lvc:Axis x:Name="AllTimeParts_CountAxis" MinValue="0" />
+                        <lvc:Axis x:Name="AllTimeParts_CountAxis" />
                     </lvc:CartesianChart.AxisY>
                 </lvc:CartesianChart>
             </StackPanel>

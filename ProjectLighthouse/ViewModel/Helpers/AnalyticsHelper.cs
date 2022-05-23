@@ -252,14 +252,21 @@ namespace ProjectLighthouse.ViewModel.Helpers
             private void GetChartData()
             {
                 Series = new();
+                
+                int cutoffYear = DateTime.Today.Year - 1;
                 List<IGrouping<DateTime, Lot>> chartLots = Data.Lots
-                    .Where(x => x.IsDelivered)
+                    .Where(x => x.IsDelivered && x.Date.Year >= cutoffYear)
                     .OrderBy(x => x.Date)
                     .GroupBy(x => x.Date.Date)
                     .ToList();
 
+
+
                 ChartValues<DateTimePoint> chartData = new();
-                int total = 0;
+                int total = Data.Lots
+                    .Where(x => x.IsDelivered && x.Date.Year < cutoffYear)
+                    .Sum(x => x.Quantity);
+
                 for (int i = 0; i < chartLots.Count; i++)
                 {
                     total += chartLots[i].Sum(x => x.Quantity);

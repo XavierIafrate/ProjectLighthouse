@@ -195,7 +195,6 @@ namespace ProjectLighthouse.ViewModel
 
                 reportService.Export(path, reportData);
                 reportService.OpenPdf(path);
-                //PDFHelper.PrintDeliveryNote(SelectedDeliveryNote, FilteredDeliveryItems);
             }
         }
 

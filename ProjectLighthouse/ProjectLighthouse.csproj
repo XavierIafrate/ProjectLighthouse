@@ -44,6 +44,7 @@
   <ItemGroup>
     <None Remove="Resources\GIF\fireworks.gif" />
     <None Remove="Resources\Lighthouse_dark_PDF.png" />
+    <None Remove="Resources\MiB_Logo_Stacked_Colour.jpg" />
     <None Remove="Resources\RGB_wixroyd_ant_logo_red.png" />
     <None Remove="Resources\snowdonia.jpg" />
     <None Remove="Resources\SplashScreen.png" />
@@ -101,6 +102,9 @@
     </Resource>
     <Resource Include="Resources\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\MiB_Logo_Stacked_Colour.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\RGB_wixroyd_ant_logo_red.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

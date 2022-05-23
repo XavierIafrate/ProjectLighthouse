@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-    d:DesignHeight="850"
+    d:DesignHeight="1288"
     d:DesignWidth="1701"
     Background="{StaticResource Background}"
     mc:Ignorable="d">
@@ -213,9 +213,7 @@
             Visibility="{Binding Path=CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel>
                 <StackPanel Margin="25,10">
-                    <Grid
-                        MaxWidth="700"
-                        Visibility="{Binding Path=LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
+                    <Grid MaxWidth="700" Visibility="{Binding Path=LiveInfoVis, UpdateSourceTrigger=PropertyChanged}">
                         <Border
                             d:Background="Black"
                             Background="{Binding DisplayStats, Converter={StaticResource liveBadgeColour}}"
@@ -295,8 +293,11 @@
                             </TextBlock>
                         </Grid>
                     </Grid>
-                    <Grid x:Name="OrderCardGrid" MaxWidth="700" Margin="0,15,0,50">
-                        <Border CornerRadius="10" Background="White">
+                    <Grid
+                        x:Name="OrderCardGrid"
+                        MaxWidth="700"
+                        Margin="0,15,0,50">
+                        <Border Background="White" CornerRadius="10">
                             <Border.Effect>
                                 <DropShadowEffect
                                     BlurRadius="30"
@@ -654,7 +655,12 @@
                         </StackPanel>
                     </Grid>
                 </StackPanel>
-                <Grid Height="100" />
+                <Grid Height="100">
+                    <Image
+                        Width="200"
+                        RenderOptions.BitmapScalingMode="Fant"
+                        Source="/Resources/MiB_Logo_Stacked_Colour.jpg" />
+                </Grid>
             </StackPanel>
         </ScrollViewer>
 

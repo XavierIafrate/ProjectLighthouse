@@ -276,6 +276,13 @@
                         Text="Watch out for bugs!" />
                 </StackPanel>
             </StackPanel>
+            <Image
+                Visibility="{Binding MiBVis}"
+                HorizontalAlignment="Left"
+                Margin="30,0"
+                    Width="150"
+                    RenderOptions.BitmapScalingMode="Fant"
+                    Source="/Resources/MiB_Logo_Stacked_Colour.jpg" />
             <Viewbox
                 MaxHeight="70"
                 Margin="50,20"

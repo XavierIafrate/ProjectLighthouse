@@ -8,20 +8,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class EmailHelper
     {
-        public void SendDailyRuntimeReport(List<User> to, AnalyticsHelper data, DateTime? fromDate = null)
+        public void SendDailyRuntimeReport(List<EmailRecipient> to, AnalyticsHelper data, DateTime? fromDate = null)
         {
             Model.Email email = new();
-            foreach (User user in to)
-            {
-                if (string.IsNullOrEmpty(user.EmailAddress))
-                {
-                    continue;
-                }
-                email.TOs.Add(new EmailRecipient(
-                    email: user.EmailAddress,
-                    name: user.GetFullName()
-                    ));
-            }
+            email.TOs = to;
 
             DateTime startingDate;
             if (fromDate != null)
@@ -140,6 +130,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
 
+
+
+
+
             EmailRecipient RaisedBy = new(
                 email: personWhoRaised.EmailAddress,
                 name: personWhoRaised.GetFullName());
@@ -147,6 +141,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
             if (!email.TOs.Contains(RaisedBy) && personWhoRaised.ReceivesNotifications)
             {
                 email.CCs.Add(RaisedBy);
+            }
+
+
+            if (email.TOs.Count == 0)
+            {
+                return;
             }
 
             string subject = $"New Request Raised - {request.Product}";

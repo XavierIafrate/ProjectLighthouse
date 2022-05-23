@@ -110,6 +110,8 @@ namespace ProjectLighthouse.ViewModel
             SelectedProduct = new();
             SelectedGroup = "Live";
             PopulateMachineInsights();
+            CheckForCancelledOrders();
+
         }
 
         private void PopulateMachineInsights()
@@ -303,6 +305,20 @@ namespace ProjectLighthouse.ViewModel
             OnPropertyChanged(nameof(FilteredList));
             OnPropertyChanged(nameof(AddSpecialVisibility));
             LoadGraph();
+
+
+
+        }
+
+        private void CheckForCancelledOrders()
+        {
+            foreach (TurnedProduct product in TurnedProducts)
+            {
+                if (product.LighthouseGuaranteedQuantity > product.QuantityOnSO)
+                {
+                    Debug.WriteLine($"{product.ProductName} - {product.LighthouseGuaranteedQuantity} on Lighthouse, {product.QuantityOnSO} on sales order");
+                }
+            }
         }
 
         private void LoadGraph()

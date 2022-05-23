@@ -35,6 +35,18 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private Visibility miBVis = Visibility.Collapsed;
+        public Visibility MiBVis
+        {
+            get { return miBVis; }
+            set 
+            { 
+                miBVis = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public Visibility DataRefreshBadgeVis { get; set; }
 
         private BaseViewModel _selectedViewModel;

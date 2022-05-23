@@ -195,15 +195,16 @@ namespace ProjectLighthouse.ViewModel
 
         private void SetAgenda()
         {
+            int numDays = 21;
             Agenda = new();
             List<ScheduleItem> ordersOnAgenda = new();
             ordersOnAgenda.AddRange(ActiveOrders
-                .Where(x => x.StartDate < DateTime.Now.AddDays(14))
+                .Where(x => x.StartDate < DateTime.Now.AddDays(numDays))
                 .ToList());
             ordersOnAgenda.AddRange(PlannedResearch);
             ordersOnAgenda.AddRange(PlannedServices);
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < numDays; i++)
             {
                 DateTime date = DateTime.Today.AddDays(i);
                 Agenda.Add(new CalendarDay(date, ordersOnAgenda.Where(x => x.StartDate.Date == date).ToList()));

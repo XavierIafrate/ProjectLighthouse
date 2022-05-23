@@ -1,12 +1,9 @@
-﻿using ProjectLighthouse.Model;
+﻿using IO.ClickSend.ClickSend.Model;
 using ProjectLighthouse.Model.Logistics;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -48,46 +45,23 @@ namespace ProjectLighthouse.ViewModel
 
         public void SendRuntimeReport(bool test)
         {
-            List<User> to = new();
-
-            List<User> allUsers = DatabaseHelper.Read<User>();
-
-            to.Add(allUsers.Find(x => x.UserName == "xav"));
-            if (!test)
-            {
-                to.Add(allUsers.Find(x => x.UserName == "anthony"));
-                to.Add(allUsers.Find(x => x.UserName == "richard"));
-            }
-
             EmailHelper emailHelper = new();
 
-            //emailHelper.SendDailyRuntimeReport(to, new AnalyticsHelper(), DateTime.Today.AddDays(-4).AddHours(6));
-            //emailHelper.SendDailyRuntimeReport(to, new AnalyticsHelper(), DateTime.Today.AddDays(-3).AddHours(6));
-            //emailHelper.SendDailyRuntimeReport(to, new AnalyticsHelper(), DateTime.Today.AddDays(-2).AddHours(6));
-            emailHelper.SendDailyRuntimeReport(to, new AnalyticsHelper());
-        }
-
-        private static bool DateWithinRange(DateTime inputDate, DateTime startingDate)
-        {
-            double diff = (inputDate - startingDate).TotalHours;
-            return diff >= 0 && diff < 24;
-        }
-
-        private static string GetTempPdfPath()
-        {
-            return System.IO.Path.GetTempFileName() + ".pdf";
-        }
-
-        public static int GetIso8601WeekOfYear(DateTime time) // shamelessly stolen
-        {
-            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
-            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            List<EmailRecipient> emailRecipients = new();
+            emailRecipients.Add(new(email: "x.iafrate@wixroydgroup.com", name: "Xavier Iafrate"));
+            if (!test)
             {
-                time = time.AddDays(3);
+                emailRecipients.Add(new(email: "anthony.iafrate@automotioncomponents.com", name: "Anthony Iafrate"));
+                emailRecipients.Add(new(email: "r.budd@wixroydgroup.com", name: "Richard Budd"));
+                emailRecipients.Add(new(email: "m.iafrate@wixroyd.com", name: "Marcus Iafrate"));
             }
 
-            // Return the week of our adjusted day
-            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Tuesday);
+            if (DateTime.Today.DayOfWeek == DayOfWeek.Monday)
+            {
+                emailHelper.SendDailyRuntimeReport(emailRecipients, new AnalyticsHelper(), DateTime.Today.AddDays(-3).AddHours(6));
+                emailHelper.SendDailyRuntimeReport(emailRecipients, new AnalyticsHelper(), DateTime.Today.AddDays(-2).AddHours(6));
+            }
+            emailHelper.SendDailyRuntimeReport(emailRecipients, new AnalyticsHelper());
         }
     }
 }
