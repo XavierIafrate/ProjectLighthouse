@@ -169,6 +169,11 @@
                             Content="Manage Users"
                             Style="{StaticResource ManageUsers_MenuItem}" />
                         <ToggleButton
+                            x:Name="manage_lathes_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Lathe Config"
+                            Content="Lathe Config"/>
+                        <ToggleButton
                             x:Name="debug_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Dev Area / Debug"

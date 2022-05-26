@@ -100,6 +100,13 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new ManageUsersViewModel();
                 viewModel.NavText = "Manage Users";
             }
+            else if (parameter.ToString() == "Lathe Config")
+            {
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new LatheViewModel();
+                viewModel.NavText = "Lathe Configuration";
+            }
             else if (parameter.ToString() == "Analytics")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;

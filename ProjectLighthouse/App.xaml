@@ -80,6 +80,10 @@
             <DataTemplate DataType="{x:Type vms:DebugViewModel}">
                 <views:DebugView />
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vms:LatheViewModel}">
+                <views:LatheView />
+            </DataTemplate>
             <!--#endregion-->
 
         </ResourceDictionary>
