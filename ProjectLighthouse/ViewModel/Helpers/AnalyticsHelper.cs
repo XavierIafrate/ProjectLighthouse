@@ -602,11 +602,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 if (date.DayOfWeek >= DayOfWeek.Monday && date.DayOfWeek < DayOfWeek.Friday) // Mon-thu
                 {
-                    return date.Hour < 6 || date.Hour >= 22;
+                    return date.Hour <= 6 || date.Hour >= 22;
                 }
                 else if (date.DayOfWeek == DayOfWeek.Friday)
                 {
-                    return date.Hour < 6 || date.Hour >= 17;
+                    return date.Hour <= 6 || date.Hour >= 17;
                 }
                 else
                 {

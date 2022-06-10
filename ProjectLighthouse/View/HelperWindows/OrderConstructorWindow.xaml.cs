@@ -424,7 +424,7 @@ namespace ProjectLighthouse.View
                 return matches.First();
             }
 
-            matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family).ToList();
+            matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && string.IsNullOrEmpty(d.ToolingGroup)).ToList();
             if (matches.Count > 0)
             {
                 matches = matches.OrderByDescending(d => d.Revision).ToList();

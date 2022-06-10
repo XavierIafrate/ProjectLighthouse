@@ -5,13 +5,75 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <StackPanel>
-        <TextBlock Text="Lathes" />
-        <ListView ItemsSource="{Binding Lathes}">
-            
-        </ListView>
+    <StackPanel Margin="10" d:Background="White">
+        <TextBlock Style="{StaticResource title}" Text="Lathes" />
+        <Button Content="+ Lathe"/>
+
+        <!--<TextBlock Style="{StaticResource title}" Text="Title" />
+        <TextBlock Style="{StaticResource subtitle}" Text="subtitle" />
+        <TextBlock Style="{StaticResource subsubtitle}" Text="subsubtitle" />
+        <TextBlock Style="{StaticResource statement}" Text="statement" />
+        <TextBlock Style="{StaticResource annotation}" Text="annotation" />-->
+
+
+        <ItemsControl Background="White" ItemsSource="{Binding Lathes}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Margin="5"
+                        Padding="5"
+                        Background="White"
+                        BorderBrush="{StaticResource DisabledElement}"
+                        BorderThickness="2"
+                        CornerRadius="8">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource subtitle}" Text="{Binding FullName}" />
+                            <TextBox Style="{StaticResource DefaultTextBox}" Tag="IP Address"/>
+                            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Controller Reference"/>
+                            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Max Length"/>
+                            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Max Diameter"/>
+                            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Serial Number"/>
+                            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Make"/>
+                            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Model"/>
+                            <TextBlock Style="{StaticResource section}" Text="Maintenance Plan" />
+                            <ListView ItemsSource="{Binding Maintenance}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="20,10">
+                                            <TextBlock Style="{StaticResource statement}" Text="{Binding}" />
+                                            <StackPanel HorizontalAlignment="Right">
+                                                <TextBlock
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource statement}"
+                                                    Text="{Binding IntervalMonths, StringFormat='{}Every {0} Months'}" />
+                                                <TextBlock
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource statement}"
+                                                    Text="{Binding StartingDate, StringFormat='{}Starting from {0:dd/MM/yyyy}'}" />
+                                                <TextBlock
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource statement}"
+                                                    Text="{Binding LastCompleted, StringFormat='{}Last completed {0:dd/MM/yyyy}'}" />
+                                                <TextBlock
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource statement}"
+                                                    Text="{Binding LastCompleted, StringFormat='{}Next Due {0:dd/MM/yyyy}'}" />
+
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                        </StackPanel>
+
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </StackPanel>
 </UserControl>

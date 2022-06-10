@@ -172,7 +172,8 @@
                             x:Name="manage_lathes_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Lathe Config"
-                            Content="Lathe Config"/>
+                            Content="Lathe Config"
+                            Style="{StaticResource Lathe_MenuItem}" />
                         <ToggleButton
                             x:Name="debug_button"
                             Command="{Binding UpdateViewCommand}"
@@ -282,12 +283,12 @@
                 </StackPanel>
             </StackPanel>
             <Image
-                Visibility="{Binding MiBVis}"
-                HorizontalAlignment="Left"
+                Width="150"
                 Margin="30,0"
-                    Width="150"
-                    RenderOptions.BitmapScalingMode="Fant"
-                    Source="/Resources/MiB_Logo_Stacked_Colour.jpg" />
+                HorizontalAlignment="Left"
+                RenderOptions.BitmapScalingMode="Fant"
+                Source="/Resources/MiB_Logo_Stacked_Colour.jpg"
+                Visibility="{Binding MiBVis}" />
             <Viewbox
                 MaxHeight="70"
                 Margin="50,20"

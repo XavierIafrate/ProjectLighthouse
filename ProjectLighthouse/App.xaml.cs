@@ -1,18 +1,16 @@
 ﻿using ProjectLighthouse.Model;
-using ProjectLighthouse.ViewModel;
-using System;
-using System.Threading;
-using System.Windows;
-using System.Timers;
-using ProjectLighthouse.ViewModel.Helpers;
-using System.Diagnostics;
 using ProjectLighthouse.View;
-using System.IO;
+using ProjectLighthouse.ViewModel;
+using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Data.Odbc;
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
 
 namespace ProjectLighthouse
 {
-    public enum Skin { Classic, Dark }
     public partial class App : Application
     {
         public static User CurrentUser { get; set; }
@@ -20,7 +18,6 @@ namespace ProjectLighthouse
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
         public static DateTime LastDataRefresh { get; set; } = DateTime.MinValue;
-        public static Skin Skin { get; set; } = Skin.Dark;
         public static System.Timers.Timer DataRefreshTimer { get; set; }
         public static bool DevMode { get; set; }
 
@@ -29,14 +26,7 @@ namespace ProjectLighthouse
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            
-            //this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
-
-            DatabaseHelper.DatabasePath = Environment.UserName == "xavier"
-                               ? @"C:\Users\xavie\Documents\lighthouse_test\manufactureDB.db3"
-                               : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
-
-            DevMode = Debugger.IsAttached;
+            this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 
             ROOT_PATH = Environment.UserName == "xavier"
                 ? @"C:\Users\xavie\Documents\lighthouse_test\"
@@ -48,6 +38,9 @@ namespace ProjectLighthouse
                 Application.Current.Shutdown();
                 return;
             }
+
+            DevMode = Debugger.IsAttached;
+            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
 
             string workstation = String.Empty;
             try
@@ -86,8 +79,62 @@ namespace ProjectLighthouse
             }
         }
 
+
+        //private void CrashApplication()
+        //{
+        //    int a = 1;
+        //    int b = 0;
+        //    int _ = a / b;
+
+        //}
+
+        //void TestODBC()
+        //{
+
+        //    OdbcConnection DbConnection = new(HanaCreds.GetConnString());
+        //    DbConnection.Open();
+
+        //    //DataTable tables = DbConnection.GetSchema("Tables");
+
+        //    //foreach (object table in tables.Rows)
+        //    //{
+        //    //    Debug.WriteLine(table.ToString());
+        //    //}
+
+        //    OdbcCommand DbCommand = DbConnection.CreateCommand();
+        //    DbCommand.CommandText = $"SELECT \"SlpName\" FROM WIXROYD_UAT2.OSLP";
+        //    OdbcDataReader DbReader = DbCommand.ExecuteReader();
+
+        //    int fCount = DbReader.FieldCount;
+        //    Debug.Write(":");
+        //    for (int i = 0; i < fCount; i++)
+        //    {
+        //        string fName = DbReader.GetName(i);
+        //        Debug.Write(fName + ":");
+        //    }
+        //    Debug.WriteLine("");
+
+        //    while (DbReader.Read())
+        //    {
+        //        Debug.Write(":");
+        //        for (int i = 0; i < fCount; i++)
+        //        {
+
+        //            string col = DbReader.GetString(i) ?? "Error";
+
+        //            Debug.Write(col + ":");
+        //        }
+        //        Debug.WriteLine("");
+        //    }
+
+        //    DbReader.Close();
+        //    DbCommand.Dispose();
+        //    DbConnection.Close();
+
+        //}
+
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-        private string? GetWorkstationLogistics()
+        private static string? GetWorkstationLogistics()
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             string jsonLogisticsMachines = File.ReadAllText($"{ROOT_PATH}/PackingStations.json");
@@ -127,7 +174,16 @@ namespace ProjectLighthouse
             }
             ShowError errorWindow = new() { Error = e };
             errorWindow.NotifyPropertyChanged();
+            RecordError(e);
+
             errorWindow.ShowDialog();
+        }
+
+        static void RecordError(System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            string errorJson = Newtonsoft.Json.JsonConvert.SerializeObject(e.Exception);
+            string filename = DateTime.Now.ToString("s").Replace(':', '_');
+            File.WriteAllText($"{ROOT_PATH}/errors/{filename}.json", errorJson);
         }
     }
 }

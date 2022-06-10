@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model
 {
@@ -17,6 +18,9 @@ namespace ProjectLighthouse.Model
         public int SoftMinDiameter { get; set; }    
         public int SoftMaxDiameter { get; set; }
         public double PartOff { get; set; }
+
+        [Ignore]
+        public List<MaintenanceEvent> Maintenance { get; set; }
 
         public override string ToString()
         {

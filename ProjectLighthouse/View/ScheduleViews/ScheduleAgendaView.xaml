@@ -30,15 +30,15 @@
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
             <StackPanel Orientation="Horizontal">
-                <Button
+                <!--<Button
                     Command="{Binding FirebaseSyncCommand}"
                     Style="{StaticResource FirebaseButton}"
-                    Visibility="{Binding AddButtonsVis}" />
-                <Button
+                    Visibility="{Binding AddButtonsVis}" />-->
+                <!--<Button
                     Command="{Binding AutoScheduleCommand}"
                     Content="Auto Schedule"
                     Style="{StaticResource BlueButton}"
-                    Visibility="{Binding AddButtonsVis}" />
+                    Visibility="{Binding AddButtonsVis}" />-->
                 <Button
                     Command="{Binding AddResearchCommand}"
                     Content="+ Research"

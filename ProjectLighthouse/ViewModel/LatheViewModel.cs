@@ -1,11 +1,9 @@
-﻿using ProjectLighthouse.Model;
+﻿
+
+using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -22,6 +20,18 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private List<MaintenanceEvent> maintenanceEvents;
+
+        public List<MaintenanceEvent> MaintenanceEvents
+        {
+            get { return maintenanceEvents; }
+            set 
+            { 
+                maintenanceEvents = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public LatheViewModel()
         {
@@ -31,6 +41,14 @@ namespace ProjectLighthouse.ViewModel
         private void GetData()
         {
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
+            MaintenanceEvents = DatabaseHelper.Read<MaintenanceEvent>().ToList();
+
+            foreach (Lathe lathe in Lathes)
+            {
+                lathe.Maintenance = MaintenanceEvents
+                    .Where(x => x.Lathe == lathe.Id)
+                    .ToList();
+            }
         }
     }
 }
