@@ -14,8 +14,6 @@ namespace ProjectLighthouse.View.UserControls
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //public CompleteOrder completeOrder { get; set; }
-
         public LatheManufactureOrder orderObject
         {
             get { return (LatheManufactureOrder)GetValue(orderObjectProperty); }

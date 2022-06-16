@@ -167,16 +167,25 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public class DailyLathePerformance
                 {
-                    public DailyLathePerformance(Lathe lathe, DateTime date, List<MachineOperatingBlock> operatingData,  int resolution = 30)
+                    public DailyLathePerformance(Lathe lathe, DateTime date, List<MachineOperatingBlock> operatingData, int resolution = 30, bool debug = false)
                     {
                         Lathe = lathe;
                         Lots = Data.Lots.Where(x => x.DateProduced.Date == date.Date && x.FromMachine == Lathe.Id).ToList();
                         Orders = Data.ScheduleItems.Where(x => x.StartDate.Date == date.Date && x.AllocatedMachine == Lathe.Id).ToList();
 
+                        if (debug) CSVHelper.WriteListToCSV(operatingData.Where(x => x.MachineID == lathe.Id).ToList(), "allLatheOperatingData");
+
                         List<MachineOperatingBlock> relevantOperatingData = operatingData.Where(x => DateWithinRange(x.StateEntered, date) && x.MachineID == lathe.Id).ToList();
 
-                         MachineOperatingBlocks = MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes:resolution);
-                        OperatingData = new(relevantOperatingData);
+                        if(debug) CSVHelper.WriteListToCSV(relevantOperatingData, "relevantOperatingData");
+
+                        MachineOperatingBlocks = MachinePerformanceHelper.Backfill(relevantOperatingData, date.Hour);
+                        //MachineOperatingBlocks = MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes: resolution);
+                        //if (debug) CSVHelper.WriteListToCSV(MachineOperatingBlocks, "after_convolution");
+
+                        OperatingData = new(MachineOperatingBlocks);
+                        if (debug) CSVHelper.WriteListToCSV(MachinePerformanceHelper.Backfill(relevantOperatingData, date.Hour), "after_backfill");
+
 
                         TotalScrap = Lots.Where(x => x.IsReject).Sum(x => x.Quantity);
                         TotalGood = Lots.Where(x => x.IsAccepted).Sum(x => x.Quantity);
@@ -317,10 +326,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 List<OperatingPerformance.DayPerformance.DailyLathePerformance> latheOverview = new();
 
-                List<MachineOperatingBlock> data = DatabaseHelper.Read<MachineOperatingBlock>().OrderBy(x => x.StateEntered).ToList();
+                List<MachineOperatingBlock> data = DatabaseHelper.Read<MachineOperatingBlock>()
+                    .Where(x => (x.StateEntered - DateTime.Now).TotalDays < 30)
+                    .OrderBy(x => x.StateEntered)
+                    .ToList();
+
                 data.AddRange(Data.GetLatheCurrentStates(data));
                 data = MachinePerformanceHelper.SplitBlocksIntoDays(new(Data.MachinePerformanceByDay), hour: startingDate.Hour);
-
 
                 ////DEBUG ONLY
                 //data = data.Where(x => x.StateEntered.AddDays(5) > DateTime.Now).ToList();
@@ -330,7 +342,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 for (int i = 0; i < Data.Lathes.Count; i++)
                 {
-                    latheOverview.Add(new(Data.Lathes[i], startingDate, data, resolution:1));
+                    latheOverview.Add(new(Data.Lathes[i], startingDate, data, resolution:1)); //true
                 }
 
                 foreach (OperatingPerformance.DayPerformance.DailyLathePerformance lathe in latheOverview)
@@ -572,24 +584,19 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     message = $"The machine encountered an error within working hours, from {errorBlock.StateEntered:HH:mm} to {errorBlock.StateLeft:HH:mm}.";
                 }
 
-                if (!string.IsNullOrEmpty(errorBlock.ErrorMessages))
+                if (errorBlock.GetListOfErrors().Count > 0)
                 {
-                    message += " Here are the error messages:";
+                    message += " Here are the error message(s):";
                 }
                 string result = $"<li style='padding: 10px; '><p style='margin: 0;padding: 0;color: #b71c1c;'>{message}</p>";
-                if (!string.IsNullOrEmpty(errorBlock.ErrorMessages))
+                if (errorBlock.GetListOfErrors().Count > 0)
                 {
-                    List<string> errors = errorBlock.ErrorMessages.Split(";").ToList();
+                    List<string> errors = errorBlock.GetListOfErrors();
 
                     result += "<div style='margin-left: 5%; width: fit-content; padding: 10px;'><ul style='list-style: square; font-size: 10pt; font-family: monospace; color: #333; margin-top: 5px;'>";
                     foreach (string error in errors)
                     {
-                        string errorText = error.Trim().Replace("\t", " ");
-                        if (string.IsNullOrWhiteSpace(errorText))
-                        {
-                            continue;
-                        }
-                        result += $"<li><p style='margin: 0; padding: 0;'>{errorText}</p></li>";
+                        result += $"<li><p style='margin: 0; padding: 0;'>{error}</p></li>";
                     }
                     result += "</ul></div>";
                 }

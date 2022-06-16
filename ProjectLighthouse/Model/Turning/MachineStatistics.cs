@@ -115,7 +115,7 @@ namespace ProjectLighthouse.Model
             }
 
             // Running, Setting, Breakdown, Offline
-            if (ControllerMode.Contains("MANUAL") || SystemMessages.ToUpper().Contains("SETTING") || SystemMessages.ToUpper().Contains("PAUSE SIGNAL ON"))
+            if (ControllerMode.Contains("MANUAL") || SystemMessages.ToUpper().Contains("SETTING")) // || SystemMessages.ToUpper().Contains("PAUSE SIGNAL ON")
             {
                 Status = "Setting";
                 return;

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectLighthouse.Model
 {
@@ -17,7 +19,23 @@ namespace ProjectLighthouse.Model
 
         public int GetCalculatedPartsProduced()
         {
-            return State != "Running" ? 0 : (int)Math.Floor(SecondsElapsed / CycleTime);
+            return State != "Running" ? 0 : (int)Math.Floor(SecondsElapsed / (CycleTime < 10 ? 120 : CycleTime));
+        }
+
+        public List<string> GetListOfErrors()
+        {
+            List<string> results = ErrorMessages.Split(";").ToList();
+            List<string> cleanedResults = new();
+            foreach (string result in results)
+            {
+                cleanedResults.Add(result.Trim().Replace("\t", " "));
+            }
+
+            return cleanedResults
+                .Where(
+                    x => !x.Contains("T02 Auto operation pause signal ON") 
+                            && !string.IsNullOrWhiteSpace(x))
+                .ToList();
         }
     }
 }

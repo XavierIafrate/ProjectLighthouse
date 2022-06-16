@@ -83,7 +83,7 @@
                 </Grid>
             </Border>
 
-            <Border
+            <!--<Border
                 Height="80"
                 Margin="0,10"
                 Background="{StaticResource Surface}"
@@ -98,9 +98,9 @@
                         Command="{Binding Path=DownloadPackingDataCommand}"
                         Content="Download" />
                 </Grid>
-            </Border>
+            </Border>-->
 
-            <Grid>
+            <!--<Grid>
                 <Rectangle Fill="Black" />
                 <StackPanel Margin="30,15">
                     <TextBlock
@@ -118,12 +118,12 @@
                     Margin="20,5"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
-                    <!--
+                    --><!--
                         Command="{Binding GenerateReportCommand}"
                         CommandParameter="daily"
                         Command="{Binding GenerateReportCommand}"
                         CommandParameter="weekly"
-                    -->
+                    --><!--
                     <Button
                         Margin="0,0,5,0"
                         Content="DAILY REPORT [coming soon]"
@@ -135,10 +135,10 @@
                         IsEnabled="False"
                         Style="{StaticResource SentryDownloadButton}" />
                 </StackPanel>
-            </Grid>
+            </Grid>-->
 
             <Grid Height="30" />
-            <TextBlock Style="{StaticResource subtitle}" Text="Machine Performance" />
+            <!--<TextBlock Style="{StaticResource subtitle}" Text="Machine Performance" />
             <StackPanel DataContext="{Binding Analytics.Performance}">
                 <ItemsControl HorizontalAlignment="Stretch" ItemsSource="{Binding Performance}">
                     <ItemsControl.ItemTemplate>
@@ -147,7 +147,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </StackPanel>
+            </StackPanel>-->
         </StackPanel>
     </ScrollViewer>
 </UserControl>

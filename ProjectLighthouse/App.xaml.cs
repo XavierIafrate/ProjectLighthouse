@@ -40,7 +40,7 @@ namespace ProjectLighthouse
             }
 
             DevMode = Debugger.IsAttached;
-            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
+            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB.db3";
 
             string workstation = String.Empty;
             try
@@ -174,7 +174,11 @@ namespace ProjectLighthouse
             }
             ShowError errorWindow = new() { Error = e };
             errorWindow.NotifyPropertyChanged();
-            RecordError(e);
+
+            if (!App.DevMode)
+            {
+                RecordError(e);
+            }
 
             errorWindow.ShowDialog();
         }

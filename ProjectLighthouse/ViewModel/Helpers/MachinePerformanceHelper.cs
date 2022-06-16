@@ -111,5 +111,81 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             return result;
         }
+
+        public static List<MachineOperatingBlock> Backfill(List<MachineOperatingBlock> blocks, int? clampHour = null)
+        {
+            List<MachineOperatingBlock> results = new();
+
+            if (blocks == null || blocks.Count == 0)
+            {
+                return results;
+            }
+
+            if (clampHour != null)
+            {
+                MachineOperatingBlock firstBlock = blocks.First();
+                DateTime firstBlockStarts = firstBlock.StateEntered;
+
+                if (firstBlockStarts.Hour != clampHour && firstBlockStarts.Minute != 0 && firstBlockStarts.Second != 0)
+                {
+                    results.Add(new()
+                    {
+                        StateEntered = firstBlock.StateEntered.Date.AddHours((double)clampHour),
+                        StateLeft = firstBlock.StateEntered,
+                        State = "Unknown",
+                        MachineID = firstBlock.MachineID,
+                        MachineName = firstBlock.MachineName,
+                        SecondsElapsed = (firstBlock.StateEntered - firstBlock.StateEntered.Date.AddHours((double)clampHour)).TotalSeconds
+                    });
+                }
+            }
+            if (blocks.Count != 1)
+            {
+                for (int i = 0; i < blocks.Count - 1; i++)
+                {
+                    results.Add(blocks[i]);
+
+                    if (Math.Abs((blocks[i].StateLeft - blocks[i + 1].StateEntered).TotalSeconds) <= 1)
+                    {
+                        continue;
+                    }
+
+                    results.Add(new()
+                    {
+                        StateEntered = blocks[i].StateLeft,
+                        StateLeft = blocks[i + 1].StateEntered.AddSeconds(-1),
+                        State = "Unknown",
+                        MachineID = blocks[i].MachineID,
+                        MachineName = blocks[i].MachineName,
+                        SecondsElapsed = (blocks[i + 1].StateEntered - blocks[i].StateLeft.AddSeconds(1)).TotalSeconds,
+                    });
+                }
+
+                results.Add(blocks.Last());
+            }
+            else
+            {
+                results.Add(blocks.First());
+            }
+
+            if (clampHour != null)
+            {
+                MachineOperatingBlock lastBlock = results.Last();
+                if (lastBlock.StateLeft.AddHours(1).Hour != clampHour && lastBlock.StateLeft.Minute != 59 && lastBlock.StateLeft.Second != 59)
+                {
+                    results.Add(new()
+                    {
+                        StateEntered = lastBlock.StateLeft.AddSeconds(1),
+                        StateLeft = lastBlock.StateLeft.Hour < clampHour ? lastBlock.StateLeft.Date.AddHours((double)clampHour).AddSeconds(-1) : lastBlock.StateLeft.Date.AddDays(1).AddHours((double)clampHour).AddSeconds(-1),
+                        State = "Unknown",
+                        MachineID = lastBlock.MachineID,
+                        MachineName = lastBlock.MachineName,
+                        SecondsElapsed = ((lastBlock.StateLeft.Hour < clampHour ? lastBlock.StateLeft.Date.AddHours((double)clampHour).AddSeconds(-1) : lastBlock.StateLeft.Date.AddDays(1).AddHours((double)clampHour).AddSeconds(-1)) - lastBlock.StateLeft.AddSeconds(1)).TotalSeconds
+                    });
+                }
+            }
+
+            return results;
+        }
     }
 }
