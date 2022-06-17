@@ -35,7 +35,7 @@
         <Rectangle Grid.RowSpan="2" Fill="{StaticResource Surface}" />
         <StackPanel VerticalAlignment="Center">
             <Grid>
-                <Border
+                <!--<Border
                     x:Name="LogoFill"
                     Width="34"
                     Height="34"
@@ -47,19 +47,22 @@
                             <TranslateTransform.X>-57</TranslateTransform.X>
                         </TranslateTransform>
                     </Border.RenderTransform>
-                </Border>
-                <Image
+                </Border>-->
+                <!--<Image
                     Width="150"
                     RenderOptions.BitmapScalingMode="Fant"
-                    Source="/Resources/Lighthouse_dark.png" />
-                <Rectangle
+                    Source="/Resources/Lighthouse_dark.png" />-->
+                <Image
+                    RenderOptions.BitmapScalingMode="Fant"
+                    Source="/Resources/LighthouseLogo.png" Margin="50,10,50,-10" />
+                <!--<Rectangle
                     Width="150"
                     Fill="#00ffffff"
                     IsMouseDirectlyOverChanged="Image_IsMouseCapturedChanged"
-                    MouseDown="Rectangle_MouseDown" />
+                    MouseDown="Rectangle_MouseDown" />-->
             </Grid>
 
-            <Grid x:Name="DebugTile" Margin="10">
+            <Grid x:Name="DebugTile" Margin="10" Visibility="Collapsed">
                 <TextBlock
                     Margin="0,5"
                     HorizontalAlignment="Center"

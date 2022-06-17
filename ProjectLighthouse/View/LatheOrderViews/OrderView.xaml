@@ -207,7 +207,7 @@
         </StackPanel>
         <ScrollViewer
             x:Name="OrderScroller"
-            Grid.RowSpan="3"
+            Grid.RowSpan="4"
             Grid.Column="1"
             ScrollChanged="ScrollViewer_ScrollChanged"
             Visibility="{Binding Path=CardVis, UpdateSourceTrigger=PropertyChanged}">

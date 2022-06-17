@@ -41,7 +41,7 @@ namespace ProjectLighthouse
             Title += $" - {DatabaseHelper.DatabasePath}";
             #endif
 
-            DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
+            DebugTile.Visibility = App.DevMode ? Visibility.Collapsed : Visibility.Collapsed;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -94,7 +94,7 @@ namespace ProjectLighthouse
         {
             if (sender is System.Windows.Shapes.Rectangle rect)
             {
-                LogoFill.Visibility = rect.IsMouseDirectlyOver ? Visibility.Visible : Visibility.Hidden;
+                //LogoFill.Visibility = rect.IsMouseDirectlyOver ? Visibility.Visible : Visibility.Hidden;
             }
         }
 
