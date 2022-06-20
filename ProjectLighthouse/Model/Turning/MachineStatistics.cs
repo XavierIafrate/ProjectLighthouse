@@ -95,7 +95,7 @@ namespace ProjectLighthouse.Model
 
             if (!string.IsNullOrEmpty(SystemMessages))
             {
-                if (SystemMessages.ToUpper().Contains("WORK COUNTER FULL"))
+                if (SystemMessages.ToUpper().Contains("WORK COUNTER FULL") || SystemMessages.ToUpper().Contains("END-OF-SCHEDULE"))
                 {
                     Status = "Idle";
                     return;
