@@ -44,34 +44,6 @@
                         </Image>
                     </Grid>
                 </Border>
-                <!--<Border
-                    Name="Mask"
-                    Background="{StaticResource Blue}"
-                    CornerRadius="50,50,0,0"/>
-                <Grid x:Name="image">
-                -->
-                <!--<Image
-                        Name="Receiver"
-                        Source="/Resources/StartPoint.png"
-                        Stretch="UniformToFill" />-->
-                <!--
-
-                    <Image
-                        VerticalAlignment="Top"
-                        Source="/Resources/portland.jpg"
-                        Stretch="UniformToFill"
-                         >
-                -->
-                <!--<Image.RenderTransform>
-                            <TranslateTransform Y="-20"/>
-                        </Image.RenderTransform>-->
-                <!--
-                    </Image>
-
-                    <Grid.OpacityMask>
-                        <VisualBrush Stretch="Fill" Visual="{Binding ElementName=Mask}" />
-                    </Grid.OpacityMask>
-                </Grid>-->
             </Grid>
         </Border>
         <Border
@@ -100,10 +72,17 @@
                     Text="Lighthouse will open as a Logistics Station" />
             </StackPanel>
         </Border>
+        <Button
+            Margin="30"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="ExitButton_Click"
+            Style="{StaticResource ExitButton}" />
         <TextBlock
             x:Name="VersionInfo"
-            Margin="20"
-            HorizontalAlignment="Right"
+            Grid.Row="1"
+            Margin="30"
+            HorizontalAlignment="Left"
             VerticalAlignment="Top"
             FontSize="10"
             FontStyle="Italic"
@@ -148,6 +127,7 @@
                     Text="Username Not Found debug" />
             </Grid>
             <StackPanel
+                Margin="0,0,0,10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
@@ -174,7 +154,9 @@
                             x:Name="PasswordGhost"
                             Margin="21,10"
                             VerticalAlignment="Center"
+                            Foreground="{StaticResource OnSurface}"
                             IsHitTestVisible="False"
+                            Opacity="0.6"
                             Style="{StaticResource GhostText}"
                             Text="password"
                             TextWrapping="Wrap"
@@ -183,19 +165,11 @@
                 </Grid>
 
                 <Button
-                    Width="100"
                     Click="LoginButton_Click"
                     Content="log in"
-                    Style="{StaticResource GreenButton}" />
+                    Style="{StaticResource LoginButton}" />
 
-                <!--<StackPanel Margin="0,20,0,0">
-                -->
-                <!--<Button
-                        Width="75"
-                        Click="ExitButton_Click"
-                        Style="{StaticResource ExitButton}" />-->
-                <!--
-                </StackPanel>-->
+
 
             </StackPanel>
         </Grid>

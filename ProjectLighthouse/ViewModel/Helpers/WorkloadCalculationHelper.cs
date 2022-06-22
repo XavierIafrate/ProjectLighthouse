@@ -9,7 +9,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         public static Tuple<TimeSpan, DateTime> GetMachineWorkload(List<ScheduleItem> items)
         {
-            double secondsOfRuntime = 0;
+            double secondsOfRuntime = 7 * 84600;
             DateTime lastItemFinished = DateTime.MinValue;
 
             items = items.OrderBy(x => x.StartDate).ToList(); //otherwise bad things happen
@@ -34,11 +34,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 if (i == 0)
                 {
-                    lastItemFinished = DateTime.Now.AddSeconds(secondsOfRuntime);
+                    lastItemFinished = DateTime.Now.AddSeconds(secondsOfRuntime).AddDays(7);
                 }
                 else
                 {
-                    lastItemFinished = item.StartDate.AddSeconds(item.TimeToComplete);
+                    lastItemFinished = item.StartDate.AddSeconds(item.TimeToComplete).AddDays(7);
                 }
             }
 

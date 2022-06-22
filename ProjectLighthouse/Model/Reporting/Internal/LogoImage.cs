@@ -7,7 +7,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 
     public class LogoImage
     {
-        private const string LogoResourceName = "Resources.Lighthouse_dark_PDF.png";
+        private const string LogoResourceName = "Resources.Lighthouse_Mono_L_Embedded.png";
         public string GetMigraDocFileName()
         {
             return ConvertToMigraDocFileName(LoadResource(LogoResourceName));

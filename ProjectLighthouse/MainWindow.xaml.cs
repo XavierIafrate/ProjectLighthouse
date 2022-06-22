@@ -1,10 +1,8 @@
 ﻿using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -37,11 +35,11 @@ namespace ProjectLighthouse
 
             Title += $" v.{versionInfo.FileVersion}";
 
-            #if DEBUG
+#if DEBUG
             Title += $" - {DatabaseHelper.DatabasePath}";
-            #endif
+#endif
 
-            DebugTile.Visibility = App.DevMode ? Visibility.Collapsed : Visibility.Collapsed;
+            DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -90,18 +88,22 @@ namespace ProjectLighthouse
             LoggedInUserRole.Text = App.CurrentUser.UserRole;
         }
 
-        private void Image_IsMouseCapturedChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (sender is System.Windows.Shapes.Rectangle rect)
-            {
-                //LogoFill.Visibility = rect.IsMouseDirectlyOver ? Visibility.Visible : Visibility.Hidden;
-            }
-        }
-
         private void Rectangle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             AboutWindow window = new();
             window.ShowDialog();
+        }
+
+        private void Rectangle_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            LogoColour.Visibility = Visibility.Visible;
+            LogoMono.Visibility = Visibility.Hidden;
+        }
+
+        private void Rectangle_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            LogoColour.Visibility = Visibility.Hidden;
+            LogoMono.Visibility = Visibility.Visible;
         }
     }
 }

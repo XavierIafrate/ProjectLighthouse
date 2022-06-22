@@ -83,6 +83,10 @@ namespace ProjectLighthouse.View
                     quantityBox.Text = Math.Abs(turnedProduct.FreeStock()).ToString();
                 }
             }
+            else
+            {
+                quantityBox.Text = "0";
+            }
 
             EnableSubmit();
         }

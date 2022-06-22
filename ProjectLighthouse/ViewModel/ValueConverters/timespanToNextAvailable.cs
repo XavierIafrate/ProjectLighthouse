@@ -18,7 +18,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             {
                 nextAvailable = nextAvailable.AddDays(2);
             }
-            return String.Format("{0:ddd dd MMM}", nextAvailable);
+            return $"{nextAvailable:ddd dd MMM}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

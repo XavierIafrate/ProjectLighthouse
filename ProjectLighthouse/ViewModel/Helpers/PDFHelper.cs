@@ -74,7 +74,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             // Logo
             XImage logo = XImage.FromFile(GetLogoFile());
-            double logo_width = 100;
+            double logo_width = 150;
             double logo_aspect_ratio = Convert.ToDouble(logo.PixelHeight) / Convert.ToDouble(logo.PixelWidth);
             double logo_height = logo_width * logo_aspect_ratio;
 
@@ -321,21 +321,25 @@ namespace ProjectLighthouse.ViewModel.Helpers
             #region Title
 
             // Logo
-            string logo_file = @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
 
-            if (Environment.UserName == "xavier")
-            {
-                logo_file = @"C:\Users\xavie\Desktop\Lighthouse_dark.png";
-            }
+            XImage logo = XImage.FromFile(GetLogoFile());
+            double logo_width = 150;
+            double logo_aspect_ratio = Convert.ToDouble(logo.PixelHeight) / Convert.ToDouble(logo.PixelWidth);
+            double logo_height = logo_width * logo_aspect_ratio;
 
-            XImage logo = XImage.FromFile(logo_file);
-            const double dy = 150;
-            double width = logo.PixelWidth * 72 / logo.HorizontalResolution;
-            double height = logo.PixelHeight * 72 / logo.HorizontalResolution;
-            width /= 10;
-            height /= 10;
-            XRect logoRect = new(page.Width / 2 - (width / 2), (dy - height) / 2, width, height);
+            double logo_y_position = (HEADER_HEIGHT - logo_height) / 2 + DOCUMENT_GUTTER;
+            XRect logoRect = new(DOCUMENT_GUTTER, logo_y_position, logo_width, logo_height);
+
+            //XRect logoRect = new(DOCUMENT_GUTTER, logo_y_position, logo_width, logo_height);
             gfx.DrawImage(logo, logoRect);
+
+            //const double dy = 150;
+            //double width = logo.PixelWidth * 72 / logo.HorizontalResolution;
+            //double height = logo.PixelHeight * 72 / logo.HorizontalResolution;
+            //width /= 10;
+            //height /= 10;
+            //XRect logoRect = new(page.Width / 2 - (width / 2), (dy - height) / 2, width, height);
+            //gfx.DrawImage(logo, logoRect);
 
             // Title
             XFont font = new("Tahoma", 35, XFontStyle.Bold, options);
@@ -780,7 +784,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             // Logo
             XImage logo = XImage.FromFile(GetLogoFile());
-            double logo_width = 100;
+            double logo_width = 250;
             double logo_aspect_ratio = Convert.ToDouble(logo.PixelHeight) / Convert.ToDouble(logo.PixelWidth);
             double logo_height = logo_width * logo_aspect_ratio;
 
@@ -906,8 +910,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static string GetLogoFile()
         {
             return (Environment.UserName == "xavier")
-                ? @"C:\Users\xavie\Desktop\Lighthouse_dark.png"
-                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_dark.png";
+                ? @"C:\Users\xavie\Desktop\Lighthouse_Mono_L_Embedded.png"
+                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_Mono_L_Embedded.png";
         }
 
         public static void OpenWithDefaultProgram(string path)

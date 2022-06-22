@@ -35,43 +35,27 @@
         <Rectangle Grid.RowSpan="2" Fill="{StaticResource Surface}" />
         <StackPanel VerticalAlignment="Center">
             <Grid>
-                <!--<Border
-                    x:Name="LogoFill"
-                    Width="34"
-                    Height="34"
-                    Background="#ec1c24"
-                    CornerRadius="4"
-                    Visibility="Hidden">
-                    <Border.RenderTransform>
-                        <TranslateTransform>
-                            <TranslateTransform.X>-57</TranslateTransform.X>
-                        </TranslateTransform>
-                    </Border.RenderTransform>
-                </Border>-->
-                <!--<Image
-                    Width="150"
-                    RenderOptions.BitmapScalingMode="Fant"
-                    Source="/Resources/Lighthouse_dark.png" />-->
                 <Image
+                    x:Name="LogoMono"
+                    Width="200"
+                    VerticalAlignment="Bottom"
                     RenderOptions.BitmapScalingMode="Fant"
-                    Source="/Resources/LighthouseLogo.png" Margin="50,10,50,-10" />
-                <!--<Rectangle
-                    Width="150"
-                    Fill="#00ffffff"
-                    IsMouseDirectlyOverChanged="Image_IsMouseCapturedChanged"
-                    MouseDown="Rectangle_MouseDown" />-->
+                    Source="/Resources/LighthouseLogo_Mono.png" />
+                <Image
+                    Visibility="Hidden"
+                    x:Name="LogoColour"
+                    Width="200"
+                    VerticalAlignment="Bottom"
+                    RenderOptions.BitmapScalingMode="Fant"
+                    Source="/Resources/LighthouseLogo.png" />
+                <Rectangle
+                    Fill="Transparent"
+                    MouseDown="Rectangle_MouseDown"
+                    MouseEnter="Rectangle_MouseEnter"
+                    MouseLeave="Rectangle_MouseLeave" />
             </Grid>
 
-            <Grid x:Name="DebugTile" Margin="10" Visibility="Collapsed">
-                <TextBlock
-                    Margin="0,5"
-                    HorizontalAlignment="Center"
-                    FontFamily="Consolas"
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Foreground="{StaticResource Red}"
-                    Text="DEV BUILD" />
-            </Grid>
+
         </StackPanel>
 
 
@@ -83,7 +67,22 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <ScrollViewer>
+
                 <StackPanel x:Name="main_menu">
+                    <Grid
+                        x:Name="DebugTile"
+                        Margin="10"
+                        Background="{StaticResource Red}"
+                        Visibility="Collapsed">
+                        <TextBlock
+                            Margin="0,5"
+                            HorizontalAlignment="Center"
+                            FontFamily="Consolas"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource OnRed}"
+                            Text="Development Build" />
+                    </Grid>
                     <StackPanel Margin="0,20">
                         <ToggleButton
                             x:Name="new_request_button"
@@ -306,6 +305,7 @@
 
         </Grid>
         <ContentControl
+            x:Name="viewPort"
             Grid.Row="1"
             Grid.Column="1"
             Content="{Binding SelectedViewModel}" />

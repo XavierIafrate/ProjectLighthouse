@@ -10,10 +10,10 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-    Loaded="UserControl_Loaded"
     d:Background="White"
     d:DesignHeight="758.58"
     d:DesignWidth="1179.077"
+    Loaded="UserControl_Loaded"
     SizeChanged="UserControl_SizeChanged"
     mc:Ignorable="d">
 
@@ -27,7 +27,7 @@
 
             <Style x:Key="InsightName" TargetType="TextBlock">
                 <Setter Property="Padding" Value="0,2" />
-                <Setter Property="FontStyle" Value="Italic"/>
+                <Setter Property="FontStyle" Value="Italic" />
                 <Setter Property="FontSize" Value="14" />
             </Style>
 
@@ -71,11 +71,11 @@
                         ItemsSource="{Binding Families}"
                         SelectedValue="{Binding SelectedGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <Button
-                        Command="{Binding AddSpecialCommand}"
-                        Visibility="{Binding AddSpecialVisibility}"
                         Grid.Column="1"
+                        Command="{Binding AddSpecialCommand}"
                         Content="+ new"
-                        Style="{StaticResource SubtleButtonTemplate}" />
+                        Style="{StaticResource SubtleButtonTemplate}"
+                        Visibility="{Binding AddSpecialVisibility}" />
                 </Grid>
             </StackPanel>
 
@@ -106,9 +106,9 @@
                     <TextBox
                         x:Name="quantityBox"
                         Margin="0"
-                        Tag="Enter Quantity Required"
                         PreviewKeyDown="QuantityBox_PreviewKeyDown"
                         Style="{StaticResource DefaultTextBox}"
+                        Tag="Enter Quantity Required"
                         Text="{Binding RequiredQtyPrefill, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         TextChanged="QuantityBox_TextChanged" />
                 </Grid>
@@ -212,14 +212,14 @@
                             Text="{Binding SelectedProduct.ProductName, FallbackValue='Nothing selected'}" />
 
                         <TextBlock
-                            Margin="0,10,0,0"
                             Grid.Row="1"
+                            Margin="0,10,0,0"
                             Style="{StaticResource InsightName}"
                             Text="Quantity in Stock" />
                         <TextBlock
-                            Margin="0,10,0,0"
                             Grid.Row="1"
                             Grid.Column="2"
+                            Margin="0,10,0,0"
                             Style="{StaticResource InsightValue}"
                             Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} pcs'}" />
 
@@ -254,14 +254,14 @@
                             Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />
 
                         <TextBlock
-                            Margin="0,10,0,0"
                             Grid.Row="5"
+                            Margin="0,10,0,0"
                             Style="{StaticResource InsightName}"
                             Text="Schedule Compatible" />
                         <TextBlock
-                            Margin="0,10,0,0"
                             Grid.Row="5"
                             Grid.Column="2"
+                            Margin="0,10,0,0"
                             Style="{StaticResource InsightValue}"
                             Text="{Binding PotentialQuantityText}" />
 
@@ -287,15 +287,15 @@
 
                         <TextBlock
                             Grid.Row="8"
+                            Margin="0,10,0,0"
                             Style="{StaticResource InsightName}"
-                            Text="Approval Likeliness" 
-                            Margin="0,10,0,0"/>
+                            Text="Approval Likeliness" />
                         <TextBlock
                             Grid.Row="8"
                             Grid.Column="2"
+                            Margin="0,10,0,0"
                             Style="{StaticResource InsightValue}"
-                            Text="{Binding LikelinessText}"
-                            Margin="0,10,0,0"/>
+                            Text="{Binding LikelinessText}" />
                     </Grid>
 
                     <Grid Grid.Row="2" Height="10" />
@@ -308,7 +308,7 @@
                         Margin="15,8"
                         FontSize="22"
                         Foreground="{StaticResource OnBlue}"
-                        Text="Machine Workload" />
+                        Text="Estimated Lead Times" />
 
                     <Border
                         Grid.Row="4"

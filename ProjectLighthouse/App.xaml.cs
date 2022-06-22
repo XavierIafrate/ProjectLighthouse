@@ -20,9 +20,11 @@ namespace ProjectLighthouse
         public static DateTime LastDataRefresh { get; set; } = DateTime.MinValue;
         public static System.Timers.Timer DataRefreshTimer { get; set; }
         public static bool DevMode { get; set; }
+        private static MainWindow Window;
 
         public static MainViewModel MainViewModel { get; set; }
 
+        
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -54,7 +56,7 @@ namespace ProjectLighthouse
 
             if (string.IsNullOrEmpty(workstation))
             {
-                MainWindow Window = new();
+                Window = new();
                 MainViewModel VM = new()
                 {
                     MainWindow = Window
@@ -77,6 +79,8 @@ namespace ProjectLighthouse
                 window.WorkStation = workstation;
                 window.LoginRoutine();
             }
+
+            //CrashApplication();
         }
 
 
@@ -180,6 +184,7 @@ namespace ProjectLighthouse
                 RecordError(e);
             }
 
+            Window.Hide();
             errorWindow.ShowDialog();
         }
 
@@ -188,6 +193,10 @@ namespace ProjectLighthouse
             string errorJson = Newtonsoft.Json.JsonConvert.SerializeObject(e.Exception);
             string filename = DateTime.Now.ToString("s").Replace(':', '_');
             File.WriteAllText($"{ROOT_PATH}/errors/{filename}.json", errorJson);
+            string textInfo = $"USER: {App.CurrentUser.UserName}\n" +
+                $"COMP: {Environment.MachineName}" +
+                $"VIEW: {App.ActiveViewModel}";
+            File.WriteAllText($"{ROOT_PATH}/errors/supp_{filename}.txt", textInfo);
         }
     }
 }

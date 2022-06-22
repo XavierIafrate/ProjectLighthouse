@@ -1,4 +1,5 @@
 ﻿using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Shapes;
 using System;
 
 namespace ProjectLighthouse.Model.Reporting.Internal
@@ -17,7 +18,9 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             header.Format.AddTabStop(Size.GetWidth(section), TabAlignment.Right);
             header.Style = CustomStyles.GeneratedAtStyle;
 
-            header.AddImage(new LogoImage().GetMigraDocFileName());
+            Image logo= header.AddImage(new LogoImage().GetMigraDocFileName());
+            logo.Width = "8cm";
+            logo.LockAspectRatio = true;
 
             header.AddTab();
             header.AddText("Wixroyd Ltd.");

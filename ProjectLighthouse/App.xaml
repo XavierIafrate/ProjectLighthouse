@@ -33,6 +33,12 @@
             <!--#endregion-->
 
             <!--#region DataTemplates-->
+            <DataTemplate DataType="{x:Type x:NullExtension}">
+                <Grid>
+                    <TextBlock Text="Null"/>
+                </Grid>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type vms:RequestViewModel}">
                 <views:RequestView />
             </DataTemplate>

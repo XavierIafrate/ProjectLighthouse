@@ -92,7 +92,6 @@ namespace ProjectLighthouse.ViewModel
         public Visibility HighLeadTimeVisibility { get; set; }
 
         #endregion
-
         public NewRequestViewModel()
         {
             NewRequest = new();
@@ -148,6 +147,7 @@ namespace ProjectLighthouse.ViewModel
                     MachineFullName = lathes[i].FullName,
                     LeadTime = workload.Item1
                 };
+
 
                 if (lathes[i].Model.StartsWith("L20"))
                 {

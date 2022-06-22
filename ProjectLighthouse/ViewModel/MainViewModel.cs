@@ -62,7 +62,6 @@ namespace ProjectLighthouse.ViewModel
                 }
 
                 _selectedViewModel = value;
-
                 DataRefreshBadgeVis = (_selectedViewModel is IRefreshableViewModel) && App.CurrentUser.EnableDataSync
                     ? Visibility.Visible
                     : Visibility.Collapsed;

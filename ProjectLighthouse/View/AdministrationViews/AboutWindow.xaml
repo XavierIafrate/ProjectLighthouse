@@ -7,15 +7,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="About Project Lighthouse"
+    ResizeMode="NoResize"
     Width="571"
-    Height="577"
+    Height="600"
     mc:Ignorable="d">
     <StackPanel Margin="30" VerticalAlignment="Center">
         <Image
             Width="150"
             Margin="0,0,0,20"
             RenderOptions.BitmapScalingMode="Fant"
-            Source="/Resources/Lighthouse_dark.png" />
+            Source="/Resources/LighthouseLogo.png" />
         <StackPanel Margin="30,0">
             <TextBlock
                 Margin="0,0,0,20"
@@ -32,7 +33,6 @@
                 FontStyle="Italic"
                 Text="Copyright Wixroyd Group " />
             <TextBlock Foreground="{StaticResource Green}" Text="Written by Xavier Iafrate" />
-            <TextBlock Opacity="0.3" Text="Written because Excel is not a database" />
 
             <Grid Height="20" />
             <Separator />
