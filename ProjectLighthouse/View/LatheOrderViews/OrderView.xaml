@@ -146,6 +146,7 @@
             <ComboBox Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="All Active" IsSelected="True" />
                 <ComboBoxItem Content="Not Ready" />
+                <ComboBoxItem Content="No Program" />
                 <ComboBoxItem Content="Ready" />
                 <ComboBoxItem Content="Complete" />
                 <ComboBoxItem Content="All" />

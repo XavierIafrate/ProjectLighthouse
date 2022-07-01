@@ -180,7 +180,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         if(debug) CSVHelper.WriteListToCSV(relevantOperatingData, "relevantOperatingData");
 
                         MachineOperatingBlocks = MachinePerformanceHelper.Backfill(relevantOperatingData, date.Hour);
-                        //MachineOperatingBlocks = MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes: resolution);
+                        MachineOperatingBlocks = MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes: resolution);
                         //if (debug) CSVHelper.WriteListToCSV(MachineOperatingBlocks, "after_convolution");
 
                         OperatingData = new(MachineOperatingBlocks);

@@ -365,6 +365,10 @@ namespace ProjectLighthouse.ViewModel
                     orders = Orders.Where(n => n.State == OrderState.Problem).ToList();
                     break;
 
+                case "No Program":
+                    orders = Orders.Where(n => !n.HasProgram && n.State < OrderState.Complete).ToList();
+                    break;
+
                 case "Ready":
                     orders = Orders.Where(n => n.State == OrderState.Ready || n.State == OrderState.Prepared).ToList();
                     break;
