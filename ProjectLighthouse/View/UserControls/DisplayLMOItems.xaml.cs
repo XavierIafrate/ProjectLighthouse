@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
@@ -15,6 +16,20 @@ namespace ProjectLighthouse.View.UserControls
 
         public static readonly DependencyProperty LatheManufactureOrderItemProperty =
             DependencyProperty.Register("LatheManufactureOrderItem", typeof(LatheManufactureOrderItem), typeof(DisplayLMOItems), new PropertyMetadata(null, SetValues));
+
+
+
+        public ICommand EditCommand
+        {
+            get { return (ICommand)GetValue(EditCommandProperty); }
+            set { SetValue(EditCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for EditCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty EditCommandProperty =
+            DependencyProperty.Register("EditCommand", typeof(ICommand), typeof(DisplayLMOItems), new PropertyMetadata(null));
+
+
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -56,7 +71,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            LatheManufactureOrderItem.NotifyRequestToEdit();
+            EditCommand.Execute(LatheManufactureOrderItem.Id);
         }
     }
 }

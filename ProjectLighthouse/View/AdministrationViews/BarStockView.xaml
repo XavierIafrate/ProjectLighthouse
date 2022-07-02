@@ -18,7 +18,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" >
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
@@ -28,26 +28,37 @@
                         <Border Background="{StaticResource Purple}" CornerRadius="10" />
                         <StackPanel Orientation="Horizontal">
                             <Path
-                                Margin="15,0,0,0"
                                 Height="30"
+                                Margin="15,0,0,0"
                                 Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
                                 Fill="{StaticResource OnRed}"
                                 Stretch="UniformToFill" />
                             <StackPanel Margin="10,10,15,10" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding NumberOfBars, StringFormat='{}{0:#,##0} more bars required to cover active orders'}" Foreground="{StaticResource OnPurple}" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding CostOfNewBar, StringFormat='{}Approximately £{0:N0}'}" Foreground="{StaticResource OnPurple}" FontStyle="Italic" Opacity="0.8"/>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource OnPurple}"
+                                    Text="{Binding NumberOfBars, StringFormat='{}{0:#,##0} more bars required to cover active orders'}" />
+                                <TextBlock
+                                    FontStyle="Italic"
+                                    Foreground="{StaticResource OnPurple}"
+                                    Opacity="0.8"
+                                    Text="{Binding CostOfNewBar, StringFormat='{}Approximately £{0:N0}'}" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
 
                     <Button
                         Grid.Column="2"
+                        Command="{Binding PrintCommand}"
                         Content="Get Requisitions"
                         IsEnabled="{Binding RequisitionAvailable}"
-                        Command="{Binding PrintCommand}"
                         Style="{StaticResource LighthouseButton}" />
                 </Grid>
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding BarStockOverview}">
+                <ItemsControl
+                    Background="White"
+                    Grid.Row="1"
+                    MinHeight="100"
+                    ItemsSource="{Binding BarStockOverview}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <uc:DisplayBarOverview Bar="{Binding}" />

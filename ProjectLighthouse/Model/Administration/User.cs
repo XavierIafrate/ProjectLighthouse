@@ -43,6 +43,7 @@ namespace ProjectLighthouse.Model
         public bool EnableDataSync { get; set; }
         public string DefaultView { get; set; }
         public bool ReceivesNotifications { get; set; }
+        public bool CanApproveDrawings { get; set; }
 
         public string GetFullName()
         {

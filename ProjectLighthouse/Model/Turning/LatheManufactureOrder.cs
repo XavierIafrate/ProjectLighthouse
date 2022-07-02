@@ -14,6 +14,7 @@ namespace ProjectLighthouse.Model
         public DateTime ModifiedAt { get; set; }
         public string ModifiedBy { get; set; }
 
+
         public OrderState State
         {
             get
@@ -58,16 +59,15 @@ namespace ProjectLighthouse.Model
         public bool IsClosed { get; set; }
 
         public string Status { get; set; }
-
-        public bool IsUrgent { get; set; }
         public DateTime CompletedAt { get; set; }
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
         public double BarsInStockAtCreation { get; set; }
         public double MajorDiameter { get; set; }
         public bool ItemNeedsCleaning { get; set; }
-
         public string ToolingGroup { get; set; }
+        public bool IsResearch { get; set; }
+        public int SpareBars { get; set; }
 
         public BarStock Bar;
         [Ignore]
@@ -99,7 +99,6 @@ namespace ProjectLighthouse.Model
                 IsComplete = IsComplete,
                 IsClosed = IsClosed,
                 Status = Status,
-                IsUrgent = IsUrgent,
                 IsCancelled = IsCancelled,
                 State = State,
                 AllocatedMachine = AllocatedMachine,
@@ -114,7 +113,9 @@ namespace ProjectLighthouse.Model
                 BarIsAllocated = BarIsAllocated,
                 BarIsVerified = BarIsVerified,
                 BarsInStockAtCreation = BarsInStockAtCreation,
-                OrderItems = new(OrderItems?? new())
+                IsResearch = IsResearch,
+                SpareBars = SpareBars,
+                OrderItems = new(OrderItems ?? new())
             };
         }
 
@@ -138,6 +139,8 @@ namespace ProjectLighthouse.Model
                 || NumberOfBars != OtherOrder.NumberOfBars
                 || TimeToComplete != OtherOrder.TimeToComplete
                 || ModifiedAt != OtherOrder.ModifiedAt
+                || SpareBars != OtherOrder.SpareBars
+                || IsResearch != OtherOrder.IsResearch
                 || BarID != OtherOrder.BarID;
         }
 
@@ -181,26 +184,6 @@ namespace ProjectLighthouse.Model
             }
 
             return dateTime;
-        }
-
-        public void UpdateBarRequirements(List<BarStock> barStock, List<Lathe> lathes)
-        {
-            double totalLengthRequired = 0;
-            BarStock bar = barStock.First(b => b.Id == BarID);
-            double partOff = 2;
-
-            if (!string.IsNullOrEmpty(AllocatedMachine))
-            {
-                Lathe runningOnLathe = lathes.First(l => l.Id == AllocatedMachine);
-                partOff = runningOnLathe.PartOff;
-            }
-
-            foreach (LatheManufactureOrderItem orderItem in OrderItems)
-            {
-                totalLengthRequired += (orderItem.MajorLength + partOff) * orderItem.TargetQuantity * 1.02;
-            }
-
-            NumberOfBars = Math.Ceiling(totalLengthRequired / 2700);
         }
         #endregion
     }

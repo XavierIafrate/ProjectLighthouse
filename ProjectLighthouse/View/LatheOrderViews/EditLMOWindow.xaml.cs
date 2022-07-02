@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.View.LatheOrderViews;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -18,23 +19,28 @@ namespace ProjectLighthouse.View
         #region Variables
 
         private LatheManufactureOrder _order;
-        public LatheManufactureOrder order
+        public LatheManufactureOrder Order
         {
             get { return _order; }
             set
             {
                 _order = value;
-                SetCheckboxEnabling();
+                SetCheckboxEnabling(CanEdit);
                 OnPropertyChanged();
             }
         }
 
         public LatheManufactureOrder savedOrder;
 
-        public List<LatheManufactureOrderItem> items { get; set; }
-        public List<Lot> lots;
+        public bool CanEdit { get; set; }
+
+        public List<LatheManufactureOrderItem> Items { get; set; }
+        public List<Lot> Lots;
         public bool SaveExit { get; set; }
-        public List<Note> Notes { get; set; }   
+        public List<Note> Notes { get; set; }
+        public List<TechnicalDrawing> Drawings { get; set;}
+
+        List<OrderDrawing> DrawingReferences { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,59 +48,63 @@ namespace ProjectLighthouse.View
 
         #endregion
 
-        public EditLMOWindow(LatheManufactureOrder o, List<LatheManufactureOrderItem> i, List<Lot> l, List<Note> n, List<BarStock> b)
+        public EditLMOWindow(string id, bool canEdit)
         {
             InitializeComponent();
 
-            SaveExit = false;
-
-            items = new();
-            foreach (LatheManufactureOrderItem item in i)
-            {
-                if (item.RequestToEdit == null)
-                {
-                    item.RequestToEdit += EditItem;
-                }
-                items.Add(item);
-                item.ShowEdit = App.CurrentUser.CanUpdateLMOs;
-            }
-
-            lots = new(l);
-            Notes = n;
-            BarStock = b;
-            OnPropertyChanged(nameof(BarStock));
-
-            FormatNoteDisplay();
-
-            savedOrder = o;
-            order = (LatheManufactureOrder)o.Clone(); // break the reference
+            CanEdit = canEdit;
+            LoadData(id);
 
             DataContext = this;
+            UpdateControls(canEdit);
+        }
 
-            UpdateControls();
+        private void LoadData(string id)
+        {
+
+            Order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == id);
+
+            if (BarStock == null)
+            {
+                BarStock = DatabaseHelper.Read<BarStock>();
+                BarStock currentBar = BarStock.Find(x => x.Id == Order.BarID);
+                BarStock = BarStock.Where(x => x.Material == currentBar.Material).ToList();
+                OnPropertyChanged(nameof(BarStock));
+            }
+            savedOrder = (LatheManufactureOrder)Order.Clone();
+
+            Items = DatabaseHelper.Read<LatheManufactureOrderItem>()
+                .Where(x => x.AssignedMO == id)
+                .OrderByDescending(n => n.RequiredQuantity)
+                .ThenBy(n => n.ProductName)
+                .ToList();
+
+            for (int i = 0; i < Items.Count; i++)
+            {
+                Items[i].ShowEdit = App.CurrentUser.CanUpdateLMOs && CanEdit;
+            }
+            OnPropertyChanged(nameof(Items));
+
+
+            Lots = DatabaseHelper.Read<Lot>().Where(x => x.Order == id).ToList();
+            Notes = DatabaseHelper.Read<Note>().Where(x => x.DocumentReference == id && !x.IsDeleted).ToList();
+            OnPropertyChanged(nameof(Notes));
+            FormatNoteDisplay();
+
+            DrawingReferences = DatabaseHelper.Read<OrderDrawing>().Where(x => x.OrderId == Order.Name).ToList();
+            List<TechnicalDrawing> drawings = DatabaseHelper.Read<TechnicalDrawing>();
+            Drawings = new();
+            for (int i = 0; i < DrawingReferences.Count; i++)
+            {
+                Drawings.Add(drawings.Find(x => x.Id == DrawingReferences[i].DrawingId));
+            }
+
+            OnPropertyChanged(nameof(Drawings));
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void EditItem(LatheManufactureOrderItem item)
-        {
-            EditLMOItemWindow editWindow = new(item, lots, order.AllocatedMachine ?? "");
-            Hide();
-            editWindow.ShowDialog();
-
-            if (editWindow.SaveExit)
-            {
-                SaveExit = true;
-                lots = new List<Lot>(editWindow.Lots);
-                RefreshItems();
-            }
-            editWindow = null;
-            Show();
-            items = new(items);
-            OnPropertyChanged(nameof(items));
         }
 
         private void FormatNoteDisplay()
@@ -116,24 +126,31 @@ namespace ProjectLighthouse.View
             }
         }
 
-        private void UpdateControls()
+        private void UpdateControls(bool canEdit)
         {
             NotesScroller.ScrollToBottom();
 
-            PORef.IsEnabled = App.CurrentUser.CanUpdateLMOs;
-            BarStockComboBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && !order.BarIsVerified;
+            PurchaseOrderTextBox.IsEnabled = App.CurrentUser.CanUpdateLMOs && canEdit;
+            BarStockComboBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && !Order.BarIsVerified && canEdit;
+            SpareBarsTextBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit;
+            researchCheckBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit;
+            composeMessageControls.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
 
-            SetCheckboxEnabling();
+            AddItemButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && Order.State < OrderState.Complete && canEdit && !Order.BarIsAllocated;
+
+            SaveButton.IsEnabled = canEdit;
+
+            SetCheckboxEnabling(canEdit);
         }
 
-        private void SetCheckboxEnabling()
+        private void SetCheckboxEnabling(bool canEdit)
         {
             bool tier1;
             bool tier2;
             bool tier3;
             bool tier4;
 
-            switch (order.State)
+            switch (Order.State)
             {
                 case >= OrderState.Complete:
                     tier1 = false;
@@ -150,12 +167,12 @@ namespace ProjectLighthouse.View
                 case OrderState.Prepared:
                     tier1 = false;
                     tier2 = true;
-                    tier3 = order.StartDate.Date <= DateTime.Today;
+                    tier3 = Order.StartDate.Date <= DateTime.Today;
                     tier4 = false;
                     break;
                 case OrderState.Problem or OrderState.Ready:
                     tier1 = true;
-                    tier2 = order.BarIsVerified;
+                    tier2 = Order.BarIsVerified;
                     tier3 = false;
                     tier4 = false;
                     break;
@@ -167,7 +184,7 @@ namespace ProjectLighthouse.View
                     break;
             }
 
-            if (!App.CurrentUser.CanUpdateLMOs)
+            if (!App.CurrentUser.CanUpdateLMOs || !canEdit)
             {
                 tier1 = false;
                 tier2 = false;
@@ -183,8 +200,13 @@ namespace ProjectLighthouse.View
 
             Running_Checkbox.IsEnabled = tier3;
 
-            Complete_Checkbox.IsEnabled = tier4 && !order.IsCancelled;
-            Cancelled_Checkbox.IsEnabled = App.CurrentUser.UserRole is "Scheduling" or "admin";
+            Complete_Checkbox.IsEnabled = tier4 && !Order.IsCancelled;
+            Cancelled_Checkbox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit;
+        }
+
+        public void TestClickEvent(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -194,52 +216,36 @@ namespace ProjectLighthouse.View
 
         private void CheckIfOrderIsClosed()
         {
-            if (order.State > OrderState.Running)
+            if (Order.State > OrderState.Running)
             {
-                var itemsWithBadCycleTimes = items.Where(i => i.CycleTime == 0 && i.QuantityMade > 0).ToList();
-                var unresolvedLots = lots.Where(l => l.Quantity != 0 && !l.IsDelivered && !l.IsReject).ToList();
+                List<LatheManufactureOrderItem> itemsWithBadCycleTimes = Items.Where(i => i.CycleTime == 0 && i.QuantityMade > 0).ToList();
+                List<Lot> unresolvedLots = Lots.Where(l => l.Quantity != 0 && !l.IsDelivered && !l.IsReject).ToList();
 
-                order.IsClosed = itemsWithBadCycleTimes.Count == 0 // ensure cycle time is updated
+                Order.IsClosed = itemsWithBadCycleTimes.Count == 0 // ensure cycle time is updated
                     && unresolvedLots.Count == 0; // ensure lots are fully processed
             }
             else
             {
-                order.IsClosed = false;
+                Order.IsClosed = false;
             }
         }
 
         private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DisplayLMOItems control = sender as DisplayLMOItems;
-            if (App.CurrentUser.CanUpdateLMOs)
+            if (App.CurrentUser.CanUpdateLMOs && CanEdit)
             {
-                EditItem(control.LatheManufactureOrderItem);
+                SaveCommand.Execute(control.LatheManufactureOrderItem.Id);
             }
         }
 
-        public void RefreshItems()
-        {
-            items = new();
-            items = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(n => n.AssignedMO == order.Name)
-                .OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName)
-                .ToList();
-
-            foreach (LatheManufactureOrderItem item in items)
-            {
-                item.ShowEdit = true;
-                if (item.RequestToEdit == null)
-                {
-                    item.RequestToEdit += EditItem;
-                }
-            }
-        }
 
         #region Helpers
         private void CalculateTime()
         {
             int estimatedTimeSeconds = 0;
             int cycleTime = 0;
-            foreach (LatheManufactureOrderItem item in items.OrderByDescending(x => x.CycleTime))
+            foreach (LatheManufactureOrderItem item in Items.OrderByDescending(x => x.CycleTime))
             {
                 if (item.CycleTime == 0 && cycleTime > 0) // uses better cycle time if available
                 {
@@ -251,40 +257,31 @@ namespace ProjectLighthouse.View
                 }
             }
 
-            order.TimeToComplete = estimatedTimeSeconds;
+            Order.TimeToComplete = estimatedTimeSeconds;
         }
 
         private void CalculateBarRequirements()
         {
-            List<BarStock> barStock = DatabaseHelper.Read<BarStock>();
             double totalLengthRequired = 0;
-            BarStock bar = barStock.First(b=>b.Id == order.BarID);
+            BarStock bar = (BarStock)BarStockComboBox.SelectedValue;
             double partOff = 2;
 
-            if (!string.IsNullOrEmpty(order.AllocatedMachine))
+            if (!string.IsNullOrEmpty(Order.AllocatedMachine))
             {
                 List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
-                Lathe runningOnLathe = lathes.First(l => l.Id == order.AllocatedMachine);
+                Lathe runningOnLathe = lathes.First(l => l.Id == Order.AllocatedMachine);
                 partOff = runningOnLathe.PartOff;
             }
 
-            foreach (LatheManufactureOrderItem item in items)
+            foreach (LatheManufactureOrderItem item in Items)
             {
                 totalLengthRequired += (item.MajorLength + partOff) * item.TargetQuantity * 1.02;
             }
 
-            order.NumberOfBars = Math.Ceiling(totalLengthRequired / 2700);
+            Order.NumberOfBars = Math.Ceiling(totalLengthRequired / (bar.Length - 300)) + Order.SpareBars;
         }
 
         #endregion
-
-        private void PORef_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            poRefGhostText.Visibility = string.IsNullOrEmpty(textBox.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
-        }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
@@ -312,7 +309,7 @@ namespace ProjectLighthouse.View
                 SentBy = App.CurrentUser.UserName,
                 DateSent = DateTime.Now.ToString("s"),
                 DateEdited = DateTime.MinValue.ToString("s"),
-                DocumentReference = order.Name
+                DocumentReference = Order.Name
             };
 
             DatabaseHelper.Insert(newNote);
@@ -335,7 +332,7 @@ namespace ProjectLighthouse.View
 
         private void Checkbox_Checked(object sender, RoutedEventArgs e)
         {
-            SetCheckboxEnabling();
+            SetCheckboxEnabling(CanEdit);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -344,25 +341,185 @@ namespace ProjectLighthouse.View
             CalculateBarRequirements();
             CheckIfOrderIsClosed(); // running to closed is broken
 
-            if (savedOrder.IsUpdated(order))
+            if (savedOrder.IsUpdated(Order))
             {
                 SaveExit = true;
             }
 
             if (SaveExit)
             {
-                order.ModifiedBy = App.CurrentUser.GetFullName();
-                order.ModifiedAt = DateTime.Now;
-
-                order.Status = order.State.ToString();
-
-                if (savedOrder.State < OrderState.Complete && order.State >= OrderState.Complete)
-                {
-                    order.CompletedAt = order.ModifiedAt;
-                }
-
-                _ = DatabaseHelper.Update(order);
+                SaveOrder();
             }
+        }
+
+        void SaveOrder()
+        {
+            Order.ModifiedBy = App.CurrentUser.GetFullName();
+            Order.ModifiedAt = DateTime.Now;
+
+            Order.Status = Order.State.ToString();
+
+            if (savedOrder.State < OrderState.Complete && Order.State >= OrderState.Complete)
+            {
+                Order.CompletedAt = Order.ModifiedAt;
+            }
+
+            _ = DatabaseHelper.Update(Order);
+        }
+
+        private void SpareBarsTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
+        }
+
+        private void Items_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is not ListView list)
+            {
+                return;
+            }
+
+            if (list.SelectedValue is LatheManufactureOrderItem selectedItem)
+            {
+                RemoveItemButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling
+                    && CanEdit
+                    && Order.State < OrderState.Complete
+                    && selectedItem.QuantityMade == 0;
+            }
+            else
+            {
+                RemoveItemButton.IsEnabled = false;
+            }
+        }
+
+        private void RemoveItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            LatheManufactureOrderItem item = (LatheManufactureOrderItem)ItemsListBox.SelectedValue;
+            MessageBoxResult userChoice = MessageBox.Show($"Are you sure you want to delete {item.ProductName} from {Order.Name}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (userChoice == MessageBoxResult.Yes)
+            {
+                DatabaseHelper.Delete(item);
+                CalculateBarRequirements();
+                CalculateTime();
+                SaveExit = true;
+                SaveOrder();
+                LoadData(Order.Name);
+            }
+        }
+
+        private void AddItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddItemToOrderWindow window = new(Order.Name);
+            if(window.PossibleItems.Count == 0)
+            {
+                MessageBox.Show("No further items are available to run on this order.", "Unavailable", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            Hide();
+            window.ShowDialog();
+            if (window.ItemsWereAdded)
+            {
+                SaveExit = true;
+                CalculateBarRequirements();
+                CalculateTime();
+                SaveOrder();
+                LoadData(Order.Name);
+            }
+            Show();
+        }
+
+        private ICommand _saveCommand;
+        public static int? _toEdit = null;
+        public ICommand SaveCommand
+        {
+            get
+            {
+                if (_saveCommand == null)
+                {
+                    _saveCommand = new RelayCommand(
+                        param => this.SaveObject(),
+                        param => this.CanSave()
+                    );
+                }
+                return _saveCommand;
+            }
+        }
+
+        private bool CanSave()
+        {
+            return true;// Verify command can be executed here
+        }
+
+        private void SaveObject()
+        {
+            if (_toEdit == null)
+            {
+                MessageBox.Show("no edit");// Save command execution logic
+            }
+            EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit);
+            Hide();
+            editWindow.ShowDialog();
+
+            if (editWindow.SaveExit)
+            {
+                SaveExit = true;
+                LoadData(Order.Name);
+            }
+            Show();
+        }
+
+        public class RelayCommand : ICommand
+        {
+            #region Fields
+
+            readonly Action<object> _execute;
+            readonly Predicate<object> _canExecute;
+
+            #endregion
+
+            #region Constructors
+
+            public RelayCommand(Action<object> execute)
+                : this(execute, null)
+            {
+            }
+
+            public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+            {
+                if (execute == null)
+                    throw new ArgumentNullException("execute");
+
+                _execute = execute;
+                _canExecute = canExecute;
+            }
+
+            #endregion
+
+            #region ICommand Members
+
+            [DebuggerStepThrough]
+            public bool CanExecute(object parameters)
+            {
+                return _canExecute == null ? true : _canExecute(parameters);
+            }
+
+            public event EventHandler CanExecuteChanged
+            {
+                add { CommandManager.RequerySuggested += value; }
+                remove { CommandManager.RequerySuggested -= value; }
+            }
+
+            public void Execute(object parameters)
+            {
+                if (parameters is not int id)
+                {
+                    return;
+                }
+                _toEdit = id;
+                _execute(parameters);
+            }
+
+            #endregion
         }
     }
 }

@@ -35,7 +35,7 @@
             <!--#region DataTemplates-->
             <DataTemplate DataType="{x:Type x:NullExtension}">
                 <Grid>
-                    <TextBlock Text="Null"/>
+                    <TextBlock Text="Null" />
                 </Grid>
             </DataTemplate>
 

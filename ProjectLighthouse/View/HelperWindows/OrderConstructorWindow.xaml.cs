@@ -303,6 +303,7 @@ namespace ProjectLighthouse.View
             NewOrder.MajorDiameter = NewOrderItems.First().MajorDiameter;
             NewOrder.BarsInStockAtCreation = Bars.Find(x => x.Id == NewOrder.BarID).InStock;
             NewOrder.NumberOfBars = Math.Ceiling(Insights.NumberOfBarsRequired);
+            NewOrder.ToolingGroup = SelectedToolingGroup;
 
             int time = 0;
             for (int i = 0; i < NewOrderItems.Count; i++)
@@ -311,7 +312,8 @@ namespace ProjectLighthouse.View
             }
             NewOrder.TimeToComplete = time;
 
-            List<TechnicalDrawing> drawings = FindDrawings();
+            List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().ToList();
+            List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.ToolingGroup);
 
             _ = DatabaseHelper.Insert(NewOrder);
             foreach (LatheManufactureOrderItem item in NewOrderItems)
@@ -352,85 +354,6 @@ namespace ProjectLighthouse.View
             return blank[..(6 - orderNumLen)] + strOrderNum;
         }
 
-        private List<TechnicalDrawing> FindDrawings()
-        {
-            List<TechnicalDrawing> drawings = DatabaseHelper.Read<TechnicalDrawing>();
-
-            List<TechnicalDrawing> results = new();
-            for (int i = 0; i < NewOrderItems.Count; i++)
-            {
-                if (NewOrderItems[i].IsSpecialPart)
-                {
-                    List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == NewOrderItems[i].ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
-                    if (matches.Count == 0)
-                    {
-                        NewOrderItems[i].DrawingId = 0;
-                    }
-                    else
-                    {
-                        NewOrderItems[i].DrawingId = matches.First().Id;
-                        results.Add(matches.First());
-                    }
-                }
-                else
-                {
-                    List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == NewOrderItems[i].ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
-                    if (matches.Count == 0)
-                    {
-                        TechnicalDrawing best = GetBestDrawingForProduct(
-                            family: NewOrderItems[i].ProductName[..5],
-                            group: RequiredProduct.ProductGroup,
-                            material: RequiredProduct.Material,
-                            drawings: drawings);
-
-                        if (best == null)
-                        {
-                            NewOrderItems[i].DrawingId = 0;
-                        }
-                        else
-                        {
-                            NewOrderItems[i].DrawingId = best.Id;
-                            results.Add(best);
-
-                        }
-                    }
-                    else
-                    {
-                        NewOrderItems[i].DrawingId = matches.First().Id;
-                        results.Add(matches.First());
-                    }
-                }
-            }
-
-
-            return results.Distinct().ToList();
-        }
-
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-        public static TechnicalDrawing? GetBestDrawingForProduct(string family, string group, string material, List<TechnicalDrawing> drawings)
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-        {
-            List<TechnicalDrawing> matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group && d.MaterialConstraint == material).ToList();
-            if (matches.Count > 0)
-            {
-                matches = matches.OrderByDescending(d => d.Revision).ToList();
-                return matches.First();
-            }
-
-            matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group).ToList();
-            if (matches.Count > 0)
-            {
-                matches = matches.OrderByDescending(d => d.Revision).ToList();
-                return matches.First();
-            }
-
-            matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && string.IsNullOrEmpty(d.ToolingGroup)).ToList();
-            if (matches.Count > 0)
-            {
-                matches = matches.OrderByDescending(d => d.Revision).ToList();
-                return matches.First();
-            }
-            return null;
-        }
+        
     }
 }

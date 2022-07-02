@@ -25,8 +25,8 @@
             <Path
                 x:Name="doneFlag"
                 Width="18"
-                Margin="0,0,5,0"
                 Height="18"
+                Margin="0,0,5,0"
                 Data="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"
                 Fill="{StaticResource Green}"
                 Stretch="Uniform" />
@@ -88,8 +88,8 @@
             <StackPanel
                 x:Name="requirements"
                 Grid.Column="2"
-                HorizontalAlignment="Right"
                 Margin="0,0,20,0"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
                 <Grid>
@@ -138,7 +138,7 @@
                 <TextBlock
                     Grid.Column="2"
                     HorizontalAlignment="Right"
-                                        Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
+                    Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
 
                 <TextBlock
                     Grid.Row="1"
@@ -148,7 +148,7 @@
                     Grid.Row="1"
                     Grid.Column="2"
                     HorizontalAlignment="Right"
-                    Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}"/>
+                    Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}" />
 
                 <TextBlock
                     Grid.Row="2"

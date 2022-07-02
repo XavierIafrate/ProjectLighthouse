@@ -40,8 +40,6 @@ namespace ProjectLighthouse.View
             ToolingGroupConstraintComboBox.ItemsSource = new List<string>().Prepend("All Tooling Groups");
             ToolingGroupConstraintComboBox.SelectedItem = ToolingGroupConstraintComboBox.Items[0];
 
-
-
             ChooseArchetypeControls.Visibility = Visibility.Collapsed;
         }
 
@@ -84,11 +82,10 @@ namespace ProjectLighthouse.View
 
         private void SetNewFileNames()
         {
-            string bin = (bool)ArchetypeCheckbox.IsChecked ? @"Drawings\" : @"Drawings\Specials\";
-            int newRevision = GetRevision(NewDrawing.DrawingName);
-            NewDrawing.Revision = newRevision;
-            NewDrawing.URL = bin + $"{MakeValidFileName(NewDrawing.DrawingName)}_R{newRevision}.pdf";
-            destinationFilePath = Path.Combine(App.ROOT_PATH, NewDrawing.URL);
+            string bin = @"lib\";
+            NewDrawing.Revision = 0;
+            NewDrawing.DrawingStore = bin + Path.GetRandomFileName();
+            destinationFilePath = Path.Combine(App.ROOT_PATH, NewDrawing.DrawingStore);
         }
 
         private bool ImprintData()
@@ -220,10 +217,8 @@ namespace ProjectLighthouse.View
         {
             if (DataIsValid())
             {
-                MessageBox.Show($"Creating {NewDrawing.DrawingName}, revision {GetRevision(NewDrawing.DrawingName)}");
                 ImprintData();
-                SaveExit = true;
-                
+                SaveExit = true;   
                 Close();
             }
         }

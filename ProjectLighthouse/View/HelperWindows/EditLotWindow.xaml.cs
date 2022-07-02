@@ -10,11 +10,17 @@ namespace ProjectLighthouse.View
     {
         public bool SaveExit = false;
         public Lot EditLot { get; set; }
+        public bool CanEdit { get; set; }   
         private Lot originalLot { get; set; }
 
-        public EditLotWindow(Lot lot)
+        public EditLotWindow(int lotId, bool edit)
         {
             InitializeComponent();
+
+            CanEdit = edit;
+
+            Lot lot = DatabaseHelper.Read<Lot>().Find(x => x.ID == lotId);  
+
             EditLot = (Lot)lot.Clone();
             originalLot = lot;
             PopulateControls();

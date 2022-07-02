@@ -19,13 +19,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="3*" />
             <RowDefinition Height="2*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition Width="450" />
-            <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="280" />
-        </Grid.ColumnDefinitions>-->
         <Border Name="ReceiverColor" Grid.RowSpan="2">
             <Grid>
                 <Border CornerRadius="50">
@@ -110,23 +105,27 @@
 
 
         <Grid Grid.Row="2">
-            <Grid
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border
                 x:Name="MessageBadge"
-                Margin="10,5"
-                Visibility="Hidden">
-                <Rectangle
-                    Height="26"
-                    Fill="{StaticResource Red}"
-                    RadiusX="13"
-                    RadiusY="13" />
+                Margin="3"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{StaticResource Red}"
+                CornerRadius="2"
+                Visibility="Collapsed">
                 <TextBlock
                     x:Name="message"
-                    Padding="15,5,15,7"
+                    Padding="15,2,15,4"
                     HorizontalAlignment="Center"
                     Foreground="{StaticResource OnRed}"
                     Text="Username Not Found debug" />
-            </Grid>
+            </Border>
             <StackPanel
+                Grid.Row="1"
                 Margin="0,0,0,10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"

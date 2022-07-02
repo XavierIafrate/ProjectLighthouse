@@ -63,11 +63,15 @@
                     MaxWidth="700"
                     Margin="30"
                     VerticalAlignment="Top">
-                    <Rectangle
-                        RadiusX="5"
-                        RadiusY="5"
-                        Stroke="{StaticResource Blue}"
-                        StrokeThickness="2" />
+                    <Border CornerRadius="10" Background="{StaticResource Background}" >
+                        <Border.Effect>
+                            <DropShadowEffect
+                                        BlurRadius="30"
+                                        Opacity="0.4"
+                                        ShadowDepth="0"
+                                        Color="Black" />
+                        </Border.Effect>
+                    </Border>
                     <Grid Margin="30">
                         <StackPanel>
                             <Grid>

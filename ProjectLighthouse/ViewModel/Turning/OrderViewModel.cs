@@ -619,29 +619,28 @@ namespace ProjectLighthouse.ViewModel
         {
             DataRefreshTimer.Enabled = false;
             string order = SelectedOrder.Name;
-            EditLMOWindow editWindow = new(
-                o: SelectedOrder,
-                i: FilteredOrderItems.ToList(),
-                l: Lots.Where(n => n.Order == SelectedOrder.Name).ToList(),
-                n: FilteredNotes.ToList(),
-                b: BarStock
-                );
+            bool editable = true;
+            if (SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)
+            {
+                editable = false;
+            }
+            if(!App.CurrentUser.CanUpdateLMOs)
+            {
+                editable = false;
+            }
+            EditLMOWindow editWindow = new(SelectedOrder.Name, editable);
 
             editWindow.Owner = Application.Current.MainWindow;
             editWindow.ShowDialog();
 
-            if (editWindow.SaveExit)
+            Refresh(silent: false);
+            for (int i = 0; i < FilteredOrders.Count; i++)
             {
-                Refresh(silent: false);
-                for (int i = 0; i < FilteredOrders.Count; i++)
+                if (FilteredOrders[i].Name == order)
                 {
-                    if (FilteredOrders[i].Name == order)
-                    {
-                        SelectedOrder = FilteredOrders[i];
-                    }
-                }   
-            }
-            //editWindow = null;
+                    SelectedOrder = FilteredOrders[i];
+                }
+            }   
 
             DataRefreshTimer.Enabled = true;
         }

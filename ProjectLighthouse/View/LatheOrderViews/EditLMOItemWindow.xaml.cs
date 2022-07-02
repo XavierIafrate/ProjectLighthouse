@@ -6,86 +6,51 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ProjectLighthouse.View
 {
     public partial class EditLMOItemWindow : Window
     {
-        public LatheManufactureOrderItem Item;
-        public List<Lot> Lots;
-        public int intQtyMade;
-        public int intQtyReject;
-        public int intQtyDelivered;
-        private bool LotAdded;
+        public LatheManufactureOrderItem Item { get; set; } 
+        public List<Lot> Lots { get; set; }
+        public bool CanEdit { get; set; }
         private string ProducedOnMachine { get; set; }
 
         public bool SaveExit;
+        private bool LotAdded;
 
-        public EditLMOItemWindow(LatheManufactureOrderItem item, List<Lot> lots, string MachineID)
+        public EditLMOItemWindow(int ItemId, bool canEdit)
         {
             InitializeComponent();
             SaveExit = false;
-            Item = item;
-            Lots = lots;
+            CanEdit = canEdit;
 
-            foreach (Lot lot in Lots)
-            {
-                if (lot.RequestToEdit == null)
-                {
-                    lot.RequestToEdit += EditLot;
-                }
-            }
+            LoadData(ItemId);
 
-            ProducedOnMachine = MachineID;
+            //ProducedOnMachine = MachineID;
+            DataContext = this;
 
             LoadUI();
         }
 
+        private void LoadData(int id)
+        {
+            Item = DatabaseHelper.Read<LatheManufactureOrderItem>().Find(x => x.Id == id);
+            Lots = DatabaseHelper.Read<Lot>().Where(x => x.ProductName == Item.ProductName && x.Order == Item.AssignedMO).ToList();
+
+            Item.QuantityMade = Lots.Where(x => !x.IsReject).Sum(x => x.Quantity);
+            Item.QuantityReject = Lots.Where(x => x.IsReject).Sum(x => x.Quantity);
+            Item.QuantityDelivered = Lots.Where(x => x.IsDelivered).Sum(x => x.Quantity);
+            DatabaseHelper.Update(Item);
+        }
+
         private void LoadUI()
         {
-            intQtyMade = 0;
-            intQtyReject = 0;
-            intQtyDelivered = 0;
-
-            if (Lots.Count > 0)
-            {
-                foreach (Lot lot in Lots)
-                {
-                    if (lot.ProductName != Item.ProductName)
-                    {
-                        continue;
-                    }
-
-                    if (!lot.IsReject)
-                    {
-                        intQtyMade += lot.Quantity;
-
-                        if (lot.IsDelivered)
-                        {
-                            intQtyDelivered += lot.Quantity;
-                        }
-                    }
-                    else
-                    {
-                        intQtyReject += lot.Quantity;
-                    }
-                }
-            }
-
-            Item.QuantityDelivered = intQtyDelivered;
-            Item.QuantityMade = intQtyMade;
-            Item.QuantityReject = intQtyReject;
-
-            QtyMadeTextBlock.Text = $"{Item.QuantityMade:#,##0} pcs";
-            QtyRejectTextBlock.Text = $"{Item.QuantityReject:#,##0} pcs";
-            QtyDeliveredTextBlock.Text = $"{Item.QuantityDelivered:#,##0} pcs";
-            QuantityRequiredTextbox.Text = Item.RequiredQuantity.ToString();
-            QuantityTargetTextbox.Text = Item.TargetQuantity.ToString();
-            DateRequiredPicker.SelectedDate = Item.DateRequired;
-
-            ProductNameTextBlock.Text = Item.ProductName;
-            ManufactureOrderTextBlock.Text = Item.AssignedMO;
+            //QuantityRequiredTextbox.Text = Item.RequiredQuantity.ToString();
+            //QuantityTargetTextbox.Text = Item.TargetQuantity.ToString();
+            //DateRequiredPicker.SelectedDate = Item.DateRequired;
 
             SchedulingGrid.Visibility = App.CurrentUser.UserRole is "Scheduling" or "admin"
                 ? Visibility.Visible
@@ -140,26 +105,18 @@ namespace ProjectLighthouse.View
 
             DatabaseHelper.Update(Item);
 
-            //Update master cycle time record
-            List<TurnedProduct> product = DatabaseHelper.Read<TurnedProduct>().Where(n => n.ProductName == Item.ProductName).ToList();
-
-            //should return only one!
-            if (product != null)
-            {
-                TurnedProduct thisProduct = product.First();
-                thisProduct.CycleTime = cycleTime;
-                if (LotAdded)
-                {
-                    thisProduct.QuantityManufactured = Lots.Where(l => l.ProductName == Item.ProductName).Sum(l => l.Quantity);
-                    thisProduct.lastManufactured = DateTime.Now;
-                }
-
-                DatabaseHelper.Update(thisProduct);
-            }
-            else
+            TurnedProduct product = DatabaseHelper.Read<TurnedProduct>().Find(n => n.ProductName == Item.ProductName);
+            if (product == null)
             {
                 MessageBox.Show("Failed to update product record.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            product.CycleTime = cycleTime;
+            if (LotAdded)
+            {
+                product.lastManufactured = DateTime.Now;
+            }
+
+            DatabaseHelper.Update(product);
             SaveExit = true;
             Close();
         }
@@ -233,89 +190,52 @@ namespace ProjectLighthouse.View
                 return;
             }
 
-            if (int.TryParse(QuantityNewLotTextBox.Text, out int n))
-            {
-                Lot newLot = new()
-                {
-                    ProductName = Item.ProductName,
-                    Order = Item.AssignedMO,
-                    AddedBy = App.CurrentUser.UserName,
-                    Quantity = n,
-                    Date = DateTime.Now,
-                    IsReject = (bool)RejectCheckBox.IsChecked,
-                    IsAccepted = (bool)AcceptedCheckBox.IsChecked,
-                    IsDelivered = false,
-                    MaterialBatch = BatchTextBox.Text.Trim(),
-                    FromMachine = ProducedOnMachine,
-                    Remarks = RemarksTextBox.Text.Trim(),
-                    DateProduced = DateTime.Now.Hour >= 9
-                        ? DateTime.Now.Date.AddHours(12)
-                        : DateTime.Now.Date.AddHours(-12)
-                };
-
-                newLot.SetExcelDateTime();
-
-                if (!DatabaseHelper.Insert(newLot))
-                {
-                    MessageBox.Show("Failed to add to database", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                if (newLot.IsReject)
-                {
-                    Item.QuantityReject += n;
-                }
-                else
-                {
-                    Item.QuantityMade += n;
-                }
-
-                LotAdded = true;
-                DatabaseHelper.Update<LatheManufactureOrderItem>(Item);
-
-                Lots.Add(newLot);
-                SaveExit = true;
-                List<Lot> refreshedLots = new(Lots.Where(l => l.ProductName == Item.ProductName));
-
-                foreach (Lot lot in refreshedLots)
-                {
-                    if (lot.RequestToEdit == null)
-                    {
-                        lot.RequestToEdit += EditLot;
-                    }
-                }
-
-                LotsListBox.ItemsSource = refreshedLots;
-                QtyMadeTextBlock.Text = $"{Item.QuantityMade:#,##0} pcs";
-                QtyRejectTextBlock.Text = $"{Item.QuantityReject:#,##0} pcs";
-
-                QuantityNewLotTextBox.Text = "";
-                RejectCheckBox.IsChecked = false;
-            }
-            else
+            if (!int.TryParse(QuantityNewLotTextBox.Text, out int n))
             {
                 MessageBox.Show("Invalid quantity", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-        }
 
-        private void EditLot(Lot lotToEdit)
-        {
-            EditLotWindow window = new(lotToEdit);
-            window.Owner = Application.Current.MainWindow;
-            window.ShowDialog();
-
-            Lots = null;
-            Lots = DatabaseHelper.Read<Lot>().Where(n => n.Order == Item.AssignedMO).ToList();
-            foreach (Lot lot in Lots)
+            Lot newLot = new()
             {
-                if (lot.RequestToEdit == null)
-                {
-                    lot.RequestToEdit += EditLot;
-                }
+                ProductName = Item.ProductName,
+                Order = Item.AssignedMO,
+                AddedBy = App.CurrentUser.UserName,
+                Quantity = n,
+                Date = DateTime.Now,
+                IsReject = (bool)RejectCheckBox.IsChecked,
+                IsAccepted = (bool)AcceptedCheckBox.IsChecked,
+                IsDelivered = false,
+                MaterialBatch = BatchTextBox.Text.Trim(),
+                FromMachine = ProducedOnMachine,
+                Remarks = RemarksTextBox.Text.Trim(),
+                DateProduced = DateTime.Now.Hour >= 9
+                    ? DateTime.Now.Date.AddHours(12)
+                    : DateTime.Now.Date.AddHours(-12)
+            };
+
+            if (!DatabaseHelper.Insert(newLot))
+            {
+                MessageBox.Show("Failed to add to database", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
-            LoadUI();
+            LotAdded = true;
+            SaveExit = true;
+
+            LoadData(Item.Id);
+            LoadUI();   
+
+            QuantityNewLotTextBox.Text = "";
+            RejectCheckBox.IsChecked = false;
         }
+
+        //private void EditLot(Lot lotToEdit)
+        //{
+        //    EditLotWindow window = new(lotToEdit.ID);
+        //    window.Owner = Application.Current.MainWindow;
+        //    window.ShowDialog();
+        //}
 
         private void BatchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -352,6 +272,100 @@ namespace ProjectLighthouse.View
             RemarksGhost.Visibility = string.IsNullOrEmpty(RemarksTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Hidden;
+        }
+
+        private ICommand _saveCommand;
+        public static int? _toEdit = null;
+        public ICommand EditCommand
+        {
+            get
+            {
+                if (_saveCommand == null)
+                {
+                    _saveCommand = new RelayCommand(
+                        param => this.SaveObject(),
+                        param => this.CanSave()
+                    );
+                }
+                return _saveCommand;
+            }
+        }
+
+        private bool CanSave()
+        {
+            return true;// Verify command can be executed here
+        }
+
+        private void SaveObject()
+        {
+            if (_toEdit == null)
+            {
+                MessageBox.Show("no edit");// Save command execution logic
+            }
+            EditLotWindow editWindow = new((int)_toEdit, CanEdit);
+            Hide();
+            editWindow.ShowDialog();
+
+            if (editWindow.SaveExit)
+            {
+                SaveExit = true;
+                LoadData(Item.Id);
+            }
+            Show();
+        }
+
+        public class RelayCommand : ICommand
+        {
+            #region Fields
+
+            readonly Action<object> _execute;
+            readonly Predicate<object> _canExecute;
+
+            #endregion
+
+            #region Constructors
+
+            public RelayCommand(Action<object> execute)
+                : this(execute, null)
+            {
+            }
+
+            public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+            {
+                if (execute == null)
+                    throw new ArgumentNullException("execute");
+
+                _execute = execute;
+                _canExecute = canExecute;
+            }
+
+            #endregion
+
+            #region ICommand Members
+
+            [DebuggerStepThrough]
+            public bool CanExecute(object parameters)
+            {
+                return _canExecute == null ? true : _canExecute(parameters);
+            }
+
+            public event EventHandler CanExecuteChanged
+            {
+                add { CommandManager.RequerySuggested += value; }
+                remove { CommandManager.RequerySuggested -= value; }
+            }
+
+            public void Execute(object parameters)
+            {
+                if (parameters is not int id)
+                {
+                    return;
+                }
+                _toEdit = id;
+                _execute(parameters);
+            }
+
+            #endregion
         }
     }
 }

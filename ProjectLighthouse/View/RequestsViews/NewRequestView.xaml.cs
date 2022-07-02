@@ -20,24 +20,24 @@ namespace ProjectLighthouse.View
 
         private void EnableSubmit()
         {
-            if (viewModel != null)
-            {
-                submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate > DateTime.Now &&
-                    DateRequiredCalendarView.SelectedDate < DateTime.Now.AddMonths(13) &&
-                        viewModel.NewRequest.QuantityRequired > 0 &&
-                        productsListBox.SelectedItem != null &&
-                        App.CurrentUser.CanRaiseRequest;
-            }
+            //if (viewModel != null)
+            //{
+            //    submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate > DateTime.Now &&
+            //        DateRequiredCalendarView.SelectedDate < DateTime.Now.AddMonths(13) &&
+            //            viewModel.NewRequest.QuantityRequired > 0 &&
+            //            productsListBox.SelectedItem != null &&
+            //            App.CurrentUser.CanRaiseRequest;
+            //}
         }
 
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            bool success = await viewModel.SubmitRequest();
-            if (success)
-            {
-                quantityBox.Text = "";
-                notesTextBox.Document.Blocks.Clear();
-            }
+            //bool success = await viewModel.SubmitRequest();
+            //if (success)
+            //{
+            //    quantityBox.Text = "";
+            //    notesTextBox.Document.Blocks.Clear();
+            //}
         }
 
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
@@ -71,36 +71,36 @@ namespace ProjectLighthouse.View
 
         void PopulateQuantityPrefill()
         {
-            if (viewModel == null)
-            {
-                return;
-            }
+            //if (viewModel == null)
+            //{
+            //    return;
+            //}
 
-            if (viewModel.SelectedGroup == "Live")
-            {
-                if (productsListBox.SelectedValue is TurnedProduct turnedProduct)
-                {
-                    quantityBox.Text = Math.Abs(turnedProduct.FreeStock()).ToString();
-                }
-            }
-            else
-            {
-                quantityBox.Text = "0";
-            }
+            //if (viewModel.SelectedGroup == "Live")
+            //{
+            //    if (productsListBox.SelectedValue is TurnedProduct turnedProduct)
+            //    {
+            //        quantityBox.Text = Math.Abs(turnedProduct.FreeStock()).ToString();
+            //    }
+            //}
+            //else
+            //{
+            //    quantityBox.Text = "0";
+            //}
 
-            EnableSubmit();
+            //EnableSubmit();
         }
 
         private void NotesTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextRange textRange = new(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
-            if (viewModel != null && textRange.Text.Length >= 2)
-            {
-                viewModel.NewRequest.Notes = textRange.Text[0..^2];
-                NotesGhost.Visibility = string.IsNullOrEmpty(textRange.Text[0..^2])
-                    ? Visibility.Visible
-                    : Visibility.Hidden;
-            }
+            //TextRange textRange = new(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
+            //if (viewModel != null && textRange.Text.Length >= 2)
+            //{
+            //    viewModel.NewRequest.Notes = textRange.Text[0..^2];
+            //    NotesGhost.Visibility = string.IsNullOrEmpty(textRange.Text[0..^2])
+            //        ? Visibility.Visible
+            //        : Visibility.Hidden;
+            //}
         }
 
         private void QuantityBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -110,24 +110,24 @@ namespace ProjectLighthouse.View
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (graphGrid.Visibility == Visibility.Visible)
-            {
-                if (mainGrid.ColumnDefinitions[2].ActualWidth < 380)
-                {
-                    graphGrid.Visibility = Visibility.Collapsed;
-                    mainGrid.ColumnDefinitions[2].Width = new(0);
-                    mainGrid.ColumnDefinitions[1].Width = new(1, GridUnitType.Star);
-                }
-            }
-            else
-            {
-                if (mainGrid.ColumnDefinitions[1].ActualWidth > (380 + 350))
-                {
-                    graphGrid.Visibility = Visibility.Visible;
-                    mainGrid.ColumnDefinitions[2].Width = new(1, GridUnitType.Star);
-                    mainGrid.ColumnDefinitions[1].Width = GridLength.Auto;
-                }
-            }
+            //if (graphGrid.Visibility == Visibility.Visible)
+            //{
+            //    if (mainGrid.ColumnDefinitions[2].ActualWidth < 380)
+            //    {
+            //        graphGrid.Visibility = Visibility.Collapsed;
+            //        mainGrid.ColumnDefinitions[2].Width = new(0);
+            //        mainGrid.ColumnDefinitions[1].Width = new(1, GridUnitType.Star);
+            //    }
+            //}
+            //else
+            //{
+            //    if (mainGrid.ColumnDefinitions[1].ActualWidth > (380 + 350))
+            //    {
+            //        graphGrid.Visibility = Visibility.Visible;
+            //        mainGrid.ColumnDefinitions[2].Width = new(1, GridUnitType.Star);
+            //        mainGrid.ColumnDefinitions[1].Width = GridLength.Auto;
+            //    }
+            //}
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

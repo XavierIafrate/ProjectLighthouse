@@ -11,7 +11,18 @@ namespace ProjectLighthouse.Model
         public string Order { get; set; }
         public string AddedBy { get; set; }
         public int Quantity { get; set; }
-        public DateTime Date { get; set; }
+        private DateTime date;
+
+        public DateTime Date
+        {
+            get { return date; }
+            set
+            {
+                date = value;
+                ExcelDate = $"{Date:dd/MM/yyyy HH:mm:ss}";
+            }
+        }
+
         public DateTime DateProduced { get; set; }
         public string ExcelDate { get; set; }
         public bool IsReject { get; set; }
@@ -29,12 +40,6 @@ namespace ProjectLighthouse.Model
         public void NotifyRequestToEdit()
         {
             RequestToEdit?.Invoke(this);
-        }
-
-
-        public void SetExcelDateTime()
-        {
-            ExcelDate = $"{Date:dd/MM/yyyy HH:mm:ss}";
         }
 
         public object Clone()

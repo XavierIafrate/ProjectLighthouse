@@ -876,23 +876,27 @@
                 <ControlTemplate TargetType="Button">
 
                     <Border
+                        Height="40"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="15"
-                        Height="40">
-                        <Grid HorizontalAlignment="Center" Margin="20,0">
+                        CornerRadius="15">
+                        <Grid Margin="20,0" HorizontalAlignment="Center">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Path
                                 Width="15"
                                 Height="15"
-                                VerticalAlignment="Center"
                                 Margin="0,2,6,0"
+                                VerticalAlignment="Center"
                                 Data="M10,17V14H3V10H10V7L15,12L10,17M10,2H19A2,2 0 0,1 21,4V20A2,2 0 0,1 19,22H10A2,2 0 0,1 8,20V18H10V20H19V4H10V6H8V4A2,2 0 0,1 10,2Z"
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
-                            <TextBlock Text="Log In" Grid.Column="1" FontSize="15"  VerticalAlignment="Center"/>
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                Text="Log In" />
 
                         </Grid>
                     </Border>

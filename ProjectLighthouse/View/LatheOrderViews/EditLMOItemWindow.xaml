@@ -8,10 +8,10 @@
     xmlns:mdl="clr-namespace:ProjectLighthouse.Model"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Edit Item"
-    ResizeMode="NoResize"
     Background="{StaticResource Background}"
-    TextElement.Foreground="{StaticResource OnBackground}"
+    ResizeMode="NoResize"
     SizeToContent="WidthAndHeight"
+    TextElement.Foreground="{StaticResource OnBackground}"
     WindowStartupLocation="CenterScreen">
 
     <Grid>
@@ -30,16 +30,12 @@
                 Text="Update Item" />
             <Separator />
             <StackPanel Orientation="Horizontal">
-                <TextBlock
-                    x:Name="ProductNameTextBlock"
-                    FontSize="20"
-                    Text="P0123.456-789-A0" />
+                <TextBlock FontSize="20" Text="{Binding Item.ProductName}" />
                 <TextBlock FontSize="20" Text=" • " />
                 <TextBlock
-                    x:Name="ManufactureOrderTextBlock"
                     FontSize="20"
                     Foreground="{StaticResource Blue}"
-                    Text="M00000" />
+                    Text="{Binding Item.AssignedMO}" />
             </StackPanel>
 
 
@@ -65,7 +61,7 @@
                     HorizontalAlignment="Center"
                     FontSize="18"
                     Foreground="{StaticResource Purple}"
-                    Text="n/a" />
+                    Text="{Binding Item.QuantityMade, StringFormat='{}{0:#,##0} pcs'}" />
 
                 <TextBlock
                     Grid.Column="1"
@@ -80,7 +76,7 @@
                     HorizontalAlignment="Center"
                     FontSize="18"
                     Foreground="{StaticResource Red}"
-                    Text="n/a" />
+                    Text="{Binding Item.QuantityReject, StringFormat='{}{0:#,##0} pcs'}" />
 
                 <TextBlock
                     Grid.Column="2"
@@ -95,7 +91,7 @@
                     HorizontalAlignment="Center"
                     FontSize="18"
                     Foreground="{StaticResource Green}"
-                    Text="n/a" />
+                    Text="{Binding Item.QuantityDelivered, StringFormat='{}{0:#,##0} pcs'}" />
             </Grid>
 
             <TextBlock
@@ -154,10 +150,14 @@
                 x:Name="LotsListBox"
                 MinHeight="100"
                 MaxHeight="350"
-                HorizontalContentAlignment="Stretch">
+                HorizontalContentAlignment="Stretch"
+                ItemsSource="{Binding Lots}">
                 <ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type mdl:Lot}">
-                        <uc:DisplayLot Lot="{Binding}" Margin="10,2"/>
+                        <uc:DisplayLot
+                            Margin="10,2"
+                            EditCommand="{Binding EditCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Window}}"
+                            Lot="{Binding}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -197,14 +197,14 @@
                     <CheckBox
                         x:Name="AcceptedCheckBox"
                         Margin="5,0,5,5"
-                        Checked="AcceptedCheckBox_Checked"
                         VerticalAlignment="Center"
+                        Checked="AcceptedCheckBox_Checked"
                         Content="QC Accept" />
                     <CheckBox
                         x:Name="RejectCheckBox"
-                        Checked="RejectCheckBox_Checked"
                         Margin="5,0"
                         VerticalAlignment="Center"
+                        Checked="RejectCheckBox_Checked"
                         Content="QC Reject" />
                 </StackPanel>
 
@@ -273,13 +273,15 @@
                 x:Name="QuantityRequiredTextbox"
                 Width="150"
                 PreviewKeyDown="Allow_Nums_Only"
-                Style="{StaticResource UsernameTextBox}" />
+                Style="{StaticResource UsernameTextBox}"
+                Text="{Binding Item.RequiredQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Margin="0,10,0,5" Text="Quantity Target" />
             <TextBox
                 x:Name="QuantityTargetTextbox"
                 Width="150"
                 PreviewKeyDown="Allow_Nums_Only"
-                Style="{StaticResource UsernameTextBox}" />
+                Style="{StaticResource UsernameTextBox}"
+                Text="{Binding Item.TargetQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Margin="0,10,0,5" Text="Date Required" />
             <Grid>
                 <DatePicker

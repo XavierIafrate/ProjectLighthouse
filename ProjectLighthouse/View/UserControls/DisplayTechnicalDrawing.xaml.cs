@@ -33,10 +33,10 @@ namespace ProjectLighthouse.View.UserControls
                     return;
                 }
 
-                string filePath = Path.Join(App.ROOT_PATH, control.Drawing.URL);
+                string filePath = Path.Join(App.ROOT_PATH, control.Drawing.DrawingStore);
                 
                 control.filename.Text = control.Drawing.DrawingName;
-                control.rev.Text = $"Revision {control.Drawing.Revision}";
+                control.rev.Text = $"Revision {control.Drawing.Revision}{control.Drawing.AmendmentType}";
 
                 if (!File.Exists(filePath))
                 {
@@ -55,7 +55,9 @@ namespace ProjectLighthouse.View.UserControls
         {
             Process fileopener = new();
             fileopener.StartInfo.FileName = "explorer";
-            fileopener.StartInfo.Arguments = "\"" + Path.Join(App.ROOT_PATH, Drawing.URL) + "\"";
+            string tmpPath = Path.GetTempFileName() + ".pdf";
+            File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath);
+            fileopener.StartInfo.Arguments = "\"" + tmpPath + "\"";
             _ = fileopener.Start();
         }
 

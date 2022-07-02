@@ -20,6 +20,7 @@ namespace ProjectLighthouse.Model
         public string BarID { get; set; }
 
         public double MajorLength { get; set; }
+        public double PartOffLength { get; set; }
         public double MajorDiameter { get; set; }
         public DateTime lastManufactured { get; set; }
         public int SellPrice { get; set; }
