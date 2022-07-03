@@ -34,26 +34,31 @@
 
         <Rectangle Grid.RowSpan="2" Fill="{StaticResource Surface}" />
         <StackPanel VerticalAlignment="Center">
-            <Grid>
-                <Image
-                    x:Name="LogoMono"
-                    Width="200"
-                    VerticalAlignment="Bottom"
-                    RenderOptions.BitmapScalingMode="Fant"
-                    Source="/Resources/LighthouseLogo_Mono.png" />
-                <Image
-                    Visibility="Hidden"
-                    x:Name="LogoColour"
-                    Width="200"
-                    VerticalAlignment="Bottom"
-                    RenderOptions.BitmapScalingMode="Fant"
-                    Source="/Resources/LighthouseLogo.png" />
-                <Rectangle
-                    Fill="Transparent"
-                    MouseDown="Rectangle_MouseDown"
-                    MouseEnter="Rectangle_MouseEnter"
-                    MouseLeave="Rectangle_MouseLeave" />
-            </Grid>
+            <Viewbox
+                MaxWidth="200"
+                MaxHeight="80">
+                <Grid>
+                    <Image
+                        x:Name="LogoMono"
+                        Width="150"
+                        VerticalAlignment="Center"
+                        RenderOptions.BitmapScalingMode="Fant"
+                        Source="/Resources/LighthouseLogo_Mono.png" />
+                    <Image
+                        Visibility="Hidden"
+                        x:Name="LogoColour"
+                        Width="150"
+                        VerticalAlignment="Center"
+                        RenderOptions.BitmapScalingMode="Fant"
+                        Source="/Resources/LighthouseLogo.png" />
+                    <Rectangle
+                        Fill="Transparent"
+                        MouseDown="Rectangle_MouseDown"
+                        MouseEnter="Rectangle_MouseEnter"
+                        Cursor="Hand"
+                        MouseLeave="Rectangle_MouseLeave" />
+                </Grid>
+            </Viewbox>
 
 
         </StackPanel>

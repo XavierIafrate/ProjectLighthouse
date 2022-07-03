@@ -9,7 +9,7 @@
     Title="About Project Lighthouse"
     ResizeMode="NoResize"
     Width="571"
-    Height="600"
+    SizeToContent="Height"
     mc:Ignorable="d">
     <StackPanel Margin="30" VerticalAlignment="Center">
         <Image
@@ -21,20 +21,16 @@
             <TextBlock
                 Margin="0,0,0,20"
                 HorizontalAlignment="Center"
-                FontSize="25"
-                FontWeight="Bold"
+                Style="{StaticResource title}"
                 Text="About" />
             <TextBlock
-                FontSize="20"
-                FontWeight="SemiBold"
+                Style="{StaticResource subtitle}"
                 Text="Project Lighthouse" />
-            <TextBlock
-                x:Name="CopyRightText"
-                FontStyle="Italic"
-                Text="Copyright Wixroyd Group " />
-            <TextBlock Foreground="{StaticResource Green}" Text="Written by Xavier Iafrate" />
+            
+            <TextBlock Foreground="{StaticResource Blue}" FontFamily="Consolas" Text="Written by Xavier Iafrate" />
 
             <Grid Height="20" />
+            <TextBlock Margin="0,0,0,10" Text="copyright 2021" x:Name="CopyRightText" Style="{StaticResource statement}" HorizontalAlignment="Center"/>
             <Separator />
             <Grid Height="20" />
 

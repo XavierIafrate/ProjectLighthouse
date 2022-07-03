@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -22,7 +23,7 @@ namespace ProjectLighthouse.View.UserControls
                 return;
 
             control.DataContext = control.Product;
-            int recommendedQuantity = control.Product.GetRecommendedQuantity();
+            int recommendedQuantity = control.Product.GetRecommendedQuantity() + Math.Max(0, control.Product.QuantityOnSO - control.Product.QuantityOnPO - control.Product.QuantityInStock);
 
             control.recommendedQtyText.Text = $"{recommendedQuantity:#,##0} pcs";
             Geometry g;

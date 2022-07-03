@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using ProjectLighthouse.Model;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -8,6 +9,8 @@ using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using Windows.ApplicationModel.Activation;
+using Windows.Foundation.Collections;
 
 namespace ProjectLighthouse
 {
@@ -81,7 +84,30 @@ namespace ProjectLighthouse
             }
 
             //CrashApplication();
+
+            ToastNotificationManagerCompat.OnActivated += toastArgs =>
+            {
+                // Obtain the arguments from the notification
+                ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
+
+                // Obtain any user input (text boxes, menu selections) from the notification
+                ValueSet userInput = toastArgs.UserInput;
+
+                // Need to dispatch to UI thread if performing UI operations
+                Application.Current.Dispatcher.Invoke(delegate
+                {
+                    Debug.WriteLine($"Activated request for {toastArgs.Argument}");
+                    if (toastArgs.Argument == "action=viewRequest")
+                    {
+                        
+                        Window.viewModel.UpdateViewCommand.Execute("View Requests");
+                    }
+                });
+            };
+
         }
+
+
 
 
         //private void CrashApplication()
@@ -156,6 +182,8 @@ namespace ProjectLighthouse
 
         protected override void OnExit(ExitEventArgs e)
         {
+            ToastNotificationManagerCompat.History.Clear();
+
             try
             {
                 if (Login != null)

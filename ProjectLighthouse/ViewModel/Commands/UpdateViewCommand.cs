@@ -32,15 +32,15 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "View Requests")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new RequestViewModel();
                 viewModel.NavText = "Requests";
             }
             else if (parameter.ToString() == "New Request")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new NewRequestViewModel();
                 viewModel.NavText = "New Request";
             }
@@ -60,17 +60,10 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Drawings")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DrawingBrowserViewModel();
                 viewModel.NavText = "Technical Drawings";
-            }
-            else if (parameter.ToString() == "Check Sheets")
-            {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new CheckSheetsViewModel();
-                viewModel.NavText = "Part Check Sheets";
             }
             else if (parameter.ToString() == "Calibration")
             {

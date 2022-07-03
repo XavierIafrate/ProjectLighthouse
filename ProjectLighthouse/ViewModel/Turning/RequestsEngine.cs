@@ -7,7 +7,7 @@ namespace ProjectLighthouse.ViewModel
 {
     public class RequestsEngine
     {
-        public static List<LatheManufactureOrderItem> GetRecommendedOrderItems(List<TurnedProduct> turnedProducts, TurnedProduct requiredProduct, int qtyOfRequired, TimeSpan maxRuntime, DateTime? RequiredProductDueDate = null, int numberOfItems = 4)
+        public static List<LatheManufactureOrderItem> GetRecommendedOrderItems(List<TurnedProduct> turnedProducts, TurnedProduct requiredProduct, int qtyOfRequired, TimeSpan maxRuntime, DateTime? RequiredProductDueDate = null, int numberOfItems = 4, bool enforceMOQ = true)
         {
             List<LatheManufactureOrderItem> recommendedItems = new();
             if (RequiredProductDueDate != null)
@@ -23,9 +23,11 @@ namespace ProjectLighthouse.ViewModel
             
             compatibleProducts.AddRange(turnedProducts
                 .Where(p => p.IsScheduleCompatible(requiredProduct) 
+                    && !p.isSpecialPart
                     && Math.Abs(p.MajorLength - requiredProduct.MajorLength) <= 40 
                     && p.ProductName != requiredProduct.ProductName)
                 .OrderByDescending(p => p.GetRecommendedQuantity())
+                .ThenBy(p => p.QuantityInStock)
                 );
 
             foreach (TurnedProduct product in compatibleProducts)
@@ -34,7 +36,7 @@ namespace ProjectLighthouse.ViewModel
                 recommendedItems.Add(newItem);
             }
 
-            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendedItems, maxRuntime, enforceMOQs:true);
+            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendedItems, maxRuntime, enforceMOQs:enforceMOQ);
 
             filteredItems = filteredItems.Take(numberOfItems).ToList();
 

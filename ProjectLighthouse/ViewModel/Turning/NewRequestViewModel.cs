@@ -1,7 +1,6 @@
-﻿using LiveCharts;
-using LiveCharts.Wpf;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model;
-using ProjectLighthouse.View;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -23,20 +22,42 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 newRequest = value;
-                OnPropertyChanged("NewRequest");
+                OnPropertyChanged();
             }
         }
 
+        private string searchTerm;
+        public string SearchTerm
+        {
+            get { return searchTerm; }
+            set
+            {
+                searchTerm = value.Trim().ToUpper();
+                FilterProducts(searchTerm);
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ShowingLiveRequirements { get; set; }
+        public bool NoSearchResults { get; set; }
+        public bool ProductIsSelected { get; set; }
+
         public List<TurnedProduct> TurnedProducts { get; set; }
-        public List<TurnedProduct> FilteredList { get; set; }
+        private List<TurnedProduct> filteredList;
 
-        public List<TurnedProduct> ItemsOnOrder { get; set; }
-        public List<Request> RecentlyDeclinedRequests { get; set; }
+        public List<TurnedProduct> FilteredList
+        {
+            get { return filteredList; }
+            set
+            {
+                filteredList = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public string PotentialQuantityText { get; set; }
-        public string RecommendedStockText { get; set; }
-        public string LikelinessText { get; set; }
-        public string RequiredQtyPrefill { get; set; }
+
+        public List<TurnedProduct> ItemsOnOrder;
+        public List<Request> RecentlyDeclinedRequests;
 
         private TurnedProduct selectedProduct;
         public TurnedProduct SelectedProduct
@@ -45,78 +66,50 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedProduct = value;
+                ProductIsSelected = value != null;
+                OnPropertyChanged(nameof(ProductIsSelected));
                 OnPropertyChanged();
-
-                if (selectedProduct != null)
-                {
-                    if (!selectedProduct.CanBeManufactured())
-                    {
-                        MessageBox.Show(selectedProduct.ProductName + " cannot be made on the lathes." + Environment.NewLine
-                             + Environment.NewLine + "Reason:" + Environment.NewLine + selectedProduct.GetReasonCannotBeMade(), "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    }
-                    CalculateInsights();
-                }
+                SetRequest();
             }
         }
 
-        public List<MachineInfoSnippet> Snippets { get; set; }
+        public List<LeadTime> Lathes { get; set; }
 
-        public List<string> Families { get; set; }
+        public List<User> ToNotify { get; set; }
 
-        private string selectedGroup;
-        public string SelectedGroup
-        {
-            get { return selectedGroup; }
-            set
-            {
-                selectedGroup = value;
-                OnPropertyChanged();
-                PopulateListBox();
-            }
-        }
+        public List<Product> ProductGroups { get; set; }
+
+        public List<LatheManufactureOrderItem> RecommendedManifest { get; set; }
 
         public NewSpecialPartCommand AddSpecialCommand { get; set; }
         public NewRequestCommand SubmitRequestCommand { get; set; }
-        public event EventHandler SelectedGroupChanged;
-        public event EventHandler SelectedProductChanged;
-
-        //Graph stuff
-        public string[] XAxisLabels { get; set; }
-        public SeriesCollection SeriesCollection { get; set; }
-        public Func<double, string> ThousandsSeparator { get; set; }
-        public string GraphTitle { get; set; }
-        public Visibility NotEnoughDataVis { get; set; }
-        public Visibility GraphVis { get; set; }
-        public Visibility GIFVis { get; set; }
-        public Visibility AddSpecialVisibility { get; set; }
-        public Visibility HighLeadTimeVisibility { get; set; }
 
         #endregion
         public NewRequestViewModel()
         {
+            TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
+                .Where(x => !x.Retired)
+                .OrderBy(x => x.ProductName).ToList();
+
+            ProductGroups = DatabaseHelper.Read<Product>();
+
+            ToNotify = DatabaseHelper.Read<User>().Where(x => x.CanApproveRequests).ToList();
+
             NewRequest = new();
             SubmitRequestCommand = new(this);
             AddSpecialCommand = new(this);
-
-            TurnedProducts = new();
-
-            NotEnoughDataVis = Visibility.Visible;
-            GraphVis = Visibility.Hidden;
-            GIFVis = Visibility.Visible;
-            HighLeadTimeVisibility = Visibility.Collapsed;
-
-            ClearScreen();
+            FilteredList = new();
             SelectedProduct = new();
-            SelectedGroup = "Live";
-            PopulateMachineInsights();
-            CheckForCancelledOrders();
-
+            SearchTerm = "";
+            ProductIsSelected = false;
+            OnPropertyChanged(nameof(ProductIsSelected));
+            GetLeadTimes();
         }
 
-        private void PopulateMachineInsights()
+        private void GetLeadTimes()
         {
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
-            Snippets = new List<MachineInfoSnippet>();
+            Lathes = new();
 
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(x => x.State < OrderState.Complete).ToList();
             List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
@@ -125,6 +118,7 @@ namespace ProjectLighthouse.ViewModel
             List<ResearchTime> research = DatabaseHelper.Read<ResearchTime>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > DateTime.Now).ToList();
 
             List<ScheduleItem> CompleteOrders = new();
+
             CompleteOrders.AddRange(research);
             CompleteOrders.AddRange(servicing);
             foreach (LatheManufactureOrder order in orders)
@@ -133,415 +127,155 @@ namespace ProjectLighthouse.ViewModel
                 CompleteOrders.Add(order);
             }
 
-            TimeSpan L20_leadTimes = TimeSpan.Zero;
-            int num_L20s = 0;
-
             for (int i = 0; i < lathes.Count; i++)
             {
                 List<ScheduleItem> ordersForLathe = CompleteOrders.Where(o => o.AllocatedMachine == lathes[i].Id).ToList();
                 Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
 
-                MachineInfoSnippet tmpSnippet = new()
+                LeadTime tmpSnippet = new()
                 {
-                    MachineID = lathes[i].Id,
-                    MachineFullName = lathes[i].FullName,
-                    LeadTime = workload.Item1
+                    Lathe = lathes[i],
+                    Workload = workload.Item1,
                 };
 
 
-                if (lathes[i].Model.StartsWith("L20"))
-                {
-                    num_L20s++;
-                    L20_leadTimes += tmpSnippet.LeadTime;
-                }
-
-                Snippets.Add(tmpSnippet);
+                Lathes.Add(tmpSnippet);
             }
 
-            if (num_L20s > 0)
-            {
-                L20_leadTimes /= num_L20s;
-                HighLeadTimeVisibility = L20_leadTimes.TotalDays > 6*7
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-
-                OnPropertyChanged(nameof(HighLeadTimeVisibility));
-            }
-
-            OnPropertyChanged(nameof(Snippets));
+            OnPropertyChanged(nameof(Lathes));
         }
 
-        private void PopulateComboBox()
+        private void SetRequest()
         {
-            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>()
-                .Where(x => !x.Retired)
-                .OrderBy(x => x.ProductName).ToList();
-            TurnedProducts.Clear();
-            Families.Clear();
-            Families.Add("Live");
-
-            foreach (TurnedProduct product in products)
+            if (SelectedProduct == null)
             {
-                TurnedProducts.Add(product);
-                if (!product.isSpecialPart)
-                {
-                    if (!Families.Any(item => item.ToString() == product.ProductName[..5]))
-                    {
-                        Families.Add(product.ProductName[..5]);
-                    }
-                }
-            }
-
-            Families = Families.OrderBy(n => n).ToList();
-            Families.Add("Specials");
-        }
-
-        public void PopulateListBox()
-        {
-            AddSpecialVisibility = Visibility.Collapsed;
-            if (TurnedProducts.Count == 0) // called before loading
-            {
+                NewRequest = null;
+                RecommendedManifest = null;
+                OnPropertyChanged(nameof(RecommendedManifest));
                 return;
             }
 
-            RecentlyDeclinedRequests = DatabaseHelper.Read<Request>()
-                .Where(r => r.DateRaised.AddDays(14) > DateTime.Now && r.IsDeclined)
-                .ToList();
-
-            FilteredList.Clear();
-            if (SelectedGroup == "Specials")
-            {
-                if (App.CurrentUser.CanCreateSpecial)
-                {
-                    AddSpecialVisibility = Visibility.Visible;
-                }
-
-                FilteredList.AddRange(TurnedProducts.Where(p => p.isSpecialPart));
-            }
-            else if (SelectedGroup == "Live")
-            {
-                FilteredList.AddRange(TurnedProducts.Where(p => p.FreeStock() < 0));
-            }
-            else
-            {
-                foreach (TurnedProduct product in TurnedProducts)
-                {
-                    if (product.ProductName[..Math.Min(5, product.ProductName.Length)] == SelectedGroup && !product.isSpecialPart)
-                    {
-                        FilteredList.Add(product);
-                    }
-                }
-            }
-
-            List<LatheManufactureOrder> activeOrders = DatabaseHelper.Read<LatheManufactureOrder>()
-                .Where(o => o.State < OrderState.Complete)
-                .ToList();
-            List<LatheManufactureOrderItem> activeOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>()
-                .Where(i => activeOrders.Any(o => i.AssignedMO == o.Name))
-                .ToList();
-
-            activeOrders = null;
-            ItemsOnOrder = new();
-
-            for (int i = 0; i < activeOrderItems.Count; i++)
-            {
-                TurnedProduct productOnOrder = TurnedProducts.Single(p => p.ProductName == activeOrderItems[i].ProductName);
-                productOnOrder.OrderReference = activeOrderItems[i].AssignedMO;
-                productOnOrder.LighthouseGuaranteedQuantity = activeOrderItems[i].RequiredQuantity;
-                ItemsOnOrder.Add(productOnOrder);
-            }
-
-            activeOrders = null;
-            activeOrderItems = null;
-
-            // populate recent Lighthouse decisions
-            foreach (TurnedProduct item in FilteredList)
-            {
-                foreach (TurnedProduct orderItem in ItemsOnOrder)
-                {
-                    if (item.IsScheduleCompatible(orderItem))
-                    {
-                        item.OrderReference = orderItem.OrderReference;
-                    }
-                    if (item.ProductName == orderItem.ProductName)
-                    {
-                        item.IsAlreadyOnOrder = true;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(item.OrderReference))
-                {
-                    continue;
-                }
-
-                foreach (Request declinedRequest in RecentlyDeclinedRequests)
-                {
-                    if (declinedRequest.Product == item.ProductName)
-                    {
-                        item.RecentlyDeclined = true;
-                        break;
-                    }
-                }
-            }
-
-            if (SelectedGroup != "Live")
-            {
-                FilteredList = new(FilteredList.OrderBy(n => n.Material).ThenBy(x => x.DriveType).ThenBy(n => n.ProductName));
-            }
-            else
-            {
-                FilteredList = new(FilteredList
-                    .Where(x => x.IsAlreadyOnOrder || x.QuantityOnPO == 0)
-                    .OrderBy(n => n.Material)
-                    .ThenBy(x => x.DriveType)
-                    .ThenBy(n => n.ProductName));
-            }
-
-            if (FilteredList.Count > 0)
-            {
-                SelectedProduct = FilteredList.First();
-            }
-           
-            OnPropertyChanged(nameof(FilteredList));
-            OnPropertyChanged(nameof(AddSpecialVisibility));
-            LoadGraph();
-
-
-
-        }
-
-        private void CheckForCancelledOrders()
-        {
-            foreach (TurnedProduct product in TurnedProducts)
-            {
-                if (product.LighthouseGuaranteedQuantity > product.QuantityOnSO)
-                {
-                    Debug.WriteLine($"{product.ProductName} - {product.LighthouseGuaranteedQuantity} on Lighthouse, {product.QuantityOnSO} on sales order");
-                }
-            }
-        }
-
-        private void LoadGraph()
-        {
-            List<string> labels = new();
-            ThousandsSeparator = value => $"{value:#,##0}";
-
-            if (SelectedGroup is "Live" or "Specials")
-            {
-                GraphTitle = "Select a product group to view analytics";
-                GraphVis = Visibility.Hidden;
-                NotEnoughDataVis = Visibility.Visible;
-                GIFVis = Visibility.Collapsed;
-                OnPropertyChanged("GraphTitle");
-                OnPropertyChanged("GraphVis");
-                OnPropertyChanged("GIFVis");
-                OnPropertyChanged("NotEnoughDataVis");
-                return;
-            }
-
-            for (int i = 0; i < FilteredList.Count; i++) // labels
-            {
-                TurnedProduct turnedProduct = FilteredList[i];
-                if (!labels.Contains(turnedProduct.ProductGroup))
-                    labels.Add(turnedProduct.ProductGroup);
-            }
-
-            XAxisLabels = labels.OrderBy(q => q).ToArray();
-            SeriesCollection = new();
-            System.Windows.Media.BrushConverter converter = new();
-
-            LineSeries _series = new()
-            {
-                Title = "Units Sold",
-                Values = new ChartValues<double> { },
-                PointGeometrySize = 10,
-                LineSmoothness = 0,
-                Foreground = (System.Windows.Media.Brush)converter.ConvertFromString("#6B303030")
+            NewRequest = new()
+            { 
+                Product = SelectedProduct.ProductName ,
+                QuantityRequired = Math.Max(SelectedProduct.QuantityOnSO - SelectedProduct.QuantityOnPO - SelectedProduct.QuantityInStock, 0),
+                DateRequired = DateTime.Now.AddMonths(1),
             };
 
-            int totalSold = 0;
+            GetRecommendedManifest();
+        }
 
-            foreach (string label in XAxisLabels)
+        public void GetRecommendedManifest()
+        {
+            if (SelectedProduct == null || NewRequest == null)
             {
-                int sumSold = FilteredList.Where(n => n.ProductGroup == label && !n.isSpecialPart).ToList().Sum(p => p.QuantitySold);
-                _series.Values.Add(Convert.ToDouble(sumSold));
-                totalSold += sumSold;
+                return;
             }
+            RecommendedManifest = null;
+            RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(TurnedProducts,
+                SelectedProduct,
+                NewRequest.QuantityRequired,
+                TimeSpan.FromDays(5),
+                NewRequest.DateRequired,
+                enforceMOQ: false);
+            OnPropertyChanged(nameof(RecommendedManifest));
+        }
 
-            SeriesCollection.Add(_series);
-
-            if (_series.Values.Count < 4 || totalSold < 10000)
+        private void FilterProducts(string searchTerm)
+        {
+            ShowingLiveRequirements = string.IsNullOrEmpty(searchTerm);
+            OnPropertyChanged(nameof(ShowingLiveRequirements));
+            if (string.IsNullOrEmpty(searchTerm))
             {
-                GraphTitle = "Lighthouse Analytics Not Available";
-                GraphVis = Visibility.Hidden;
-                NotEnoughDataVis = Visibility.Visible;
-                GIFVis = Visibility.Visible;
+                FilteredList = TurnedProducts
+                    .Where(x => x.QuantityOnSO > 0 && x.QuantityOnSO > x.QuantityOnPO + x.QuantityInStock)
+                    .OrderBy(n => n.Material)
+                    .ThenBy(n => n.ProductName)
+                    .ToList();
+
+                NoSearchResults = false;
             }
             else
             {
-                GraphTitle = $"At a Glance: {SelectedGroup}";
-                GraphVis = Visibility.Visible;
-                NotEnoughDataVis = Visibility.Hidden;
+                FilteredList = TurnedProducts.Where(x => x.ProductName.ToUpper().Contains(searchTerm)).Take(100).ToList();
+                NoSearchResults = FilteredList.Count == 0;
             }
 
-            OnPropertyChanged("XAxisLabels");
-            OnPropertyChanged("GraphTitle");
-            OnPropertyChanged("GraphVis");
-            OnPropertyChanged("GIFVis");
-            OnPropertyChanged("NotEnoughDataVis");
-            OnPropertyChanged("SeriesCollection");
-            OnPropertyChanged("ThousandsSeparator");
+            OnPropertyChanged(nameof(NoSearchResults));
         }
 
-        public async Task<bool> SubmitRequest()
+        public bool SubmitRequest()
         {
-            if (string.IsNullOrEmpty(SelectedProduct.ProductName))
-            {
-                MessageBox.Show("Please select a product!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return false;
-            }
-            else if (!selectedProduct.CanBeManufactured())
-            {
-                MessageBox.Show("This product can not be made on our machines!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return false;
-            }
-
-            if (newRequest.DateRequired <= DateTime.Now)
-            {
-                MessageBox.Show("Please select a date!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return false;
-            }
-
             newRequest.RaisedBy = App.CurrentUser.GetFullName();
             newRequest.DateRaised = DateTime.Now;
             newRequest.Product = selectedProduct.ProductName;
-            newRequest.Likeliness = LikelinessText;
 
-            if (DatabaseHelper.Insert(newRequest))
+            int weeks = (int)Math.Round((NewRequest.DateRequired - DateTime.Now).TotalDays / 7);
+
+            for (int i = 0; i < ToNotify.Count; i++)
             {
-                if (!Debugger.IsAttached)
+                Notification not = new(
+                    to:ToNotify[i].UserName, 
+                    from: App.CurrentUser.UserName, 
+                    header: "Request Raised", 
+                    body: $"New request raised for {NewRequest.QuantityRequired:#,##0}pcs of {NewRequest.Product}. Requested in {weeks} weeks.");
+                if (!DatabaseHelper.Insert(not))
                 {
-                    string message = $"{App.CurrentUser.GetFullName()} has submitted a request for {newRequest.QuantityRequired:#,##0}pcs of {newRequest.Product}. {newRequest.Likeliness} ({RecommendedStockText}, {PotentialQuantityText}). Required for {newRequest.DateRequired:d MMMM}.";
-                    SMSHelper.SendText("+447979606705", message);
+                    return false;
                 }
+            }
 
-                await Task.Run(() => EmailHelper.NotifyNewRequest(newRequest, SelectedProduct, App.CurrentUser));
+            if (ProductGroups.Any(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant()))
+            {
+                new ToastContentBuilder()
+                   .AddText("New Request Raised")
+                   .AddHeroImage(new Uri($@"{App.ROOT_PATH}lib\renders\StartPoint.png"))
+                   .AddArgument("action", "viewRequest")
+                   .AddText("People with approval permissions will get notified.")
+                   .AddInlineImage(new Uri(ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant()).LocalRenderPath))
+                   .Show();
+            }
+            else
+            {
+                new ToastContentBuilder()
+                    .AddText("New Request Raised")
+                    .AddArgument("action", "viewRequest")
+                    .AddText("People with approval permissions will get notified.")
+                    .AddHeroImage(new Uri($@"{App.ROOT_PATH}lib\renders\StartPoint.png"))
+                    .Show();
+            }
 
-                MessageBox.Show("Your request has been submitted", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                ClearScreen();
+
+
+            if (DatabaseHelper.Insert(NewRequest))
+            {
+                NewRequest = null;
                 return true;
             }
             else
             {
-                MessageBox.Show("An error has occurred.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
 
-        public void ClearScreen()
+        public class LeadTime 
         {
-            NewRequest = new();
-            TurnedProducts = new();
-            FilteredList = new();
-            Families = new();
-            SelectedProduct = new();
-            RecentlyDeclinedRequests = new();
+            public Lathe Lathe { get; set; }
+            public TimeSpan Workload { get; set; }
 
-            PopulateComboBox();
-            PopulateListBox();
-            SelectedGroup = "Live";
-            OnPropertyChanged("FilteredList");
-            OnPropertyChanged("SelectedGroup");
-            OnPropertyChanged("SelectedProduct");
-        }
-
-        public void CalculateInsights()
-        {
-            if (selectedProduct != null)
+            public bool IsHigh
             {
-                RecommendedStockText = $"{selectedProduct.GetRecommendedQuantity():#,##0} pcs";
-
-                List<int> classQuantities = new();
-                foreach (TurnedProduct product in TurnedProducts)
+                get
                 {
-                    if (product.ProductName != selectedProduct.ProductName && product.IsScheduleCompatible(selectedProduct))
-                    {
-                        classQuantities.Add(product.GetRecommendedQuantity());
-                    }
-                }
-
-                classQuantities.Sort();
-                classQuantities.Reverse();
-
-                int tmpQuant = 0;
-                for (int i = 0; i < Math.Min(classQuantities.Count, 3); i += 1)
-                {
-                    tmpQuant += classQuantities[i];
-                }
-
-                PotentialQuantityText = $"{tmpQuant:#,##0} pcs";
-
-                LikelinessText = "";
-                int hypothetical = selectedProduct.GetRecommendedQuantity() + tmpQuant + newRequest.QuantityRequired;
-                if (hypothetical == 2147483647)
-                {
-                    LikelinessText = "Upper limit of the software";
-                }
-                else if (hypothetical > 500000)
-                {
-                    LikelinessText = "1000yr lead time";
-                }
-                else if (hypothetical > 40000)
-                {
-                    LikelinessText = "Seriously?";
-                }
-                else if (hypothetical > 3000)
-                {
-                    LikelinessText = "Strong";
-                }
-                else if (hypothetical > 1500)
-                {
-                    LikelinessText = "Good";
-                }
-                else
-                {
-                    LikelinessText = hypothetical > 500
-                        ? "Fair"
-                        : "Unlikely";
+                    return Workload.TotalDays > 7 * 6;
                 }
             }
-            else
+
+            public string DisplayLeadTime
             {
-                RecommendedStockText = "";
-                LikelinessText = "";
-                PotentialQuantityText = "";
+                //get { return $"{(Workload.TotalDays/7):0} weeks"; }
+                get { return $"{Math.Round((Workload.TotalDays / 7) + 1):0} weeks"; }
             }
-
-            OnPropertyChanged("RecommendedStockText");
-            OnPropertyChanged("LikelinessText");
-            OnPropertyChanged("PotentialQuantityText");
-        }
-
-        public void AddSpecialRequest()
-        {
-            AddSpecialPartWindow window = new();
-            window.ShowDialog();
-
-            if (window.SaveExit)
-            {
-                if (DatabaseHelper.Insert(window.NewProduct))
-                {
-                    MessageBox.Show($"Successfully added {window.NewProduct.ProductName} to Specials.", "Success");
-                    ClearScreen();
-                }
-            }
-        }
-
-        public class MachineInfoSnippet
-        {
-            public string MachineID { get; set; }
-            public string MachineFullName { get; set; }
-            public TimeSpan LeadTime { get; set; }
         }
     }
 }

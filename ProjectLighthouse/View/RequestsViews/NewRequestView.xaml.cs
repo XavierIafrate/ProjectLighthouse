@@ -16,28 +16,26 @@ namespace ProjectLighthouse.View
             InitializeComponent();
             viewModel = Resources["vm"] as NewRequestViewModel;
             EnableSubmit();
+
+            requiredDatePicker.FirstDayOfWeek = DayOfWeek.Monday;
+
         }
 
         private void EnableSubmit()
         {
-            //if (viewModel != null)
-            //{
-            //    submitButton.IsEnabled = DateRequiredCalendarView.SelectedDate > DateTime.Now &&
-            //        DateRequiredCalendarView.SelectedDate < DateTime.Now.AddMonths(13) &&
-            //            viewModel.NewRequest.QuantityRequired > 0 &&
-            //            productsListBox.SelectedItem != null &&
-            //            App.CurrentUser.CanRaiseRequest;
-            //}
-        }
+            bool productSelected = (TurnedProduct)ProductsListBox.SelectedValue is not null;
+            bool quantityOk = false;
+            if(int.TryParse(quantityTextBox.Text, out int qty))
+            {
+                if(qty > 0 && qty < 200000)
+                {
+                    quantityOk = true;
+                }
+            }
 
-        private async void SubmitButton_Click(object sender, RoutedEventArgs e)
-        {
-            //bool success = await viewModel.SubmitRequest();
-            //if (success)
-            //{
-            //    quantityBox.Text = "";
-            //    notesTextBox.Document.Blocks.Clear();
-            //}
+            bool dateOk = requiredDatePicker.SelectedDate is not null;
+
+            SubmitButton.IsEnabled = productSelected && quantityOk && dateOk;
         }
 
         private void DateRequiredCalendarView_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
@@ -58,37 +56,9 @@ namespace ProjectLighthouse.View
                 if (j > 0)
                 {
                     viewModel.NewRequest.QuantityRequired = j;
-                    viewModel.CalculateInsights();
                 }
             }
             EnableSubmit();
-        }
-
-        private void ProductsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            PopulateQuantityPrefill();
-        }
-
-        void PopulateQuantityPrefill()
-        {
-            //if (viewModel == null)
-            //{
-            //    return;
-            //}
-
-            //if (viewModel.SelectedGroup == "Live")
-            //{
-            //    if (productsListBox.SelectedValue is TurnedProduct turnedProduct)
-            //    {
-            //        quantityBox.Text = Math.Abs(turnedProduct.FreeStock()).ToString();
-            //    }
-            //}
-            //else
-            //{
-            //    quantityBox.Text = "0";
-            //}
-
-            //EnableSubmit();
         }
 
         private void NotesTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -110,29 +80,26 @@ namespace ProjectLighthouse.View
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //if (graphGrid.Visibility == Visibility.Visible)
-            //{
-            //    if (mainGrid.ColumnDefinitions[2].ActualWidth < 380)
-            //    {
-            //        graphGrid.Visibility = Visibility.Collapsed;
-            //        mainGrid.ColumnDefinitions[2].Width = new(0);
-            //        mainGrid.ColumnDefinitions[1].Width = new(1, GridUnitType.Star);
-            //    }
-            //}
-            //else
-            //{
-            //    if (mainGrid.ColumnDefinitions[1].ActualWidth > (380 + 350))
-            //    {
-            //        graphGrid.Visibility = Visibility.Visible;
-            //        mainGrid.ColumnDefinitions[2].Width = new(1, GridUnitType.Star);
-            //        mainGrid.ColumnDefinitions[1].Width = GridLength.Auto;
-            //    }
-            //}
+
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PopulateQuantityPrefill();
+            EnableSubmit();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            EnableSubmit();
+            if (App.MainViewModel.SelectedViewModel is NewRequestViewModel vm)
+            {
+                vm.GetRecommendedManifest();
+            }
+        }
+
+        private void requiredDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            EnableSubmit();
         }
     }
 }

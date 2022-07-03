@@ -65,7 +65,7 @@ namespace ProjectLighthouse.ViewModel
                 Products[i].ToolingGroups = ToolingGroups
                     .Where(x => x.MemberOf == Products[i].Name)
                     .ToList();
-                Products[i].CheckSheetFields = CheckSheetFields.Where(x => x.Product == Products[i].Name && string.IsNullOrEmpty(x.ToolingGroup)).ToList();
+                //Products[i].CheckSheetFields = CheckSheetFields.Where(x => x.Product == Products[i].Name && string.IsNullOrEmpty(x.ToolingGroup)).ToList();
             }
 
             if (Products.Count > 0)

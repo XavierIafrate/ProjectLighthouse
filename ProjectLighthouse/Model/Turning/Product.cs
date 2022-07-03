@@ -5,19 +5,23 @@ namespace ProjectLighthouse.Model
 {
     public class Product
     {
-        [PrimaryKey]
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+        [Unique, NotNull]
         public string Name { get; set; }
+        [NotNull]
         public string Description { get; set; }
+        [NotNull]
         public string WebUrl { get; set; }
+        [NotNull]
         public string ImageUrl { get; set; }
-        public string CheckSheetUrl { get; set; }
-        [Ignore]
-        public List<CheckSheetField> CheckSheetFields { get; set; }
+        [NotNull]
+        public string WebImageUrl { get; set; }
 
         [Ignore]
-        public string RenderPath
+        public string LocalRenderPath
         {
-            get { return App.ROOT_PATH + ImageUrl; }
+            get { return $@"{App.ROOT_PATH}lib\renders\{ImageUrl}"; }
         }
 
 
