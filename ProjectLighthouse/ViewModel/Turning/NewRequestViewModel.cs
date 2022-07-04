@@ -212,13 +212,24 @@ namespace ProjectLighthouse.ViewModel
 
             int weeks = (int)Math.Round((NewRequest.DateRequired - DateTime.Now).TotalDays / 7);
 
+            Product matchedProduct = ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant());
+            string toastImage = matchedProduct == null ? null : $@"lib\renders\{matchedProduct.ImageUrl}";
+
             for (int i = 0; i < ToNotify.Count; i++)
             {
                 Notification not = new(
                     to:ToNotify[i].UserName, 
                     from: App.CurrentUser.UserName, 
                     header: "Request Raised", 
-                    body: $"New request raised for {NewRequest.QuantityRequired:#,##0}pcs of {NewRequest.Product}. Requested in {weeks} weeks.");
+                    body: $"New request raised for {NewRequest.QuantityRequired:#,##0}pcs of {NewRequest.Product}. Requested in {weeks} weeks.",
+                    toastAction : "viewRequest",
+                    toastImageUrl: toastImage);
+                
+                if (not.TargetUser == not.Origin)
+                {
+                    continue;
+                }
+
                 if (!DatabaseHelper.Insert(not))
                 {
                     return false;
@@ -230,8 +241,8 @@ namespace ProjectLighthouse.ViewModel
                 new ToastContentBuilder()
                    .AddText("New Request Raised")
                    .AddHeroImage(new Uri($@"{App.ROOT_PATH}lib\renders\StartPoint.png"))
-                   .AddArgument("action", "viewRequest")
                    .AddText("People with approval permissions will get notified.")
+                   .AddArgument("action", "viewRequest")
                    .AddInlineImage(new Uri(ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant()).LocalRenderPath))
                    .Show();
             }

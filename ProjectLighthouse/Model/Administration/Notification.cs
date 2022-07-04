@@ -13,8 +13,11 @@ namespace ProjectLighthouse.Model.Administration
         public string Header { get; set; }
         public string Body { get; set; }
         public bool Seen { get; set; }
+        public DateTime SeenTimeStamp { get; set; }
+        public string ToastAction { get; set; }
+        public string ToastInlineImageUrl { get; set; }
 
-        public Notification(string to, string from, string header, string body)
+        public Notification(string to, string from, string header, string body, string toastAction = null, string toastImageUrl = null)
         {
             TimeStamp = DateTime.Now;
             Seen = false;
@@ -22,6 +25,13 @@ namespace ProjectLighthouse.Model.Administration
             Origin = from;
             Header = header;
             Body = body;
+            ToastAction = toastAction;
+            ToastInlineImageUrl = toastImageUrl;
+        }
+
+        public Notification()
+        {
+
         }
     }
 }

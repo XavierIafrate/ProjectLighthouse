@@ -39,7 +39,7 @@ namespace ProjectLighthouse
             Title += $" - {DatabaseHelper.DatabasePath}";
 #endif
 
-            DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
+            DebugTile.Visibility = App.DevMode ? Visibility.Collapsed : Visibility.Collapsed;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -104,6 +104,12 @@ namespace ProjectLighthouse
         {
             LogoColour.Visibility = Visibility.Hidden;
             LogoMono.Visibility = Visibility.Visible;
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
         }
     }
 }

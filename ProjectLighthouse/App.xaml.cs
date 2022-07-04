@@ -24,10 +24,9 @@ namespace ProjectLighthouse
         public static System.Timers.Timer DataRefreshTimer { get; set; }
         public static bool DevMode { get; set; }
         private static MainWindow Window;
-
         public static MainViewModel MainViewModel { get; set; }
+        public static NotificationManager NotificationsManager { get; set; }
 
-        
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -83,8 +82,6 @@ namespace ProjectLighthouse
                 window.LoginRoutine();
             }
 
-            //CrashApplication();
-
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {
                 // Obtain the arguments from the notification
@@ -105,18 +102,11 @@ namespace ProjectLighthouse
                 });
             };
 
+            NotificationsManager = new();
+            NotificationsManager.Initialise();
+            NotificationsManager.DataRefreshTimer.Start();
+
         }
-
-
-
-
-        //private void CrashApplication()
-        //{
-        //    int a = 1;
-        //    int b = 0;
-        //    int _ = a / b;
-
-        //}
 
         //void TestODBC()
         //{

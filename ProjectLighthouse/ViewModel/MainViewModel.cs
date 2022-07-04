@@ -1,6 +1,8 @@
-﻿using ProjectLighthouse.View;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Timers;
 using System.Windows;
@@ -46,7 +48,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
         public Visibility DataRefreshBadgeVis { get; set; }
 
         private BaseViewModel _selectedViewModel;
@@ -83,9 +84,46 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private int notCount;
+
+        public int NotCount
+        {
+            get { return notCount; }
+            set 
+            { 
+                notCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private List<Notification> nots;
+
+        public List<Notification> Notifications
+        {
+            get { return nots; }
+            set 
+            { 
+                nots = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility notificationsBarVis = Visibility.Collapsed;
+
+        public Visibility NotificationsBarVis
+        {
+            get { return notificationsBarVis; }
+            set 
+            { 
+                notificationsBarVis = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand UpdateViewCommand { get; set; }
         public ICommand EditCommand { get; set; }
+        public ToggleNotificationsBarViewCommand ToggleShowNotsCommand { get; set; }
+        public ReadAllNotificationsCommand ReadAllCommand { get; set; }
 
         public MainWindow MainWindow { get; set; }
 
@@ -101,6 +139,8 @@ namespace ProjectLighthouse.ViewModel
         {
             EditCommand = new EditSettingsCommand(this);
             UpdateViewCommand = new UpdateViewCommand(this);
+            ToggleShowNotsCommand = new(this);
+            ReadAllCommand = new();
         }
 
 
@@ -122,9 +162,19 @@ namespace ProjectLighthouse.ViewModel
                         ? "Orders"
                         : App.CurrentUser.DefaultView;
                     if (MainWindow != null)
+                    {
                         UpdateViewCommand.Execute(TargetView);
+                        
+                    }
                 }
             }
+        }
+
+        public void ToggleNotificationsBarVisibility()
+        {
+            NotificationsBarVis = NotificationsBarVis == Visibility.Visible 
+                ? Visibility.Collapsed 
+                : Visibility.Visible;
         }
     }
 }

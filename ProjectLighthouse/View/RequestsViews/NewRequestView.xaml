@@ -132,7 +132,7 @@
                                     MaxWidth="400"
                                     gif:ImageBehavior.AnimateInDesignMode="True"
                                     gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
-                                    gif:ImageBehavior.RepeatBehavior="3"
+                                    gif:ImageBehavior.RepeatBehavior="3x"
                                     RenderOptions.BitmapScalingMode="HighQuality" />
                                 <StackPanel.OpacityMask>
                                     <VisualBrush Visual="{Binding ElementName=Mask}" />
