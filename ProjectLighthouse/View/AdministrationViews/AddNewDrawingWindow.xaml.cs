@@ -121,6 +121,10 @@ namespace ProjectLighthouse.View
             MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
             ToolingGroupConstraintComboBox.SelectedItem = ToolingGroupConstraintComboBox.Items[0];
 
+            NewDrawing.DrawingType = (bool)researchCheckBox.IsChecked 
+                ? TechnicalDrawing.Type.Research 
+                : TechnicalDrawing.Type.Production;
+
             SetConstraints();
         }
 
@@ -184,28 +188,6 @@ namespace ProjectLighthouse.View
             NewDrawing.DrawingName = selectedProduct.ProductName;
             NewDrawing.IsArchetype = false;
             NewDrawing.Customer = selectedProduct.CustomerRef;
-        }
-
-        private int GetRevision(string product)
-        {
-            List<TechnicalDrawing> otherDrawings = Drawings.Where(d => d.DrawingName == product).ToList();
-            if (otherDrawings.Count == 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return otherDrawings.OrderByDescending(d => d.Revision).First().Revision + 1;
-            }
-        }
-
-        private static string MakeValidFileName(string name)
-        {
-            name = name.Trim().ToUpperInvariant();
-            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
-            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
-
-            return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
         }
 
         private bool DataIsValid()

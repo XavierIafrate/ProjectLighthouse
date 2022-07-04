@@ -35,7 +35,7 @@
                         HorizontalAlignment="Right"
                         SelectionChanged="ProductGroupComboBox_SelectionChanged" />
                 </Grid>
-                
+
 
                 <Grid Margin="60,3,30,3">
                     <Grid.ColumnDefinitions>
@@ -43,8 +43,16 @@
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Path Width="20" Height="15" Stretch="Uniform" Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z" Fill="{StaticResource OnBackground}"/>
-                    <TextBlock VerticalAlignment="Center" Text="Tooling Group" Grid.Column="1" />
+                    <Path
+                        Width="20"
+                        Height="15"
+                        Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z"
+                        Fill="{StaticResource OnBackground}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Text="Tooling Group" />
                     <ComboBox
                         x:Name="ToolingGroupConstraintComboBox"
                         Grid.Column="2"
@@ -52,15 +60,23 @@
                         HorizontalAlignment="Right"
                         SelectionChanged="ToolingGroupConstraintComboBox_SelectionChanged" />
                 </Grid>
-                <Grid  Margin="90,3,30,3">
+                <Grid Margin="90,3,30,3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Path Width="20" Height="15" Stretch="Uniform" Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z" Fill="{StaticResource OnBackground}"/>
+                    <Path
+                        Width="20"
+                        Height="15"
+                        Data="M19,15L13,21L11.58,19.58L15.17,16H4V4H6V14H15.17L11.58,10.42L13,9L19,15Z"
+                        Fill="{StaticResource OnBackground}"
+                        Stretch="Uniform" />
 
-                    <TextBlock VerticalAlignment="Center" Text="Material" Grid.Column="1" />
+                    <TextBlock
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Text="Material" />
                     <ComboBox
                         x:Name="MaterialConstraintComboBox"
                         Grid.Column="2"
@@ -69,7 +85,7 @@
                         SelectionChanged="MaterialConstraintComboBox_SelectionChanged" />
                 </Grid>
 
-                <TextBlock Text="Preview" Style="{StaticResource section}"/>
+                <TextBlock Style="{StaticResource section}" Text="Preview" />
                 <ListBox
                     x:Name="PreviewBox"
                     Grid.Row="2"
@@ -151,6 +167,7 @@
                 </Grid>
             </Border>
 
+            <CheckBox x:Name="researchCheckBox" Content="Drawing is for R&amp;D" />
             <Button
                 x:Name="AddButton"
                 HorizontalAlignment="Right"
@@ -158,6 +175,7 @@
                 Content="Add"
                 Style="{StaticResource GreenButton}" />
         </StackPanel>
+
 
     </StackPanel>
 </Window>
