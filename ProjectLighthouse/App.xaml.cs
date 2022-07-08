@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation.Collections;
@@ -26,6 +27,8 @@ namespace ProjectLighthouse
         private static MainWindow Window;
         public static MainViewModel MainViewModel { get; set; }
         public static NotificationManager NotificationsManager { get; set; }
+        public static string AppDataDirectory { get; set; }
+        public static List<string> AppTrace = new();
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -42,6 +45,8 @@ namespace ProjectLighthouse
                 Application.Current.Shutdown();
                 return;
             }
+
+            EnsureAppData();
 
             DevMode = Debugger.IsAttached;
             DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB.db3";
@@ -69,43 +74,72 @@ namespace ProjectLighthouse
                 Window.DataContext = VM;
                 Window.viewModel = VM;
 
-                VM.LoginRoutine();
+                bool userLoggedIn = VM.LoginRoutine();
+
+                if (!userLoggedIn)
+                {
+                    Application.Current.Shutdown();
+                }
                 Window.Show();
 
                 Window.AddVersionNumber();
             }
             else
             {
-
-                LogisticsKioskWindow window = new();
-                window.WorkStation = workstation;
+                LogisticsKioskWindow window = new()
+                {
+                    WorkStation = workstation
+                };
                 window.LoginRoutine();
             }
 
+
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {
-                // Obtain the arguments from the notification
                 ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
-
-                // Obtain any user input (text boxes, menu selections) from the notification
                 ValueSet userInput = toastArgs.UserInput;
 
-                // Need to dispatch to UI thread if performing UI operations
                 Application.Current.Dispatcher.Invoke(delegate
                 {
                     Debug.WriteLine($"Activated request for {toastArgs.Argument}");
-                    if (toastArgs.Argument == "action=viewRequest")
-                    {
-                        
-                        Window.viewModel.UpdateViewCommand.Execute("View Requests");
-                    }
+                    NotificationsManager.ParseToastArgs(toastArgs.Argument);
                 });
             };
 
             NotificationsManager = new();
             NotificationsManager.Initialise();
             NotificationsManager.DataRefreshTimer.Start();
+        }
 
+        private void EnsureAppData()
+        {
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string specificFolder = Path.Combine(folder, "Lighthouse");
+            AppDataDirectory = $@"{specificFolder}\";
+            if (!Directory.Exists(specificFolder))
+            {
+                Directory.CreateDirectory(specificFolder);
+            }
+
+            string copyFrom = $@"{ROOT_PATH}lib\";
+            string copyTo = $@"{specificFolder}\lib\";
+
+            CopyFilesRecursively(copyFrom, copyTo);
+        }
+
+        private static void CopyFilesRecursively(string sourcePath, string targetPath)
+        {
+            //Now Create all of the directories
+            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+            }
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+            }
         }
 
         //void TestODBC()

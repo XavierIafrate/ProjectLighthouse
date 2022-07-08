@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vc="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     d:Background="White"
+    d:DesignHeight="631.642"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid Margin="20,20,20,0">
+    <Grid Margin="20,20,20,20">
         <Grid.Resources>
             <vc:isResearchToHiddenCollapsed x:Key="researchToCollapsed" />
             <vc:boolToCollapsedOrVisible x:Key="collapseIfTrue" />
@@ -210,7 +211,10 @@
                         Foreground="{StaticResource DisabledElement}"
                         Text="{Binding RejectedDate, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
 
-                    <TextBlock Text="{Binding RejectionReason}" Style="{StaticResource statement}" HorizontalAlignment="Center"/>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource statement}"
+                        Text="{Binding RejectionReason}" />
 
                 </StackPanel>
 
@@ -236,7 +240,7 @@
 
             </Grid>
             <StackPanel Margin="20,0,20,20">
-                <TextBlock Text="Release Notes" Style="{StaticResource section}"/>
+                <TextBlock Style="{StaticResource section}" Text="Release Notes" />
                 <TextBlock
                     d:Text="Lorem ipsum dolor sit amet"
                     Foreground="{StaticResource OnSurface}"
@@ -244,14 +248,78 @@
                     Text="{Binding IssueDetails}" />
             </StackPanel>
 
-            <StackPanel Margin="20,0,20,20" x:Name="approvalControls">
-                <TextBlock Text="Approval" Style="{StaticResource section}"/>
-                <TextBox Style="{StaticResource DefaultTextBox}" x:Name="rejectionReason" Tag="Enter reason for rejecting" Width="500" Background="{StaticResource Background}" TextChanged="TextBox_TextChanged"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="Reject" IsEnabled="False" x:Name="rejectButton" Click="rejectButton_Click" Style="{StaticResource CancelButton}"/>
-                    <Button Content="Approve As Amendment" x:Name="approveAmendButton" Click="approveAmendButton_Click" Style="{StaticResource GreenButton}"/>
-                    <Button Content="Approve As Revision" x:Name="approveRevButton" Click="approveRevButton_Click" Style="{StaticResource GreenButton}"/>
+            <StackPanel x:Name="approvalControls" Margin="20,0,20,20">
+                <TextBlock Style="{StaticResource section}" Text="Approval" />
+                <TextBox
+                    x:Name="rejectionReason"
+                    Width="500"
+                    Background="{StaticResource Background}"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="Enter reason for rejecting"
+                    TextChanged="TextBox_TextChanged" />
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Button
+                        x:Name="rejectButton"
+                        Click="rejectButton_Click"
+                        Content="Reject"
+                        IsEnabled="False"
+                        Style="{StaticResource CancelButton}" />
+                    <Button
+                        x:Name="approveAmendButton"
+                        Click="approveAmendButton_Click"
+                        Content="Approve As Amendment"
+                        Style="{StaticResource GreenButton}" />
+                    <Button
+                        x:Name="approveRevButton"
+                        Click="approveRevButton_Click"
+                        Content="Approve As Revision"
+                        Style="{StaticResource GreenButton}" />
                 </StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="Comments" Margin="20,0,20,20">
+                <TextBlock Style="{StaticResource section}" Text="Comments" />
+
+                <local:DisplayListOfNotes Notes="{Binding Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <!--<ItemsControl
+                    x:Name="NotesDisplay"
+                    MinHeight="50"
+                    HorizontalContentAlignment="Stretch"
+                    Background="{StaticResource Background}"
+                    ItemsSource="{Binding Notes}"
+                    ScrollViewer.CanContentScroll="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:DisplayNote Note="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>-->
+                <Grid Margin="10,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="71*" />
+                        <ColumnDefinition Width="589*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="Message"
+                        Grid.ColumnSpan="2"
+                        Margin="5,5,5,5"
+                        Background="{StaticResource Background}"
+                        Foreground="{StaticResource OnSurface}"
+                        KeyDown="Message_KeyDown"
+                        Style="{StaticResource DefaultTextBox}"
+                        Tag="Compose message..."
+                        TextChanged="Message_TextChanged"
+                        TextWrapping="WrapWithOverflow" />
+                    <Button
+                        x:Name="SendButton"
+                        Grid.Column="2"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Left"
+                        Click="SendButton_Click"
+                        Style="{StaticResource SendButton}" />
+                </Grid>
+
             </StackPanel>
 
         </StackPanel>

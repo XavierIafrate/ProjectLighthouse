@@ -7,56 +7,43 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
     d:DesignWidth="610.033"
+    MinHeight="50"
     Background="#01FFFFFF"
     mc:Ignorable="d">
     <Grid>
-        <Grid>
+        <Grid VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="180" />
                 <ColumnDefinition Width="180" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Path
-                x:Name="doneFlag"
-                Width="18"
-                Height="18"
-                Margin="0,0,5,0"
-                Data="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"
-                Fill="{StaticResource Green}"
-                Stretch="Uniform" />
-
             <StackPanel
-                Grid.Column="1"
                 Margin="5,2,10,2"
                 VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock
+                        FontWeight="SemiBold"
                         x:Name="productText"
                         Padding="0,2"
                         VerticalAlignment="Center"
                         FontSize="16"
-                        FontWeight="SemiBold"
                         Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
                     <Path
                         x:Name="cycleTimeIndicator"
-                        Width="15"
-                        Height="15"
+                        Width="12"
+                        Height="12"
                         Margin="5,0,0,0"
                         Data="M19.03 7.39L20.45 5.97C20 5.46 19.55 5 19.04 4.56L17.62 6C16.07 4.74 14.12 4 12 4C7.03 4 3 8.03 3 13S7.03 22 12 22C17 22 21 17.97 21 13C21 10.88 20.26 8.93 19.03 7.39M13 14H11V7H13V14M15 1H9V3H15V1Z"
                         Fill="{StaticResource Orange}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        ToolTip="Please register cycle time"/>
                 </StackPanel>
 
-                <ProgressBar
-                    x:Name="ProgressBar"
-                    Margin="0,0,0,3"
-                    Value="0.5" />
                 <StackPanel Orientation="Horizontal">
                     <Button
                         x:Name="EditButton"
@@ -67,60 +54,52 @@
                             <TextBlock Margin="0,0,7,2" Text="Edit" />
                         </Button.Content>
                     </Button>
-                    <Grid x:Name="specialFlag">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Border
-                            Height="20"
-                            Background="{StaticResource Purple}"
-                            CornerRadius="10" />
-                        <TextBlock
-                            Padding="10,0,10,2"
-                            Foreground="{StaticResource OnPurple}"
-                            Text="Special" />
-                    </Grid>
+                    <Border x:Name="specialFlag"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                Grid.Column="2" BorderBrush="{StaticResource Purple}" CornerRadius="3" BorderThickness="3,0,0,0">
+                        <Grid>
+                            <Border Background="{StaticResource Purple}" CornerRadius="2,5,5,2" Opacity="0.15"/>
+                            <TextBlock Text="Special Item" Margin="5,2" FontSize="12" Foreground="{StaticResource Purple}" FontWeight="SemiBold"/>
+                                
+                        </Grid>
+                    </Border>
                 </StackPanel>
 
             </StackPanel>
 
-            <StackPanel
-                x:Name="requirements"
-                Grid.Column="2"
-                Margin="0,0,20,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
+            <local:LMOQuantityDisplay Grid.Column="2" Item="{Binding Path=.}"/>
+
+
+            <Border x:Name="requirements"
+                    Margin="5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                Grid.Column="1" BorderBrush="{StaticResource Red}" CornerRadius="3" BorderThickness="3,0,0,0">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Rectangle
-                        x:Name="requirementsBadge"
-                        Fill="{StaticResource Red}"
-                        RadiusX="5"
-                        RadiusY="5" />
-                    <StackPanel Margin="10,0">
-                        <TextBlock
-                            x:Name="qtyrequired"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            FontSize="12"
-                            Foreground="{StaticResource OnRed}"
-                            Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs', FallbackValue='100 pcs'}" />
-                        <TextBlock
-                            x:Name="daterequired"
-                            HorizontalAlignment="Right"
-                            FontSize="12"
-                            Foreground="{StaticResource OnRed}"
-                            Text="{Binding DateRequired, StringFormat='{}{0:dd/MM/yy}', FallbackValue='01/01/1970'}" />
+                    <Border Background="{StaticResource Red}" x:Name="requirementsBg"  CornerRadius="2,5,5,2" Opacity="0.15"/>
+                    <StackPanel Margin="10,2">
+                        <TextBlock Text="Customer Requirement" x:Name="custReqTitle" FontSize="12" Foreground="{StaticResource Red}" FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                x:Name="qtyrequired"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{StaticResource Red}"
+                                Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" d:Text="99,000 pcs" />
+                            <TextBlock
+                                x:Name="daterequired"
+                                HorizontalAlignment="Right"
+                                FontSize="12"
+                                Foreground="{StaticResource Red}"
+                                Text="{Binding DateRequired, StringFormat='{} for {0:d MMMM}'}" d:Text=" for 1 September" />
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
-            </StackPanel>
+            </Border>
 
-            <Grid
+            <!--<Grid
                 Grid.Column="3"
                 Margin="5"
                 VerticalAlignment="Center">
@@ -159,7 +138,7 @@
                     Grid.Column="2"
                     HorizontalAlignment="Right"
                     Text="{Binding QuantityDelivered, StringFormat='{}{0:#,##0} pcs', FallbackValue='0 pcs'}" />
-            </Grid>
+            </Grid>-->
 
         </Grid>
     </Grid>

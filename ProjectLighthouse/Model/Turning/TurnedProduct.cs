@@ -43,6 +43,14 @@ namespace ProjectLighthouse.Model
 
         public bool Retired { get; set; }
 
+        [Ignore]
+        public Product Group { get; set; }
+        [Ignore]
+        public int TargetStock
+        {
+            get { return GetRecommendedQuantity(); }
+        }
+
         public int GetCycleTime()
         {
             if (CycleTime != 0)
@@ -62,21 +70,15 @@ namespace ProjectLighthouse.Model
 
         public int GetRecommendedQuantity(bool forManufacture = false)
         {
-            
-                const int targetMonthsStock = 12;
-                double scaleFactor = Convert.ToDouble(targetMonthsStock) / 18;
-                double toMake = Math.Max((QuantitySold * scaleFactor) - QuantityInStock, 0);
+            const int targetMonthsStock = 12;
+            double scaleFactor = Convert.ToDouble(targetMonthsStock) / 18;
+            double toMake = Math.Max((QuantitySold * scaleFactor) - QuantityInStock, 0);
 
             int qty = Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
-            if (forManufacture)
-            {
-                return Math.Max(qty, RequestsEngine.GetMiniumumOrderQuantity(this));
-            }
-            else
-            {
-                return qty;
-            }
-            
+
+            return forManufacture 
+                ? Math.Max(qty, RequestsEngine.GetMiniumumOrderQuantity(this)) 
+                : qty;
         }
 
         public TimeSpan GetTimeToMake(int quantity)
@@ -123,11 +125,11 @@ namespace ProjectLighthouse.Model
 
         // For requests engine
         [Ignore]
-        public bool RecentlyDeclined { get; set; }
+        public Request DeclinedRequest { get; set; }
         [Ignore]
-        public string OrderReference { get; set; }
+        public LatheManufactureOrder AppendableOrder { get; set; }
         [Ignore]
-        public bool IsAlreadyOnOrder { get; set; }
+        public LatheManufactureOrder ZeroSetOrder { get; set; }
         [Ignore]
         public int LighthouseGuaranteedQuantity { get; set; }
 

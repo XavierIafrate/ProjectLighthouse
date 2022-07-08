@@ -23,7 +23,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedGroup = value;
-               FilteredDrawings = selectedGroup.Drawings;
+                FilteredDrawings = selectedGroup.Drawings;
                 //DisplayDrawing(value);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(FilteredDrawings));
@@ -72,10 +72,15 @@ namespace ProjectLighthouse.ViewModel
             Drawings = DatabaseHelper.Read<TechnicalDrawing>();
 
             Drawings = Drawings.OrderBy(d => d.DrawingName).ThenBy(d => d.Revision).ThenBy(x => x.Created).ToList();
+            List<Note> Notes = DatabaseHelper.Read<Note>().ToList();
+            for (int i = 0; i < Drawings.Count; i++)
+            {
+                Drawings[i].Notes = Notes.Where(x => x.DocumentReference == Drawings[i].DrawingName).ToList();
+            }
 
             string[] drawingGroups = Drawings.Select(x => x.DrawingName).Distinct().ToArray();
             DrawingGroups = new();
-            for(int i = 0; i < drawingGroups.Length; i++)
+            for (int i = 0; i < drawingGroups.Length; i++)
             {
                 List<TechnicalDrawing> d = Drawings.Where(x => x.DrawingName == drawingGroups[i]).ToList();
                 int maxRev = d.Max(x => x.Revision);
@@ -96,8 +101,6 @@ namespace ProjectLighthouse.ViewModel
                     LastIssue = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.ApprovedDate),
                     Amendment = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.AmendmentType),
                 };
-
-                
 
                 DrawingGroups.Add(newGroup);
             }
@@ -252,10 +255,10 @@ namespace ProjectLighthouse.ViewModel
         public class DrawingGroup
         {
             public string Name { get; set; }
-            public DateTime LastIssue { get; set; }   
+            public DateTime LastIssue { get; set; }
             public int CurrentRevision { get; set; }
-            public TechnicalDrawing.Amendment Amendment { get; set; }   
-            public List<TechnicalDrawing> Drawings { get; set; }    
+            public TechnicalDrawing.Amendment Amendment { get; set; }
+            public List<TechnicalDrawing> Drawings { get; set; }
         }
     }
 }

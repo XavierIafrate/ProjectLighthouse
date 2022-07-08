@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.Model;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -287,38 +289,38 @@ namespace ProjectLighthouse.ViewModel
 
         private void CheckForAppendOppurtunities()
         {
-            List<TurnedProduct> productsOnOrder = new();
-            for (int i = 0; i < ActiveOrderItems.Count; i++)
-            {
-                TurnedProduct product = Products.Find(x => x.ProductName == ActiveOrderItems[i].ProductName);
-                if (product != null)
-                {
-                    product.IsAlreadyOnOrder = true;
-                    product.OrderReference = ActiveOrderItems[i].AssignedMO;
-                    productsOnOrder.Add(product);
-                }
-            }
+            //List<TurnedProduct> productsOnOrder = new();
+            //for (int i = 0; i < ActiveOrderItems.Count; i++)
+            //{
+            //    TurnedProduct product = Products.Find(x => x.ProductName == ActiveOrderItems[i].ProductName);
+            //    if (product != null)
+            //    {
+            //        product.IsAlreadyOnOrder = true;
+            //        product.OrderReference = ActiveOrderItems[i].AssignedMO;
+            //        productsOnOrder.Add(product);
+            //    }
+            //}
 
-            for (int i = 0; i < Requests.Count; i++)
-            {
-                if (Requests[i].Status != "Pending approval")
-                {
-                    continue;
-                }
-                TurnedProduct requestedProduct = Products.Find(x => x.ProductName == Requests[i].Product);
-                for (int j = 0; j < productsOnOrder.Count; j++)
-                {
-                    if (requestedProduct.IsScheduleCompatible(productsOnOrder[j]))
-                    {
-                        Requests[i].CanAppend = true;
-                        Requests[i].ExistingOrder = productsOnOrder[j].OrderReference;
-                    }
-                    if (requestedProduct.ProductName == productsOnOrder[j].ProductName)
-                    {
-                        Requests[i].UpdateOrder = true;
-                    }
-                }
-            }
+            //for (int i = 0; i < Requests.Count; i++)
+            //{
+            //    if (Requests[i].Status != "Pending approval")
+            //    {
+            //        continue;
+            //    }
+            //    TurnedProduct requestedProduct = Products.Find(x => x.ProductName == Requests[i].Product);
+            //    for (int j = 0; j < productsOnOrder.Count; j++)
+            //    {
+            //        if (requestedProduct.IsScheduleCompatible(productsOnOrder[j]))
+            //        {
+            //            Requests[i].CanAppend = true;
+            //            Requests[i].ExistingOrder = productsOnOrder[j].OrderReference;
+            //        }
+            //        if (requestedProduct.ProductName == productsOnOrder[j].ProductName)
+            //        {
+            //            Requests[i].UpdateOrder = true;
+            //        }
+            //    }
+            //}
         }
 
         public void LoadRequestCard(Request request)
@@ -418,6 +420,12 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public void SelectById(int id)
+        {
+            Request target = Requests.Find(x => x.Id == id);
+            LoadRequestCard(target);
+        }
+
         public void UpdateRequirements(string notes, int QuantityRequired)
         {
             SelectedRequest.LastModified = DateTime.Now;
@@ -466,19 +474,39 @@ namespace ProjectLighthouse.ViewModel
             
 
             SelectedRequest.MarkAsAccepted();
-            
+
+            User ToNotify = DatabaseHelper.Read<User>().Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
+
+            Notification not = new(
+                to: ToNotify.UserName,
+                from: App.CurrentUser.UserName,
+                header: "Request Approved",
+                body: $"Your request for {SelectedRequest.QuantityRequired:#,##0} pcs of {SelectedRequest.Product} has been approved! Please update Lighthouse with the Purchase Reference.",
+                toastAction: $"viewManufactureOrder:{SelectedRequest.ResultingLMO}");
+
+            if (not.TargetUser != not.Origin)
+            {
+                DatabaseHelper.Insert(not);
+            }
+
             if (DatabaseHelper.Update(SelectedRequest))
             {
-                Request tmp = (Request)SelectedRequest.Clone();
-                Task.Run(() => EmailHelper.NotifyRequestApproved(tmp));
-
+                new ToastContentBuilder()
+                   .AddText($"Order {SelectedRequest.ResultingLMO} created.")
+                   .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
+                   .AddText("You have successfully approved this request.")
+                   .Show();
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged(nameof(SelectedRequest));
                 SelectedRequest = Requests.First();
             }
             else
             {
-                MessageBox.Show("Failed to update the request.", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
+                new ToastContentBuilder()
+                   .AddText("An error occurred.")
+                   .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
+                   .AddText("Lighthouse encountered an error while updating request")
+                   .Show();
             }
         }
 

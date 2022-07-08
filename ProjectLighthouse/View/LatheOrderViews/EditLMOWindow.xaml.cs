@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.View.LatheOrderViews;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -117,10 +118,6 @@ namespace ProjectLighthouse.View
                 Notes[i].ShowEdit = Notes[i].SentBy == App.CurrentUser.UserName;
                 Notes[i].ShowHeader = Notes[i].SentBy != name
                     || DateTime.Parse(Notes[i].DateSent) > lastTimeStamp.AddHours(6);
-                if (i < Notes.Count - 1)
-                {
-                    Notes[i].ShowSpacerUnder = DateTime.Parse(Notes[i + 1].DateSent) > DateTime.Parse(Notes[i].DateSent).AddHours(6);
-                }
                 lastTimeStamp = DateTime.Parse(Notes[i].DateSent);
                 name = Notes[i].SentBy;
             }
@@ -311,6 +308,27 @@ namespace ProjectLighthouse.View
                 DateEdited = DateTime.MinValue.ToString("s"),
                 DocumentReference = Order.Name
             };
+
+            // people who have already commented
+            List<string> toUpdate = Notes.Select(x => x.SentBy).Distinct().ToList();
+
+            List<string> otherUsers;
+            if (App.CurrentUser.Role >= UserRole.Scheduling)
+            {
+                otherUsers = DatabaseHelper.Read<User>().Where(x => x.Role == UserRole.Production && x.ReceivesNotifications).Select(x => x.UserName).ToList();
+            }
+            else
+            {
+                otherUsers = DatabaseHelper.Read<User>().Where(x => x.Role >= UserRole.Scheduling && x.ReceivesNotifications).Select(x => x.UserName).ToList();
+            }
+
+            toUpdate.AddRange(otherUsers);
+            toUpdate = toUpdate.Distinct().Where(x => x != App.CurrentUser.UserName).ToList();
+
+            for (int i = 0; i < toUpdate.Count; i++)
+            {
+                DatabaseHelper.Insert<Notification>(new(to: toUpdate[i], from: App.CurrentUser.UserName, header: $"Comment - {Order.Name}", body: "New comment left on this order", toastAction:$"viewManufactureOrder:{Order.Name}"));
+            }
 
             DatabaseHelper.Insert(newNote);
             Notes.Add(newNote);

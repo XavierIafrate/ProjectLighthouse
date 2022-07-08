@@ -18,7 +18,7 @@
     SizeToContent="Height"
     TextElement.Foreground="{StaticResource OnBackground}"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    mc:Ignorable="d" d:DesignHeight="900">
 
     <ScrollViewer Margin="20,20,0,20">
         <Grid>
@@ -306,7 +306,7 @@
                     x:Name="ItemsListBox"
                     MinHeight="50"
                     MaxHeight="350"
-                    d:ItemsSource="{d:SampleData ItemCount=4}"
+                    d:ItemsSource="{d:SampleData ItemCount=3}"
                     ItemsSource="{Binding Items}"
                     SelectionChanged="Items_SelectionChanged">
                     <ListView.ItemTemplate>

@@ -40,16 +40,24 @@ namespace ProjectLighthouse.View.UserControls
                 control.specialFlag.Visibility = (control.LatheManufactureOrderItem.IsSpecialPart) ? Visibility.Visible : Visibility.Collapsed;
                 control.requirements.Visibility = (control.LatheManufactureOrderItem.RequiredQuantity == 0) ? Visibility.Collapsed : Visibility.Visible;
 
-                control.requirementsBadge.Fill = (control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
+                control.requirements.BorderBrush = (control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
                     (Brush)Application.Current.Resources["Green"] : (Brush)Application.Current.Resources["Red"];
 
-                control.doneFlag.Visibility = control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.TargetQuantity
-                    ? Visibility.Visible
-                    : Visibility.Hidden;
+                control.requirementsBg.Background = (control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
+                    (Brush)Application.Current.Resources["Green"] : (Brush)Application.Current.Resources["Red"];
 
-                control.ProgressBar.Foreground = control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.TargetQuantity
-                    ? (Brush)Application.Current.Resources["Green"]
-                    : (Brush)Application.Current.Resources["Purple"];
+                control.qtyrequired.Foreground = (control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
+                    (Brush)Application.Current.Resources["Green"] : (Brush)Application.Current.Resources["Red"];
+
+                control.daterequired.Foreground = (control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
+                    (Brush)Application.Current.Resources["Green"] : (Brush)Application.Current.Resources["Red"];
+
+                control.custReqTitle.Foreground = (control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
+                    (Brush)Application.Current.Resources["Green"] : (Brush)Application.Current.Resources["Red"];
+
+                //control.ProgressBar.Foreground = control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.TargetQuantity
+                //    ? (Brush)Application.Current.Resources["Green"]
+                //    : (Brush)Application.Current.Resources["Purple"];
 
                 control.EditButton.Visibility = control.LatheManufactureOrderItem.ShowEdit
                     ? Visibility.Visible
@@ -59,8 +67,8 @@ namespace ProjectLighthouse.View.UserControls
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
-                control.ProgressBar.Maximum = control.LatheManufactureOrderItem.TargetQuantity;
-                control.ProgressBar.Value = control.LatheManufactureOrderItem.QuantityMade;
+                //control.ProgressBar.Maximum = control.LatheManufactureOrderItem.TargetQuantity;
+                //control.ProgressBar.Value = control.LatheManufactureOrderItem.QuantityMade;
             }
         }
 

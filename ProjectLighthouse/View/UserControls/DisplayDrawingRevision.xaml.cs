@@ -111,5 +111,20 @@ namespace ProjectLighthouse.View.UserControls
                 vm.ApproveRevision(Drawing);
             }
         }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Message_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void Message_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+        }
     }
 }

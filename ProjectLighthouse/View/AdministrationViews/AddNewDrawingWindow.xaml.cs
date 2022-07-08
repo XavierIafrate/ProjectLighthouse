@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -107,8 +108,21 @@ namespace ProjectLighthouse.View
                 return false;
             }
 
+            NewDrawing.DrawingType = (bool)researchCheckBox.IsChecked
+                ? TechnicalDrawing.Type.Research
+                : TechnicalDrawing.Type.Production;
+
+            NewDrawing.IssueDetails = revisionInfoTextBox.Text.Trim();
+
             NewDrawing.Created = DateTime.Now;
             NewDrawing.CreatedBy = App.CurrentUser.GetFullName();
+
+            List<User> ToNotify = DatabaseHelper.Read<User>().Where(x => x.CanApproveDrawings && x.UserName != App.CurrentUser.UserName).ToList();
+
+            for (int i = 0; i < ToNotify.Count; i++)
+            {
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Drawing proposal - {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.DrawingName}"));
+            }
 
             return DatabaseHelper.Insert(NewDrawing);
         }
@@ -120,10 +134,6 @@ namespace ProjectLighthouse.View
 
             MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
             ToolingGroupConstraintComboBox.SelectedItem = ToolingGroupConstraintComboBox.Items[0];
-
-            NewDrawing.DrawingType = (bool)researchCheckBox.IsChecked 
-                ? TechnicalDrawing.Type.Research 
-                : TechnicalDrawing.Type.Production;
 
             SetConstraints();
         }
@@ -192,7 +202,7 @@ namespace ProjectLighthouse.View
 
         private bool DataIsValid()
         {
-            return !string.IsNullOrEmpty(targetFilePath) && !string.IsNullOrEmpty(NewDrawing.DrawingName);
+            return !string.IsNullOrEmpty(targetFilePath) && !string.IsNullOrEmpty(NewDrawing.DrawingName) && !string.IsNullOrEmpty(revisionInfoTextBox.Text.Trim());
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)

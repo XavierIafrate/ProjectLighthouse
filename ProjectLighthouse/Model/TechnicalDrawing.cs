@@ -39,6 +39,10 @@ namespace ProjectLighthouse.Model
         public enum Amendment { A, B, C, D, E, F, G, H }
         public enum Type { Production, Research}
 
+
+        [Ignore]
+        public List<Note> Notes { get; set; }
+
         public static List<TechnicalDrawing> FindDrawings(List<TechnicalDrawing> drawings, List<LatheManufactureOrderItem> items, string group)
         {
             List<TechnicalDrawing> drawingsList = new();

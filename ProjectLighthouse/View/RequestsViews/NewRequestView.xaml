@@ -21,7 +21,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" x:Name="analyticsCol" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -88,7 +88,7 @@
                 SelectionChanged="ListView_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:LMOConstructionDisplayProducts Product="{Binding Path=.}" />
+                        <uc:DisplayTurnedProduct Product="{Binding Path=.}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -118,10 +118,8 @@
                             ShadowDepth="20"
                             Color="Black" />
                     </Border.Effect>
-                    <Border
-                        Name="ReceiverColor"
-                        CornerRadius="15">
-                        <Grid Opacity="0.2">
+                    <Border Name="ReceiverColor" CornerRadius="15">
+                        <Grid Opacity="0.5">
                             <Border
                                 Name="Mask"
                                 Background="{StaticResource Blue}"
@@ -132,7 +130,6 @@
                                     MaxWidth="400"
                                     gif:ImageBehavior.AnimateInDesignMode="True"
                                     gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
-                                    gif:ImageBehavior.RepeatBehavior="3x"
                                     RenderOptions.BitmapScalingMode="HighQuality" />
                                 <StackPanel.OpacityMask>
                                     <VisualBrush Visual="{Binding ElementName=Mask}" />
@@ -172,6 +169,122 @@
         </Grid>
 
         <StackPanel Grid.Row="1" Grid.Column="1">
+            <Border
+                Margin="5"
+                Background="{StaticResource Surface}"
+                CornerRadius="8">
+                <Grid Margin="20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.ColumnSpan="2"
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Style="{StaticResource section}"
+                        Text="{Binding SelectedProduct.ProductName}" />
+                    <Image
+                        RenderOptions.BitmapScalingMode="Fant"
+                        Grid.Row="1"
+                        MaxWidth="120"
+                        Height="120"
+                        Source="{Binding SelectedProduct.Group.LocalRenderPath}" />
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="10,0,0,0"
+                        TextElement.FontFamily="Consolas">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="In Stock" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            FontWeight="SemiBold"
+                            d:Text="P0123.456-789-A2"
+                            Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} pcs'}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Text="On Sales Order" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            FontWeight="SemiBold"
+                            d:Text="P0123.456-789-A2"
+                            Text="{Binding SelectedProduct.QuantityOnSO, StringFormat='{}{0:#,##0} pcs'}" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Text="On Purchase Order" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            d:Text="P0123.456-789-A2"
+                            FontWeight="SemiBold"
+                            Text="{Binding SelectedProduct.QuantityOnPO, StringFormat='{}{0:#,##0} pcs'}" />
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Text="Tooling Group" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            d:Text="P0123.456-789-A2"
+                            FontWeight="SemiBold"
+                            Text="{Binding SelectedProduct.ProductGroup}" />
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Text="Material" />
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            FontWeight="SemiBold"
+                            HorizontalAlignment="Right"
+                            d:Text="P0123.456-789-A2"
+                            Text="{Binding SelectedProduct.Material}" />
+
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Text="Target Stock" />
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            d:Text="P0123.456-789-A2"
+                            FontWeight="SemiBold"
+                            Text="{Binding SelectedProduct.TargetStock, StringFormat='{}{0:#,##0} pcs'}" />
+                    </Grid>
+                </Grid>
+            </Border>
             <TextBlock Style="{StaticResource section}" Text="Customer's Required Quantity" />
 
             <TextBox
@@ -187,14 +300,28 @@
                 DisplayDateStart="{Binding Mode=OneWay, Source={x:Static System:DateTime.Today}}"
                 SelectedDate="{Binding NewRequest.DateRequired}"
                 SelectedDateChanged="requiredDatePicker_SelectedDateChanged" />
-            <Border Background="{StaticResource Surface}" Margin="5" CornerRadius="5">
+            <Border
+                x:Name="LeadTimesGrid"
+                Margin="5"
+                Background="{StaticResource Surface}"
+                CornerRadius="5">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Path
                             Margin="12,5,0,7"
                             VerticalAlignment="Center"
                             Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
-                            Fill="{StaticResource Blue}" />
+                            Fill="{StaticResource Blue}">
+                            <Path.ToolTip>
+                                <TextBlock
+                                    MaxWidth="500"
+                                    Margin="20,0"
+                                    FontSize="16"
+                                    Text="Scheduling isn't run on a FIFO basis- a product could be significantly faster or slower depending on how it fits in with existing orders on the schedule."
+                                    TextWrapping="Wrap" />
+
+                            </Path.ToolTip>
+                        </Path>
                         <TextBlock
                             Margin="5,5,5,7"
                             VerticalAlignment="Center"
@@ -202,28 +329,52 @@
                             Foreground="{StaticResource OnSurface}"
                             Text="Our estimated lead times" />
                     </StackPanel>
-                    <TextBlock
-                        Margin="20,0"
-                            FontSize="16"
-                            Style="{StaticResource statement}"
-                            Text="Scheduling isn't run on a FIFO basis- a product could be significantly faster or slower depending on how it fits in with existing orders on the schedule." TextWrapping="Wrap"/>
                     <Grid>
-                        <ListView ItemsSource="{Binding Lathes}" Style="{x:Null}" Background="Transparent" BorderBrush="Transparent" Margin="15,5">
+                        <ListView
+                            Margin="15,0,15,5"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            ItemsSource="{Binding Lathes}"
+                            Style="{x:Null}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="10,5">
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding Lathe.Id}" FontWeight="SemiBold" FontSize="18"/>
-                                            <TextBlock Style="{StaticResource statement}">
-                                            <Run Text="{Binding Lathe.Make}"/>
-                                            <Run Text="{Binding Lathe.Model}"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock
+                                                FontSize="18"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Lathe.Id}" />
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource Purple}"
+                                                Style="{StaticResource statement}">
+                                                <Run Text="{Binding Lathe.Make}" />
+                                                <Run Text="{Binding Lathe.Model}" />
                                             </TextBlock>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <Border Background="{StaticResource Yellow}" Visibility="{Binding IsHigh, Converter={StaticResource showIfTrue}}" BorderBrush="{StaticResource OnYellow}" BorderThickness="2" CornerRadius="3" VerticalAlignment="Center" Margin="10,0">
-                                                <TextBlock Text="HIGH" Foreground="{StaticResource OnYellow}" FontWeight="SemiBold" FontFamily="Consolas" Margin="10,3"/>
+                                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                            <Border
+                                                Margin="10,0"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource Yellow}"
+                                                BorderBrush="{StaticResource OnYellow}"
+                                                BorderThickness="2"
+                                                CornerRadius="3"
+                                                Visibility="{Binding IsHigh, Converter={StaticResource showIfTrue}}">
+                                                <TextBlock
+                                                    Margin="10,3"
+                                                    FontFamily="Consolas"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource OnYellow}"
+                                                    Text="HIGH" />
                                             </Border>
-                                            <TextBlock Text="{Binding DisplayLeadTime}" HorizontalAlignment="Right" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                                            <TextBlock
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding DisplayLeadTime}" />
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
@@ -231,12 +382,12 @@
                         </ListView>
                         <Rectangle Fill="#01ffffff" />
                     </Grid>
-                    
+
                 </StackPanel>
             </Border>
             <TextBox
-                Height="100"
                 AcceptsReturn="True"
+                MaxLength="100"
                 MaxLines="3"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="Add remarks here... (optional)"
@@ -249,7 +400,10 @@
                 IsEnabled="False" />
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="2">
-            <TextBlock Style="{StaticResource subtitle}" FontSize="25" Text="Analytics" />
+            <TextBlock
+                FontSize="25"
+                Style="{StaticResource subtitle}"
+                Text="Analytics" />
             <TextBlock
                 Style="{StaticResource section}"
                 Text="Here's how Lighthouse would build the order:"

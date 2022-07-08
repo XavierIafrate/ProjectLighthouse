@@ -21,7 +21,7 @@ namespace ProjectLighthouse.Model
         [Ignore]
         public string LocalRenderPath
         {
-            get { return $@"{App.ROOT_PATH}lib\renders\{ImageUrl}"; }
+            get { return $@"{App.AppDataDirectory}lib\renders\{ImageUrl}"; }
         }
 
 

@@ -6,12 +6,9 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Timers;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
@@ -34,7 +31,7 @@ namespace ProjectLighthouse.ViewModel
 
         #region Observable
         public ObservableCollection<LatheManufactureOrder> FilteredOrders { get; set; }
-        public List<LatheManufactureOrderItem> FilteredOrderItems { get; set; } 
+        public List<LatheManufactureOrderItem> FilteredOrderItems { get; set; }
         public List<Note> FilteredNotes { get; set; }
         public List<TechnicalDrawing> FilteredDrawings { get; set; }
         #endregion
@@ -354,8 +351,8 @@ namespace ProjectLighthouse.ViewModel
                         .OrderBy(x => x.AllocatedMachine)
                         .ToList();
                     orders.AddRange(
-                        Orders.Where(n => n.State < OrderState.Complete 
-                        || n.ModifiedAt.AddDays(1) > DateTime.Now 
+                        Orders.Where(n => n.State < OrderState.Complete
+                        || n.ModifiedAt.AddDays(1) > DateTime.Now
                         || !n.IsClosed)
                         .Where(o => o.State != OrderState.Running)
                         .ToList());
@@ -512,7 +509,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 LiveInfoVis = Visibility.Collapsed;
             }
-            else if(DisplayStats.DataTime.AddHours(1) < DateTime.Now)
+            else if (DisplayStats.DataTime.AddHours(1) < DateTime.Now)
             {
                 LiveInfoVis = Visibility.Collapsed;
             }
@@ -534,27 +531,14 @@ namespace ProjectLighthouse.ViewModel
 
 
             // Order Notes
-            FilteredNotes.Clear();
-            if (App.CurrentUser.Role == UserRole.Administrator)
-            {
-                FilteredNotes = Notes
-                   .Where(n => n.DocumentReference == SelectedOrder.Name)
-                   .OrderBy(x => x.DateSent)
-                   .ToList();
-            }
-            else
-            {
-                FilteredNotes = Notes
-                .Where(n =>
-                    n.DocumentReference == SelectedOrder.Name &&
-                    !n.IsDeleted)
-                .OrderBy(x => x.DateSent)
-                .ToList();
-            }
-            
-
-            FormatNotes(FilteredNotes);
-
+            FilteredNotes = null;
+            OnPropertyChanged(nameof(FilteredNotes));
+            FilteredNotes = Notes
+            .Where(n =>
+                n.DocumentReference == SelectedOrder.Name &&
+                !n.IsDeleted)
+            .OrderBy(x => x.DateSent)
+            .ToList();
 
             // Order Drawings
             FilteredDrawings.Clear();
@@ -566,32 +550,10 @@ namespace ProjectLighthouse.ViewModel
             FilteredDrawings = Drawings
                 .Where(d => drawings.Contains(d.Id))
                 .ToList();
-            
 
             OnPropertyChanged(nameof(FilteredOrderItems));
             OnPropertyChanged(nameof(FilteredNotes));
             OnPropertyChanged(nameof(FilteredDrawings));
-        }
-
-        private static List<Note> FormatNotes(List<Note> notes)
-        {
-            string name = "";
-            DateTime lastTimeStamp = DateTime.MinValue;
-
-            for (int i = 0; i < notes.Count; i++)
-            {
-                notes[i].ShowEdit = false;
-                notes[i].ShowHeader = notes[i].SentBy != name
-                    || DateTime.Parse(notes[i].DateSent) > lastTimeStamp.AddHours(6);
-                if (i < notes.Count - 1)
-                {
-                    notes[i].ShowSpacerUnder = DateTime.Parse(notes[i + 1].DateSent) > DateTime.Parse(notes[i].DateSent).AddHours(6);
-                }
-                lastTimeStamp = DateTime.Parse(notes[i].DateSent);
-                name = notes[i].SentBy;
-            }
-
-            return notes;
         }
 
         public void PrintSelectedOrder()
@@ -624,7 +586,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 editable = false;
             }
-            if(!App.CurrentUser.CanUpdateLMOs)
+            if (!App.CurrentUser.CanUpdateLMOs)
             {
                 editable = false;
             }
@@ -640,7 +602,7 @@ namespace ProjectLighthouse.ViewModel
                 {
                     SelectedOrder = FilteredOrders[i];
                 }
-            }   
+            }
 
             DataRefreshTimer.Enabled = true;
         }
@@ -657,7 +619,7 @@ namespace ProjectLighthouse.ViewModel
             }
             else
             {
-                Refresh(silent:false);
+                Refresh(silent: false);
             }
         }
 

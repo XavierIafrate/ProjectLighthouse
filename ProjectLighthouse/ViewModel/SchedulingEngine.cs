@@ -58,6 +58,8 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        
+
         public void CategoriseThreads(bool SoftLimits = true)
         {
             for (int i = 0; i < Lathes.Count; i++)

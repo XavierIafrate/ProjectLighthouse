@@ -20,11 +20,11 @@ namespace ProjectLighthouse.ViewModel
             }
 
             List<TurnedProduct> compatibleProducts = new();
-            
+
             compatibleProducts.AddRange(turnedProducts
-                .Where(p => p.IsScheduleCompatible(requiredProduct) 
+                .Where(p => p.IsScheduleCompatible(requiredProduct)
                     && !p.isSpecialPart
-                    && Math.Abs(p.MajorLength - requiredProduct.MajorLength) <= 40 
+                    && Math.Abs(p.MajorLength - requiredProduct.MajorLength) <= 40
                     && p.ProductName != requiredProduct.ProductName)
                 .OrderByDescending(p => p.GetRecommendedQuantity())
                 .ThenBy(p => p.QuantityInStock)
@@ -36,7 +36,7 @@ namespace ProjectLighthouse.ViewModel
                 recommendedItems.Add(newItem);
             }
 
-            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendedItems, maxRuntime, enforceMOQs:enforceMOQ);
+            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendedItems, maxRuntime, enforceMOQs: enforceMOQ);
 
             filteredItems = filteredItems.Take(numberOfItems).ToList();
 
@@ -148,7 +148,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 originalNumber += divisor;
             }
-            
+
             return originalNumber - (originalNumber % divisor);
         }
 
@@ -161,6 +161,32 @@ namespace ProjectLighthouse.ViewModel
 
             double numPossible = secondsAllotted / Convert.ToDouble(cycleTime);
             return (int)Math.Floor(numPossible);
+        }
+
+        public static List<TurnedProduct> PopulateInsightFields(List<TurnedProduct> products, List<LatheManufactureOrder> activeOrders, List<Request> recentlyDeclinedRequests)
+        {
+            for (int i = 0; i < products.Count; i++)
+            {
+                for (int j = 0; j < activeOrders.Count; j++)
+                {
+                    if (activeOrders[j].OrderItems.Any(x => x.ProductName == products[i].ProductName))
+                    {
+                        products[i].AppendableOrder = activeOrders[j];
+                        products[i].LighthouseGuaranteedQuantity = activeOrders[j].OrderItems.Find(x => x.ProductName == products[i].ProductName).RequiredQuantity;
+                    }
+                    else if (activeOrders[j].ToolingGroup == products[i].ProductGroup)
+                    {
+                        products[i].ZeroSetOrder = activeOrders[j];
+                    }
+                }
+
+                if (products[i].ZeroSetOrder == null && products[i].AppendableOrder == null && recentlyDeclinedRequests.Any(x => x.Product == products[i].ProductName))
+                {
+                    products[i].DeclinedRequest = recentlyDeclinedRequests.OrderByDescending(x => x.LastModified).First(x => x.Product == products[i].ProductName);
+                }
+            }
+
+            return products;
         }
     }
 }

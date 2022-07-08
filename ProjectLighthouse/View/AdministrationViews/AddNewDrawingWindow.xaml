@@ -167,6 +167,8 @@
                 </Grid>
             </Border>
 
+            <TextBox x:Name="revisionInfoTextBox" Style="{StaticResource DefaultTextBox}" Tag="Revision details..."/>
+
             <CheckBox x:Name="researchCheckBox" Content="Drawing is for R&amp;D" />
             <Button
                 x:Name="AddButton"

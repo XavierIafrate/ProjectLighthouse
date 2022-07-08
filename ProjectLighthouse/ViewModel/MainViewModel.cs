@@ -64,7 +64,7 @@ namespace ProjectLighthouse.ViewModel
 
                 _selectedViewModel = value;
                 DataRefreshBadgeVis = (_selectedViewModel is IRefreshableViewModel) && App.CurrentUser.EnableDataSync
-                    ? Visibility.Visible
+                    ? Visibility.Collapsed
                     : Visibility.Collapsed;
                 OnPropertyChanged(nameof(DataRefreshBadgeVis));
 
@@ -96,6 +96,8 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public bool NoNotifications { get; set; }
+
         private List<Notification> nots;
 
         public List<Notification> Notifications
@@ -104,6 +106,8 @@ namespace ProjectLighthouse.ViewModel
             set 
             { 
                 nots = value;
+                NoNotifications = nots.Count == 0;
+                OnPropertyChanged(nameof(NoNotifications));
                 OnPropertyChanged();
             }
         }
@@ -144,7 +148,7 @@ namespace ProjectLighthouse.ViewModel
         }
 
 
-        public void LoginRoutine()
+        public bool LoginRoutine()
         {
             if (App.CurrentUser == null)
             {
@@ -164,10 +168,12 @@ namespace ProjectLighthouse.ViewModel
                     if (MainWindow != null)
                     {
                         UpdateViewCommand.Execute(TargetView);
-                        
                     }
+                    return true;
                 }
             }
+
+            return false;
         }
 
         public void ToggleNotificationsBarVisibility()

@@ -1,11 +1,12 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Timers;
+using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -28,8 +29,8 @@ namespace ProjectLighthouse.ViewModel
         public int NotificationCount
         {
             get { return notificationCount; }
-            set 
-            { 
+            set
+            {
                 notificationCount = value;
                 OnPropertyChanged();
             }
@@ -42,7 +43,11 @@ namespace ProjectLighthouse.ViewModel
 
         public void Initialise()
         {
-            MyNotifications = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName && x.Seen).ToList();
+            if (App.CurrentUser is null) return;
+            MyNotifications = DatabaseHelper.Read<Notification>().Where(n => n.TargetUser == App.CurrentUser.UserName && n.Seen).ToList();
+            NotificationCount = myNotifications.Where(n => !n.Seen).Count();
+            App.MainViewModel.Notifications = MyNotifications.Where(n => n.TimeStamp.AddDays(7) > DateTime.Now && n.Seen).OrderByDescending(x => x.TimeStamp).ToList();
+            App.MainViewModel.NotCount = 0;
         }
 
         private void CreateTimer()
@@ -73,7 +78,7 @@ namespace ProjectLighthouse.ViewModel
 
             NotificationCount = myNotifications.Where(not => !not.Seen).Count();
             App.MainViewModel.NotCount = NotificationCount;
-            App.MainViewModel.Notifications = MyNotifications.Where(not => !not.Seen).ToList();
+            App.MainViewModel.Notifications = MyNotifications.Where(not => not.TimeStamp.AddDays(7) > DateTime.Now).OrderByDescending(x => x.TimeStamp).ToList();
         }
 
         private void RaiseToast(Notification notification)
@@ -82,17 +87,18 @@ namespace ProjectLighthouse.ViewModel
             {
                 new ToastContentBuilder()
                        .AddText(notification.Header)
-                       .AddHeroImage(new Uri($@"{App.ROOT_PATH}lib\renders\StartPoint.png"))
+                       .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
                        .AddText(notification.Body)
                        .AddArgument("action", notification.ToastAction ?? "")
-                       .AddInlineImage(new Uri($"{App.ROOT_PATH}{notification.ToastInlineImageUrl}"))
+                       .AddArgument("id", $"{notification.Id:0}")
+                       .AddInlineImage(new Uri($"{App.AppDataDirectory}{notification.ToastInlineImageUrl}"))
                        .Show(x => { x.Tag = $"{notification.Id:0}"; });
             }
             else
             {
                 new ToastContentBuilder()
                        .AddText(notification.Header)
-                       .AddHeroImage(new Uri($@"{App.ROOT_PATH}lib\renders\StartPoint.png"))
+                       .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
                        .AddText(notification.Body)
                        .AddArgument("action", notification.ToastAction ?? "")
                        .Show(x => { x.Tag = $"{notification.Id:0}"; });
@@ -113,5 +119,81 @@ namespace ProjectLighthouse.ViewModel
 
             CheckForNotifications();
         }
+
+        public int? ParseToastArgs(string rawArgs)
+        {
+            string[] separated = rawArgs.Split(';');
+            Dictionary<string, string> args = new();
+            for (int i = 0; i < separated.Length; i++)
+            {
+                string[] kvp = separated[i].Split("=");
+                if (kvp.Length == 2)
+                {
+                    args.Add(kvp[0], kvp[1]);
+                }
+            }
+            for (int i = 0; i < args.Count; i++)
+            {
+                ExecuteToastArgs(args.ToList()[i]);
+            }
+
+            if (args.ContainsKey("id"))
+            {
+                return int.Parse(args["id"]);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private void ExecuteToastArgs(KeyValuePair<string, string> arg)
+        {
+            if (arg.Key == "action")
+            {
+                ExecuteToastAction(arg.Value);
+            }
+        }
+
+        public void ExecuteToastAction(string action)
+        {
+            if (action == null)
+            {
+                return;
+            }
+
+
+            int loadedWindows = Application.Current.Windows.Cast<Window>()
+                                               .Where(win => win.IsVisible && !string.IsNullOrEmpty(win.Title)).Count();
+
+            if (loadedWindows != 1)
+            {
+                return;
+            }
+
+            if (action.StartsWith("viewRequest:"))
+            {
+                App.MainViewModel.UpdateViewCommand.Execute("View Requests");
+            }
+            else if (action.StartsWith("viewManufactureOrder:"))
+            {
+                EditLMOWindow window = new(action.Replace("viewManufactureOrder:", ""), App.CurrentUser.CanUpdateLMOs);
+                window.ShowDialog();
+            }
+        }
+
+        public void EnsureMarkedRead(Notification notification)
+        {
+            if (notification.Seen)
+            {
+                return;
+            }
+            notification.Seen = true;
+            notification.SeenTimeStamp = DateTime.Now;
+            DatabaseHelper.Update(notification);
+            CheckForNotifications();
+        }
+
+
     }
 }

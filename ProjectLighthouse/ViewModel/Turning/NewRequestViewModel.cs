@@ -51,6 +51,10 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 filteredList = value;
+                if (filteredList.Count > 0)
+                {
+                    SelectedProduct = filteredList[0];
+                }
                 OnPropertyChanged();
             }
         }
@@ -67,6 +71,13 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedProduct = value;
                 ProductIsSelected = value != null;
+                if (value != null)
+                {
+                    if (value.ProductName != null)
+                    {
+                        selectedProduct.Group = ProductGroups.Find(x => selectedProduct.ProductName.StartsWith(x.Name));
+                    }
+                }
                 OnPropertyChanged(nameof(ProductIsSelected));
                 OnPropertyChanged();
                 SetRequest();
@@ -91,9 +102,27 @@ namespace ProjectLighthouse.ViewModel
                 .Where(x => !x.Retired)
                 .OrderBy(x => x.ProductName).ToList();
 
+            List<LatheManufactureOrder> ActiveOrders = DatabaseHelper.Read<LatheManufactureOrder>()
+                .Where(x => x.State < OrderState.Complete)
+                .ToList();
+            string[] activeOrders = ActiveOrders.Select(x => x.Name).ToArray();
+
+            List<LatheManufactureOrderItem> ActiveOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>()
+                .Where(x => activeOrders.Contains(x.AssignedMO))
+                .ToList();
+
+            for (int i = 0; i < ActiveOrders.Count; i++)
+            {
+                ActiveOrders[i].OrderItems = ActiveOrderItems.Where(x => x.AssignedMO == ActiveOrders[i].Name).ToList();
+            }
+
+            List<Request> recentlyDeclinedRequests = DatabaseHelper.Read<Request>().Where(x => x.IsDeclined && x.LastModified.AddDays(14) > DateTime.Now).ToList();
+
+            TurnedProducts = RequestsEngine.PopulateInsightFields(TurnedProducts, ActiveOrders, recentlyDeclinedRequests);
+
             ProductGroups = DatabaseHelper.Read<Product>();
 
-            ToNotify = DatabaseHelper.Read<User>().Where(x => x.CanApproveRequests).ToList();
+            ToNotify = DatabaseHelper.Read<User>().Where(x => x.CanApproveRequests && x.ReceivesNotifications).ToList();
 
             NewRequest = new();
             SubmitRequestCommand = new(this);
@@ -158,7 +187,7 @@ namespace ProjectLighthouse.ViewModel
             NewRequest = new()
             { 
                 Product = SelectedProduct.ProductName ,
-                QuantityRequired = Math.Max(SelectedProduct.QuantityOnSO - SelectedProduct.QuantityOnPO - SelectedProduct.QuantityInStock, 0),
+                QuantityRequired = Math.Max(-SelectedProduct.FreeStock(), 0),
                 DateRequired = DateTime.Now.AddMonths(1),
             };
 
@@ -188,7 +217,7 @@ namespace ProjectLighthouse.ViewModel
             if (string.IsNullOrEmpty(searchTerm))
             {
                 FilteredList = TurnedProducts
-                    .Where(x => x.QuantityOnSO > 0 && x.QuantityOnSO > x.QuantityOnPO + x.QuantityInStock)
+                    .Where(x => x.QuantityOnSO > 0 && x.QuantityOnPO + x.QuantityInStock < x.QuantityOnSO)
                     .OrderBy(n => n.Material)
                     .ThenBy(n => n.ProductName)
                     .ToList();
@@ -215,6 +244,8 @@ namespace ProjectLighthouse.ViewModel
             Product matchedProduct = ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant());
             string toastImage = matchedProduct == null ? null : $@"lib\renders\{matchedProduct.ImageUrl}";
 
+            int newRequestId = DatabaseHelper.Read<sqlite_sequence>().Find(x => x.name == nameof(Request)).seq + 1;
+
             for (int i = 0; i < ToNotify.Count; i++)
             {
                 Notification not = new(
@@ -222,7 +253,7 @@ namespace ProjectLighthouse.ViewModel
                     from: App.CurrentUser.UserName, 
                     header: "Request Raised", 
                     body: $"New request raised for {NewRequest.QuantityRequired:#,##0}pcs of {NewRequest.Product}. Requested in {weeks} weeks.",
-                    toastAction : "viewRequest",
+                    toastAction : $"viewRequest:{newRequestId:0}",
                     toastImageUrl: toastImage);
                 
                 if (not.TargetUser == not.Origin)
@@ -238,25 +269,26 @@ namespace ProjectLighthouse.ViewModel
 
             if (ProductGroups.Any(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant()))
             {
+
+                string renderPath = ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant()).LocalRenderPath;
+
                 new ToastContentBuilder()
                    .AddText("New Request Raised")
-                   .AddHeroImage(new Uri($@"{App.ROOT_PATH}lib\renders\StartPoint.png"))
+                   .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
                    .AddText("People with approval permissions will get notified.")
-                   .AddArgument("action", "viewRequest")
-                   .AddInlineImage(new Uri(ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant()).LocalRenderPath))
+                   .AddArgument("action", $"viewRequest:{newRequestId:0}")
+                   .AddInlineImage(new Uri(renderPath))
                    .Show();
             }
             else
             {
                 new ToastContentBuilder()
                     .AddText("New Request Raised")
-                    .AddArgument("action", "viewRequest")
+                    .AddArgument("action", $"viewRequest:{newRequestId:0}")
                     .AddText("People with approval permissions will get notified.")
-                    .AddHeroImage(new Uri($@"{App.ROOT_PATH}lib\renders\StartPoint.png"))
+                    .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
                     .Show();
             }
-
-
 
             if (DatabaseHelper.Insert(NewRequest))
             {

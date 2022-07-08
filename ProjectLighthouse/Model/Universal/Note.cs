@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using System;
+using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model
 {
@@ -20,11 +21,16 @@ namespace ProjectLighthouse.Model
         [Ignore]
         public bool ShowHeader { get; set; }
         [Ignore]
+        public bool ShowDateHeader { get; set; }
+        [Ignore]
+        public bool SpaceUnder { get; set; }
+        [Ignore]
         public bool ShowEdit { get; set; }
         [Ignore]
-        public bool ShowSpacerUnder { get; set; }
+        public User UserDetails { get; set; }
 
         public event Action Edited;
+
 
         public void NotifyEdited()
         {

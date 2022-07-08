@@ -2,6 +2,7 @@
 using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -61,18 +62,6 @@ namespace ProjectLighthouse.View
             EnableSubmit();
         }
 
-        private void NotesTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //TextRange textRange = new(notesTextBox.Document.ContentStart, notesTextBox.Document.ContentEnd);
-            //if (viewModel != null && textRange.Text.Length >= 2)
-            //{
-            //    viewModel.NewRequest.Notes = textRange.Text[0..^2];
-            //    NotesGhost.Visibility = string.IsNullOrEmpty(textRange.Text[0..^2])
-            //        ? Visibility.Visible
-            //        : Visibility.Hidden;
-            //}
-        }
-
         private void QuantityBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
@@ -80,7 +69,17 @@ namespace ProjectLighthouse.View
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            Debug.WriteLine($"Height: '{this.ActualHeight:N2}' Width: '{this.ActualWidth:N2}'");
 
+            //remove col below 1150
+            analyticsCol.Width = this.ActualWidth < 1150
+                ? new GridLength(0)
+                : new GridLength(1, GridUnitType.Star);
+
+            // remove lead times below 710
+            LeadTimesGrid.Visibility = this.ActualHeight < 710
+                ? Visibility.Collapsed
+                : Visibility.Visible;
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

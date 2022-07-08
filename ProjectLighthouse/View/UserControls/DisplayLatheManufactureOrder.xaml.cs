@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -30,6 +31,15 @@ namespace ProjectLighthouse.View.UserControls
             control.PoTextBlock.Visibility = (App.CurrentUser.Role == UserRole.Administrator || App.CurrentUser.Role == UserRole.Purchasing)
                 ?Visibility.Visible
                 :Visibility.Collapsed;
+
+            bool needsUpdate = control.LatheManufactureOrder.ModifiedAt.AddDays(3) < DateTime.Now
+                   && control.LatheManufactureOrder.State == OrderState.Problem
+                   && control.LatheManufactureOrder.CreatedAt.AddDays(3) < DateTime.Now;
+
+            needsUpdate = needsUpdate && !(control.LatheManufactureOrder.BarIsVerified && control.LatheManufactureOrder.HasProgram && control.LatheManufactureOrder.IsReady);
+
+
+            control.BadgeText.Visibility = control.LatheManufactureOrder.IsClosed || needsUpdate ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public DisplayLatheManufactureOrder()

@@ -7,6 +7,8 @@
     xmlns:local="clr-namespace:ProjectLighthouse"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Project Lighthouse"
     Width="1312"
     Height="849"
@@ -21,17 +23,21 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Grid.Resources>
+            <converters:boolToCollapsedOrVisible x:Key="hideIfTrue"/>
+            <converters:boolToVisibleOrCollapsed x:Key="showIfTrue"/>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
                 Width="*"
-                MinWidth="300"
+                MinWidth="250"
                 MaxWidth="350" />
-            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="4*" MinWidth="800" />
             <ColumnDefinition Width="auto" MaxWidth="400" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="6*" />
+            <RowDefinition Height="7*" />
         </Grid.RowDefinitions>
 
         <Rectangle Grid.RowSpan="2" Fill="{StaticResource Surface}" />
@@ -190,7 +196,6 @@
                             Style="{StaticResource Debug_MenuItem}"
                             Visibility="Collapsed" />
 
-                        <TextBlock Text="{Binding Path=NotificationManager.NotificationCount, Source={x:Static Application.Current}, StringFormat='{}You have {0} Notifications'}" />
                     </StackPanel>
 
                 </StackPanel>
@@ -362,6 +367,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
                     <Grid Margin="20,10">
@@ -389,55 +395,17 @@
                     </Grid>
                     <ItemsControl
                         Grid.Row="1"
+                        Margin="10,0"
                         MaxWidth="350"
                         ItemsSource="{Binding Notifications}"
                         Style="{x:Null}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border
-                                    Margin="5"
-                                    Background="{StaticResource Background}"
-                                    BorderBrush="{StaticResource DisabledElement}"
-                                    BorderThickness="2"
-                                    CornerRadius="8">
-                                    <StackPanel Margin="10,5">
-                                        <Grid>
-
-                                            <TextBlock
-                                                VerticalAlignment="Center"
-                                                FontSize="18"
-                                                FontWeight="Bold"
-                                                Text="{Binding Header}" />
-                                            <Button
-                                                Margin="0"
-                                                HorizontalAlignment="Right"
-                                                Content="view"
-                                                Style="{StaticResource ModernGreenButtonTemplate}" />
-
-
-                                        </Grid>
-
-                                        <TextBlock Text="{Binding Body}" TextWrapping="Wrap" />
-
-                                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                            <TextBlock
-                                                FontStyle="Italic"
-                                                Foreground="{StaticResource Blue}"
-                                                Text="{Binding Origin}" />
-                                            <TextBlock
-                                                VerticalAlignment="Center"
-                                                FontStyle="Italic"
-                                                Foreground="{StaticResource Blue}"
-                                                Text="{Binding TimeStamp, StringFormat='{} - {0:dd/MM HH:mm}'}" />
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Border>
-
+                                <userControls:DisplayNotification Notification="{Binding Path=.}"/>
                             </DataTemplate>
-
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <StackPanel Visibility="{Binding NoNotifications, Converter={StaticResource showIfTrue}}" Grid.Row="1" VerticalAlignment="Center">
                         <Border
                         Name="ReceiverColor"
                         Margin="20,5"
@@ -453,7 +421,6 @@
                                     MaxWidth="250"
                                     gif:ImageBehavior.AnimateInDesignMode="False"
                                     gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/excellent.gif"
-                                    gif:ImageBehavior.RepeatBehavior="3x"
                                     RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <StackPanel.OpacityMask>
                                         <VisualBrush Visual="{Binding ElementName=Mask}" />
@@ -463,13 +430,16 @@
                         </Border>
                         <TextBlock HorizontalAlignment="Center"  >
                             <Hyperlink NavigateUri="https://www.youtube.com/watch?v=KjB6r-HDDI0" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">
-                                <TextBlock Text="{Binding Path=FirstName, Source={x:Static local:App.CurrentUser}, StringFormat='{}Party on, {0}!'}" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Green}"/>
+                                <TextBlock Text="Party on!" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Green}"/>
                             </Hyperlink>
                         </TextBlock>
                         <TextBlock Text="No notifications to show" HorizontalAlignment="Center" FontStyle="Italic" Opacity="0.6" />
-
                     </StackPanel>
-                    
+                    <StackPanel Orientation="Horizontal" Grid.Row="2">
+                        <Button Content="Archive All"/>
+                        <ToggleButton Content="Mute"/>
+                    </StackPanel>
+
                 </Grid>
 
 

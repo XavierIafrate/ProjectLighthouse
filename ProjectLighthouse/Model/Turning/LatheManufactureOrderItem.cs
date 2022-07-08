@@ -59,7 +59,7 @@ namespace ProjectLighthouse.Model
         public LatheManufactureOrderItem(TurnedProduct fromProduct)
         {
             ProductName = fromProduct.ProductName;
-            CycleTime = fromProduct.CycleTime;
+            CycleTime = 0; // force them to update it
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
             DateAdded = DateTime.Now;
@@ -122,9 +122,13 @@ namespace ProjectLighthouse.Model
             {
                 return MajorDiameter switch
                 {
-                    < 15 => 120,
-                    < 24 => 180,
-                    _ => 240
+                    <= 5 => 90,
+                    <= 7 => 100,
+                    <= 10 => 120,
+                    <= 15 => 180,
+                    <= 20 => 240,
+                    <= 25 => 270,
+                    _ => 320
                 };
             }
         }
