@@ -79,6 +79,15 @@ namespace ProjectLighthouse.View.UserControls
 
         private static string GetDateString(DateTime date)
         {
+            if (date.Date == DateTime.Today)
+            {
+                return "Today";
+            }
+            else if (date.Date == DateTime.Today.AddDays(-1))
+            {
+                return "Yesterday";
+            }
+
             string suffix = GetDaySuffix(date.Day);
             return $"{date:dddd}, {date.Day}{suffix} {date:MMMM yyyy}";
         }

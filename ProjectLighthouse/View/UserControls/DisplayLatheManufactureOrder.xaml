@@ -40,7 +40,7 @@
                     FontSize="14"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource Blue}"
-                    Text="{Binding POReference}" />
+                    Text="{Binding POReference}" d:Text="POR12345" />
             </StackPanel>
 
         </StackPanel>
