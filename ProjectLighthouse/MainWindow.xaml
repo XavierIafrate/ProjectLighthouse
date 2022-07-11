@@ -26,6 +26,7 @@
         <Grid.Resources>
             <converters:boolToCollapsedOrVisible x:Key="hideIfTrue"/>
             <converters:boolToVisibleOrCollapsed x:Key="showIfTrue"/>
+            <converters:intToNotifications x:Key="notificationCounter"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
@@ -201,7 +202,7 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <Border
+            <!--<Border
                 Grid.Row="1"
                 Padding="30,3"
                 Background="{StaticResource OnBackground}"
@@ -226,10 +227,11 @@
                         Opacity="0.5"
                         Text="{Binding LastDataRefresh, FallbackValue='Test', StringFormat='{}last refreshed at {0:HH:mm:ss}'}" />
                 </StackPanel>
-            </Border>
+            </Border>-->
 
             <Button
-                Grid.Row="2"
+                Visibility="{Binding NoNotifications, Converter={StaticResource hideIfTrue}}"
+                Grid.Row="1"
                 Command="{Binding ToggleShowNotsCommand}"
                 Style="{StaticResource NotificationsMainButton}">
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
@@ -241,29 +243,27 @@
                     <TextBlock
                         Margin="7,0,0,2"
                         Foreground="{StaticResource OnRed}"
-                        Text="{Binding NotCount, StringFormat='{}You have {0} notifications.', NotifyOnSourceUpdated=True}" />
+                        Text="{Binding NotCount, Converter={StaticResource notificationCounter}, NotifyOnSourceUpdated=True}" d:Text="You have x notifications." />
                 </StackPanel>
             </Button>
-
-            <!--<Border
+            <Button
+                Visibility="{Binding NoNotifications, Converter={StaticResource showIfTrue}}"
                 Grid.Row="2"
-                Padding="30,3"
-                Background="{StaticResource Red}">
-                <Grid>
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <Path
-                            Height="13"
-                            Data="M21 6.5C21 8.43 19.43 10 17.5 10S14 8.43 14 6.5 15.57 3 17.5 3 21 4.57 21 6.5M19 11.79C18.5 11.92 18 12 17.5 12C14.47 12 12 9.53 12 6.5C12 5.03 12.58 3.7 13.5 2.71C13.15 2.28 12.61 2 12 2C10.9 2 10 2.9 10 4V4.29C7.03 5.17 5 7.9 5 11V17L3 19V20H21V19L19 17V11.79M12 23C13.11 23 14 22.11 14 21H10C10 22.11 10.9 23 12 23Z"
-                            Fill="{StaticResource OnRed}"
-                            Stretch="Uniform" />
-                        <TextBlock
-                            Margin="7,0,0,2"
-                            Foreground="{StaticResource OnRed}"
-                            Text="{Binding NotCount, StringFormat='{}You have {0} notifications.', NotifyOnSourceUpdated=True}" />
-                        <Button Content="View" Command="{Binding ViewNotificationsCommand}"/>
-                    </StackPanel>
-                </Grid>
-            </Border>-->
+                Command="{Binding ToggleShowNotsCommand}"
+                Style="{StaticResource NoNotificationsMainButton}">
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Path
+                        Height="15"
+                        Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
+                        Fill="{StaticResource OnRed}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="7,0,0,0"
+                        Foreground="{StaticResource OnRed}"
+                        Text="No new notifications " />
+                </StackPanel>
+            </Button>
 
             <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>

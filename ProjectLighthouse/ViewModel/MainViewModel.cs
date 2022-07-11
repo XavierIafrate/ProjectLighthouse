@@ -145,6 +145,8 @@ namespace ProjectLighthouse.ViewModel
             UpdateViewCommand = new UpdateViewCommand(this);
             ToggleShowNotsCommand = new(this);
             ReadAllCommand = new();
+            NoNotifications = true;
+            OnPropertyChanged(nameof(NoNotifications));
         }
 
 

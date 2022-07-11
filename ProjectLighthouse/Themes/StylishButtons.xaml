@@ -72,6 +72,36 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="NoNotificationsMainButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Green}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Height="35"
+                        Padding="20,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0">
+                        <ContentPresenter
+                            Margin="0,0,0,2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource GreenDark}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="LightGray" />
+                <Setter Property="Foreground" Value="Gray" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="SentryDownloadButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource Red}" />
         <Setter Property="HorizontalAlignment" Value="Center" />

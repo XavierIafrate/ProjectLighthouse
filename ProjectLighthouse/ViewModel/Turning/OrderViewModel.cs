@@ -114,6 +114,8 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public bool NoNotes { get; set; }
+
         private Visibility cleaningVis;
         public Visibility CleaningVis
         {
@@ -496,6 +498,8 @@ namespace ProjectLighthouse.ViewModel
 
             NoDrawingsFoundVis = FilteredDrawings.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             DrawingsFoundVis = FilteredDrawings.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+            NoNotes = FilteredNotes.Count == 0;
+            OnPropertyChanged(nameof(NoNotes));
 
             RunInfoText = !string.IsNullOrEmpty(SelectedOrder.AllocatedMachine)
                 ? $"Assigned to {SelectedOrder.AllocatedMachine}, starting {SelectedOrder.StartDate:dddd, MMMM d}{GetDaySuffix(SelectedOrder.StartDate.Day)}"

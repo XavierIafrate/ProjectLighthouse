@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ProjectLighthouse.Model
 {
-    public class TechnicalDrawing
+    public class TechnicalDrawing : ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -115,6 +115,35 @@ namespace ProjectLighthouse.Model
                 return matches.First();
             }
             return null;
+        }
+
+        public object Clone()
+        {
+            return new TechnicalDrawing()
+            {
+                Id = Id,
+                Revision = Revision,
+                URL = URL,
+                Created = Created,
+                CreatedBy = CreatedBy,
+                IsArchetype = IsArchetype,
+                Customer = Customer,
+                DrawingName = DrawingName,
+                DrawingStore = DrawingStore,
+                IsApproved = IsApproved,
+                IsRejected = IsRejected,
+                RejectedDate = RejectedDate,
+                RejectionReason = RejectionReason,
+                ApprovedBy = ApprovedBy,
+                ApprovedDate = ApprovedDate,
+                ProductGroup = ProductGroup,
+                ToolingGroup = ToolingGroup,
+                MaterialConstraint = MaterialConstraint,
+                DrawingType = DrawingType,
+                AmendmentType = AmendmentType,
+                IssueDetails = IssueDetails,
+                IsCurrent = IsCurrent,
+            };
         }
     }
 }

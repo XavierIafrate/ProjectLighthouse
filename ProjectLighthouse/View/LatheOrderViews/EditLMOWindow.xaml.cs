@@ -282,7 +282,7 @@ namespace ProjectLighthouse.View
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(Message.Text))
+            if (!string.IsNullOrWhiteSpace(Message.Text.Trim()))
             {
                 AddNewNote(Message.Text.Trim());
             }

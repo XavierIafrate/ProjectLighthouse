@@ -47,6 +47,10 @@ namespace ProjectLighthouse.View.UserControls
             control.delivered.Visibility = control.Item.QuantityMade > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             double lWidth = (double)control.Item.RequiredQuantity / (double)control.Item.TargetQuantity;
+            if (double.IsNaN(lWidth))
+            {
+                lWidth = 0;
+            }
             lWidth *= 100;
 
             control.lCol.Width = new(lWidth, GridUnitType.Star);

@@ -24,6 +24,11 @@ namespace ProjectLighthouse.Model
 
         public List<string> GetListOfErrors()
         {
+            if (ErrorMessages == null)
+            {
+                return new();
+            }
+
             List<string> results = ErrorMessages.Split(";").ToList();
             List<string> cleanedResults = new();
             foreach (string result in results)

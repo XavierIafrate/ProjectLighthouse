@@ -24,7 +24,10 @@
             <converters:intToStringCycleTime x:Key="intToStringCycleTime" />
             <converters:stringToAssignedLathe x:Key="stringToAssignedLathe" />
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisible" />
+            <converters:boolToCollapsedOrVisible x:Key="boolToCollapsed" />
             <converters:StatsToLiveColour x:Key="liveBadgeColour" />
+            <converters:dateToLastModified x:Key="modifiedFormatter" />
+            <converters:OrderStateToBrush x:Key="stateBrush" />
 
             <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
                 <DoubleAnimation
@@ -93,12 +96,10 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid>
-            <Button
-                HorizontalAlignment="Left"
-                Command="{Binding NewOrderCommand}"
-                Content="+  New Order" />
-        </Grid>
+        <Button
+            HorizontalAlignment="Left"
+            Command="{Binding NewOrderCommand}"
+            Content="+  New Order" />
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -319,37 +320,53 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock
+                                            Margin="0,0,0,4"
                                             Foreground="{StaticResource OnSurface}"
                                             Style="{StaticResource title}"
                                             Text="{Binding Path=SelectedOrder.Name, FallbackValue='M00000'}" />
-                                        <Path
-                                            Width="30"
-                                            Height="25"
-                                            Margin="5,4,5,0"
+                                        <Border
+                                            Margin="10,0"
+                                            HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
-                                            Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
-                                            Fill="{StaticResource Blue}"
-                                            Stretch="Uniform"
-                                            ToolTip="This order is closed."
-                                            Visibility="{Binding ArchiveVis}" />
+                                            BorderBrush="{Binding SelectedOrder.State, Converter={StaticResource stateBrush}}"
+                                            BorderThickness="3,0,0,0"
+                                            CornerRadius="5">
+                                            <Grid>
+                                                <Border
+                                                    Background="{Binding SelectedOrder.State, Converter={StaticResource stateBrush}}"
+                                                    CornerRadius="5"
+                                                    Opacity="0.15" />
+                                                <TextBlock
+                                                    Margin="10,5"
+                                                    d:Text="STATUS"
+                                                    FontSize="16"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{Binding SelectedOrder.State, Converter={StaticResource stateBrush}}"
+                                                    Text="{Binding SelectedOrder.State}" />
+                                            </Grid>
+                                        </Border>
                                     </StackPanel>
-                                    <TextBlock
-                                        x:Name="CreatedTextBlock"
-                                        FontStyle="Normal"
-                                        Foreground="{StaticResource OnSurface}"
-                                        Style="{StaticResource statement}"
-                                        Text="{Binding Path=SelectedOrder.CreatedAt, StringFormat='{}Issued {0:MMMM dd yyyy HH:mm}'}" />
-
-                                    <TextBlock
-                                        x:Name="ModifiedTextBlock"
-                                        FontStyle="Normal"
-                                        Foreground="{StaticResource OnSurface}"
-                                        Style="{StaticResource statement}"
-                                        Visibility="{Binding Path=ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
-                                        <Run Text="Last modified by" />
-                                        <Run Text="{Binding Path=SelectedOrder.ModifiedBy, FallbackValue='Kyle Brovloski'}" />
-                                        <Run Text="{Binding Path=SelectedOrder.ModifiedAt, StringFormat='{}at {0:dd/MM/yy HH:mm}'}" />
-                                    </TextBlock>
+                                    <StackPanel Opacity="0.4" Orientation="Horizontal" Visibility="{Binding ModifiedVis}">
+                                        <Path
+                                            Width="15"
+                                            Height="15"
+                                            Data="M21,10.12H14.22L16.96,7.3C14.23,4.6 9.81,4.5 7.08,7.2C4.35,9.91 4.35,14.28 7.08,17C9.81,19.7 14.23,19.7 16.96,17C18.32,15.65 19,14.08 19,12.1H21C21,14.08 20.12,16.65 18.36,18.39C14.85,21.87 9.15,21.87 5.64,18.39C2.14,14.92 2.11,9.28 5.62,5.81C9.13,2.34 14.76,2.34 18.27,5.81L21,3V10.12M12.5,8V12.25L16,14.33L15.28,15.54L11,13V8H12.5Z"
+                                            Fill="{StaticResource OnBackground}"
+                                            Stretch="Uniform" />
+                                        <TextBlock
+                                            Margin="5,0,0,0"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource OnBackground}"
+                                            Text="{Binding SelectedOrder.ModifiedAt, Converter={StaticResource modifiedFormatter}, StringFormat='{}Updated {0}'}" />
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource OnBackground}"
+                                            Text="{Binding SelectedOrder.ModifiedBy, StringFormat='{} by {0}'}" />
+                                    </StackPanel>
                                 </StackPanel>
 
 
@@ -370,11 +387,37 @@
                                 </StackPanel>
 
                             </Grid>
-                            <!--#endregion-->
-                            <!--#region Metadata-->
-                            <TextBlock Style="{StaticResource section}" Text="Resources" />
 
-                            <Grid Margin="20,20,20,10">
+                            <Grid Margin="10,10,10,0" Visibility="{Binding SelectedOrder.IsResearch, Converter={StaticResource boolToVisible}}">
+                                <Border Background="{StaticResource Blue}" CornerRadius="3" />
+                                <StackPanel Margin="10,5" Orientation="Horizontal">
+                                    <Path
+                                        Width="12"
+                                        Height="12"
+                                        Margin="0,2,5,0"
+                                        VerticalAlignment="Center"
+                                        Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                                        Fill="{StaticResource OnBlue}"
+                                        Stretch="UniformToFill" />
+                                    <TextBlock Foreground="{StaticResource OnBlue}" Text="This order is for Research and Development - deliveries will be disabled" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Border
+                                Height="3"
+                                Margin="0,10,0,20"
+                                Background="{StaticResource DisabledElement}"
+                                CornerRadius="1.5" />
+                            <!--#endregion-->
+
+
+                            <!--#region Metadata-->
+                            <TextBlock
+                                Style="{StaticResource section}"
+                                Text="Resources"
+                                Visibility="{Binding SelectedOrder.IsClosed, Converter={StaticResource boolToCollapsed}}" />
+
+                            <Grid Margin="20,20,20,10" Visibility="{Binding SelectedOrder.IsClosed, Converter={StaticResource boolToCollapsed}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -388,100 +431,94 @@
 
 
                                 <Path
-                                        Grid.Column="0"
-                                        Height="30"
-                                        Data="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M6.12,15.5L9.86,19.24L11.28,17.83L8.95,15.5L11.28,13.17L9.86,11.76L6.12,15.5M17.28,15.5L13.54,11.76L12.12,13.17L14.45,15.5L12.12,17.83L13.54,19.24L17.28,15.5Z"
-                                        Fill="{Binding ProgramIconBrush}"
-                                        Stretch="Uniform" />
+                                    Grid.Column="0"
+                                    Height="30"
+                                    Data="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M6.12,15.5L9.86,19.24L11.28,17.83L8.95,15.5L11.28,13.17L9.86,11.76L6.12,15.5M17.28,15.5L13.54,11.76L12.12,13.17L14.45,15.5L12.12,17.83L13.54,19.24L17.28,15.5Z"
+                                    Fill="{Binding ProgramIconBrush}"
+                                    Stretch="Uniform" />
                                 <Border
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        Opacity="0.15"
-                                        Margin="5"
-                                        Background="{Binding ProgramIconBrush}"
-                                        CornerRadius="2">
-
-                                </Border>
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Background="{Binding ProgramIconBrush}"
+                                    CornerRadius="2"
+                                    Opacity="0.15" />
                                 <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                            Margin="5,7,5,9"
-                                            HorizontalAlignment="Center"
-                                            FontWeight="SemiBold"
-                                            Foreground="{Binding ProgramIconBrush}"
-                                            Text="PROGRAM" />
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="5,7,5,9"
+                                    HorizontalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Foreground="{Binding ProgramIconBrush}"
+                                    Text="PROGRAM" />
 
                                 <Path
-                                        Grid.Column="1"
-                                        Height="30"
-                                        Data="M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z"
-                                        Fill="{Binding ToolingIconBrush}"
-                                        Stretch="Uniform" />
+                                    Grid.Column="1"
+                                    Height="30"
+                                    Data="M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z"
+                                    Fill="{Binding ToolingIconBrush}"
+                                    Stretch="Uniform" />
                                 <Border
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Margin="5"
-                                        Opacity="0.15"
-                                        Background="{Binding ToolingIconBrush}"
-                                        CornerRadius="2">
-
-                                </Border>
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Background="{Binding ToolingIconBrush}"
+                                    CornerRadius="2"
+                                    Opacity="0.15" />
                                 <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        VerticalAlignment="Center"
-                                            Margin="5,2,5,4"
-                                            HorizontalAlignment="Center"
-                                            FontWeight="SemiBold"
-                                            Foreground="{Binding ToolingIconBrush}"
-                                            Text="TOOLING" />
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="5,2,5,4"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Foreground="{Binding ToolingIconBrush}"
+                                    Text="TOOLING" />
                                 <Path
-                                        Grid.Column="2"
-                                        Height="30"
-                                        Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"
-                                        Fill="{Binding BarVerifiedIconBrush}"
-                                        Stretch="Uniform" />
+                                    Grid.Column="2"
+                                    Height="30"
+                                    Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"
+                                    Fill="{Binding BarVerifiedIconBrush}"
+                                    Stretch="Uniform" />
                                 <Border
-                                        Grid.Row="1"
-                                        Grid.Column="2"
-                                        Margin="5"
-                                        Opacity="0.15"
-                                        Background="{Binding BarVerifiedIconBrush}"
-                                        CornerRadius="2">
-
-                                </Border>
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Margin="5"
+                                    Background="{Binding BarVerifiedIconBrush}"
+                                    CornerRadius="2"
+                                    Opacity="0.15" />
                                 <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="2"
-                                        VerticalAlignment="Center"
-                                            Margin="5,2,5,4"
-                                            HorizontalAlignment="Center"
-                                            FontWeight="SemiBold"
-                                            Foreground="{Binding BarVerifiedIconBrush}"
-                                            Text="BAR VERIFIED" />
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Margin="5,2,5,4"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Foreground="{Binding BarVerifiedIconBrush}"
+                                    Text="BAR VERIFIED" />
 
                                 <Path
-                                        Grid.Column="3"
-                                        Height="30"
-                                        Data="M10,12A2,2 0 0,0 8,14A2,2 0 0,0 10,16A2,2 0 0,0 12,14A2,2 0 0,0 10,12M6,8A2,2 0 0,0 4,10A2,2 0 0,0 6,12A2,2 0 0,0 8,10A2,2 0 0,0 6,8M6,16A2,2 0 0,0 4,18A2,2 0 0,0 6,20A2,2 0 0,0 8,18A2,2 0 0,0 6,16M18,8A2,2 0 0,0 20,6A2,2 0 0,0 18,4A2,2 0 0,0 16,6A2,2 0 0,0 18,8M14,16A2,2 0 0,0 12,18A2,2 0 0,0 14,20A2,2 0 0,0 16,18A2,2 0 0,0 14,16M18,12A2,2 0 0,0 16,14A2,2 0 0,0 18,16A2,2 0 0,0 20,14A2,2 0 0,0 18,12M14,8A2,2 0 0,0 12,10A2,2 0 0,0 14,12A2,2 0 0,0 16,10A2,2 0 0,0 14,8M10,4A2,2 0 0,0 8,6A2,2 0 0,0 10,8A2,2 0 0,0 12,6A2,2 0 0,0 10,4Z"
-                                        Fill="{Binding BarAllocatedIconBrush}"
-                                        Stretch="Uniform" />
+                                    Grid.Column="3"
+                                    Height="30"
+                                    Data="M10,12A2,2 0 0,0 8,14A2,2 0 0,0 10,16A2,2 0 0,0 12,14A2,2 0 0,0 10,12M6,8A2,2 0 0,0 4,10A2,2 0 0,0 6,12A2,2 0 0,0 8,10A2,2 0 0,0 6,8M6,16A2,2 0 0,0 4,18A2,2 0 0,0 6,20A2,2 0 0,0 8,18A2,2 0 0,0 6,16M18,8A2,2 0 0,0 20,6A2,2 0 0,0 18,4A2,2 0 0,0 16,6A2,2 0 0,0 18,8M14,16A2,2 0 0,0 12,18A2,2 0 0,0 14,20A2,2 0 0,0 16,18A2,2 0 0,0 14,16M18,12A2,2 0 0,0 16,14A2,2 0 0,0 18,16A2,2 0 0,0 20,14A2,2 0 0,0 18,12M14,8A2,2 0 0,0 12,10A2,2 0 0,0 14,12A2,2 0 0,0 16,10A2,2 0 0,0 14,8M10,4A2,2 0 0,0 8,6A2,2 0 0,0 10,8A2,2 0 0,0 12,6A2,2 0 0,0 10,4Z"
+                                    Fill="{Binding BarAllocatedIconBrush}"
+                                    Stretch="Uniform" />
                                 <Border
-                                        Grid.Row="1"
-                                        Grid.Column="3"
-                                        Margin="5"
-                                        Background="{Binding BarAllocatedIconBrush}"
-                                        CornerRadius="2"
-                                        Opacity="0.15" />
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Margin="5"
+                                    Background="{Binding BarAllocatedIconBrush}"
+                                    CornerRadius="2"
+                                    Opacity="0.15" />
                                 <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="3"
-                                        Margin="5,2,5,4"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontWeight="SemiBold"
-                                        Foreground="{Binding BarAllocatedIconBrush}"
-                                        Text="BAR PREPARED" />
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Margin="5,2,5,4"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Foreground="{Binding BarAllocatedIconBrush}"
+                                    Text="BAR PREPARED" />
                             </Grid>
                             <!--<Grid Margin="15,5">
 
@@ -621,10 +658,17 @@
                                 Margin="0,15,0,5"
                                 Style="{StaticResource section}"
                                 Text="Notes" />
-                            <Grid>
+                            <Grid Visibility="{Binding NoNotes, Converter={StaticResource boolToCollapsed}}">
                                 <uc:DisplayListOfNotes Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}" />
                                 <Rectangle Fill="#01ffffff" />
                             </Grid>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="18"
+                                FontStyle="Italic"
+                                Foreground="{StaticResource DisabledElement}"
+                                Text="None found"
+                                Visibility="{Binding NoNotes, Converter={StaticResource boolToVisible}}" />
                             <!--#endregion-->
                         </StackPanel>
                     </Grid>

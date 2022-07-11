@@ -69,6 +69,7 @@ namespace ProjectLighthouse.View.UserControls
         {
             ControlGrid.ColumnDefinitions[0].Width = right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
             ControlGrid.ColumnDefinitions[2].Width = !right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
+            MetadataStackPanel.HorizontalAlignment = right ? HorizontalAlignment.Right : HorizontalAlignment.Left;
             bg.CornerRadius = right ? new(10, 10, 0, 10) : new(10, 10, 10, 0);
         }
 
