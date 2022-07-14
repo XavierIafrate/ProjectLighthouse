@@ -8,17 +8,17 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.5.2</FileVersion>
-    <AssemblyVersion>1.5.2</AssemblyVersion>
+    <FileVersion>1.6.0</FileVersion>
+    <AssemblyVersion>1.6.0</AssemblyVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.5.2</Version>
-    <Product>ProjectLighthouse</Product>
+    <Version>1.6.0</Version>
+    <Product>Lighthouse</Product>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <StartupObject></StartupObject>
     <Description>Wixroyd Ltd custom manufacturing pipeline.</Description>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <PackageIcon>package_icon.png</PackageIcon>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>

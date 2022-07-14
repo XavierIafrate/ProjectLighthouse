@@ -306,13 +306,43 @@ namespace ProjectLighthouse.View
             NewOrder.ToolingGroup = SelectedToolingGroup;
 
             int time = 0;
-            for (int i = 0; i < NewOrderItems.Count; i++)
+            List<TurnedProduct> comparableProducts = ProductsInToolingGroup.Where(x => x.CycleTime > 0).ToList();
+            int lastCycleTime = comparableProducts.Count > 0 
+                ? comparableProducts.Min(x => x.CycleTime) 
+                : 0;
+            List<LatheManufactureOrderItem> items = NewOrderItems.OrderByDescending(x => x.CycleTime).ToList();
+            for (int i = 0; i < items.Count; i++)
             {
-                time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
+                if (NewOrderItems[i].CycleTime > 0)
+                {
+                    time += NewOrderItems[i].CycleTime * NewOrderItems[i].TargetQuantity;
+                }
+                else if (lastCycleTime > 0)
+                {
+                    time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
+                }
+                else
+                {
+                    time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
+                }
+
+                lastCycleTime = NewOrderItems[i].CycleTime;
             }
             NewOrder.TimeToComplete = time;
+            items = items.Where(x => x.CycleTime > 0).ToList();
 
-            List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().ToList();
+            if (items.Count > 0)
+            {
+                NewOrder.TargetCycleTime = items.Min(x => x.CycleTime);
+                NewOrder.TargetCycleTimeEstimated = false;
+            }
+            else
+            {
+                NewOrder.TargetCycleTime = NewOrderItems[0].GetCycleTime();
+                NewOrder.TargetCycleTimeEstimated = true;
+            }
+
+            List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == TechnicalDrawing.Type.Production).ToList();
             List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.ToolingGroup);
 
             _ = DatabaseHelper.Insert(NewOrder);
@@ -322,6 +352,8 @@ namespace ProjectLighthouse.View
                 {
                     continue;
                 }
+
+                item.CycleTime = 0; //force to update if different
                 if (Request != null)
                 {
                     item.NeedsCleaning = Request.CleanCustomerRequirement && item.RequiredQuantity > 0;
@@ -354,6 +386,6 @@ namespace ProjectLighthouse.View
             return blank[..(6 - orderNumLen)] + strOrderNum;
         }
 
-        
+
     }
 }

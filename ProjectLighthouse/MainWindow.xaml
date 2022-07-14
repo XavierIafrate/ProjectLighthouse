@@ -2,15 +2,13 @@
     x:Class="ProjectLighthouse.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
-    xmlns:local="clr-namespace:ProjectLighthouse"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
-    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
-    Title="Project Lighthouse"
-    Width="1312"
+    Title="Lighthouse"
+    Width="1500"
     Height="849"
     MinWidth="1200"
     MinHeight="700"
@@ -23,10 +21,11 @@
     mc:Ignorable="d">
 
     <Grid>
+        <!--#region Layout setup and resources-->
         <Grid.Resources>
-            <converters:boolToCollapsedOrVisible x:Key="hideIfTrue"/>
-            <converters:boolToVisibleOrCollapsed x:Key="showIfTrue"/>
-            <converters:intToNotifications x:Key="notificationCounter"/>
+            <converters:boolToCollapsedOrVisible x:Key="hideIfTrue" />
+            <converters:boolToVisibleOrCollapsed x:Key="showIfTrue" />
+            <converters:intToNotifications x:Key="notificationCounter" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
@@ -34,52 +33,54 @@
                 MinWidth="250"
                 MaxWidth="350" />
             <ColumnDefinition Width="4*" MinWidth="800" />
-            <ColumnDefinition Width="auto" MaxWidth="400" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="7*" />
+            <RowDefinition Height="8*" />
         </Grid.RowDefinitions>
 
+        <!--#endregion-->
+
         <Rectangle Grid.RowSpan="2" Fill="{StaticResource Surface}" />
-        <StackPanel VerticalAlignment="Center">
-            <Viewbox MaxWidth="200" MaxHeight="80">
-                <Grid>
-                    <Image
+
+        <!--#region Main Menu-->
+        <Grid Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <!--#region Logo area-->
+            <StackPanel VerticalAlignment="Center" Margin="20">
+                <Viewbox MaxWidth="200" MaxHeight="80">
+                    <Grid>
+                        <Image
                         x:Name="LogoMono"
                         Width="150"
                         VerticalAlignment="Center"
                         RenderOptions.BitmapScalingMode="Fant"
                         Source="/Resources/LighthouseLogo_Mono.png" />
-                    <Image
+                        <Image
                         x:Name="LogoColour"
                         Width="150"
                         VerticalAlignment="Center"
                         RenderOptions.BitmapScalingMode="Fant"
                         Source="/Resources/LighthouseLogo.png"
                         Visibility="Hidden" />
-                    <Rectangle
+                        <Rectangle
                         Cursor="Hand"
                         Fill="Transparent"
                         MouseDown="Rectangle_MouseDown"
                         MouseEnter="Rectangle_MouseEnter"
                         MouseLeave="Rectangle_MouseLeave" />
-                </Grid>
-            </Viewbox>
-
-
-        </StackPanel>
-
-
-
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <ScrollViewer>
+                    </Grid>
+                </Viewbox>
+            </StackPanel>
+            <!--#endregion-->
+            <ScrollViewer Grid.Row="1">
 
                 <StackPanel x:Name="main_menu">
                     <Grid
@@ -126,13 +127,6 @@
                             Content="Schedule"
                             Style="{StaticResource Schedule_MenuItem}" />
 
-                        <!--<ToggleButton
-                            x:Name="agenda_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Agenda"
-                            Content="Agenda"
-                            Style="{StaticResource Agenda_MenuItem}" />-->
-
                         <ToggleButton
                             x:Name="barstock_button"
                             Command="{Binding UpdateViewCommand}"
@@ -158,13 +152,6 @@
                     </StackPanel>
 
                     <StackPanel Margin="0,20">
-                        <ToggleButton
-                            x:Name="checksheet_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Check Sheets"
-                            Content="Check Sheets"
-                            Style="{StaticResource CheckSheet_MenuItem}"
-                            Visibility="Collapsed" />
                         <ToggleButton
                             x:Name="calibration_button"
                             Command="{Binding UpdateViewCommand}"
@@ -196,44 +183,17 @@
                             Content="Dev Area"
                             Style="{StaticResource Debug_MenuItem}"
                             Visibility="Collapsed" />
-
                     </StackPanel>
-
                 </StackPanel>
             </ScrollViewer>
+            <!--#endregion-->
 
-            <!--<Border
-                Grid.Row="1"
-                Padding="30,3"
-                Background="{StaticResource OnBackground}"
-                Visibility="{Binding DataRefreshBadgeVis}">
-                <StackPanel>
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <Path
-                            Height="13"
-                            Data="M2 12A10 10 0 1 0 12 2A10 10 0 0 0 2 12M15.6 13.72A4 4 0 0 0 16 12A4 4 0 0 0 12 8V10L8.88 7L12 4V6A6 6 0 0 1 18 12A5.9 5.9 0 0 1 17.07 15.19M6 12A5.9 5.9 0 0 1 6.93 8.81L8.4 10.28A4 4 0 0 0 8 12A4 4 0 0 0 12 16V14L15 17L12 20V18A6 6 0 0 1 6 12Z"
-                            Fill="{StaticResource OnPurple}"
-                            Stretch="Uniform" />
-                        <TextBlock
-                            Margin="7,0,0,2"
-                            Foreground="{StaticResource OnPurple}"
-                            Text="Data Synchronising" />
-                    </StackPanel>
-                    <TextBlock
-                        x:Name="refreshTime"
-                        HorizontalAlignment="Center"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Background}"
-                        Opacity="0.5"
-                        Text="{Binding LastDataRefresh, FallbackValue='Test', StringFormat='{}last refreshed at {0:HH:mm:ss}'}" />
-                </StackPanel>
-            </Border>-->
-
+            <!--#region User controls-->
             <Button
-                Visibility="{Binding NoNotifications, Converter={StaticResource hideIfTrue}}"
-                Grid.Row="1"
+                Grid.Row="2"
                 Command="{Binding ToggleShowNotsCommand}"
-                Style="{StaticResource NotificationsMainButton}">
+                Style="{StaticResource NotificationsMainButton}"
+                Visibility="{Binding NoNotifications, Converter={StaticResource hideIfTrue}}">
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Path
                         Height="13"
@@ -242,15 +202,16 @@
                         Stretch="Uniform" />
                     <TextBlock
                         Margin="7,0,0,2"
+                        d:Text="You have x notifications."
                         Foreground="{StaticResource OnRed}"
-                        Text="{Binding NotCount, Converter={StaticResource notificationCounter}, NotifyOnSourceUpdated=True}" d:Text="You have x notifications." />
+                        Text="{Binding NotCount, Converter={StaticResource notificationCounter}, NotifyOnSourceUpdated=True}" />
                 </StackPanel>
             </Button>
             <Button
-                Visibility="{Binding NoNotifications, Converter={StaticResource showIfTrue}}"
-                Grid.Row="2"
+                Grid.Row="3"
                 Command="{Binding ToggleShowNotsCommand}"
-                Style="{StaticResource NoNotificationsMainButton}">
+                Style="{StaticResource NoNotificationsMainButton}"
+                Visibility="{Binding NoNotifications, Converter={StaticResource showIfTrue}}">
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Path
                         Height="15"
@@ -258,14 +219,14 @@
                         Fill="{StaticResource OnRed}"
                         Stretch="Uniform" />
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="7,0,0,0"
+                        VerticalAlignment="Center"
                         Foreground="{StaticResource OnRed}"
                         Text="No new notifications " />
                 </StackPanel>
             </Button>
 
-            <Grid Grid.Row="3">
+            <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
@@ -279,9 +240,9 @@
                         Text="Randy Marsh" />
                     <TextBlock
                         x:Name="LoggedInUserRole"
-                        FontStyle="Italic"
                         Foreground="{StaticResource OnBlue}"
-                        Text="Viewer" />
+                        Opacity="0.4"
+                        Text="user_role" />
                 </StackPanel>
 
                 <Button
@@ -291,42 +252,35 @@
                     Style="{StaticResource SettingsButton}" />
             </Grid>
         </Grid>
+        <!--#endregion-->
 
+        <!--#region Window adorners-->
+        <Grid Grid.Column="1" Visibility="Visible">
 
-        <Grid Grid.Column="1">
-            <StackPanel
-                VerticalAlignment="Center"
-                Orientation="Horizontal"
+            <Grid Margin="5,5,10,5" 
+                  HorizontalAlignment="Left" VerticalAlignment="Center"
                 Visibility="{Binding BetaWarningVis}">
+                <Border
+                        Background="{StaticResource Red}"
+                        CornerRadius="5"
+                        Opacity="0.15"/>
+                <Border BorderBrush="{StaticResource Red}" BorderThickness="5,0,0,0" CornerRadius="3">
+                    <StackPanel 
+                    Margin="15,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource Red}"
+                            Text="Module in Beta" />
 
-                <Grid Margin="30,5,10,5">
-                    <Rectangle
-                        Fill="{StaticResource Red}"
-                        RadiusX="5"
-                        RadiusY="5" />
-                    <TextBlock
-                        Padding="15,0,15,1"
-                        VerticalAlignment="Center"
-                        FontSize="18"
-                        FontWeight="Bold"
-                        Foreground="{StaticResource OnRed}"
-                        Text="BETA" />
-                </Grid>
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock
-                        FontSize="15"
-                        FontStyle="Italic"
-                        Opacity="0.5"
-                        Text="This module of Lighthouse is in Beta trials" />
-                    <TextBlock
-                        FontSize="15"
-                        FontStyle="Italic"
-                        Opacity="0.5"
-                        Text="Watch out for bugs!" />
-                </StackPanel>
-            </StackPanel>
+                        <TextBlock Foreground="{StaticResource Red}" FontStyle="Italic" Opacity="0.6" FontSize="13" Text="Core actions have been tested but may break in edge cases. Please report any bugs you encounter!" MaxWidth="350" TextWrapping="Wrap"/>
+                    </StackPanel>
+                    
+                </Border>
+            </Grid>
             <Image
-                Width="150"
+                Width="120"
                 Margin="30,0"
                 HorizontalAlignment="Left"
                 RenderOptions.BitmapScalingMode="Fant"
@@ -334,7 +288,7 @@
                 Visibility="{Binding MiBVis}" />
             <Viewbox
                 MaxHeight="70"
-                Margin="50,20"
+                Margin="50,15"
                 HorizontalAlignment="Right">
 
                 <TextBlock
@@ -345,38 +299,42 @@
             </Viewbox>
 
         </Grid>
+        <!--#endregion-->
+
+        <!--#region ViewModel binding-->
         <ContentControl
             x:Name="viewPort"
             Grid.Row="1"
             Grid.Column="1"
             Content="{Binding SelectedViewModel}" />
+        <!--#endregion-->
 
+        <!--#region Notifications Bar-->
         <Grid
-            Grid.RowSpan="2"
+            Grid.Row="1"
+            HorizontalAlignment="Right"
             Grid.Column="2"
             MinWidth="250"
             Visibility="{Binding NotificationsBarVis}">
-
-
             <Border
-                Margin="5,20,10,20"
+                Margin="5,10,20,10"
                 Background="{StaticResource Surface}"
                 CornerRadius="8">
-
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="50" ShadowDepth="8" Opacity="0.5" Direction="220"/>
+                </Border.Effect>
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-
                     <Grid Margin="20,10">
                         <TextBlock
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Style="{StaticResource subtitle}"
                             Text="Notifications" />
-
                         <Button
                             Margin="0"
                             HorizontalAlignment="Right"
@@ -395,56 +353,67 @@
                     </Grid>
                     <ItemsControl
                         Grid.Row="1"
-                        Margin="10,0"
                         MaxWidth="350"
+                        Margin="10,0"
                         ItemsSource="{Binding Notifications}"
                         Style="{x:Null}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <userControls:DisplayNotification Notification="{Binding Path=.}"/>
+                                <userControls:DisplayNotification Notification="{Binding Path=.}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <StackPanel Visibility="{Binding NoNotifications, Converter={StaticResource showIfTrue}}" Grid.Row="1" VerticalAlignment="Center">
+                    <StackPanel
+                        Grid.Row="1"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding NoNotifications, Converter={StaticResource showIfTrue}}">
                         <Border
-                        Name="ReceiverColor"
-                        Margin="20,5"
-                        CornerRadius="15">
+                            Name="ReceiverColor"
+                            Margin="20,5"
+                            CornerRadius="15">
                             <Grid>
                                 <Border
-                                Name="Mask"
-                                Background="{StaticResource Blue}"
-                                CornerRadius="20" />
+                                    Name="Mask"
+                                    Background="{StaticResource Blue}"
+                                    CornerRadius="20" />
                                 <StackPanel x:Name="image">
                                     <Image
-                                    Name="Receiver"
-                                    MaxWidth="250"
-                                    gif:ImageBehavior.AnimateInDesignMode="False"
-                                    gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/excellent.gif"
-                                    RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        Name="Receiver"
+                                        MaxWidth="250"
+                                        gif:ImageBehavior.AnimateInDesignMode="False"
+                                        gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/excellent.gif"
+                                        RenderOptions.BitmapScalingMode="HighQuality" />
                                     <StackPanel.OpacityMask>
                                         <VisualBrush Visual="{Binding ElementName=Mask}" />
                                     </StackPanel.OpacityMask>
                                 </StackPanel>
                             </Grid>
                         </Border>
-                        <TextBlock HorizontalAlignment="Center"  >
-                            <Hyperlink NavigateUri="https://www.youtube.com/watch?v=KjB6r-HDDI0" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">
-                                <TextBlock Text="Party on!" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Green}"/>
+                        <TextBlock HorizontalAlignment="Center">
+                            <Hyperlink
+                                NavigateUri="https://www.youtube.com/watch?v=KjB6r-HDDI0"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                <TextBlock
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Green}"
+                                    Text="Party on!" />
                             </Hyperlink>
                         </TextBlock>
-                        <TextBlock Text="No notifications to show" HorizontalAlignment="Center" FontStyle="Italic" Opacity="0.6" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontStyle="Italic"
+                            Opacity="0.6"
+                            Text="No notifications to show" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Row="2">
-                        <Button Content="Archive All"/>
-                        <ToggleButton Content="Mute"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Button Content="Archive All" />
+                        <ToggleButton Content="Mute" />
                     </StackPanel>
-
                 </Grid>
-
-
             </Border>
-
         </Grid>
+        <!--#endregion-->
     </Grid>
 </Window>

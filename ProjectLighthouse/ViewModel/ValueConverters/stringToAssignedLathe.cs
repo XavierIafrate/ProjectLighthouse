@@ -8,12 +8,9 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not string str)
-            {
-                return null;
-            }
+            if (value is not string str) return "Pending";
 
-            return string.IsNullOrEmpty(str) ? "Awaiting scheduling" : $"Assigned to lathe: {str}";
+            return string.IsNullOrEmpty(str) ? "Pending" : str;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -61,6 +61,7 @@ namespace ProjectLighthouse.Model
 
         public static TechnicalDrawing FindDrawing(List<TechnicalDrawing> drawings, LatheManufactureOrderItem item, string group)
         {
+            drawings = drawings.Where(x => x.IsApproved).ToList();
             if (item.IsSpecialPart)
             {
                 List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
@@ -144,6 +145,20 @@ namespace ProjectLighthouse.Model
                 IssueDetails = IssueDetails,
                 IsCurrent = IsCurrent,
             };
+        }
+
+        public string GetSafeFileName()
+        {
+            return $"{MakeValidFileName(DrawingName)}_R{Revision:0}{AmendmentType}.pdf";
+        }
+
+        private static string MakeValidFileName(string name)
+        {
+            name = name.Trim().ToUpperInvariant();
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
         }
     }
 }

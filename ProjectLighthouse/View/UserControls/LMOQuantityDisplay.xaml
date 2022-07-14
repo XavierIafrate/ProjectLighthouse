@@ -47,11 +47,10 @@
             Grid.Row="2"
             Margin="5,0"
             HorizontalAlignment="Right"
-            Orientation="Horizontal"
-            TextElement.FontFamily="Consolas">
-            <TextBlock Text="{Binding QuantityDelivered, StringFormat='{}{0:#,##0} / '}" d:Text="99,999 / " x:Name="delivered" />
-            <TextBlock Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" FontWeight="SemiBold" d:Text="99,999 pcs" />
+            Orientation="Horizontal">
+            <TextBlock Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} / '}" d:Text="99,999 / " Foreground="{StaticResource Orange}" x:Name="made" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding QuantityDelivered, StringFormat='{}{0:#,##0} / '}" d:Text="99,999 / " x:Name="delivered" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" FontWeight="SemiBold" d:Text="99,999 pcs" Opacity="0.6" />
         </StackPanel>
-
     </Grid>
 </UserControl>

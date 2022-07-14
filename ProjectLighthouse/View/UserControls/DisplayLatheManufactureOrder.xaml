@@ -23,12 +23,24 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <StackPanel Margin="0,5" VerticalAlignment="Center">
-            <TextBlock
-                x:Name="MOTextBlock"
-                FontSize="22"
-                FontWeight="Bold"
-                Foreground="{StaticResource OnBackground}"
-                Text="{Binding Name, FallbackValue='M00001'}" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    x:Name="MOTextBlock"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="{StaticResource OnBackground}"
+                    Text="{Binding Name, FallbackValue='M00001'}" />
+                <Border
+                    x:Name="RecentUpdateFlag"
+                    Width="10"
+                    Height="10"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    Background="{StaticResource Blue}"
+                    CornerRadius="5"
+                    Opacity="0.7" />
+            </StackPanel>
+
             <StackPanel Orientation="Horizontal">
                 <TextBlock
                     FontSize="14"
@@ -37,23 +49,14 @@
                     Text="{Binding AllocatedMachine, FallbackValue='C00 ', StringFormat='{}{0} '}" />
                 <TextBlock
                     x:Name="PoTextBlock"
+                    d:Text="POR12345"
                     FontSize="14"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource Blue}"
-                    Text="{Binding POReference}" d:Text="POR12345" />
+                    Text="{Binding POReference}" />
             </StackPanel>
 
         </StackPanel>
-        <Border
-            x:Name="RecentUpdateFlag"
-            Grid.Column="1"
-            Width="10"
-            Height="10"
-            Margin="8,0"
-            HorizontalAlignment="Left"
-            Background="{StaticResource Blue}"
-            CornerRadius="5"
-            Opacity="0.7" />
         <StackPanel
             Grid.Column="1"
             Margin="5,0"

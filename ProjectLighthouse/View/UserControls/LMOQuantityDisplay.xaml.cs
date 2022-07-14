@@ -46,6 +46,8 @@ namespace ProjectLighthouse.View.UserControls
             control.progressBarRow.Height = control.Item.QuantityMade > 0 ? new(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
             control.delivered.Visibility = control.Item.QuantityMade > 0 ? Visibility.Visible : Visibility.Collapsed;
 
+            control.made.Visibility = control.Item.QuantityMade != control.Item.QuantityDelivered ? Visibility.Visible : Visibility.Collapsed;
+
             double lWidth = (double)control.Item.RequiredQuantity / (double)control.Item.TargetQuantity;
             if (double.IsNaN(lWidth))
             {

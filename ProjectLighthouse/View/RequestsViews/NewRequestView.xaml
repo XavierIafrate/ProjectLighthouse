@@ -210,6 +210,7 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <TextBlock
                             Grid.Row="0"
@@ -282,6 +283,18 @@
                             d:Text="P0123.456-789-A2"
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.TargetStock, StringFormat='{}{0:#,##0} pcs'}" />
+                        
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="0"
+                            Text="Guaranteed" />
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            d:Text="P0123.456-789-A2"
+                            FontWeight="SemiBold"
+                            Text="{Binding SelectedProduct.LighthouseGuaranteedQuantity, StringFormat='{}{0:#,##0} pcs'}" />
                     </Grid>
                 </Grid>
             </Border>

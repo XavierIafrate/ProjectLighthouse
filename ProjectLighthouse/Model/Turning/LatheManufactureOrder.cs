@@ -68,6 +68,8 @@ namespace ProjectLighthouse.Model
         public string ToolingGroup { get; set; }
         public bool IsResearch { get; set; }
         public int SpareBars { get; set; }
+        public int TargetCycleTime { get; set; }
+        public bool TargetCycleTimeEstimated { get; set; }
 
         public BarStock Bar;
         [Ignore]
@@ -115,7 +117,9 @@ namespace ProjectLighthouse.Model
                 BarsInStockAtCreation = BarsInStockAtCreation,
                 IsResearch = IsResearch,
                 SpareBars = SpareBars,
-                OrderItems = new(OrderItems ?? new())
+                OrderItems = new(OrderItems ?? new()),
+                TargetCycleTime = TargetCycleTime,
+                TargetCycleTimeEstimated = TargetCycleTimeEstimated,
             };
         }
 

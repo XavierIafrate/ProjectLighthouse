@@ -33,7 +33,7 @@ namespace ProjectLighthouse.ViewModel
                 targetRuntime = value;
                 OnPropertyChanged();
 
-                if (SelectedRequest.Status == "Pending approval" && SelectedRequest.Product != null)
+                if (SelectedRequest.Product != null)
                 {
                     LoadRecommendedOrder();
                 }
@@ -74,6 +74,24 @@ namespace ProjectLighthouse.ViewModel
                 LoadRequestCard(value);
             }
         }
+
+        private TurnedProduct selectedRequestProduct;
+
+        public TurnedProduct SelectedRequestProduct
+        {
+            get { return selectedRequestProduct; }
+            set 
+            { 
+                selectedRequestProduct = value;
+                if (value.ProductName != null)
+                {
+                    selectedRequestProduct.Group = ProductGroups.Find(x => selectedRequestProduct.ProductName.StartsWith(x.Name));
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        public List<Product> ProductGroups { get; set; }
 
         public bool UpdateButtonEnabled { get; set; }
 
@@ -270,6 +288,7 @@ namespace ProjectLighthouse.ViewModel
             GetRequests();
 
             Products = DatabaseHelper.Read<TurnedProduct>();
+            ProductGroups = DatabaseHelper.Read<Product>();
 
             ActiveOrders = DatabaseHelper.Read<LatheManufactureOrder>()
                 .Where(x => x.State < OrderState.Complete)
@@ -285,6 +304,8 @@ namespace ProjectLighthouse.ViewModel
             }
 
             CheckForAppendOppurtunities();
+
+            SelectedFilter = "Last 14 Days";
         }
 
         private void CheckForAppendOppurtunities()
@@ -352,14 +373,17 @@ namespace ProjectLighthouse.ViewModel
             CanEditRequirements = !request.IsAccepted && !request.IsDeclined;
 
             DropboxEnabled = request.Status == "Pending approval" &&
-                (App.CurrentUser.UserRole == "Scheduling" ||
-                App.CurrentUser.UserRole == "admin" ||
-                App.CurrentUser.UserRole == "Production")
+                App.CurrentUser.Role >= UserRole.Scheduling
                 && App.CurrentUser.CanApproveRequests;
 
             PurchaseRef = !string.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
 
-            if (request.Status == "Pending approval" && request.Product != null)
+            if (!string.IsNullOrEmpty(SelectedRequest.Product))
+            {
+                SelectedRequestProduct = Products.Find(x => x.ProductName == SelectedRequest.Product);
+            }
+
+            if (request.Product != null)
             {
                 LoadRecommendedOrder();
             }

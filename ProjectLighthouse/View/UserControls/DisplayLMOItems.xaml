@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MinHeight="50"
     d:Background="White"
     d:DesignWidth="610.033"
-    MinHeight="50"
     Background="#01FFFFFF"
     mc:Ignorable="d">
     <Grid>
@@ -22,16 +22,14 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel
-                Margin="5,2,10,2"
-                VerticalAlignment="Center">
+            <StackPanel Margin="5,2,10,2" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock
-                        FontWeight="SemiBold"
                         x:Name="productText"
                         Padding="0,2"
                         VerticalAlignment="Center"
                         FontSize="16"
+                        FontWeight="SemiBold"
                         Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
                     <Path
                         x:Name="cycleTimeIndicator"
@@ -41,7 +39,7 @@
                         Data="M19.03 7.39L20.45 5.97C20 5.46 19.55 5 19.04 4.56L17.62 6C16.07 4.74 14.12 4 12 4C7.03 4 3 8.03 3 13S7.03 22 12 22C17 22 21 17.97 21 13C21 10.88 20.26 8.93 19.03 7.39M13 14H11V7H13V14M15 1H9V3H15V1Z"
                         Fill="{StaticResource Orange}"
                         Stretch="Uniform"
-                        ToolTip="Please register cycle time"/>
+                        ToolTip="Please register cycle time" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
@@ -49,51 +47,74 @@
                         x:Name="EditButton"
                         Margin="0,0,5,0"
                         Click="EditButton_Click"
-                        Style="{StaticResource IconEditButton}">
-                        <Button.Content>
-                            <TextBlock Margin="0,0,7,2" Text="Edit" />
-                        </Button.Content>
-                    </Button>
-                    <Border x:Name="specialFlag"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                Grid.Column="2" BorderBrush="{StaticResource Purple}" CornerRadius="3" BorderThickness="3,0,0,0">
+                        Style="{StaticResource EditButton}" />
+                    <Border
+                        x:Name="specialFlag"
+                        Grid.Column="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BorderBrush="{StaticResource Purple}"
+                        BorderThickness="3,0,0,0"
+                        CornerRadius="3">
                         <Grid>
-                            <Border Background="{StaticResource Purple}" CornerRadius="2,5,5,2" Opacity="0.15"/>
-                            <TextBlock Text="Special Item" Margin="5,2" FontSize="12" Foreground="{StaticResource Purple}" FontWeight="SemiBold"/>
-                                
+                            <Border
+                                Background="{StaticResource Purple}"
+                                CornerRadius="2,5,5,2"
+                                Opacity="0.15" />
+                            <TextBlock
+                                Margin="5,2"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Purple}"
+                                Text="Special Item" />
+
                         </Grid>
                     </Border>
                 </StackPanel>
 
             </StackPanel>
 
-            <local:LMOQuantityDisplay Grid.Column="2" Item="{Binding Path=.}"/>
+            <local:LMOQuantityDisplay Grid.Column="2" Item="{Binding Path=.}" />
 
 
-            <Border x:Name="requirements"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                Grid.Column="1" BorderBrush="{StaticResource Red}" CornerRadius="3" BorderThickness="3,0,0,0">
+            <Border
+                x:Name="requirements"
+                Grid.Column="1"
+                Margin="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BorderBrush="{StaticResource Red}"
+                BorderThickness="3,0,0,0"
+                CornerRadius="3">
                 <Grid>
-                    <Border Background="{StaticResource Red}" x:Name="requirementsBg"  CornerRadius="2,5,5,2" Opacity="0.15"/>
+                    <Border
+                        x:Name="requirementsBg"
+                        Background="{StaticResource Red}"
+                        CornerRadius="2,5,5,2"
+                        Opacity="0.15" />
                     <StackPanel Margin="10,2">
-                        <TextBlock Text="Customer Requirement" x:Name="custReqTitle" FontSize="12" Foreground="{StaticResource Red}" FontWeight="SemiBold"/>
+                        <TextBlock
+                            x:Name="custReqTitle"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Red}"
+                            Text="Customer Requirement" />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
                                 x:Name="qtyrequired"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
+                                d:Text="99,000 pcs"
                                 FontSize="12"
                                 Foreground="{StaticResource Red}"
-                                Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" d:Text="99,000 pcs" />
+                                Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" />
                             <TextBlock
                                 x:Name="daterequired"
                                 HorizontalAlignment="Right"
+                                d:Text=" for 1 September"
                                 FontSize="12"
                                 Foreground="{StaticResource Red}"
-                                Text="{Binding DateRequired, StringFormat='{} for {0:d MMMM}'}" d:Text=" for 1 September" />
+                                Text="{Binding DateRequired, StringFormat='{} for {0:d MMMM}'}" />
                         </StackPanel>
                     </StackPanel>
                 </Grid>

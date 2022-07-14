@@ -305,7 +305,6 @@
                 <ListView
                     x:Name="ItemsListBox"
                     MinHeight="50"
-                    MaxHeight="350"
                     d:ItemsSource="{d:SampleData ItemCount=3}"
                     ItemsSource="{Binding Items}"
                     SelectionChanged="Items_SelectionChanged">
@@ -328,6 +327,7 @@
                         HorizontalAlignment="Right"
                         Content="Pull Updates"
                         IsEnabled="False"
+                        Click="GetDrawingUpdatesButton_Click"
                         Visibility="{Binding Order.IsClosed, Converter={StaticResource boolToCollapsedOrVisible}}" />
                 </Grid>
                 <ListView MinHeight="50" ItemsSource="{Binding Drawings}">
@@ -351,7 +351,6 @@
                     x:Name="NotesScroller"
                     Grid.Row="1"
                     MinHeight="120"
-                    MaxHeight="400"
                     VerticalScrollBarVisibility="Auto">
                     <ItemsControl
                         x:Name="NotesDisplay"

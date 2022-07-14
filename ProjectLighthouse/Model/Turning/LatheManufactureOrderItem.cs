@@ -59,7 +59,7 @@ namespace ProjectLighthouse.Model
         public LatheManufactureOrderItem(TurnedProduct fromProduct)
         {
             ProductName = fromProduct.ProductName;
-            CycleTime = 0; // force them to update it
+            CycleTime = fromProduct.CycleTime;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
             DateAdded = DateTime.Now;

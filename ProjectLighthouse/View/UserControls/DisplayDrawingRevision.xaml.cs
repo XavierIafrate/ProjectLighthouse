@@ -81,8 +81,11 @@ namespace ProjectLighthouse.View.UserControls
         {
             Process fileopener = new();
             fileopener.StartInfo.FileName = "explorer";
-            string tmpPath = Path.GetTempFileName() + ".pdf";
-            File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath);
+            string tmpPath = Drawing.GetSafeFileName();
+            if (!File.Exists(tmpPath))
+            {
+                File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath);
+            }
             fileopener.StartInfo.Arguments = "\"" + tmpPath + "\"";
             _ = fileopener.Start();
         }

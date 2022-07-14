@@ -5,12 +5,9 @@ using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows;
-using Windows.ApplicationModel.Activation;
 using Windows.Foundation.Collections;
 
 namespace ProjectLighthouse

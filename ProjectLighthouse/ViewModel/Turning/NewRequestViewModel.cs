@@ -217,7 +217,7 @@ namespace ProjectLighthouse.ViewModel
             if (string.IsNullOrEmpty(searchTerm))
             {
                 FilteredList = TurnedProducts
-                    .Where(x => x.QuantityOnSO > 0 && x.QuantityOnPO + x.QuantityInStock < x.QuantityOnSO)
+                    .Where(x => x.FreeStock() < 0)
                     .OrderBy(n => n.Material)
                     .ThenBy(n => n.ProductName)
                     .ToList();

@@ -75,6 +75,5 @@ namespace ProjectLighthouse.Model
             ModifiedBy = App.CurrentUser.GetFullName();
             Status = $"Declined - {DeclinedReason}";
         }
-
     }
 }

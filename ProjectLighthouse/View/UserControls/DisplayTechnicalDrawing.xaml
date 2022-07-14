@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="74.062"
     d:DesignWidth="550.625"
     mc:Ignorable="d">
     <Grid>
@@ -36,7 +35,7 @@
                 FontSize="16"
                 FontStyle="Italic"
                 Foreground="{StaticResource Purple}"
-                Text="Revision 0" />
+                Text="Revision 0A" />
 
             <Button
                 x:Name="openButton"

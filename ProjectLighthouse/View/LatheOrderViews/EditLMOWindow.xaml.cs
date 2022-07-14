@@ -134,6 +134,7 @@ namespace ProjectLighthouse.View
             composeMessageControls.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
 
             AddItemButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && Order.State < OrderState.Complete && canEdit && !Order.BarIsAllocated;
+            GetDrawingUpdatesButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit && Order.State < OrderState.Complete;
 
             SaveButton.IsEnabled = canEdit;
 
@@ -260,8 +261,8 @@ namespace ProjectLighthouse.View
         private void CalculateBarRequirements()
         {
             double totalLengthRequired = 0;
-            BarStock bar = (BarStock)BarStockComboBox.SelectedValue;
             double partOff = 2;
+            BarStock bar = (BarStock)BarStockComboBox.SelectedValue;
 
             if (!string.IsNullOrEmpty(Order.AllocatedMachine))
             {
@@ -538,6 +539,51 @@ namespace ProjectLighthouse.View
             }
 
             #endregion
+        }
+
+        private void GetDrawingUpdatesButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == (Order.IsResearch ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production)).ToList();
+            List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, Items, Order.ToolingGroup);
+
+            int[] currentDrawingIds = DrawingReferences.Select(x => x.DrawingId).ToArray();
+            int[] upToDateDrawingIds = drawings.Select(x => x.Id).ToArray();
+
+            if (currentDrawingIds.OrderBy(x => x) == upToDateDrawingIds.OrderBy(x => x))
+            {
+                MessageBox.Show("No drawing updates have been found.", "Up to date", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            else if (currentDrawingIds.Length == 0 && upToDateDrawingIds.Length == 0)
+            {
+                MessageBox.Show("No drawing updates have been found.", "Up to date", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            for (int i = 0; i < currentDrawingIds.Length; i++)
+            {
+                if (!upToDateDrawingIds.Contains(currentDrawingIds[i]))
+                {
+                    DatabaseHelper.Delete(DrawingReferences.Find(x => x.DrawingId == currentDrawingIds[i]));
+                    Drawings.Remove(Drawings.Find(x => x.Id == currentDrawingIds[i]));
+                    DrawingReferences.Remove(DrawingReferences.Find(x => x.DrawingId == currentDrawingIds[i]));
+                }
+            }
+            
+
+            for (int i = 0; i < upToDateDrawingIds.Length; i++)
+            {
+                if (!currentDrawingIds.Contains(upToDateDrawingIds[i]))
+                {
+                    OrderDrawing newRecord = new() { DrawingId = upToDateDrawingIds[i], OrderId=Order.Name };
+                    DatabaseHelper.Insert<OrderDrawing>(newRecord);
+                    DrawingReferences.Add(newRecord);
+                    Drawings.Add(drawings.Find(x => x.Id == upToDateDrawingIds[i]));
+                }
+            }
+
+            MessageBox.Show("Updated drawings were found and the order records amended.", "Now up to date", MessageBoxButton.OK, MessageBoxImage.Information);
+            OnPropertyChanged(nameof(Drawings));
         }
     }
 }

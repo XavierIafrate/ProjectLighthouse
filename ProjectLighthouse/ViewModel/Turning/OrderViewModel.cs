@@ -103,13 +103,13 @@ namespace ProjectLighthouse.ViewModel
 
         #region Visibility variables
 
-        private Visibility liveInfoVis;
-        public Visibility LiveInfoVis
+        private bool liveInfoAvailable;
+        public bool LiveInfoAvailable
         {
-            get { return liveInfoVis; }
+            get { return liveInfoAvailable; }
             set
             {
-                liveInfoVis = value;
+                liveInfoAvailable = value;
                 OnPropertyChanged();
             }
         }
@@ -511,15 +511,15 @@ namespace ProjectLighthouse.ViewModel
             DisplayStats = MachineStatistics.Find(x => x.MachineID == SelectedOrder.AllocatedMachine);
             if (DisplayStats == null || SelectedOrder.State != OrderState.Running)
             {
-                LiveInfoVis = Visibility.Collapsed;
+                LiveInfoAvailable = false;
             }
             else if (DisplayStats.DataTime.AddHours(1) < DateTime.Now)
             {
-                LiveInfoVis = Visibility.Collapsed;
+                LiveInfoAvailable = false;
             }
             else
             {
-                LiveInfoVis = Visibility.Visible;
+                LiveInfoAvailable = true;
             }
         }
 
