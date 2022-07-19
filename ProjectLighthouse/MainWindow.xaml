@@ -257,7 +257,7 @@
         <!--#region Window adorners-->
         <Grid Grid.Column="1" Visibility="Visible">
 
-            <Grid Margin="5,5,10,5" 
+            <Grid Margin="20,5,10,5" 
                   HorizontalAlignment="Left" VerticalAlignment="Center"
                 Visibility="{Binding BetaWarningVis}">
                 <Border
@@ -265,7 +265,10 @@
                         CornerRadius="5"
                         Opacity="0.15"/>
                 <Border BorderBrush="{StaticResource Red}" BorderThickness="5,0,0,0" CornerRadius="3">
-                    <StackPanel 
+                    <StackPanel Orientation="Horizontal">
+                        <Path Margin="10,0,0,0" Data="M11 13H13V14H11V13M21 5V11C21 16.5 17.2 21.7 12 23C6.8 21.7 3 16.5 3 11V5L12 1L21 5M17 10H14.8C14.6 9.4 14.2 8.9 13.7 8.5L14.9 7.3L14.2 6.6L12.8 8H12C11.8 8 11.5 8 11.3 8.1L9.9 6.6L9.1 7.4L10.3 8.6C9.8 8.9 9.4 9.4 9.2 10H7V11H9V12H7V13H9V14H7V15H9.2C9.6 16.2 10.7 17 12 17S14.4 16.2 14.8 15H17V14H15V13H17V12H15V11H17V10M11 12H13V11H11V12Z"
+                              Height="35" Stretch="UniformToFill" Fill="{StaticResource Red}"/>
+                        <StackPanel 
                     Margin="15,5">
                         <TextBlock
                             VerticalAlignment="Center"
@@ -275,6 +278,7 @@
                             Text="Module in Beta" />
 
                         <TextBlock Foreground="{StaticResource Red}" FontStyle="Italic" Opacity="0.6" FontSize="13" Text="Core actions have been tested but may break in edge cases. Please report any bugs you encounter!" MaxWidth="350" TextWrapping="Wrap"/>
+                    </StackPanel>
                     </StackPanel>
                     
                 </Border>
@@ -314,7 +318,7 @@
             Grid.Row="1"
             HorizontalAlignment="Right"
             Grid.Column="2"
-            MinWidth="250"
+            Width="400"
             Visibility="{Binding NotificationsBarVis}">
             <Border
                 Margin="5,10,20,10"
@@ -373,6 +377,8 @@
                             CornerRadius="15">
                             <Grid>
                                 <Border
+                                    HorizontalAlignment="Center"
+                                    Width="250"
                                     Name="Mask"
                                     Background="{StaticResource Blue}"
                                     CornerRadius="20" />
@@ -407,10 +413,10 @@
                             Opacity="0.6"
                             Text="No notifications to show" />
                     </StackPanel>
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <!--<StackPanel Grid.Row="2" Orientation="Horizontal">
                         <Button Content="Archive All" />
                         <ToggleButton Content="Mute" />
-                    </StackPanel>
+                    </StackPanel>-->
                 </Grid>
             </Border>
         </Grid>

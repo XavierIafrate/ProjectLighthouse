@@ -2,6 +2,7 @@
 using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.View;
+using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -23,6 +24,10 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrder> ActiveOrders { get; set; }
         public List<LatheManufactureOrderItem> ActiveOrderItems { get; set; }
         public List<LatheManufactureOrderItem> RecommendedManifest { get; set; }
+
+        public List<Note> FilteredNotes { get; set; }
+        public List<Note> Notes { get; set; }
+
         private double targetRuntime;
 
         public double TargetRuntime
@@ -262,6 +267,7 @@ namespace ProjectLighthouse.ViewModel
         public RequestsToCSVCommand ExportCommand { get; set; }
         public MergeRequestToOrderCommand MergeCommand { get; set; }
         public ViewMakeOrBuyCommand ViewMakeOrBuyCommand { get; set; }
+        public EditProductCommand ModifyProductCommand { get; set; }
 
         #endregion
 
@@ -276,6 +282,9 @@ namespace ProjectLighthouse.ViewModel
             ExportCommand = new(this);
             MergeCommand = new(this);
             ViewMakeOrBuyCommand = new(this);
+            ModifyProductCommand = new(this);
+            Notes = new();
+            Notes = DatabaseHelper.Read<Note>().ToList();
 
             SelectedRequest = new();
 
@@ -284,6 +293,7 @@ namespace ProjectLighthouse.ViewModel
             approvalControlsVis = App.CurrentUser.CanApproveRequests
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+
 
             GetRequests();
 
@@ -306,6 +316,12 @@ namespace ProjectLighthouse.ViewModel
             CheckForAppendOppurtunities();
 
             SelectedFilter = "Last 14 Days";
+        }
+
+        public void EditProduct()
+        {
+            EditProductWindow window = new(SelectedRequestProduct);
+            window.ShowDialog();
         }
 
         private void CheckForAppendOppurtunities()
@@ -378,6 +394,7 @@ namespace ProjectLighthouse.ViewModel
 
             PurchaseRef = !string.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
 
+
             if (!string.IsNullOrEmpty(SelectedRequest.Product))
             {
                 SelectedRequestProduct = Products.Find(x => x.ProductName == SelectedRequest.Product);
@@ -385,6 +402,10 @@ namespace ProjectLighthouse.ViewModel
 
             if (request.Product != null)
             {
+                FilteredNotes = null;
+                OnPropertyChanged(nameof(FilteredNotes));
+                FilteredNotes = Notes.Where(x => x.DocumentReference == $"r{request.Id:0}").ToList();
+                OnPropertyChanged(nameof(FilteredNotes));
                 LoadRecommendedOrder();
             }
         }

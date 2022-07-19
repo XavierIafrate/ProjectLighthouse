@@ -141,8 +141,6 @@ namespace ProjectLighthouse.Model
             return;
         }
 
-
-
         public bool IsConnected()
         {
             return !string.IsNullOrEmpty(EmergencyStop);

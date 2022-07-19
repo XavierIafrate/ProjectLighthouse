@@ -104,7 +104,7 @@
                     Width="60"
                     HorizontalContentAlignment="Center"
                     MaxLength="2"
-                    PreviewKeyDown="Allow_Nums_Only"
+                    PreviewKeyDown="Allow_Nums_Only_And_TabAcross"
                     Style="{StaticResource UsernameTextBox}"
                     Text="60"
                     TextChanged="CycleTime_Min_TextChanged" />

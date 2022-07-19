@@ -54,7 +54,7 @@ namespace ProjectLighthouse.ViewModel
                 emailRecipients.Add(new(email: "anthony.iafrate@automotioncomponents.com", name: "Anthony Iafrate"));
                 emailRecipients.Add(new(email: "r.budd@wixroydgroup.com", name: "Richard Budd"));
                 emailRecipients.Add(new(email: "m.iafrate@wixroyd.com", name: "Marcus Iafrate"));
-                emailRecipients.Add(new(email: "a.harandizadeh@wixroyd.com", name: "Arian Harandizadeh"));
+                emailRecipients.Add(new(email: "a.harandizadeh@wixroydgroup.com", name: "Arian Harandizadeh"));
             }
 
             if (DateTime.Today.DayOfWeek == DayOfWeek.Monday)

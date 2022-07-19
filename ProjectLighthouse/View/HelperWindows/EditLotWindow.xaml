@@ -13,33 +13,36 @@
     WindowStartupLocation="CenterOwner">
     <StackPanel Margin="20">
         <TextBlock Style="{StaticResource title}" Text="Edit Lot" />
-        <Separator Margin="0,5"/>
-        <TextBlock Text="Batch" Style="{StaticResource section}"/>
+        <Separator Margin="0,5" />
+        <TextBlock Style="{StaticResource section}" Text="Batch" />
         <TextBox
+            x:Name="BatchTextBox"
             Style="{StaticResource DefaultTextBox}"
             Tag="Batch ID"
-            x:Name="BatchTextBox"
             TextChanged="BatchTextBox_TextChanged"
             TextWrapping="Wrap" />
         <TextBlock Text="Quantity" />
         <TextBox
-            Style="{StaticResource DefaultTextBox}"
-            Tag="Quantity In Lot"
             x:Name="QuantityTextBox"
             PreviewKeyDown="QuantityTextBox_PreviewKeyDown"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Quantity In Lot"
             TextChanged="QuantityTextBox_TextChanged" />
-        <TextBlock Text="Date Produced"/>
+        <TextBlock Text="Date Produced" />
         <Grid>
-            <DatePicker x:Name="ProducedDatePicker" SelectedDateChanged="ProducedDatePicker_SelectedDateChanged" Margin="5"/>
+            <DatePicker
+                x:Name="ProducedDatePicker"
+                Margin="5"
+                SelectedDateChanged="ProducedDatePicker_SelectedDateChanged" />
         </Grid>
-        
+
         <TextBlock Text="Remarks" />
         <TextBox
-            Style="{StaticResource DefaultTextBox}"
             x:Name="RemarksTextBox"
             MinHeight="50"
             MaxHeight="200"
             MaxLength="512"
+            Style="{StaticResource DefaultTextBox}"
             TextChanged="BatchTextBox_TextChanged"
             TextWrapping="Wrap" />
 
@@ -56,6 +59,13 @@
             VerticalContentAlignment="Center"
             Checked="AcceptCheckBox_Checked"
             Content="Lot is Accepted"
+            FontSize="16" />
+        <CheckBox
+            x:Name="AllowDeliveryCheckbox"
+            Margin="20,7"
+            VerticalContentAlignment="Center"
+            Checked="AllowDeliveryCheckbox_Checked"
+            Content="Allow Delivery"
             FontSize="16" />
         <Button
             x:Name="SaveButton"

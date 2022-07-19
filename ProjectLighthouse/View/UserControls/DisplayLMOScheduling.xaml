@@ -19,7 +19,10 @@
     </UserControl.Resources>
     <Grid Margin="7">
         <Grid.ToolTip>
-            <local:OrderStatusTooltip Order="{Binding}" ToolTipService.ShowDuration="60" Margin="0"/>
+            <local:OrderStatusTooltip
+                Margin="0"
+                Order="{Binding}"
+                ToolTipService.ShowDuration="60" />
         </Grid.ToolTip>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="12" />
@@ -31,7 +34,7 @@
             CornerRadius="5,0,0,5" />
 
 
-        <Grid Grid.Column="1" x:Name="MainCanvas">
+        <Grid x:Name="MainCanvas" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" MinWidth="130" />
                 <ColumnDefinition Width="auto" />
@@ -43,64 +46,88 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Border Grid.ColumnSpan="3" Background="{StaticResource Red}" Margin="10,0,0,0" CornerRadius="10" Height="26" x:Name="WarningBanner" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,3">
-                    <Path Data="M12,2C16.46,2 20.26,4.95 21.54,9H18V20C16.33,21.25 14.25,22 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M16.2,16.2L17,14.9L12.5,12.2V7H11V13L16.2,16.2M20,11H22V18H20V11M20,20H22V22H20V20Z"
-                          Width="15" Height="15" Stretch="UniformToFill" Fill="{StaticResource OnRed}" Margin="0,0,5,0"/>
-                    <TextBlock Text="WARNING" Foreground="{StaticResource OnRed}" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                    <TextBlock Text="This order is at risk of not meeting delivery target" Margin="5,0,0,0" Foreground="{StaticResource OnRed}" FontStyle="Italic" x:Name="WarningText"/>
+            <Grid x:Name="WarningBanner" Grid.ColumnSpan="3" Margin="0,0,5,0">
+                <Border Background="{StaticResource Red}" Opacity="0.15" CornerRadius="0,3,3,0"/>
+
+                <StackPanel
+                    Margin="20,3"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Path
+                        Width="15"
+                        Height="15"
+                        Margin="0,0,5,0"
+                        Data="M6,6.9L3.87,4.78L5.28,3.37L7.4,5.5L6,6.9M13,1V4H11V1H13M20.13,4.78L18,6.9L16.6,5.5L18.72,3.37L20.13,4.78M4.5,10.5V12.5H1.5V10.5H4.5M19.5,10.5H22.5V12.5H19.5V10.5M6,20H18A2,2 0 0,1 20,22H4A2,2 0 0,1 6,20M12,5A6,6 0 0,1 18,11V19H6V11A6,6 0 0,1 12,5Z"
+                        Fill="{StaticResource Red}"
+                        Stretch="UniformToFill" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        FontSize="16"
+                        Foreground="{StaticResource Red}"
+                        Text="Warning" />
+                    <TextBlock
+                       VerticalAlignment="Bottom"
+                        x:Name="WarningText"
+                        Margin="5,0,0,0"
+                        FontStyle="Italic"
+                        Foreground="{StaticResource Red}"
+                        Text="At risk of missing delivery target." />
                 </StackPanel>
-            </Border>
+            </Grid>
 
             <StackPanel Grid.Row="1" Margin="20,10">
                 <TextBlock
+                    d:Text="M00000"
                     FontSize="25"
                     FontWeight="Bold"
                     Foreground="{StaticResource OnBackground}"
-                    Text="{Binding Name, FallbackValue='%Order.Name%', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Rectangle
+                    <Border
                         x:Name="statusBadgeText"
                         Height="24"
-                        Fill="{StaticResource Red}"
-                        RadiusX="12"
-                        RadiusY="12" />
+                        Background="{StaticResource Red}"
+                        CornerRadius="3" />
                     <TextBlock
                         Padding="10,0,10,2"
                         VerticalAlignment="Center"
+                        FontWeight="SemiBold"
                         FontSize="14"
                         Foreground="{StaticResource OnPurple}"
                         Text="{Binding State, FallbackValue='Ready', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
-                <Border
+                <Grid
                     x:Name="LargeDiameterIndicator"
                     Margin="0,5,0,0"
-                    HorizontalAlignment="Left"
-                    Background="{StaticResource Yellow}"
-                    BorderBrush="{StaticResource OnYellow}"
-                    BorderThickness="2"
-                    CornerRadius="10">
-                    <StackPanel Margin="5,2" Orientation="Horizontal">
-                        <Path
-                            Width="15"
-                            Height="15"
-                            Margin="0,0,3,0"
-                            Data="M4.15,21.46L5.47,19.58C3.35,17.74 2,15.03 2,12A10,10 0 0,1 12,2C13.78,2 15.44,2.46 16.89,3.27L18.21,1.39L19.85,2.54L18.53,4.42C20.65,6.26 22,8.97 22,12A10,10 0 0,1 12,22C10.22,22 8.56,21.54 7.11,20.73L5.79,22.61L4.15,21.46M12,4A8,8 0 0,0 4,12C4,14.35 5,16.46 6.63,17.93L15.73,4.92C14.62,4.33 13.35,4 12,4M12,20A8,8 0 0,0 20,12C20,9.65 19,7.54 17.37,6.07L8.27,19.08C9.38,19.67 10.65,20 12,20Z"
-                            Fill="{StaticResource OnYellow}"
-                            Stretch="Uniform" />
-                        <TextBlock
-                            Margin="0,0,0,1"
-                            VerticalAlignment="Center"
-                            FontSize="12"
-                            Foreground="{StaticResource OnYellow}"
-                            Text="Large Diameter" />
-                    </StackPanel>
+                    HorizontalAlignment="Left">
+                    <Border
+                        Background="{StaticResource Orange}"
+                        Opacity="0.15"
+                        CornerRadius="3" />
+                    <Border BorderBrush="{StaticResource Orange}" CornerRadius="2" BorderThickness="3,0,0,0">
+                        <StackPanel Margin="5,2" Orientation="Horizontal">
+                            <Path
+                                Width="15"
+                                Height="15"
+                                Margin="0,0,3,0"
+                                Data="M4.15,21.46L5.47,19.58C3.35,17.74 2,15.03 2,12A10,10 0 0,1 12,2C13.78,2 15.44,2.46 16.89,3.27L18.21,1.39L19.85,2.54L18.53,4.42C20.65,6.26 22,8.97 22,12A10,10 0 0,1 12,22C10.22,22 8.56,21.54 7.11,20.73L5.79,22.61L4.15,21.46M12,4A8,8 0 0,0 4,12C4,14.35 5,16.46 6.63,17.93L15.73,4.92C14.62,4.33 13.35,4 12,4M12,20A8,8 0 0,0 20,12C20,9.65 19,7.54 17.37,6.07L8.27,19.08C9.38,19.67 10.65,20 12,20Z"
+                                Fill="{StaticResource Orange}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Margin="0,0,0,1"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{StaticResource Orange}"
+                                Text="Large Diameter" />
+                        </StackPanel>                        
+                    </Border>
 
-                </Border>
+                </Grid>
                 <Button
                     x:Name="editButton"
                     Margin="0,5,0,0"
@@ -110,13 +137,15 @@
                     Style="{StaticResource SubtleButtonTemplate}" />
             </StackPanel>
 
-            <Grid Grid.Column="1" Margin="10" Grid.Row="1">
+            <Grid
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
@@ -127,7 +156,7 @@
                     HorizontalAlignment="Right"
                     FontWeight="SemiBold"
                     Text="Start" />
-                <TextBlock Grid.Column="1" Text="{Binding StartDate, StringFormat='{}{0:ddd, dd MMM HHmm}h'}" />
+                <TextBlock Grid.Column="1" Text="{Binding StartDate, StringFormat='{}{0:ddd, dd MMM HHmm}h'}" d:Text="Mon, 01 Jan 0000h" />
 
                 <TextBlock
                     Grid.Row="1"
@@ -138,7 +167,7 @@
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"
-                    Text="{Binding Path=., Converter='{StaticResource startToFinish}', StringFormat='{}{0:ddd, dd MMM HHmm}h'}" />
+                    Text="{Binding Path=., Converter='{StaticResource startToFinish}', StringFormat='{}{0:ddd, dd MMM HHmm}h'}" d:Text="Mon, 01 Jan 0000h" />
 
                 <TextBlock
                     Grid.Row="2"
@@ -149,7 +178,7 @@
                 <TextBlock
                     Grid.Row="2"
                     Grid.Column="1"
-                    Text="{Binding TimeToComplete, Converter='{StaticResource inttoday}', StringFormat='{}{0} days'}" />
+                    Text="{Binding TimeToComplete, Converter={StaticResource inttoday}, StringFormat='{}{0} days'}" d:Text="0 days" />
 
                 <TextBlock
                     Grid.Row="3"
@@ -160,7 +189,8 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="1"
-                    Text="{Binding BarID}" />
+                    Text="{Binding BarID}"
+                    d:Text="PRB000-0000-000"/>
             </Grid>
 
             <StackPanel
@@ -215,27 +245,24 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid
-                                
-                                Margin="0,1"
-                                HorizontalAlignment="Stretch">
+                            <Grid Margin="0,1" HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition
                                         Width="*"
                                         MaxWidth="20"
                                         SharedSizeGroup="b" />
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
                                     <ColumnDefinition
                                         Width="*"
                                         MaxWidth="20"
                                         SharedSizeGroup="b" />
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
                                     <ColumnDefinition
                                         Width="*"
                                         MaxWidth="20"
                                         SharedSizeGroup="b" />
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Padding="0,0,10,0"
@@ -246,14 +273,22 @@
                                     Padding="0,0,10,0"
                                     HorizontalAlignment="Center"
                                     Text="{Binding Path=TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" />
-                                <StackPanel Orientation="Horizontal" Grid.Column="4"
-                                            HorizontalAlignment="Right"
-                                            TextElement.Foreground="{StaticResource Blue}"
-                                            TextElement.FontWeight="SemiBold"
-                                            Visibility="{Binding Path=., Converter={StaticResource requirementVis}}">
-                                    <TextBlock Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}"/>
-                                    <Path Margin="5,0" Data="M2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12M17,12L12,7V10H8V14H12V17L17,12Z" Fill="{StaticResource Blue}" Stretch="Uniform" Height="14" Width="14"/>
-                                    <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dd/MM}'}"/>
+                                <StackPanel
+                                    Grid.Column="4"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Horizontal"
+                                    TextElement.FontWeight="SemiBold"
+                                    TextElement.Foreground="{StaticResource Blue}"
+                                    Visibility="{Binding Path=., Converter={StaticResource requirementVis}}">
+                                    <TextBlock Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" />
+                                    <Path
+                                        Width="14"
+                                        Height="14"
+                                        Margin="5,0"
+                                        Data="M2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12M17,12L12,7V10H8V14H12V17L17,12Z"
+                                        Fill="{StaticResource Blue}"
+                                        Stretch="Uniform" />
+                                    <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:dd/MM}'}" />
                                 </StackPanel>
                                 <TextBlock
                                     Grid.Column="6"

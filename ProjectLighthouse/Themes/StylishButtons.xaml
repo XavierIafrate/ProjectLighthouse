@@ -629,6 +629,41 @@
         </Style.Triggers>
     </Style>
 
+    
+
+    <Style x:Key="HeroSaveButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Width="40"
+                        Height="40"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="3">
+                        <Path
+                            Width="16"
+                            Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource Surface}" />
+                <Setter Property="Foreground" Value="{StaticResource Green}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+                <Setter Property="Background" Value="{StaticResource Green}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="HeroPdfButton" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>

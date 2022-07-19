@@ -217,7 +217,7 @@ namespace ProjectLighthouse.View
             if (Order.State > OrderState.Running)
             {
                 List<LatheManufactureOrderItem> itemsWithBadCycleTimes = Items.Where(i => i.CycleTime == 0 && i.QuantityMade > 0).ToList();
-                List<Lot> unresolvedLots = Lots.Where(l => l.Quantity != 0 && !l.IsDelivered && !l.IsReject).ToList();
+                List<Lot> unresolvedLots = Lots.Where(l => l.Quantity != 0 && !l.IsDelivered && !l.IsReject && l.AllowDelivery).ToList();
 
                 Order.IsClosed = itemsWithBadCycleTimes.Count == 0 // ensure cycle time is updated
                     && unresolvedLots.Count == 0; // ensure lots are fully processed
@@ -356,6 +356,12 @@ namespace ProjectLighthouse.View
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            //List<TurnedProduct> p = DatabaseHelper.Read<TurnedProduct>();
+            //TurnedProduct target = p.Find(x => x.ProductName == Items.First().ProductName);
+            //Order.ToolingGroup = target.ProductGroup;
+            //DatabaseHelper.Update(Order);
+            //return;
+
             CalculateTime();
             CalculateBarRequirements();
             CheckIfOrderIsClosed(); // running to closed is broken
@@ -475,7 +481,7 @@ namespace ProjectLighthouse.View
             {
                 MessageBox.Show("no edit");// Save command execution logic
             }
-            EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit);
+            EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit, allowDelivery:!Order.IsResearch);
             Hide();
             editWindow.ShowDialog();
 

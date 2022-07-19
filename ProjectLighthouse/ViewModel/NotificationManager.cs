@@ -55,7 +55,7 @@ namespace ProjectLighthouse.ViewModel
             DataRefreshTimer = new();
 
             DataRefreshTimer.Elapsed += Timer_Tick;
-            DataRefreshTimer.Interval = 60 * 1000;
+            DataRefreshTimer.Interval = 30 * 1000;
             DataRefreshTimer.Enabled = true;
         }
 
@@ -67,13 +67,30 @@ namespace ProjectLighthouse.ViewModel
         private void CheckForNotifications()
         {
             List<Notification> nots = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName).ToList();
+
+            int numNewNots = nots.Where(n => !MyNotifications.Contains(n)).Count();
+
             for (int i = 0; i < nots.Count; i++)
             {
                 if (!MyNotifications.Select(x => x.Id).ToArray().Contains(nots[i].Id))
                 {
-                    RaiseToast(nots[i]);
+                    if (numNewNots <= 3)
+                    {
+                        RaiseToast(nots[i]);
+                    }
                     MyNotifications.Add(nots[i]);
                 }
+            }
+
+            if (numNewNots > 3)
+            {
+                string header = $"{numNewNots:0} new notification" + ((numNewNots == 1) ? "" : "s");
+                new ToastContentBuilder()
+                       .AddText(header)
+                       .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
+                       .AddText("Click here to see your inbox.")
+                       .AddArgument("action", "showNotifications")
+                       .Show();
             }
 
             NotificationCount = myNotifications.Where(not => !not.Seen).Count();
@@ -179,6 +196,10 @@ namespace ProjectLighthouse.ViewModel
             {
                 EditLMOWindow window = new(action.Replace("viewManufactureOrder:", ""), App.CurrentUser.CanUpdateLMOs);
                 window.ShowDialog();
+            }
+            else if (action == "showNotifications")
+            {
+                App.MainViewModel.NotificationsBarVis = Visibility.Visible;
             }
         }
 

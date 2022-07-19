@@ -16,15 +16,17 @@ namespace ProjectLighthouse.View
         public LatheManufactureOrderItem Item { get; set; } 
         public List<Lot> Lots { get; set; }
         public bool CanEdit { get; set; }
+        public bool AllowDelivery { get; set; }
         private string ProducedOnMachine { get; set; }
 
         public bool SaveExit;
         private bool LotAdded;
 
-        public EditLMOItemWindow(int ItemId, bool canEdit)
+        public EditLMOItemWindow(int ItemId, bool canEdit, bool allowDelivery = true)
         {
             InitializeComponent();
             SaveExit = false;
+            AllowDelivery = allowDelivery;
             CanEdit = canEdit;
 
             LoadData(ItemId);
@@ -182,6 +184,19 @@ namespace ProjectLighthouse.View
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
 
+        private void Allow_Nums_Only_And_TabAcross(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Tab)
+            {
+                CycleTime_Sec.Focus();
+                CycleTime_Sec.CaretIndex = CycleTime_Sec.Text.Length;
+                e.Handled = true;
+                return;
+            }
+
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
+        }
+
         private void AddLotButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(BatchTextBox.Text))
@@ -209,6 +224,7 @@ namespace ProjectLighthouse.View
                 MaterialBatch = BatchTextBox.Text.Trim(),
                 FromMachine = ProducedOnMachine,
                 Remarks = RemarksTextBox.Text.Trim(),
+                AllowDelivery = AllowDelivery,
                 DateProduced = DateTime.Now.Hour >= 9
                     ? DateTime.Now.Date.AddHours(12)
                     : DateTime.Now.Date.AddHours(-12)

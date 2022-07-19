@@ -64,58 +64,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return errs;
         }
 
-        //private static List<PurchaseHeader> GetPurchaseHeaders(string[] refs)
-        //{
-        //    List<PurchaseHeader> results = new();
-        //    using DbfTable dbfTable = new(purchaseLinesTable, Encoding.UTF8);
-        //    DbfHeader tableHeader = dbfTable.Header;
-        //    Console.WriteLine($"{tableHeader.RecordCount:#,##0} records in Automotion Purchase Order Lines table.");
-
-        //    int iRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_DCREF"));
-        //    int iClosed = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_ACCOUNT"));
-        //    int iCancelled = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_ACCOUNT"));
-
-        //    DbfRecord dbfRecord = new(dbfTable);
-
-        //    int total_records = (int)tableHeader.RecordCount;
-        //    int i = 0;
-
-        //    while (dbfTable.Read(dbfRecord))
-        //    {
-        //        double percent_progress = (double)i / (double)total_records;
-        //        percent_progress *= 100;
-
-        //        Console.Write($"\rReading Opera... [  {percent_progress:#.00}%  ]");
-
-        //        i++;
-
-        //        if (dbfRecord.IsDeleted)
-        //        {
-        //            continue;
-        //        }
-
-        //        string poRef = dbfRecord.Values[iRef].ToString();
-        //        if (!refs.Contains(poRef.ToUpper()))
-        //        {
-        //            continue;
-        //        }
-
-        //        bool closed = dbfRecord.Values[iClosed].ToString() == "T";
-        //        bool cancelled = dbfRecord.Values[iCancelled].ToString() == "T";
-
-        //        PurchaseHeader record = new()
-        //        {
-
-        //            Reference = poRef,
-        //            IsClosed = closed,
-        //            IsCancelled = cancelled,
-        //        };
-
-        //        results.Add(record);
-        //    }
-        //    return results;
-        //}
-
         private static List<PurchaseLine> GetPurchaseLines(string[] refs)
         {
             List<PurchaseLine> results = new();

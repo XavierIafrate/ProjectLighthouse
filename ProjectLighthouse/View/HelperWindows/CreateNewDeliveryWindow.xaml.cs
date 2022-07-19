@@ -28,7 +28,7 @@ namespace ProjectLighthouse.View
 
         private void GetUndelivered()
         {
-            Lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && n.IsAccepted && n.Quantity > 0).ToList();
+            Lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && n.IsAccepted && n.Quantity > 0 && n.AllowDelivery).ToList();
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             //List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
@@ -74,15 +74,10 @@ namespace ProjectLighthouse.View
 
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
-            //if (itemsOnNewNote.Count == 8)
-            //{
-            //    MessageBox.Show("Max 8 items on a delivery", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    return;
-            //}
-
-
             if (undeliveredList.SelectedValue is not DeliveryItem move_item)
+            {
                 return;
+            }
 
             if (string.IsNullOrWhiteSpace(move_item.PurchaseOrderReference))
             {

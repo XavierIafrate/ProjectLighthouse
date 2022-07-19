@@ -43,10 +43,10 @@ namespace ProjectLighthouse.ViewModel
             get { return selectedOrder; }
             set
             {
-                if (value == null)
-                {
-                    return;
-                }
+                //if (value == null)
+                //{
+                //    return;
+                //}
                 selectedOrder = value;
 
                 LoadOrderCard();
@@ -385,6 +385,9 @@ namespace ProjectLighthouse.ViewModel
             {
                 FilteredOrders.Add(orders[i]);
             }
+
+
+
         }
 
         #endregion Loading
@@ -442,6 +445,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 FilteredOrders.Add(Results[i]);
             }
+            //CardVis = FilteredOrders.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
             OnPropertyChanged(nameof(FilteredOrders));
         }
 
@@ -594,9 +598,10 @@ namespace ProjectLighthouse.ViewModel
             {
                 editable = false;
             }
-            EditLMOWindow editWindow = new(SelectedOrder.Name, editable);
-
-            editWindow.Owner = Application.Current.MainWindow;
+            EditLMOWindow editWindow = new(SelectedOrder.Name, editable)
+            {
+                Owner = Application.Current.MainWindow
+            };
             editWindow.ShowDialog();
 
             Refresh(silent: false);

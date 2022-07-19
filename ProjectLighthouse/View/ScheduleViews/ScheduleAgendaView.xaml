@@ -39,11 +39,11 @@
                     Content="Auto Schedule"
                     Style="{StaticResource BlueButton}"
                     Visibility="{Binding AddButtonsVis}" />-->
-                <Button
+                <!--<Button
                     Command="{Binding AddResearchCommand}"
                     Content="+ Research"
                     Style="{StaticResource BlueButton}"
-                    Visibility="{Binding AddButtonsVis}" />
+                    Visibility="{Binding AddButtonsVis}" />-->
                 <Button
                     Command="{Binding AddServiceCommand}"
                     Content="+ Maintenance"

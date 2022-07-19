@@ -39,23 +39,23 @@ namespace ProjectLighthouse.View.UserControls
                 {
                     case OrderState.Problem:
                         control.bg.Background = (Brush)Application.Current.Resources["Red"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Red"];
+                        control.statusBadgeText.Background = (Brush)Application.Current.Resources["Red"];
                         break;
                     case OrderState.Ready:
                         control.bg.Background = (Brush)Application.Current.Resources["Green"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Green"];
+                        control.statusBadgeText.Background = (Brush)Application.Current.Resources["Green"];
                         break;
                     case OrderState.Prepared:
                         control.bg.Background = (Brush)Application.Current.Resources["Green"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Green"];
+                        control.statusBadgeText.Background = (Brush)Application.Current.Resources["Green"];
                         break;
                     case OrderState.Running:
                         control.bg.Background = (Brush)Application.Current.Resources["Blue"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Blue"];
+                        control.statusBadgeText.Background = (Brush)Application.Current.Resources["Blue"];
                         break;
                     default:
                         control.bg.Background = (Brush)Application.Current.Resources["OnBackground"];
-                        control.statusBadgeText.Fill = (Brush)Application.Current.Resources["Background"];
+                        control.statusBadgeText.Background = (Brush)Application.Current.Resources["Background"];
                         break;
                 }
                 control.orderItems.ItemsSource = control.orderObject.OrderItems;
@@ -64,7 +64,7 @@ namespace ProjectLighthouse.View.UserControls
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
-                control.editButton.Visibility = App.CurrentUser.UserRole is "Scheduling" or "admin"
+                control.editButton.Visibility = App.CurrentUser.Role >= UserRole.Scheduling
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
@@ -84,19 +84,24 @@ namespace ProjectLighthouse.View.UserControls
                     }
 
                     int secondsToRequirement = (item.RequiredQuantity-item.QuantityDelivered) * item.GetCycleTime();
-
                     int diff = (int)(item.DateRequired.Date - startDate.Date.AddSeconds(secondsBudgeted)).TotalSeconds;
 
-                    if (diff < secondsToRequirement)
+                    if (item.DateRequired < DateTime.Now && item.RequiredQuantity > item.QuantityDelivered)
                     {
                         control.WarningBanner.Visibility = Visibility.Visible;
-                        control.WarningText.Text = "A delivery target will be missed with high confidence";
+                        control.WarningText.Text = "The delivery target has been missed.";
                         break;
                     }
-                    else if (diff * 0.9 < secondsToRequirement || diff <= 86400)
+                    else if (diff < secondsToRequirement && secondsBudgeted > 0)
                     {
                         control.WarningBanner.Visibility = Visibility.Visible;
-                        control.WarningText.Text = "A delivery target is at risk";
+                        control.WarningText.Text = "Highly likely delivery target will be missed.";
+                        break;
+                    }
+                    else if (diff * 0.9 < secondsToRequirement || diff <= 86400 && secondsBudgeted > 0)
+                    {
+                        control.WarningBanner.Visibility = Visibility.Visible;
+                        control.WarningText.Text = "At risk of missing delivery target.";
                     }
                     else
                     {

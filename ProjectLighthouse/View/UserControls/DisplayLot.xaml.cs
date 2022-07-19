@@ -8,15 +8,12 @@ namespace ProjectLighthouse.View.UserControls
 {
     public partial class DisplayLot : UserControl
     {
-
-
         public ICommand EditCommand
         {
             get { return (ICommand)GetValue(EditCommandProperty); }
             set { SetValue(EditCommandProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for EditCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty EditCommandProperty =
             DependencyProperty.Register("EditCommand", typeof(ICommand), typeof(DisplayLot), new PropertyMetadata(null));
 
@@ -52,7 +49,7 @@ namespace ProjectLighthouse.View.UserControls
             }
             else if (control.Lot.IsAccepted)
             {
-                control.HelperText.Text = "Not Delivered";
+                control.HelperText.Text = control.Lot.AllowDelivery ? "Not Delivered" : "Delivery restricted";
                 control.EditButton.Visibility = control.Lot.Date.AddDays(3) > DateTime.Now ? Visibility.Visible : Visibility.Collapsed;
 
             }

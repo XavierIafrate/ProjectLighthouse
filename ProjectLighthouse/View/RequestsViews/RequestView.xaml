@@ -196,18 +196,18 @@
                                 Fill="{StaticResource Purple}"
                                 Stretch="Uniform" />
                             <TextBlock
-                                FontWeight="SemiBold"
-                                Opacity="0.8"
-                                FontStyle="Italic"
                                 FontSize="13"
+                                FontStyle="Italic"
+                                FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
+                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}" />
                             <TextBlock
-                                FontWeight="SemiBold"
-                                Opacity="0.8"
-                                FontStyle="Italic"
                                 FontSize="13"
+                                FontStyle="Italic"
+                                FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
+                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.DateRaised, UpdateSourceTrigger=PropertyChanged, StringFormat='{} {0}', Converter={StaticResource modifiedFormatter}}" />
                         </StackPanel>
                         <StackPanel
@@ -225,21 +225,21 @@
 
                             <TextBlock
                                 Grid.Row="1"
-                                FontWeight="SemiBold"
-                                Opacity="0.8"
-                                FontStyle="Italic"
                                 FontSize="13"
+                                FontStyle="Italic"
+                                FontWeight="SemiBold"
                                 Foreground="{StaticResource Blue}"
+                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.ModifiedBy, StringFormat='{}Updated by {0}', UpdateSourceTrigger=PropertyChanged}" />
                             <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="2"
-                                Opacity="0.8"
-                                FontStyle="Italic"
-                                FontSize="13"
                                 HorizontalAlignment="Right"
+                                FontSize="13"
+                                FontStyle="Italic"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Blue}"
+                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.LastModified, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource modifiedFormatter}, StringFormat='{} {0}'}" />
                         </StackPanel>
 
@@ -257,11 +257,11 @@
                                 Stretch="Uniform" />
 
                             <TextBlock
-                                FontWeight="SemiBold"
-                                Opacity="0.8"
-                                FontStyle="Italic"
                                 FontSize="13"
+                                FontStyle="Italic"
+                                FontWeight="SemiBold"
                                 Foreground="{StaticResource Red}"
+                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.Status, UpdateSourceTrigger=PropertyChanged, FallbackValue='Updated by Kyle Brovloski'}" />
                         </StackPanel>
 
@@ -279,11 +279,11 @@
                                 Stretch="Uniform" />
 
                             <TextBlock
+                                FontSize="13"
+                                FontStyle="Italic"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Green}"
                                 Opacity="0.8"
-                                FontStyle="Italic"
-                                FontSize="13"
                                 Text="{Binding SelectedRequest.Status, UpdateSourceTrigger=PropertyChanged}" />
 
                         </StackPanel>
@@ -315,7 +315,6 @@
                             </StackPanel>
                         </Grid>
 
-                        <!--  Visibility="{Binding DecisionVis}"  -->
                         <TextBlock Style="{StaticResource section}" Text="Recommended Manifest" />
                         <Grid Margin="0,10">
                             <Grid.ColumnDefinitions>
@@ -389,7 +388,9 @@
                                 Opacity="0.25"
                                 Stretch="Uniform" />
                         </StackPanel>
-
+                        <StackPanel>
+                            
+                        </StackPanel>
                         <TextBlock
                             Grid.Row="2"
                             Margin="0,10,0,5"
@@ -418,6 +419,7 @@
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Button
                                 x:Name="DeclineButton"
@@ -437,6 +439,12 @@
                                 Command="{Binding MergeCommand}"
                                 Style="{StaticResource MergeButton}"
                                 Visibility="{Binding MergeVis}" />
+                            <Button
+                                x:Name="ModifyButton"
+                                Grid.Column="3"
+                                Margin="10,0"
+                                Command="{Binding ModifyProductCommand}"
+                                Content="Edit Product"/>
 
                         </Grid>
                     </StackPanel>
@@ -465,19 +473,16 @@
                                 SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}" />
                         </Grid>
 
-                        <TextBlock Style="{StaticResource section}" Text="Notes" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Content="Update"
+                            Style="{StaticResource BlueButton}" />
+                        <TextBlock Style="{StaticResource section}" Text="Comments" />
 
-                        <uc:DisplayListOfNotes Notes="{Binding FilteredNotes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MinHeight="50"/>
-
-                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                            <Button Content="Save" />
-                        </StackPanel>
+                        <uc:DisplayListOfNotes MinHeight="50" Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}" />
                     </StackPanel>
-                    <!--<TextBlock Text="{Binding SelectedRequest.Status, StringFormat='{}Status: {0}', FallbackValue='Status: Pending input'}" />-->
                 </StackPanel>
-
             </Grid>
-
         </ScrollViewer>
     </Grid>
 </UserControl>

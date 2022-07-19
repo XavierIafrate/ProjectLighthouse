@@ -58,7 +58,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 users = value;
-                OnPropertyChanged("Users");
+                OnPropertyChanged();
             }
         }
 
@@ -77,7 +77,7 @@ namespace ProjectLighthouse.ViewModel
                         SelectedView = views.Where(n => n.ToString() == (string.IsNullOrEmpty(value.DefaultView) ? "Orders" : value.DefaultView)).Single();
                     if (value.UserName != null)
                     {
-                        UserLogins = Logins.Where(x => x.User == value.UserName && x.Time.AddDays(14) > DateTime.Now).ToList();
+                        UserLogins = Logins.Where(x => x.User == value.UserName && x.Time.AddDays(14) > DateTime.Now).ToList() ?? new();
                         OnPropertyChanged(nameof(UserLogins));
                     }
                     

@@ -44,6 +44,7 @@
   <ItemGroup>
     <None Remove="Resources\GIF\excellent.gif" />
     <None Remove="Resources\GIF\fireworks.gif" />
+    <None Remove="Resources\GIF\sylvester.gif" />
     <None Remove="Resources\LighthouseLogo_Mono.png" />
     <None Remove="Resources\Lighthouse_Mono_L_Embedded.png" />
     <None Remove="Resources\MiB_Logo_Stacked_Colour.jpg" />
@@ -93,6 +94,9 @@
     <Resource Include="Resources\GIF\fireworks.gif" />
     <Resource Include="Resources\GIF\moderate.gif" />
     <Resource Include="Resources\GIF\no.gif" />
+    <Resource Include="Resources\GIF\sylvester.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\GIF\travolta.gif" />
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

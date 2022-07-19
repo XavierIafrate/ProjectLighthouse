@@ -12,6 +12,8 @@ namespace ProjectLighthouse.Model
         public int TimeToComplete { get; set; }
         public DateTime StartDate { get; set; }
         public string AllocatedMachine { get; set; }
+        [Ignore]
+        public bool IsZeroSet { get; set; }
 
         public event Action EditMade;
         public void NotifyEditMade()

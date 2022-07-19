@@ -145,6 +145,7 @@ namespace ProjectLighthouse.Model
                 || ModifiedAt != OtherOrder.ModifiedAt
                 || SpareBars != OtherOrder.SpareBars
                 || IsResearch != OtherOrder.IsResearch
+                || ToolingGroup != OtherOrder.ToolingGroup
                 || BarID != OtherOrder.BarID;
         }
 

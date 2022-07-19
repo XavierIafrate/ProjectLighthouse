@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.Model;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -28,6 +29,8 @@ namespace ProjectLighthouse.View.UserControls
             control.DataContext = control.Day;
 
             control.DateText.Text = control.Day.Date.ToString("dddd d") + GetDaySuffix(control.Day.Date.Day);
+
+            control.Counter.Text = $"{control.Day.Orders.Where(x => !x.IsZeroSet).Count():0}x";
 
             if (control.Day.Orders.Count == 0)
             {

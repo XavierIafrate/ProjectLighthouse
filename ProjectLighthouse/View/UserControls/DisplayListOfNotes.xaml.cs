@@ -2,18 +2,8 @@
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -25,7 +15,6 @@ namespace ProjectLighthouse.View.UserControls
             set { SetValue(ShowingEditControlsProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ShowingEditControls.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ShowingEditControlsProperty =
             DependencyProperty.Register("ShowingEditControls", typeof(bool), typeof(DisplayListOfNotes), new PropertyMetadata(false, SetEditVis));
 
@@ -57,8 +46,8 @@ namespace ProjectLighthouse.View.UserControls
 
         public static List<Note> FormatListOfNotes(List<Note> notes, bool edit = false)
         {
-            if(notes == null) return null;
-            if(notes.Count == 0) return notes;
+            if (notes == null) return null;
+            if (notes.Count == 0) return notes;
 
             string name = "";
             DateTime lastTimeStamp = DateTime.MinValue;
@@ -74,7 +63,7 @@ namespace ProjectLighthouse.View.UserControls
 
                 if (i < notes.Count - 1)
                 {
-                    notes[i].SpaceUnder = notes[i].SentBy != notes[i+1].SentBy || DateTime.Parse(notes[i].DateSent).AddHours(6) < DateTime.Parse(notes[i+1].DateSent);
+                    notes[i].SpaceUnder = notes[i].SentBy != notes[i + 1].SentBy || DateTime.Parse(notes[i].DateSent).AddHours(6) < DateTime.Parse(notes[i + 1].DateSent);
                 }
                 lastTimeStamp = DateTime.Parse(notes[i].DateSent);
                 name = notes[i].SentBy;

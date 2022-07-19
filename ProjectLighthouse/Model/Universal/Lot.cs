@@ -33,6 +33,7 @@ namespace ProjectLighthouse.Model
         public DateTime ModifiedAt { get; set; }
         public string FromMachine { get; set; }
         public string Remarks { get; set; }
+        public bool AllowDelivery { get; set; }
 
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public Action<Lot> RequestToEdit { get; set; }

@@ -41,6 +41,9 @@ namespace ProjectLighthouse.Model
         public string AddedBy { get; set; }
         public DateTime AddedDate { get; set; }
 
+        public string SpecificationDocument { get; set; }
+        public string SpecificationDetails { get; set; }
+
         public bool Retired { get; set; }
 
         [Ignore]
@@ -121,6 +124,20 @@ namespace ProjectLighthouse.Model
                 otherProduct.ThreadSize == ThreadSize &&
                 otherProduct.ProductGroup == ProductGroup &&
                 otherProduct.Material == Material;
+        }
+
+        public bool DataIsComplete()
+        {
+            return MajorDiameter > 0
+                && MajorLength > 0
+                && !string.IsNullOrWhiteSpace(ProductName)
+                && !string.IsNullOrWhiteSpace(ProductGroup)
+                && !string.IsNullOrWhiteSpace(Material)
+                && !string.IsNullOrWhiteSpace(BarID)
+                && !string.IsNullOrWhiteSpace(ThreadSize)
+                && !string.IsNullOrWhiteSpace(DriveSize)
+                && !string.IsNullOrWhiteSpace(DriveType);
+
         }
 
         // For requests engine

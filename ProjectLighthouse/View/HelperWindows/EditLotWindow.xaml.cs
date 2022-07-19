@@ -37,12 +37,16 @@ namespace ProjectLighthouse.View
                 ? EditLot.Date 
                 : EditLot.DateProduced;
 
+            AllowDeliveryCheckbox.IsChecked = EditLot.AllowDelivery;
+            AllowDeliveryCheckbox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling;
+
             if (EditLot.IsDelivered)
             {
                 RejectCheckBox.IsEnabled = false;
                 AcceptCheckBox.IsEnabled = false;
                 QuantityTextBox.IsEnabled = false;
                 BatchTextBox.IsEnabled = false;
+                AllowDeliveryCheckbox.IsEnabled = false;
             }
         }
 
@@ -50,6 +54,7 @@ namespace ProjectLighthouse.View
         {
             EditLot.IsReject = (bool)RejectCheckBox.IsChecked;
             EditLot.IsAccepted = (bool)AcceptCheckBox.IsChecked;
+            EditLot.AllowDelivery = (bool)AllowDeliveryCheckbox.IsChecked;
             EditLot.Remarks = RemarksTextBox.Text.Trim();
 
             if (originalLot.Quantity == EditLot.Quantity &&
@@ -57,7 +62,8 @@ namespace ProjectLighthouse.View
                 originalLot.IsReject == EditLot.IsReject &&
                 originalLot.IsAccepted == EditLot.IsAccepted &&
                 originalLot.Remarks == EditLot.Remarks &&
-                originalLot.DateProduced == EditLot.DateProduced)
+                originalLot.DateProduced == EditLot.DateProduced &&
+                originalLot.AllowDelivery == EditLot.AllowDelivery)
             {
                 Close();
                 return;
@@ -123,6 +129,11 @@ namespace ProjectLighthouse.View
             {
                 EditLot.DateProduced = picker.SelectedDate.Value.AddHours(12);
             }
+        }
+
+        private void AllowDeliveryCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

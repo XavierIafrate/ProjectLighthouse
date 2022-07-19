@@ -195,7 +195,7 @@ namespace ProjectLighthouse.ViewModel
 
         private void SetAgenda()
         {
-            int numDays = 21;
+            int numDays = 30;
             Agenda = new();
             List<ScheduleItem> ordersOnAgenda = new();
             ordersOnAgenda.AddRange(ActiveOrders
@@ -203,6 +203,26 @@ namespace ProjectLighthouse.ViewModel
                 .ToList());
             ordersOnAgenda.AddRange(PlannedResearch);
             ordersOnAgenda.AddRange(PlannedServices);
+
+            ordersOnAgenda = ordersOnAgenda.OrderBy(x => x.StartDate).ToList();
+
+            string[] lathes = ordersOnAgenda.Where(x => !string.IsNullOrEmpty(x.AllocatedMachine)).Select(x => x.AllocatedMachine).ToArray();
+            for (int l = 0; l < lathes.Length; l++)
+            {
+                List<ScheduleItem> orders = ordersOnAgenda.Where(x => x is LatheManufactureOrder && x.AllocatedMachine == lathes[l]).ToList();
+                if (orders.Count < 2)
+                {
+                    continue;
+                }
+
+                LatheManufactureOrder lastOrder = orders[0] as LatheManufactureOrder;
+                for (int i = 1; i < orders.Count; i++)
+                {
+                    LatheManufactureOrder currentOrder = orders[i] as LatheManufactureOrder;
+                    ordersOnAgenda.Find(x => x.Id == currentOrder.Id).IsZeroSet = currentOrder.ToolingGroup == lastOrder.ToolingGroup;
+                    lastOrder = currentOrder;
+                }
+            }
 
             for (int i = 0; i < numDays; i++)
             {
