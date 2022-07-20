@@ -267,6 +267,7 @@ namespace ProjectLighthouse.ViewModel
         public RequestsToCSVCommand ExportCommand { get; set; }
         public MergeRequestToOrderCommand MergeCommand { get; set; }
         public ViewMakeOrBuyCommand ViewMakeOrBuyCommand { get; set; }
+        public UpdateRequestCommand UpdateRequestCmd { get; set; }
         public EditProductCommand ModifyProductCommand { get; set; }
 
         #endregion
@@ -283,6 +284,7 @@ namespace ProjectLighthouse.ViewModel
             MergeCommand = new(this);
             ViewMakeOrBuyCommand = new(this);
             ModifyProductCommand = new(this);
+            UpdateRequestCmd = new(this);
             Notes = new();
             Notes = DatabaseHelper.Read<Note>().ToList();
 
@@ -380,7 +382,7 @@ namespace ProjectLighthouse.ViewModel
                 : Visibility.Collapsed;
 
             ApprovalControlsVis = (App.CurrentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
-            EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy || App.CurrentUser.CanApproveRequests) && (!request.IsAccepted && !request.IsDeclined) 
+            EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy) && !request.IsAccepted && !request.IsDeclined
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
             DecisionVis = (request.IsDeclined || request.IsAccepted) ? Visibility.Collapsed : Visibility.Visible;
@@ -536,14 +538,21 @@ namespace ProjectLighthouse.ViewModel
 
             if (DatabaseHelper.Update(SelectedRequest))
             {
+                int id = SelectedRequest.Id;
                 new ToastContentBuilder()
                    .AddText($"Order {SelectedRequest.ResultingLMO} created.")
                    .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
                    .AddText("You have successfully approved this request.")
                    .Show();
                 FilterRequests(SelectedFilter);
-                OnPropertyChanged(nameof(SelectedRequest));
-                SelectedRequest = Requests.First();
+                foreach(Request request in FilteredRequests)
+                {
+                    if (request.Id == id)
+                    {
+                        SelectedRequest = request; 
+                        OnPropertyChanged(nameof(SelectedRequest));
+                    }
+                }
             }
             else
             {

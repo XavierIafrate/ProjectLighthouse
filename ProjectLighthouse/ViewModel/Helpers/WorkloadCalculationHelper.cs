@@ -12,7 +12,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             double secondsOfRuntime = 7 * 84600;
             DateTime lastItemFinished = DateTime.MinValue;
 
-            items = items.OrderBy(x => x.StartDate).ToList(); //otherwise bad things happen
+            items = items.OrderBy(x => x.StartDate).ToList();
 
             for (int i = 0; i < items.Count; i++)
             {

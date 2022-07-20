@@ -911,7 +911,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Green}" />
+                <Setter Property="Background" Value="{StaticResource GreenDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>

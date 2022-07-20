@@ -32,7 +32,7 @@
             <ListView x:Name="undeliveredList" HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,5" Grid.IsSharedSizeScope="True">
+                        <Grid Margin="10,5" Grid.IsSharedSizeScope="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" SharedSizeGroup="A" />
                                 <ColumnDefinition Width="auto" SharedSizeGroup="B" />
@@ -110,7 +110,7 @@
             <ListView x:Name="deliveryList" HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,5">
+                        <Grid Margin="10,5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="70" />
                                 <ColumnDefinition Width="auto" />
@@ -120,7 +120,7 @@
                             <TextBlock
                                 FontSize="16"
                                 FontWeight="Bold"
-                                Foreground="{StaticResource Blue}"
+                                Foreground="{StaticResource Purple}"
                                 Text="{Binding ItemManufactureOrderNumber}" />
                             <TextBlock
                                 Grid.Column="1"

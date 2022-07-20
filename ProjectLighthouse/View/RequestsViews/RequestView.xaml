@@ -84,10 +84,10 @@
                 Text="try changing the filter"
                 Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
-        <ScrollViewer Grid.RowSpan="2" Grid.Column="2">
+        <ScrollViewer x:Name="scroller" ScrollChanged="ScrollViewer_ScrollChanged" Grid.RowSpan="2" Grid.Column="2">
             <Grid
                 MaxWidth="700"
-                Margin="0,15,0,50"
+                Margin="0,20,0,50"
                 Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -449,8 +449,7 @@
                         </Grid>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="2" Margin="10">
-                        <Separator Margin="0,5" />
+                    <StackPanel Grid.Row="2" Margin="10" Visibility="{Binding EditControlsVis}">
                         <TextBlock
                             Margin="0,5"
                             Style="{StaticResource section}"
@@ -476,13 +475,28 @@
                         <Button
                             HorizontalAlignment="Right"
                             Content="Update"
+                            Command="{Binding UpdateRequestCmd}"
+                            CommandParameter="{Binding SelectedRequest}"
                             Style="{StaticResource BlueButton}" />
+                    </StackPanel>
                         <TextBlock Style="{StaticResource section}" Text="Comments" />
 
                         <uc:DisplayListOfNotes MinHeight="50" Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}" />
-                    </StackPanel>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
+        <Border Height="20"
+                VerticalAlignment="Top"
+            x:Name="grad"
+            Grid.Column="1"
+            CornerRadius="20,0,0,0"
+            IsHitTestVisible="False">
+            <Border.Background>
+                <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Gray" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
     </Grid>
 </UserControl>
