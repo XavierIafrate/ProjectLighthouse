@@ -86,7 +86,7 @@ namespace ProjectLighthouse.View.UserControls
                     int secondsToRequirement = (item.RequiredQuantity-item.QuantityDelivered) * item.GetCycleTime();
                     int diff = (int)(item.DateRequired.Date - startDate.Date.AddSeconds(secondsBudgeted)).TotalSeconds;
 
-                    if (item.DateRequired < DateTime.Now && item.RequiredQuantity > item.QuantityDelivered)
+                    if (item.DateRequired < DateTime.Today && item.RequiredQuantity > item.QuantityDelivered)
                     {
                         control.WarningBanner.Visibility = Visibility.Visible;
                         control.WarningText.Text = "The delivery target has been missed.";

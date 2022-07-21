@@ -264,8 +264,8 @@ namespace ProjectLighthouse.ViewModel
 
         public void Refresh(bool silent = false) // Check behaviour
         {
-            if (string.IsNullOrEmpty(SearchTerm))
-            {
+            //if (string.IsNullOrEmpty(SearchTerm))
+            //{
                 LoadData();
                 if (silent)
                 {
@@ -278,7 +278,9 @@ namespace ProjectLighthouse.ViewModel
                     FilterOrders(SelectedFilter);
                 }
                 OnPropertyChanged(nameof(FilteredOrders));
-            }
+            //}
+
+            if (!string.IsNullOrEmpty(SearchTerm)) Search();
 
             App.MainViewModel.LastDataRefresh = DateTime.Now;
 
@@ -386,8 +388,7 @@ namespace ProjectLighthouse.ViewModel
                 FilteredOrders.Add(orders[i]);
             }
 
-
-
+            if (FilteredOrders.Count > 0) SelectedOrder = FilteredOrders.First();
         }
 
         #endregion Loading
@@ -440,6 +441,8 @@ namespace ProjectLighthouse.ViewModel
 
             Results.AddRange(Orders.Where(x => FoundOrdersByItem.Contains(x.Name)));
 
+            Results = Results.OrderByDescending(x => x.ModifiedAt).ToList();
+
             FilteredOrders.Clear();
             for (int i = 0; i < Results.Count; i++)
             {
@@ -447,6 +450,7 @@ namespace ProjectLighthouse.ViewModel
             }
             //CardVis = FilteredOrders.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
             OnPropertyChanged(nameof(FilteredOrders));
+            if (FilteredOrders.Count > 0) SelectedOrder = FilteredOrders.First();
         }
 
         private void LoadOrderCard()

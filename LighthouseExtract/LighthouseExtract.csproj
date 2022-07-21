@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+	  <TargetFramework>net5.0-windows10.0.20348.0</TargetFramework>
     <StartupObject>LighthouseExtract.Program</StartupObject>
     <Platforms>AnyCPU;x64</Platforms>
     <PlatformTarget>x86</PlatformTarget>
