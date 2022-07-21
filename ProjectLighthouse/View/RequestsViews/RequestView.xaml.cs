@@ -18,5 +18,11 @@ namespace ProjectLighthouse.View
                 ? Visibility.Hidden
                 : Visibility.Visible;
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is not TextBox textBox) return;
+            SendButton.IsEnabled = !string.IsNullOrWhiteSpace(textBox.Text);
+        }
     }
 }

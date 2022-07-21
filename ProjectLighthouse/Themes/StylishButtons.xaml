@@ -809,6 +809,7 @@
         BasedOn="{StaticResource Default}"
         TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
+        <Setter Property="Background" Value="{StaticResource Surface}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -816,7 +817,7 @@
                         <Border
                             Width="30"
                             Height="26"
-                            Background="{StaticResource Surface}"
+                            Background="{TemplateBinding Background}"
                             CornerRadius="5" />
                         <Path
                             Width="20"

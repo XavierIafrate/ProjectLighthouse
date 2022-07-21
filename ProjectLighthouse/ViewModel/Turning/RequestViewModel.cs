@@ -28,6 +28,19 @@ namespace ProjectLighthouse.ViewModel
         public List<Note> FilteredNotes { get; set; }
         public List<Note> Notes { get; set; }
 
+        private string newMessage;
+
+        public string NewMessage
+        {
+            get { return newMessage; }
+            set 
+            { 
+                newMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private double targetRuntime;
 
         public double TargetRuntime
@@ -269,6 +282,7 @@ namespace ProjectLighthouse.ViewModel
         public ViewMakeOrBuyCommand ViewMakeOrBuyCommand { get; set; }
         public UpdateRequestCommand UpdateRequestCmd { get; set; }
         public EditProductCommand ModifyProductCommand { get; set; }
+        public SendMessageCommand SendMessageCommand { get; set; }
 
         #endregion
 
@@ -285,6 +299,7 @@ namespace ProjectLighthouse.ViewModel
             ViewMakeOrBuyCommand = new(this);
             ModifyProductCommand = new(this);
             UpdateRequestCmd = new(this);
+            SendMessageCommand = new(this);
             Notes = new();
             Notes = DatabaseHelper.Read<Note>().ToList();
 
@@ -519,7 +534,6 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
             
-
             SelectedRequest.MarkAsAccepted();
 
             User ToNotify = DatabaseHelper.Read<User>().Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
@@ -582,13 +596,9 @@ namespace ProjectLighthouse.ViewModel
             if (DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                Request tmp = (Request)SelectedRequest.Clone();
-                Task.Run(() => EmailHelper.NotifyRequestDeclined(tmp));
 
                 FilterRequests(SelectedFilter);
                 OnPropertyChanged("SelectedRequest");
-
-                SelectedRequestChanged?.Invoke(this, new EventArgs());
                 SelectedRequest = Requests.First();
             }
             else
@@ -637,6 +647,37 @@ namespace ProjectLighthouse.ViewModel
 
             OnPropertyChanged("FilteredRequests");
             OnPropertyChanged("SelectedFilter");
+        }
+
+        public void SendMessage()
+        {
+            Note newNote = new()
+            {
+                Message = NewMessage,
+                OriginalMessage = NewMessage,
+                DateSent = DateTime.Now.ToString("s"),
+                DocumentReference = $"r{SelectedRequest.Id:0}",
+                SentBy = App.CurrentUser.UserName,
+            };
+
+            _ = DatabaseHelper.Insert(newNote);
+
+            List<string> otherUsers = FilteredNotes.Select(x => x.SentBy).ToList();
+            otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.CanApproveRequests).Select(x => x.UserName));
+            otherUsers.Add(App.NotificationsManager.users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy).UserName);
+
+            otherUsers = otherUsers.Where(x => x != App.CurrentUser.UserName).Distinct().ToList();
+
+            for (int i = 0; i < otherUsers.Count; i++)
+            {
+                Notification newNotification = new(otherUsers[i], App.CurrentUser.UserName, $"Comment: Request #{SelectedRequest.Id:0}", $"{App.CurrentUser.FirstName} left a comment: {NewMessage}");
+                _ = DatabaseHelper.Insert(newNotification);
+            }
+
+            Notes.Add(newNote);
+            LoadRequestCard(SelectedRequest);
+
+            NewMessage = "";
         }
     }
 }

@@ -25,6 +25,7 @@
                     </StackPanel>
                     <Button
                         Margin="0"
+                        x:Name="actionButton"
                         HorizontalAlignment="Right"
                         Content="view"
                         Click="Button_Click"

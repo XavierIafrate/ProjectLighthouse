@@ -101,27 +101,16 @@
         <ScrollViewer
             Grid.RowSpan="3"
             Grid.Column="1"
+            CanContentScroll="True"
             Visibility="{Binding SelectedDrawingDisplayVis}">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock
-                    d:Text="PRODUCT_NAME"
-                    Style="{StaticResource title}"
-                    Text="{Binding SelectedGroup.Name}" />
 
-                <TextBlock Style="{StaticResource subtitle}" Grid.Row="1" Text="History" />
-                <ItemsControl Background="{StaticResource Background}" Grid.Row="2" ItemsSource="{Binding FilteredDrawings}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <userControls:DisplayDrawingRevision Drawing="{Binding Path=.}" MaxWidth="700"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
+            <ItemsControl Background="{StaticResource Background}" ItemsSource="{Binding FilteredDrawings}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <userControls:DisplayDrawingRevision MaxWidth="700" Drawing="{Binding Path=.}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
 
 

@@ -28,6 +28,7 @@ namespace ProjectLighthouse.View.UserControls
             control.SeenIndicator.Visibility = control.Notification.Seen
                 ? Visibility.Collapsed
                 : Visibility.Visible;
+            control.actionButton.IsEnabled = !string.IsNullOrEmpty(control.Notification.ToastAction);
         }
 
         public DisplayNotification()

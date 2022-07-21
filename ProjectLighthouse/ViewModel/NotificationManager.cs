@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
+using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -14,7 +15,7 @@ namespace ProjectLighthouse.ViewModel
     {
         public Timer DataRefreshTimer { get; set; }
         private List<Notification> myNotifications;
-
+        public List<User> users = new();
         public List<Notification> MyNotifications
         {
             get { return myNotifications; }
@@ -48,6 +49,7 @@ namespace ProjectLighthouse.ViewModel
             NotificationCount = myNotifications.Where(n => !n.Seen).Count();
             App.MainViewModel.Notifications = MyNotifications.Where(n => n.TimeStamp.AddDays(7) > DateTime.Now && n.Seen).OrderByDescending(x => x.TimeStamp).ToList();
             App.MainViewModel.NotCount = 0;
+            users = DatabaseHelper.Read<User>().ToList();
         }
 
         private void CreateTimer()
@@ -61,14 +63,14 @@ namespace ProjectLighthouse.ViewModel
 
         private void Timer_Tick(object sender, ElapsedEventArgs e)
         {
-            CheckForNotifications();
+            CheckForNotifications(false);
         }
 
-        private void CheckForNotifications()
+        public void CheckForNotifications(bool multiToast)
         {
             List<Notification> nots = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName).ToList();
 
-            int numNewNots = nots.Where(n => !MyNotifications.Contains(n)).Count();
+            int numNewNots = nots.Where(n => !n.Seen).Count();
 
             for (int i = 0; i < nots.Count; i++)
             {
@@ -82,7 +84,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
 
-            if (numNewNots > 3)
+            if (numNewNots > 3 && multiToast)
             {
                 string header = $"{numNewNots:0} new notification" + ((numNewNots == 1) ? "" : "s");
                 new ToastContentBuilder()
@@ -134,7 +136,7 @@ namespace ProjectLighthouse.ViewModel
                 }
             }
 
-            CheckForNotifications();
+            CheckForNotifications(false);
         }
 
         public int? ParseToastArgs(string rawArgs)
@@ -212,7 +214,7 @@ namespace ProjectLighthouse.ViewModel
             notification.Seen = true;
             notification.SeenTimeStamp = DateTime.Now;
             DatabaseHelper.Update(notification);
-            CheckForNotifications();
+            CheckForNotifications(false);
         }
 
 
