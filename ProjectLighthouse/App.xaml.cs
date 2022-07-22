@@ -46,7 +46,7 @@ namespace ProjectLighthouse
             EnsureAppData();
 
             DevMode = Debugger.IsAttached;
-            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
+            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB.db3";
 
             string workstation = String.Empty;
             try

@@ -1,16 +1,54 @@
-﻿<Window x:Class="ProjectLighthouse.View.HelperWindows.RaiseSpecialRequest"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ProjectLighthouse.View.HelperWindows"
-        mc:Ignorable="d"
-        Title="Special Request" Height="450" Width="800">
-    <StackPanel>
-        <TextBlock Text="Please do not use this window to add items listed in the catalogue!"/>
-        <TextBox Style="{StaticResource DefaultTextBox}" Tag="Product Name"/>
-        <Button Content="Choose File"/>
-        <TextBox Style="{StaticResource DefaultTextBox}" Tag="Specifications"/>
+﻿<Window
+    x:Class="ProjectLighthouse.View.HelperWindows.RaiseSpecialRequest"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.HelperWindows"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    Title="Special Request"
+    Width="415"
+    Height="450"
+    mc:Ignorable="d">
+    <StackPanel Margin="20">
+        <TextBlock Style="{StaticResource title}" Text="Add Bespoke Product" />
+        <Grid Margin="10">
+            <Border
+                Background="{StaticResource Red}"
+                CornerRadius="3"
+                Opacity="0.15" />
+            <Border
+                BorderBrush="{StaticResource Red}"
+                BorderThickness="3,0,0,0"
+                CornerRadius="3">
+                <TextBlock
+                    Margin="10,5"
+                    FontWeight="Bold"
+                    Foreground="{StaticResource Red}"
+                    Text="This function is for non-standard items only- please do not add items listed in the catalogue!"
+                    TextWrapping="Wrap" />
+            </Border>
+        </Grid>
 
+        <TextBlock
+            FontStyle="Italic"
+            Foreground="{StaticResource Blue}"
+            Text="Provide a product name and either a drawing or a note explaining the specification. After submitting a request someone with authorisation will fill in the product data."
+            TextWrapping="Wrap" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Product Name"
+            Text="{Binding NewProduct.ProductName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <uc:FilePicker FilePath="{Binding NewProduct.SpecificationDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Specifications"
+            Text="{Binding NewProduct.SpecificationDetails, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Button
+            HorizontalAlignment="Right"
+            Content="Add Product"
+            Style="{StaticResource BlueButton}" />
     </StackPanel>
 </Window>

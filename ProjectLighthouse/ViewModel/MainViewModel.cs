@@ -97,7 +97,18 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public bool NoNotifications { get; set; }
+        private bool noNotifications;
+
+        public bool NoNotifications
+        {
+            get { return noNotifications; }
+            set 
+            { 
+                noNotifications = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private List<Notification> nots;
 
@@ -107,8 +118,6 @@ namespace ProjectLighthouse.ViewModel
             set 
             { 
                 nots = value;
-                NoNotifications = nots.Count == 0;
-                OnPropertyChanged(nameof(NoNotifications));
                 OnPropertyChanged();
             }
         }

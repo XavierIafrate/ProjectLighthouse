@@ -11,22 +11,22 @@
     mc:Ignorable="d">
     <Grid Margin="10,0" VerticalAlignment="Center">
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="markerRow"/>
-            <RowDefinition x:Name="progressBarRow"/>
+            <RowDefinition x:Name="markerRow" />
+            <RowDefinition x:Name="progressBarRow" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid x:Name="sliderGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2.5" />
-                <ColumnDefinition Width="*" x:Name="lCol" />
+                <ColumnDefinition x:Name="lCol" Width="*" />
                 <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" x:Name="rCol" />
+                <ColumnDefinition x:Name="rCol" Width="*" />
                 <ColumnDefinition Width="2.5" />
             </Grid.ColumnDefinitions>
             <Path
                 x:Name="targetMarker"
-                Width="10"
                 Grid.Column="2"
+                Width="10"
                 Height="12"
                 Data="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z"
                 Fill="{StaticResource Red}"
@@ -48,9 +48,22 @@
             Margin="5,0"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
-            <TextBlock Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} / '}" d:Text="99,999 / " Foreground="{StaticResource Orange}" x:Name="made" FontWeight="SemiBold" />
-            <TextBlock Text="{Binding QuantityDelivered, StringFormat='{}{0:#,##0} / '}" d:Text="99,999 / " x:Name="delivered" FontWeight="SemiBold" />
-            <TextBlock Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" FontWeight="SemiBold" d:Text="99,999 pcs" Opacity="0.6" />
+            <TextBlock
+                x:Name="made"
+                d:Text="99,999 / "
+                FontWeight="SemiBold"
+                Foreground="{StaticResource Orange}"
+                Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} / '}" />
+            <TextBlock
+                x:Name="delivered"
+                d:Text="99,999 / "
+                FontWeight="SemiBold"
+                Text="{Binding QuantityDelivered, StringFormat='{}{0:#,##0} / '}" />
+            <TextBlock
+                d:Text="99,999 pcs"
+                FontWeight="SemiBold"
+                Opacity="0.6"
+                Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" />
         </StackPanel>
     </Grid>
 </UserControl>

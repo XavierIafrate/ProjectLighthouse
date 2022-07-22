@@ -126,7 +126,7 @@ namespace ProjectLighthouse.View.UserControls
             EditBox.Visibility = Visibility.Collapsed;
             EditBox.IsEnabled = false;
 
-            if (MessageTextBlock.Text != Note.Message)
+            if (MessageTextBlock.Text != Note.OriginalMessage)
             {
                 MessageTextBlock.Text = Note.Message;
                 Note.DateEdited = DateTime.Now.ToString("s");

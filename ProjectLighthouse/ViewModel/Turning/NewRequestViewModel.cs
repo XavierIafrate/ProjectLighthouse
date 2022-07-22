@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -231,6 +232,12 @@ namespace ProjectLighthouse.ViewModel
             }
 
             OnPropertyChanged(nameof(NoSearchResults));
+        }
+
+        public void AddSpecialRequest()
+        {
+            RaiseSpecialRequest window = new();
+            window.ShowDialog();
         }
 
         public bool SubmitRequest()

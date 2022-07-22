@@ -592,7 +592,7 @@ namespace ProjectLighthouse.ViewModel
         public void EditLMO()
         {
             DataRefreshTimer.Enabled = false;
-            string order = SelectedOrder.Name;
+            //string order = SelectedOrder.Name;
             bool editable = true;
             if (SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)
             {
@@ -608,14 +608,14 @@ namespace ProjectLighthouse.ViewModel
             };
             editWindow.ShowDialog();
 
-            Refresh(silent: false);
-            for (int i = 0; i < FilteredOrders.Count; i++)
-            {
-                if (FilteredOrders[i].Name == order)
-                {
-                    SelectedOrder = FilteredOrders[i];
-                }
-            }
+            Refresh(silent: true);
+            //for (int i = 0; i < FilteredOrders.Count; i++)
+            //{
+            //    if (FilteredOrders[i].Name == order)
+            //    {
+            //        SelectedOrder = FilteredOrders[i];
+            //    }
+            //}
 
             DataRefreshTimer.Enabled = true;
         }

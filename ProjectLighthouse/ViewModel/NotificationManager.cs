@@ -97,6 +97,7 @@ namespace ProjectLighthouse.ViewModel
 
             NotificationCount = myNotifications.Where(not => !not.Seen).Count();
             App.MainViewModel.NotCount = NotificationCount;
+            App.MainViewModel.NoNotifications = App.MainViewModel.NotCount == 0;
             App.MainViewModel.Notifications = MyNotifications.Where(not => not.TimeStamp.AddDays(7) > DateTime.Now).OrderByDescending(x => x.TimeStamp).ToList();
         }
 

@@ -397,7 +397,7 @@ namespace ProjectLighthouse.ViewModel
                 : Visibility.Collapsed;
 
             ApprovalControlsVis = (App.CurrentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
-            EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy) && !request.IsAccepted && !request.IsDeclined
+            EditControlsVis = (App.CurrentUser.GetFullName() != request.RaisedBy) && !request.IsAccepted && !request.IsDeclined
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
             DecisionVis = (request.IsDeclined || request.IsAccepted) ? Visibility.Collapsed : Visibility.Visible;

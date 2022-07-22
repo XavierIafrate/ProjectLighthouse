@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +21,22 @@ namespace ProjectLighthouse.View.HelperWindows
     /// </summary>
     public partial class RaiseSpecialRequest : Window
     {
+        public TurnedProduct NewProduct { get; set; }
+        public bool productAdded = false;
         public RaiseSpecialRequest()
         {
             InitializeComponent();
+        }
+
+        public void Submit()
+        {
+            _ = DatabaseHelper.Insert<TurnedProduct>(NewProduct);
+            productAdded = true;
+        }
+
+        private void chooseSpecButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

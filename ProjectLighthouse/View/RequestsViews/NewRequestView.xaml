@@ -161,7 +161,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Content="Add Special Item"
-                    IsEnabled="False"
+                    Command="{Binding AddSpecialCommand}"
                     Style="{StaticResource SubtleButtonTemplate}" />
             </StackPanel>
 
