@@ -40,14 +40,16 @@
             Tag="Product Name"
             Text="{Binding NewProduct.ProductName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <uc:FilePicker FilePath="{Binding NewProduct.SpecificationDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        
-        <TextBox
+        <uc:FilePicker FilePath="{Binding NewProduct.SpecificationDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <!--<TextBox
             Style="{StaticResource DefaultTextBox}"
             Tag="Specifications"
-            Text="{Binding NewProduct.SpecificationDetails, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            Text="{Binding NewProduct.SpecificationDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
         <Button
+            x:Name="SubmitButton"
             HorizontalAlignment="Right"
+            Click="SubmitButton_Click"
             Content="Add Product"
             Style="{StaticResource BlueButton}" />
     </StackPanel>

@@ -12,7 +12,12 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
         <TextBlock Text="No File Selected" x:Name="fileNameText" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBlock Text="{Binding Path=FilePath, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='fallback'}" Grid.Row="1" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <Button Content="Choose File" Grid.Column="1" x:Name="SelectFileButton" Click="SelectFileButton_Click"/>
             
         </Grid>

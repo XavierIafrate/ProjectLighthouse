@@ -26,6 +26,7 @@ namespace ProjectLighthouse.View.HelperWindows
         public RaiseSpecialRequest()
         {
             InitializeComponent();
+            NewProduct = new();
         }
 
         public void Submit()
@@ -34,9 +35,10 @@ namespace ProjectLighthouse.View.HelperWindows
             productAdded = true;
         }
 
-        private void chooseSpecButton_Click(object sender, RoutedEventArgs e)
-        {
 
+        private void SubmitButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show($"drawing: {NewProduct.SpecificationDocument}");
         }
     }
 }

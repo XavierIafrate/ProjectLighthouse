@@ -1,12 +1,14 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    public partial class FilePicker : UserControl
+    public partial class FilePicker : UserControl, INotifyPropertyChanged
     {
 
 
@@ -25,12 +27,19 @@ namespace ProjectLighthouse.View.UserControls
         public string FilePath
         {
             get { return (string)GetValue(FilePathProperty); }
-            set { SetValue(FilePathProperty, value); }
+            set { SetValue(FilePathProperty, value); OnPropertyChanged(); }
         }
 
         // Using a DependencyProperty as the backing store for FilePath.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FilePathProperty =
-            DependencyProperty.Register("FilePath", typeof(string), typeof(FilePicker), new PropertyMetadata(null, SetValues));
+            DependencyProperty.Register("FilePath", typeof(string), typeof(FilePicker), new PropertyMetadata("", SetValues));
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new(prop));
+        }
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
