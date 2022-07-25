@@ -156,11 +156,11 @@
                     Margin="0,0,0,4"
                     VerticalAlignment="Center"
                     Style="{StaticResource annotation}"
-                    Text="Got a special request?" />
+                    Text="Need something else?" />
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Content="Add Special Item"
+                    Content="Add Bespoke Item"
                     Command="{Binding AddSpecialCommand}"
                     Style="{StaticResource SubtleButtonTemplate}" />
             </StackPanel>
@@ -412,7 +412,14 @@
                 Content="Submit"
                 IsEnabled="False" />
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="2">
+        <Border Background="{StaticResource Surface}" Margin="10" CornerRadius="10" Grid.Column="2" Grid.Row="1">
+            <StackPanel VerticalAlignment="Center">
+                <Image Source="/Resources/LighthouseLogo_Mono.png" RenderOptions.BitmapScalingMode="HighQuality" Width="200" Margin="0,0,0,10"/>
+                <TextBlock Text="Request Analytics" HorizontalAlignment="Center" Style="{StaticResource subtitle}" Foreground="{StaticResource Teal}"/>
+                <TextBlock Text="Coming soon"  HorizontalAlignment="Center" Style="{StaticResource subsubtitle}" Opacity="0.6" Foreground="{StaticResource Teal}"/>
+            </StackPanel>
+        </Border>
+        <!--<StackPanel Grid.Row="1" Grid.Column="2">
             <TextBlock
                 FontSize="25"
                 Style="{StaticResource subtitle}"
@@ -451,6 +458,6 @@
             </StackPanel>
             <TextBlock Text="And here's how we would cost that:" />
 
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </UserControl>

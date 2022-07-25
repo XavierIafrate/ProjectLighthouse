@@ -33,6 +33,7 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBox
+                Visibility="Collapsed"
                 x:Name="searchBox"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="Search..."
@@ -42,6 +43,7 @@
             <Button
                 x:Name="ClearButton"
                 Grid.Column="1"
+                Visibility="Collapsed"
                 Click="ClearButton_Click"
                 IsEnabled="False"
                 Style="{StaticResource ClearButton}" />
@@ -98,20 +100,19 @@
             Foreground="{StaticResource DisabledElement}"
             Text="None found"
             Visibility="{Binding NoneFoundVis}" />
-        <ScrollViewer
+        <!--<ListBox
             Grid.RowSpan="3"
             Grid.Column="1"
-            CanContentScroll="True"
-            Visibility="{Binding SelectedDrawingDisplayVis}">
+            Visibility="{Binding SelectedDrawingDisplayVis}">-->
 
-            <ItemsControl Background="{StaticResource Background}" ItemsSource="{Binding FilteredDrawings}">
-                <ItemsControl.ItemTemplate>
+            <ListView Grid.Column="1" Grid.RowSpan="3" Background="{StaticResource Background}" ItemsSource="{Binding FilteredDrawings}">
+            <ListView.ItemTemplate>
                     <DataTemplate>
-                        <userControls:DisplayDrawingRevision MaxWidth="700" Drawing="{Binding Path=.}" />
+                        <userControls:DisplayDrawingRevision MaxWidth="700" Drawing="{Binding Path=.}" BorderThickness="0"/>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                </ListView.ItemTemplate>
+            </ListView>
+        <!--</ListBox>-->
 
 
     </Grid>

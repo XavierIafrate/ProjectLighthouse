@@ -24,7 +24,7 @@
                 x:Name="filename"
                 VerticalAlignment="Center"
                 FontSize="18"
-                Text="Path" />
+                Text="FILE_PATH" />
 
             <Button
                 x:Name="openButton"

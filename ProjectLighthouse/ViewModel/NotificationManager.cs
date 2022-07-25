@@ -46,9 +46,9 @@ namespace ProjectLighthouse.ViewModel
         {
             if (App.CurrentUser is null) return;
             MyNotifications = DatabaseHelper.Read<Notification>().Where(n => n.TargetUser == App.CurrentUser.UserName && n.Seen).ToList();
-            NotificationCount = myNotifications.Where(n => !n.Seen).Count();
+            NotificationCount = MyNotifications.Where(n => !n.Seen).Count();
             App.MainViewModel.Notifications = MyNotifications.Where(n => n.TimeStamp.AddDays(7) > DateTime.Now && n.Seen).OrderByDescending(x => x.TimeStamp).ToList();
-            App.MainViewModel.NotCount = 0;
+            App.MainViewModel.NotCount = NotificationCount;
             users = DatabaseHelper.Read<User>().ToList();
         }
 
@@ -97,7 +97,8 @@ namespace ProjectLighthouse.ViewModel
 
             NotificationCount = myNotifications.Where(not => !not.Seen).Count();
             App.MainViewModel.NotCount = NotificationCount;
-            App.MainViewModel.NoNotifications = App.MainViewModel.NotCount == 0;
+            App.MainViewModel.NoNotifications = App.MainViewModel.Notifications.Count == 0;
+            App.MainViewModel.NoNewNotifications = App.MainViewModel.NotCount == 0;
             App.MainViewModel.Notifications = MyNotifications.Where(not => not.TimeStamp.AddDays(7) > DateTime.Now).OrderByDescending(x => x.TimeStamp).ToList();
         }
 

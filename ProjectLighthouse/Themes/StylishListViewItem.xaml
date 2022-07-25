@@ -2,7 +2,7 @@
     <Style x:Key="Default" TargetType="ListViewItem">
         <Setter Property="Background" Value="{StaticResource Background}" />
         <Setter Property="Margin" Value="2" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderThickness" Value="2" />
         <Setter Property="BorderBrush" Value="#f0f0f0" />
         <Setter Property="Template">
             <Setter.Value>

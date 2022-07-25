@@ -270,6 +270,19 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        private Visibility completeProductVis;
+
+        public Visibility CompleteProductVis
+        {
+            get { return completeProductVis; }
+            set 
+            { 
+                completeProductVis = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         public event EventHandler SelectedRequestChanged;
@@ -384,6 +397,16 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
 
+            if (request.Product == null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(SelectedRequest.Product))
+            {
+                SelectedRequestProduct = Products.Find(x => x.ProductName == SelectedRequest.Product);
+            }
+
             CleaningVis = request.CleanCustomerRequirement
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -396,10 +419,15 @@ namespace ProjectLighthouse.ViewModel
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            ApprovalControlsVis = (App.CurrentUser.CanApproveRequests && request.Status == "Pending approval") ? Visibility.Visible : Visibility.Collapsed;
-            EditControlsVis = (App.CurrentUser.GetFullName() != request.RaisedBy) && !request.IsAccepted && !request.IsDeclined
+            ApprovalControlsVis = App.CurrentUser.CanApproveRequests && request.Status == "Pending approval" && SelectedRequestProduct.DataIsComplete() ? Visibility.Visible : Visibility.Collapsed;
+            EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy) && !request.IsAccepted && !request.IsDeclined
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
+
+            CompleteProductVis = !SelectedRequestProduct.DataIsComplete() && !request.IsDeclined && !request.IsAccepted
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
             DecisionVis = (request.IsDeclined || request.IsAccepted) ? Visibility.Collapsed : Visibility.Visible;
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
             DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
@@ -410,12 +438,6 @@ namespace ProjectLighthouse.ViewModel
                 && App.CurrentUser.CanApproveRequests;
 
             PurchaseRef = !string.IsNullOrEmpty(request.POReference) ? request.POReference : "POR";
-
-
-            if (!string.IsNullOrEmpty(SelectedRequest.Product))
-            {
-                SelectedRequestProduct = Products.Find(x => x.ProductName == SelectedRequest.Product);
-            }
 
             if (request.Product != null)
             {

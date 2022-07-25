@@ -238,6 +238,12 @@ namespace ProjectLighthouse.ViewModel
         {
             RaiseSpecialRequest window = new();
             window.ShowDialog();
+
+            if (window.productAdded)
+            {
+                TurnedProducts.Add(window.NewProduct);
+                SearchTerm = window.NewProduct.ProductName;
+            }
         }
 
         public bool SubmitRequest()

@@ -83,6 +83,10 @@
             <DataTemplate DataType="{x:Type vms:LatheViewModel}">
                 <views:LatheView />
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vms:QualityCheckViewModel}">
+                <views:QualityCheckView />
+            </DataTemplate>
             <!--#endregion-->
 
         </ResourceDictionary>

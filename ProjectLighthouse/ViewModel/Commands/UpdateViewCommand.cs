@@ -72,6 +72,13 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new CalibrationViewModel();
                 viewModel.NavText = "Calibration";
             }
+            else if (parameter.ToString() == "Quality Check")
+            {
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new QualityCheckViewModel();
+                viewModel.NavText = "Quality Checking";
+            }
             else if (parameter.ToString() == "Deliveries")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;

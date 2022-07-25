@@ -144,6 +144,12 @@
 
                     <StackPanel Margin="0,20">
                         <ToggleButton
+                            x:Name="qc_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Quality Check"
+                            Content="Quality Check"
+                            Style="{StaticResource QualityCheck_MenuItem}" />
+                        <ToggleButton
                             x:Name="deliveries_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Deliveries"
@@ -158,6 +164,7 @@
                             CommandParameter="Calibration"
                             Content="Calibration"
                             Style="{StaticResource Calibration_MenuItem}" />
+                        
                         <ToggleButton
                             x:Name="analytics_button"
                             Command="{Binding UpdateViewCommand}"
@@ -193,7 +200,7 @@
                 Grid.Row="2"
                 Command="{Binding ToggleShowNotsCommand}"
                 Style="{StaticResource NotificationsMainButton}"
-                Visibility="{Binding NoNotifications, Converter={StaticResource hideIfTrue}}">
+                Visibility="{Binding NoNewNotifications, Converter={StaticResource hideIfTrue}}">
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Path
                         Height="13"
@@ -211,7 +218,7 @@
                 Grid.Row="3"
                 Command="{Binding ToggleShowNotsCommand}"
                 Style="{StaticResource NoNotificationsMainButton}"
-                Visibility="{Binding NoNotifications, Converter={StaticResource showIfTrue}}">
+                Visibility="{Binding NoNewNotifications, Converter={StaticResource showIfTrue}}">
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Path
                         Height="15"

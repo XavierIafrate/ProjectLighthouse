@@ -6,20 +6,33 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.HelperWindows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Modify Product Record"
-    Width="800"
-    Height="450"
+    Width="420"
+    SizeToContent="Height"
     mc:Ignorable="d">
-    <StackPanel>
-        <TextBlock Text="{Binding Product.ProductName}" />
-        <TextBox Text="{Binding Product.MajorDiameter}" />
-        <TextBox Text="{Binding Product.MajorLength}" />
+    <StackPanel Margin="10">
+        <TextBlock Text="{Binding Product.ProductName, StringFormat='{}Editing: {0}'}" d:Text="Editing: P0123.456-789-A2" Margin="0,0,0,10" Style="{StaticResource subtitle}" />
+        
+        <TextBlock Text="Major Diameter"/>
+        <TextBox x:Name="MajorDiameterTextBox" TextChanged="TextBox_TextChanged" />
+
+        <TextBlock Text="Major Length"/>
+        <TextBox x:Name="MajorLengthTextBox" TextChanged="TextBox_TextChanged" />
+        
+        <TextBlock Text="Tooling Group"/>
         <TextBox Text="{Binding Product.ProductGroup}" />
+        <TextBlock Text="Material"/>
         <TextBox Text="{Binding Product.Material}" />
-        <ComboBox ItemsSource="{Binding BarStock}" Text="{Binding Product.BarID}" />
+        <TextBlock Text="Bar ID"/> 
+        <ComboBox ItemsSource="{Binding BarStock}" Text="{Binding Product.BarID}" Margin="5" />
+        <TextBlock Text="Thread Size"/>
         <TextBox Text="{Binding Product.ThreadSize}" />
+        <TextBlock Text="Drive Type"/>
         <TextBox Text="{Binding Product.DriveType}" />
-        <TextBox Text="{Binding Product.DriveSize}" />
+        <TextBlock Text="Drive Size"/>
+        <TextBox Text="{Binding Product.DriveSize}"/>
+        <TextBlock Text="Customer Reference"/>
         <TextBox Text="{Binding Product.CustomerRef}" />
-        <CheckBox Content="Bespoke Item" IsChecked="{Binding Product.isSpecialPart}" />
+        <CheckBox Content="Product is a bespoke item" IsChecked="{Binding Product.isSpecialPart}" Margin="10,5" />
+        <Button Content="Save" Name="SaveButton" Click="SaveButton_Click" Style="{StaticResource GreenButton}" HorizontalAlignment="Right"/>
     </StackPanel>
 </Window>

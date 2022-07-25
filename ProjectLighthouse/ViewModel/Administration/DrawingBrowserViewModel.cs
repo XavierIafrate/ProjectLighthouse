@@ -141,6 +141,8 @@ namespace ProjectLighthouse.ViewModel
             else
             {
                 searchString = searchString.Trim().ToUpperInvariant();
+                
+
                 for (int i = 0; i < Drawings.Count; i++)
                 {
                     if (Drawings[i].DrawingName.ToUpperInvariant().Contains(searchString))
@@ -166,11 +168,6 @@ namespace ProjectLighthouse.ViewModel
             {
                 SelectedDrawingDisplayVis = Visibility.Visible;
                 NoneFoundVis = Visibility.Hidden;
-
-                //if (SelectedDrawing == null)
-                //{
-                //    SelectedDrawing = FilteredDrawings[0];
-                //}
             }
 
             OnPropertyChanged(nameof(SelectedDrawingDisplayVis));

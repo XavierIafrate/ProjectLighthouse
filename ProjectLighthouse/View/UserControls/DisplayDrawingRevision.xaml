@@ -318,6 +318,7 @@
                         HorizontalAlignment="Left"
                         Click="SendButton_Click"
                         IsEnabled="False"
+                        Background="{StaticResource Surface}"
                         Style="{StaticResource SendButton}" />
                 </Grid>
 

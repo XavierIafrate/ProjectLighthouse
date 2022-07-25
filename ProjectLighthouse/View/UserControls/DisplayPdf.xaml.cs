@@ -18,30 +18,30 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is DisplayPdf control)
+            if (d is not DisplayPdf control) return;
+
+            if (string.IsNullOrEmpty(control.FilePath))
             {
-                if (string.IsNullOrEmpty(control.FilePath))
-                {
-                    control.filename.Text = "<null>";
-                    control.openButton.IsEnabled = false;
-                    return;
-                }
+                control.filename.Text = "none";
+                control.openButton.IsEnabled = false;
+                return;
+            }
 
-                string filePath = Path.Join(App.ROOT_PATH, control.FilePath);
+            string filePath = Path.Join(App.ROOT_PATH, control.FilePath);
 
-                if (!File.Exists(filePath))
-                {
-                    
-                    control.filename.Text = Path.GetFileName(filePath) + " (not found)";
-                    control.openButton.IsEnabled = false;
-                }
-                else
-                {
-                    control.filename.Text = Path.GetFileName(filePath);
-                    control.openButton.IsEnabled = true;
-                }
+            if (!File.Exists(filePath))
+            {
+
+                control.filename.Text = Path.GetFileName(filePath) + " (not found)";
+                control.openButton.IsEnabled = false;
+            }
+            else
+            {
+                control.filename.Text = Path.GetFileName(filePath);
+                control.openButton.IsEnabled = true;
             }
         }
+
 
         public DisplayPdf()
         {

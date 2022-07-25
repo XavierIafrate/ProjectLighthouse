@@ -97,13 +97,25 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private bool noNewNotifications;
+
+        public bool NoNewNotifications
+        {
+            get { return noNewNotifications; }
+            set 
+            {
+                noNewNotifications = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool noNotifications;
 
         public bool NoNotifications
         {
             get { return noNotifications; }
-            set 
-            { 
+            set
+            {
                 noNotifications = value;
                 OnPropertyChanged();
             }

@@ -1,24 +1,10 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.HelperWindows
 {
-    /// <summary>
-    /// Interaction logic for RaiseSpecialRequest.xaml
-    /// </summary>
     public partial class RaiseSpecialRequest : Window
     {
         public TurnedProduct NewProduct { get; set; }
@@ -26,19 +12,59 @@ namespace ProjectLighthouse.View.HelperWindows
         public RaiseSpecialRequest()
         {
             InitializeComponent();
-            NewProduct = new();
-        }
-
-        public void Submit()
-        {
-            _ = DatabaseHelper.Insert<TurnedProduct>(NewProduct);
-            productAdded = true;
+            NewProduct = new() { isSpecialPart = true };
         }
 
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"drawing: {NewProduct.SpecificationDocument}");
+            if (string.IsNullOrWhiteSpace(productName.Text))
+            {
+                MessageBox.Show("Product needs a name.", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
+                return;
+            }
+            else
+            {
+                NewProduct.ProductName = productName.Text.Trim();
+            }
+
+            if (string.IsNullOrWhiteSpace(specDetails.Text) && string.IsNullOrEmpty(specDocument.FilePath))
+            {
+                MessageBox.Show("You need to provide a specification by one of the given methods.", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
+                return;
+            }
+
+
+            if (!string.IsNullOrEmpty(specDocument.FilePath))
+            {
+                string newPath = $@"{App.ROOT_PATH}lib\{System.IO.Path.GetFileName(specDocument.FilePath)}";
+                try
+                {
+                    System.IO.File.Copy(specDocument.FilePath, newPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
+                    return;
+                }
+                NewProduct.SpecificationDocument = $@"lib\{System.IO.Path.GetFileName(specDocument.FilePath)}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(specDetails.Text))
+            {
+                NewProduct.SpecificationDetails = specDetails.Text.Trim();
+            }
+
+            if (DatabaseHelper.Insert<TurnedProduct>(NewProduct))
+            {
+                MessageBox.Show($"Successfully added {NewProduct.ProductName} to database, you can now raise a request.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                productAdded = true;
+                Close();
+            }
+            else
+            {
+                MessageBox.Show($"Something bad happened, please notify an administrator.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

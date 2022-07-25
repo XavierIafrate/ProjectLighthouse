@@ -62,7 +62,7 @@ namespace ProjectLighthouse.View.UserControls
         {
             OpenFileDialog openFileDialog = new()
             {
-                Filter = "PDF Files (*.pdf)|*.pdf"
+                Filter = AllowedFileTypes
             };
 
             string openDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);

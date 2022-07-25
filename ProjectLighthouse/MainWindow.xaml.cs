@@ -80,6 +80,8 @@ namespace ProjectLighthouse
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
+            qc_button.Visibility = manage_lathes_button.Visibility;
+
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.UserRole;
         }

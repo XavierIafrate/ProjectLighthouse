@@ -7,24 +7,24 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Special Request"
-    Width="415"
-    Height="450"
+    Width="500"
+    SizeToContent="Height"
     mc:Ignorable="d">
     <StackPanel Margin="20">
         <TextBlock Style="{StaticResource title}" Text="Add Bespoke Product" />
         <Grid Margin="10">
             <Border
-                Background="{StaticResource Red}"
+                Background="{StaticResource Orange}"
                 CornerRadius="3"
                 Opacity="0.15" />
             <Border
-                BorderBrush="{StaticResource Red}"
+                BorderBrush="{StaticResource Orange}"
                 BorderThickness="3,0,0,0"
                 CornerRadius="3">
                 <TextBlock
                     Margin="10,5"
-                    FontWeight="Bold"
-                    Foreground="{StaticResource Red}"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Orange}"
                     Text="This function is for non-standard items only- please do not add items listed in the catalogue!"
                     TextWrapping="Wrap" />
             </Border>
@@ -36,16 +36,18 @@
             Text="Provide a product name and either a drawing or a note explaining the specification. After submitting a request someone with authorisation will fill in the product data."
             TextWrapping="Wrap" />
         <TextBox
+            Margin="5,10"
             Style="{StaticResource DefaultTextBox}"
             Tag="Product Name"
-            Text="{Binding NewProduct.ProductName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            x:Name="productName" />
+        <TextBlock Text="Technical Specification" Style="{StaticResource section}"/>
+        <TextBlock Text="PDF, jpg, or png accepted." Style="{StaticResource annotation}"/>
+        <uc:FilePicker x:Name="specDocument" AllowedFileTypes="PDF Files(*.pdf) | *.pdf|JPG(*.jpg) | *.jpg|PNG Files(*.png) | *.png" />
 
-        <uc:FilePicker FilePath="{Binding NewProduct.SpecificationDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-        <!--<TextBox
+        <TextBox
             Style="{StaticResource DefaultTextBox}"
-            Tag="Specifications"
-            Text="{Binding NewProduct.SpecificationDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
+            Tag="Or give written details here..."
+            x:Name="specDetails" />
         <Button
             x:Name="SubmitButton"
             HorizontalAlignment="Right"
