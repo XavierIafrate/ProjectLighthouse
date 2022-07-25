@@ -10,7 +10,7 @@ namespace ProjectLighthouse.Model
         public string Product { get; set; }
         public DateTime RaisedAt { get; set; }
         public string RaisedBy { get; set; }
-        public Status State { get; set; }
+        public bool Complete { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
         public bool Authorised { get; set; }
@@ -20,6 +20,6 @@ namespace ProjectLighthouse.Model
         public string SpecificationDocument { get; set; }
         public string SpecificationDetails { get; set; }
 
-        public enum Status { Pending, Complete }
+        public string Result { get; set;}
     }
 }

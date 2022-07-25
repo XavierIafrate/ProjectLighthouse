@@ -55,8 +55,8 @@ namespace ProjectLighthouse.View.UserControls
                 control.openButton.IsEnabled = true;
             }
 
-            control.pendingControls.Visibility = (!control.Drawing.IsApproved && !control.Drawing.IsRejected) 
-                ? Visibility.Visible 
+            control.pendingControls.Visibility = (!control.Drawing.IsApproved && !control.Drawing.IsRejected)
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             control.approvedControls.Visibility = control.Drawing.IsApproved
@@ -67,9 +67,11 @@ namespace ProjectLighthouse.View.UserControls
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            control.approvalControls.Visibility = (!control.Drawing.IsApproved && !control.Drawing.IsRejected && App.CurrentUser.GetFullName() != control.Drawing.CreatedBy)
+            control.approvalControls.Visibility = (!control.Drawing.IsApproved && !control.Drawing.IsRejected && App.CurrentUser.GetFullName() != control.Drawing.CreatedBy && App.CurrentUser.CanApproveDrawings)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+
+            control.notesDisplay.Notes = control.Drawing.Notes;
         }
 
         public DisplayDrawingRevision()
@@ -153,7 +155,7 @@ namespace ProjectLighthouse.View.UserControls
             List<string> toUpdate = Drawing.Notes.Select(x => x.SentBy).Distinct().ToList();
 
             List<string> otherUsers;
-            
+
             otherUsers = DatabaseHelper.Read<User>().Where(x => x.CanApproveDrawings && x.ReceivesNotifications).Select(x => x.UserName).ToList();
 
             toUpdate.AddRange(otherUsers);
@@ -166,9 +168,8 @@ namespace ProjectLighthouse.View.UserControls
 
             DatabaseHelper.Insert(newNote);
             Drawing.Notes.Add(newNote);
-
-            Drawing = (TechnicalDrawing)Drawing.Clone();
-            OnPropertyChanged(nameof(Drawing));
+            notesDisplay.Notes = null;
+            notesDisplay.Notes = Drawing.Notes;
 
             Message.Text = "";
         }

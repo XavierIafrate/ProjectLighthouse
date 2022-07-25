@@ -326,6 +326,7 @@ namespace ProjectLighthouse.View
             {
                 SaveExit = true;
                 LoadData(Item.Id);
+                LoadUI();
             }
             Show();
         }
@@ -382,6 +383,20 @@ namespace ProjectLighthouse.View
             }
 
             #endregion
+        }
+
+        private void CycleTime_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is not TextBox textBox) return;
+
+            if (textBox.Text == "0") textBox.Text = "";
+        }
+
+        private void CycleTime_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is not TextBox textBox) return;
+
+            if (string.IsNullOrWhiteSpace(textBox.Text)) textBox.Text = "0";
         }
     }
 }

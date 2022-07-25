@@ -27,17 +27,17 @@
                 Style="{StaticResource subtitle}"
                 Text="Project Lighthouse" />
             
-            <TextBlock Foreground="{StaticResource Blue}" FontFamily="Consolas" Text="Written by Xavier Iafrate" />
+            <TextBlock Foreground="{StaticResource Blue}" Text="Written by Xavier Iafrate" />
 
             <Grid Height="20" />
             <TextBlock Margin="0,0,0,10" Text="copyright 2021" x:Name="CopyRightText" Style="{StaticResource statement}" HorizontalAlignment="Center"/>
-            <Separator />
             <Grid Height="20" />
 
             <TextBlock
                 Margin="0,0,0,10"
                 Style="{StaticResource statement}"
-                Text="Made possible by the following Open Source Libraries" />
+                HorizontalAlignment="Center"
+                Text="Lighthouse is made possible by Open Source Libraries" />
             <StackPanel Margin="30,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -152,7 +152,6 @@
                 Text="If I have seen further, it is by standing upon the shoulders of giants" />
             <TextBlock
                 HorizontalAlignment="Center"
-                FontStyle="Italic"
                 Text="Isaac Newton" />
         </StackPanel>
     </StackPanel>

@@ -88,6 +88,7 @@ namespace ProjectLighthouse
                     WorkStation = workstation
                 };
                 window.LoginRoutine();
+                if (CurrentUser == null) return;
             }
 
 

@@ -280,7 +280,7 @@
             <StackPanel x:Name="Comments" Margin="20,0,20,20">
                 <TextBlock Style="{StaticResource section}" Text="Comments" />
 
-                <local:DisplayListOfNotes Notes="{Binding Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <local:DisplayListOfNotes x:Name="notesDisplay" ShowingEditControls="False" />
                 <!--<ItemsControl
                     x:Name="NotesDisplay"
                     MinHeight="50"

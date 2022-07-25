@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View"
              xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+             xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="717"
              d:Background="White" d:DesignWidth="1354.562">
@@ -17,21 +18,85 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <ListView ItemsSource="{Binding Checks}" SelectedValue="{Binding SelectedCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+        <TextBox Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DefaultTextBox}" Tag="search..."/>
+                <Button Style="{StaticResource ClearButton}" Grid.Column="1"/>
+            </Grid>
+        <ListView Grid.Row="1" ItemsSource="{Binding Checks}" SelectedValue="{Binding SelectedCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Product}"/>
+                    <TextBlock Text="{Binding Product}" Margin="20,5" FontSize="18" FontWeight="SemiBold"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <TextBlock Text="None found" Visibility="{Binding NoCheckFound, Converter={StaticResource showIfTrue}}"/>
-        <Grid Grid.Column="1" Width="700" HorizontalAlignment="Center" Margin="10" Visibility="{Binding NoCheckFound, Converter={StaticResource hideIfTrue}}">
-            <Border Background="{StaticResource Surface}" CornerRadius="10"/>
-            <StackPanel>
-                <TextBlock Text="{Binding SelectedCheck.Product}"/>
-                <TextBlock Text="{Binding SelectedCheck}"/>
-                <TextBlock Text="{Binding SelectedCheck.RaisedBy}"/>
-            </StackPanel>
         </Grid>
+        
+        <TextBlock Text="None found" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Opacity="0.3" FontWeight="SemiBold" Visibility="{Binding NoCheckFound, Converter={StaticResource showIfTrue}}"/>
+
+
+        <ScrollViewer
+            Visibility="{Binding NoCheckFound, Converter={StaticResource hideIfTrue}}"
+            x:Name="scroller"
+            Grid.Column="1">
+            <Grid
+                MaxWidth="700"
+                Margin="0,20,0,50">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Border Background="White" CornerRadius="10">
+                    <Border.Effect>
+                        <DropShadowEffect
+                            BlurRadius="30"
+                            Opacity="0.4"
+                            ShadowDepth="0"
+                            Color="Black" />
+                    </Border.Effect>
+                </Border>
+                <StackPanel Margin="20">
+                    <TextBlock Text="{Binding SelectedCheck.Product}" d:Text="Product"/>
+                    <TextBlock Text="{Binding SelectedCheck.RaisedBy, StringFormat='{}Raised by {0}'}" d:Text="Product"/>
+                    <TextBlock Text="{Binding SelectedCheck.RaisedAt, StringFormat='{} at {0}'}" d:Text="Product"/>
+                    <TextBlock Style="{StaticResource section}" Text="Comments" />
+
+                    <uc:DisplayListOfNotes ShowingEditControls="False" MinHeight="50" Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}" />
+                    <Grid
+                        x:Name="composeMessageControls"
+                        Grid.Row="2"
+                        Margin="5">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                                Style="{StaticResource DefaultTextBox}"
+                                TextChanged="TextBox_TextChanged"
+                                Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Tag="Compose message..."
+                                TextWrapping="WrapWithOverflow" />
+                        <Button
+                                x:Name="SendButton"
+                                IsEnabled="False"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Background="Transparent"
+                                Style="{StaticResource SendButton}" Command="{Binding SendMessageCommand}"/>
+
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

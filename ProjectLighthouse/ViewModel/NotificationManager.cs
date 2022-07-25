@@ -45,6 +45,7 @@ namespace ProjectLighthouse.ViewModel
         public void Initialise()
         {
             if (App.CurrentUser is null) return;
+            if (App.CurrentUser.UserName is null) return;
             MyNotifications = DatabaseHelper.Read<Notification>().Where(n => n.TargetUser == App.CurrentUser.UserName && n.Seen).ToList();
             NotificationCount = MyNotifications.Where(n => !n.Seen).Count();
             App.MainViewModel.Notifications = MyNotifications.Where(n => n.TimeStamp.AddDays(7) > DateTime.Now && n.Seen).OrderByDescending(x => x.TimeStamp).ToList();
@@ -68,7 +69,8 @@ namespace ProjectLighthouse.ViewModel
 
         public void CheckForNotifications(bool multiToast)
         {
-            List<Notification> nots = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName).ToList();
+            if (App.CurrentUser == null) return;
+            List<Notification> nots = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName && x.TimeStamp.AddDays(7) > DateTime.Now).ToList();
 
             int numNewNots = nots.Where(n => !n.Seen).Count();
 
@@ -99,7 +101,7 @@ namespace ProjectLighthouse.ViewModel
             App.MainViewModel.NotCount = NotificationCount;
             App.MainViewModel.NoNotifications = App.MainViewModel.Notifications.Count == 0;
             App.MainViewModel.NoNewNotifications = App.MainViewModel.NotCount == 0;
-            App.MainViewModel.Notifications = MyNotifications.Where(not => not.TimeStamp.AddDays(7) > DateTime.Now).OrderByDescending(x => x.TimeStamp).ToList();
+            App.MainViewModel.Notifications = MyNotifications.OrderByDescending(x => x.TimeStamp).ToList();
         }
 
         private void RaiseToast(Notification notification)
@@ -204,6 +206,16 @@ namespace ProjectLighthouse.ViewModel
             else if (action == "showNotifications")
             {
                 App.MainViewModel.NotificationsBarVis = Visibility.Visible;
+            }
+            else if (action.StartsWith("viewDrawing:"))
+            {
+                string targetDrawing = action.Replace("viewDrawing:", "");
+                App.MainViewModel.UpdateViewCommand.Execute("Drawings");
+                if (App.MainViewModel.SelectedViewModel is DrawingBrowserViewModel drawingBrowserVM)
+                {
+                    drawingBrowserVM.SelectedGroup = drawingBrowserVM.DrawingGroups.First(x => x.Drawings.Any(y => y.DrawingName == targetDrawing));
+                }
+
             }
         }
 

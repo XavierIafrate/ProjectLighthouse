@@ -60,6 +60,7 @@ namespace ProjectLighthouse.View
             if (originalLot.Quantity == EditLot.Quantity &&
                 originalLot.MaterialBatch == EditLot.MaterialBatch &&
                 originalLot.IsReject == EditLot.IsReject &&
+                originalLot.AllowDelivery == EditLot.AllowDelivery &&
                 originalLot.IsAccepted == EditLot.IsAccepted &&
                 originalLot.Remarks == EditLot.Remarks &&
                 originalLot.DateProduced == EditLot.DateProduced &&
@@ -133,7 +134,7 @@ namespace ProjectLighthouse.View
 
         private void AllowDeliveryCheckbox_Checked(object sender, RoutedEventArgs e)
         {
-
+            EditLot.AllowDelivery = (bool)AllowDeliveryCheckbox.IsChecked;
         }
     }
 }

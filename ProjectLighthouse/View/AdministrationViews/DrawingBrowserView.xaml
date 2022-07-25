@@ -105,7 +105,7 @@
             Grid.Column="1"
             Visibility="{Binding SelectedDrawingDisplayVis}">-->
 
-            <ListView Grid.Column="1" Grid.RowSpan="3" Background="{StaticResource Background}" ItemsSource="{Binding FilteredDrawings}">
+            <ListView ScrollViewer.CanContentScroll="False" Grid.Column="1" Grid.RowSpan="3" Background="{StaticResource Background}" ItemsSource="{Binding FilteredDrawings}">
             <ListView.ItemTemplate>
                     <DataTemplate>
                         <userControls:DisplayDrawingRevision MaxWidth="700" Drawing="{Binding Path=.}" BorderThickness="0"/>

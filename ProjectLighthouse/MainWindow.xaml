@@ -362,18 +362,18 @@
                             </Button.Content>
                         </Button>
                     </Grid>
-                    <ItemsControl
+                    <ListView
+                        d:ItemsSource="{d:SampleData ItemCount=10}"
                         Grid.Row="1"
                         MaxWidth="350"
                         Margin="10,0"
-                        ItemsSource="{Binding Notifications}"
-                        Style="{x:Null}">
+                        ItemsSource="{Binding Notifications}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <userControls:DisplayNotification Notification="{Binding Path=.}" />
+                                <userControls:DisplayNotification Notification="{Binding Path=.}" MaxWidth="320" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    </ListView>
                     <StackPanel
                         Grid.Row="1"
                         VerticalAlignment="Center"

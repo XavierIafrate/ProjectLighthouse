@@ -23,6 +23,7 @@ namespace ProjectLighthouse.View
             InitializeComponent();
             AddVersionNumber();
 
+            MessageBadge.Visibility = Visibility.Hidden;
             Users = DatabaseHelper.Read<User>().ToList();
 
             LogisticsWarning.Visibility = logistics ? Visibility.Visible : Visibility.Hidden;
@@ -55,6 +56,7 @@ namespace ProjectLighthouse.View
             {
                 UsernameTextBox.Focus();
             }
+
         }
 
         private void AddVersionNumber()

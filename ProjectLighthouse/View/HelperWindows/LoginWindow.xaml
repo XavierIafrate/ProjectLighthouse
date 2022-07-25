@@ -42,6 +42,20 @@
             </Grid>
         </Border>
         <Border
+                x:Name="MessageBadge"
+                Margin="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="{StaticResource Red}"
+                CornerRadius="2">
+            <TextBlock
+                    x:Name="message"
+                    Padding="15,2,15,4"
+                    HorizontalAlignment="Center"
+                    Foreground="{StaticResource OnRed}"
+                    Text="Username Not Found debug" />
+        </Border>
+        <Border
             x:Name="LogisticsWarning"
             Margin="20"
             HorizontalAlignment="Left"
@@ -98,6 +112,7 @@
                 CornerRadius="200" />
             <Image
                 Width="250"
+                Margin="0,0,0,10"
                 VerticalAlignment="Bottom"
                 RenderOptions.BitmapScalingMode="HighQuality"
                 Source="/Resources/LighthouseLogo.png" />
@@ -109,21 +124,6 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Border
-                x:Name="MessageBadge"
-                Margin="3"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="{StaticResource Red}"
-                CornerRadius="2"
-                Visibility="Collapsed">
-                <TextBlock
-                    x:Name="message"
-                    Padding="15,2,15,4"
-                    HorizontalAlignment="Center"
-                    Foreground="{StaticResource OnRed}"
-                    Text="Username Not Found debug" />
-            </Border>
             <StackPanel
                 Grid.Row="1"
                 Margin="0,0,0,10"

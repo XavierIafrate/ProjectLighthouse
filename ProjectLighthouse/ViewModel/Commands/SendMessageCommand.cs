@@ -24,9 +24,13 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            if (viewModel is RequestViewModel vm)
+            if (viewModel is RequestViewModel rvm)
             {
-                vm.SendMessage();
+                rvm.SendMessage();
+            }
+            else if (viewModel is QualityCheckViewModel qcvm)
+            {
+                qcvm.SendMessage();
             }
         }
     }

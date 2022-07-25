@@ -5,49 +5,81 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="236.143">
+    d:DesignWidth="236.143"
+    mc:Ignorable="d">
     <Grid>
-        <Border
+        <!--<Border
             Margin="5"
             Background="{StaticResource Background}"
             BorderBrush="{StaticResource DisabledElement}"
             BorderThickness="2"
-            CornerRadius="8">
-            <StackPanel Margin="10,5">
+            CornerRadius="8" />-->
+        <Grid Margin="10,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid>
                 <Grid>
-                    <StackPanel Orientation="Horizontal">
-                        <Border x:Name="SeenIndicator" Background="{StaticResource Blue}" Height="10" Width="10" CornerRadius="5" Margin="0,5,5,2"/>
-                        <TextBlock
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border
+                        x:Name="SeenIndicator"
+                        Width="10"
+                        Height="10"
+                        Margin="0,5,5,2"
+                        Background="{StaticResource Blue}"
+                        CornerRadius="5" />
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="NOTIFICATION_HEADER"
                         FontSize="18"
+                        MaxWidth="230"
                         FontWeight="Bold"
-                        Text="{Binding Header}" d:Text="New Request" />
-                    </StackPanel>
-                    <Button
-                        Margin="0"
-                        x:Name="actionButton"
-                        HorizontalAlignment="Right"
-                        Content="view"
-                        Click="Button_Click"
-                        Style="{StaticResource ModernGreenButtonTemplate}" />
-
-
+                        Text="{Binding Header}"
+                        TextTrimming="CharacterEllipsis" />
                 </Grid>
+                <Button
+                    x:Name="actionButton"
+                    Grid.Column="2"
+                    Margin="0"
+                    HorizontalAlignment="Right"
+                    Click="Button_Click"
+                    Content="view"
+                    Style="{StaticResource ModernGreenButtonTemplate}" />
 
-                <TextBlock Text="{Binding Body}" d:Text="Lorem ipsum dolor sit amet" TextWrapping="Wrap" />
 
-                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                    <TextBlock
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Blue}"
-                        Text="{Binding Origin}" d:Text="randy" />
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Blue}"
-                        Text="{Binding TimeStamp, StringFormat='{} - {0:dd/MM HH:mm}'}" d:Text=" - 01/01 00:00" />
-                </StackPanel>
+            </Grid>
+
+            <TextBlock
+                Grid.Row="1"
+                d:Text="Lorem ipsum dolor sit amet"
+                Text="{Binding Body}"
+                TextWrapping="Wrap" />
+
+            <StackPanel
+                Grid.Row="2"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <TextBlock
+                    d:Text="randy"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource Blue}"
+                    Text="{Binding Origin}" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    d:Text=" - 01/01 00:00"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource Blue}"
+                    Text="{Binding TimeStamp, StringFormat='{} - {0:dd/MM HH:mm}'}" />
             </StackPanel>
-        </Border>
+        </Grid>
+
     </Grid>
 </UserControl>

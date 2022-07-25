@@ -75,7 +75,7 @@ namespace ProjectLighthouse.ViewModel
             List<Note> Notes = DatabaseHelper.Read<Note>().ToList();
             for (int i = 0; i < Drawings.Count; i++)
             {
-                Drawings[i].Notes = Notes.Where(x => x.DocumentReference == Drawings[i].Id.ToString("0")).ToList();
+                Drawings[i].Notes = Notes.Where(x => x.DocumentReference == Drawings[i].Id.ToString("0")).ToList() ?? new();
             }
 
             string[] drawingGroups = Drawings.Select(x => x.DrawingName).Distinct().ToArray();

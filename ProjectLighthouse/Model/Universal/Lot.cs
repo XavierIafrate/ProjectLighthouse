@@ -58,6 +58,7 @@ namespace ProjectLighthouse.Model
                 IsReject = IsReject,
                 IsAccepted = IsAccepted,
                 IsDelivered = IsDelivered,
+                AllowDelivery = AllowDelivery,
                 MaterialBatch = MaterialBatch,
                 ModifiedBy = ModifiedBy,
                 ModifiedAt = ModifiedAt,
