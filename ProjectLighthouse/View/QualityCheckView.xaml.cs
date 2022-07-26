@@ -17,5 +17,10 @@ namespace ProjectLighthouse.View
             }
             SendButton.IsEnabled = !string.IsNullOrEmpty(textBox.Text);
         }
+
+        private void clearButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            searchBox.Clear();
+        }
     }
 }

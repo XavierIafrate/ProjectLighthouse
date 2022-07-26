@@ -82,8 +82,9 @@ namespace ProjectLighthouse.View.UserControls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Process fileopener = new();
-            fileopener.StartInfo.FileName = "explorer";
-            string tmpPath = Drawing.GetSafeFileName();
+            fileopener.StartInfo.FileName = "explorer"; 
+            string tmpPath = Path.Join(Path.GetTempPath(), Drawing.GetSafeFileName());
+
             if (!File.Exists(tmpPath))
             {
                 File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath);

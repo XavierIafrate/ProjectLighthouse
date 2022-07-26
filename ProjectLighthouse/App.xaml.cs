@@ -5,6 +5,7 @@ using ProjectLighthouse.ViewModel;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -46,7 +47,7 @@ namespace ProjectLighthouse
             EnsureAppData();
 
             DevMode = Debugger.IsAttached;
-            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB.db3";
+            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
 
             string workstation = String.Empty;
             try
@@ -108,77 +109,10 @@ namespace ProjectLighthouse
             NotificationsManager.Initialise();
             NotificationsManager.DataRefreshTimer.Start();
             NotificationsManager.CheckForNotifications(true);
+
+            //TestODBC();
         }
 
-
-        //private void CheckForAppUpdates()
-        //{
-        //    UpdateCheckInfo info = null;
-
-        //    if (ApplicationDeployment.IsNetworkDeployed)
-        //    {
-        //        ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
-
-        //        try
-        //        {
-        //            info = ad.CheckForDetailedUpdate();
-
-        //        }
-        //        catch (DeploymentDownloadException dde)
-        //        {
-        //            MessageBox.Show("The new version of the application cannot be downloaded at this time. \n\nPlease check your network connection, or try again later. Error: " + dde.Message);
-        //            return;
-        //        }
-        //        catch (InvalidDeploymentException ide)
-        //        {
-        //            MessageBox.Show("Cannot check for a new version of the application. The ClickOnce deployment is corrupt. Please redeploy the application and try again. Error: " + ide.Message);
-        //            return;
-        //        }
-        //        catch (InvalidOperationException ioe)
-        //        {
-        //            MessageBox.Show("This application cannot be updated. It is likely not a ClickOnce application. Error: " + ioe.Message);
-        //            return;
-        //        }
-
-        //        if (info.UpdateAvailable)
-        //        {
-        //            Boolean doUpdate = true;
-
-        //            if (!info.IsUpdateRequired)
-        //            {
-        //                DialogResult dr = MessageBox.Show("An update is available. Would you like to update the application now?", "Update Available", MessageBoxButtons.OKCancel);
-        //                if (!(DialogResult.OK == dr))
-        //                {
-        //                    doUpdate = false;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                // Display a message that the app MUST reboot. Display the minimum required version.
-        //                MessageBox.Show("This application has detected a mandatory update from your current " +
-        //                    "version to version " + info.MinimumRequiredVersion.ToString() +
-        //                    ". The application will now install the update and restart.",
-        //                    "Update Available", MessageBoxButtons.OK,
-        //                    MessageBoxIcon.Information);
-        //            }
-
-        //            if (doUpdate)
-        //            {
-        //                try
-        //                {
-        //                    ad.Update();
-        //                    MessageBox.Show("The application has been upgraded, and will now restart.");
-        //                    Application.Restart();
-        //                }
-        //                catch (DeploymentDownloadException dde)
-        //                {
-        //                    MessageBox.Show("Cannot install the latest version of the application. \n\nPlease check your network connection, or try again later. Error: " + dde);
-        //                    return;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
         private void EnsureAppData()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -210,50 +144,50 @@ namespace ProjectLighthouse
             }
         }
 
-        //void TestODBC()
-        //{
+        void TestODBC()
+        {
 
-        //    OdbcConnection DbConnection = new(HanaCreds.GetConnString());
-        //    DbConnection.Open();
+            OdbcConnection DbConnection = new(HanaCreds.GetConnString());
+            DbConnection.Open();
 
-        //    //DataTable tables = DbConnection.GetSchema("Tables");
+            //DataTable tables = DbConnection.GetSchema("Tables");
 
-        //    //foreach (object table in tables.Rows)
-        //    //{
-        //    //    Debug.WriteLine(table.ToString());
-        //    //}
+            //foreach (object table in tables.Rows)
+            //{
+            //    Debug.WriteLine(table.ToString());
+            //}
 
-        //    OdbcCommand DbCommand = DbConnection.CreateCommand();
-        //    DbCommand.CommandText = $"SELECT \"SlpName\" FROM WIXROYD_UAT2.OSLP";
-        //    OdbcDataReader DbReader = DbCommand.ExecuteReader();
+            OdbcCommand DbCommand = DbConnection.CreateCommand();
+            DbCommand.CommandText = $"SELECT T0.\"ItemCode\", T0.\"ItemName\", T0.\"CardCode\", T0.\"U_V33_Automotion\", T0.\"OnHand\" FROM WIXROYD_UAT2.OITM T0 WHERE T0.\"U_V33_Automotion\" IS NOT NULL";
+            OdbcDataReader DbReader = DbCommand.ExecuteReader();
 
-        //    int fCount = DbReader.FieldCount;
-        //    Debug.Write(":");
-        //    for (int i = 0; i < fCount; i++)
-        //    {
-        //        string fName = DbReader.GetName(i);
-        //        Debug.Write(fName + ":");
-        //    }
-        //    Debug.WriteLine("");
+            int fCount = DbReader.FieldCount;
+            Debug.Write(":");
+            for (int i = 0; i < fCount; i++)
+            {
+                string fName = DbReader.GetName(i);
+                Debug.Write(fName + ":");
+            }
+            Debug.WriteLine("");
 
-        //    while (DbReader.Read())
-        //    {
-        //        Debug.Write(":");
-        //        for (int i = 0; i < fCount; i++)
-        //        {
+            while (DbReader.Read())
+            {
+                Debug.Write(":");
+                for (int i = 0; i < fCount; i++)
+                {
 
-        //            string col = DbReader.GetString(i) ?? "Error";
+                    string col = DbReader.GetString(i) ?? "Error";
 
-        //            Debug.Write(col + ":");
-        //        }
-        //        Debug.WriteLine("");
-        //    }
+                    Debug.Write(col + ":");
+                }
+                Debug.WriteLine("");
+            }
 
-        //    DbReader.Close();
-        //    DbCommand.Dispose();
-        //    DbConnection.Close();
+            DbReader.Close();
+            DbCommand.Dispose();
+            DbConnection.Close();
 
-        //}
+        }
 
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         private static string? GetWorkstationLogistics()

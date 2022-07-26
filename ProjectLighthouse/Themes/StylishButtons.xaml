@@ -664,6 +664,37 @@
         </Style.Triggers>
     </Style>
 
+
+
+    <Style x:Key="HeroAddButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Width="60"
+                        Height="60"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="30">
+                        <Path
+                            Width="20"
+                            Data="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Green}" />
+        <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+                <Setter Property="Background" Value="{StaticResource GreenDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style x:Key="HeroPdfButton" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>

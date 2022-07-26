@@ -57,7 +57,7 @@ namespace ProjectLighthouse.View.UserControls
         {
             Process fileopener = new();
             fileopener.StartInfo.FileName = "explorer";
-            string tmpPath = Drawing.GetSafeFileName();
+            string tmpPath = Path.Join(Path.GetTempPath(), Drawing.GetSafeFileName());
             if (!File.Exists(tmpPath))
             {
                 File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath);

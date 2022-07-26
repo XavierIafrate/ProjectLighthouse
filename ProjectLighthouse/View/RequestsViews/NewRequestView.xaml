@@ -348,6 +348,7 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             ItemsSource="{Binding Lathes}"
+                            d:ItemsSource="{d:SampleData ItemCount=4}"
                             Style="{x:Null}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -398,13 +399,6 @@
 
                 </StackPanel>
             </Border>
-            <TextBox
-                AcceptsReturn="True"
-                MaxLength="100"
-                MaxLines="3"
-                Style="{StaticResource DefaultTextBox}"
-                Tag="Add remarks here... (optional)"
-                Text="{Binding NewRequest.Notes}" />
             <Button
                 x:Name="SubmitButton"
                 HorizontalAlignment="Right"

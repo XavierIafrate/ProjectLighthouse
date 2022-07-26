@@ -1,10 +1,14 @@
-﻿using ProjectLighthouse.Model;
+﻿using Microsoft.Win32;
+using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -12,47 +16,55 @@ namespace ProjectLighthouse.ViewModel
     {
         public List<QualityCheck> Checks { get; set; }
         public List<Note> Notes { get; set; }
+        public List<Attachment> Attachments { get; set; }
+
+        private List<Attachment> filteredAttachments;
+        public List<Attachment> FilteredAttachments
+        {
+            get { return filteredAttachments; }
+            set { filteredAttachments = value; OnPropertyChanged(); }
+        }
+
 
         private List<Note> filteredNotes;
-
         public List<Note> FilteredNotes
         {
             get { return filteredNotes; }
             set { filteredNotes = value; OnPropertyChanged(); }
         }
 
-        private List<QualityCheck> filteredChecks;
-
-        public List<QualityCheck> FilteredChecks
-        {
-            get { return filteredChecks; }
-            set { filteredChecks = value; OnPropertyChanged(); }
-        }
+        public ObservableCollection<QualityCheck> FilteredChecks { get; set; }
+        //public List<QualityCheck> FilteredChecks
+        //{
+        //    get { return filteredChecks; }
+        //    set 
+        //    { 
+        //        filteredChecks = value; 
+        //        OnPropertyChanged(); 
+        //    }
+        //}
 
         private QualityCheck selectedCheck;
-
         public QualityCheck SelectedCheck
         {
             get { return selectedCheck; }
             set
             {
                 selectedCheck = value;
-                LoadCheck();
                 OnPropertyChanged();
+                LoadCheck();
 
             }
         }
 
         private string searchTerm;
-
         public string SearchTerm
         {
             get { return searchTerm; }
-            set { searchTerm = value; FilterChecks(value); OnPropertyChanged(); }
+            set { searchTerm = value.ToUpper().Trim(); FilterChecks(searchTerm); OnPropertyChanged(); }
         }
 
         private string newMessage;
-
         public string NewMessage
         {
             get { return newMessage; }
@@ -62,26 +74,44 @@ namespace ProjectLighthouse.ViewModel
         public bool NoCheckFound { get; set; }
 
         public SendMessageCommand SendMessageCommand { get; set; }
+        public UploadEvidenceCommand UploadEvidenceCmd { get; set; }
 
         public QualityCheckViewModel()
         {
+            FilteredNotes = new();
+            FilteredChecks = new();
+            FilteredAttachments = new();
+
             Checks = DatabaseHelper.Read<QualityCheck>().ToList();
             Notes = DatabaseHelper.Read<Note>().ToList();
+            Attachments = DatabaseHelper.Read<Attachment>().ToList();
+
             SendMessageCommand = new(this);
+            UploadEvidenceCmd = new(this);
             FilterChecks();
         }
 
 
         void FilterChecks(string searchTerm = null)
         {
+            FilteredChecks.Clear();
+            List<QualityCheck> checks = new();
             if (string.IsNullOrEmpty(searchTerm))
             {
-                FilteredChecks = Checks.Where(x => (!x.Complete && x.Authorised) || x.UpdatedAt.AddDays(7) > DateTime.Now).ToList();
+                //checks = Checks.Where(x => (!x.Complete) || x.UpdatedAt.AddDays(7) > DateTime.Now).ToList();                
+                checks = Checks.ToList();
             }
             else
             {
-                FilteredChecks = Checks.Where(x => x.Product.ToUpper().Contains(searchTerm)).ToList();
+                checks = Checks.Where(x => x.Product.ToUpper().Contains(searchTerm)).ToList();
             }
+
+            for (int i = 0; i < checks.Count; i++)
+            {
+                FilteredChecks.Add(checks[i]);
+            }
+
+            OnPropertyChanged(nameof(FilteredChecks));
 
             if (FilteredChecks.Count > 0)
             {
@@ -105,6 +135,7 @@ namespace ProjectLighthouse.ViewModel
             }
 
             FilteredNotes = Notes.Where(x => x.DocumentReference == "q" + SelectedCheck.Id).ToList();
+            FilteredAttachments = Attachments.Where(x => x.DocumentReference == "q" + SelectedCheck.Id).ToList();
             OnPropertyChanged(nameof(FilteredNotes));
         }
 
@@ -137,6 +168,54 @@ namespace ProjectLighthouse.ViewModel
             LoadCheck();
 
             NewMessage = "";
+        }
+
+        public void GetEvidenceUpload()
+        {
+            OpenFileDialog filePicker = new() 
+            { 
+                Filter = "Pdf Files (*.pdf)|*.pdf|Image Files (*.png, *.jpg)|*.png;*.jpg|Excel Workbooks (*.xlsx)|*.xlsx|Word Docs (*.docx)|*.docx", 
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+            };
+            if(!(bool)filePicker.ShowDialog())
+            {
+                return;
+            }
+
+            string storeName = $@"lib\{Path.GetRandomFileName()}";
+            File.Copy(filePicker.FileName, $"{App.ROOT_PATH}{storeName}");
+
+            Attachment newAttachment = new()
+            {
+                DocumentReference = "q" + SelectedCheck.Id,
+                AttachmentStore = storeName,
+                Extension = Path.GetExtension(filePicker.FileName),
+                FileName = Path.GetFileNameWithoutExtension(filePicker.FileName),
+                Remark="",
+            };
+
+            DatabaseHelper.Insert(newAttachment);
+        }
+
+        public class UploadEvidenceCommand : ICommand
+        {
+            public event EventHandler CanExecuteChanged;
+
+            private QualityCheckViewModel viewModel;
+            public UploadEvidenceCommand(QualityCheckViewModel viewModel)
+            {
+                this.viewModel = viewModel;
+            }
+
+            public bool CanExecute(object parameter)
+            {
+                return App.CurrentUser.Role >= UserRole.Production;
+            }
+
+            public void Execute(object parameter)
+            {
+                viewModel.GetEvidenceUpload();
+            }
         }
     }
 }

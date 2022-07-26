@@ -76,11 +76,11 @@ namespace ProjectLighthouse
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            manage_lathes_button.Visibility = App.CurrentUser.UserName == "xav"
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            //manage_lathes_button.Visibility = App.CurrentUser.UserName == "xav"
+            //    ? Visibility.Visible
+            //    : Visibility.Collapsed;
 
-            qc_button.Visibility = manage_lathes_button.Visibility;
+            //qc_button.Visibility = manage_lathes_button.Visibility;
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.UserRole;

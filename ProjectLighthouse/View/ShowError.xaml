@@ -62,7 +62,7 @@
                 Text="This error has been recorded for analysis and bug fixes."
                 TextWrapping="Wrap" />
             <TextBlock Style="{StaticResource propHeader}" Text="Message" />
-            <TextBlock Text="{Binding Path=Error.Exception.Message, FallbackValue='N/A'}" />
+            <TextBlock Text="{Binding Path=Error.Exception.Message, FallbackValue='N/A'}" TextWrapping="Wrap" />
             <TextBlock Style="{StaticResource propHeader}" Text="Inner Exception" />
             <TextBlock Text="{Binding Path=Error.Exception.InnerException, FallbackValue='N/A'}" />
             <TextBlock Style="{StaticResource propHeader}" Text="Source" />
