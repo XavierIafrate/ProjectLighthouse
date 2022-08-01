@@ -1,28 +1,13 @@
 ﻿using ProjectLighthouse.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ProjectLighthouse.ViewModel.ValueConverters;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DisplayQualityCheck.xaml
-    /// </summary>
     public partial class DisplayQualityCheck : UserControl
     {
-
-
         public QualityCheck Check
         {
             get { return (QualityCheck)GetValue(CheckProperty); }
@@ -38,6 +23,24 @@ namespace ProjectLighthouse.View.UserControls
         {
             if (d is not DisplayQualityCheck control) return;
             control.productText.Text = control.Check.Product;
+            control.StatusText.Text = control.Check.Status;
+            Brush flagBrush;
+            if (control.Check.Status == "Accepted")
+            {
+                flagBrush  = (Brush)Application.Current.Resources["Green"];
+            }
+            else if (control.Check.Status == "Rejected")
+            {
+                flagBrush =(Brush)Application.Current.Resources["Red"];
+            }
+            else
+            {
+                flagBrush = (Brush)Application.Current.Resources["Blue"];
+            }
+
+            control.StatusText.Foreground = flagBrush;
+            control.borderAccent.BorderBrush = flagBrush;
+            control.borderBackground.Background = flagBrush;
         }
 
         public DisplayQualityCheck()

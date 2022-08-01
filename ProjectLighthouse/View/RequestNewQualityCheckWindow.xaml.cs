@@ -1,5 +1,9 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace ProjectLighthouse.View
@@ -31,17 +35,45 @@ namespace ProjectLighthouse.View
             QualityCheck newCheck = new()
             {
                 Product = productNameTextBox.Text.Trim().ToUpperInvariant(),
-                RaisedAt = System.DateTime.Now,
+                RaisedAt = DateTime.Now,
                 RaisedBy = App.CurrentUser.UserName,
                 SpecificationDetails = specDetailsTextBox.Text.Trim(),
-                SpecificationDocument = FilePicker.FilePath,
-                RequiredBy = (System.DateTime)RequiredDate.SelectedDate,
+                RequiredBy = (DateTime)RequiredDate.SelectedDate,
             };
+
+            if (!string.IsNullOrEmpty(FilePicker.FilePath))
+            {
+                string newPath = $@"{App.ROOT_PATH}lib\{System.IO.Path.GetFileName(FilePicker.FilePath)}";
+                try
+                {
+                    System.IO.File.Copy(FilePicker.FilePath, newPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
+                    return;
+                }
+                newCheck.SpecificationDocument = $@"lib\{System.IO.Path.GetFileName(FilePicker.FilePath)}";
+            }
 
             if (DatabaseHelper.Insert(newCheck))
             {
+                NotifyPeople();
                 this.RequestAdded = true;
                 Close();
+            }
+        }
+
+        void NotifyPeople()
+        {
+            List<string> otherUsers = new();
+            otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.HasQualityNotifications).Select(x => x.UserName));
+
+            otherUsers = otherUsers.Where(x => x != App.CurrentUser.UserName).Distinct().ToList();
+            for (int i = 0; i < otherUsers.Count; i++)
+            {
+                Notification newNotification = new(otherUsers[i], App.CurrentUser.UserName, "New QC Request", $"{App.CurrentUser.FirstName} has requested a quality check on {productNameTextBox.Text.ToUpper().Trim()}");
+                _ = DatabaseHelper.Insert(newNotification);
             }
         }
     }

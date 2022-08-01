@@ -24,23 +24,14 @@ namespace ProjectLighthouse.View.UserControls
             }
 
             control.DataContext = control.Warning;
-            if (control.Warning.Important)
-            {
-                control.elementBackground.Background = (Brush)Application.Current.Resources["Red"];
-                control.elementBackground.BorderThickness = new Thickness(2);
-                control.WarningText.Foreground = (Brush)Application.Current.Resources["OnRed"];
-                control.title.Foreground = (Brush)Application.Current.Resources["OnRed"];
-                control.icon.Fill = (Brush)Application.Current.Resources["OnRed"];
+            string baseColour = control.Warning.Important ? "Red" : "Orange";
 
-            }
-            else
-            {
-                control.elementBackground.Background = (Brush)Application.Current.Resources["Yellow"];
-                control.elementBackground.BorderThickness = new Thickness(2);
-                control.WarningText.Foreground = (Brush)Application.Current.Resources["OnYellow"];
-                control.title.Foreground = (Brush)Application.Current.Resources["OnYellow"];
-                control.icon.Fill = (Brush)Application.Current.Resources["OnYellow"];
-            }
+
+            control.elementBackground.Background = (Brush)Application.Current.Resources[baseColour];
+            control.elementBorder.BorderBrush = (Brush)Application.Current.Resources[baseColour];
+            control.WarningText.Foreground = (Brush)Application.Current.Resources[baseColour];
+            control.title.Foreground = (Brush)Application.Current.Resources[baseColour];
+            control.icon.Fill = (Brush)Application.Current.Resources[baseColour];
         }
 
         public DisplayScheduleWarning()

@@ -4,14 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" d:Background="White" d:DesignHeight="32.683" d:DesignWidth="227.018">
-    <Grid>
+             mc:Ignorable="d" d:Background="White" d:DesignWidth="220.765">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="DOCUMENT_NAME" x:Name="FileName" VerticalAlignment="Center"/>
+        <StackPanel>
+        <TextBlock FontWeight="SemiBold" Text="DOCUMENT_NAME" x:Name="FileName" VerticalAlignment="Center" MaxWidth="400" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
+        <TextBlock Text="N/A" x:Name="FileSize" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="Gray"/>
+            
+        </StackPanel>
         <Button x:Name="OpenButton" Click="OpenButton_Click" Content="Open" HorizontalAlignment="Right"/>
-        <Image x:Name="imgPreview"/>
+        <!--<Image x:Name="imgPreview"/>-->
     </Grid>
 </UserControl>

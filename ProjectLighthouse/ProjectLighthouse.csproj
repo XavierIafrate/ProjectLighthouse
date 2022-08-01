@@ -54,6 +54,8 @@
     <None Remove="Resources\SplashScreen.png" />
     <None Remove="Resources\teignmouth.jpg" />
     <None Remove="Resources\UKAS-calibration-logo.jpg" />
+    <None Remove="Resources\UkasDark.png" />
+    <None Remove="Resources\UkasLight.png" />
   </ItemGroup>
    
   <ItemGroup>
@@ -129,6 +131,12 @@
     </Resource>
     <Resource Include="Resources\StartPoint.png" />
     <Resource Include="Resources\UKAS-calibration-logo.jpg" />
+    <Resource Include="Resources\UkasDark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\UkasLight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

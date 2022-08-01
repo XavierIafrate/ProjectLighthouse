@@ -16,9 +16,10 @@
             <converters:boolToCollapsedOrVisible x:Key="hideIfTrue" />
             <converters:boolToVisibleOrCollapsed x:Key="showIfTrue" />
             <converters:dateToLastModified x:Key="modifiedFormatter" />
+            <converters:QCStatusToBrush x:Key="stateToBrush" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" MinWidth="300" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid>
@@ -36,7 +37,11 @@
                     Style="{StaticResource DefaultTextBox}"
                     Tag="search..."
                     Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Grid.Column="1" Style="{StaticResource ClearButton}" x:Name="clearButton" Click="clearButton_Click" />
+                <Button
+                    x:Name="clearButton"
+                    Grid.Column="1"
+                    Click="clearButton_Click"
+                    Style="{StaticResource ClearButton}" />
             </Grid>
             <ListView
                 Grid.Row="1"
@@ -44,7 +49,7 @@
                 SelectedValue="{Binding Path=SelectedCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <uc:DisplayQualityCheck Check="{Binding}"/>
+                        <uc:DisplayQualityCheck Check="{Binding}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -65,7 +70,7 @@
             x:Name="scroller"
             Grid.Column="1"
             Visibility="{Binding NoCheckFound, Converter={StaticResource hideIfTrue}}">
-            <Grid MaxWidth="700" Margin="0,20,0,50">
+            <Grid MaxWidth="700" Margin="20,20,20,50">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
@@ -91,19 +96,19 @@
                             VerticalAlignment="Center"
                             Visibility="Visible">
                             <Border
-                                Background="{StaticResource Blue}"
+                                Background="{Binding SelectedCheck.Status, Converter={StaticResource stateToBrush}}"
                                 CornerRadius="3"
                                 Opacity="0.15" />
                             <Border
-                                BorderBrush="{StaticResource Blue}"
+                                BorderBrush="{Binding SelectedCheck.Status, Converter={StaticResource stateToBrush}}"
                                 BorderThickness="3,0,0,0"
                                 CornerRadius="3">
                                 <TextBlock
                                     Margin="20,8"
                                     FontSize="18"
                                     FontWeight="SemiBold"
-                                    Foreground="{StaticResource Blue}"
-                                    Text="Pending" />
+                                    Foreground="{Binding SelectedCheck.Status, Converter={StaticResource stateToBrush}}"
+                                    Text="{Binding SelectedCheck.Status, FallbackValue='N/A'}" />
                             </Border>
                         </Grid>
                         <Grid
@@ -174,7 +179,7 @@
                         Grid.Row="1"
                         Margin="0,5"
                         Orientation="Horizontal"
-                        Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
+                        Visibility="{Binding IsModified, Converter={StaticResource showIfTrue}}">
                         <Path
                             Width="15"
                             Height="15"
@@ -203,18 +208,30 @@
                             Opacity="0.8"
                             Text="{Binding SelectedCheck.UpdatedAt, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource modifiedFormatter}, StringFormat='{} {0}'}" />
                     </StackPanel>
-                    <TextBlock Style="{StaticResource section}" Text="Product Specification" />
-                    <TextBlock Margin="15,10" d:Text="Lorem ipsum dolor sit amet" Text="{Binding SelectedCheck.SpecificationDetails, TargetNullValue='N/A'}" />
+                    <TextBlock
+                        Margin="0,20,0,0"
+                        Style="{StaticResource section}"
+                        Text="Product Specification" />
+                    <TextBlock
+                        Margin="15,10"
+                        d:Text="Lorem ipsum dolor sit amet"
+                        Foreground="{StaticResource Purple}"
+                        Text="{Binding SelectedCheck.SpecificationDetails, TargetNullValue='N/A', FallbackValue='N/A'}" />
                     <uc:DisplayPdf Margin="10" FilePath="{Binding SelectedCheck.SpecificationDocument, TargetNullValue=''}" />
-                    
+
                     <Grid>
-                        <TextBlock Style="{StaticResource section}" Text="Evidence" />
-                        <Button HorizontalAlignment="Right" Content="Upload" Style="{StaticResource BlueButton}" Command="{Binding UploadEvidenceCmd}" />
+                        <TextBlock Style="{StaticResource section}" Text="Supporting Evidence" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Command="{Binding UploadEvidenceCmd}"
+                            Content="Upload"
+                            Style="{StaticResource BlueButton}"
+                            Visibility="{Binding Incomplete, Converter={StaticResource showIfTrue}}" />
                     </Grid>
-                    <ItemsControl ItemsSource="{Binding FilteredAttachments}">
+                    <ItemsControl ItemsSource="{Binding FilteredAttachments}" Visibility="{Binding EvidenceUploaded, Converter={StaticResource showIfTrue}}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <uc:DisplayAttachment Attachment="{Binding}"/>
+                                <uc:DisplayAttachment Attachment="{Binding}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -223,11 +240,115 @@
                         FontSize="16"
                         FontStyle="Italic"
                         Foreground="{StaticResource DisabledElement}"
-                        Text="None" />
+                        Text="None"
+                        Visibility="{Binding EvidenceUploaded, Converter={StaticResource hideIfTrue}}" />
 
                     <TextBlock Style="{StaticResource section}" Text="Result" />
-                    <CheckBox Content="Pass"/>
-                    <CheckBox Content="Fail"/>
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal"
+                        Visibility="{Binding CanApprove, Converter={StaticResource showIfTrue}}">
+                        <Button
+                            Command="{Binding ResolveCommand}"
+                            CommandParameter="true"
+                            Content="Accept Samples"
+                            Style="{StaticResource GreenButton}" />
+                        <Button
+                            Command="{Binding ResolveCommand}"
+                            CommandParameter="false"
+                            Content="Reject Samples"
+                            Style="{StaticResource CancelButton}" />
+                    </StackPanel>
+
+                    <Grid
+                        Margin="30,10"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding SelectedCheck.IsAccepted, Converter={StaticResource showIfTrue}}">
+                        <Border
+                            Background="{StaticResource Green}"
+                            CornerRadius="3"
+                            Opacity="0.15" />
+                        <Border
+                            BorderBrush="{StaticResource Green}"
+                            BorderThickness="3,0,0,0"
+                            CornerRadius="3">
+                            <StackPanel Margin="10,5">
+
+                                <TextBlock
+                                    Margin="10,2"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Green}"
+                                    Text="Accepted" />
+                                <TextBlock
+                                    Margin="10,2"
+                                    FontSize="14"
+                                    Foreground="{StaticResource Green}"
+                                    Text="The samples observed have been found to meet or exceed the standards given at the time of checking."
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Grid
+                        Margin="30,10"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding SelectedCheck.IsRejected, Converter={StaticResource showIfTrue}}">
+                        <Border
+                            Background="{StaticResource Red}"
+                            CornerRadius="3"
+                            Opacity="0.15" />
+                        <Border
+                            BorderBrush="{StaticResource Red}"
+                            BorderThickness="3,0,0,0"
+                            CornerRadius="3">
+                            <StackPanel Margin="10,5">
+
+                                <TextBlock
+                                    Margin="10,2"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Red}"
+                                    Text="Rejected" />
+                                <TextBlock
+                                    Margin="10,2"
+                                    FontSize="14"
+                                    Foreground="{StaticResource Red}"
+                                    Text="Some or all of the samples observed were found to not meet the required specification at the time of checking. For further information please refer to the attached evidence."
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Grid
+                        Margin="30,10"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding NoResult, Converter={StaticResource showIfTrue}}">
+                        <Border
+                            Background="{StaticResource OnBackground}"
+                            CornerRadius="3"
+                            Opacity="0.15" />
+                        <Border
+                            BorderBrush="{StaticResource OnBackground}"
+                            BorderThickness="3,0,0,0"
+                            CornerRadius="3">
+                            <StackPanel Margin="10,5">
+
+                                <TextBlock
+                                    Margin="10,2"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource OnBackground}"
+                                    Text="Pending results" />
+                                <TextBlock
+                                    Margin="10,2"
+                                    FontSize="14"
+                                    Foreground="{StaticResource OnBackground}"
+                                    Text="These samples haven't been inspected yet, please check back later."
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
 
                     <TextBlock Style="{StaticResource section}" Text="Comments" />
                     <uc:DisplayListOfNotes
@@ -263,6 +384,14 @@
             </Grid>
         </ScrollViewer>
 
-        <Button Content="New" Grid.Column="1" HorizontalAlignment="Right" Command="{Binding AddNewCheckCommand}" VerticalAlignment="Bottom" Margin="20" Style="{StaticResource HeroAddButton}"/>
+        <Button
+            Grid.Column="1"
+            Margin="20"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Command="{Binding AddNewCheckCommand}"
+            Content="New"
+            Style="{StaticResource HeroAddButton}"
+            Visibility="{Binding CanAddCheck, Converter={StaticResource showIfTrue}}" />
     </Grid>
 </UserControl>

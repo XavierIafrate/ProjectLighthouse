@@ -46,11 +46,32 @@ namespace ProjectLighthouse.ViewModel
         {
             if (App.CurrentUser is null) return;
             if (App.CurrentUser.UserName is null) return;
-            MyNotifications = DatabaseHelper.Read<Notification>().Where(n => n.TargetUser == App.CurrentUser.UserName && n.Seen).ToList();
-            NotificationCount = MyNotifications.Where(n => !n.Seen).Count();
-            App.MainViewModel.Notifications = MyNotifications.Where(n => n.TimeStamp.AddDays(7) > DateTime.Now && n.Seen).OrderByDescending(x => x.TimeStamp).ToList();
-            App.MainViewModel.NotCount = NotificationCount;
             users = DatabaseHelper.Read<User>().ToList();
+
+            MyNotifications = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName).ToList();
+
+            SetInterfaceVariables();
+        }
+
+        void SetInterfaceVariables()
+        {
+            List<Notification> visibleNots = MyNotifications
+                .Where(n => n.TimeStamp.AddDays(7) > DateTime.Now)
+                .OrderByDescending(x => x.TimeStamp).ToList();
+            App.MainViewModel.Notifications = visibleNots;
+            if (visibleNots.Count == 0)
+            {
+                App.MainViewModel.NotCount = 0;
+                App.MainViewModel.NoNotifications = true;
+                App.MainViewModel.NoNewNotifications = true;
+            }
+            else
+            {
+                App.MainViewModel.NotCount = visibleNots.Where(x => !x.Seen).Count();
+                App.MainViewModel.NoNotifications = false;
+                App.MainViewModel.NoNewNotifications = App.MainViewModel.NotCount == 0;
+            }
+            
         }
 
         private void CreateTimer()
@@ -97,11 +118,7 @@ namespace ProjectLighthouse.ViewModel
                        .Show();
             }
 
-            NotificationCount = myNotifications.Where(not => !not.Seen).Count();
-            App.MainViewModel.NotCount = NotificationCount;
-            App.MainViewModel.NoNotifications = App.MainViewModel.Notifications.Count == 0;
-            App.MainViewModel.NoNewNotifications = App.MainViewModel.NotCount == 0;
-            App.MainViewModel.Notifications = MyNotifications.OrderByDescending(x => x.TimeStamp).ToList();
+            SetInterfaceVariables();
         }
 
         private void RaiseToast(Notification notification)
@@ -216,6 +233,14 @@ namespace ProjectLighthouse.ViewModel
                     drawingBrowserVM.SelectedGroup = drawingBrowserVM.DrawingGroups.First(x => x.Drawings.Any(y => y.DrawingName == targetDrawing));
                 }
 
+            }
+            if (action.StartsWith("viewQC:"))
+            {
+                App.MainViewModel.UpdateViewCommand.Execute("Quality Check");
+                if (App.MainViewModel.SelectedViewModel is QualityCheckViewModel qcViewModel)
+                {
+                    qcViewModel.SearchTerm = action;
+                }
             }
         }
 

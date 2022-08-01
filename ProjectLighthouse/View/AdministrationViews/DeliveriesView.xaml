@@ -141,8 +141,8 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <TextBlock Style="{StaticResource section}" Text="Errata" />
-                            <Grid Margin="20,10">
+                            <TextBlock Style="{StaticResource section}" Text="Errata" Visibility="Collapsed"/>
+                            <Grid Margin="20,10"  Visibility="Collapsed">
                                 <Border
                                     Background="{StaticResource Green}"
                                     CornerRadius="3"

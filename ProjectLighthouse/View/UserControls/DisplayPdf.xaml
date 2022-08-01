@@ -21,6 +21,8 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
+                MaxWidth="400"
+                TextTrimming="CharacterEllipsis"
                 x:Name="filename"
                 VerticalAlignment="Center"
                 FontSize="18"

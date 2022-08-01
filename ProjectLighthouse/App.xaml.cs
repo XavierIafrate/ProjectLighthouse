@@ -19,8 +19,6 @@ namespace ProjectLighthouse
         public static Login Login { get; set; }
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
-        public static DateTime LastDataRefresh { get; set; } = DateTime.MinValue;
-        public static System.Timers.Timer DataRefreshTimer { get; set; }
         public static bool DevMode { get; set; }
         private static MainWindow Window;
         public static MainViewModel MainViewModel { get; set; }
@@ -47,7 +45,7 @@ namespace ProjectLighthouse
             EnsureAppData();
 
             DevMode = Debugger.IsAttached;
-            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
+            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB.db3";
 
             string workstation = String.Empty;
             try

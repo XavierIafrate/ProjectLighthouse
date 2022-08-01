@@ -156,6 +156,8 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        public bool CanModify { get; set; }
+
         #endregion
 
         #endregion
@@ -177,6 +179,8 @@ namespace ProjectLighthouse.ViewModel
             Equipment = new();
             FilteredCertificates = new();
             FilteredEquipment = new();
+
+            CanModify = App.CurrentUser.CanModifyCalibration;
         }
 
 

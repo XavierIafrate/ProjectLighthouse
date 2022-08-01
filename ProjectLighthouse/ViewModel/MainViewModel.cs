@@ -109,7 +109,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        private bool noNotifications;
+        private bool noNotifications = true;
 
         public bool NoNotifications
         {

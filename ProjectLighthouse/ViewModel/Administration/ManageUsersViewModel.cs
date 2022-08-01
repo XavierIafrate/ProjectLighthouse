@@ -122,7 +122,7 @@ namespace ProjectLighthouse.ViewModel
         public ManageUsersViewModel()
         {
             roles = new() { "admin", "Purchasing", "Scheduling", "Production", "Viewer" };
-            views = new() { "View Requests", "Orders", "Schedule", "Assembly Orders" };
+            views = new() { "View Requests", "Orders", "Schedule", "New Request" };
 
             SelectedRole = string.Empty;
             Users = new();

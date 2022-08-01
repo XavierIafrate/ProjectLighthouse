@@ -163,7 +163,7 @@ namespace ProjectLighthouse.ViewModel
             DeliveryNotes.Clear();
             DeliveryNotes = DatabaseHelper.Read<DeliveryNote>()
                 .OrderByDescending(n => n.DeliveryDate)
-                .Where(d => d.DeliveryDate.AddDays(30) > System.DateTime.Now)
+                //.Where(d => d.DeliveryDate.AddDays(30) > System.DateTime.Now)
                 .ToList();
 
 

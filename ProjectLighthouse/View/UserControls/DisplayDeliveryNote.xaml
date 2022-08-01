@@ -5,29 +5,33 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     MinWidth="200"
-    MinHeight="50"
     d:Background="White"
     d:DesignWidth="200"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Margin="3,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <converters:dateToLastModified x:Key="dateFormatter"/>
+        </Grid.Resources>
 
         <StackPanel VerticalAlignment="Center">
             <TextBlock
                 x:Name="MOTextBlock"
-                FontSize="22"
-                FontWeight="Bold"
+                FontSize="20"
+                FontWeight="SemiBold"
                 Foreground="{StaticResource OnBackground}"
                 Text="{Binding Name, FallbackValue='M00001'}" />
             <TextBlock
                 x:Name="PORTextBlock"
                 FontSize="12"
+                Margin="0,0,0,2"
                 Foreground="{StaticResource Blue}"
-                Text="{Binding DeliveryDate, FallbackValue='01/01/1970', StringFormat='{}Delivered {0:dd/MM/yy HH:mm}'}" />
+                Text="{Binding DeliveryDate, Converter={StaticResource dateFormatter}}" />
         </StackPanel>
     </Grid>
 </UserControl>

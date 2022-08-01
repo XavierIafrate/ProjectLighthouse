@@ -32,13 +32,15 @@ namespace ProjectLighthouse.View.UserControls
             if (!File.Exists(filePath))
             {
 
-                control.filename.Text = Path.GetFileName(filePath) + " (not found)";
                 control.openButton.IsEnabled = false;
+                control.openButton.Content = "not found";
             }
             else
             {
                 control.filename.Text = Path.GetFileName(filePath);
                 control.openButton.IsEnabled = true;
+                control.openButton.Content = "Open File";
+
             }
         }
 

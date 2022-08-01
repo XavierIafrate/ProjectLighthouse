@@ -72,21 +72,13 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //PurchasingModule.Visibility = App.CurrentUser.Role != Model.UserRole.Production ? Visibility.Visible : Visibility.Collapsed;
-            AdminModule.Visibility = App.CurrentUser.Role == Model.UserRole.Administrator ? Visibility.Visible : Visibility.Collapsed;
-
-
-
-
-            manage_users_button.Visibility = App.CurrentUser.Role == Model.UserRole.Administrator
-                ? Visibility.Visible
+            AdminModule.Visibility = App.CurrentUser.Role == Model.UserRole.Administrator 
+                ? Visibility.Visible 
                 : Visibility.Collapsed;
 
-            //manage_lathes_button.Visibility = App.CurrentUser.UserName == "xav"
-            //    ? Visibility.Visible
-            //    : Visibility.Collapsed;
-
-            //qc_button.Visibility = manage_lathes_button.Visibility;
+            manage_lathes_button.Visibility = App.CurrentUser.UserName == "xav"
+                ? Visibility.Collapsed
+                : Visibility.Collapsed;
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.UserRole;

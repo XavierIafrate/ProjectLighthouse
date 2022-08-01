@@ -10,16 +10,35 @@ namespace ProjectLighthouse.Model
         public string Product { get; set; }
         public DateTime RaisedAt { get; set; }
         public string RaisedBy { get; set; }
-        public bool Complete { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
-        public bool Authorised { get; set; }
-        public string AuthorisedBy { get; set; }
-        public DateTime AuthorisedAt { get; set; }
+        public bool IsAccepted { get; set; }
+        public bool IsRejected { get; set; }
+        public string CheckedBy { get; set; }
+        public DateTime CheckedAt { get; set; }
         public DateTime RequiredBy { get; set; }
         public string SpecificationDocument { get; set; }
         public string SpecificationDetails { get; set; }
 
-        public string Result { get; set;}
+        [Ignore]
+        public string Status
+        {
+            get 
+            {
+                if (IsAccepted)
+                {
+                    return "Accepted";
+                }
+                else if (IsRejected)
+                {
+                    return "Rejected";
+                }
+                else
+                {
+                    return "Pending";
+                }
+            }
+        }
+
     }
 }

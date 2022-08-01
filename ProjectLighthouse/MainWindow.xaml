@@ -152,8 +152,8 @@
                         <ToggleButton
                             x:Name="qc_button"
                             Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Quality Control"
-                            Content="Quality Control"
+                            CommandParameter="Quality Check"
+                            Content="Quality Check"
                             Style="{StaticResource QualityCheck_MenuItem}" />
                         <ToggleButton
                             x:Name="deliveries_button"
