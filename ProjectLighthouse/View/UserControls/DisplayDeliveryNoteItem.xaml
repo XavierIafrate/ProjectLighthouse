@@ -9,8 +9,9 @@
     d:DesignWidth="281.387"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid Margin="10,5"  TextElement.FontFamily="Consolas">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
@@ -19,15 +20,17 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+        <Button Click="Button_Click" Grid.RowSpan="2" Style="{StaticResource IconEditButton}" Margin="0,0,10,0" Visibility="Collapsed"/>
         <TextBlock
+            Grid.Column="1"
             FontSize="16"
             FontWeight="SemiBold"
-            Text="{Binding Product, FallbackValue='P0123.456-789-A0'}" />
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            Text="{Binding Path=DelItem.Product, FallbackValue='PRODUCT_NAME', Mode=OneWay}" />
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
             <TextBlock
                 FontSize="14"
                 Foreground="{StaticResource Blue}"
-                Text="{Binding ItemManufactureOrderNumber, FallbackValue='M00001'}" />
+                Text="{Binding Path=DelItem.ItemManufactureOrderNumber, FallbackValue='M00001'}" />
             <TextBlock
                 FontSize="14"
                 Foreground="{StaticResource Blue}"
@@ -35,15 +38,16 @@
             <TextBlock
                 FontSize="14"
                 Foreground="{StaticResource Blue}"
-                Text="{Binding PurchaseOrderReference, FallbackValue='P012345'}" />
+                Text="{Binding Path=DelItem.PurchaseOrderReference, FallbackValue='P012345'}" />
         </StackPanel>
 
         <TextBlock
             Grid.RowSpan="2"
-            Grid.Column="2"
+            Grid.Column="3"
             Padding="0,0,10,0"
             VerticalAlignment="Center"
-            FontSize="18"
-            Text="{Binding QuantityThisDelivery, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
+            FontSize="15"
+            FontFamily="Consolas"
+            Text="{Binding Path=DelItem.QuantityThisDelivery, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" FontWeight="SemiBold" />
     </Grid>
 </UserControl>

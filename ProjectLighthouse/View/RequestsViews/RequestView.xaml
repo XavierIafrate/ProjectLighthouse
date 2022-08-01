@@ -447,30 +447,41 @@
                                     Visibility="{Binding MergeVis}" />
                             </Grid>
                         </StackPanel>
-                        <StackPanel Margin="0,10" Visibility="{Binding CompleteProductVis}">
-                            <TextBlock Style="{StaticResource section}" Text="Amend Data" />
-                            <TextBlock Text="The required data for manufacture is not available for this product. Please review the specifications below and amend the product record." TextWrapping="Wrap"/>
-                            <TextBlock Margin="10" Text="Specification Details" Style="{StaticResource section}" FontSize="16"/>
-                            <TextBlock Margin="10,0" Text="{Binding SelectedRequestProduct.SpecificationDetails, TargetNullValue='N/A'}" d:Text="N/A"/>
+                        <Border Margin="0,10" Visibility="{Binding CompleteProductVis}" BorderBrush="{StaticResource Orange}" BorderThickness="3" CornerRadius="8">
+                            <StackPanel Margin="20">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
+                                          Fill="{StaticResource OnBackground}" Width="25" Stretch="Uniform" Margin="0,3,7,0"/>
+                                <TextBlock Style="{StaticResource section}" Text="Data Required" Grid.Column="1"/>
+                                </Grid>
+                                <TextBlock Text="The required data for manufacture is not available for this product. Please review the specifications below and amend the product record." FontStyle="Italic" Foreground="{StaticResource Purple}" Margin="10" TextWrapping="Wrap"/>
+                                <TextBlock Margin="10" Text="Spec Details" Style="{StaticResource section}" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Margin="20,0" Text="{Binding SelectedRequestProduct.SpecificationDetails, TargetNullValue='N/A'}" d:Text="N/A"/>
 
-                            <TextBlock Margin="10" Text="Specification Document" Style="{StaticResource section}" FontSize="16"/>
-                            <uc:DisplayPdf Margin="10,0" FilePath="{Binding SelectedRequestProduct.SpecificationDocument, TargetNullValue=''}" Width="350" HorizontalAlignment="Left"/>
+                                <TextBlock Margin="10" Text="Spec Document" Style="{StaticResource section}" FontWeight="SemiBold" FontSize="16"/>
+                                <uc:DisplayPdf Margin="20,0" FilePath="{Binding SelectedRequestProduct.SpecificationDocument, TargetNullValue=''}"  HorizontalAlignment="Stretch"/>
 
-                            <Grid
-                                Margin="0,20"
-                                HorizontalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                </Grid.ColumnDefinitions>
-                                <Button
-                                    Margin="10,0"
-                                    Command="{Binding ModifyProductCommand}"
-                                    Content="Edit Product" />
-                            </Grid>
-                        </StackPanel>
+                                <Grid
+                                    Margin="0,20,0,0"
+                                    HorizontalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button
+                                        Margin="10,0"
+                                        Command="{Binding ModifyProductCommand}"
+                                        Content="Edit Product Data" />
+                                </Grid>
+                                
+                            </StackPanel>
+                        </Border>
 
                     </StackPanel>
 

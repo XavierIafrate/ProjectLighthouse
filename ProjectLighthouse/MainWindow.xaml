@@ -97,7 +97,7 @@
                             Foreground="{StaticResource OnRed}"
                             Text="Development Build" />
                     </Grid>
-                    <StackPanel Margin="0,20">
+                    <StackPanel Margin="0,20" x:Name="PurchasingModule">
                         <ToggleButton
                             x:Name="new_request_button"
                             Command="{Binding UpdateViewCommand}"
@@ -112,7 +112,7 @@
                             Style="{StaticResource ViewRequests_MenuItem}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,20">
+                    <StackPanel Margin="0,20" x:Name="ProductionModule">
                         <ToggleButton
                             x:Name="orders_button"
                             Command="{Binding UpdateViewCommand}"
@@ -142,7 +142,13 @@
                             Style="{StaticResource Drawings_MenuItem}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,20">
+                    <StackPanel Margin="0,20" x:Name="AssemblyModule">
+                        <ToggleButton
+                            x:Name="calibration_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Calibration"
+                            Content="Calibration"
+                            Style="{StaticResource Calibration_MenuItem}" />
                         <ToggleButton
                             x:Name="qc_button"
                             Command="{Binding UpdateViewCommand}"
@@ -157,13 +163,7 @@
                             Style="{StaticResource Deliveries_MenuItem}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,20">
-                        <ToggleButton
-                            x:Name="calibration_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Calibration"
-                            Content="Calibration"
-                            Style="{StaticResource Calibration_MenuItem}" />
+                    <StackPanel Margin="0,20" x:Name="AdminModule">
                         
                         <ToggleButton
                             x:Name="analytics_button"

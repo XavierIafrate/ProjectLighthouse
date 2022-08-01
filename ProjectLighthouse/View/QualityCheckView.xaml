@@ -263,6 +263,6 @@
             </Grid>
         </ScrollViewer>
 
-        <Button Content="New" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" Style="{StaticResource HeroAddButton}"/>
+        <Button Content="New" Grid.Column="1" HorizontalAlignment="Right" Command="{Binding AddNewCheckCommand}" VerticalAlignment="Bottom" Margin="20" Style="{StaticResource HeroAddButton}"/>
     </Grid>
 </UserControl>

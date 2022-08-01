@@ -1,0 +1,35 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.RequestNewQualityCheckWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    Title="New Quality Check"
+    Width="500"
+    SizeToContent="Height"
+    mc:Ignorable="d">
+    <Grid>
+        <StackPanel Margin="20">
+            <TextBlock Style="{StaticResource title}" Text="Request Quality Check" />
+            <TextBlock Text="Product Name" Style="{StaticResource section}"/>
+            <TextBlock Text="This should match the code in Opera"/>
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Product Name"
+                x:Name="productNameTextBox" />
+            <TextBlock Text="Product Spec" Style="{StaticResource section}"/>
+            <TextBlock Text="What dimensions are being examined? You can either attach a file (pdf, jpg, png) or give written details. If we are checking against the catalog then please just write 'Catalog'" TextWrapping="Wrap"/>
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Specification Details"
+                x:Name="specDetailsTextBox" />
+            <uc:FilePicker x:Name="FilePicker" AllowedFileTypes="PDF Files(*.pdf) | *.pdf|Image Files (*.jpg, *.png) | *.jpg;*.png" />
+            <TextBlock Text="Required Date" Style="{StaticResource section}"/>
+            <TextBlock Text="When do you need the work done at the latest?"/>
+            <DatePicker Name="RequiredDate" Margin="5"/>
+            <Button HorizontalAlignment="Right" Content="Submit" x:Name="SubmitButton" Click="SubmitButton_Click" Style="{StaticResource GreenButton}"/>
+        </StackPanel>
+    </Grid>
+</Window>

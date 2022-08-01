@@ -344,10 +344,10 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource RedLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OrangeLight}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Red}" />
+                <Setter Property="Foreground" Value="{StaticResource Orange}" />
             </Trigger>
         </Style.Triggers>
     </Style>

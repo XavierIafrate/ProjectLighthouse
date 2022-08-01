@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel
@@ -75,6 +77,7 @@ namespace ProjectLighthouse.ViewModel
 
         public SendMessageCommand SendMessageCommand { get; set; }
         public UploadEvidenceCommand UploadEvidenceCmd { get; set; }
+        public AddQualityCheckCommand AddNewCheckCommand { get; set; }
 
         public QualityCheckViewModel()
         {
@@ -82,12 +85,20 @@ namespace ProjectLighthouse.ViewModel
             FilteredChecks = new();
             FilteredAttachments = new();
 
+            SendMessageCommand = new(this);
+            UploadEvidenceCmd = new(this);
+            AddNewCheckCommand = new(this);
+
+            LoadData();
+        }
+
+        void LoadData()
+        {
+
             Checks = DatabaseHelper.Read<QualityCheck>().ToList();
             Notes = DatabaseHelper.Read<Note>().ToList();
             Attachments = DatabaseHelper.Read<Attachment>().ToList();
 
-            SendMessageCommand = new(this);
-            UploadEvidenceCmd = new(this);
             FilterChecks();
         }
 
@@ -195,6 +206,16 @@ namespace ProjectLighthouse.ViewModel
             };
 
             DatabaseHelper.Insert(newAttachment);
+        }
+
+        public void AddQualityCheck()
+        {
+            RequestNewQualityCheckWindow window = new();
+            window.ShowDialog();
+            if (window.RequestAdded)
+            {
+                LoadData();
+            }
         }
 
         public class UploadEvidenceCommand : ICommand

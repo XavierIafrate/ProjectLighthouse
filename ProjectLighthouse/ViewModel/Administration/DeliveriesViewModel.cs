@@ -39,7 +39,7 @@ namespace ProjectLighthouse.ViewModel
                     return;
 
                 NoteIsNotVerified = !selectedDeliveryNote.Verified;
-                PdfEnabled = selectedDeliveryNote.Verified;
+                PdfEnabled = selectedDeliveryNote.Verified || App.CurrentUser.Role == UserRole.Administrator;
                 FilteredDeliveryItems = new List<DeliveryItem>(DeliveryItems.Where(n => n.AllocatedDeliveryNote == value.Name));
                 OnPropertyChanged(nameof(FilteredDeliveryItems));
                 OnPropertyChanged();
@@ -50,6 +50,8 @@ namespace ProjectLighthouse.ViewModel
         public GeneratePDFDeliveryNoteCommand GenerateDeliveryNotePDFCommand { get; set; }
 
         public VerifyDeliveryNoteCommand VerifyCommand { get; set; }
+        public EditDeliveryNoteItemCommand EditDeliveryNoteItemCmd { get; set; }
+
 
         private bool noteIsNotVerified;
         public bool NoteIsNotVerified
@@ -110,6 +112,7 @@ namespace ProjectLighthouse.ViewModel
             GenerateDeliveryNotePDFCommand = new(this);
             VerifyCommand = new(this);
             DisableControls = false;
+            EditDeliveryNoteItemCmd = new(this);
 
             CheckingOperaVis = Visibility.Collapsed;
 
@@ -147,6 +150,12 @@ namespace ProjectLighthouse.ViewModel
                 MessageBox.Show(message, "Mismatch detected", MessageBoxButton.OK, MessageBoxImage.Hand);
             }
 
+        }
+
+        public void EditItem(int id)
+        {
+            MessageBox.Show(id.ToString());
+            return;
         }
 
         private void LoadDeliveryNotes()
