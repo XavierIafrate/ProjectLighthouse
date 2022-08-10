@@ -1,9 +1,11 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -104,23 +106,6 @@ namespace ProjectLighthouse.ViewModel
 
                 DrawingGroups.Add(newGroup);
             }
-
-            //CleanDrawings();
-        }
-
-        void CleanDrawings()
-        {
-            for (int i = 0; i < Drawings.Count; i++)
-            {
-                if (string.IsNullOrEmpty(Drawings[i].DrawingStore))
-                {
-                    string tmpPath = Path.GetTempFileName() + ".pdf";
-                    File.Copy(Path.Join(App.ROOT_PATH, Drawings[i].URL), tmpPath);
-                    Drawings[i].DrawingStore = tmpPath;
-                    DatabaseHelper.Update(Drawings[i]);
-                }
-
-            }
         }
 
         private void FilterDrawings(string searchString = "")
@@ -193,6 +178,13 @@ namespace ProjectLighthouse.ViewModel
             drawing.RejectedDate = DateTime.Now;
             drawing.RejectedBy = App.CurrentUser.GetFullName();
             DatabaseHelper.Update(drawing);
+
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == drawing.CreatedBy).ToList();
+            for (int i = 0; i < ToNotify.Count; i++)
+            {
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Rejected: {drawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has rejected this drawing.", toastAction: $"viewDrawing:{drawing.DrawingName}"));
+            }
+
             int target = drawing.Id;
             LoadData();
             SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));
@@ -210,6 +202,13 @@ namespace ProjectLighthouse.ViewModel
             drawing.ApprovedBy = App.CurrentUser.GetFullName();
 
             DatabaseHelper.Update(drawing);
+
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == drawing.CreatedBy).ToList();
+            for (int i = 0; i < ToNotify.Count; i++)
+            {
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Approved: {drawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has approved this drawing.", toastAction: $"viewDrawing:{drawing.DrawingName}"));
+            }
+
             int target = drawing.Id;
             LoadData();
             SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));

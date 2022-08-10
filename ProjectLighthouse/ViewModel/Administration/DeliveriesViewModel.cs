@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.View;
+using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
@@ -154,7 +155,9 @@ namespace ProjectLighthouse.ViewModel
 
         public void EditItem(int id)
         {
-            MessageBox.Show(id.ToString());
+            DeliveryItem targetItem = (DeliveryItem)DeliveryItems.Find(x => x.Id == id).Clone();
+            EditDeliveryNoteWindow window = new(targetItem);
+            window.ShowDialog();
             return;
         }
 

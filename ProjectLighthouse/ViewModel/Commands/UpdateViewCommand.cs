@@ -28,63 +28,117 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new ScheduleViewModel();
-                viewModel.NavText = "Schedule";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Harmonogram",
+                    "Persian" => "برنامه",
+                    "Welsh" => "Amserlen",
+                    _ => "Schedule"
+                };
             }
             else if (parameter.ToString() == "View Requests")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new RequestViewModel();
-                viewModel.NavText = "Requests";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Wyświetl Prośby",
+                    "Persian" => "مشاهده درخواست ها",
+                    "Welsh" => "Gweld Ceisiadau",
+                    _ => "View Requests"
+                };
             }
             else if (parameter.ToString() == "New Request")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new NewRequestViewModel();
-                viewModel.NavText = "New Request";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Nowe Żądanie",
+                    "Persian" => "درخواست جدید",
+                    "Welsh" => "Cais Newydd",
+                    _ => "New Request"
+                };
             }
             else if (parameter.ToString() == "Orders")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new OrderViewModel();
-                viewModel.NavText = "Manufacture Orders";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Zamówienia Produkcje",
+                    "Persian" => "سفارشات ساخت",
+                    "Welsh" => "Gorchmynion Gweithgynhyrchu",
+                    _ => "Manufacture Orders"
+                };
             }
             else if (parameter.ToString() == "Bar Stock")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new BarStockViewModel();
-                viewModel.NavText = "Bar Stock";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Materiał",
+                    "Persian" => "ماده خام",
+                    "Welsh" => "Deunydd Crai",
+                    _ => "Bar Stock"
+                };
             }
             else if (parameter.ToString() == "Drawings")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DrawingBrowserViewModel();
-                viewModel.NavText = "Technical Drawings";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Rysunek Techniczney",
+                    "Persian" => "نقشه های فنی",
+                    "Welsh" => "Darluniau Technegol",
+                    _ => "Technical Drawings"
+                };
             }
             else if (parameter.ToString() == "Calibration")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new CalibrationViewModel();
-                viewModel.NavText = "Calibration";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Kalibracja",
+                    "Persian" => "تنظیم",
+                    "Welsh" => "Calibradu",
+                    _ => "Calibration"
+                };
             }
             else if (parameter.ToString() == "Quality Check")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new QualityCheckViewModel();
-                viewModel.NavText = "Quality Control";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Kontrola Jakości",
+                    "Persian" => "بررسی کیفیت",
+                    "Welsh" => "Gwiriad Ansawdd",
+                    _ => "Quality Check"
+                };
             }
             else if (parameter.ToString() == "Deliveries")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new DeliveriesViewModel();
-                viewModel.NavText = "Deliveries";
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Dostawy",
+                    "Persian" => "تحویل",
+                    "Welsh" => "Dosbarthu",
+                    _ => "Deliveries"
+                };
             }
             else if (parameter.ToString() == "Dev Area / Debug")
             {

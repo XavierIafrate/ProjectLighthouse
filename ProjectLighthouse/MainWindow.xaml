@@ -317,7 +317,8 @@
             x:Name="viewPort"
             Grid.Row="1"
             Grid.Column="1"
-            Content="{Binding SelectedViewModel}" />
+            Content="{Binding SelectedViewModel}"
+            MouseDown="viewPort_MouseDown"/>
         <!--#endregion-->
 
         <!--#region Notifications Bar-->
@@ -325,7 +326,7 @@
             Grid.Row="1"
             HorizontalAlignment="Right"
             Grid.Column="2"
-            Width="400"
+            Width="420"
             Visibility="{Binding NotificationsBarVis}">
             <Border
                 Margin="5,10,20,10"
@@ -365,7 +366,7 @@
                     <ListView
                         d:ItemsSource="{d:SampleData ItemCount=10}"
                         Grid.Row="1"
-                        MaxWidth="350"
+                        MaxWidth="380"
                         Margin="10,0"
                         ItemsSource="{Binding Notifications}">
                         <ItemsControl.ItemTemplate>

@@ -1,8 +1,9 @@
 ﻿using SQLite;
+using System;
 
 namespace ProjectLighthouse.Model
 {
-    public class DeliveryItem
+    public class DeliveryItem : ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -15,5 +16,22 @@ namespace ProjectLighthouse.Model
         public int LotID { get; set; }
         [Ignore]
         public string FromMachine { get; set; }
+
+        public object Clone()
+        {
+            return new DeliveryItem()
+            {
+                Id = Id,
+                AllocatedDeliveryNote = AllocatedDeliveryNote,
+                ItemManufactureOrderNumber = ItemManufactureOrderNumber,
+                PurchaseOrderReference = PurchaseOrderReference,
+                Product = Product,
+                QuantityThisDelivery = QuantityThisDelivery,
+                QuantityToFollow = QuantityToFollow,
+                LotID = LotID,
+                FromMachine = FromMachine,
+            };
+
+        }
     }
 }

@@ -228,13 +228,14 @@ namespace ProjectLighthouse
             {
                 return;
             }
-            ShowError errorWindow = new() { Error = e };
-            errorWindow.NotifyPropertyChanged();
-
             if (!App.DevMode)
             {
                 RecordError(e);
             }
+
+            ShowError errorWindow = new() { Error = e };
+            errorWindow.NotifyPropertyChanged();
+
 
             Window.Hide();
             errorWindow.ShowDialog();

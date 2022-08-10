@@ -46,12 +46,12 @@ namespace ProjectLighthouse.View.UserControls
                 control.DateText.Foreground = (Brush)App.Current.Resources["OnSurface"];
                 control.Counter.Foreground = (Brush)App.Current.Resources["OnSurface"];
             }
-
-            if (control.Day.Orders.Count <= 1)
+            int numFullSets = control.Day.Orders.Where(x => !x.IsZeroSet).Count();
+            if (numFullSets <= 1)
             {
                 control.Warning.Background = (Brush)Application.Current.Resources["Green"];
             }
-            else if (control.Day.Orders.Count == 2)
+            else if (numFullSets <= 3)
             {
                 control.Warning.Background = (Brush)Application.Current.Resources["Orange"];
             }

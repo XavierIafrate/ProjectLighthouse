@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,7 +74,9 @@ namespace ProjectLighthouse.View.UserControls
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
+            //LabelPrintingHelper.PrintLot(Lot);
             EditCommand.Execute(Lot.ID);
         }
+
     }
 }

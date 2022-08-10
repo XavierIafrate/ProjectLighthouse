@@ -52,8 +52,7 @@
                 x:Name="made"
                 d:Text="99,999 / "
                 FontWeight="SemiBold"
-                Foreground="{StaticResource Orange}"
-                Text="{Binding QuantityMade, StringFormat='{}{0:#,##0} / '}" />
+                Foreground="{StaticResource Orange}" />
             <TextBlock
                 x:Name="delivered"
                 d:Text="99,999 / "

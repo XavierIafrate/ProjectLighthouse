@@ -120,6 +120,7 @@ namespace ProjectLighthouse.Model
                 OrderItems = new(OrderItems ?? new()),
                 TargetCycleTime = TargetCycleTime,
                 TargetCycleTimeEstimated = TargetCycleTimeEstimated,
+                ToolingGroup = ToolingGroup,
             };
         }
 

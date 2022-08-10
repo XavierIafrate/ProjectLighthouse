@@ -149,6 +149,10 @@ namespace ProjectLighthouse.Model
 
         public string GetSafeFileName()
         {
+            if (Revision == 0)
+            {
+                return $"{MakeValidFileName(DrawingName)}_rc{Id:0}.pdf";
+            }
             return $"{MakeValidFileName(DrawingName)}_R{Revision:0}{AmendmentType}.pdf";
         }
 

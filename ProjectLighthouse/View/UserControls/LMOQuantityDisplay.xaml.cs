@@ -47,6 +47,7 @@ namespace ProjectLighthouse.View.UserControls
             control.delivered.Visibility = control.Item.QuantityMade > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             control.made.Visibility = control.Item.QuantityMade != control.Item.QuantityDelivered ? Visibility.Visible : Visibility.Collapsed;
+            control.made.Text = $"{control.Item.QuantityMade - control.Item.QuantityDelivered} / ";
 
             double lWidth = (double)control.Item.RequiredQuantity / (double)control.Item.TargetQuantity;
             if (double.IsNaN(lWidth))

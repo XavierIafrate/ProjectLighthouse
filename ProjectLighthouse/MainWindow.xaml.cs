@@ -33,6 +33,15 @@ namespace ProjectLighthouse
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
+            Title = App.CurrentUser.Locale switch
+            {
+                "" => "Lighthouse",
+                "Polish" => "Latarnia Morska",
+                "Persian" => "فانوس دریایی",
+                "Welsh" => "Goleudy",
+                _ => "Lighthouse"
+            };
+
             Title += $" v.{versionInfo.FileVersion}";
 
 #if DEBUG
@@ -106,6 +115,11 @@ namespace ProjectLighthouse
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
+        }
+
+        private void viewPort_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            App.MainViewModel.NotificationsBarVis = Visibility.Collapsed;
         }
     }
 }

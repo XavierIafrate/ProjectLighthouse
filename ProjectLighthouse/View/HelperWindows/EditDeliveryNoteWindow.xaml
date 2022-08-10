@@ -1,0 +1,20 @@
+﻿<Window x:Class="ProjectLighthouse.View.HelperWindows.EditDeliveryNoteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectLighthouse.View.HelperWindows"
+        mc:Ignorable="d"
+        Title="Edit Delivery Item"
+        SizeToContent="Height"
+        ResizeMode="NoResize" Width="502.305">
+    <Grid Margin="30">
+        <StackPanel>
+            <TextBlock Style="{StaticResource title}" Text="Edit Delivery Item"/>
+            <TextBlock Style="{StaticResource subtitle}" Text="Only do this if you know what you're doing."/>
+            <TextBox Tag="Product Name" Style="{StaticResource DefaultTextBox}" Margin="5,20,5,5" x:Name="productText"/>
+            <TextBox Tag="Purchase Reference" Style="{StaticResource DefaultTextBox}" x:Name="poText"/>
+            <Button Content="Save" Style="{StaticResource GreenButton}" HorizontalAlignment="Right"/>
+        </StackPanel>
+    </Grid>
+</Window>

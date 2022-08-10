@@ -208,6 +208,29 @@
                             Opacity="0.8"
                             Text="{Binding SelectedCheck.UpdatedAt, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource modifiedFormatter}, StringFormat='{} {0}'}" />
                     </StackPanel>
+                    <StackPanel
+                        Grid.Row="1"
+                        Margin="0,5"
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsModified, Converter={StaticResource showIfTrue}}">
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Margin="0,0,5,0"
+                            Data="M19,4H18V2H16V4H8V2H6V4H5C3.89,4 3,4.9 3,6V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V6A2,2 0 0,0 19,4M19,20H5V10H19V20M19,8H5V6H19V8M12,13H17V18H12V13Z"
+                            Fill="{StaticResource Orange}"
+                            Stretch="Uniform" />
+                        <TextBlock
+                            Grid.Column="2"
+                            HorizontalAlignment="Right"
+                            d:Text="Required Monday, 01/01/1970"
+                            FontSize="13"
+                            FontStyle="Italic"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Orange}"
+                            Opacity="0.8"
+                            Text="{Binding SelectedCheck.RequiredBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Required {0:dddd, dd/MM/yy}'}" />
+                    </StackPanel>
                     <TextBlock
                         Margin="0,20,0,0"
                         Style="{StaticResource section}"
