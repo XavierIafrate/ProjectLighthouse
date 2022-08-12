@@ -280,19 +280,7 @@
                 <TextBlock Style="{StaticResource section}" Text="Comments" />
 
                 <local:DisplayListOfNotes x:Name="notesDisplay" ShowingEditControls="False" />
-                <!--<ItemsControl
-                    x:Name="NotesDisplay"
-                    MinHeight="50"
-                    HorizontalContentAlignment="Stretch"
-                    Background="{StaticResource Background}"
-                    ItemsSource="{Binding Notes}"
-                    ScrollViewer.CanContentScroll="False">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:DisplayNote Note="{Binding}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>-->
+
                 <Grid Margin="10,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="71*" />

@@ -46,6 +46,8 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.DelItem = (DeliveryItem)e.NewValue;
             }
+
+            control.EditButton.Visibility = App.CurrentUser.Role == UserRole.Administrator ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public DisplayDeliveryNoteItem()

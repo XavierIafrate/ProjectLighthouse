@@ -230,11 +230,14 @@ namespace ProjectLighthouse.View
                     : DateTime.Now.Date.AddHours(-12)
             };
 
+
             if (!DatabaseHelper.Insert(newLot))
             {
                 MessageBox.Show("Failed to add to database", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            LabelPrintingHelper.PrintLot(newLot);
 
             LotAdded = true;
             SaveExit = true;

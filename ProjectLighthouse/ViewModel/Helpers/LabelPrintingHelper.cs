@@ -62,7 +62,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public LotLabel()
             {
-                User = App.CurrentUser.UserName;
+                User = App.CurrentUser.UserName.ToUpper();
                 Date = DateTime.Now;
             }
 
@@ -71,7 +71,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 Product = lot.ProductName;
                 Batch = lot.MaterialBatch;
                 Quantity = lot.Quantity;
-                User = App.CurrentUser.UserName;
+                User = App.CurrentUser.UserName.ToUpper();
                 Date = DateTime.Now;
             }
         }
@@ -89,7 +89,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public InventoryLabel()
             {
-                User = App.CurrentUser.UserName;
+                User = App.CurrentUser.UserName.ToUpper();
                 Date = DateTime.Now;
             }
 

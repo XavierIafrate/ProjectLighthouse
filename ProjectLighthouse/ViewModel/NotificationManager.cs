@@ -79,7 +79,7 @@ namespace ProjectLighthouse.ViewModel
             DataRefreshTimer = new();
 
             DataRefreshTimer.Elapsed += Timer_Tick;
-            DataRefreshTimer.Interval = 30 * 1000;
+            DataRefreshTimer.Interval = 60 * 1000;
             DataRefreshTimer.Enabled = true;
         }
 

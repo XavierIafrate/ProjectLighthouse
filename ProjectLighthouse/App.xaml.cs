@@ -45,7 +45,7 @@ namespace ProjectLighthouse
             EnsureAppData();
 
             DevMode = Debugger.IsAttached;
-            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB.db3";
+            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
 
             string workstation = String.Empty;
             try
@@ -138,7 +138,14 @@ namespace ProjectLighthouse
             //Copy all the files & Replaces any files with the same name
             foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
-                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+                try
+                {
+                    File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -224,11 +231,11 @@ namespace ProjectLighthouse
 
         void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            if (e.Handled)
+            if (e.Handled || Window == null)
             {
                 return;
             }
-            if (!App.DevMode)
+            if (!App.DevMode && App.CurrentUser != null)
             {
                 RecordError(e);
             }
@@ -247,7 +254,7 @@ namespace ProjectLighthouse
             string filename = DateTime.Now.ToString("s").Replace(':', '_');
             File.WriteAllText($"{ROOT_PATH}/errors/{filename}.json", errorJson);
             string textInfo = $"USER: {App.CurrentUser.UserName}\n" +
-                $"COMP: {Environment.MachineName}" +
+                $"COMP: {Environment.MachineName}\n" +
                 $"VIEW: {App.ActiveViewModel}";
             File.WriteAllText($"{ROOT_PATH}/errors/supp_{filename}.txt", textInfo);
         }

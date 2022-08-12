@@ -309,9 +309,9 @@ namespace ProjectLighthouse.ViewModel
 
         public void CreateReport()
         {
-            List<CalibratedEquipment> requiresRecal = Equipment.Where(x => x.NextDue < System.DateTime.Now.AddMonths(2) && x.RequiresCalibration && !x.IsOutOfService).ToList();
-            CSVHelper.WriteListToCSV(requiresRecal, "RequiresCal");
-            //TestLabelPrinter();
+            //List<CalibratedEquipment> requiresRecal = Equipment.Where(x => x.NextDue < System.DateTime.Now.AddMonths(2) && x.RequiresCalibration && !x.IsOutOfService).ToList();
+            //CSVHelper.WriteListToCSV(requiresRecal, "RequiresCal");
+            TestLabelPrinter();
         }
 
         void TestLabelPrinter()

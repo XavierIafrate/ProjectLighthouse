@@ -64,7 +64,7 @@ namespace ProjectLighthouse.Model
             drawings = drawings.Where(x => x.IsApproved).ToList();
             if (item.IsSpecialPart)
             {
-                List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
+                List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
                 if (matches.Count > 0)
                 {
                     item.DrawingId = matches.First().Id;
@@ -74,7 +74,7 @@ namespace ProjectLighthouse.Model
             }
             else
             {
-                List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.Revision).ToList();
+                List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
                 if (matches.Count == 0)
                 {
                     return GetBestDrawingForProduct(
@@ -98,21 +98,21 @@ namespace ProjectLighthouse.Model
             List<TechnicalDrawing> matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group).ToList(); // && d.MaterialConstraint == material
             if (matches.Count > 0)
             {
-                matches = matches.OrderByDescending(d => d.Revision).ToList();
+                matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
                 return matches.First();
             }
 
             matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group).ToList();
             if (matches.Count > 0)
             {
-                matches = matches.OrderByDescending(d => d.Revision).ToList();
+                matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
                 return matches.First();
             }
 
             matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && string.IsNullOrEmpty(d.ToolingGroup)).ToList();
             if (matches.Count > 0)
             {
-                matches = matches.OrderByDescending(d => d.Revision).ToList();
+                matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
                 return matches.First();
             }
             return null;
