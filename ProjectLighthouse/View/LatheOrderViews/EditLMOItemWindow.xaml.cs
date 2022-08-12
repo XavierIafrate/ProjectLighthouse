@@ -321,6 +321,8 @@ namespace ProjectLighthouse.View
             {
                 MessageBox.Show("no edit");// Save command execution logic
             }
+
+
             EditLotWindow editWindow = new((int)_toEdit, CanEdit);
             Hide();
             editWindow.ShowDialog();

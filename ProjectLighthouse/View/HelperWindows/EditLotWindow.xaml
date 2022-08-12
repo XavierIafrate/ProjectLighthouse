@@ -68,6 +68,11 @@
             Content="Allow Delivery"
             FontSize="16" />
         <Button
+            x:Name="PrintButton"
+            HorizontalAlignment="Right"
+            Click="PrintButton_Click"
+            Content="Print" />
+        <Button
             x:Name="SaveButton"
             HorizontalAlignment="Right"
             Click="SaveButton_Click"

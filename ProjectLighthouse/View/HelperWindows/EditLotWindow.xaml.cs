@@ -136,5 +136,10 @@ namespace ProjectLighthouse.View
         {
             EditLot.AllowDelivery = (bool)AllowDeliveryCheckbox.IsChecked;
         }
+
+        private void PrintButton_Click(object sender, RoutedEventArgs e)
+        {
+            LabelPrintingHelper.PrintLot(EditLot);
+        }
     }
 }
