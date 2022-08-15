@@ -9,7 +9,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         public static Tuple<TimeSpan, DateTime> GetMachineWorkload(List<ScheduleItem> items)
         {
-            double secondsOfRuntime = 7 * 84600;
+            double secondsOfRuntime = 0;
             DateTime lastItemFinished = DateTime.MinValue;
 
             items = items.OrderBy(x => x.StartDate).ToList();
@@ -47,17 +47,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static int GetTimeToMakeOrder(LatheManufactureOrder order, bool includeSetting)
         {
-            const int settingTime = 86400 / 2;
-            int runtime = 0;
-            if (includeSetting)
-            {
-                runtime += settingTime;
-            }
+            int runtime = includeSetting ? 86400 / 2 : 0;
 
             for (int i = 0; i < order.OrderItems.Count; i++)
             {
                 LatheManufactureOrderItem item = order.OrderItems[i];
-                runtime += item.GetCycleTime() * (item.TargetQuantity - item.QuantityMade);
+                runtime += item.GetCycleTime() * Math.Max(item.TargetQuantity - item.QuantityMade, 0);
             }
 
             return runtime;
