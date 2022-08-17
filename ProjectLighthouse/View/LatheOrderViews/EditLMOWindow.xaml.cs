@@ -490,7 +490,7 @@ namespace ProjectLighthouse.View
                 SaveExit = true;
                 LoadData(Order.Name);
             }
-            Show();
+            ShowDialog();
         }
 
         public class RelayCommand : ICommand

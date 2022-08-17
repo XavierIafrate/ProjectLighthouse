@@ -333,7 +333,7 @@ namespace ProjectLighthouse.View
                 LoadData(Item.Id);
                 LoadUI();
             }
-            Show();
+            ShowDialog();
         }
 
         public class RelayCommand : ICommand
