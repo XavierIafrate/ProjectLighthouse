@@ -370,7 +370,6 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Insert(o);
             }
 
-            MessageBox.Show($"Order {NewOrder.Name} has successfully been issued.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             Cancelled = false;
             Close();
         }

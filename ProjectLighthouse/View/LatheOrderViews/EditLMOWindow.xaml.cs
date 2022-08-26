@@ -273,7 +273,7 @@ namespace ProjectLighthouse.View
 
             foreach (LatheManufactureOrderItem item in Items)
             {
-                totalLengthRequired += (item.MajorLength + partOff) * item.TargetQuantity * 1.02;
+                totalLengthRequired += (item.MajorLength + item.PartOffLength + partOff) * item.TargetQuantity * 1.02;
             }
 
             Order.NumberOfBars = Math.Ceiling(totalLengthRequired / (bar.Length - 300)) + Order.SpareBars;

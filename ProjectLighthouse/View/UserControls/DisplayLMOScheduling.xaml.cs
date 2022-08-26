@@ -60,7 +60,7 @@ namespace ProjectLighthouse.View.UserControls
                 }
                 control.orderItems.ItemsSource = control.orderObject.OrderItems;
 
-                control.LargeDiameterIndicator.Visibility = control.orderObject.OrderItems.First().MajorLength > 90 || control.orderObject.OrderItems.First().MajorDiameter > 20
+                control.LargeDiameterIndicator.Visibility = control.orderObject.OrderItems.First().MajorDiameter > 20
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
