@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model.Administration;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 

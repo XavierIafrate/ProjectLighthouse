@@ -6,10 +6,7 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -186,8 +183,8 @@ namespace ProjectLighthouse.ViewModel
             }
 
             NewRequest = new()
-            { 
-                Product = SelectedProduct.ProductName ,
+            {
+                Product = SelectedProduct.ProductName,
                 QuantityRequired = Math.Max(-SelectedProduct.FreeStock(), 0),
                 DateRequired = DateTime.Now.AddMonths(1),
             };
@@ -262,13 +259,13 @@ namespace ProjectLighthouse.ViewModel
             for (int i = 0; i < ToNotify.Count; i++)
             {
                 Notification not = new(
-                    to:ToNotify[i].UserName, 
-                    from: App.CurrentUser.UserName, 
-                    header: "Request Raised", 
+                    to: ToNotify[i].UserName,
+                    from: App.CurrentUser.UserName,
+                    header: "Request Raised",
                     body: $"New request raised for {NewRequest.QuantityRequired:#,##0}pcs of {NewRequest.Product}. Requested in {weeks} weeks.",
-                    toastAction : $"viewRequest:{newRequestId:0}",
+                    toastAction: $"viewRequest:{newRequestId:0}",
                     toastImageUrl: toastImage);
-                
+
                 if (not.TargetUser == not.Origin)
                 {
                     continue;
@@ -314,7 +311,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public class LeadTime 
+        public class LeadTime
         {
             public Lathe Lathe { get; set; }
             public TimeSpan Workload { get; set; }

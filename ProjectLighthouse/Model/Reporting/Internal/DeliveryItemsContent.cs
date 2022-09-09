@@ -1,10 +1,5 @@
 ﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectLighthouse.Model.Reporting.Internal
 {
@@ -25,10 +20,10 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             Table signingLine = section.AddTable();
 
             Unit width = Size.GetWidth(signingLine.Section);
-            signingLine.AddColumn(width*0.7);
+            signingLine.AddColumn(width * 0.7);
 
             Row headerRow = signingLine.AddRow();
-            signingLine.TopPadding = Size.TableCellPadding*20;
+            signingLine.TopPadding = Size.TableCellPadding * 20;
             signingLine.BottomPadding = Size.TableCellPadding;
             headerRow.Borders.Bottom.Width = 1;
 
@@ -101,7 +96,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 
         private void AddItemRows(Table table, DeliveryItem[] items)
         {
-            for(int i = 0; i < items.Length; i++)
+            for (int i = 0; i < items.Length; i++)
             {
                 Row row = table.AddRow();
                 row.VerticalAlignment = VerticalAlignment.Center;

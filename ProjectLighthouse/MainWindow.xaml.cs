@@ -81,8 +81,8 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            AdminModule.Visibility = App.CurrentUser.Role == Model.UserRole.Administrator 
-                ? Visibility.Visible 
+            AdminModule.Visibility = App.CurrentUser.Role == Model.UserRole.Administrator
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             manage_lathes_button.Visibility = App.CurrentUser.UserName == "xav"

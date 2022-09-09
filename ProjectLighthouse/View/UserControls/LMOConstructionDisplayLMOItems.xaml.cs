@@ -45,7 +45,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Item.TargetQuantity = string.IsNullOrWhiteSpace(QuantityTextBox.Text) 
+            Item.TargetQuantity = string.IsNullOrWhiteSpace(QuantityTextBox.Text)
                 ? Math.Max(Item.RequiredQuantity, 0)
                 : Math.Max(int.Parse(QuantityTextBox.Text), Item.RequiredQuantity);
             Item.NotifyEditMade();

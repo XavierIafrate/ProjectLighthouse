@@ -83,7 +83,7 @@ namespace ProjectLighthouse.View.UserControls
                         continue;
                     }
 
-                    int secondsToRequirement = (item.RequiredQuantity-item.QuantityDelivered) * item.GetCycleTime();
+                    int secondsToRequirement = (item.RequiredQuantity - item.QuantityDelivered) * item.GetCycleTime();
                     int diff = (int)(item.DateRequired.Date - startDate.Date.AddSeconds(secondsBudgeted)).TotalSeconds;
 
                     if (item.DateRequired < DateTime.Today && item.RequiredQuantity > item.QuantityDelivered)

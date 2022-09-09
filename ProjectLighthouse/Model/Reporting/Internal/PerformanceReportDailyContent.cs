@@ -84,7 +84,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
                 numRowsRequired = Math.Max(numRowsRequired, lotsContent.Count);
                 numRowsRequired = Math.Max(numRowsRequired, 1);
                 AllocateRows(table, numRowsRequired);
-                
+
                 AddParagraphsToColumn(table, content.Item1, rowCursor, 1);
                 AddParagraphsToColumn(table, content.Item2, rowCursor, 2);
                 AddParagraphsToColumn(table, lotsContent, rowCursor, 3);
@@ -179,7 +179,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             for (int i = 0; i < blocks.Length; i++)
             {
                 MachineOperatingBlock block = blocks[i];
-                string state = block.State; 
+                string state = block.State;
                 summary[state] += block.SecondsElapsed;
                 unknown -= block.SecondsElapsed;
 

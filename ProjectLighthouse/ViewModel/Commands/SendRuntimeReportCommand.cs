@@ -23,12 +23,12 @@ namespace ProjectLighthouse.ViewModel.Commands
         {
             if (parameter.ToString() == "all")
             {
-                viewModel.SendRuntimeReport(test:false);
+                viewModel.SendRuntimeReport(test: false);
 
             }
             else if (parameter.ToString() == "test")
             {
-                viewModel.SendRuntimeReport(test:true);
+                viewModel.SendRuntimeReport(test: true);
             }
             else
             {

@@ -307,8 +307,8 @@ namespace ProjectLighthouse.View
 
             int time = 0;
             List<TurnedProduct> comparableProducts = ProductsInToolingGroup.Where(x => x.CycleTime > 0).ToList();
-            int lastCycleTime = comparableProducts.Count > 0 
-                ? comparableProducts.Min(x => x.CycleTime) 
+            int lastCycleTime = comparableProducts.Count > 0
+                ? comparableProducts.Min(x => x.CycleTime)
                 : 0;
             List<LatheManufactureOrderItem> items = NewOrderItems.OrderByDescending(x => x.CycleTime).ToList();
             for (int i = 0; i < items.Count; i++)

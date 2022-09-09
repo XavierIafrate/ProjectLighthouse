@@ -80,7 +80,7 @@ namespace ProjectLighthouse.ViewModel
                         UserLogins = Logins.Where(x => x.User == value.UserName && x.Time.AddDays(14) > DateTime.Now).ToList() ?? new();
                         OnPropertyChanged(nameof(UserLogins));
                     }
-                    
+
                 }
 
                 OnPropertyChanged("SelectedUser");

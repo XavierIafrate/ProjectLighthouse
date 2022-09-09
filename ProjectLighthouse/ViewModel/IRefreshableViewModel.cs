@@ -1,6 +1,4 @@
-﻿using System.Timers;
-
-namespace ProjectLighthouse.ViewModel
+﻿namespace ProjectLighthouse.ViewModel
 {
     public interface IRefreshableViewModel
     {

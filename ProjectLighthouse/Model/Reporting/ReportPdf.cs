@@ -217,7 +217,7 @@ namespace ProjectLighthouse.Model.Reporting
 
         private void AddContents(Section section, LoginReportData data)
         {
-            AddReportMetadata (section, data);
+            AddReportMetadata(section, data);
             AddLogins(section, data.UserLogins);
         }
 

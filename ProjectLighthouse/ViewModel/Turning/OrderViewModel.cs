@@ -264,21 +264,18 @@ namespace ProjectLighthouse.ViewModel
 
         public void Refresh(bool silent = false) // Check behaviour
         {
-            //if (string.IsNullOrEmpty(SearchTerm))
-            //{
-                LoadData();
-                if (silent)
-                {
-                    UpdateOrders();
-                    LoadOrderCard();
-                    OnPropertyChanged(nameof(SelectedOrder));
-                }
-                else
-                {
-                    FilterOrders(SelectedFilter);
-                }
-                OnPropertyChanged(nameof(FilteredOrders));
-            //}
+            LoadData();
+            if (silent)
+            {
+                UpdateOrders();
+                LoadOrderCard();
+                OnPropertyChanged(nameof(SelectedOrder));
+            }
+            else
+            {
+                FilterOrders(SelectedFilter);
+            }
+            OnPropertyChanged(nameof(FilteredOrders));
 
             if (!string.IsNullOrEmpty(SearchTerm)) Search();
 
@@ -367,7 +364,9 @@ namespace ProjectLighthouse.ViewModel
                     break;
 
                 case "No Program":
-                    orders = Orders.Where(n => !n.HasProgram && n.State < OrderState.Complete).ToList();
+                    orders = Orders.Where(n => !n.HasProgram && n.State < OrderState.Complete && n.StartDate > DateTime.MinValue)
+                        .OrderBy(x => x.StartDate)
+                        .ToList();
                     break;
 
                 case "Ready":
@@ -480,7 +479,7 @@ namespace ProjectLighthouse.ViewModel
             ProgramIconBrush = (Brush)Application.Current.Resources[SelectedOrder.HasProgram ? "Green" : "Red"];
             OnPropertyChanged(nameof(ProgramIconBrush));
 
-            ToolingIconBrush = (Brush)Application.Current.Resources[SelectedOrder.IsReady ? "Green" : "Red"];
+            ToolingIconBrush = (Brush)Application.Current.Resources[SelectedOrder.ToolingReady && SelectedOrder.GaugingReady && SelectedOrder.ColletsReady ? "Green" : "Red"];
             OnPropertyChanged(nameof(ToolingIconBrush));
 
             BarVerifiedIconBrush = (Brush)Application.Current.Resources[SelectedOrder.BarIsVerified ? "Green" : "Red"];
@@ -592,7 +591,6 @@ namespace ProjectLighthouse.ViewModel
         public void EditLMO()
         {
             DataRefreshTimer.Enabled = false;
-            //string order = SelectedOrder.Name;
             bool editable = true;
             if (SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)
             {
@@ -609,13 +607,6 @@ namespace ProjectLighthouse.ViewModel
             editWindow.ShowDialog();
 
             Refresh(silent: true);
-            //for (int i = 0; i < FilteredOrders.Count; i++)
-            //{
-            //    if (FilteredOrders[i].Name == order)
-            //    {
-            //        SelectedOrder = FilteredOrders[i];
-            //    }
-            //}
 
             DataRefreshTimer.Enabled = true;
         }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ProjectLighthouse.Model
+﻿namespace ProjectLighthouse.Model
 {
     public class ScheduleWarning : ScheduleItem
     {

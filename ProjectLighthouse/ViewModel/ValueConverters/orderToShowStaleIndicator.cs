@@ -14,11 +14,11 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             {
                 return null;
             }
-            bool needsUpdate = order.ModifiedAt.AddDays(3) < DateTime.Now
+            bool needsUpdate = order.ModifiedAt.AddDays(5) < DateTime.Now
                     && order.State == OrderState.Problem
-                    && order.CreatedAt.AddDays(3) < DateTime.Now;
+                    && order.CreatedAt.AddDays(5) < DateTime.Now;
 
-            Visibility result =  needsUpdate && !(order.BarIsVerified && order.HasProgram && order.IsReady)
+            Visibility result = needsUpdate && order.State == OrderState.Problem
                             ? Visibility.Visible
                             : Visibility.Collapsed;
             return result;

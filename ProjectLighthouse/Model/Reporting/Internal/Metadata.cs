@@ -67,7 +67,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 
         private void AddOrderInfo(Table table, LatheManufactureOrder order)
         {
-            AddRow(table, "Start Date", order.StartDate.ToString("d"), "Tooling Ready", order.IsReady ? "Yes" : "No");
+            //AddRow(table, "Start Date", order.StartDate.ToString("d"), "Tooling Ready", order.IsReady ? "Yes" : "No");
             AddRow(table, "Allocated Machine", order.AllocatedMachine ?? "TBC", "Program Ready", order.HasProgram ? "Yes" : "No");
             AddRow(table, "Created", order.CreatedAt.ToString("d"), "Bar Verified", order.BarIsVerified ? "Yes" : "No");
             AddRow(table, "Estimated # Bars", order.NumberOfBars.ToString("#,##0"), "Bar Allocated", order.BarIsAllocated ? "Yes" : "No");

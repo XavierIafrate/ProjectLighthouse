@@ -1,7 +1,5 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.View.ScheduleViews;
-using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,7 +16,7 @@ namespace ProjectLighthouse.View.UserControls
         // Using a DependencyProperty as the backing store for Research.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ResearchProperty =
             DependencyProperty.Register("Research", typeof(ResearchTime), typeof(DisplayResearch), new PropertyMetadata(null, SetValues));
-        
+
         public DisplayResearch()
         {
             InitializeComponent();

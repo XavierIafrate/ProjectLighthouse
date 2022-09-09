@@ -22,11 +22,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             List<PurchaseLine> lines = GetPurchaseLines(relevantPurchases);
             //List<PurchaseHeader> headers = GetPurchaseHeaders(relevantPurchases);
-            
+
             foreach (string order in relevantPurchases)
             {
                 List<DeliveryItem> itemsOnPO = items.Where(x => x.PurchaseOrderReference == order).ToList();
-                string[] uniqueItems = itemsOnPO.Select(x=> x.Product).Distinct().ToArray();
+                string[] uniqueItems = itemsOnPO.Select(x => x.Product).Distinct().ToArray();
 
                 foreach (string item in uniqueItems)
                 {
@@ -60,7 +60,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 errs.Add(msg);
             }
-            
+
             return errs;
         }
 
@@ -287,20 +287,20 @@ namespace ProjectLighthouse.ViewModel.Helpers
         }
 
         protected class PurchaseHeader
-        { 
+        {
             public string Reference { get; set; }
             public bool IsClosed { get; set; }
-            public bool IsCancelled { get; set; }   
+            public bool IsCancelled { get; set; }
         }
 
 
         protected class PurchaseLine
         {
             public string PurchaseReference { get; set; }
-            public string Account { get; set;}  
+            public string Account { get; set; }
             public string Product { get; set; }
             public int RequiredQuantity { get; set; }
-            public int ReceivedQuantity { get; set;}
+            public int ReceivedQuantity { get; set; }
         }
     }
 }

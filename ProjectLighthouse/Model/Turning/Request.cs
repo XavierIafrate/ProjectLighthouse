@@ -39,7 +39,7 @@ namespace ProjectLighthouse.Model
                 Id = Id,
                 Product = Product,
                 POReference = POReference,
-                QuantityRequired = QuantityRequired,   
+                QuantityRequired = QuantityRequired,
                 DateRequired = DateRequired,
                 RaisedBy = RaisedBy,
                 DateRaised = DateRaised,

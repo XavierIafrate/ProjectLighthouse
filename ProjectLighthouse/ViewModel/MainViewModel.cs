@@ -3,8 +3,6 @@ using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 
@@ -41,8 +39,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility MiBVis
         {
             get { return miBVis; }
-            set 
-            { 
+            set
+            {
                 miBVis = value;
                 OnPropertyChanged();
             }
@@ -90,8 +88,8 @@ namespace ProjectLighthouse.ViewModel
         public int NotCount
         {
             get { return notCount; }
-            set 
-            { 
+            set
+            {
                 notCount = value;
                 OnPropertyChanged();
             }
@@ -102,7 +100,7 @@ namespace ProjectLighthouse.ViewModel
         public bool NoNewNotifications
         {
             get { return noNewNotifications; }
-            set 
+            set
             {
                 noNewNotifications = value;
                 OnPropertyChanged();
@@ -127,8 +125,8 @@ namespace ProjectLighthouse.ViewModel
         public List<Notification> Notifications
         {
             get { return nots; }
-            set 
-            { 
+            set
+            {
                 nots = value;
                 OnPropertyChanged();
             }
@@ -139,8 +137,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility NotificationsBarVis
         {
             get { return notificationsBarVis; }
-            set 
-            { 
+            set
+            {
                 notificationsBarVis = value;
                 OnPropertyChanged();
             }
@@ -176,7 +174,7 @@ namespace ProjectLighthouse.ViewModel
         {
             if (App.CurrentUser == null)
             {
-                LoginWindow login = new(); 
+                LoginWindow login = new();
                 login.ShowDialog();
 
                 if (login.auth_user == null)
@@ -202,8 +200,8 @@ namespace ProjectLighthouse.ViewModel
 
         public void ToggleNotificationsBarVisibility()
         {
-            NotificationsBarVis = NotificationsBarVis == Visibility.Visible 
-                ? Visibility.Collapsed 
+            NotificationsBarVis = NotificationsBarVis == Visibility.Visible
+                ? Visibility.Collapsed
                 : Visibility.Visible;
         }
     }

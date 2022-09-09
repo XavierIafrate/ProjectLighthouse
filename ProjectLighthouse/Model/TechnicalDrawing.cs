@@ -21,23 +21,23 @@ namespace ProjectLighthouse.Model
         public string DrawingStore { get; set; }
         public bool IsApproved { get; set; }
         public bool IsRejected { get; set; }
-        public DateTime RejectedDate { get; set;}
-        public string RejectedBy { get; set; }  
+        public DateTime RejectedDate { get; set; }
+        public string RejectedBy { get; set; }
         public string RejectionReason { get; set; }
-        public string ApprovedBy { get; set; }  
-        public DateTime ApprovedDate { get; set; }  
+        public string ApprovedBy { get; set; }
+        public DateTime ApprovedDate { get; set; }
         public string ProductGroup { get; set; }
-        public string ToolingGroup{ get; set; }
+        public string ToolingGroup { get; set; }
         public string MaterialConstraint { get; set; }
         public Type DrawingType { get; set; }
         public Amendment AmendmentType { get; set; }
         public string IssueDetails { get; set; }
-        
+
         [Ignore]
         public bool IsCurrent { get; set; }
 
         public enum Amendment { A, B, C, D, E, F, G, H }
-        public enum Type { Production, Research}
+        public enum Type { Production, Research }
 
 
         [Ignore]
@@ -49,7 +49,7 @@ namespace ProjectLighthouse.Model
             for (int i = 0; i < items.Count; i++)
             {
                 TechnicalDrawing? d = FindDrawing(drawings, items[i], group);
-                if(d != null)
+                if (d != null)
                 {
                     drawingsList.Add(d);
                 }

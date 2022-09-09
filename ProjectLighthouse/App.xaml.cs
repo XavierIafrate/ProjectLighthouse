@@ -107,8 +107,6 @@ namespace ProjectLighthouse
             NotificationsManager.Initialise();
             NotificationsManager.DataRefreshTimer.Start();
             NotificationsManager.CheckForNotifications(true);
-
-            //TestODBC();
         }
 
         private void EnsureAppData()

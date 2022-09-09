@@ -763,7 +763,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static PdfDocument DrawPerformanceReport(List<MachineOperatingBlock> Statistics, Lathe Lathe, List<LatheManufactureOrder> Orders, Dictionary<string, XRect> cols, PdfDocument doc)
         {
-            string timespan = $"{ Statistics.First().StateEntered.Date:d} - {Statistics.Last().StateEntered.Date:d}";
+            string timespan = $"{Statistics.First().StateEntered.Date:d} - {Statistics.Last().StateEntered.Date:d}";
             doc = GetPerformanceReportTemplate(cols, timespan, doc, Lathe.Id);
 
             PdfPage page = doc.Pages[^1];

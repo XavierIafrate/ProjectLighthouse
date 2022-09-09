@@ -80,21 +80,22 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             int x = 0;
             string lastState = input[x].State;
-            
+
             for (int i = 1; i < input.Count; i++)
             {
                 MachineOperatingBlock curr = input[i];
                 MachineOperatingBlock first = input[x];
                 if (curr.State != lastState)
                 {
-                    MachineOperatingBlock newBlock = new() {
+                    MachineOperatingBlock newBlock = new()
+                    {
                         MachineID = curr.MachineID,
                         MachineName = curr.MachineName,
                         StateEntered = first.StateEntered,
                         StateLeft = input[i - 1].StateLeft,
                         State = first.State,
                         SecondsElapsed = (input[i - 1].StateLeft - first.StateEntered).TotalSeconds,
-                        CycleTime=first.CycleTime,
+                        CycleTime = first.CycleTime,
                         Messages = first.Messages,
                         ErrorMessages = first.ErrorMessages,
                     };

@@ -3,7 +3,6 @@ using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -189,7 +188,7 @@ namespace ProjectLighthouse.View
         private bool CheckTextIsFullDouble(string text)
         {
             bool valid = false;
-            
+
             if (text.Length > 3)
             {
                 if (double.TryParse(text, out double val))

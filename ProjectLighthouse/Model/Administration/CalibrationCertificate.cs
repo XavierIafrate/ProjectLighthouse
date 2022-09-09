@@ -14,7 +14,7 @@ namespace ProjectLighthouse.Model.Administration
         public bool IsPass { get; set; }
         public DateTime DateIssued { get; set; }
         public string Url { get; set; } = "";
-        public string AddedBy { get; set; } 
+        public string AddedBy { get; set; }
         public DateTime AddedAt { get; set; }
     }
 }

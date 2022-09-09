@@ -120,7 +120,7 @@ namespace ProjectLighthouse.ViewModel
             FilteredChecks.Clear();
             List<QualityCheck> checks = new();
             if (string.IsNullOrEmpty(searchTerm))
-            {               
+            {
                 checks = Checks.OrderByDescending(x => x.RaisedAt).ToList();
             }
             else
@@ -197,7 +197,7 @@ namespace ProjectLighthouse.ViewModel
 
             for (int i = 0; i < otherUsers.Count; i++)
             {
-                Notification newNotification = new(otherUsers[i], App.CurrentUser.UserName, $"QC: {SelectedCheck.Product}", $"{App.CurrentUser.FirstName} left a comment: {NewMessage}", toastAction:$"viewQC:{SelectedCheck.Id}");
+                Notification newNotification = new(otherUsers[i], App.CurrentUser.UserName, $"QC: {SelectedCheck.Product}", $"{App.CurrentUser.FirstName} left a comment: {NewMessage}", toastAction: $"viewQC:{SelectedCheck.Id}");
                 _ = DatabaseHelper.Insert(newNotification);
             }
 
@@ -209,12 +209,12 @@ namespace ProjectLighthouse.ViewModel
 
         public void GetEvidenceUpload()
         {
-            OpenFileDialog filePicker = new() 
-            { 
-                Filter = "Pdf Files (*.pdf)|*.pdf|Image Files (*.png, *.jpg)|*.png;*.jpg|Excel Workbooks (*.xlsx)|*.xlsx|Word Docs (*.docx)|*.docx", 
+            OpenFileDialog filePicker = new()
+            {
+                Filter = "Pdf Files (*.pdf)|*.pdf|Image Files (*.png, *.jpg)|*.png;*.jpg|Excel Workbooks (*.xlsx)|*.xlsx|Word Docs (*.docx)|*.docx",
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
             };
-            if(!(bool)filePicker.ShowDialog())
+            if (!(bool)filePicker.ShowDialog())
             {
                 return;
             }
@@ -228,7 +228,7 @@ namespace ProjectLighthouse.ViewModel
                 AttachmentStore = storeName,
                 Extension = Path.GetExtension(filePicker.FileName),
                 FileName = Path.GetFileNameWithoutExtension(filePicker.FileName),
-                Remark="",
+                Remark = "",
             };
 
             DatabaseHelper.Insert(newAttachment);
@@ -312,7 +312,7 @@ namespace ProjectLighthouse.ViewModel
 
             public ResolveSampleCommand(QualityCheckViewModel viewModel)
             {
-                this.viewModel= viewModel;
+                this.viewModel = viewModel;
             }
             public bool CanExecute(object parameter)
             {

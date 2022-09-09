@@ -5,8 +5,6 @@ using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 
@@ -86,7 +84,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 List<TechnicalDrawing> d = Drawings.Where(x => x.DrawingName == drawingGroups[i]).ToList();
                 int maxRev = d.Max(x => x.Revision);
-                TechnicalDrawing.Amendment maxAmd = d.Max(x => x.AmendmentType);
+                TechnicalDrawing.Amendment maxAmd = d.Where(x => x.Revision == maxRev).Max(x => x.AmendmentType);
 
                 for (int j = 0; j < d.Count; j++)
                 {
@@ -126,7 +124,7 @@ namespace ProjectLighthouse.ViewModel
             else
             {
                 searchString = searchString.Trim().ToUpperInvariant();
-                
+
 
                 for (int i = 0; i < Drawings.Count; i++)
                 {

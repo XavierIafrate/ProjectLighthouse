@@ -34,9 +34,9 @@ namespace ProjectLighthouse.View.UserControls
                 }
 
                 string filePath = Path.Join(App.ROOT_PATH, control.Drawing.DrawingStore);
-                
+
                 control.filename.Text = control.Drawing.DrawingName;
-                control.rev.Text = control.Drawing.DrawingType == TechnicalDrawing.Type.Production 
+                control.rev.Text = control.Drawing.DrawingType == TechnicalDrawing.Type.Production
                     ? $"Revision {control.Drawing.Revision}{control.Drawing.AmendmentType}"
                     : $"Development v.{control.Drawing.Revision}{control.Drawing.AmendmentType}";
 

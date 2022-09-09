@@ -10,7 +10,7 @@ namespace ProjectLighthouse.View
     {
         public bool SaveExit = false;
         public Lot EditLot { get; set; }
-        public bool CanEdit { get; set; }   
+        public bool CanEdit { get; set; }
         private Lot originalLot { get; set; }
 
         public EditLotWindow(int lotId, bool edit)
@@ -19,7 +19,7 @@ namespace ProjectLighthouse.View
 
             CanEdit = edit;
 
-            Lot lot = DatabaseHelper.Read<Lot>().Find(x => x.ID == lotId);  
+            Lot lot = DatabaseHelper.Read<Lot>().Find(x => x.ID == lotId);
 
             EditLot = (Lot)lot.Clone();
             originalLot = lot;
@@ -33,8 +33,8 @@ namespace ProjectLighthouse.View
             AcceptCheckBox.IsChecked = EditLot.IsAccepted;
             BatchTextBox.Text = EditLot.MaterialBatch;
             RemarksTextBox.Text = EditLot.Remarks;
-            ProducedDatePicker.SelectedDate = EditLot.DateProduced.Year < 2000 
-                ? EditLot.Date 
+            ProducedDatePicker.SelectedDate = EditLot.DateProduced.Year < 2000
+                ? EditLot.Date
                 : EditLot.DateProduced;
 
             AllowDeliveryCheckbox.IsChecked = EditLot.AllowDelivery;

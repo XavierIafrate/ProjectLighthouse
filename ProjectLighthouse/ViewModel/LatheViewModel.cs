@@ -13,8 +13,8 @@ namespace ProjectLighthouse.ViewModel
         public List<Lathe> Lathes
         {
             get { return lathes; }
-            set 
-            { 
+            set
+            {
                 lathes = value;
                 OnPropertyChanged();
             }
@@ -25,8 +25,8 @@ namespace ProjectLighthouse.ViewModel
         public List<MaintenanceEvent> MaintenanceEvents
         {
             get { return maintenanceEvents; }
-            set 
-            { 
+            set
+            {
                 maintenanceEvents = value;
                 OnPropertyChanged();
             }

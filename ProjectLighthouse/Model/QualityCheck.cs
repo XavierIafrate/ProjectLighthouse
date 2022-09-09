@@ -23,7 +23,7 @@ namespace ProjectLighthouse.Model
         [Ignore]
         public string Status
         {
-            get 
+            get
             {
                 if (IsAccepted)
                 {

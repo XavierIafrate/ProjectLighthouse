@@ -1,7 +1,6 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ProjectLighthouse.Model
 {
@@ -33,11 +32,11 @@ namespace ProjectLighthouse.Model
                 {
                     return OrderState.Running;
                 }
-                else if (BarIsAllocated && BarIsVerified && HasProgram && IsReady)
+                else if (BarIsAllocated && BarIsVerified && HasProgram && ToolingReady && GaugingReady && ColletsReady)
                 {
                     return OrderState.Prepared;
                 }
-                else if (BarIsVerified && HasProgram && IsReady && startDate.AddDays(-14) > DateTime.Now)
+                else if (BarIsVerified && HasProgram && startDate.AddDays(-14) > DateTime.Now)
                 {
                     return OrderState.Ready;
                 }
@@ -49,7 +48,18 @@ namespace ProjectLighthouse.Model
             set { }
         }
 
-        public bool IsReady { get; set; } // alias for tooling ready (legacy)
+        [Ignore]
+        public bool AllToolingReady
+        {
+            get
+            {
+                return ToolingReady && GaugingReady && ColletsReady;
+            }
+        }
+        public bool ToolingReady { get; set; }
+        public bool GaugingReady { get; set; }
+        public bool ColletsReady { get; set; }
+
         public bool HasProgram { get; set; }
         public bool HasStarted { get; set; }
         public bool BarIsAllocated { get; set; }
@@ -106,7 +116,9 @@ namespace ProjectLighthouse.Model
                 AllocatedMachine = AllocatedMachine,
                 StartDate = StartDate,
                 CompletedAt = CompletedAt,
-                IsReady = IsReady,
+                ToolingReady = ToolingReady,
+                ColletsReady = ColletsReady,
+                GaugingReady = GaugingReady,
                 HasProgram = HasProgram,
                 HasStarted = HasStarted,
                 BarID = BarID,
@@ -139,7 +151,9 @@ namespace ProjectLighthouse.Model
                 || BarIsAllocated != OtherOrder.BarIsAllocated
                 || BarIsVerified != OtherOrder.BarIsVerified
                 || HasProgram != OtherOrder.HasProgram
-                || IsReady != OtherOrder.IsReady
+                || ToolingReady != OtherOrder.ToolingReady
+                || GaugingReady != OtherOrder.GaugingReady
+                || ColletsReady != OtherOrder.ColletsReady
                 || POReference != OtherOrder.POReference
                 || NumberOfBars != OtherOrder.NumberOfBars
                 || TimeToComplete != OtherOrder.TimeToComplete
@@ -164,7 +178,9 @@ namespace ProjectLighthouse.Model
             BarIsAllocated = otherOrder.BarIsAllocated;
             BarIsVerified = otherOrder.BarIsVerified;
             HasProgram = otherOrder.HasProgram;
-            IsReady = otherOrder.IsReady;
+            ToolingReady = otherOrder.ToolingReady;
+            GaugingReady = otherOrder.GaugingReady;
+            ColletsReady = otherOrder.ColletsReady;
             POReference = otherOrder.POReference;
             NumberOfBars = otherOrder.NumberOfBars;
             TimeToComplete = otherOrder.TimeToComplete;
@@ -176,7 +192,7 @@ namespace ProjectLighthouse.Model
         public DateTime GetStartDeadline()
         {
             DateTime dateTime = DateTime.MaxValue;
-            
+
             for (int i = 0; i < OrderItems.Count; i++)
             {
                 if (OrderItems[i].RequiredQuantity == 0)

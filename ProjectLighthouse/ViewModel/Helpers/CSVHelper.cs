@@ -117,7 +117,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         ProductName = csv.GetField<string>("ProductName"),
                         QuantitySold = csv.GetField<int>("QuantitySold"),
                         NumberOfOrders = csv.GetField<int>("NumberOfOrders"),
-                        
+
                     };
 
                     products.Add(record);
@@ -193,11 +193,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     }
 
                     int calInterval = 0;
-                    if(int.TryParse(csv.GetField<string>("LastCalibrated"), out int tmp))
+                    if (int.TryParse(csv.GetField<string>("LastCalibrated"), out int tmp))
                     {
                         calInterval = tmp;
                     }
-                    
+
                     CalibratedEquipment record = new()
                     {
                         Id = csv.GetField<int>("Id"),

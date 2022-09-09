@@ -18,7 +18,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             header.Format.AddTabStop(Size.GetWidth(section), TabAlignment.Right);
             header.Style = CustomStyles.GeneratedAtStyle;
 
-            Image logo= header.AddImage(new LogoImage().GetMigraDocFileName());
+            Image logo = header.AddImage(new LogoImage().GetMigraDocFileName());
             logo.Width = "8cm";
             logo.LockAspectRatio = true;
 

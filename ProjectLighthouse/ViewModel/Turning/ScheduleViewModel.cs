@@ -81,10 +81,10 @@ namespace ProjectLighthouse.ViewModel
             AutoScheduleCommand = new(this);
             FirebaseSyncCommand = new(this);
 
-            AddButtonsVis = App.CurrentUser.UserRole is "admin" or "Scheduling"
+            AddButtonsVis = App.CurrentUser.Role >= UserRole.Scheduling
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-            OnPropertyChanged("AddButtonsVis");
+            OnPropertyChanged(nameof(AddButtonsVis));
 
             PrintScheduleCommand = new(this);
 
@@ -117,15 +117,17 @@ namespace ProjectLighthouse.ViewModel
             }
 
             Lathes = DatabaseHelper.Read<Lathe>();
-            FilterOptions = new();
-            FilterOptions.Add("Unallocated");
+            FilterOptions = new()
+            {
+                "Unallocated"
+            };
 
             foreach (Lathe lathe in Lathes)
             {
                 FilterOptions.Add(lathe.FullName);
             }
 
-            OnPropertyChanged("FilterOptions"); // Is this right
+            OnPropertyChanged(nameof(FilterOptions)); // TODO Is this right
         }
 
         private void SetView()
@@ -143,7 +145,7 @@ namespace ProjectLighthouse.ViewModel
                 PrintButtonVis = Visibility.Visible;
             }
 
-            OnPropertyChanged("PrintButtonVis");
+            OnPropertyChanged(nameof(PrintButtonVis));
 
             FilteredItems = new();
             FilteredItems.Clear();
@@ -173,21 +175,21 @@ namespace ProjectLighthouse.ViewModel
                 order.EditMade += SetView;
             }
 
-            OnPropertyChanged("FilteredItems");
+            OnPropertyChanged(nameof(FilteredItems));
 
             NoneFoundVis = FilteredItems.Count == 0
                 ? Visibility.Visible
                 : Visibility.Hidden;
-            OnPropertyChanged("NoneFoundVis");
+            OnPropertyChanged(nameof(NoneFoundVis));
 
             InsightsVis = !string.IsNullOrEmpty(searchString)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-            OnPropertyChanged("InsightsVis");
+            OnPropertyChanged(nameof(InsightsVis));
 
 
             ViewTitle = Filter == "Unallocated" ? "Unscheduled Orders" : $"Schedule for {Filter}";
-            OnPropertyChanged("ViewTitle");
+            OnPropertyChanged(nameof(ViewTitle));
 
             GetInsights();
             SetAgenda();
@@ -316,11 +318,11 @@ namespace ProjectLighthouse.ViewModel
             WorkloadInsights = $"~{Math.Ceiling(2 * ((workload.Item1.TotalDays + 1) / 7)) / 2:N1} weeks [{Math.Ceiling(workload.Item1.TotalDays) + 1} days]";
             BookedUntilInsights = $"Booked until {workload.Item2:dddd, dd MMMM}";
 
-            OnPropertyChanged("MachineInfoInsights");
-            OnPropertyChanged("MachineCapabilitiesInsights");
-            OnPropertyChanged("NumberOfOrdersInsights");
-            OnPropertyChanged("BookedUntilInsights");
-            OnPropertyChanged("WorkloadInsights");
+            OnPropertyChanged(nameof(MachineInfoInsights));
+            OnPropertyChanged(nameof(MachineCapabilitiesInsights));
+            OnPropertyChanged(nameof(NumberOfOrdersInsights));
+            OnPropertyChanged(nameof(BookedUntilInsights));
+            OnPropertyChanged(nameof(WorkloadInsights));
         }
 
         public void AddResearch()

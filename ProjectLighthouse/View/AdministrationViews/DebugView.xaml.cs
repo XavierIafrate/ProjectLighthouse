@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -97,7 +96,7 @@ namespace ProjectLighthouse.View
 
         private void ImportCertificates_Click(object sender, RoutedEventArgs e)
         {
-            
+
 
             OpenFileDialog openFileDialog1 = new()
             {

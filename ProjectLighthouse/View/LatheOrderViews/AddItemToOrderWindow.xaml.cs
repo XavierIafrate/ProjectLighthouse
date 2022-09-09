@@ -1,20 +1,11 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.LatheOrderViews
 {
@@ -26,13 +17,13 @@ namespace ProjectLighthouse.View.LatheOrderViews
 
         private List<LatheManufactureOrderItem> possibleItems;
         string parentOrderId;
-        public bool ItemsWereAdded { get; set; }    
+        public bool ItemsWereAdded { get; set; }
 
         public List<LatheManufactureOrderItem> PossibleItems
         {
             get { return possibleItems; }
-            set 
-            { 
+            set
+            {
                 possibleItems = value;
                 OnPropertyChanged();
             }
@@ -57,7 +48,7 @@ namespace ProjectLighthouse.View.LatheOrderViews
             {
                 items.Add(new(PossibleProducts[i]));
             }
-            PossibleItems = new(items);               
+            PossibleItems = new(items);
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -67,7 +58,7 @@ namespace ProjectLighthouse.View.LatheOrderViews
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(sender is not ListView list)
+            if (sender is not ListView list)
             {
                 return;
             }
