@@ -10,7 +10,7 @@
     SizeToContent="Height"
     mc:Ignorable="d">
     <StackPanel Margin="30">
-        <TextBlock Style="{StaticResource title}" Text="Register Measurement Equipment" />
+        <TextBlock Style="{StaticResource title}" Text="Register Instrument" x:Name="titleText"/>
         <StackPanel Margin="40,20">
             <StackPanel HorizontalAlignment="Right">
                 <CheckBox
@@ -187,6 +187,12 @@
                 Click="AddButton_Click"
                 Content="Add to Registry"
                 Style="{StaticResource GreenButton}" />
+            <Button
+                x:Name="SaveButton"
+                HorizontalAlignment="Right"
+                Click="SaveButton_Click"
+                Content="Save Changes"
+                Style="{StaticResource BlueButton}" />
         </StackPanel>
 
     </StackPanel>

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.View
 {
@@ -26,7 +27,7 @@ namespace ProjectLighthouse.View
             MessageBadge.Visibility = Visibility.Hidden;
             Users = DatabaseHelper.Read<User>().ToList();
 
-            LogisticsWarning.Visibility = logistics ? Visibility.Visible : Visibility.Hidden;
+            //LogisticsWarning.Visibility = logistics ? Visibility.Visible : Visibility.Hidden;
 
             if (Environment.UserName == "xavier" || Debugger.IsAttached)
             {
@@ -63,7 +64,7 @@ namespace ProjectLighthouse.View
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
 
-            VersionInfo.Text = $"v{FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion}";
+            VersionText.Text = $"v{FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion}";
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -92,24 +93,30 @@ namespace ProjectLighthouse.View
         private void Login()
         {
             Users = DatabaseHelper.Read<User>().ToList();
-            User User = Users.FirstOrDefault(u => u.UserName == UsernameTextBox.Text);
+            User User = Users.Find(u => u.UserName == UsernameTextBox.Text);
 
             if (User == null)
             {
                 message.Text = "Username not found";
                 MessageBadge.Visibility = Visibility.Visible;
+                UsernameTextBox.BorderBrush = (Brush)App.Current.Resources["Red"]; 
+                PasswordBox.BorderBrush = (Brush)App.Current.Resources["Background"];
                 return;
             }
             else if (User.IsBlocked)
             {
-                message.Text = "User blocked";
+                message.Text = "User's access has been revoked";
                 MessageBadge.Visibility = Visibility.Visible;
+                UsernameTextBox.BorderBrush = (Brush)App.Current.Resources["Red"];
+                PasswordBox.BorderBrush = (Brush)App.Current.Resources["Red"];
                 return;
             }
             else if (User.Password != PasswordBox.Password)
             {
                 message.Text = "Invalid password";
                 MessageBadge.Visibility = Visibility.Visible;
+                UsernameTextBox.BorderBrush = (Brush)App.Current.Resources["Background"];
+                PasswordBox.BorderBrush = (Brush)App.Current.Resources["Red"];
                 return;
             }
 

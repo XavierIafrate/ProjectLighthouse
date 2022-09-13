@@ -56,20 +56,19 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Grid
-                Grid.Row="2">
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
                     Margin="10,0,0,0"
                     VerticalAlignment="Center"
-                    Text="Filter by "
                     FontWeight="SemiBold"
-                    Foreground="Gray"/>
+                    Foreground="Gray"
+                    Text="Filter by " />
                 <ComboBox
                     Grid.Column="1"
                     Margin="5"
@@ -81,17 +80,19 @@
                     <ComboBoxItem Content="All Items" />
                 </ComboBox>
 
-                <Button Grid.Column="2"
+                <Button
+                    Grid.Column="2"
+                    Margin="5,0"
                     Command="{Binding AddNewEquipmentCmd}"
                     Content="Add"
-                        Margin="5,0"
-                        Style="{StaticResource BlueButton}"
+                    Style="{StaticResource BlueButton}"
                     Visibility="{Binding CanModify, Converter={StaticResource visibleConverter}}" />
-                <Button Grid.Column="3"
+                <Button
+                    Grid.Column="3"
+                    Margin="5,0"
                     Command="{Binding GenerateReportCmd}"
                     Content="Download Report"
                     Style="{StaticResource CSVButton}"
-                        Margin="5,0"
                     Visibility="{Binding CanModify, Converter={StaticResource visibleConverter}}" />
             </Grid>
         </Grid>
@@ -290,8 +291,10 @@
                                 ToolTip="UKAS Accredited Calibration is required for this equipment."
                                 Visibility="{Binding SelectedEquipment.UKAS, Converter={StaticResource visibleConverter}}" />
                         </Grid>
-
-                        <TextBlock Style="{StaticResource section}" Text="Instrument Details" />
+                        <Grid>
+                            <TextBlock Style="{StaticResource section}" Text="Instrument Details" />
+                            <Button Content="Edit" Style="{StaticResource BlueButton}" HorizontalAlignment="Right" Command="{Binding EditEquipmentCmd}" CommandParameter="{Binding SelectedEquipment.Id}" />
+                        </Grid>
                         <Grid Margin="20,5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -480,6 +483,7 @@
                         Foreground="{StaticResource OnBackground}"
                         Text="{Binding SelectedEquipment.AddedBy, StringFormat='{} by {0}'}" />
                 </StackPanel>
+
             </StackPanel>
         </ScrollViewer>
 

@@ -15,12 +15,25 @@ namespace ProjectLighthouse.View
         public CalibratedEquipment NewEquipment;
         private List<CalibratedEquipment> EquipmentList;
 
-        public AddNewCalibratedEquipmentWindow(List<CalibratedEquipment> existingEquipment)
+        public AddNewCalibratedEquipmentWindow(List<CalibratedEquipment> existingEquipment, int? id = null)
         {
             InitializeComponent();
             EquipmentList = existingEquipment;
             SetComboBoxes();
-            NewEquipment = new();
+
+            if (id != null)
+            {
+                NewEquipment = (CalibratedEquipment)existingEquipment.Find(x => x.Id == id).Clone();
+                this.Title = "Edit Equipment Configuration";
+                this.titleText.Text = $"Editing: {NewEquipment.EquipmentId}";
+                AddButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                SaveButton.Visibility = Visibility.Collapsed;
+                NewEquipment = new();
+            }
+
             DataContext = NewEquipment;
         }
 
@@ -161,6 +174,22 @@ namespace ProjectLighthouse.View
         private void MakeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SetModelComboBox();
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            CleanValues();
+
+            if (!Validate())
+            {
+                return;
+            }
+
+            if (DatabaseHelper.Update(NewEquipment))
+            {
+                SaveExit = true;
+                Close();
+            }
         }
     }
 }

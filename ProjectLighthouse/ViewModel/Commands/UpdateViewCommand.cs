@@ -25,7 +25,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
             if (parameter.ToString() == "Schedule")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.BetaWarningVis = Visibility.Hidden;
                 viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new ScheduleViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
@@ -51,7 +51,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "New Request")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Hidden;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new NewRequestViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch

@@ -13,6 +13,7 @@ namespace ProjectLighthouse.View
         private List<DeliveryItem> allUndeliveredItems { get; set; }
         private List<DeliveryItem> filteredUndeliveredItems { get; set; }
         private List<DeliveryItem> itemsOnNewNote { get; set; }
+        private List<TurnedProduct> turnedProducts { get; set; }
         private List<Lot> Lots { get; set; }
         public bool SaveExit = false;
 
@@ -22,6 +23,7 @@ namespace ProjectLighthouse.View
             allUndeliveredItems = new List<DeliveryItem>();
             filteredUndeliveredItems = new List<DeliveryItem>();
             itemsOnNewNote = new List<DeliveryItem>();
+            turnedProducts = DatabaseHelper.Read<TurnedProduct>();
             Lots = new List<Lot>();
             GetUndelivered();
         }
@@ -47,11 +49,13 @@ namespace ProjectLighthouse.View
                     }
                 }
 
+                TurnedProduct deliveringProduct = turnedProducts.Find(x => lot.ProductName == x.ProductName);
+
                 allUndeliveredItems.Add(new DeliveryItem()
                 {
                     ItemManufactureOrderNumber = lot.Order,
                     PurchaseOrderReference = _POref,
-                    Product = lot.ProductName,
+                    Product = string.IsNullOrEmpty(deliveringProduct.ExportProductName) ? lot.ProductName : deliveringProduct.ExportProductName,
                     QuantityThisDelivery = lot.Quantity,
                     LotID = lot.ID,
                     FromMachine = lot.FromMachine

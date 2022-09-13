@@ -302,16 +302,20 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        public void EditEquipment()
+        public void EditEquipment(int id)
         {
-            MessageBox.Show("Edit Equipment");
+            AddNewCalibratedEquipmentWindow window = new(Equipment, id);
+            window.ShowDialog();
+            if (window.SaveExit)
+            {
+                Refresh();
+            }
         }
 
         public void CreateReport()
         {
-            //List<CalibratedEquipment> requiresRecal = Equipment.Where(x => x.NextDue < System.DateTime.Now.AddMonths(2) && x.RequiresCalibration && !x.IsOutOfService).ToList();
-            //CSVHelper.WriteListToCSV(requiresRecal, "RequiresCal");
-            TestLabelPrinter();
+            List<CalibratedEquipment> requiresRecal = Equipment.Where(x => x.NextDue < System.DateTime.Now.AddMonths(2) && x.RequiresCalibration && !x.IsOutOfService).ToList();
+            CSVHelper.WriteListToCSV(requiresRecal, "RequiresCal");
         }
 
         void TestLabelPrinter()

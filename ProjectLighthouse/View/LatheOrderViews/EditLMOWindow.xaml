@@ -354,7 +354,8 @@
                         Grid.Row="1"
                         MinHeight="120"
                         VerticalScrollBarVisibility="Auto">
-                        <ItemsControl
+                        <uc:DisplayListOfNotes x:Name="NotesDisplay" Notes="{Binding Notes}"/>
+                        <!--<ItemsControl
                             x:Name="NotesDisplay"
                             HorizontalContentAlignment="Stretch"
                             ItemsSource="{Binding Notes}"
@@ -364,7 +365,7 @@
                                     <uc:DisplayNote Note="{Binding}" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        </ItemsControl>-->
                     </ScrollViewer>
 
                     <Grid

@@ -694,7 +694,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <Style x:Key="HeroPdfButton" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
@@ -1042,7 +1042,7 @@
     </Style>
 
     <Style x:Key="ExitButton" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource Red}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource OnRed}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -1055,8 +1055,8 @@
                         CornerRadius="15">
                         <Grid HorizontalAlignment="Center">
                             <Path
-                                Width="10"
-                                Height="10"
+                                Width="8"
+                                Height="8"
                                 Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
@@ -1068,51 +1068,44 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource OnRed}" />
-                <Setter Property="Foreground" Value="{StaticResource Red}" />
+                <Setter Property="Background" Value="{StaticResource Red}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style x:Key="LoginButton" TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource Green}" />
-        <Setter Property="Background" Value="{StaticResource OnGreen}" />
+        <Setter Property="Background" Value="#01ffffff" />
+        <Setter Property="Foreground" Value="White" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
 
                     <Border
-                        Height="40"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="15">
-                        <Grid Margin="20,0" HorizontalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <Path
-                                Width="15"
-                                Height="15"
-                                Margin="0,2,6,0"
-                                VerticalAlignment="Center"
-                                Data="M10,17V14H3V10H10V7L15,12L10,17M10,2H19A2,2 0 0,1 21,4V20A2,2 0 0,1 19,22H10A2,2 0 0,1 8,20V18H10V20H19V4H10V6H8V4A2,2 0 0,1 10,2Z"
-                                Fill="{TemplateBinding Foreground}"
-                                Stretch="Uniform" />
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                FontSize="15"
-                                Text="Log In" />
+                        CornerRadius="3">
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M10,17V14H3V10H10V7L15,12L10,17M10,2H19A2,2 0 0,1 21,4V20A2,2 0 0,1 19,22H10A2,2 0 0,1 8,20V18H10V20H19V4H10V6H8V4A2,2 0 0,1 10,2Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
 
-                        </Grid>
+
+
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Green}" />
-                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+                <Setter Property="Background" Value="{StaticResource Background}" />
+                <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
             </Trigger>
         </Style.Triggers>
     </Style>

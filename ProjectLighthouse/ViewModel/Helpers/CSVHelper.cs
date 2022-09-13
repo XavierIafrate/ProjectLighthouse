@@ -210,7 +210,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         EnteredSystem = DateTime.Now,
                         LastCalibrated = lastCal,
                         CalibrationIntervalMonths = calInterval,
-                        CalibrationHouse = csv.GetField<string>("CalibrationHouse"),
                         UKAS = csv.GetField<bool>("UKAS"),
                         AddedBy = "system",
                         RequiresCalibration = csv.GetField<bool>("RequiresCalibration"),

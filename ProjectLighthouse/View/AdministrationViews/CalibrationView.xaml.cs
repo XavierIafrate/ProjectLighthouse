@@ -11,15 +11,14 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
         }
-
-        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
-        }
-
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             SearchBox.Text = "";
+        }
+
+        private void NumbersOnly(object sender, KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
     }
 }

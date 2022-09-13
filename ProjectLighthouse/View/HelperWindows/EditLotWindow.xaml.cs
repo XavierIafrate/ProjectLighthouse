@@ -140,6 +140,7 @@ namespace ProjectLighthouse.View
         private void PrintButton_Click(object sender, RoutedEventArgs e)
         {
             LabelPrintingHelper.PrintLot(EditLot);
+            PrintButton.IsEnabled = false;
         }
     }
 }

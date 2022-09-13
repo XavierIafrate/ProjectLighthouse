@@ -170,7 +170,7 @@ namespace ProjectLighthouse.View
 
             if (ToolingGroupConstraintComboBox.SelectedValue.ToString() == "All Tooling Groups")
             {
-                ToolingGroupConstraintComboBox.ItemsSource = possibilities.Select(x => x.ProductGroup).Distinct().ToList().Prepend("All Tooling Groups");
+                ToolingGroupConstraintComboBox.ItemsSource = possibilities.Select(x => x.ProductGroup).OrderBy(x => x).Distinct().ToList().Prepend("All Tooling Groups");
                 NewDrawing.DrawingName = ProductGroupComboBox.SelectedValue.ToString();
                 MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
                 MaterialConstraintComboBox.IsEnabled = false;
@@ -183,7 +183,7 @@ namespace ProjectLighthouse.View
 
             if (MaterialConstraintComboBox.SelectedValue.ToString() == "Any Material")
             {
-                MaterialConstraintComboBox.ItemsSource = possibilities.Select(x=>x.Material).Distinct().ToList().Prepend("Any Material");
+                MaterialConstraintComboBox.ItemsSource = possibilities.Select(x=>x.Material).OrderBy(x => x).Distinct().ToList().Prepend("Any Material");
             }
             else
             {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model.Administration
 {
-    public class CalibratedEquipment
+    public class CalibratedEquipment : ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -24,7 +24,6 @@ namespace ProjectLighthouse.Model.Administration
             get { return LastCalibrated.AddMonths(CalibrationIntervalMonths); }
         }
         public int CalibrationIntervalMonths { get; set; }
-        public string CalibrationHouse { get; set; }
         public bool UKAS { get; set; }
         public bool RequiresCalibration { get; set; }
         public bool RequiresInternalChecks { get; set; }
@@ -48,6 +47,31 @@ namespace ProjectLighthouse.Model.Administration
             }
 
             return NextDue < DateTime.Now;
+        }
+
+        public object Clone()
+        {
+            return new CalibratedEquipment() 
+            { 
+                Id = Id,
+                EquipmentId = EquipmentId,
+                Make = Make,
+                Model = Model,
+                SerialNumber = SerialNumber,
+                Type = Type,
+                Location = Location,
+                EnteredSystem = EnteredSystem,
+                LastVisualCheck = LastVisualCheck,
+                LastCalibrated = LastCalibrated,
+                CalibrationIntervalMonths = CalibrationIntervalMonths,
+                UKAS = UKAS,
+                RequiresCalibration = RequiresCalibration,
+                RequiresInternalChecks = RequiresInternalChecks,
+                IsOutOfService = IsOutOfService,
+                AddedBy = AddedBy,
+                Notes = Notes,
+            };
+
         }
     }
 }

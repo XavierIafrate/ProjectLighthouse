@@ -255,7 +255,5 @@ namespace ProjectLighthouse.ViewModel
             DatabaseHelper.Update(notification);
             CheckForNotifications(false);
         }
-
-
     }
 }

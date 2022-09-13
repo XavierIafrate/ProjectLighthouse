@@ -19,7 +19,8 @@ namespace ProjectLighthouse.ViewModel.Commands.Calibration
 
         public void Execute(object parameter)
         {
-            viewModel.EditEquipment();
+            if (parameter is not int Id) return;
+            viewModel.EditEquipment(Id);
         }
     }
 }

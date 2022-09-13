@@ -14,6 +14,7 @@ namespace ProjectLighthouse.Model
 
         [Indexed]
         public string ProductName { get; set; }
+        public string ExportProductName { get; set; }
 
         public int CycleTime { get; set; }
         public string Material { get; set; }

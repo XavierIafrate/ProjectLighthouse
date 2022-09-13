@@ -333,8 +333,8 @@ namespace ProjectLighthouse.View
 
             DatabaseHelper.Insert(newNote);
             Notes.Add(newNote);
-            NotesDisplay.ItemsSource = new List<Note>();
-            NotesDisplay.ItemsSource = Notes;
+            NotesDisplay.Notes = new List<Note>();
+            NotesDisplay.Notes = Notes;
             Message.Text = "";
             SaveExit = true;
 
