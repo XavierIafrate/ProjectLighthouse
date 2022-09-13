@@ -1,9 +1,5 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectLighthouse.Model.Logistics
 {
@@ -15,10 +11,10 @@ namespace ProjectLighthouse.Model.Logistics
         public DateTime TimeStamp
         {
             get { return timeStamp; }
-            set 
-            { 
-                timeStamp = value;  
-                StrTimeStamp = $"{value:s}"; 
+            set
+            {
+                timeStamp = value;
+                StrTimeStamp = $"{value:s}";
             }
         }
         [Ignore]
@@ -28,7 +24,7 @@ namespace ProjectLighthouse.Model.Logistics
         public string User_LastName { get; set; }
         public string WorkStation { get; set; }
         public string MachineName { get; set; }
-        public string DomainUser { get; set; }  
+        public string DomainUser { get; set; }
         public string OrderReference { get; set; }
         public int NumPackages { get; set; }
     }

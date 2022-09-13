@@ -71,7 +71,7 @@ namespace ProjectLighthouse.ViewModel
                 App.MainViewModel.NoNotifications = false;
                 App.MainViewModel.NoNewNotifications = App.MainViewModel.NotCount == 0;
             }
-            
+
         }
 
         private void CreateTimer()

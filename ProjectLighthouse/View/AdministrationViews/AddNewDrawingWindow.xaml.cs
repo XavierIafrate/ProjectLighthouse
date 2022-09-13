@@ -165,7 +165,7 @@ namespace ProjectLighthouse.View
             }
 
             PreviewBox.ItemsSource = possibilities.ToList();
-            
+
             NewDrawing.ProductGroup = ProductGroupComboBox.SelectedValue.ToString();
 
             if (ToolingGroupConstraintComboBox.SelectedValue.ToString() == "All Tooling Groups")
@@ -210,7 +210,7 @@ namespace ProjectLighthouse.View
             if (DataIsValid())
             {
                 ImprintData();
-                SaveExit = true;   
+                SaveExit = true;
                 Close();
             }
         }

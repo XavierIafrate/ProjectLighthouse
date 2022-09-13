@@ -32,7 +32,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         static void Print(ILabel label)
         {
-            if(!label.DataIsComplete())
+            if (!label.DataIsComplete())
             {
                 Debug.WriteLine("Data not complete for label");
                 return;

@@ -2,7 +2,6 @@
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -30,7 +29,7 @@ namespace ProjectLighthouse.View.ScheduleViews
             }
 
             LathesListBox.ItemsSource = Lathes;
-            
+
 
             if (Service.Id > 0)
             {
@@ -131,7 +130,7 @@ namespace ProjectLighthouse.View.ScheduleViews
 
             if (string.IsNullOrEmpty(minutes.Text))
             {
-                MarkControl(minutes, valid:false);
+                MarkControl(minutes, valid: false);
                 valid = false;
             }
             else
@@ -161,7 +160,7 @@ namespace ProjectLighthouse.View.ScheduleViews
             }
             else
             {
-                MarkControl(LathesListBox, valid:true);
+                MarkControl(LathesListBox, valid: true);
             }
 
             if (datePicker.SelectedDate == null)

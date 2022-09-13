@@ -23,7 +23,7 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
             Equipment = equipment;
-            NewCertificate = new() { Instrument = Equipment.EquipmentId, DateIssued=System.DateTime.Today.AddDays(-1) };
+            NewCertificate = new() { Instrument = Equipment.EquipmentId, DateIssued = System.DateTime.Today.AddDays(-1) };
             CertificateList = certificates;
             SetComboBoxes();
             DataContext = NewCertificate;

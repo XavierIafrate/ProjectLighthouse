@@ -5,7 +5,6 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace ProjectLighthouse.View
 {
@@ -26,9 +25,9 @@ namespace ProjectLighthouse.View
         {
             bool productSelected = (TurnedProduct)ProductsListBox.SelectedValue is not null;
             bool quantityOk = false;
-            if(int.TryParse(quantityTextBox.Text, out int qty))
+            if (int.TryParse(quantityTextBox.Text, out int qty))
             {
-                if(qty > 0 && qty < 200000)
+                if (qty > 0 && qty < 200000)
                 {
                     quantityOk = true;
                 }

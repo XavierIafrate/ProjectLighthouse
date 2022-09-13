@@ -93,6 +93,7 @@
                                 Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
                                 Fill="{StaticResource OnYellow}" />
                             <TextBlock
+                                FontWeight="SemiBold"
                                 Margin="10,5"
                                 VerticalAlignment="Center"
                                 Text="You are viewing this order in read only mode." />
@@ -108,7 +109,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-
+                       
                         <Grid Grid.Row="1" Grid.ColumnSpan="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -122,7 +123,9 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Column="0">
-                                <Border Background="{StaticResource Red}" CornerRadius="10,0,0,10" />
+                                <Border Background="{StaticResource Orange}" CornerRadius="10,0,0,10" >
+                                    <TextBlock  Text="IDENTIFICATION" HorizontalAlignment="Center" Margin="3" FontWeight="SemiBold" FontSize="10" VerticalAlignment="Center" Foreground="{StaticResource OnOrange}"/>
+                                </Border>
                             </Grid>
                             <StackPanel
                                 Grid.Row="1"
@@ -133,25 +136,34 @@
                                     x:Name="Tooling_Checkbox"
                                     Checked="Checkbox_Checked"
                                     Content="Tooling"
-                                    IsChecked="{Binding Order.IsReady, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    IsChecked="{Binding Order.ToolingReady, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Unchecked="Checkbox_Checked" />
                                 <CheckBox
-                                    x:Name="Program_Checkbox"
+                                    x:Name="Collets_Checkbox"
                                     Checked="Checkbox_Checked"
-                                    Content="Program"
-                                    IsChecked="{Binding Order.HasProgram, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Content="Bar Holding"
+                                    IsChecked="{Binding Order.ColletsReady, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Unchecked="Checkbox_Checked" />
+                                <CheckBox
+                                    x:Name="Gauges_Checkbox"
+                                    Checked="Checkbox_Checked"
+                                    Content="Gauging"
+                                    IsChecked="{Binding Order.GaugingReady, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Unchecked="Checkbox_Checked" />
                                 <CheckBox
                                     x:Name="BarVerified_Checkbox"
                                     Checked="Checkbox_Checked"
-                                    Content="Bar Settings"
+                                    Content="Bar Verified"
                                     IsChecked="{Binding Order.BarIsVerified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Unchecked="Checkbox_Checked" />
+                                
                             </StackPanel>
 
                             <Grid Grid.Column="1">
-                                <Border Background="{StaticResource Green}" />
-                                <Polygon Fill="{StaticResource Red}" Points="-1,0 0,0 10,10 0,20 -1,20" />
+                                <Border Background="{StaticResource Teal}">
+                                    <TextBlock  Text="PREPARATION" HorizontalAlignment="Center" Margin="3" FontWeight="SemiBold" FontSize="10" VerticalAlignment="Center" Foreground="{StaticResource OnTeal}"/>
+                                </Border>
+                                <Polygon Fill="{StaticResource Orange}" Points="-1,0 0,0 10,10 0,20 -1,20" />
                             </Grid>
                             <StackPanel
                                 Grid.Row="1"
@@ -159,16 +171,36 @@
                                 Margin="5,10"
                                 HorizontalAlignment="Center">
                                 <CheckBox
-                                    x:Name="BarAllocated_Checkbox"
+                                    x:Name="ToolingArrived_Checkbox"
                                     Checked="Checkbox_Checked"
-                                    Content="Bar Allocated"
+                                    Content="Tooling Issued"
                                     IsChecked="{Binding Order.BarIsAllocated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Unchecked="Checkbox_Checked" />
+                                <CheckBox
+                                    x:Name="ColletsArrived_Checkbox"
+                                    Checked="Checkbox_Checked"
+                                    Content="Collets Available"
+                                    IsChecked="{Binding Order.BarIsAllocated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Unchecked="Checkbox_Checked" />
+                                <CheckBox
+                                    x:Name="GaugesArrived_Checkbox"
+                                    Checked="Checkbox_Checked"
+                                    Content="Gauges Available"
+                                    IsChecked="{Binding Order.BarIsAllocated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Unchecked="Checkbox_Checked" />
+                                <CheckBox
+                                    x:Name="Program_Checkbox"
+                                    Checked="Checkbox_Checked"
+                                    Content="Program Ready"
+                                    IsChecked="{Binding Order.HasProgram, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Unchecked="Checkbox_Checked" />
                             </StackPanel>
 
                             <Grid Grid.Column="2">
-                                <Border Background="{StaticResource Blue}" />
-                                <Polygon Fill="{StaticResource Green}" Points="-1,0 0,0 10,10 0,20 -1,20" />
+                                <Border Background="{StaticResource Blue}" >
+                                    <TextBlock  Text="OPERATION" HorizontalAlignment="Center" Margin="3" FontWeight="SemiBold" FontSize="10" VerticalAlignment="Center" Foreground="{StaticResource OnBlue}"/>
+                                </Border>
+                                <Polygon Fill="{StaticResource Teal}" Points="-1,0 0,0 10,10 0,20 -1,20" />
                             </Grid>
                             <StackPanel
                                 Grid.Row="1"
@@ -184,7 +216,9 @@
                             </StackPanel>
 
                             <Grid Grid.Column="3">
-                                <Border Background="{StaticResource OnBackground}" CornerRadius="0,10,10,0" />
+                                <Border Background="{StaticResource OnBackground}" CornerRadius="0,10,10,0" >
+                                    <TextBlock  Text="COMPLETION" HorizontalAlignment="Center" Margin="3" FontWeight="SemiBold" FontSize="10" VerticalAlignment="Center" Foreground="{StaticResource Background}"/>
+                                </Border>
                                 <Polygon Fill="{StaticResource Blue}" Points="-1,0 0,0 10,10 0,20 -1,20" />
                             </Grid>
                             <StackPanel
@@ -208,7 +242,7 @@
                         </Grid>
                     </Grid>
 
-                    <Expander Margin="10" Header="Order Configuration">
+                    <Expander Margin="10" Header="Order Configuration" d:IsExpanded="True">
                         <StackPanel>
                             <Grid Margin="10,0">
                                 <TextBlock
@@ -243,6 +277,7 @@
                                     FontSize="14"
                                     Style="{StaticResource DefaultTextBox}"
                                     Tag="POR..."
+                                    PreviewKeyDown="PurchaseOrderTextBox_PreviewKeyDown"
                                     Text="{Binding Order.POReference}" />
                             </Grid>
                             <Grid Margin="10,0">
@@ -282,6 +317,8 @@
                                 HorizontalAlignment="Right"
                                 Content="Research and Development"
                                 IsChecked="{Binding Order.IsResearch}" />
+                            <TextBlock  Text="Bar Issues" Style="{StaticResource section}"/>
+                            <ListBox MinHeight="50"/>
                         </StackPanel>
                     </Expander>
 

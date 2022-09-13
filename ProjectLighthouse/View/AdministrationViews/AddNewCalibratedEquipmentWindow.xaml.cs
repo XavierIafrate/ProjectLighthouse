@@ -86,7 +86,7 @@ namespace ProjectLighthouse.View
             }
             else
             {
-                MakeTextBox.BorderBrush = validBorder; 
+                MakeTextBox.BorderBrush = validBorder;
             }
 
             if (string.IsNullOrEmpty(NewEquipment.Model))

@@ -1,13 +1,10 @@
-﻿using ProjectLighthouse.Model;
+﻿using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LiveCharts;
-using LiveCharts.Configurations;
-using LiveCharts.Wpf;
-using LiveCharts.Defaults;
-using System.Windows.Media;
-using System.Diagnostics;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
@@ -142,7 +139,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                     for (int i = 0; i < models.Count; i++)
                     {
-                        OverallRuntimeByLatheModel.Add( new(
+                        OverallRuntimeByLatheModel.Add(new(
                             models[i],
                             LatheData.Where(x => x.Lathe.Model == models[i])
                                      .Average(x => x.OperatingData.Running)
@@ -155,8 +152,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 public List<RuntimeAggregation> OverallRuntimeByLatheModel { get; set; }
 
                 public class RuntimeAggregation
-                { 
-                    public string Model { get; set; }   
+                {
+                    public string Model { get; set; }
                     public double AverageRuntime { get; set; }
                     public RuntimeAggregation(string model, double avg)
                     {
@@ -165,7 +162,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     }
                 }
 
-            public class DailyLathePerformance
+                public class DailyLathePerformance
                 {
                     public DailyLathePerformance(Lathe lathe, DateTime date, List<MachineOperatingBlock> operatingData, int resolution = 30, bool debug = false)
                     {
@@ -177,7 +174,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                         List<MachineOperatingBlock> relevantOperatingData = operatingData.Where(x => DateWithinRange(x.StateEntered, date) && x.MachineID == lathe.Id).ToList();
 
-                        if(debug) CSVHelper.WriteListToCSV(relevantOperatingData, "relevantOperatingData");
+                        if (debug) CSVHelper.WriteListToCSV(relevantOperatingData, "relevantOperatingData");
 
                         MachineOperatingBlocks = MachinePerformanceHelper.Backfill(relevantOperatingData, date.Hour);
                         MachineOperatingBlocks = MachinePerformanceHelper.Convolute(relevantOperatingData, resolutionMinutes: resolution);
@@ -211,11 +208,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         {
                             RawData = raw;
                             MajorSegments = RawData.Where(x => x.SecondsElapsed >= 1200).ToList();
-                            Running = (double)RawData.Where(x => x.State == nameof(Running)).Sum(x => x.SecondsElapsed)/(double)864;
-                            Setting = (double)RawData.Where(x => x.State == nameof(Setting)).Sum(x => x.SecondsElapsed)/(double)864;
-                            Breakdown = (double)RawData.Where(x => x.State == nameof(Breakdown)).Sum(x => x.SecondsElapsed)/(double)864;
-                            Offline = (double)RawData.Where(x => x.State == nameof(Offline)).Sum(x => x.SecondsElapsed)/(double)864;
-                            Idle = (double)RawData.Where(x => x.State == nameof(Idle)).Sum(x => x.SecondsElapsed)/(double)864;
+                            Running = (double)RawData.Where(x => x.State == nameof(Running)).Sum(x => x.SecondsElapsed) / (double)864;
+                            Setting = (double)RawData.Where(x => x.State == nameof(Setting)).Sum(x => x.SecondsElapsed) / (double)864;
+                            Breakdown = (double)RawData.Where(x => x.State == nameof(Breakdown)).Sum(x => x.SecondsElapsed) / (double)864;
+                            Offline = (double)RawData.Where(x => x.State == nameof(Offline)).Sum(x => x.SecondsElapsed) / (double)864;
+                            Idle = (double)RawData.Where(x => x.State == nameof(Idle)).Sum(x => x.SecondsElapsed) / (double)864;
                         }
 
                         public List<MachineOperatingBlock> RawData { get; set; }
@@ -223,8 +220,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         public double Running { get; set; }
                         public double Setting { get; set; }
                         public double Breakdown { get; set; }
-                        public double Offline { get; set; }    
-                        public double Idle { get; set; }   
+                        public double Offline { get; set; }
+                        public double Idle { get; set; }
                     }
                 }
             }
@@ -261,7 +258,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             private void GetChartData()
             {
                 Series = new();
-                
+
                 int cutoffYear = DateTime.Today.Year - 1;
                 List<IGrouping<DateTime, Lot>> chartLots = Data.Lots
                     .Where(x => x.IsDelivered && x.Date.Year >= cutoffYear)
@@ -304,7 +301,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             return $"<html style='font-family: sans-serif; margin: 0;'>" +
                 $"{helper.GetEmailHeader(startingDate)}" +
-                $"{helper.GetEmailContent(startingDate)}" + 
+                $"{helper.GetEmailContent(startingDate)}" +
                 $"{helper.GetEmailFooter()}" +
                 $"</html>";
         }
@@ -342,7 +339,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 for (int i = 0; i < Data.Lathes.Count; i++)
                 {
-                    latheOverview.Add(new(Data.Lathes[i], startingDate, data, resolution:1)); //true
+                    latheOverview.Add(new(Data.Lathes[i], startingDate, data, resolution: 1)); //true
                 }
 
                 foreach (OperatingPerformance.DayPerformance.DailyLathePerformance lathe in latheOverview)
@@ -439,7 +436,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     {
                         colour = "#009688";
                     }
-                    double percentOfDay = block.SecondsElapsed / 864;    
+                    double percentOfDay = block.SecondsElapsed / 864;
                     timelineHtmlContent += $"<td style='width: {percentOfDay:N2}%;background-color: {colour}; display: table-cell; border: none; border-radius: 2px;'></td>";
                 }
 
@@ -533,9 +530,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     }
                     else
                     {
-                        if(data.OperatingData.Idle > 50)
+                        if (data.OperatingData.Idle > 50)
                         {
-                            if(data.OperatingData.Idle > 95)
+                            if (data.OperatingData.Idle > 95)
                             {
                                 result += GetBasicListItem("The machine was idle all day.", colWarn);
                             }

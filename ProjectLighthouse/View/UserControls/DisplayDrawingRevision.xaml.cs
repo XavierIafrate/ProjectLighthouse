@@ -16,8 +16,6 @@ namespace ProjectLighthouse.View.UserControls
 {
     public partial class DisplayDrawingRevision : UserControl, INotifyPropertyChanged
     {
-
-
         public TechnicalDrawing Drawing
         {
             get { return (TechnicalDrawing)GetValue(DrawingProperty); }
@@ -41,8 +39,14 @@ namespace ProjectLighthouse.View.UserControls
             {
                 return;
             }
-
-            control.DataContext = control.Drawing;
+            if(control.Drawing == null)
+            {
+                return;
+            }
+            if (control.Drawing.DrawingStore == null)
+            {
+                return;
+            }
             string filePath = Path.Join(App.ROOT_PATH, control.Drawing.DrawingStore);
             if (!File.Exists(filePath))
             {
@@ -72,6 +76,8 @@ namespace ProjectLighthouse.View.UserControls
                 : Visibility.Collapsed;
 
             control.notesDisplay.Notes = control.Drawing.Notes;
+
+            control.DataContext = control.Drawing;
         }
 
         public DisplayDrawingRevision()
@@ -82,7 +88,7 @@ namespace ProjectLighthouse.View.UserControls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Process fileopener = new();
-            fileopener.StartInfo.FileName = "explorer"; 
+            fileopener.StartInfo.FileName = "explorer";
             string tmpPath = Path.Join(Path.GetTempPath(), Drawing.GetSafeFileName());
 
             if (!File.Exists(tmpPath))

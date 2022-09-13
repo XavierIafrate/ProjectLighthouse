@@ -8,10 +8,10 @@ namespace ProjectLighthouse.Model.Reporting
     {
         public List<User> Users { get; set; }
         public List<Login> Logins { get; set; }
-        public DateTime From { get; set; }  
-        public DateTime To { get; set; }    
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
 
-        public List<UserLoginRecords> UserLogins { get; set;}
+        public List<UserLoginRecords> UserLogins { get; set; }
 
         public LoginReportData(List<User> users, List<Login> logins, DateTime fromDate, DateTime toDate)
         {
@@ -25,8 +25,8 @@ namespace ProjectLighthouse.Model.Reporting
             {
                 UserLogins.Add(
                     new(
-                        user:Users[i],
-                        logins:Logins.Where(x => x.User == Users[i].UserName).OrderBy(x => x.Time).ToList()
+                        user: Users[i],
+                        logins: Logins.Where(x => x.User == Users[i].UserName).OrderBy(x => x.Time).ToList()
                         )
                     );
             }
@@ -36,7 +36,7 @@ namespace ProjectLighthouse.Model.Reporting
 
     public class UserLoginRecords
     {
-        public User User { get; set; }  
+        public User User { get; set; }
         public List<Login> UserLogins { get; set; }
         public UserLoginRecords(User user, List<Login> logins)
         {

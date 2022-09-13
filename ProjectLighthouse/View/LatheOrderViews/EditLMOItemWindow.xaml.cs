@@ -13,7 +13,7 @@ namespace ProjectLighthouse.View
 {
     public partial class EditLMOItemWindow : Window
     {
-        public LatheManufactureOrderItem Item { get; set; } 
+        public LatheManufactureOrderItem Item { get; set; }
         public List<Lot> Lots { get; set; }
         public bool CanEdit { get; set; }
         public bool AllowDelivery { get; set; }
@@ -243,7 +243,7 @@ namespace ProjectLighthouse.View
             SaveExit = true;
 
             LoadData(Item.Id);
-            LoadUI();   
+            LoadUI();
 
             QuantityNewLotTextBox.Text = "";
             RejectCheckBox.IsChecked = false;

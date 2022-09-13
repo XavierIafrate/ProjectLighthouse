@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
 {
@@ -21,7 +17,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             {
                 return $"yesterday at {date:h:mm tt}";
             }
-            else if(date.Year == DateTime.Now.Year)
+            else if (date.Year == DateTime.Now.Year)
             {
                 return $"{date:dddd, d}{GetDaySuffix(date.Day)} {date:MMMM}";
             }

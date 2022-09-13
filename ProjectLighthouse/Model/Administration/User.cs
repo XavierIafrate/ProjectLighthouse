@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.Model.Administration;
-using SQLite;
+﻿using SQLite;
 using System;
 
 namespace ProjectLighthouse.Model
@@ -15,7 +14,7 @@ namespace ProjectLighthouse.Model
         public string EmailAddress { get; set; }
         public string Password { get; set; }
         public string computerUsername { get; set; }
-        public string UserRole { get; set; }    
+        public string UserRole { get; set; }
 
         private DateTime lastLogin;
         public DateTime LastLogin

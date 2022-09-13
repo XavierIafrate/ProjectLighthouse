@@ -8,9 +8,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel
@@ -33,8 +31,8 @@ namespace ProjectLighthouse.ViewModel
         public string NewMessage
         {
             get { return newMessage; }
-            set 
-            { 
+            set
+            {
                 newMessage = value;
                 OnPropertyChanged();
             }
@@ -98,8 +96,8 @@ namespace ProjectLighthouse.ViewModel
         public TurnedProduct SelectedRequestProduct
         {
             get { return selectedRequestProduct; }
-            set 
-            { 
+            set
+            {
                 selectedRequestProduct = value;
                 if (value.ProductName != null)
                 {
@@ -276,8 +274,8 @@ namespace ProjectLighthouse.ViewModel
         public Visibility CompleteProductVis
         {
             get { return completeProductVis; }
-            set 
-            { 
+            set
+            {
                 completeProductVis = value;
                 OnPropertyChanged();
             }
@@ -421,7 +419,7 @@ namespace ProjectLighthouse.ViewModel
 
             ApprovalControlsVis = App.CurrentUser.CanApproveRequests && request.Status == "Pending approval" && SelectedRequestProduct.DataIsComplete() ? Visibility.Visible : Visibility.Collapsed;
             EditControlsVis = (App.CurrentUser.GetFullName() == request.RaisedBy) && !request.IsAccepted && !request.IsDeclined
-                ? Visibility.Visible 
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             CompleteProductVis = !SelectedRequestProduct.DataIsComplete() && !request.IsDeclined && !request.IsAccepted
@@ -531,7 +529,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void ShowMakeOrBuy()
         {
-            LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest, withAuthority:false);
+            LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest, withAuthority: false);
             creationWindow.Owner = Application.Current.MainWindow;
             creationWindow.ShowDialog();
         }
@@ -555,7 +553,7 @@ namespace ProjectLighthouse.ViewModel
                 MessageBox.Show("Merging not implemented yet", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            
+
             SelectedRequest.MarkAsAccepted();
 
             User ToNotify = DatabaseHelper.Read<User>().Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
@@ -581,11 +579,11 @@ namespace ProjectLighthouse.ViewModel
                    .AddText("You have successfully approved this request.")
                    .Show();
                 FilterRequests(SelectedFilter);
-                foreach(Request request in FilteredRequests)
+                foreach (Request request in FilteredRequests)
                 {
                     if (request.Id == id)
                     {
-                        SelectedRequest = request; 
+                        SelectedRequest = request;
                         OnPropertyChanged(nameof(SelectedRequest));
                     }
                 }

@@ -9,28 +9,69 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
 {
     public class DrawingBrowserViewModel : BaseViewModel
     {
-        public List<DrawingGroup> DrawingGroups { get; set; }
+        public List<TechnicalDrawingGroup> DrawingGroups { get; set; }
+        public List<TechnicalDrawingGroup> FilteredDrawingGroups { get; set; }
         public List<TechnicalDrawing> Drawings { get; set; }
-        public List<TechnicalDrawing> FilteredDrawings { get; set; }
+        private List<TechnicalDrawing> filteredDrawings;
 
-        private DrawingGroup selectedGroup;
-        public DrawingGroup SelectedGroup
+        public List<TechnicalDrawing> FilteredDrawings
+        {
+            get { return filteredDrawings; }
+            set
+            {
+                filteredDrawings = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private TechnicalDrawingGroup selectedGroup;
+        public TechnicalDrawingGroup SelectedGroup
         {
             get { return selectedGroup; }
             set
             {
                 selectedGroup = value;
-                FilteredDrawings = selectedGroup.Drawings;
-                //DisplayDrawing(value);
+
+                if(selectedGroup == null)
+                {
+                    NoneFoundVis = Visibility.Visible;
+                    DrawingVis = Visibility.Hidden;
+                }
+                else
+                {
+                    FilteredDrawings = selectedGroup.Drawings;
+                    SelectedDrawing = FilteredDrawings.Last();
+                    NoneFoundVis = Visibility.Hidden;
+                    DrawingVis = Visibility.Visible;
+                }
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(FilteredDrawings));
+                OnPropertyChanged(nameof(NoneFoundVis));
+                OnPropertyChanged(nameof(DrawingVis));
             }
         }
+
+        private TechnicalDrawing selectedDrawing;
+
+        public TechnicalDrawing SelectedDrawing
+        {
+            get { return selectedDrawing; }
+            set
+            {
+                selectedDrawing = value;
+                SetDrawingUi();
+                OnPropertyChanged();
+            }
+        }
+
 
         private string searchBoxText;
         public string SearchBoxText
@@ -47,11 +88,32 @@ namespace ProjectLighthouse.ViewModel
         public Uri FilePath { get; set; }
 
         public Visibility NoneFoundVis { get; set; } = Visibility.Hidden;
+        public Visibility DrawingVis { get; set; } = Visibility.Visible;
+
         public Visibility ArchetypeWarningVis { get; set; } = Visibility.Collapsed;
         public Visibility SelectedDrawingDisplayVis { get; set; } = Visibility.Visible;
         public Visibility EditControlsVis { get; set; } = Visibility.Collapsed;
+
+        public Visibility ApprovalControlsVis { get; set; } = Visibility.Collapsed;
+        public Visibility PendingApprovalVis{ get; set; } = Visibility.Collapsed;
         public AddNewDrawingCommand AddNewCmd { get; set; }
-        public bool StopRefresh { get; set; } = false;
+
+        public OpenDrawingCommand OpenDrawingCmd { get; set; }
+        public WithdrawDrawingCommand WithdrawCmd { get; set; }
+
+        private bool showOldGroups;
+
+        public bool ShowOldGroups
+        {
+            get { return showOldGroups; }
+            set 
+            { 
+                showOldGroups = value;
+                OnPropertyChanged();
+                FilterDrawings(SearchBoxText);
+            }
+        }
+
 
         public DrawingBrowserViewModel()
         {
@@ -66,14 +128,20 @@ namespace ProjectLighthouse.ViewModel
             EditControlsVis = App.CurrentUser.CanCreateSpecial ? Visibility.Visible : Visibility.Collapsed;
             Drawings = new();
             FilteredDrawings = new();
+            SelectedDrawing = new();
+            FilteredDrawingGroups = new();
+            DrawingGroups = new();
+
+            OpenDrawingCmd = new(this);
+            WithdrawCmd = new(this);
         }
 
         private void LoadData()
         {
             Drawings.Clear();
             Drawings = DatabaseHelper.Read<TechnicalDrawing>();
-
             Drawings = Drawings.OrderBy(d => d.DrawingName).ThenBy(d => d.Revision).ThenBy(x => x.Created).ToList();
+
             List<Note> Notes = DatabaseHelper.Read<Note>().ToList();
             for (int i = 0; i < Drawings.Count; i++)
             {
@@ -86,25 +154,31 @@ namespace ProjectLighthouse.ViewModel
             {
                 List<TechnicalDrawing> d = Drawings.Where(x => x.DrawingName == drawingGroups[i]).ToList();
                 int maxRev = d.Max(x => x.Revision);
-                TechnicalDrawing.Amendment maxAmd = d.Max(x => x.AmendmentType);
+                TechnicalDrawing.Amendment maxAmd = d.Where(x => x.Revision == maxRev).Max(x => x.AmendmentType);
 
                 for (int j = 0; j < d.Count; j++)
                 {
-                    if (d[j].AmendmentType == maxAmd && d[j].Revision == maxRev && d[j].IsApproved)
+                    if (d[j].AmendmentType == maxAmd && d[j].Revision == maxRev && d[j].IsApproved && !d[j].IsWithdrawn)
                     {
                         d[j].IsCurrent = true;
                     }
                 }
-                DrawingGroup newGroup = new()
+                TechnicalDrawingGroup newGroup = new()
                 {
-                    Drawings = d,
+                    Drawings = d.OrderBy(x => x.Created).ToList(),
                     Name = drawingGroups[i],
                     CurrentRevision = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.Revision),
                     LastIssue = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.ApprovedDate),
                     Amendment = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.AmendmentType),
+                    AllDrawingsWithdrawn = d.All(x => x.IsWithdrawn || x.IsRejected)
                 };
 
                 DrawingGroups.Add(newGroup);
+            }
+
+            if (DrawingGroups.Count > 0)
+            {
+                SelectedGroup = DrawingGroups[0];
             }
         }
 
@@ -114,49 +188,29 @@ namespace ProjectLighthouse.ViewModel
             FilteredDrawings = new();
             if (string.IsNullOrEmpty(searchString))
             {
-                SelectedGroup = new()
+                FilteredDrawingGroups = new(DrawingGroups);
+                if (!ShowOldGroups)
                 {
-                    Drawings = Drawings.Where(x => x.DrawingName == Drawings.First().DrawingName).ToList(),
-                    Name = Drawings.First().DrawingName,
-                    CurrentRevision = Drawings.Where(x => x.DrawingName == Drawings.First().DrawingName).Max(x => x.Revision),
-                    LastIssue = Drawings.Where(x => x.DrawingName == Drawings.First().DrawingName).Max(x => x.ApprovedDate),
-                    Amendment = Drawings.Where(x => x.DrawingName == Drawings.First().DrawingName).Max(x => x.AmendmentType)
-                };
+                    FilteredDrawingGroups = FilteredDrawingGroups.Where(x => !x.AllDrawingsWithdrawn).ToList();
+                }
             }
             else
             {
                 searchString = searchString.Trim().ToUpperInvariant();
-                
 
-                for (int i = 0; i < Drawings.Count; i++)
-                {
-                    if (Drawings[i].DrawingName.ToUpperInvariant().Contains(searchString))
-                    {
-                        FilteredDrawings.Add(Drawings[i]);
-                    }
-                    else if (!string.IsNullOrEmpty(Drawings[i].Customer))
-                    {
-                        if (Drawings[i].Customer.ToUpperInvariant().Contains(searchString))
-                        {
-                            FilteredDrawings.Add(Drawings[i]);
-                        }
-                    }
-                }
+                FilteredDrawingGroups = DrawingGroups.Where(x => x.Name.Contains(searchString)).ToList();
             }
 
-            if (FilteredDrawings.Count == 0)
+            if (FilteredDrawingGroups.Count > 0)
             {
-                SelectedDrawingDisplayVis = Visibility.Hidden;
-                NoneFoundVis = Visibility.Visible;
+                SelectedGroup = FilteredDrawingGroups[0];
             }
             else
             {
-                SelectedDrawingDisplayVis = Visibility.Visible;
-                NoneFoundVis = Visibility.Hidden;
+                SelectedGroup = null;
             }
 
-            OnPropertyChanged(nameof(SelectedDrawingDisplayVis));
-            OnPropertyChanged(nameof(NoneFoundVis));
+            OnPropertyChanged(nameof(FilteredDrawingGroups));
             OnPropertyChanged(nameof(FilteredDrawings));
         }
 
@@ -172,6 +226,38 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private void SetDrawingUi()
+        {
+            if (selectedDrawing == null)
+            {
+                return;
+            }
+            string filePath = Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore);
+            if (!File.Exists(filePath))
+            {
+                //control.openButton.Content = "file not found";
+                //control.openButton.IsEnabled = false;
+            }
+            else
+            {
+                //control.openButton.Content = "Open";
+                //control.openButton.IsEnabled = true;
+            }
+            PendingApprovalVis = !selectedDrawing.IsApproved && !selectedDrawing.IsRejected && !selectedDrawing.IsWithdrawn
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            OnPropertyChanged(nameof(PendingApprovalVis));
+
+            ApprovalControlsVis = !selectedDrawing.IsApproved && !selectedDrawing.IsRejected && !selectedDrawing.IsWithdrawn && App.CurrentUser.CanApproveDrawings && selectedDrawing.CreatedBy != App.CurrentUser.GetFullName()
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            OnPropertyChanged(nameof(ApprovalControlsVis));
+
+            //control.approvalControls.Visibility = (!control.Drawing.IsApproved && !control.Drawing.IsRejected && App.CurrentUser.GetFullName() != control.Drawing.CreatedBy && App.CurrentUser.CanApproveDrawings)
+            //? Visibility.Visible
+            //: Visibility.Collapsed;
+            //control.notesDisplay.Notes = control.Drawing.Notes;
+        }
         public void RejectDrawing(TechnicalDrawing drawing)
         {
             drawing.IsRejected = true;
@@ -192,7 +278,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void ApproveRevision(TechnicalDrawing drawing)
         {
-            DrawingGroup group = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == drawing.Id));
+            TechnicalDrawingGroup group = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == drawing.Id));
             int MaxRev = group.Drawings.Max(x => x.Revision);
 
             drawing.Revision = MaxRev + 1;
@@ -217,7 +303,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void ApproveAmendment(TechnicalDrawing drawing)
         {
-            DrawingGroup group = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == drawing.Id));
+            TechnicalDrawingGroup group = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == drawing.Id));
             int MaxRev = group.Drawings.Max(x => x.Revision);
             TechnicalDrawing.Amendment maxAmd = group.Drawings.Max(x => x.AmendmentType);
 
@@ -248,13 +334,53 @@ namespace ProjectLighthouse.ViewModel
             SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));
         }
 
-        public class DrawingGroup
+        public void OpenPdfDrawing()
         {
-            public string Name { get; set; }
-            public DateTime LastIssue { get; set; }
-            public int CurrentRevision { get; set; }
-            public TechnicalDrawing.Amendment Amendment { get; set; }
-            public List<TechnicalDrawing> Drawings { get; set; }
+            Process fileopener = new();
+            fileopener.StartInfo.FileName = "explorer";
+            string tmpPath = Path.Join(Path.GetTempPath(), selectedDrawing.GetSafeFileName());
+
+            if (!File.Exists(tmpPath))
+            {
+                File.Copy(Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore), tmpPath);
+            }
+            fileopener.StartInfo.Arguments = "\"" + tmpPath + "\"";
+            _ = fileopener.Start();
+        }
+
+        public void WithdrawDrawing()
+        {
+            if(SelectedDrawing.IsRejected)
+            {
+                MessageBox.Show("You cannot withdraw this drawing, it has been rejected.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (SelectedDrawing.IsWithdrawn)
+            {
+                MessageBox.Show("You cannot withdraw this drawing, it has already been withdrawn.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (MessageBox.Show("Are you sure you want to withdraw this drawing?", "Confirm proceed", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            SelectedDrawing.IsWithdrawn = true;
+            SelectedDrawing.WithdrawnDate = DateTime.Now;
+            SelectedDrawing.WithdrawnBy = App.CurrentUser.GetFullName();
+            string thisGroup = SelectedGroup.Name;
+            int thisDrawing = SelectedDrawing.Id;
+
+            DatabaseHelper.Update(SelectedDrawing);
+            ShowOldGroups = true;
+            LoadData();
+
+            SelectedGroup = FilteredDrawingGroups.Find(x => x.Name == thisGroup);
+            SelectedDrawing = SelectedGroup.Drawings.Find(x => x.Id == thisDrawing);
+
+            MessageBox.Show($"{selectedDrawing.DrawingName} R{selectedDrawing.Revision}{selectedDrawing.AmendmentType} has been withdrawn for manufacture.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

@@ -11,6 +11,6 @@ namespace ProjectLighthouse.Model
         public string Name { get; set; }
         public DateTime DeliveryDate { get; set; }
         public string DeliveredBy { get; set; }
-        public bool Verified { get; set;}
+        public bool Verified { get; set; }
     }
 }

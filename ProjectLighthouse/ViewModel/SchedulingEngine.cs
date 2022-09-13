@@ -10,8 +10,8 @@ namespace ProjectLighthouse.ViewModel
         public List<LatheManufactureOrder> Orders { get; set; }
         public List<Lathe> Lathes { get; set; }
         public List<BarStock> BarStock { get; set; }
-        public List<MachineSchedule> MachineSchedules { get; set; } 
-        
+        public List<MachineSchedule> MachineSchedules { get; set; }
+
         public List<ScheduleThread> Threads { get; set; }
 
         public void MakeThreads()
@@ -58,7 +58,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        
+
 
         public void CategoriseThreads(bool SoftLimits = true)
         {
@@ -99,7 +99,7 @@ namespace ProjectLighthouse.ViewModel
                         activeThread.StartDate = thread.Orders.Min(x => x.StartDate);
                         break;
                     }
-                    
+
                 }
                 if (activeThread != null)
                 {
@@ -164,7 +164,7 @@ namespace ProjectLighthouse.ViewModel
                 Key = key;
                 Orders = orders;
                 Bar = orders.First().Bar;
-                Deadline = orders.Min(x => x.Deadline); 
+                Deadline = orders.Min(x => x.Deadline);
             }
         }
     }

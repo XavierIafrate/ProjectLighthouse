@@ -39,7 +39,7 @@ namespace ProjectLighthouse.View
         public List<Lot> Lots;
         public bool SaveExit { get; set; }
         public List<Note> Notes { get; set; }
-        public List<TechnicalDrawing> Drawings { get; set;}
+        public List<TechnicalDrawing> Drawings { get; set; }
 
         List<OrderDrawing> DrawingReferences { get; set; }
 
@@ -143,6 +143,8 @@ namespace ProjectLighthouse.View
 
         private void SetCheckboxEnabling(bool canEdit)
         {
+
+            //TODO
             bool tier1;
             bool tier2;
             bool tier3;
@@ -191,20 +193,15 @@ namespace ProjectLighthouse.View
             }
 
             Tooling_Checkbox.IsEnabled = tier1;
-            Program_Checkbox.IsEnabled = tier1;
             BarVerified_Checkbox.IsEnabled = tier1;
 
-            BarAllocated_Checkbox.IsEnabled = tier2;
+
+            Program_Checkbox.IsEnabled = tier2;
 
             Running_Checkbox.IsEnabled = tier3;
 
             Complete_Checkbox.IsEnabled = tier4 && !Order.IsCancelled;
             Cancelled_Checkbox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit;
-        }
-
-        public void TestClickEvent(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -273,7 +270,7 @@ namespace ProjectLighthouse.View
 
             foreach (LatheManufactureOrderItem item in Items)
             {
-                totalLengthRequired += (item.MajorLength + partOff) * item.TargetQuantity * 1.02;
+                totalLengthRequired += (item.MajorLength + item.PartOffLength + partOff) * item.TargetQuantity * 1.02;
             }
 
             Order.NumberOfBars = Math.Ceiling(totalLengthRequired / (bar.Length - 300)) + Order.SpareBars;
@@ -328,7 +325,7 @@ namespace ProjectLighthouse.View
 
             for (int i = 0; i < toUpdate.Count; i++)
             {
-                DatabaseHelper.Insert<Notification>(new(to: toUpdate[i], from: App.CurrentUser.UserName, header: $"Comment - {Order.Name}", body: "New comment left on this order", toastAction:$"viewManufactureOrder:{Order.Name}"));
+                DatabaseHelper.Insert<Notification>(new(to: toUpdate[i], from: App.CurrentUser.UserName, header: $"Comment - {Order.Name}", body: "New comment left on this order", toastAction: $"viewManufactureOrder:{Order.Name}"));
             }
 
             DatabaseHelper.Insert(newNote);
@@ -356,12 +353,6 @@ namespace ProjectLighthouse.View
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            //List<TurnedProduct> p = DatabaseHelper.Read<TurnedProduct>();
-            //TurnedProduct target = p.Find(x => x.ProductName == Items.First().ProductName);
-            //Order.ToolingGroup = target.ProductGroup;
-            //DatabaseHelper.Update(Order);
-            //return;
-
             CalculateTime();
             CalculateBarRequirements();
             CheckIfOrderIsClosed(); // running to closed is broken
@@ -435,7 +426,7 @@ namespace ProjectLighthouse.View
         private void AddItemButton_Click(object sender, RoutedEventArgs e)
         {
             AddItemToOrderWindow window = new(Order.Name);
-            if(window.PossibleItems.Count == 0)
+            if (window.PossibleItems.Count == 0)
             {
                 MessageBox.Show("No further items are available to run on this order.", "Unavailable", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
@@ -459,13 +450,10 @@ namespace ProjectLighthouse.View
         {
             get
             {
-                if (_saveCommand == null)
-                {
-                    _saveCommand = new RelayCommand(
+                _saveCommand ??= new RelayCommand(
                         param => this.SaveObject(),
                         param => this.CanSave()
                     );
-                }
                 return _saveCommand;
             }
         }
@@ -481,7 +469,7 @@ namespace ProjectLighthouse.View
             {
                 MessageBox.Show("no edit");// Save command execution logic
             }
-            EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit, allowDelivery:!Order.IsResearch);
+            EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch);
             Hide();
             editWindow.ShowDialog();
 
@@ -511,10 +499,7 @@ namespace ProjectLighthouse.View
 
             public RelayCommand(Action<object> execute, Predicate<object> canExecute)
             {
-                if (execute == null)
-                    throw new ArgumentNullException("execute");
-
-                _execute = execute;
+                _execute = execute ?? throw new ArgumentNullException("execute");
                 _canExecute = canExecute;
             }
 
@@ -525,7 +510,7 @@ namespace ProjectLighthouse.View
             [DebuggerStepThrough]
             public bool CanExecute(object parameters)
             {
-                return _canExecute == null ? true : _canExecute(parameters);
+                return _canExecute == null || _canExecute(parameters);
             }
 
             public event EventHandler CanExecuteChanged
@@ -575,13 +560,13 @@ namespace ProjectLighthouse.View
                     DrawingReferences.Remove(DrawingReferences.Find(x => x.DrawingId == currentDrawingIds[i]));
                 }
             }
-            
+
 
             for (int i = 0; i < upToDateDrawingIds.Length; i++)
             {
                 if (!currentDrawingIds.Contains(upToDateDrawingIds[i]))
                 {
-                    OrderDrawing newRecord = new() { DrawingId = upToDateDrawingIds[i], OrderId=Order.Name };
+                    OrderDrawing newRecord = new() { DrawingId = upToDateDrawingIds[i], OrderId = Order.Name };
                     DatabaseHelper.Insert<OrderDrawing>(newRecord);
                     DrawingReferences.Add(newRecord);
                     Drawings.Add(drawings.Find(x => x.Id == upToDateDrawingIds[i]));
@@ -590,6 +575,11 @@ namespace ProjectLighthouse.View
 
             MessageBox.Show("Updated drawings were found and the order records amended.", "Now up to date", MessageBoxButton.OK, MessageBoxImage.Information);
             OnPropertyChanged(nameof(Drawings));
+        }
+
+        private void PurchaseOrderTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateAlphanumeric(e);
         }
     }
 }

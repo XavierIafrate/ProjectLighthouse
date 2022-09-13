@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model;
-using ProjectLighthouse.ViewModel.ValueConverters;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -27,11 +26,11 @@ namespace ProjectLighthouse.View.UserControls
             Brush flagBrush;
             if (control.Check.Status == "Accepted")
             {
-                flagBrush  = (Brush)Application.Current.Resources["Green"];
+                flagBrush = (Brush)Application.Current.Resources["Green"];
             }
             else if (control.Check.Status == "Rejected")
             {
-                flagBrush =(Brush)Application.Current.Resources["Red"];
+                flagBrush = (Brush)Application.Current.Resources["Red"];
             }
             else
             {

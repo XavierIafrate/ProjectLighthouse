@@ -80,8 +80,8 @@ namespace ProjectLighthouse.Model
 
             int qty = Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
 
-            return forManufacture 
-                ? Math.Max(qty, RequestsEngine.GetMiniumumOrderQuantity(this)) 
+            return forManufacture
+                ? Math.Max(qty, RequestsEngine.GetMiniumumOrderQuantity(this))
                 : qty;
         }
 

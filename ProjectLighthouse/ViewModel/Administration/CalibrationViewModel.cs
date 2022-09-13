@@ -258,9 +258,10 @@ namespace ProjectLighthouse.ViewModel
 
                 case "Near Expiry":
                     FilteredEquipment = Equipment
-                        .Where(x => x.CalibrationHasLapsed() 
-                                || System.DateTime.Now.AddMonths(1) > x.NextDue 
-                                && x.RequiresCalibration)
+                        .Where(x => x.CalibrationHasLapsed()
+                                || (System.DateTime.Now.AddMonths(1) > x.NextDue
+                                && x.RequiresCalibration
+                                && !x.IsOutOfService))
                         .ToList();
                     break;
 
@@ -284,15 +285,10 @@ namespace ProjectLighthouse.ViewModel
             {
                 Refresh();
             }
-            // CanEditCalibration level
-
-            // New Window
         }
 
         public void AddCertificate()
         {
-            // CanEditCalibration level
-
             AddNewCalibrationCertificateWindow window = new(SelectedEquipment, Certificates);
             window.ShowDialog();
 
@@ -316,11 +312,6 @@ namespace ProjectLighthouse.ViewModel
         {
             List<CalibratedEquipment> requiresRecal = Equipment.Where(x => x.NextDue < System.DateTime.Now.AddMonths(2) && x.RequiresCalibration && !x.IsOutOfService).ToList();
             CSVHelper.WriteListToCSV(requiresRecal, "RequiresCal");
-        }
-
-        void TestLabelPrinter()
-        {
-            LabelPrintingHelper.TestPrinter();
         }
 
         public void RecordVisualCheck()

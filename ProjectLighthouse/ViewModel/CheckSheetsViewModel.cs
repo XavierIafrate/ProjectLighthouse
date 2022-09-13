@@ -1,12 +1,9 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static ProjectLighthouse.Model.Product;
 
 namespace ProjectLighthouse.ViewModel
@@ -14,7 +11,7 @@ namespace ProjectLighthouse.ViewModel
     public class CheckSheetsViewModel : BaseViewModel
     {
         public List<Product> Products { get; set; } = new();
-        public List<ToolingGroup> ToolingGroups { get; set; } = new();    
+        public List<ToolingGroup> ToolingGroups { get; set; } = new();
         public List<TurnedProduct> TurnedProducts { get; set; } = new();
         public List<CheckSheetField> CheckSheetFields { get; set; } = new();
 
@@ -22,8 +19,8 @@ namespace ProjectLighthouse.ViewModel
         public Product SelectedProduct
         {
             get { return selectedProduct; }
-            set 
-            { 
+            set
+            {
                 selectedProduct = value;
                 OnPropertyChanged();
             }
@@ -49,7 +46,7 @@ namespace ProjectLighthouse.ViewModel
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
                 .Where(x => !x.isSpecialPart)
                 .ToList();
-            CheckSheetFields = DatabaseHelper.Read<CheckSheetField>();  
+            CheckSheetFields = DatabaseHelper.Read<CheckSheetField>();
 
             for (int i = 0; i < ToolingGroups.Count; i++)
             {
@@ -70,7 +67,7 @@ namespace ProjectLighthouse.ViewModel
 
             if (Products.Count > 0)
             {
-                SelectedProduct =Products.First();
+                SelectedProduct = Products.First();
             }
         }
 

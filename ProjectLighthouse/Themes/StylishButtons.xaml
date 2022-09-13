@@ -320,6 +320,45 @@
     </Style>
 
     <!--  Specific Styles  -->
+
+    <Style x:Key="WithdrawButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource OnRed }" />
+        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Margin" Value="10,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="30"
+                        Padding="15,2,15,3"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="15">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" Width="13" Margin="0,2,0,0" Stretch="Uniform" Fill="{TemplateBinding Foreground}"/>
+                            <TextBlock Text="Withdraw" Margin="5,0,0,0" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Red}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource Red}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    
     <Style x:Key="ClearButton" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource SelectedElement}" />
         <Setter Property="BorderThickness" Value="0" />

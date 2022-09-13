@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
+using System.Collections.Generic;
 
 namespace LighthouseExtract
 {

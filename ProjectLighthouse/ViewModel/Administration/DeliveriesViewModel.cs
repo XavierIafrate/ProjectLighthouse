@@ -69,8 +69,8 @@ namespace ProjectLighthouse.ViewModel
         public bool PdfEnabled
         {
             get { return pdfEnabled; }
-            set 
-            { 
+            set
+            {
                 pdfEnabled = value;
                 OnPropertyChanged();
             }
@@ -131,7 +131,7 @@ namespace ProjectLighthouse.ViewModel
 
             CheckingOperaVis = Visibility.Collapsed;
             DisableControls = false;
-            
+
             if (problems.Count == 0)
             {
                 MessageBox.Show("This delivery matches or subceeds the data in Opera.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

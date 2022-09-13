@@ -15,7 +15,7 @@ namespace ProjectLighthouse.Model
         public int CycleTime { get; set; }
         public string Messages { get; set; }
         public string ErrorMessages { get; set; }
-        public enum States { Running, Setting, Breakdown, Idle, Offline, Unknown}
+        public enum States { Running, Setting, Breakdown, Idle, Offline, Unknown }
 
         public int GetCalculatedPartsProduced()
         {
@@ -38,7 +38,7 @@ namespace ProjectLighthouse.Model
 
             return cleanedResults
                 .Where(
-                    x => !x.Contains("T02 Auto operation pause signal ON") 
+                    x => !x.Contains("T02 Auto operation pause signal ON")
                             && !string.IsNullOrWhiteSpace(x))
                 .ToList();
         }

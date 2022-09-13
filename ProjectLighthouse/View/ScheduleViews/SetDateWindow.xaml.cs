@@ -1,12 +1,8 @@
 ﻿using ProjectLighthouse.Model;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Media;
 
 namespace ProjectLighthouse.View
 {
@@ -16,7 +12,7 @@ namespace ProjectLighthouse.View
         public DateTime SelectedDate;
         public string AllocatedMachine;
         public bool SaveExit = false;
-        private List<DateTime> significantDates { get; set;}
+        private List<DateTime> significantDates { get; set; }
 
         public SetDateWindow(ScheduleItem item, HashSet<DateTime> setDates = null)
         {
@@ -31,8 +27,8 @@ namespace ProjectLighthouse.View
             Item = item;
             TitleText.Text = $"Editing: {Item.Name}";
 
-            calendar.SelectedDate = Item.StartDate == DateTime.MinValue 
-                ? DateTime.Today.AddDays(1) 
+            calendar.SelectedDate = Item.StartDate == DateTime.MinValue
+                ? DateTime.Today.AddDays(1)
                 : Item.StartDate;
 
             AllocatedMachine = Item.AllocatedMachine;

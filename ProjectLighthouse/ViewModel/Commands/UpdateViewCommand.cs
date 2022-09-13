@@ -51,8 +51,8 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "New Request")
             {
-                viewModel.BetaWarningVis = Visibility.Hidden;
-                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new NewRequestViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {

@@ -16,7 +16,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             else if (value is int intVal)
             {
 
-               dPrice = System.Convert.ToDouble((int)intVal) / 100;
+                dPrice = System.Convert.ToDouble((int)intVal) / 100;
             }
             return $"£{dPrice:0.00}";
         }

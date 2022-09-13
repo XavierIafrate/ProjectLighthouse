@@ -15,6 +15,8 @@ namespace ProjectLighthouse.Model
         public double OnOrder { get; set; }
         public int Cost { get; set; }
         public int SuggestedStock { get; set; }
+        public string MaterialText { get; set; }
+        public string GradeText { get; set; }
 
         public double GetUnitMassOfBar()
         {

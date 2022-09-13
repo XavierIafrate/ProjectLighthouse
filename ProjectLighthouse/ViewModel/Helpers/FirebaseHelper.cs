@@ -40,9 +40,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 if (string.IsNullOrEmpty(orders[i].FirebaseId))
                 {
-                    string newId= await Insert(orders[i]);
+                    string newId = await Insert(orders[i]);
                     Debug.WriteLine($"HTTP SUCCESS: [{newId}]");
-                    orders[i].FirebaseId=newId;
+                    orders[i].FirebaseId = newId;
                     DatabaseHelper.Update(orders[i]);
                 }
                 else
@@ -64,7 +64,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             using HttpClient client = new();
             HttpResponseMessage result = await client.PostAsync($"{dbPath}{item.GetType().Name.ToLower()}.json?auth={KEY}", content);
-            
+
             if (result.IsSuccessStatusCode)
             {
                 string jsonResult = await result.Content.ReadAsStringAsync();

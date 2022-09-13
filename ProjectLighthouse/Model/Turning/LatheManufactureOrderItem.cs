@@ -1,6 +1,5 @@
 ﻿using SQLite;
 using System;
-using CsvHelper;
 
 namespace ProjectLighthouse.Model
 {
@@ -67,7 +66,7 @@ namespace ProjectLighthouse.Model
             IsSpecialPart = fromProduct.isSpecialPart;
 
             RequiredQuantity = 0;
-            TargetQuantity = fromProduct.GetRecommendedQuantity( forManufacture:true );
+            TargetQuantity = fromProduct.GetRecommendedQuantity(forManufacture: true);
             RecommendedQuantity = TargetQuantity;
             SellPrice = fromProduct.SellPrice;
         }

@@ -44,7 +44,7 @@ namespace ProjectLighthouse.View.UserControls
         {
             Process fileopener = new();
             fileopener.StartInfo.FileName = "explorer";
-            string tmpPath = Path.Join(Path.GetTempPath(), Attachment.FileName + Attachment.Extension);
+            string tmpPath = Path.Join(Path.GetTempPath(), $"{Attachment.FileName}_{Attachment.Id}" + Attachment.Extension);
             if (!File.Exists(tmpPath))
             {
                 File.Copy(Path.Join(App.ROOT_PATH, Attachment.AttachmentStore), tmpPath);

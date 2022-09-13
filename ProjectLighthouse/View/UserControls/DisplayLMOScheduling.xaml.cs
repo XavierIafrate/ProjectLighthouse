@@ -60,7 +60,7 @@ namespace ProjectLighthouse.View.UserControls
                 }
                 control.orderItems.ItemsSource = control.orderObject.OrderItems;
 
-                control.LargeDiameterIndicator.Visibility = control.orderObject.OrderItems.First().MajorLength > 90 || control.orderObject.OrderItems.First().MajorDiameter > 20
+                control.LargeDiameterIndicator.Visibility = control.orderObject.OrderItems.First().MajorDiameter > 20
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
@@ -83,7 +83,7 @@ namespace ProjectLighthouse.View.UserControls
                         continue;
                     }
 
-                    int secondsToRequirement = (item.RequiredQuantity-item.QuantityDelivered) * item.GetCycleTime();
+                    int secondsToRequirement = (item.RequiredQuantity - item.QuantityDelivered) * item.GetCycleTime();
                     int diff = (int)(item.DateRequired.Date - startDate.Date.AddSeconds(secondsBudgeted)).TotalSeconds;
 
                     if (item.DateRequired < DateTime.Today && item.RequiredQuantity > item.QuantityDelivered)

@@ -132,7 +132,7 @@ namespace ProjectLighthouse.Model
                 return;
             }
 
-            if(Block.Contains("MACHINEID"))
+            if (Block.Contains("MACHINEID"))
             {
                 Status = "Idle";
                 return;

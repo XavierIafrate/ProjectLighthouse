@@ -2,10 +2,6 @@
 using MigraDoc.DocumentObjectModel.Tables;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectLighthouse.Model.Reporting.Internal
 {
@@ -110,7 +106,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             table.Rows[0].KeepWith = Math.Min(numRowsRequired, 5);
 
             foreach (Login login in logins)
-            { 
+            {
                 Row row = table.Rows[rowCursor];
                 Paragraph p = new();
                 p.AddText(login.Host ?? "n/a");
@@ -152,7 +148,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             {
                 if (i % 2 == 0)  // Even rows
                 {
-                    table.Rows[i].Shading.Color = Color.FromRgb(230,230,230);
+                    table.Rows[i].Shading.Color = Color.FromRgb(230, 230, 230);
                 }
             }
         }
