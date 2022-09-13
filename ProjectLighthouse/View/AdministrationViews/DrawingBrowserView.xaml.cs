@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.View
 {
@@ -20,6 +21,14 @@ namespace ProjectLighthouse.View
         private void ClearButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             searchBox.Text = "";
+        }
+
+        private void Message_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                SendButton.Command.Execute(null);
+            }
         }
     }
 }

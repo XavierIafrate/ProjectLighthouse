@@ -143,11 +143,13 @@
                                 x:Name="PART_ContentHost"
                                 Margin="12,7"
                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                TextElement.FontSize="{TemplateBinding FontSize}"
                                 TextElement.Foreground="{StaticResource OnSurface}" />
                             <TextBlock
                                 x:Name="textBlock"
                                 Margin="16,5"
                                 VerticalAlignment="Center"
+                                FontSize="{TemplateBinding FontSize}"
                                 Foreground="{StaticResource OnSurface}"
                                 Opacity="0.6"
                                 Style="{StaticResource GhostText}"

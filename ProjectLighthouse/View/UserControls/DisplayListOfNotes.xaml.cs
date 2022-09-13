@@ -40,8 +40,7 @@ namespace ProjectLighthouse.View.UserControls
             if (d is not DisplayListOfNotes control) return;
 
             control.displayNotes = FormatListOfNotes(control.Notes, control.ShowingEditControls);
-
-            control.DataContext = control;
+            control.NotesList.ItemsSource = control.displayNotes;
         }
 
         public static List<Note> FormatListOfNotes(List<Note> notes, bool edit = false)

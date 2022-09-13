@@ -9,8 +9,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -40,7 +38,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 selectedGroup = value;
 
-                if(selectedGroup == null)
+                if (selectedGroup == null)
                 {
                     NoneFoundVis = Visibility.Visible;
                     DrawingVis = Visibility.Hidden;
@@ -72,6 +70,19 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
+        private List<Note> selectedDrawingNotes = new();
+
+        public List<Note> Notes
+        {
+            get { return selectedDrawingNotes; }
+            set
+            {
+                selectedDrawingNotes = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
         private string searchBoxText;
         public string SearchBoxText
@@ -95,19 +106,32 @@ namespace ProjectLighthouse.ViewModel
         public Visibility EditControlsVis { get; set; } = Visibility.Collapsed;
 
         public Visibility ApprovalControlsVis { get; set; } = Visibility.Collapsed;
-        public Visibility PendingApprovalVis{ get; set; } = Visibility.Collapsed;
+        public Visibility PendingApprovalVis { get; set; } = Visibility.Collapsed;
         public AddNewDrawingCommand AddNewCmd { get; set; }
 
         public OpenDrawingCommand OpenDrawingCmd { get; set; }
         public WithdrawDrawingCommand WithdrawCmd { get; set; }
+        public AddCommentToDrawingCommand AddCommentToDrawingCmd { get; set; }
 
         private bool showOldGroups;
+
+        private string newNoteText;
+        public string NewNoteText
+        {
+            get { return newNoteText; }
+            set
+            {
+                newNoteText = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public bool ShowOldGroups
         {
             get { return showOldGroups; }
-            set 
-            { 
+            set
+            {
                 showOldGroups = value;
                 OnPropertyChanged();
                 FilterDrawings(SearchBoxText);
@@ -124,16 +148,21 @@ namespace ProjectLighthouse.ViewModel
 
         private void InitialiseVariables()
         {
-            AddNewCmd = new(this);
             EditControlsVis = App.CurrentUser.CanCreateSpecial ? Visibility.Visible : Visibility.Collapsed;
+
+            Notes = new();
             Drawings = new();
             FilteredDrawings = new();
             SelectedDrawing = new();
             FilteredDrawingGroups = new();
             DrawingGroups = new();
 
+            NewNoteText = "";
+
+            AddNewCmd = new(this);
             OpenDrawingCmd = new(this);
             WithdrawCmd = new(this);
+            AddCommentToDrawingCmd = new(this);
         }
 
         private void LoadData()
@@ -233,6 +262,10 @@ namespace ProjectLighthouse.ViewModel
                 return;
             }
             string filePath = Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore);
+
+            Notes.Clear();
+            Notes = selectedDrawing.Notes;
+
             if (!File.Exists(filePath))
             {
                 //control.openButton.Content = "file not found";
@@ -252,12 +285,37 @@ namespace ProjectLighthouse.ViewModel
                 ? Visibility.Visible
                 : Visibility.Collapsed;
             OnPropertyChanged(nameof(ApprovalControlsVis));
-
-            //control.approvalControls.Visibility = (!control.Drawing.IsApproved && !control.Drawing.IsRejected && App.CurrentUser.GetFullName() != control.Drawing.CreatedBy && App.CurrentUser.CanApproveDrawings)
-            //? Visibility.Visible
-            //: Visibility.Collapsed;
-            //control.notesDisplay.Notes = control.Drawing.Notes;
         }
+
+        public void AddCommentToDrawing()
+        {
+            if (string.IsNullOrEmpty(newNoteText.Trim()))
+            {
+                return;
+            }
+
+            Note newNote = new()
+            {
+                DateSent = DateTime.Now.ToString("s"),
+                DocumentReference = $"{SelectedDrawing.Id:0}",
+                SentBy = App.CurrentUser.UserName,
+                Message = newNoteText.Trim(),
+                OriginalMessage = newNoteText.Trim(),
+            };
+
+            if (!DatabaseHelper.Insert(newNote))
+            {
+                return;
+            }
+            string thisGroup = SelectedGroup.Name;
+            int thisDrawing = SelectedDrawing.Id;
+
+            LoadData();
+            NewNoteText = "";
+            SelectedGroup = FilteredDrawingGroups.Find(x => x.Name == thisGroup);
+            SelectedDrawing = SelectedGroup.Drawings.Find(x => x.Id == thisDrawing);
+        }
+
         public void RejectDrawing(TechnicalDrawing drawing)
         {
             drawing.IsRejected = true;
@@ -350,7 +408,7 @@ namespace ProjectLighthouse.ViewModel
 
         public void WithdrawDrawing()
         {
-            if(SelectedDrawing.IsRejected)
+            if (SelectedDrawing.IsRejected)
             {
                 MessageBox.Show("You cannot withdraw this drawing, it has been rejected.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
