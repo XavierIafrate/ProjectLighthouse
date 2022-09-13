@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayDrawingTimelineItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+             mc:Ignorable="d" 
+             d:Background="White">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="AMENDMENT" Margin="10,6,10,6" x:Name="NameText" FontWeight="SemiBold"/>
+        <Border Grid.Column="2" Margin="3" VerticalAlignment="Center" Background="{StaticResource Teal}" CornerRadius="3" x:Name="researchFlag">
+            <TextBlock Text="R&amp;D" Foreground="{StaticResource OnTeal}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="8,2,8,3"/>
+        </Border>
+        <Border Grid.Column="3" Margin="3" VerticalAlignment="Center" Background="{StaticResource Blue}" CornerRadius="3" x:Name="currentFlag">
+            <TextBlock Text="CURRENT" Foreground="{StaticResource OnTeal}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="8,2,8,3"/>
+        </Border>
+        <Border Grid.Column="4" Margin="3" VerticalAlignment="Center" Background="{StaticResource Red}" CornerRadius="3" x:Name="withdrawnFlag">
+            <TextBlock Text="WITHDRAWN" Foreground="{StaticResource OnTeal}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="8,2,8,3"/>
+        </Border>
+        <Border Height="10" Width="10" Grid.Column="5" VerticalAlignment="Center" Margin="10,0" CornerRadius="5" Background="Black" x:Name="Indicator"/>
+    </Grid>
+</UserControl>

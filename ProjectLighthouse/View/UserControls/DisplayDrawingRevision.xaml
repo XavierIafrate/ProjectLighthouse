@@ -126,146 +126,252 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <StackPanel Margin="0,10,0,0" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
+
+                <Grid
+                    Grid.Row="0"
+                    Width="500"
+                    Margin="0,5,0,0"
+                    HorizontalAlignment="Center">
+                    <Border
+                        Background="{StaticResource Blue}"
+                        CornerRadius="3"
+                        Opacity="0.15" />
+                    <Border
+                        BorderBrush="{StaticResource Blue}"
+                        BorderThickness="3,0,0,0"
+                        CornerRadius="3" />
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
                         <Path
-                            HorizontalAlignment="Center"
+                            Grid.RowSpan="2"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
                             Data="M4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2M12.19,5.5C11.3,5.5 10.59,5.68 10.05,6.04C9.5,6.4 9.22,7 9.27,7.69H11.24C11.24,7.41 11.34,7.2 11.5,7.06C11.7,6.92 11.92,6.85 12.19,6.85C12.5,6.85 12.77,6.93 12.95,7.11C13.13,7.28 13.22,7.5 13.22,7.8C13.22,8.08 13.14,8.33 13,8.54C12.83,8.76 12.62,8.94 12.36,9.08C11.84,9.4 11.5,9.68 11.29,9.92C11.1,10.16 11,10.5 11,11H13C13,10.72 13.05,10.5 13.14,10.32C13.23,10.15 13.4,10 13.66,9.85C14.12,9.64 14.5,9.36 14.79,9C15.08,8.63 15.23,8.24 15.23,7.8C15.23,7.1 14.96,6.54 14.42,6.12C13.88,5.71 13.13,5.5 12.19,5.5M11,12V14H13V12H11Z"
+                            Fill="{StaticResource Blue}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Blue}"
+                            Text="Proposal Submitted" />
+
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                d:Text="This drawing was submitted at 01/01/1970 00:00 by "
+                            FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Blue}"
+                                Text="{Binding Created, StringFormat='{}This drawing was submitted at {0:dd/MM/yy HH:mm} by '}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                d:Text="Randy Marsh"
+                            FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Blue}"
+                                Text="{Binding CreatedBy}" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            d:Text="Issue Details: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+                            FontSize="13"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource Blue}"
+                            Text="{Binding IssueDetails, StringFormat='{}Issue Details: {0}', TargetNullValue='No issue details given.'}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+
+                </Grid>
+
+                <Grid
+                    x:Name="approvedControls"
+                    Grid.Row="3"
+                    Width="500"
+                    Margin="0,5,0,0"
+                    HorizontalAlignment="Center">
+                    <Border
+                        Background="{StaticResource Green}"
+                        CornerRadius="3"
+                        Opacity="0.15" />
+                    <Border
+                        BorderBrush="{StaticResource Green}"
+                        BorderThickness="3,0,0,0"
+                        CornerRadius="3" />
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Path
+                            Grid.RowSpan="2"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,15L18,7L16.59,5.58L10,12.17L7.41,9.59L6,11L10,15Z"
                             Fill="{StaticResource Green}" />
                         <TextBlock
-                            Margin="10,0"
-                            HorizontalAlignment="Center"
+                            Grid.Column="1"
                             FontSize="18"
                             FontStyle="Normal"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource Green}"
-                            Style="{StaticResource statement}"
-                            Text="PROPOSAL" />
-                    </StackPanel>
-                    <TextBlock
-                        Margin="30,0"
-                        d:Text="Randy Marsh"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource OnSurface}"
-                        Text="{Binding CreatedBy}" />
+                            Text="Drawing Approved" />
 
-                    <TextBlock
-                        Margin="30,0"
-                        d:Text="01/01/1970 00:00"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource DisabledElement}"
-                        Text="{Binding Created, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
-                </StackPanel>
-                <StackPanel
-                    x:Name="approvedControls"
-                    Grid.Row="3"
-                    Margin="0,10,0,0"
-                    HorizontalAlignment="Center">
-                    <Path
-                        HorizontalAlignment="Center"
-                        Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,15L18,7L16.59,5.58L10,12.17L7.41,9.59L6,11L10,15Z"
-                        Fill="{StaticResource Green}" />
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontSize="18"
-                        FontStyle="Normal"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource Green}"
-                        Style="{StaticResource statement}"
-                        Text="APPROVED" />
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        d:Text="Kyle Brovloski"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource OnSurface}"
-                        Text="{Binding ApprovedBy}" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                            <TextBlock
+                            FontSize="13"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource Green}"
+                                d:Text="This drawing was approved at 01/01/1970 00:00 by "
+                                Text="{Binding ApprovedDate, StringFormat='{}This drawing was approved at {0:dd/MM/yy HH:mm} by '}" />
+                            <TextBlock
+                                d:Text="Kyle Brovloski"
+                            FontSize="13"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource Green}"
+                                Text="{Binding ApprovedBy}" />
+                        </StackPanel>
+                    </Grid>
 
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        d:Text="01/01/1970 00:00"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource DisabledElement}"
-                        Text="{Binding ApprovedDate, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
+                </Grid>
 
-                </StackPanel>
 
-                <StackPanel
+                <Grid
                     x:Name="rejectedControls"
                     Grid.Row="2"
-                    Margin="0,10,0,0"
+                    Width="500"
+                    Margin="0,5,0,0"
                     HorizontalAlignment="Center">
-                    <Path
-                        HorizontalAlignment="Center"
-                        Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M9.41,6L8,7.41L10.59,10L8,12.59L9.41,14L12,11.41L14.59,14L16,12.59L13.41,10L16,7.41L14.59,6L12,8.59L9.41,6Z"
-                        Fill="{StaticResource Red}" />
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontSize="18"
-                        FontStyle="Normal"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource Red}"
-                        Style="{StaticResource statement}"
-                        Text="REJECTED" />
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        d:Text="Kyle Brovloski"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource OnSurface}"
-                        Text="{Binding RejectedBy}" />
+                    <Border
+                        Background="{StaticResource Red}"
+                        CornerRadius="3"
+                        Opacity="0.15" />
+                    <Border
+                        BorderBrush="{StaticResource Red}"
+                        BorderThickness="3,0,0,0"
+                        CornerRadius="3" />
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Path
+                            Grid.RowSpan="2"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M9.41,6L8,7.41L10.59,10L8,12.59L9.41,14L12,11.41L14.59,14L16,12.59L13.41,10L16,7.41L14.59,6L12,8.59L9.41,6Z"
+                            Fill="{StaticResource Red}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            FontSize="18"
+                            FontStyle="Normal"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Red}"
+                            Text="Drawing Rejected" />
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Orientation="Horizontal">
 
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        d:Text="01/01/1970 00:00"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource DisabledElement}"
-                        Text="{Binding RejectedDate, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
+                            <TextBlock
+                                d:Text="At 01/01/1970 00:00 by "
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Red}"
+                                Text="{Binding RejectedDate, StringFormat='{}At {0:dd/MM/yy HH:mm} by '}" />
+                            <TextBlock
+                                d:Text="Kyle Brovloski"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Red}"
+                                Text="{Binding RejectedBy}" />
 
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        Style="{StaticResource statement}"
-                        Text="{Binding RejectionReason}" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            d:Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+                            FontSize="13"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource Red}"
+                            Text="{Binding RejectionReason, StringFormat='{}Citing :{0}'}"
+                            TextWrapping="Wrap" />
+                    </Grid>
 
-                </StackPanel>
+                </Grid>
 
-                <StackPanel
+                <Grid
                     x:Name="pendingControls"
                     Grid.Row="1"
-                    Margin="0,10,0,0"
+                    Width="500"
+                    Margin="0,5,0,0"
                     HorizontalAlignment="Center">
-                    <Path
-                        Data="M20,12V16C20,17.11 19.11,18 18,18H13.9L10.2,21.71C10,21.89 9.76,22 9.5,22H9A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V6C2,4.89 2.9,4 4,4H9.5C8.95,4.67 8.5,5.42 8.14,6.25L7.85,7L8.14,7.75C9.43,10.94 12.5,13 16,13C17.44,13 18.8,12.63 20,12M16,6C16.56,6 17,6.44 17,7C17,7.56 16.56,8 16,8C15.44,8 15,7.56 15,7C15,6.44 15.44,6 16,6M16,3C18.73,3 21.06,4.66 22,7C21.06,9.34 18.73,11 16,11C13.27,11 10.94,9.34 10,7C10.94,4.66 13.27,3 16,3M16,4.5A2.5,2.5 0 0,0 13.5,7A2.5,2.5 0 0,0 16,9.5A2.5,2.5 0 0,0 18.5,7A2.5,2.5 0 0,0 16,4.5"
-                        Fill="{StaticResource Purple}" />
-                    <TextBlock
-                        FontSize="18"
-                        FontStyle="Normal"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource Purple}"
-                        Style="{StaticResource statement}"
-                        Text="PENDING APPROVAL" />
-                    <TextBlock
-                        FontSize="13"
-                        FontStyle="Normal"
-                        Foreground="{StaticResource Purple}"
-                        Style="{StaticResource statement}"
-                        Text="This drawing requires a user with authorisation to approve or reject the drawing." />
-                </StackPanel>
+                    <Border
+                        Background="{StaticResource Purple}"
+                        CornerRadius="3"
+                        Opacity="0.15" />
+                    <Border
+                        BorderBrush="{StaticResource Purple}"
+                        BorderThickness="3,0,0,0"
+                        CornerRadius="3" />
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Path
+                            Grid.RowSpan="2"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Data="M20,12V16C20,17.11 19.11,18 18,18H13.9L10.2,21.71C10,21.89 9.76,22 9.5,22H9A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V6C2,4.89 2.9,4 4,4H9.5C8.95,4.67 8.5,5.42 8.14,6.25L7.85,7L8.14,7.75C9.43,10.94 12.5,13 16,13C17.44,13 18.8,12.63 20,12M16,6C16.56,6 17,6.44 17,7C17,7.56 16.56,8 16,8C15.44,8 15,7.56 15,7C15,6.44 15.44,6 16,6M16,3C18.73,3 21.06,4.66 22,7C21.06,9.34 18.73,11 16,11C13.27,11 10.94,9.34 10,7C10.94,4.66 13.27,3 16,3M16,4.5A2.5,2.5 0 0,0 13.5,7A2.5,2.5 0 0,0 16,9.5A2.5,2.5 0 0,0 18.5,7A2.5,2.5 0 0,0 16,4.5"
+                            Fill="{StaticResource Purple}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            FontSize="18"
+                            FontStyle="Normal"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Purple}"
+                            Text="Pending Approval" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            FontSize="13"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource Purple}"
+                            Text="A user with authorisation is required to approve or reject the drawing." />
+                    </Grid>
+
+                </Grid>
 
 
             </Grid>
-            <StackPanel Margin="20,0,20,20">
-                <TextBlock Style="{StaticResource section}" Text="Release Notes" />
-                <TextBlock
-                    d:Text="Lorem ipsum dolor sit amet"
-                    Foreground="{StaticResource OnSurface}"
-                    Style="{StaticResource statement}"
-                    Text="{Binding IssueDetails}" />
-            </StackPanel>
+
 
             <StackPanel x:Name="approvalControls" Margin="20,0,20,20">
                 <TextBlock Style="{StaticResource section}" Text="Approval" />
@@ -294,9 +400,10 @@
                         Content="Approve As Revision"
                         Style="{StaticResource GreenButton}" />
                 </StackPanel>
+
             </StackPanel>
 
-            <StackPanel x:Name="Comments" Margin="20,0,20,20">
+            <StackPanel x:Name="Comments" Margin="20,0,20,0">
                 <TextBlock Style="{StaticResource section}" Text="Comments" />
 
                 <local:DisplayListOfNotes x:Name="notesDisplay" ShowingEditControls="False" />
@@ -311,7 +418,7 @@
                     <TextBox
                         x:Name="Message"
                         Grid.ColumnSpan="3"
-                        Margin="5,5,5,22"
+                        Margin="5,5,5,15"
                         Background="{StaticResource Background}"
                         Foreground="{StaticResource OnSurface}"
                         Style="{StaticResource DefaultTextBox}"

@@ -21,6 +21,9 @@ namespace ProjectLighthouse.Model
         public string DrawingStore { get; set; }
         public bool IsApproved { get; set; }
         public bool IsRejected { get; set; }
+        public bool IsWithdrawn { get; set; }
+        public string WithdrawnBy { get; set; }
+        public DateTime WithdrawnDate { get; set; }
         public DateTime RejectedDate { get; set; }
         public string RejectedBy { get; set; }
         public string RejectionReason { get; set; }
@@ -32,6 +35,7 @@ namespace ProjectLighthouse.Model
         public Type DrawingType { get; set; }
         public Amendment AmendmentType { get; set; }
         public string IssueDetails { get; set; }
+        public string SubmissionType { get; set; }
 
         [Ignore]
         public bool IsCurrent { get; set; }
@@ -61,7 +65,7 @@ namespace ProjectLighthouse.Model
 
         public static TechnicalDrawing FindDrawing(List<TechnicalDrawing> drawings, LatheManufactureOrderItem item, string group)
         {
-            drawings = drawings.Where(x => x.IsApproved).ToList();
+            drawings = drawings.Where(x => x.IsApproved && !x.IsWithdrawn).ToList();
             if (item.IsSpecialPart)
             {
                 List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
