@@ -55,7 +55,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="UsernameTextBox" TargetType="TextBox">
+    <Style x:Key="LoginTextBox" TargetType="TextBox">
         <Setter Property="Margin" Value="10,5" />
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Background" Value="#22000000" />
@@ -91,6 +91,30 @@
                             <Setter TargetName="textBlock" Property="Visibility" Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        x:Key="UsernameTextBox"
+        BasedOn="{StaticResource Default}"
+        TargetType="TextBox">
+        <Setter Property="Margin" Value="10,5" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                        <Grid Margin="8">
+                            <ScrollViewer
+                                x:Name="PART_ContentHost"
+                                Margin="10,0"
+                                Focusable="false"
+                                HorizontalScrollBarVisibility="Hidden"
+                                VerticalScrollBarVisibility="Hidden" />
+                        </Grid>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

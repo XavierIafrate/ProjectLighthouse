@@ -46,33 +46,6 @@
                 </Border>
             </Grid>
         </Border>
-
-        <!--<Border
-            x:Name="LogisticsWarning"
-            Margin="20"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Background="{StaticResource Blue}"
-            CornerRadius="5">
-            <StackPanel
-                Margin="7,3"
-                HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <Path
-                    Width="12"
-                    Height="12"
-                    Margin="0,0,5,0"
-                    VerticalAlignment="Center"
-                    Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
-                    Fill="{StaticResource OnBlue}"
-                    Stretch="Uniform" />
-                <TextBlock
-                    FontSize="10"
-                    FontStyle="Italic"
-                    Foreground="{StaticResource OnBlue}"
-                    Text="Lighthouse will open as a Logistics Station" />
-            </StackPanel>
-        </Border>-->
         <Button
             Margin="50"
             HorizontalAlignment="Right"
@@ -80,11 +53,21 @@
             Click="ExitButton_Click"
             Style="{StaticResource ExitButton}" />
 
-        <Border Background="#33000000"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50" CornerRadius="5">
-            
-        <TextBlock x:Name="VersionText" Text="v.0.0.0" Margin="10,3" Foreground="White" Opacity="0.6" FontSize="10"/>
-        </Border>
+        <Border
+            Margin="50"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Background="#33000000"
+            CornerRadius="5">
 
+            <TextBlock
+                x:Name="VersionText"
+                Margin="10,3"
+                FontSize="10"
+                Foreground="White"
+                Opacity="0.6"
+                Text="v.0.0.0" />
+        </Border>
 
         <Grid
             Margin="100,80"
@@ -104,10 +87,10 @@
                 <TextBox
                     x:Name="UsernameTextBox"
                     Width="200"
-                    MaxLength="16"
                     Focusable="True"
                     KeyDown="PasswordText_KeyDown"
-                    Style="{StaticResource UsernameTextBox}"
+                    MaxLength="16"
+                    Style="{StaticResource LoginTextBox}"
                     Tag="username" />
 
                 <Grid>
@@ -115,8 +98,8 @@
                         x:Name="PasswordBox"
                         Width="230"
                         Focusable="True"
-                        MaxLength="16"
                         KeyDown="PasswordText_KeyDown"
+                        MaxLength="16"
                         PasswordChanged="PasswordTextBox_PasswordChanged"
                         Style="{StaticResource LoginPasswordBox}"
                         Tag="password" />
@@ -125,10 +108,10 @@
                             x:Name="PasswordGhost"
                             Margin="21,10"
                             VerticalAlignment="Center"
-                            IsHitTestVisible="False"
-                            Opacity="0.6"
                             FontSize="20"
                             Foreground="{StaticResource Background}"
+                            IsHitTestVisible="False"
+                            Opacity="0.6"
                             Text="password"
                             TextWrapping="Wrap"
                             Visibility="Visible" />
