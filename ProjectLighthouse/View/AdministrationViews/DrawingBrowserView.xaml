@@ -177,7 +177,7 @@
             <StackPanel>
                 <Grid
                     MaxWidth="700"
-                    Margin="20,0,20,20"
+                    Margin="20"
                     VerticalAlignment="Top"
                     >
                     <Grid.Resources>
@@ -585,7 +585,7 @@
                             <TextBlock Style="{StaticResource section}" Text="Approval" />
                             <TextBox
                                 x:Name="rejectionReason"
-                                
+                                FontSize="15"
                                 Background="{StaticResource Background}"
                                 Style="{StaticResource DefaultTextBox}"
                                 Tag="Enter reason for rejecting"
@@ -606,7 +606,7 @@
 
                         <StackPanel x:Name="Comments" Margin="20,0,20,0">
                             <TextBlock Style="{StaticResource section}" Text="Comments" />
-                            <userControls:DisplayListOfNotes x:Name="notesDisplay" ShowingEditControls="False" Notes="{Binding Notes, Mode=OneWay}" />
+                            <userControls:DisplayListOfNotes x:Name="notesDisplay" ShowingEditControls="False" Notes="{Binding SelectedDrawingNotes, Mode=OneWay}" />
                             <Grid Margin="10,5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="71*" />

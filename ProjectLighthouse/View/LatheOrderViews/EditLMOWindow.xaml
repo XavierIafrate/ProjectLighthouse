@@ -93,9 +93,9 @@
                                 Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
                                 Fill="{StaticResource OnYellow}" />
                             <TextBlock
-                                FontWeight="SemiBold"
                                 Margin="10,5"
                                 VerticalAlignment="Center"
+                                FontWeight="SemiBold"
                                 Text="You are viewing this order in read only mode." />
                         </StackPanel>
                     </Border>
@@ -109,7 +109,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                       
+
                         <Grid Grid.Row="1" Grid.ColumnSpan="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -123,8 +123,15 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Column="0">
-                                <Border Background="{StaticResource Orange}" CornerRadius="10,0,0,10" >
-                                    <TextBlock  Text="IDENTIFICATION" HorizontalAlignment="Center" Margin="3" FontWeight="SemiBold" FontSize="10" VerticalAlignment="Center" Foreground="{StaticResource OnOrange}"/>
+                                <Border Background="{StaticResource Orange}" CornerRadius="10,0,0,10">
+                                    <TextBlock
+                                        Margin="3"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource OnOrange}"
+                                        Text="IDENTIFICATION" />
                                 </Border>
                             </Grid>
                             <StackPanel
@@ -156,12 +163,19 @@
                                     Content="Bar Verified"
                                     IsChecked="{Binding Order.BarIsVerified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Unchecked="Checkbox_Checked" />
-                                
+
                             </StackPanel>
 
                             <Grid Grid.Column="1">
                                 <Border Background="{StaticResource Teal}">
-                                    <TextBlock  Text="PREPARATION" HorizontalAlignment="Center" Margin="3" FontWeight="SemiBold" FontSize="10" VerticalAlignment="Center" Foreground="{StaticResource OnTeal}"/>
+                                    <TextBlock
+                                        Margin="3"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource OnTeal}"
+                                        Text="PREPARATION" />
                                 </Border>
                                 <Polygon Fill="{StaticResource Orange}" Points="-1,0 0,0 10,10 0,20 -1,20" />
                             </Grid>
@@ -197,8 +211,15 @@
                             </StackPanel>
 
                             <Grid Grid.Column="2">
-                                <Border Background="{StaticResource Blue}" >
-                                    <TextBlock  Text="OPERATION" HorizontalAlignment="Center" Margin="3" FontWeight="SemiBold" FontSize="10" VerticalAlignment="Center" Foreground="{StaticResource OnBlue}"/>
+                                <Border Background="{StaticResource Blue}">
+                                    <TextBlock
+                                        Margin="3"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource OnBlue}"
+                                        Text="OPERATION" />
                                 </Border>
                                 <Polygon Fill="{StaticResource Teal}" Points="-1,0 0,0 10,10 0,20 -1,20" />
                             </Grid>
@@ -216,8 +237,15 @@
                             </StackPanel>
 
                             <Grid Grid.Column="3">
-                                <Border Background="{StaticResource OnBackground}" CornerRadius="0,10,10,0" >
-                                    <TextBlock  Text="COMPLETION" HorizontalAlignment="Center" Margin="3" FontWeight="SemiBold" FontSize="10" VerticalAlignment="Center" Foreground="{StaticResource Background}"/>
+                                <Border Background="{StaticResource OnBackground}" CornerRadius="0,10,10,0">
+                                    <TextBlock
+                                        Margin="3"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Background}"
+                                        Text="COMPLETION" />
                                 </Border>
                                 <Polygon Fill="{StaticResource Blue}" Points="-1,0 0,0 10,10 0,20 -1,20" />
                             </Grid>
@@ -242,7 +270,10 @@
                         </Grid>
                     </Grid>
 
-                    <Expander Margin="10" Header="Order Configuration" d:IsExpanded="True">
+                    <Expander
+                        Margin="10"
+                        d:IsExpanded="True"
+                        Header="Order Configuration">
                         <StackPanel>
                             <Grid Margin="10,0">
                                 <TextBlock
@@ -275,9 +306,9 @@
                                     Margin="0,5"
                                     HorizontalAlignment="Right"
                                     FontSize="14"
+                                    PreviewKeyDown="PurchaseOrderTextBox_PreviewKeyDown"
                                     Style="{StaticResource DefaultTextBox}"
                                     Tag="POR..."
-                                    PreviewKeyDown="PurchaseOrderTextBox_PreviewKeyDown"
                                     Text="{Binding Order.POReference}" />
                             </Grid>
                             <Grid Margin="10,0">
@@ -296,29 +327,24 @@
                                     Style="{StaticResource DefaultTextBox}"
                                     Text="{Binding Order.SpareBars}" />
                             </Grid>
-                            <!--<Grid Margin="10,0">
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="Setting Time Budget" />
-                            <TextBox
-                                x:Name="settingBudgetHours"
-                                Width="50"
-                                Height="30"
-                                Margin="0,5"
-                                HorizontalAlignment="Right"
-                                FontSize="14"
-                                PreviewKeyDown="SpareBarsTextBox_PreviewKeyDown"
-                                Style="{StaticResource DefaultTextBox}"
-                                Text="{Binding Order.SpareBars}" />
-                        </Grid>-->
+
                             <CheckBox
                                 x:Name="researchCheckBox"
                                 HorizontalAlignment="Right"
                                 Content="Research and Development"
                                 IsChecked="{Binding Order.IsResearch}" />
-                            <TextBlock  Text="Bar Issues" Style="{StaticResource section}"/>
-                            <ListBox MinHeight="50"/>
+                            <TextBlock Style="{StaticResource section}" Text="Bar Issues" />
+                            <ListBox MinHeight="50" d:ItemsSource="{d:SampleData ItemCount=5}" HorizontalContentAlignment="Stretch">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <TextBlock Text="01/01/1970 00:00" />
+                                            <TextBlock HorizontalAlignment="Right" Text="5 bar(s) Issued" />
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </StackPanel>
                     </Expander>
 
@@ -391,18 +417,7 @@
                         Grid.Row="1"
                         MinHeight="120"
                         VerticalScrollBarVisibility="Auto">
-                        <uc:DisplayListOfNotes x:Name="NotesDisplay" Notes="{Binding Notes}"/>
-                        <!--<ItemsControl
-                            x:Name="NotesDisplay"
-                            HorizontalContentAlignment="Stretch"
-                            ItemsSource="{Binding Notes}"
-                            ScrollViewer.CanContentScroll="False">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <uc:DisplayNote Note="{Binding}" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>-->
+                        <uc:DisplayListOfNotes x:Name="NotesDisplay" Notes="{Binding Notes}" />
                     </ScrollViewer>
 
                     <Grid
@@ -436,6 +451,7 @@
                                 x:Name="SendButton"
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
+                                Background="{StaticResource Surface}"
                                 Click="SendButton_Click"
                                 Style="{StaticResource SendButton}" />
                         </Grid>

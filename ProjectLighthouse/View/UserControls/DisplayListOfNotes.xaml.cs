@@ -41,6 +41,8 @@ namespace ProjectLighthouse.View.UserControls
 
             control.displayNotes = FormatListOfNotes(control.Notes, control.ShowingEditControls);
             control.NotesList.ItemsSource = control.displayNotes;
+
+            control.noneText.Visibility = control.NotesList.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public static List<Note> FormatListOfNotes(List<Note> notes, bool edit = false)

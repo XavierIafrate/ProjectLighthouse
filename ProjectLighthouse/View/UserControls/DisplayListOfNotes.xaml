@@ -14,5 +14,6 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <TextBlock Text="None" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource GhostText}" x:Name="noneText"/>
     </Grid>
 </UserControl>

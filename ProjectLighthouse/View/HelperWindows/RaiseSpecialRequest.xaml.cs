@@ -25,7 +25,7 @@ namespace ProjectLighthouse.View.HelperWindows
             }
             else
             {
-                NewProduct.ProductName = productName.Text.Trim();
+                NewProduct.ProductName = productName.Text.Trim().ToUpperInvariant();
             }
 
             if (string.IsNullOrWhiteSpace(specDetails.Text) && string.IsNullOrEmpty(specDocument.FilePath))

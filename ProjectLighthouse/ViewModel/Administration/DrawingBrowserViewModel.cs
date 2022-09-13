@@ -70,17 +70,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-        private List<Note> selectedDrawingNotes = new();
-
-        public List<Note> Notes
-        {
-            get { return selectedDrawingNotes; }
-            set
-            {
-                selectedDrawingNotes = value;
-                OnPropertyChanged();
-            }
-        }
+        public List<Note> SelectedDrawingNotes { get; set; }
 
 
 
@@ -150,7 +140,6 @@ namespace ProjectLighthouse.ViewModel
         {
             EditControlsVis = App.CurrentUser.CanCreateSpecial ? Visibility.Visible : Visibility.Collapsed;
 
-            Notes = new();
             Drawings = new();
             FilteredDrawings = new();
             SelectedDrawing = new();
@@ -263,8 +252,10 @@ namespace ProjectLighthouse.ViewModel
             }
             string filePath = Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore);
 
-            Notes.Clear();
-            Notes = selectedDrawing.Notes;
+            SelectedDrawingNotes = null;
+            OnPropertyChanged(nameof(SelectedDrawingNotes));
+            SelectedDrawingNotes = selectedDrawing.Notes;
+            OnPropertyChanged(nameof(SelectedDrawingNotes));
 
             if (!File.Exists(filePath))
             {
@@ -307,6 +298,15 @@ namespace ProjectLighthouse.ViewModel
             {
                 return;
             }
+
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.CanApproveDrawings && x.GetFullName() != App.CurrentUser.GetFullName()).ToList();
+            for (int i = 0; i < ToNotify.Count; i++)
+            {
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Comment: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} added a comment to this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
+            }
+
+
+            SelectedDrawing.Notes.Add(newNote);
             string thisGroup = SelectedGroup.Name;
             int thisDrawing = SelectedDrawing.Id;
 
@@ -326,7 +326,7 @@ namespace ProjectLighthouse.ViewModel
             List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == drawing.CreatedBy).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
-                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Rejected: {drawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has rejected this drawing.", toastAction: $"viewDrawing:{drawing.DrawingName}"));
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Rejected: {drawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has rejected this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
             }
 
             int target = drawing.Id;
@@ -350,7 +350,7 @@ namespace ProjectLighthouse.ViewModel
             List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == drawing.CreatedBy).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
-                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Approved: {drawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has approved this drawing.", toastAction: $"viewDrawing:{drawing.DrawingName}"));
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Approved: {drawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has approved this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
             }
 
             int target = drawing.Id;

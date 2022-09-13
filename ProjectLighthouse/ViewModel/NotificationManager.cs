@@ -230,7 +230,11 @@ namespace ProjectLighthouse.ViewModel
                 App.MainViewModel.UpdateViewCommand.Execute("Drawings");
                 if (App.MainViewModel.SelectedViewModel is DrawingBrowserViewModel drawingBrowserVM)
                 {
-                    drawingBrowserVM.SelectedGroup = drawingBrowserVM.DrawingGroups.First(x => x.Drawings.Any(y => y.DrawingName == targetDrawing));
+                    drawingBrowserVM.SelectedGroup = drawingBrowserVM.DrawingGroups.Find(x => x.Drawings.Any(y => y.Id.ToString("0") == targetDrawing));
+                    if (drawingBrowserVM.SelectedGroup != null)
+                    {
+                        drawingBrowserVM.SelectedDrawing = drawingBrowserVM.SelectedGroup.Drawings.Find(x => x.Id.ToString("0") == targetDrawing);
+                    }
                 }
 
             }

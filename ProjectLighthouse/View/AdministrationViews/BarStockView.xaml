@@ -8,66 +8,19 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:Background="White"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="900"
+    d:DesignWidth="1350"
     mc:Ignorable="d">
     <Grid>
-        <ScrollViewer>
-            <Grid MaxWidth="700">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Margin="0,10" Visibility="{Binding QuickOrderVis}">
-                        <Border Background="{StaticResource Purple}" CornerRadius="10" />
-                        <StackPanel Orientation="Horizontal">
-                            <Path
-                                Height="30"
-                                Margin="15,0,0,0"
-                                Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
-                                Fill="{StaticResource OnRed}"
-                                Stretch="UniformToFill" />
-                            <StackPanel Margin="10,10,15,10" VerticalAlignment="Center">
-                                <TextBlock
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource OnPurple}"
-                                    Text="{Binding NumberOfBars, StringFormat='{}{0:#,##0} more bars required to cover active orders'}" />
-                                <TextBlock
-                                    FontStyle="Italic"
-                                    Foreground="{StaticResource OnPurple}"
-                                    Opacity="0.8"
-                                    Text="{Binding CostOfNewBar, StringFormat='{}Approximately £{0:N0}'}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-
-                    <Button
-                        Grid.Column="2"
-                        Command="{Binding PrintCommand}"
-                        Content="Get Requisitions"
-                        IsEnabled="{Binding RequisitionAvailable}"
-                        Style="{StaticResource LighthouseButton}" />
-                </Grid>
-                <ItemsControl
-                    Background="White"
-                    Grid.Row="1"
-                    MinHeight="100"
-                    ItemsSource="{Binding BarStockOverview}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <uc:DisplayBarOverview Bar="{Binding}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <Rectangle Grid.Row="1" Fill="#01ffffff" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding BarStock}" SelectedValue="{Binding SelectedBarStock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <ScrollViewer Grid.Column="1">
+            <Grid MaxWidth="700" >
+                <TextBlock Text="{Binding SelectedBarStock.Id}"/>
             </Grid>
-
         </ScrollViewer>
     </Grid>
 
