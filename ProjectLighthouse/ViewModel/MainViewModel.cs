@@ -172,30 +172,26 @@ namespace ProjectLighthouse.ViewModel
 
         public bool LoginRoutine()
         {
-            if (App.CurrentUser == null)
-            {
-                LoginWindow login = new();
-                login.ShowDialog();
+            LoginWindow login = new();
+            login.ShowDialog();
 
-                if (login.auth_user == null)
-                {
-                    Application.Current.Shutdown();
-                }
-                else
-                {
-                    App.CurrentUser = login.auth_user;
-                    string TargetView = string.IsNullOrEmpty(App.CurrentUser.DefaultView)
-                        ? "Orders"
-                        : App.CurrentUser.DefaultView;
-                    if (MainWindow != null)
-                    {
-                        UpdateViewCommand.Execute(TargetView);
-                    }
-                    return true;
-                }
+            if (login.auth_user == null)
+            {
+                return false;
             }
 
-            return false;
+            App.CurrentUser = login.auth_user;
+
+            string TargetView = string.IsNullOrEmpty(App.CurrentUser.DefaultView)
+                ? "Orders"
+                : App.CurrentUser.DefaultView;
+
+            if (MainWindow != null)
+            {
+                UpdateViewCommand.Execute(TargetView);
+            }
+
+            return true;
         }
 
         public void ToggleNotificationsBarVisibility()

@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.View;
+using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -14,11 +15,12 @@ namespace ProjectLighthouse.ViewModel
 {
     public class DrawingBrowserViewModel : BaseViewModel
     {
+        #region Variables
         public List<TechnicalDrawingGroup> DrawingGroups { get; set; }
         public List<TechnicalDrawingGroup> FilteredDrawingGroups { get; set; }
         public List<TechnicalDrawing> Drawings { get; set; }
-        private List<TechnicalDrawing> filteredDrawings;
 
+        private List<TechnicalDrawing> filteredDrawings;
         public List<TechnicalDrawing> FilteredDrawings
         {
             get { return filteredDrawings; }
@@ -28,7 +30,6 @@ namespace ProjectLighthouse.ViewModel
                 OnPropertyChanged();
             }
         }
-
 
         private TechnicalDrawingGroup selectedGroup;
         public TechnicalDrawingGroup SelectedGroup
@@ -58,7 +59,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private TechnicalDrawing selectedDrawing;
-
         public TechnicalDrawing SelectedDrawing
         {
             get { return selectedDrawing; }
@@ -71,7 +71,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         public List<Note> SelectedDrawingNotes { get; set; }
-
 
 
         private string searchBoxText;
@@ -97,11 +96,14 @@ namespace ProjectLighthouse.ViewModel
 
         public Visibility ApprovalControlsVis { get; set; } = Visibility.Collapsed;
         public Visibility PendingApprovalVis { get; set; } = Visibility.Collapsed;
-        public AddNewDrawingCommand AddNewCmd { get; set; }
 
+        public AddNewDrawingCommand AddNewCmd { get; set; }
         public OpenDrawingCommand OpenDrawingCmd { get; set; }
         public WithdrawDrawingCommand WithdrawCmd { get; set; }
         public AddCommentToDrawingCommand AddCommentToDrawingCmd { get; set; }
+        public string RejectionStatement { get; set; }
+        public ApproveDrawingCommand ApproveDrawingCmd { get; set; }
+        public RejectDrawingCommand RejectDrawingCmd { get; set; }
 
         private bool showOldGroups;
 
@@ -116,7 +118,6 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
         public bool ShowOldGroups
         {
             get { return showOldGroups; }
@@ -127,6 +128,7 @@ namespace ProjectLighthouse.ViewModel
                 FilterDrawings(SearchBoxText);
             }
         }
+        #endregion
 
 
         public DrawingBrowserViewModel()
@@ -152,6 +154,8 @@ namespace ProjectLighthouse.ViewModel
             OpenDrawingCmd = new(this);
             WithdrawCmd = new(this);
             AddCommentToDrawingCmd = new(this);
+            ApproveDrawingCmd = new(this);
+            RejectDrawingCmd = new(this);
         }
 
         private void LoadData()
@@ -262,6 +266,7 @@ namespace ProjectLighthouse.ViewModel
 
             if (!File.Exists(filePath))
             {
+                //TODO
                 //control.openButton.Content = "file not found";
                 //control.openButton.IsEnabled = false;
             }
@@ -319,82 +324,73 @@ namespace ProjectLighthouse.ViewModel
             SelectedDrawing = SelectedGroup.Drawings.Find(x => x.Id == thisDrawing);
         }
 
-        public void RejectDrawing(TechnicalDrawing drawing)
+        public void RejectDrawing()
         {
-            drawing.IsRejected = true;
-            drawing.RejectedDate = DateTime.Now;
-            drawing.RejectedBy = App.CurrentUser.GetFullName();
-            DatabaseHelper.Update(drawing);
 
-            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == drawing.CreatedBy).ToList();
+            SelectedDrawing.IsRejected = true;
+            SelectedDrawing.RejectedDate = DateTime.Now;
+            SelectedDrawing.RejectedBy = App.CurrentUser.GetFullName();
+            DatabaseHelper.Update(SelectedDrawing);
+
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == SelectedDrawing.CreatedBy).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
-                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Rejected: {drawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has rejected this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Rejected: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has rejected this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
             }
 
-            int target = drawing.Id;
+            int target = SelectedDrawing.Id;
             LoadData();
             SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));
         }
 
-        public void ApproveRevision(TechnicalDrawing drawing)
+        public void ApproveDrawing()
         {
-            TechnicalDrawingGroup group = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == drawing.Id));
-            int MaxRev = group.Drawings.Max(x => x.Revision);
+            int MaxRev = SelectedGroup.Drawings.Max(x => x.Revision);
+            TechnicalDrawing.Amendment maxAmd = SelectedGroup.Drawings.Max(x => x.AmendmentType);
 
-            drawing.Revision = MaxRev + 1;
-            drawing.AmendmentType = TechnicalDrawing.Amendment.A;
-            drawing.IsApproved = true;
-            drawing.ApprovedDate = DateTime.Now;
-            drawing.ApprovedBy = App.CurrentUser.GetFullName();
+            // No input required, only one move to make as first revision or max amendment per rev
+            if (MaxRev == 0 || maxAmd == Enum.GetValues(typeof(TechnicalDrawing.Amendment)).Cast<TechnicalDrawing.Amendment>().Max())
+            {
+                SelectedDrawing.Revision = MaxRev + 1;
+                SelectedDrawing.AmendmentType = TechnicalDrawing.Amendment.A;
+                PublishDrawing();
+                return;
+            }
 
-            DatabaseHelper.Update(drawing);
+            DefineDrawingApprovalWindow window = new() 
+            { 
+                DrawingToApprove = SelectedDrawing, 
+                DrawingsInGroup = SelectedGroup.Drawings 
+            };
+            window.SetupInterface();
+            window.ShowDialog();
 
-            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == drawing.CreatedBy).ToList();
+            if (window.Confirmed)
+            {
+                PublishDrawing();
+            }
+        }
+
+        public void PublishDrawing()
+        {
+
+            SelectedDrawing.IsApproved = true;
+            SelectedDrawing.ApprovedDate = DateTime.Now;
+            SelectedDrawing.ApprovedBy = App.CurrentUser.GetFullName();
+
+            DatabaseHelper.Update(SelectedDrawing);
+
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == SelectedDrawing.CreatedBy).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
-                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Approved: {drawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has approved this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Approved: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has approved this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
             }
 
-            int target = drawing.Id;
+            int target = SelectedDrawing.Id;
             LoadData();
             SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));
 
         }
-
-        public void ApproveAmendment(TechnicalDrawing drawing)
-        {
-            TechnicalDrawingGroup group = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == drawing.Id));
-            int MaxRev = group.Drawings.Max(x => x.Revision);
-            TechnicalDrawing.Amendment maxAmd = group.Drawings.Max(x => x.AmendmentType);
-
-            if (MaxRev == 0)
-            {
-                drawing.Revision = MaxRev + 1;
-                drawing.AmendmentType = TechnicalDrawing.Amendment.A;
-            }
-            else if (maxAmd == Enum.GetValues(typeof(TechnicalDrawing.Amendment)).Cast<TechnicalDrawing.Amendment>().Max())
-            {
-                MessageBox.Show($"Amendment limit reached for Revision {MaxRev}, posting to new Revision", "Limit Reached", MessageBoxButton.OK, MessageBoxImage.Warning);
-
-                drawing.Revision = MaxRev + 1;
-                drawing.AmendmentType = TechnicalDrawing.Amendment.A;
-            }
-            else
-            {
-                drawing.Revision = MaxRev;
-                drawing.AmendmentType++;
-            }
-            drawing.IsApproved = true;
-            drawing.ApprovedDate = DateTime.Now;
-            drawing.ApprovedBy = App.CurrentUser.GetFullName();
-
-            DatabaseHelper.Update(drawing);
-            int target = drawing.Id;
-            LoadData();
-            SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));
-        }
-
         public void OpenPdfDrawing()
         {
             Process fileopener = new();

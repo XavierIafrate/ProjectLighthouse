@@ -45,51 +45,30 @@ namespace ProjectLighthouse
             EnsureAppData();
 
             DevMode = Debugger.IsAttached;
-            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
+            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB.db3";
 
-            string workstation = String.Empty;
-            try
+            Window = new();
+            MainViewModel VM = new()
             {
-                workstation = GetWorkstationLogistics();
-            }
-            catch
+                MainWindow = Window
+            };
+
+            MainViewModel = VM;
+
+            Window.DataContext = VM;
+            Window.viewModel = VM;
+
+            bool userLoggedIn = VM.LoginRoutine();
+
+            if (!userLoggedIn)
             {
-                // Nothing
-            }
-
-            if (string.IsNullOrEmpty(workstation))
-            {
-                Window = new();
-                MainViewModel VM = new()
-                {
-                    MainWindow = Window
-                };
-
-                MainViewModel = VM;
-
-                Window.DataContext = VM;
-                Window.viewModel = VM;
-
-                bool userLoggedIn = VM.LoginRoutine();
-
-                if (!userLoggedIn)
-                {
-                    Application.Current.Shutdown();
-                }
-                Window.Show();
-
-                Window.AddVersionNumber();
-            }
-            else
-            {
-                LogisticsKioskWindow window = new()
-                {
-                    WorkStation = workstation
-                };
-                window.LoginRoutine();
-                if (CurrentUser == null) return;
+                Application.Current.Shutdown();
             }
 
+
+            Window.Show();
+
+            Window.AddVersionNumber();
 
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {

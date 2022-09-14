@@ -628,12 +628,12 @@
                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                 <TextBlock VerticalAlignment="Center" Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" />
                                 <Button
-                                    x:Name="rejectButton"
+                                    Command="{Binding RejectDrawingCmd}"
                                     Content="Reject Drawing"
                                     Style="{StaticResource CancelButton}" />
                                 <Button
-                                    x:Name="approveRevButton"
                                     Content="Approve Drawing"
+                                    Command="{Binding ApproveDrawingCmd}"
                                     Style="{StaticResource GreenButton}" />
                             </StackPanel>
 

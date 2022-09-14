@@ -143,6 +143,7 @@ namespace ProjectLighthouse.View
             {
                 _ = DatabaseHelper.Insert(login);
             }
+
             auth_user = User;
 
             Close();

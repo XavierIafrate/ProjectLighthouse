@@ -7,16 +7,17 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
-    public class ApproveDrawingCommand : ICommand
+    public class RejectDrawingCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
         public DrawingBrowserViewModel viewModel;
 
-        public ApproveDrawingCommand(DrawingBrowserViewModel viewModel)
+        public RejectDrawingCommand(DrawingBrowserViewModel viewModel)
         {
             this.viewModel = viewModel;
         }
+
         public bool CanExecute(object parameter)
         {
             return App.CurrentUser.CanApproveDrawings;
@@ -24,7 +25,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            viewModel.ApproveDrawing();
+            viewModel.RejectDrawing();
         }
     }
 }
