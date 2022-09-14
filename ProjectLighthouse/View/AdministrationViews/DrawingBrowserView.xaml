@@ -15,6 +15,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:stringCoalesce x:Key="stringCoalesce" />
+        <converters:boolToVisibleOrCollapsed x:Key="showIfTrue" />
     </UserControl.Resources>
 
     <Grid>
@@ -71,7 +72,7 @@
                     Content="+ Add New"
                     Style="{StaticResource BlueButton}"
                     Visibility="{Binding EditControlsVis}" />
-                <CheckBox Content="Show Withdrawn" IsChecked="{Binding ShowOldGroups}"/>
+                <CheckBox Content="Show Withdrawn" IsChecked="{Binding ShowOldGroups}" />
             </StackPanel>
         </Grid>
 
@@ -127,21 +128,55 @@
                 Opacity="0.6"
                 Text="No results" />
         </StackPanel>
-
-        <StackPanel
+        <Grid
             Grid.Column="1"
             Grid.ColumnSpan="2"
-            Margin="20,20,20,40"
+            Margin="20,5,20,40"
             Visibility="{Binding DrawingVis}">
-            <TextBlock
-                d:Text="Drawing for P0130.000"
-                Style="{StaticResource title}"
-                Text="{Binding SelectedGroup.Name, StringFormat='{}Viewing Drawing for {0}'}" />
-            <TextBlock
-                d:Text="Last Issue, Monday, 01 January 1970"
-                Style="{StaticResource subtitle}"
-                Text="{Binding SelectedGroup.LastIssue, StringFormat='{}Last Issue: {0:dddd, dd MMMM yyyy}'}" />
-        </StackPanel>
+            <StackPanel>
+                <TextBlock
+                    d:Text="Drawing for P0130.000"
+                    Style="{StaticResource title}"
+                    Text="{Binding SelectedGroup.Name, StringFormat='{}Viewing Drawing for {0}'}" />
+                <TextBlock
+                    d:Text="Last Issue, Monday, 01 January 1970"
+                    Style="{StaticResource subtitle}"
+                    Text="{Binding SelectedGroup.LastIssue, StringFormat='{}Last Issue: {0:dddd, dd MMMM yyyy}'}" />
+            </StackPanel>
+            <Grid HorizontalAlignment="Right" Visibility="{Binding SelectedGroup.IsArchetypeGroup, Converter={StaticResource showIfTrue}}">
+                <Border
+                    Background="{StaticResource Teal}"
+                    CornerRadius="3"
+                    Opacity="0.15" />
+                <Border
+                    BorderBrush="{StaticResource Teal}"
+                    BorderThickness="3,0,0,0"
+                    CornerRadius="3" />
+                <StackPanel Margin="10,7" Orientation="Horizontal">
+                    <Path
+                        x:Name="ArchetypeBadge"
+                        Grid.Column="3"
+                        Width="30"
+                        Margin="15,0"
+                        Data="M19.5 17C19.37 17 19.24 17 19.11 17.04L17.5 13.79C17.95 13.34 18.25 12.71 18.25 12C18.25 10.62 17.13 9.5 15.75 9.5C15.62 9.5 15.5 9.5 15.36 9.54L13.73 6.29C14.21 5.84 14.5 5.21 14.5 4.5C14.5 3.12 13.38 2 12 2S9.5 3.12 9.5 4.5C9.5 5.21 9.79 5.84 10.26 6.29L8.64 9.54C8.5 9.5 8.38 9.5 8.25 9.5C6.87 9.5 5.75 10.62 5.75 12C5.75 12.71 6.05 13.34 6.5 13.79L4.89 17.04C4.76 17 4.63 17 4.5 17C3.12 17 2 18.12 2 19.5C2 20.88 3.12 22 4.5 22S7 20.88 7 19.5C7 18.8 6.71 18.16 6.24 17.71L7.86 14.46C8 14.5 8.12 14.5 8.25 14.5C8.38 14.5 8.5 14.5 8.64 14.46L10.27 17.71C9.8 18.16 9.5 18.8 9.5 19.5C9.5 20.88 10.62 22 12 22S14.5 20.88 14.5 19.5C14.5 18.12 13.38 17 12 17C11.87 17 11.74 17 11.61 17.04L10 13.79C10.46 13.34 10.75 12.71 10.75 12S10.46 10.66 10 10.21L11.61 6.96C11.74 7 11.87 7 12 7S12.26 7 12.39 6.96L14 10.21C13.55 10.66 13.25 11.3 13.25 12C13.25 13.38 14.37 14.5 15.75 14.5C15.88 14.5 16 14.5 16.14 14.46L17.77 17.71C17.3 18.16 17 18.8 17 19.5C17 20.88 18.12 22 19.5 22S22 20.88 22 19.5C22 18.12 20.88 17 19.5 17Z"
+                        Fill="{StaticResource Teal}"
+                        Stretch="Uniform" />
+                    <StackPanel Margin="0,0,10,0" VerticalAlignment="Center">
+                        <TextBlock
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Teal}"
+                            Text="Archetype Drawing" />
+                        <TextBlock
+                            MaxWidth="450"
+                            FontSize="13"
+                            Foreground="{StaticResource Teal}"
+                            Text="This drawing is representitive of a group of products and therefore it should be used in conjunction with the data sheet."
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
         <Grid
             Grid.Row="1"
@@ -173,13 +208,13 @@
         <ScrollViewer
             Grid.Row="1"
             Grid.RowSpan="2"
-            Grid.Column="2" Visibility="{Binding DrawingVis}">
+            Grid.Column="2"
+            Visibility="{Binding DrawingVis}">
             <StackPanel>
                 <Grid
                     MaxWidth="700"
                     Margin="20"
-                    VerticalAlignment="Top"
-                    >
+                    VerticalAlignment="Top">
                     <Grid.Resources>
                         <vc:isResearchToHiddenCollapsed x:Key="researchToCollapsed" />
                         <vc:boolToCollapsedOrVisible x:Key="collapseIfTrue" />
@@ -585,13 +620,13 @@
                             <TextBlock Style="{StaticResource section}" Text="Approval" />
                             <TextBox
                                 x:Name="rejectionReason"
-                                FontSize="15"
                                 Background="{StaticResource Background}"
+                                FontSize="15"
                                 Style="{StaticResource DefaultTextBox}"
                                 Tag="Enter reason for rejecting"
                                 TextChanged="TextBox_TextChanged" />
                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                <TextBlock Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" VerticalAlignment="Center"/>
+                                <TextBlock VerticalAlignment="Center" Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" />
                                 <Button
                                     x:Name="rejectButton"
                                     Content="Reject Drawing"
@@ -606,7 +641,10 @@
 
                         <StackPanel x:Name="Comments" Margin="20,0,20,0">
                             <TextBlock Style="{StaticResource section}" Text="Comments" />
-                            <userControls:DisplayListOfNotes x:Name="notesDisplay" ShowingEditControls="False" Notes="{Binding SelectedDrawingNotes, Mode=OneWay}" />
+                            <userControls:DisplayListOfNotes
+                                x:Name="notesDisplay"
+                                Notes="{Binding SelectedDrawingNotes, Mode=OneWay}"
+                                ShowingEditControls="False" />
                             <Grid Margin="10,5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="71*" />
@@ -618,26 +656,30 @@
                                     x:Name="Message"
                                     Grid.ColumnSpan="3"
                                     Margin="5,5,5,15"
-                                    FontSize="14"
-                                    Text="{Binding NewNoteText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Background="{StaticResource Background}"
+                                    FontSize="14"
                                     Foreground="{StaticResource OnSurface}"
+                                    PreviewKeyDown="Message_PreviewKeyDown"
                                     Style="{StaticResource DefaultTextBox}"
                                     Tag="Compose message..."
-                                    TextWrapping="WrapWithOverflow" PreviewKeyDown="Message_PreviewKeyDown"/>
+                                    Text="{Binding NewNoteText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    TextWrapping="WrapWithOverflow" />
                                 <Button
                                     x:Name="SendButton"
                                     Grid.Column="3"
-                                    Command="{Binding AddCommentToDrawingCmd}"
                                     Margin="10,0,0,17"
                                     HorizontalAlignment="Left"
                                     Background="{StaticResource Surface}"
+                                    Command="{Binding AddCommentToDrawingCmd}"
                                     Style="{StaticResource SendButton}" />
                             </Grid>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
-                <Button HorizontalAlignment="Center" Style="{StaticResource WithdrawButton}" Command="{Binding WithdrawCmd}" />
+                <Button
+                    HorizontalAlignment="Center"
+                    Command="{Binding WithdrawCmd}"
+                    Style="{StaticResource WithdrawButton}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

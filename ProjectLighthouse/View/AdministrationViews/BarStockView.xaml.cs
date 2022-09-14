@@ -11,5 +11,10 @@ namespace ProjectLighthouse.View
         {
             InitializeComponent();
         }
+
+        private void ClearButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            searchBox.Clear();
+        }
     }
 }

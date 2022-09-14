@@ -1,27 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectLighthouse.Model
 {
     public class BarStockRequirementOverview
     {
-        public BarStock BarStock;
-        public List<LatheManufactureOrder> Orders;
+        public BarStock BarStock { get; set; }
+        public List<LatheManufactureOrder> Orders { get; set; }
         public double BarsRequiredForOrders { get; set; }
         public double FreeBar { get; set; }
         public int Priority { get; set; }
+
 
         public BarStockRequirementOverview(BarStock barStock, List<LatheManufactureOrder> orders)
         {
             BarStock = barStock;
             Orders = orders;
 
-            foreach (LatheManufactureOrder order in orders)
-            {
-                if (!order.BarIsAllocated)
-                {
-                    BarsRequiredForOrders += order.NumberOfBars;
-                }
-            }
+            BarsRequiredForOrders = orders.Sum(x => x.NumberOfBars) - orders.Sum(x => x.NumberOfBarsIssued);
 
             FreeBar = BarStock.InStock + BarStock.OnOrder - BarsRequiredForOrders;
 
@@ -34,7 +30,7 @@ namespace ProjectLighthouse.Model
                 }
                 else
                 {
-                    Priority = 2; // all good
+                    Priority = BarsRequiredForOrders > 0 ? 2 : 3; // all good : No Dependent Orders
                 }
 
             }

@@ -694,8 +694,8 @@
                                         HorizontalAlignment="Right"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource OnBackground}"
-                                        Text="{Binding SelectedOrder.NumberOfBars, StringFormat='{}{0} bar(s),'}"
-                                        d:Text="0 bar(s)"
+                                        Text="{Binding SelectedOrder.NumberOfBarsIssued, StringFormat='{}{0} of '}"
+                                        d:Text="5 of "
                                         TextWrapping="Wrap" />
                                     <TextBlock
                                         Grid.Column="2"
@@ -703,8 +703,8 @@
                                         HorizontalAlignment="Right"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource OnBackground}"
-                                        Text="{Binding SelectedOrder.SpareBars, StringFormat='{} {0} are spare'}"
-                                        d:Text="0 of which are spare"
+                                        Text="{Binding SelectedOrder.NumberOfBars, StringFormat='{}{0} Issued'}"
+                                        d:Text="10 Issued"
                                         TextWrapping="Wrap" />
                                 </Grid>
                             </Grid>

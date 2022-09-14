@@ -99,7 +99,7 @@
                         FontWeight="SemiBold"
                         FontSize="14"
                         Foreground="{StaticResource OnPurple}"
-                        Text="{Binding State, FallbackValue='Ready', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding State}" d:Text="STATUS" />
                 </Grid>
                 <Grid
                     x:Name="LargeDiameterIndicator"

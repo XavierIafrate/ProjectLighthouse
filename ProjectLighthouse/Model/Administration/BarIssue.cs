@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SQLite;
+using System;
 
 namespace ProjectLighthouse.Model.Administration
 {
     public class BarIssue
     {
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public string IssuedBy { get; set; }
@@ -15,5 +13,6 @@ namespace ProjectLighthouse.Model.Administration
         public string OrderId { get; set; }
         public string MaterialBatch { get; set; }
         public int Quantity { get; set; }
+        public string MaterialInfo { get; set; }
     }
 }

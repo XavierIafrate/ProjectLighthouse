@@ -6,7 +6,6 @@ namespace ProjectLighthouse.Model
 {
     public partial class LatheManufactureOrder : ScheduleItem, ICloneable
     {
-        [PrimaryKey, AutoIncrement]
         public string POReference { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
@@ -14,70 +13,113 @@ namespace ProjectLighthouse.Model
         public string ModifiedBy { get; set; }
 
 
+        public string Status { get; set; } // Legacy
         public OrderState State
         {
             get
             {
-                DateTime startDate = StartDate > DateTime.MinValue.AddDays(15) ? StartDate : DateTime.MinValue.AddDays(15);
+                OrderState result;
 
                 if (IsCancelled)
                 {
-                    return OrderState.Cancelled;
+                    result =  OrderState.Cancelled;
                 }
                 else if (IsComplete)
                 {
-                    return OrderState.Complete;
+                    result = OrderState.Complete;
                 }
                 else if (HasStarted)
                 {
-                    return OrderState.Running;
+                    result = OrderState.Running;
                 }
-                else if (BarIsAllocated && BarIsVerified && HasProgram && ToolingReady && GaugingReady && ColletsReady)
+                else if (BarIsAllocated && HasProgram && AllToolingReady)
                 {
-                    return OrderState.Prepared;
+                    result = OrderState.Prepared;
                 }
-                else if (BarIsVerified && HasProgram && startDate.AddDays(-14) > DateTime.Now)
+                else if (
+                       (ToolingOrdered||ToolingReady) 
+                    && (BarToolingOrdered||BarToolingReady) 
+                    && (GaugingOrdered||GaugingReady) 
+                    && (BaseProgramExists||HasProgram) 
+                    && BarIsVerified)
                 {
-                    return OrderState.Ready;
+                    result = OrderState.Ready;
                 }
                 else
                 {
-                    return OrderState.Problem;
+                    result = OrderState.Problem;
                 }
+
+                if (result == OrderState.Ready && StartDate <= DateTime.Today.AddDays(7) && StartDate.Date != DateTime.MinValue)
+                {
+                    result = OrderState.Problem;
+                }
+                return result;
             }
-            set { }
         }
 
+
+        #region Identification Phase
+        public bool ToolingOrdered { get; set; }
+        public bool BarToolingOrdered { get; set; }
+        public bool GaugingOrdered { get; set; }
+        public bool BaseProgramExists { get; set; }
+        public bool BarIsVerified { get; set; }
+
+        #endregion
+
+        #region Preparation Phase
         [Ignore]
         public bool AllToolingReady
         {
             get
             {
-                return ToolingReady && GaugingReady && ColletsReady;
+                return ToolingReady && GaugingReady && BarToolingReady;
             }
         }
         public bool ToolingReady { get; set; }
+        public bool BarToolingReady { get; set; }
         public bool GaugingReady { get; set; }
-        public bool ColletsReady { get; set; }
 
-        public bool HasProgram { get; set; }
+
+        [Ignore]
+        public bool BarIsAllocated
+        {
+            get { return NumberOfBarsIssued >= NumberOfBars; }
+        }
+
+
+public bool HasProgram { get; set; }
+
+        #endregion
+
+        #region Running
+
         public bool HasStarted { get; set; }
-        public bool BarIsAllocated { get; set; }
-        public bool BarIsVerified { get; set; }
+
+        #endregion
+
+        #region Completed Order
         public bool IsComplete { get; set; }
         public bool IsCancelled { get; set; }
         public bool IsClosed { get; set; }
+        #endregion
 
-        public string Status { get; set; }
         public DateTime CompletedAt { get; set; }
+
+        #region Bar Configuration
         public string BarID { get; set; }
         public double NumberOfBars { get; set; }
+        public int SpareBars { get; set; }
+        public int NumberOfBarsIssued { get; set; }
         public double BarsInStockAtCreation { get; set; }
+        #endregion
+
         public double MajorDiameter { get; set; }
         public bool ItemNeedsCleaning { get; set; }
         public string ToolingGroup { get; set; }
         public bool IsResearch { get; set; }
-        public int SpareBars { get; set; }
+
         public int TargetCycleTime { get; set; }
         public bool TargetCycleTimeEstimated { get; set; }
 
@@ -112,19 +154,18 @@ namespace ProjectLighthouse.Model
                 IsClosed = IsClosed,
                 Status = Status,
                 IsCancelled = IsCancelled,
-                State = State,
                 AllocatedMachine = AllocatedMachine,
                 StartDate = StartDate,
                 CompletedAt = CompletedAt,
                 ToolingReady = ToolingReady,
-                ColletsReady = ColletsReady,
+                NumberOfBarsIssued = NumberOfBarsIssued,
+                BarToolingReady = BarToolingReady,
                 GaugingReady = GaugingReady,
                 HasProgram = HasProgram,
                 HasStarted = HasStarted,
                 BarID = BarID,
                 NumberOfBars = NumberOfBars,
                 ItemNeedsCleaning = ItemNeedsCleaning,
-                BarIsAllocated = BarIsAllocated,
                 BarIsVerified = BarIsVerified,
                 BarsInStockAtCreation = BarsInStockAtCreation,
                 IsResearch = IsResearch,
@@ -148,14 +189,17 @@ namespace ProjectLighthouse.Model
                 || IsClosed != OtherOrder.IsClosed
                 || State != OtherOrder.State
                 || HasStarted != OtherOrder.HasStarted
-                || BarIsAllocated != OtherOrder.BarIsAllocated
                 || BarIsVerified != OtherOrder.BarIsVerified
+                || BaseProgramExists != OtherOrder.BaseProgramExists
                 || HasProgram != OtherOrder.HasProgram
                 || ToolingReady != OtherOrder.ToolingReady
-                || GaugingReady != OtherOrder.GaugingReady
-                || ColletsReady != OtherOrder.ColletsReady
-                || POReference != OtherOrder.POReference
                 || NumberOfBars != OtherOrder.NumberOfBars
+                || NumberOfBarsIssued != OtherOrder.NumberOfBarsIssued
+                || GaugingOrdered != OtherOrder.GaugingOrdered
+                || GaugingReady != OtherOrder.GaugingReady
+                || BarToolingOrdered != OtherOrder.BarToolingOrdered
+                || BarToolingReady != OtherOrder.BarToolingReady
+                || POReference != OtherOrder.POReference
                 || TimeToComplete != OtherOrder.TimeToComplete
                 || ModifiedAt != OtherOrder.ModifiedAt
                 || SpareBars != OtherOrder.SpareBars
@@ -174,13 +218,22 @@ namespace ProjectLighthouse.Model
             IsCancelled = otherOrder.IsCancelled;
             IsComplete = otherOrder.IsComplete;
             IsClosed = otherOrder.IsClosed;
-            HasStarted = otherOrder.HasStarted;
-            BarIsAllocated = otherOrder.BarIsAllocated;
+            
+            NumberOfBarsIssued = otherOrder.NumberOfBarsIssued;
+            
+            ToolingOrdered = otherOrder.ToolingOrdered;
+            GaugingOrdered = otherOrder.GaugingOrdered;
+            BarToolingOrdered = otherOrder.BarToolingOrdered;
+            BaseProgramExists = otherOrder.BaseProgramExists;
             BarIsVerified = otherOrder.BarIsVerified;
-            HasProgram = otherOrder.HasProgram;
+
             ToolingReady = otherOrder.ToolingReady;
             GaugingReady = otherOrder.GaugingReady;
-            ColletsReady = otherOrder.ColletsReady;
+            BarToolingReady = otherOrder.BarToolingReady;
+            HasProgram = otherOrder.HasProgram;
+            
+            HasStarted = otherOrder.HasStarted;
+            
             POReference = otherOrder.POReference;
             NumberOfBars = otherOrder.NumberOfBars;
             TimeToComplete = otherOrder.TimeToComplete;

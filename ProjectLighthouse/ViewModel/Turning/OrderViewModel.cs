@@ -476,10 +476,12 @@ namespace ProjectLighthouse.ViewModel
             }
 
             // Quick indicator icons
-            ProgramIconBrush = (Brush)Application.Current.Resources[SelectedOrder.HasProgram ? "Green" : "Red"];
+            ProgramIconBrush = (Brush)Application.Current.Resources[SelectedOrder.HasProgram ? "Green" : (SelectedOrder.BaseProgramExists ? "Orange" : "Red")];
             OnPropertyChanged(nameof(ProgramIconBrush));
 
-            ToolingIconBrush = (Brush)Application.Current.Resources[SelectedOrder.ToolingReady && SelectedOrder.GaugingReady && SelectedOrder.ColletsReady ? "Green" : "Red"];
+            ToolingIconBrush = (Brush)Application.Current.Resources[SelectedOrder.AllToolingReady ? "Green" : ((SelectedOrder.ToolingOrdered || SelectedOrder.ToolingReady)
+                    && (SelectedOrder.BarToolingOrdered || SelectedOrder.BarToolingReady)
+                    && (SelectedOrder.GaugingOrdered || SelectedOrder.GaugingReady)) ? "Orange" : "Red"];
             OnPropertyChanged(nameof(ToolingIconBrush));
 
             BarVerifiedIconBrush = (Brush)Application.Current.Resources[SelectedOrder.BarIsVerified ? "Green" : "Red"];

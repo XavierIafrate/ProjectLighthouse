@@ -299,7 +299,6 @@ namespace ProjectLighthouse.View
             NewOrder.Name = GetNewOrderId();
             NewOrder.CreatedAt = DateTime.Now;
             NewOrder.CreatedBy = App.CurrentUser.GetFullName();
-            NewOrder.State = OrderState.Problem;
             NewOrder.MajorDiameter = NewOrderItems.First().MajorDiameter;
             NewOrder.BarsInStockAtCreation = Bars.Find(x => x.Id == NewOrder.BarID).InStock;
             NewOrder.NumberOfBars = Math.Ceiling(Insights.NumberOfBarsRequired);

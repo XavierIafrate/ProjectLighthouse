@@ -188,7 +188,8 @@ namespace ProjectLighthouse.ViewModel
                     CurrentRevision = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.Revision),
                     LastIssue = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.ApprovedDate),
                     Amendment = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.AmendmentType),
-                    AllDrawingsWithdrawn = d.All(x => x.IsWithdrawn || x.IsRejected)
+                    AllDrawingsWithdrawn = d.All(x => x.IsWithdrawn || x.IsRejected),
+                    IsArchetypeGroup = d.First().IsArchetype
                 };
 
                 DrawingGroups.Add(newGroup);
@@ -218,6 +219,8 @@ namespace ProjectLighthouse.ViewModel
 
                 FilteredDrawingGroups = DrawingGroups.Where(x => x.Name.Contains(searchString)).ToList();
             }
+
+            FilteredDrawingGroups = FilteredDrawingGroups.OrderByDescending(x => x.IsArchetypeGroup).ThenBy(x => x.Name).ToList();
 
             if (FilteredDrawingGroups.Count > 0)
             {

@@ -49,6 +49,10 @@ namespace ProjectLighthouse.View.UserControls
             control.WithdrawnText.Visibility = control.Group.AllDrawingsWithdrawn
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+
+            control.ArchetypeBadge.Visibility = control.Group.IsArchetypeGroup
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         public DisplayDrawingGroup()

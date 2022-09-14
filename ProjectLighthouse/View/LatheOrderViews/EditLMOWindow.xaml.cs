@@ -47,6 +47,8 @@ namespace ProjectLighthouse.View
 
         public List<BarStock> BarStock { get; set; }
 
+        public List<BarIssue> BarIssues { get; set; }
+
         #endregion
 
         public EditLMOWindow(string id, bool canEdit)
@@ -72,7 +74,13 @@ namespace ProjectLighthouse.View
                 BarStock = BarStock.Where(x => x.Material == currentBar.Material).ToList();
                 OnPropertyChanged(nameof(BarStock));
             }
+
             savedOrder = (LatheManufactureOrder)Order.Clone();
+
+            BarIssues = DatabaseHelper.Read<BarIssue>().Where(x => x.OrderId == Order.Name).ToList();
+            Order.NumberOfBarsIssued = BarIssues.Sum(x => x.Quantity);
+            TotalBarsText.Text = $"{Order.NumberOfBarsIssued}/{Math.Ceiling(Order.NumberOfBars)} Prepared";
+
 
             Items = DatabaseHelper.Read<LatheManufactureOrderItem>()
                 .Where(x => x.AssignedMO == id)
@@ -172,7 +180,7 @@ namespace ProjectLighthouse.View
                     break;
                 case OrderState.Problem or OrderState.Ready:
                     tier1 = true;
-                    tier2 = Order.BarIsVerified;
+                    tier2 = true;
                     tier3 = false;
                     tier4 = false;
                     break;
@@ -192,10 +200,16 @@ namespace ProjectLighthouse.View
                 tier4 = false;
             }
 
-            Tooling_Checkbox.IsEnabled = tier1;
+            ToolingOrdered_Checkbox.IsEnabled = tier1;
+            BarToolingOrdered_Checkbox.IsEnabled = tier1;
+            GaugesOrdered_Checkbox.IsEnabled = tier1;
+            BaseProgram_Checkbox.IsEnabled = tier1;
             BarVerified_Checkbox.IsEnabled = tier1;
 
 
+            ToolingArrived_Checkbox.IsEnabled = tier2;
+            BarToolingArrived_Checkbox.IsEnabled = tier2;
+            GaugesArrived_Checkbox.IsEnabled = tier2;
             Program_Checkbox.IsEnabled = tier2;
 
             Running_Checkbox.IsEnabled = tier3;
@@ -274,6 +288,7 @@ namespace ProjectLighthouse.View
             }
 
             Order.NumberOfBars = Math.Ceiling(totalLengthRequired / (bar.Length - 300)) + Order.SpareBars;
+
         }
 
         #endregion
@@ -580,6 +595,32 @@ namespace ProjectLighthouse.View
         private void PurchaseOrderTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = TextBoxHelper.ValidateAlphanumeric(e);
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is not ListBox listBox) return;
+            if (listBox.SelectedValue is not BarIssue issue)
+            {
+                PrintIssueLabelButton.IsEnabled = false;
+                return;
+            }
+            PrintIssueLabelButton.IsEnabled = true;
+
+        }
+
+        private void PrintIssueLabelButton_Click(object sender, RoutedEventArgs e)
+        {
+            BarIssue newIssue = new()
+            {
+                BarId = "PRB123-4567-890",
+                MaterialInfo = "MILD STEEL, EN1A",
+                MaterialBatch = "TEST_BATCH",
+                OrderId = "M12345",
+                Quantity = 9999,
+            };
+
+            LabelPrintingHelper.PrintIssue(newIssue);
         }
     }
 }
