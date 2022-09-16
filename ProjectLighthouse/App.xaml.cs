@@ -63,8 +63,8 @@ namespace ProjectLighthouse
             if (!userLoggedIn)
             {
                 Application.Current.Shutdown();
+                return;
             }
-
 
             Window.Show();
 

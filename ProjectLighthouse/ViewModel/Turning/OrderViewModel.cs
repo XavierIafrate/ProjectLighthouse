@@ -6,6 +6,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -212,6 +213,23 @@ namespace ProjectLighthouse.ViewModel
             InitialiseVariables();
             CreateTimer();
             Refresh();
+        }
+
+        void MigrateModel()
+        {
+            List<LatheManufactureOrder> allOrders = DatabaseHelper.Read<LatheManufactureOrder>();
+            
+            foreach (LatheManufactureOrder order in allOrders)
+            {
+                //if (order.IsReady)
+                //{
+                //    order.ToolingReady = true;
+                //    order.GaugingReady = true;
+                //    order.BarToolingReady = true;
+                //}
+
+                DatabaseHelper.Update(order);
+            }
         }
 
         private void InitialiseVariables()

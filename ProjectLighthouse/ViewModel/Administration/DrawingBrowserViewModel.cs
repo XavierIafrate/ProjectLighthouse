@@ -101,7 +101,14 @@ namespace ProjectLighthouse.ViewModel
         public OpenDrawingCommand OpenDrawingCmd { get; set; }
         public WithdrawDrawingCommand WithdrawCmd { get; set; }
         public AddCommentToDrawingCommand AddCommentToDrawingCmd { get; set; }
-        public string RejectionStatement { get; set; }
+        private string rejectionStatement;
+
+        public string RejectionStatement
+        {
+            get { return rejectionStatement; }
+            set { rejectionStatement = value; OnPropertyChanged(); }
+        }
+
         public ApproveDrawingCommand ApproveDrawingCmd { get; set; }
         public RejectDrawingCommand RejectDrawingCmd { get; set; }
 
@@ -128,6 +135,26 @@ namespace ProjectLighthouse.ViewModel
                 FilterDrawings(SearchBoxText);
             }
         }
+
+        private bool openFileButtonEnabled;
+        public bool OpenFileButtonEnabled
+        {
+            get { return openFileButtonEnabled; }
+            set 
+            { 
+                openFileButtonEnabled = value;
+                OpenFileButtonText = value ? "Open File" : "Not Found";
+                OnPropertyChanged(); 
+            }
+        }
+
+        private string openFileButtonText;
+        public string OpenFileButtonText
+        {
+            get { return openFileButtonText; }
+            set { openFileButtonText = value; OnPropertyChanged(); }
+        }
+
         #endregion
 
 
@@ -149,6 +176,7 @@ namespace ProjectLighthouse.ViewModel
             DrawingGroups = new();
 
             NewNoteText = "";
+            RejectionStatement = "";
 
             AddNewCmd = new(this);
             OpenDrawingCmd = new(this);
@@ -264,17 +292,8 @@ namespace ProjectLighthouse.ViewModel
             SelectedDrawingNotes = selectedDrawing.Notes;
             OnPropertyChanged(nameof(SelectedDrawingNotes));
 
-            if (!File.Exists(filePath))
-            {
-                //TODO
-                //control.openButton.Content = "file not found";
-                //control.openButton.IsEnabled = false;
-            }
-            else
-            {
-                //control.openButton.Content = "Open";
-                //control.openButton.IsEnabled = true;
-            }
+            OpenFileButtonEnabled = File.Exists(filePath);
+            
             PendingApprovalVis = !selectedDrawing.IsApproved && !selectedDrawing.IsRejected && !selectedDrawing.IsWithdrawn
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -326,7 +345,13 @@ namespace ProjectLighthouse.ViewModel
 
         public void RejectDrawing()
         {
+            if(string.IsNullOrEmpty(RejectionStatement.Trim()))
+            {
+                MessageBox.Show("You are required to enter a justification for rejecting a drawing", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
+                return;
+            }
 
+            SelectedDrawing.RejectionReason = RejectionStatement.Trim();
             SelectedDrawing.IsRejected = true;
             SelectedDrawing.RejectedDate = DateTime.Now;
             SelectedDrawing.RejectedBy = App.CurrentUser.GetFullName();
@@ -338,6 +363,7 @@ namespace ProjectLighthouse.ViewModel
                 DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Rejected: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has rejected this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
             }
 
+            RejectionStatement = "";
             int target = SelectedDrawing.Id;
             LoadData();
             SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));

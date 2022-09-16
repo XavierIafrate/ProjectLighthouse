@@ -77,7 +77,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Bar Stock")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new BarStockViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
@@ -103,7 +103,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Calibration")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new CalibrationViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
@@ -116,7 +116,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (parameter.ToString() == "Quality Check")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new QualityCheckViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch

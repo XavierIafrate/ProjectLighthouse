@@ -1,0 +1,49 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.HelperWindows.CreateBarIssueWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.HelperWindows"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Bar Issue"
+    Width="600"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    mc:Ignorable="d">
+    <Grid Margin="20">
+        <StackPanel>
+
+            <TextBlock
+                x:Name="OrderRefText"
+                Style="{StaticResource title}"
+                Text="New Bar Issue: M00000" />
+            <TextBlock
+                x:Name="BarIdText"
+                Style="{StaticResource subtitle}"
+                Text="Bar ID: PRB000-0000-000" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <TextBlock x:Name="BarInStockText" Text="99 in stock" Margin="10" Foreground="{StaticResource Green}" FontWeight="SemiBold"  FontSize="20"/>
+                <TextBlock x:Name="OrderRequirementText" Text="Order requires 55" Margin="10" FontWeight="SemiBold" Foreground="{StaticResource Purple}" FontSize="20"/>
+            </StackPanel>
+            <TextBlock Style="{StaticResource section}" Text="How many bars would you like to issue?" />
+            <TextBox
+                x:Name="QtyTextBox"
+                PreviewKeyDown="QtyTextBox_PreviewKeyDown"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Qty" Width="100" 
+                MaxLength="3"
+                HorizontalAlignment="Left"/>
+            <TextBlock Style="{StaticResource section}" Text="Please record the batch reference of the material being issued" />
+            <TextBox
+                x:Name="BatchInfoTextBox"
+                MaxLength="16"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Batch Ref" Width="350" HorizontalAlignment="Left" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,20,0,0">
+                <Button Content="Cancel" Style="{StaticResource CancelButton}" x:Name="CancelButton" Click="CancelButton_Click" />
+                <Button Content="Create Issue" Style="{StaticResource GreenButton}" x:Name="ConfirmButton" Click="ConfirmButton_Click" />
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</Window>

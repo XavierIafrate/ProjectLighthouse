@@ -97,7 +97,8 @@
             </Grid.ColumnDefinitions>
             <TextBox
                 x:Name="SearchBox"
-                Style="{StaticResource SearchTextBox}"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Search Orders..."
                 Text="{Binding Path=SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Button

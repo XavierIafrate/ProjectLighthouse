@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using ProjectLighthouse.Model.Administration;
+using SQLite;
 using System;
 using System.Collections.Generic;
 
@@ -60,6 +61,7 @@ namespace ProjectLighthouse.Model
 
 
         #region Identification Phase
+
         public bool ToolingOrdered { get; set; }
         public bool BarToolingOrdered { get; set; }
         public bool GaugingOrdered { get; set; }
@@ -89,7 +91,7 @@ namespace ProjectLighthouse.Model
         }
 
 
-public bool HasProgram { get; set; }
+        public bool HasProgram { get; set; }
 
         #endregion
 
@@ -134,6 +136,8 @@ public bool HasProgram { get; set; }
         public List<OrderDrawing> DrawingsReferences { get; set; } = new();
         [Ignore]
         public Lathe AssignedLathe { get; set; } = new();
+        [Ignore]
+        public List<BarIssue> BarIssues { get; set; } = new();
 
         #region Helpers
         public DateTime Deadline;
@@ -240,6 +244,11 @@ public bool HasProgram { get; set; }
             ModifiedAt = otherOrder.ModifiedAt;
             ModifiedBy = otherOrder.ModifiedBy;
             POReference = otherOrder.POReference;
+        }
+
+        public bool RequiresBar()
+        {
+            return DateTime.Now.AddDays(14) > StartDate && StartDate.Year != DateTime.MinValue.Year && NumberOfBars > NumberOfBarsIssued;
         }
 
         public DateTime GetStartDeadline()

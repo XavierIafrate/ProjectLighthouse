@@ -24,6 +24,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -31,7 +32,8 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox
-                    x:Name="searchBox" Style="{StaticResource DefaultTextBox}"
+                    x:Name="searchBox"
+                    Style="{StaticResource DefaultTextBox}"
                     Tag="search..."
                     Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
@@ -52,6 +54,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <CheckBox IsChecked="{Binding ShowRequisitionsOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Requisitions Only" Margin="0,0,0,7" Grid.Row="2" HorizontalAlignment="Center"/>
         </Grid>
         <TextBlock
             Grid.Column="1"
@@ -62,28 +65,164 @@
             Visibility="{Binding NoneFoundVis}" />
         <ScrollViewer Grid.Column="1" Visibility="{Binding BarStockVis}">
             <StackPanel MaxWidth="700">
-                <TextBlock Style="{StaticResource title}" Text="{Binding SelectedBarStock.BarStock.Id}" />
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}Size {0}mm'}" />
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.Form, StringFormat='{}Form: {0}'}" />
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}Length: {0:#,##0}mm'}" />
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.Material, StringFormat='{}Material: {0}'}" />
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Unit Cost {0}', Converter='{StaticResource priceConverter}'}" />
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.OnOrder, StringFormat='{}On PO: {0:#,##0} bars'}" />
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.InStock, StringFormat='{}In Stock: {0:#,##0} bars'}" />
-                <TextBlock FontWeight="SemiBold" Text="{Binding SelectedBarStock.FreeBar, StringFormat='{}Free Bar: {0:#,##0} bars'}" />
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}Suggested Stock: {0:#,##0} bars'}" />
-                <TextBlock Style="{StaticResource section}" Text="Dependent Orders" />
-                <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding SelectedBarStock.Orders}">
+                <Grid>
+                    <TextBlock
+                        d:Text="PRB000-0000-000"
+                        Style="{StaticResource title}"
+                        Text="{Binding SelectedBarStock.BarStock.Id}" />
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Border
+                            Background="{StaticResource Purple}"
+                            CornerRadius="5"
+                            Opacity="0.15" />
+                        <Border
+                            BorderBrush="{StaticResource Purple}"
+                            BorderThickness="0,0,0,3"
+                            CornerRadius="5" />
+                        <TextBlock
+                            Margin="15,9"
+                            d:Text="99 IN STOCK"
+                            FontSize="25"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Purple}"
+                            Text="{Binding SelectedBarStock.BarStock.InStock, StringFormat='{}{0:#,##0} IN STOCK'}" />
+
+                    </Grid>
+                </Grid>
+                <TextBlock Style="{StaticResource subtitle}">
+                    <Run d:Text="Stainless Steel," Text="{Binding SelectedBarStock.BarStock.MaterialText, StringFormat='{}{0},'}" />
+                    <Run d:Text="Grade AISI 303" Text="{Binding SelectedBarStock.BarStock.GradeText, StringFormat='{}Grade {0}'}" />
+                </TextBlock>
+                <TextBlock Style="{StaticResource subsubtitle}">
+                    <Run d:Text="3,000mm long" Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}{0:#,##0}mm long'}" />
+                    <Run d:Text="round bar," Text="{Binding SelectedBarStock.BarStock.Form, StringFormat='{}{0} bar,'}" />
+                    <Run d:Text="size 7mm" Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}size {0}mm'}" />
+                </TextBlock>
+                <!--<TextBlock Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Unit Cost {0}', Converter='{StaticResource priceConverter}'}" />-->
+
+                <Grid HorizontalAlignment="Center" Margin="0,20">
+                    <Grid.Resources>
+                        <Style x:Key="FormulaNumber" TargetType="{x:Type TextBlock}">
+                            <Setter Property="Foreground" Value="{StaticResource Purple}" />
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="FontSize" Value="40" />
+                        </Style>
+                        <Style x:Key="FormulaDecorator" TargetType="{x:Type TextBlock}">
+                            <Setter Property="Foreground" Value="{StaticResource Purple}" />
+                            <Setter Property="FontWeight" Value="SemiBold" />
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="Opacity" Value="0.7" />
+                            <Setter Property="FontSize" Value="20" />
+                        </Style>
+                        <Style x:Key="FormulaSymbol" TargetType="{x:Type TextBlock}">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="FontSize" Value="30" />
+                            <Setter Property="Margin" Value="5" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        d:Text="99"
+                        Style="{StaticResource FormulaNumber}"
+                        Text="{Binding SelectedBarStock.BarStock.InStock}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Style="{StaticResource FormulaDecorator}"
+                        Text="IN STOCK" />
+
+
+                    <TextBlock
+                        Grid.Column="1"
+                        Style="{StaticResource FormulaSymbol}"
+                        Text="+" />
+
+
+                    <TextBlock
+                        Grid.Column="2"
+                        d:Text="100"
+                        Style="{StaticResource FormulaNumber}"
+                        Text="{Binding SelectedBarStock.BarStock.OnOrder}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Style="{StaticResource FormulaDecorator}"
+                        Text="ON ORDER" />
+
+
+                    <TextBlock
+                        Grid.Column="3"
+                        Style="{StaticResource FormulaSymbol}"
+                        Text="-" />
+
+
+                    <TextBlock
+                        Grid.Column="4"
+                        d:Text="200"
+                        Style="{StaticResource FormulaNumber}"
+                        Text="{Binding SelectedBarStock.BarsRequiredForOrders}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="4"
+                        Style="{StaticResource FormulaDecorator}"
+                        Text="REQUIRED" />
+
+
+                    <TextBlock
+                        Grid.Column="5"
+                        Style="{StaticResource FormulaSymbol}"
+                        Text="=" />
+
+
+                    <TextBlock
+                        Grid.Column="6"
+                        d:Text="-1"
+                        Style="{StaticResource FormulaNumber}"
+                        Text="{Binding SelectedBarStock.FreeBar}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="6"
+                        Style="{StaticResource FormulaDecorator}"
+                        Text="FREE BAR" />
+
+                </Grid>
+
+                <TextBlock
+                    
+                    Margin="20"
+                    HorizontalAlignment="Center"
+                    d:Text="SUGGESTED STOCK: 999 bars"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource DisabledElement}"
+                    Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}SUGGESTED STOCK: {0:#,##0} bars'}" />
+                <Grid Visibility="{Binding DependentOrdersVis}">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Style="{StaticResource section}"
+                        Text="{Binding SelectedBarStock.Orders.Count, StringFormat='{}Dependent Orders [{0}]'}" />
+                    <Button HorizontalAlignment="Right" Content="New Issue" Margin="0,5" Command="{Binding IssueBarCmd}" />
+                </Grid>
+                <ListBox
+                    Visibility="{Binding DependentOrdersVis}"
+                    HorizontalContentAlignment="Stretch"
+                    ItemsSource="{Binding SelectedBarStock.Orders}" SelectedValue="{Binding SelectedOrder}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <TextBlock Text="{Binding Name}" />
-                                <TextBlock HorizontalAlignment="Right">
-                                    <Run Text="{Binding NumberOfBarsIssued}" />
-                                    <Run Text="/" />
-                                    <Run Text="{Binding NumberOfBars}" />
-                                </TextBlock>
-                            </Grid>
+                            <uc:DisplayOrderBarIssues Order="{Binding}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

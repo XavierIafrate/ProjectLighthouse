@@ -345,6 +345,7 @@
                             </Grid>
                             <ListBox
                                 MinHeight="50"
+                                x:Name="BarIssuesListBox"
                                 HorizontalContentAlignment="Stretch"
                                 d:ItemsSource="{d:SampleData ItemCount=5}"
                                 ItemsSource="{Binding BarIssues}"

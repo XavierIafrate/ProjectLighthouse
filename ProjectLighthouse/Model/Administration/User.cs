@@ -44,6 +44,7 @@ namespace ProjectLighthouse.Model
         public bool ReceivesNotifications { get; set; }
         public bool CanApproveDrawings { get; set; }
         public bool HasQualityNotifications { get; set; }
+        public bool CanIssueBarStock { get; set; }
         public string Locale { get; set; }
 
         public string GetFullName()

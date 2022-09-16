@@ -295,9 +295,10 @@
                                     x:Name="openButton"
                                     Grid.Column="3"
                                     Margin="0"
+                                    IsEnabled="{Binding OpenFileButtonEnabled}"
                                     HorizontalAlignment="Right"
                                     Command="{Binding OpenDrawingCmd}"
-                                    Content="Open PDF"
+                                    Content="{Binding OpenFileButtonText}"
                                     Style="{StaticResource BlueButton}" />
                             </Grid>
 
@@ -622,11 +623,12 @@
                                 x:Name="rejectionReason"
                                 Background="{StaticResource Background}"
                                 FontSize="15"
+                                Text="{Binding RejectionStatement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource DefaultTextBox}"
                                 Tag="Enter reason for rejecting"
                                 TextChanged="TextBox_TextChanged" />
                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center" Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" />
+                                <!--<TextBlock VerticalAlignment="Center" Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" />-->
                                 <Button
                                     Command="{Binding RejectDrawingCmd}"
                                     Content="Reject Drawing"

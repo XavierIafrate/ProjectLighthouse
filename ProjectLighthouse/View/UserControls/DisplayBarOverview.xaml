@@ -7,8 +7,8 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:ProjectLighthouse.Model"
-    d:DesignWidth="300"
     d:Background="White"
+    d:DesignWidth="300"
     mc:Ignorable="d">
 
     <Grid Margin="5">
@@ -19,10 +19,10 @@
         </Grid.ColumnDefinitions>
         <TextBlock
             x:Name="BarID"
-            FontSize="16"
-            Opacity="0.8"
             FontFamily="Consolas"
+            FontSize="16"
             FontWeight="SemiBold"
+            Opacity="0.8"
             Text="PRB000-0000-000" />
 
         <Path

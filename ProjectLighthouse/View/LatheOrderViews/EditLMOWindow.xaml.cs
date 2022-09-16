@@ -151,8 +151,6 @@ namespace ProjectLighthouse.View
 
         private void SetCheckboxEnabling(bool canEdit)
         {
-
-            //TODO
             bool tier1;
             bool tier2;
             bool tier3;
@@ -197,6 +195,15 @@ namespace ProjectLighthouse.View
                 tier1 = false;
                 tier2 = false;
                 tier3 = false;
+                tier4 = false;
+            }
+
+            if (Order.AllToolingReady && Order.HasProgram && Order.NumberOfBarsIssued > 0 && Order.State == OrderState.Ready)
+            {
+                // Not all bar arrived
+                tier1 = false;
+                tier2 = true;
+                tier3 = Order.StartDate.Date <= DateTime.Today; ;
                 tier4 = false;
             }
 
@@ -600,7 +607,7 @@ namespace ProjectLighthouse.View
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is not ListBox listBox) return;
-            if (listBox.SelectedValue is not BarIssue issue)
+            if (listBox.SelectedValue is not BarIssue)
             {
                 PrintIssueLabelButton.IsEnabled = false;
                 return;
@@ -611,16 +618,9 @@ namespace ProjectLighthouse.View
 
         private void PrintIssueLabelButton_Click(object sender, RoutedEventArgs e)
         {
-            BarIssue newIssue = new()
-            {
-                BarId = "PRB123-4567-890",
-                MaterialInfo = "MILD STEEL, EN1A",
-                MaterialBatch = "TEST_BATCH",
-                OrderId = "M12345",
-                Quantity = 9999,
-            };
+            if (BarIssuesListBox.SelectedValue == null) return;
 
-            LabelPrintingHelper.PrintIssue(newIssue);
+            LabelPrintingHelper.PrintIssue((BarIssue)BarIssuesListBox.SelectedValue, copies:2);
         }
     }
 }

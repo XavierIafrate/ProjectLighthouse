@@ -17,7 +17,7 @@ namespace ProjectLighthouse.Model
             BarStock = barStock;
             Orders = orders;
 
-            BarsRequiredForOrders = orders.Sum(x => x.NumberOfBars) - orders.Sum(x => x.NumberOfBarsIssued);
+            BarsRequiredForOrders = System.Math.Max(orders.Sum(x => x.NumberOfBars) - orders.Sum(x => x.NumberOfBarsIssued), 0);
 
             FreeBar = BarStock.InStock + BarStock.OnOrder - BarsRequiredForOrders;
 

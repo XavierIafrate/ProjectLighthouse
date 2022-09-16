@@ -30,25 +30,27 @@ namespace ProjectLighthouse.ViewModel.Helpers
             Print(label);
 
         }
-        public static void PrintIssue(BarIssue issue)
+        public static bool PrintIssue(BarIssue issue, int copies = 1)
         {
             BarIssueLabel label = new(issue);
-            Print(label);
+            label.Copies = copies;
+            return Print(label);
 
         }
 
-        static void Print(ILabel label)
+        static bool Print(ILabel label)
         {
             if (!label.DataIsComplete())
             {
                 Debug.WriteLine("Data not complete for label");
-                return;
+                return false;
             }
 
             string labelJson = JsonConvert.SerializeObject(label);
             string url = $@"print\l_{DateTime.Now:yyyyMMddHHmmss}.json";
             url = App.ROOT_PATH + url;
             File.WriteAllText(url, labelJson);
+            return true;
         }
 
         public class LotLabel : ILabel
