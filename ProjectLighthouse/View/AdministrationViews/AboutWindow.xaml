@@ -7,8 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="About Project Lighthouse"
-    ResizeMode="NoResize"
     Width="571"
+    ResizeMode="NoResize"
     SizeToContent="Height"
     mc:Ignorable="d">
     <StackPanel Margin="30" VerticalAlignment="Center">
@@ -23,20 +23,23 @@
                 HorizontalAlignment="Center"
                 Style="{StaticResource title}"
                 Text="About" />
-            <TextBlock
-                Style="{StaticResource subtitle}"
-                Text="Project Lighthouse" />
-            
+            <TextBlock Style="{StaticResource subtitle}" Text="Project Lighthouse" />
+
             <TextBlock Foreground="{StaticResource Blue}" Text="Written by Xavier Iafrate" />
 
             <Grid Height="20" />
-            <TextBlock Margin="0,0,0,10" Text="copyright 2021" x:Name="CopyRightText" Style="{StaticResource statement}" HorizontalAlignment="Center"/>
+            <TextBlock
+                x:Name="CopyRightText"
+                Margin="0,0,0,10"
+                HorizontalAlignment="Center"
+                Style="{StaticResource statement}"
+                Text="copyright 2021" />
             <Grid Height="20" />
 
             <TextBlock
                 Margin="0,0,0,10"
-                Style="{StaticResource statement}"
                 HorizontalAlignment="Center"
+                Style="{StaticResource statement}"
                 Text="Lighthouse is made possible by Open Source Libraries" />
             <StackPanel Margin="30,0">
                 <Grid>
@@ -150,9 +153,12 @@
                 FontWeight="SemiBold"
                 Foreground="{StaticResource Blue}"
                 Text="If I have seen further, it is by standing upon the shoulders of giants" />
-            <TextBlock
-                HorizontalAlignment="Center"
-                Text="Isaac Newton" />
+            <TextBlock HorizontalAlignment="Center" Text="Isaac Newton" />
         </StackPanel>
+        <Image
+            Width="100"
+            Margin="0,30,0,0"
+            RenderOptions.BitmapScalingMode="Fant"
+            Source="/Resources/mwl-dark.png" />
     </StackPanel>
 </Window>

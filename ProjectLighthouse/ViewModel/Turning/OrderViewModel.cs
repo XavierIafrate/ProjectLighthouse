@@ -117,17 +117,6 @@ namespace ProjectLighthouse.ViewModel
 
         public bool NoNotes { get; set; }
 
-        private Visibility cleaningVis;
-        public Visibility CleaningVis
-        {
-            get { return cleaningVis; }
-            set
-            {
-                cleaningVis = value;
-                OnPropertyChanged();
-            }
-        }
-
         private Visibility cardVis;
         public Visibility CardVis
         {
@@ -213,23 +202,6 @@ namespace ProjectLighthouse.ViewModel
             InitialiseVariables();
             CreateTimer();
             Refresh();
-        }
-
-        void MigrateModel()
-        {
-            List<LatheManufactureOrder> allOrders = DatabaseHelper.Read<LatheManufactureOrder>();
-            
-            foreach (LatheManufactureOrder order in allOrders)
-            {
-                //if (order.IsReady)
-                //{
-                //    order.ToolingReady = true;
-                //    order.GaugingReady = true;
-                //    order.BarToolingReady = true;
-                //}
-
-                DatabaseHelper.Update(order);
-            }
         }
 
         private void InitialiseVariables()
@@ -519,10 +491,6 @@ namespace ProjectLighthouse.ViewModel
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            CleaningVis = SelectedOrder.ItemNeedsCleaning
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
             NoDrawingsFoundVis = FilteredDrawings.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             DrawingsFoundVis = FilteredDrawings.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
             NoNotes = FilteredNotes.Count == 0;
@@ -610,6 +578,14 @@ namespace ProjectLighthouse.ViewModel
 
         public void EditLMO()
         {
+
+            //SelectedOrder.StartDate = DateTime.Today.AddDays(-7);
+
+            //SelectedOrder.UpdateStartDate();
+
+            //return; 
+
+
             DataRefreshTimer.Enabled = false;
             bool editable = true;
             if (SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)

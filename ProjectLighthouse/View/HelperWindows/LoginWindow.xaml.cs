@@ -27,8 +27,6 @@ namespace ProjectLighthouse.View
             MessageBadge.Visibility = Visibility.Hidden;
             Users = DatabaseHelper.Read<User>().ToList();
 
-            //LogisticsWarning.Visibility = logistics ? Visibility.Visible : Visibility.Hidden;
-
             if (Environment.UserName == "xavier" || Debugger.IsAttached)
             {
                 User user = Users.Find(u => u.UserName == "xav");
@@ -99,7 +97,7 @@ namespace ProjectLighthouse.View
             {
                 message.Text = "Username not found";
                 MessageBadge.Visibility = Visibility.Visible;
-                UsernameTextBox.BorderBrush = (Brush)App.Current.Resources["Red"]; 
+                UsernameTextBox.BorderBrush = (Brush)App.Current.Resources["Red"];
                 PasswordBox.BorderBrush = (Brush)App.Current.Resources["Background"];
                 return;
             }

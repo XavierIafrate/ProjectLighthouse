@@ -1,7 +1,13 @@
-﻿using SQLite;
+﻿using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+using SQLite;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using Color = System.Drawing.Color;
 
 namespace ProjectLighthouse.Model
 {
@@ -19,6 +25,7 @@ namespace ProjectLighthouse.Model
 
         public string DrawingName { get; set; }
         public string DrawingStore { get; set; }
+        public string RawDrawingStore { get; set; }
         public bool IsApproved { get; set; }
         public bool IsRejected { get; set; }
         public bool IsWithdrawn { get; set; }
@@ -36,6 +43,7 @@ namespace ProjectLighthouse.Model
         public Amendment AmendmentType { get; set; }
         public string IssueDetails { get; set; }
         public string SubmissionType { get; set; }
+        public bool WatermarkOnly { get; set; }
 
         [Ignore]
         public bool IsCurrent { get; set; }
@@ -58,7 +66,6 @@ namespace ProjectLighthouse.Model
                     drawingsList.Add(d);
                 }
             }
-
 
             return drawingsList.Distinct().ToList();
         }
@@ -135,6 +142,7 @@ namespace ProjectLighthouse.Model
                 Customer = Customer,
                 DrawingName = DrawingName,
                 DrawingStore = DrawingStore,
+                RawDrawingStore = RawDrawingStore,
                 IsApproved = IsApproved,
                 IsRejected = IsRejected,
                 RejectedDate = RejectedDate,
@@ -167,6 +175,150 @@ namespace ProjectLighthouse.Model
             string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
 
             return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+        }
+
+        public bool PrepareMarkedPdf()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            string tmpFile = GetCopyOfRawDocument();
+
+            using var pdfDocument = PdfReader.Open(tmpFile, PdfDocumentOpenMode.Modify);
+            PdfPage page = pdfDocument.Pages[0];
+
+            bool success;
+            if (IsRejected)
+            {
+                success = MarkDrawingAsRejected(page);
+            }
+            else if (!IsApproved)
+            {
+                success = MarkDrawingAsNotApproved(page);
+            }
+            else if (DrawingType == TechnicalDrawing.Type.Research)
+            {
+                success = MarkDrawingAsResearchOnly(page);
+            }
+            else if (IsWithdrawn)
+            {
+                success = MarkDrawingAsWithdrawn(page);
+            }
+            else if (IsApproved && !IsCurrent)
+            {
+                success = MarkDrawingAsSuperceded(page);
+            }
+            else
+            {
+                success = MarkDrawingAsApproved(page);
+            }
+
+            if (!success)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(DrawingStore))
+            {
+                DrawingStore = @"lib\gen\" + Path.GetRandomFileName();
+            }
+
+            pdfDocument.Save(tmpFile); //save && close
+
+            File.Copy(tmpFile, Path.Combine(App.ROOT_PATH, DrawingStore), overwrite: true);
+            File.Delete(tmpFile);
+
+            return true;
+        }
+
+        private string GetCopyOfRawDocument()
+        {
+            // Copy the raw drawing store to a known working file and return path
+
+            string baseDrawing = Path.Combine(App.ROOT_PATH, RawDrawingStore);
+            string newName = "lib\\" + Path.GetRandomFileName();
+            string newCopyName = $@"{App.ROOT_PATH}{newName}.pdf";
+            File.Copy(baseDrawing, newCopyName);
+            return newCopyName;
+        }
+
+        private bool MarkDrawingAsApproved(PdfPage page)
+        {
+            ApplyApprovalInformation(page);
+            return true;
+        }
+        private bool MarkDrawingAsSuperceded(PdfPage page)
+        {
+            ApplyWatermark(page, "DRAWING NO LONGER CURRENT", Color.Purple);
+            ApplyApprovalInformation(page);
+            return true;
+        }
+        private bool MarkDrawingAsWithdrawn(PdfPage page)
+        {
+            ApplyWatermark(page, "WITHDRAWN - DO NOT USE", Color.Red);
+            ApplyApprovalInformation(page);
+            return true;
+        }
+        private bool MarkDrawingAsResearchOnly(PdfPage page)
+        {
+            ApplyWatermark(page, "DEVELOPMENT USE ONLY", Color.Blue);
+            ApplyApprovalInformation(page);
+            return true;
+        }
+        private bool MarkDrawingAsNotApproved(PdfPage page)
+        {
+            ApplyWatermark(page, "MANUFACTURE USE NOT PERMITTED", Color.Red);
+            return true;
+        }
+        private bool MarkDrawingAsRejected(PdfPage page)
+        {
+            ApplyWatermark(page, "REJECTED - DO NOT USE", Color.Red);
+            return true;
+        }
+
+        private void ApplyApprovalInformation(PdfPage page)
+        {
+            if (WatermarkOnly) return;
+
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XFont font = new("Consolas", 9, XFontStyle.Regular);
+
+            gfx.DrawString($"{this.Revision}{this.AmendmentType}", font, XBrushes.Black,
+                  new XRect(86, 225, 80, 14),
+                  XStringFormats.CenterLeft);
+
+            // Style of: RANDY M if too long
+            string approvedBy = this.ApprovedBy.Length <= 18
+                ? this.ApprovedBy.ToUpperInvariant()
+                : this.ApprovedBy.Split(' ')[0].ToUpperInvariant() + " " + this.ApprovedBy.Split(' ')[1][..1].ToUpperInvariant();
+
+            // unlucky
+            if (approvedBy.Length > 18)
+            {
+                approvedBy = "SEE LIGHTHOUSE";
+            }
+
+            gfx.DrawString(approvedBy, font, XBrushes.Black,
+                  new XRect(72, 373, 94, 14),
+                  XStringFormats.Center);
+
+            gfx.DrawString($"{ApprovedDate:dd/MM/yyyy HH:mm}", font, XBrushes.Black,
+                  new XRect(72, 387, 94, 14),
+                  XStringFormats.Center);
+            gfx.Dispose();
+        }
+
+        private void ApplyWatermark(PdfPage page, string text, Color colour)
+        {
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            XFont font = new("Consolas", 40, XFontStyle.Bold);
+            XBrush brush = new XSolidBrush(XColor.FromArgb((int)(0.20 * 255), colour.R, colour.G, colour.B));
+
+            gfx.DrawString(text, font, brush,
+                new XRect(0, 0, page.Width, page.Height),
+                  XStringFormats.Center);
+
+            gfx.Dispose();
         }
     }
 }

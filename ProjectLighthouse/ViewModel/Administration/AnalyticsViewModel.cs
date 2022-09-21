@@ -1,5 +1,4 @@
 ﻿using IO.ClickSend.ClickSend.Model;
-using ProjectLighthouse.Model.Logistics;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -26,22 +25,15 @@ namespace ProjectLighthouse.ViewModel
         #endregion
 
         #region Commands
-        public DownloadPackingDataCommand DownloadPackingDataCommand { get; set; }
         public SendRuntimeReportCommand RuntimeReportCommand { get; set; }
         #endregion
 
         public AnalyticsViewModel()
         {
             Analytics = new();
-            DownloadPackingDataCommand = new(this);
             RuntimeReportCommand = new(this);
         }
 
-        public async void DownloadPackingData()
-        {
-            List<PackageRecord> records = await FirebaseHelper.Read<PackageRecord>();
-            CSVHelper.WriteListToCSV(records, "packing_kpi");
-        }
 
         public void SendRuntimeReport(bool test)
         {

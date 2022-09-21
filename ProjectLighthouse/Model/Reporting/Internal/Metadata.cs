@@ -71,7 +71,6 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddRow(table, "Allocated Machine", order.AllocatedMachine ?? "TBC", "Program Ready", order.HasProgram ? "Yes" : "No");
             AddRow(table, "Created", order.CreatedAt.ToString("d"), "Bar Verified", order.BarIsVerified ? "Yes" : "No");
             AddRow(table, "Estimated # Bars", order.NumberOfBars.ToString("#,##0"), "Bar Allocated", order.BarIsAllocated ? "Yes" : "No");
-            AddRow(table, "Bar ID", order.BarID, "Ultrasonic Cleaning", order.ItemNeedsCleaning ? "Yes" : "No");
         }
 
         private void AddRow(Table table, string parameter1, string value1, string parameter2, string value2)

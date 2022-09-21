@@ -141,7 +141,7 @@ namespace ProjectLighthouse.View
             researchCheckBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit;
             composeMessageControls.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
 
-            AddItemButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && Order.State < OrderState.Complete && canEdit && !Order.BarIsAllocated;
+            AddItemButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && Order.State < OrderState.Complete && canEdit;
             GetDrawingUpdatesButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit && Order.State < OrderState.Complete;
 
             SaveButton.IsEnabled = canEdit;
@@ -198,7 +198,7 @@ namespace ProjectLighthouse.View
                 tier4 = false;
             }
 
-            if (Order.AllToolingReady && Order.HasProgram && Order.NumberOfBarsIssued > 0 && Order.State == OrderState.Ready)
+            if (Order.AllToolingReady && Order.HasProgram && Order.NumberOfBarsIssued > 0 && Order.State == OrderState.Problem)
             {
                 // Not all bar arrived
                 tier1 = false;

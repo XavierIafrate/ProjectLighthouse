@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -154,9 +155,7 @@ namespace ProjectLighthouse.ViewModel
             get { return openFileButtonText; }
             set { openFileButtonText = value; OnPropertyChanged(); }
         }
-
         #endregion
-
 
         public DrawingBrowserViewModel()
         {
@@ -299,7 +298,11 @@ namespace ProjectLighthouse.ViewModel
                 : Visibility.Collapsed;
             OnPropertyChanged(nameof(PendingApprovalVis));
 
-            ApprovalControlsVis = !selectedDrawing.IsApproved && !selectedDrawing.IsRejected && !selectedDrawing.IsWithdrawn && App.CurrentUser.CanApproveDrawings && selectedDrawing.CreatedBy != App.CurrentUser.GetFullName()
+            ApprovalControlsVis = !selectedDrawing.IsApproved 
+                && !selectedDrawing.IsRejected 
+                && !selectedDrawing.IsWithdrawn 
+                && App.CurrentUser.CanApproveDrawings
+                && selectedDrawing.CreatedBy != App.CurrentUser.GetFullName()
                 ? Visibility.Visible
                 : Visibility.Collapsed;
             OnPropertyChanged(nameof(ApprovalControlsVis));
@@ -357,6 +360,8 @@ namespace ProjectLighthouse.ViewModel
             SelectedDrawing.RejectedBy = App.CurrentUser.GetFullName();
             DatabaseHelper.Update(SelectedDrawing);
 
+            SelectedDrawing.PrepareMarkedPdf();
+
             List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == SelectedDrawing.CreatedBy).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
@@ -399,12 +404,20 @@ namespace ProjectLighthouse.ViewModel
 
         public void PublishDrawing()
         {
-
+            TechnicalDrawing beingReplaced = SelectedGroup.Drawings.Find(x => x.IsCurrent);
+            if (beingReplaced != null)
+            {
+                beingReplaced.IsCurrent = false;
+                beingReplaced.PrepareMarkedPdf();
+            }
             SelectedDrawing.IsApproved = true;
+            SelectedDrawing.IsCurrent = true;
             SelectedDrawing.ApprovedDate = DateTime.Now;
             SelectedDrawing.ApprovedBy = App.CurrentUser.GetFullName();
 
             DatabaseHelper.Update(SelectedDrawing);
+
+            SelectedDrawing.PrepareMarkedPdf();
 
             List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == SelectedDrawing.CreatedBy).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
@@ -423,7 +436,19 @@ namespace ProjectLighthouse.ViewModel
             fileopener.StartInfo.FileName = "explorer";
             string tmpPath = Path.Join(Path.GetTempPath(), selectedDrawing.GetSafeFileName());
 
-            if (!File.Exists(tmpPath))
+            if (File.Exists(tmpPath))
+            {
+                try
+                {
+                    File.Delete(tmpPath);
+                    File.Copy(Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore), tmpPath);
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show("This file is already open - the version being opened is cached on your computer.", "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            else
             {
                 File.Copy(Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore), tmpPath);
             }
@@ -457,6 +482,7 @@ namespace ProjectLighthouse.ViewModel
             int thisDrawing = SelectedDrawing.Id;
 
             DatabaseHelper.Update(SelectedDrawing);
+            SelectedDrawing.PrepareMarkedPdf();
             ShowOldGroups = true;
             LoadData();
 

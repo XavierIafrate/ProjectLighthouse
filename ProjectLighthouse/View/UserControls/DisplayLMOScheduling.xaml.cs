@@ -125,9 +125,7 @@ namespace ProjectLighthouse.View.UserControls
 
             if (dateWindow.SaveExit)
             {
-                orderObject.StartDate = dateWindow.SelectedDate.Date.AddHours(12);
-                orderObject.AllocatedMachine = dateWindow.AllocatedMachine;
-                DatabaseHelper.Update(orderObject);
+                orderObject.UpdateStartDate(dateWindow.SelectedDate, dateWindow.AllocatedMachine);
                 orderObject.NotifyEditMade();
             }
         }

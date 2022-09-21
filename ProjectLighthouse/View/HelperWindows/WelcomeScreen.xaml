@@ -76,7 +76,7 @@
                 Opacity="0.8"
                 Password="Username"
                 Style="{x:Null}" />
-            <Button Grid.Column="2" Style="{StaticResource LoginButton}"/>
+            <Button Grid.Column="2" Style="{StaticResource LoginButton}" />
         </Grid>
     </Grid>
 </Window>

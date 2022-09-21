@@ -439,7 +439,7 @@
                         Grid.Row="1"
                         MinHeight="120"
                         VerticalScrollBarVisibility="Auto">
-                        <uc:DisplayListOfNotes x:Name="NotesDisplay" Notes="{Binding Notes}" />
+                        <uc:DisplayListOfNotes x:Name="NotesDisplay" Notes="{Binding Notes}" ShowingEditControls="True"/>
                     </ScrollViewer>
 
                     <Grid

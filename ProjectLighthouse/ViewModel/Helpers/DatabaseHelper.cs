@@ -10,6 +10,17 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static string DatabasePath;
 
+        public static bool ExecuteCommand<T>(string query)
+        {
+            using (SQLiteConnection conn = new(DatabasePath))
+            {
+                var test = conn.Execute(query);
+
+            }
+
+            return true;
+        }
+
         public static bool Insert<T>(T item)
         {
             bool result = false;

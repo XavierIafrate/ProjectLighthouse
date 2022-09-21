@@ -8,10 +8,10 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.7.0</FileVersion>
-    <AssemblyVersion>1.7.0</AssemblyVersion>
+    <FileVersion>1.7.1</FileVersion>
+    <AssemblyVersion>1.7.1</AssemblyVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.7.0</Version>
+    <Version>1.7.1</Version>
     <Product>Lighthouse</Product>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>

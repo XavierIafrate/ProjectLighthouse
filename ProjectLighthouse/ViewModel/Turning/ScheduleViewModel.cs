@@ -49,7 +49,6 @@ namespace ProjectLighthouse.ViewModel
         public AddResearchCommand AddResearchCommand { get; set; }
         public AddServiceCommand AddServiceCommand { get; set; }
         public AutoScheduleCommand AutoScheduleCommand { get; set; }
-        public FirebaseSyncCommand FirebaseSyncCommand { get; set; }
 
         public List<string> FilterOptions { get; set; }
 
@@ -79,7 +78,6 @@ namespace ProjectLighthouse.ViewModel
             AddResearchCommand = new(this);
             AddServiceCommand = new(this);
             AutoScheduleCommand = new(this);
-            FirebaseSyncCommand = new(this);
 
             AddButtonsVis = App.CurrentUser.Role >= UserRole.Scheduling
                 ? Visibility.Visible
@@ -349,11 +347,6 @@ namespace ProjectLighthouse.ViewModel
                 LoadData();
                 SetView();
             }
-        }
-
-        public void SyncWithFirebase()
-        {
-            FirebaseHelper.SynchroniseSchedule(OrderHeaders);
         }
 
         public void PrintSchedule()

@@ -2,7 +2,7 @@
 
 namespace ProjectLighthouse.Model
 {
-    public interface ISchedulableObject : IHasFirebaseId
+    public interface ISchedulableObject
     {
         int Id { get; set; }
         string Name { get; set; }

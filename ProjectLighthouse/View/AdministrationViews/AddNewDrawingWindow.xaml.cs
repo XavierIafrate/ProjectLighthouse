@@ -85,8 +85,8 @@ namespace ProjectLighthouse.View
         {
             string bin = @"lib\";
             NewDrawing.Revision = 0;
-            NewDrawing.DrawingStore = bin + Path.GetRandomFileName();
-            destinationFilePath = Path.Combine(App.ROOT_PATH, NewDrawing.DrawingStore);
+            NewDrawing.RawDrawingStore = bin + Path.GetRandomFileName();
+            destinationFilePath = Path.Combine(App.ROOT_PATH, NewDrawing.RawDrawingStore);
         }
 
         private bool ImprintData()
@@ -117,11 +117,13 @@ namespace ProjectLighthouse.View
             NewDrawing.Created = DateTime.Now;
             NewDrawing.CreatedBy = App.CurrentUser.GetFullName();
 
+            NewDrawing.PrepareMarkedPdf();
+
             List<User> ToNotify = DatabaseHelper.Read<User>().Where(x => x.CanApproveDrawings && x.UserName != App.CurrentUser.UserName).ToList();
 
             for (int i = 0; i < ToNotify.Count; i++)
             {
-                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Drawing proposal - {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.DrawingName}"));
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Drawing proposal - {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.Id}"));
             }
 
             return DatabaseHelper.Insert(NewDrawing);
