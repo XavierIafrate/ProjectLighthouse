@@ -4,7 +4,7 @@ using System;
 
 namespace ProjectLighthouse.Model
 {
-    public class TurnedProduct
+    public class TurnedProduct : IAutoIncrementPrimaryKey
     {
         public const double MaxDiameter = 38;
         public const double MaxLength = 150;

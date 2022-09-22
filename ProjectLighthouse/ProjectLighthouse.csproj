@@ -55,6 +55,8 @@
     <None Remove="Resources\Lighthouse_Mono_L_Embedded.png" />
     <None Remove="Resources\Lighthouse_Splash_Screen.png" />
     <None Remove="Resources\MiB_Logo_Stacked_Colour.jpg" />
+    <None Remove="Resources\mwl-dark.png" />
+    <None Remove="Resources\mwl-light.png" />
     <None Remove="Resources\portland.jpg" />
     <None Remove="Resources\RGB_wixroyd_ant_logo_red.png" />
     <None Remove="Resources\snowdonia.jpg" />
@@ -134,6 +136,8 @@
     <Resource Include="Resources\MiB_Logo_Stacked_Colour.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\mwl-dark.png" />
+    <Resource Include="Resources\mwl-light.png" />
     <Resource Include="Resources\portland.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using ProjectLighthouse.Model;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -43,6 +44,25 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
             return result;
+        }
+
+        public static int InsertAndReturnId<T>(T item) where T : IAutoIncrementPrimaryKey
+        {
+            using (SQLiteConnection conn = new(DatabasePath))
+            {
+                conn.CreateTable<T>();
+                try
+                {
+                    int rows = conn.Insert(item);
+                    MessageBox.Show($"{item.Id}");
+                }
+                catch (SQLiteException sqle)
+                {
+                    MessageBox.Show($"Lighthouse encountered an error trying to add to the database.\nError message: {sqle.Message}", "Insert Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return 0;
+                }
+            }
+            return item.Id;
         }
 
         public static bool Update<T>(T item)

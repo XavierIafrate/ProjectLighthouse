@@ -452,6 +452,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 File.Copy(Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore), tmpPath);
             }
+
             fileopener.StartInfo.Arguments = "\"" + tmpPath + "\"";
             _ = fileopener.Start();
         }
