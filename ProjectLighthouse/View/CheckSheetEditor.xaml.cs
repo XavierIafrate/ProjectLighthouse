@@ -1,5 +1,9 @@
-﻿using System;
+﻿using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Quality;
+using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,15 +18,88 @@ using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for CheckSheetEditor.xaml
-    /// </summary>
     public partial class CheckSheetEditor : Window
     {
+        public List<CheckSheetDimension> Dimensions { get; set; }
         public CheckSheetEditor()
         {
             InitializeComponent();
-            pdfViewer.Navigate(new Uri("file:///C:/Users/x.iafrate/Downloads/529-38602.pdf"));
+            
+            Console.SetOut(new ControlWriter(ConsoleOutput));
+
+            Dimensions = new()
+            {
+                new()
+                {
+                    Id = 1,
+                    DrawingId = 5,
+                    Name = "Head Chamfer",
+                    IsNumeric = true,
+                    NumericValue = 0.2,
+                    ToleranceType = Model.Quality.ToleranceType.Basic,
+                },
+                new()
+                {
+                    Id = 2,
+                    DrawingId = 5,
+                    Name = "Finish",
+                    IsNumeric = false,
+                    StringValue = "Clean",
+                },
+                new()
+                {
+                    Id = 3,
+                    DrawingId = 5,
+                    Name = "Thread Length",
+                    IsNumeric = true,
+                    NumericValue = 10.5,
+                    ToleranceType = Model.Quality.ToleranceType.Bilateral,
+                    Min = 0.5,
+                    Max = 0,
+                }
+            };
+
+            int newId = DatabaseHelper.InsertAndReturnId(Dimensions.First());
+
+            Console.WriteLine($"Inserted dimension with ID: {newId}");
+
+            DimensionGrid.ItemsSource = Dimensions;
+
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine($"Count of Dimensions: {Dimensions.Count}");
+        }
+
+        public class ControlWriter : TextWriter
+        {
+            private TextBox textbox;
+            public ControlWriter(TextBox textbox)
+            {
+                this.textbox = textbox;
+            }
+
+            public override void Write(char value)
+            {
+                textbox.Text += value;
+            }
+
+            public override void Write(string value)
+            {
+                textbox.Text += value;
+            }
+
+            public override Encoding Encoding
+            {
+                get { return Encoding.ASCII; }
+            }
+        }
+
+        private void Browser_Loaded(object sender, RoutedEventArgs e)
+        {
+            //pdfViewer.Navigate(new Uri());
+            //Browser.Address = "";
         }
     }
 }
