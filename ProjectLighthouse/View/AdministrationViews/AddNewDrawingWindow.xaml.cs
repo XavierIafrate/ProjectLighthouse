@@ -118,6 +118,14 @@ namespace ProjectLighthouse.View
             NewDrawing.CreatedBy = App.CurrentUser.GetFullName();
 
             NewDrawing.PrepareMarkedPdf();
+            int id = DatabaseHelper.InsertAndReturnId(NewDrawing);
+
+            if (id == 0)
+            {
+                return false;
+            }
+
+
 
             List<User> ToNotify = DatabaseHelper.Read<User>().Where(x => x.CanApproveDrawings && x.UserName != App.CurrentUser.UserName).ToList();
 
@@ -126,7 +134,7 @@ namespace ProjectLighthouse.View
                 DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Drawing proposal - {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.Id}"));
             }
 
-            return DatabaseHelper.Insert(NewDrawing);
+            return true;
         }
 
         private void ProductGroupComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -211,7 +219,10 @@ namespace ProjectLighthouse.View
         {
             if (DataIsValid())
             {
-                ImprintData();
+                if (!ImprintData())
+                {
+                    return;
+                }
                 SaveExit = true;
                 Close();
             }

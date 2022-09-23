@@ -301,7 +301,7 @@ namespace ProjectLighthouse.Model
         {
             StartDate = date;
             AllocatedMachine = machine;
-            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Ticks}, AllocatedMachine='{AllocatedMachine}' WHERE Id={Id}");
+            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Date.AddHours(12).Ticks}, AllocatedMachine='{AllocatedMachine}' WHERE Id={Id}");
         }
 
     }

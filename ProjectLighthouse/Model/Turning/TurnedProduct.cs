@@ -34,6 +34,7 @@ namespace ProjectLighthouse.Model
         public string ThreadSize { get; set; }
         public string DriveType { get; set; }
         public string DriveSize { get; set; }
+        //public string Product { get; set; }
         public string ProductGroup { get; set; }
         public int QuantityManufactured { get; set; }
 

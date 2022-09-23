@@ -54,7 +54,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 try
                 {
                     int rows = conn.Insert(item);
-                    MessageBox.Show($"{item.Id}");
                 }
                 catch (SQLiteException sqle)
                 {

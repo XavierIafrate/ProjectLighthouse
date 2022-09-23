@@ -11,7 +11,7 @@ using Color = System.Drawing.Color;
 
 namespace ProjectLighthouse.Model
 {
-    public class TechnicalDrawing : ICloneable
+    public class TechnicalDrawing : ICloneable, IAutoIncrementPrimaryKey
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

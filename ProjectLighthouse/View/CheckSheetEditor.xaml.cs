@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model;
+﻿using ABI.System;
+using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -21,6 +22,7 @@ namespace ProjectLighthouse.View
     public partial class CheckSheetEditor : Window
     {
         public List<CheckSheetDimension> Dimensions { get; set; }
+        string PdfPath = @"C:\Users\x.iafrate\Desktop\Spooktoberfest_Invite_2022_v2[5751].pdf";
         public CheckSheetEditor()
         {
             InitializeComponent();
@@ -59,9 +61,9 @@ namespace ProjectLighthouse.View
                 }
             };
 
-            int newId = DatabaseHelper.InsertAndReturnId(Dimensions.First());
+            //int newId = DatabaseHelper.InsertAndReturnId(Dimensions.First());
 
-            Console.WriteLine($"Inserted dimension with ID: {newId}");
+            //Console.WriteLine($"Inserted dimension with ID: {newId}");
 
             DimensionGrid.ItemsSource = Dimensions;
 
@@ -100,6 +102,17 @@ namespace ProjectLighthouse.View
         {
             //pdfViewer.Navigate(new Uri());
             //Browser.Address = "";
+        }
+
+        private void ToggleNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            PdfPath = PdfPath == @"C:\Users\x.iafrate\Desktop\Spooktoberfest_Invite_2022_v2[5751].pdf"
+                    ? @"C:\Users\x.iafrate\Desktop\machinists-handbook-gcodetutor.pdf"
+                    : @"C:\Users\x.iafrate\Desktop\Spooktoberfest_Invite_2022_v2[5751].pdf";
+
+
+            System.Uri uri = new System.Uri(PdfPath);
+            webView.Source = uri;
         }
     }
 }
