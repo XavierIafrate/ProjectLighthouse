@@ -1,4 +1,5 @@
 ﻿using ABI.System;
+using LiveCharts.Wpf.Converters;
 using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -39,6 +40,7 @@ namespace ProjectLighthouse.View
                     IsNumeric = true,
                     NumericValue = 0.2,
                     ToleranceType = Model.Quality.ToleranceType.Basic,
+                    StringFormatter = "0.00"
                 },
                 new()
                 {
@@ -60,6 +62,22 @@ namespace ProjectLighthouse.View
                     Max = 0,
                 }
             };
+
+            foreach (CheckSheetDimension d in Dimensions)
+            {
+                Console.WriteLine($"{d.Name}");
+                if (d.IsNumeric)
+                {
+                    Console.WriteLine($"Nominal: {d.NumericValue.ToString(d.StringFormatter)}");
+                    Console.WriteLine($"Lower Limit: {d.LowerLimit}");
+                    Console.WriteLine($"Upper Limit: {d.UpperLimit}");
+                }
+                else
+                {
+                    Console.WriteLine($"Nominal: {d.StringValue}");
+                }
+                Console.WriteLine("");
+            }
 
             //int newId = DatabaseHelper.InsertAndReturnId(Dimensions.First());
 
