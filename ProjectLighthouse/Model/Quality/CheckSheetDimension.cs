@@ -18,9 +18,6 @@ namespace ProjectLighthouse.Model.Quality
         public double Min { get; set; }
         public double Max { get; set; }
         public string StringFormatter { get; set; } = "0";
-        public string UpperLimit => IsNumeric
-            ? $"{(NumericValue + Max).ToString(StringFormatter)}"
-            : "-";
 
         public string LowerLimit
         {
@@ -39,6 +36,28 @@ namespace ProjectLighthouse.Model.Quality
                     ToleranceType.Max => "-",
                     ToleranceType.Symmetric => $"{(NumericValue - Max).ToString(StringFormatter)}",
                     ToleranceType.Bilateral => $"{(NumericValue - Min).ToString(StringFormatter)}",
+                    _ => "-",
+                };
+            }
+        }
+
+        public string UpperLimit
+        {
+            get
+            {
+                if (!IsNumeric)
+                {
+                    return "-";
+                }
+
+                return ToleranceType switch
+                {
+                    ToleranceType.None => "-",
+                    ToleranceType.Basic => (NumericValue + GetBasicTolerance(StringFormatter)).ToString(StringFormatter),
+                    ToleranceType.Min => "-",
+                    ToleranceType.Max => NumericValue.ToString(StringFormatter),
+                    ToleranceType.Symmetric => $"{(NumericValue + Max).ToString(StringFormatter)}",
+                    ToleranceType.Bilateral => $"{(NumericValue + Max).ToString(StringFormatter)}",
                     _ => "-",
                 };
             }

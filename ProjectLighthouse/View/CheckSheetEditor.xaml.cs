@@ -95,6 +95,9 @@ namespace ProjectLighthouse.View
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine($"Count of Dimensions: {Dimensions.Count}");
+            DimensionCheckSheet checkSheet = new();
+            checkSheet.BuildContent(new(), Dimensions, null);
+            
         }
 
         public class ControlWriter : TextWriter
@@ -129,13 +132,13 @@ namespace ProjectLighthouse.View
 
         private void ToggleNavButton_Click(object sender, RoutedEventArgs e)
         {
-            PdfPath = PdfPath == @"C:\Users\x.iafrate\Desktop\Spooktoberfest_Invite_2022_v2[5751].pdf"
-                    ? @"C:\Users\x.iafrate\Desktop\machinists-handbook-gcodetutor.pdf"
-                    : @"C:\Users\x.iafrate\Desktop\Spooktoberfest_Invite_2022_v2[5751].pdf";
+            PdfPath = @"C:\Users\xavie\Documents\checksheet.pdf";
 
 
             System.Uri uri = new System.Uri(PdfPath);
             webView.Source = uri;
+
+            webView.Reload();
         }
     }
 }

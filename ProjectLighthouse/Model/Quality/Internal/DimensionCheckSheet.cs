@@ -82,9 +82,16 @@ namespace Model.Quality.Internal
             {
                 row = t.AddRow();
                 row.Cells[0].AddParagraph(dims[i].Name);
-                row.Cells[1].AddParagraph(dims[i].NumericValue.ToString(dims[i].StringFormatter); 
-                row.Cells[2].AddParagraph(dims[i].Name); 
-                row.Cells[3].AddParagraph(dims[i].Name); 
+                row.Cells[1].AddParagraph(dims[i].IsNumeric ? dims[i].NumericValue.ToString(dims[i].StringFormatter) : dims[i].StringValue); 
+                row.Cells[2].AddParagraph(dims[i].LowerLimit); 
+                row.Cells[3].AddParagraph(dims[i].UpperLimit); 
+
+                for (int j = 0; j < 12; j++)
+                {
+                    row.Cells[j].Borders.Width = 1;
+                }
+
+
             }
 
             return t;
@@ -139,10 +146,19 @@ namespace Model.Quality.Internal
             row.Format.Alignment = ParagraphAlignment.Center;
             row.Format.Font.Bold = true;
 
+            row.Cells[0].Borders.Color = Colors.Black;
+            row.Cells[0].Borders.DiagonalDown.Width = 1;
+            row.Cells[0].Borders.Width = 1;
+
             row.Cells[1].AddParagraph("Specification");
             row.Cells[1].Borders.Color = Colors.Black;
             row.Cells[1].Borders.Width = 1;
             row.Cells[1].MergeRight = 2;
+
+            row.Cells[4].AddParagraph("Sample Inspections");
+            row.Cells[4].Borders.Color = Colors.Black;
+            row.Cells[4].Borders.Width = 1;
+            row.Cells[4].MergeRight = 7;
 
             row = t.AddRow();
             row.HeadingFormat = true;
@@ -175,9 +191,8 @@ namespace Model.Quality.Internal
                 row.Cells[i+3].Borders.Width = 1;
             }
 
-
-            row = t.AddRow();
-            row.Cells[0].MergeRight = 1;
+            row.BottomPadding = 5;
+            row.Borders.Bottom.Width = 2;
 
 
             return t;
