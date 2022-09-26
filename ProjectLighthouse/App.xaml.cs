@@ -50,7 +50,7 @@ namespace ProjectLighthouse
             CheckSheetEditor editor = new();
             editor.ShowDialog();
 
-            //return;
+            return;
 
             Window = new();
             MainViewModel VM = new()
