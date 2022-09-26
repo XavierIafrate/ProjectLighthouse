@@ -1,4 +1,5 @@
 ﻿using ABI.System;
+using Model.Quality.Internal;
 using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -60,6 +61,10 @@ namespace ProjectLighthouse.View
                     Max = 0,
                 }
             };
+
+            DimensionCheckSheet checkSheet = new();
+            checkSheet.BuildContent(new(), Dimensions, null);
+
 
             //int newId = DatabaseHelper.InsertAndReturnId(Dimensions.First());
 

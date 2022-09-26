@@ -56,7 +56,7 @@
             Name="webView"
             Grid.Row="1"
             Grid.Column="1"
-            Source="file:///C:/Users/x.iafrate/AppData/Local/Temp/P0050.060_R1A.pdf" />
+            Source="file:///C:/Users/xavie/Documents/checksheet.pdf" />
         <TextBox
             x:Name="ConsoleOutput"
             Grid.Row="1"
