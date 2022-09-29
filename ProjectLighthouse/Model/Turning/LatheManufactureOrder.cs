@@ -304,5 +304,9 @@ namespace ProjectLighthouse.Model
             DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Date.AddHours(12).Ticks}, AllocatedMachine='{AllocatedMachine}' WHERE Id={Id}");
         }
 
+        public void MarkAsClosed()
+        {
+            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {true} WHERE Id={Id}");
+        }
     }
 }

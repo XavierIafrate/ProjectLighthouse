@@ -18,6 +18,10 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             {
                 return "You have 1 notification";
             }
+            else if (count > 9)
+            {
+                return $"You have 9+ notifications.";
+            }
             else
             {
                 return $"You have {count:0} notifications.";

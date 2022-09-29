@@ -432,6 +432,10 @@ namespace ProjectLighthouse.ViewModel
         }
         public void OpenPdfDrawing()
         {
+            //SelectedDrawing.PrepareMarkedPdf();
+
+            //return;
+
             Process fileopener = new();
             fileopener.StartInfo.FileName = "explorer";
             string tmpPath = Path.Join(Path.GetTempPath(), selectedDrawing.GetSafeFileName());

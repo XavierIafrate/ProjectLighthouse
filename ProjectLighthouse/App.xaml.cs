@@ -47,10 +47,10 @@ namespace ProjectLighthouse
             DevMode = Debugger.IsAttached;
             DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB.db3";
 
-            CheckSheetEditor editor = new();
-            editor.ShowDialog();
+            //CheckSheetEditor editor = new();
+            //editor.ShowDialog();
 
-            return;
+            //return;
 
             Window = new();
             MainViewModel VM = new()

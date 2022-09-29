@@ -578,14 +578,6 @@ namespace ProjectLighthouse.ViewModel
 
         public void EditLMO()
         {
-
-            //SelectedOrder.StartDate = DateTime.Today.AddDays(-7);
-
-            //SelectedOrder.UpdateStartDate();
-
-            //return; 
-
-
             DataRefreshTimer.Enabled = false;
             bool editable = true;
             if (SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)

@@ -1,11 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.View
 {
-    /// <summary>
-    /// Interaction logic for DrawingBrowserView.xaml
-    /// </summary>
     public partial class DrawingBrowserView : UserControl
     {
         public DrawingBrowserView()
@@ -29,6 +27,13 @@ namespace ProjectLighthouse.View
             {
                 SendButton.Command.Execute(null);
             }
+        }
+
+        private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            //Debug.WriteLine($"Height: '{this.ActualHeight:N2}' Width: '{this.ActualWidth:N2}'");
+
+            archtypeAnnotations.Visibility = this.ActualWidth > 1380 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
         }
     }
 }

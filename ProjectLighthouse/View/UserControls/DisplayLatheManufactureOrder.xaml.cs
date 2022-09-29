@@ -1,9 +1,7 @@
 ﻿using ProjectLighthouse.Model;
 using System;
-
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -33,10 +31,6 @@ namespace ProjectLighthouse.View.UserControls
             bool needsUpdate = control.LatheManufactureOrder.ModifiedAt.AddDays(5) < DateTime.Now
                    && control.LatheManufactureOrder.State == OrderState.Problem
                    && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now;
-
-            control.MOTextBlock.Foreground = control.LatheManufactureOrder.IsResearch
-                ? (Brush)App.Current.Resources["Blue"]
-                : (Brush)App.Current.Resources["OnBackground"];
 
             control.BadgeText.Visibility = control.LatheManufactureOrder.IsClosed || needsUpdate ? Visibility.Collapsed : Visibility.Visible;
         }

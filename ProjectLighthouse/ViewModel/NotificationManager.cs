@@ -55,10 +55,10 @@ namespace ProjectLighthouse.ViewModel
 
         void SetInterfaceVariables()
         {
-            List<Notification> visibleNots = MyNotifications
-                .Where(n => n.TimeStamp.AddDays(7) > DateTime.Now)
-                .OrderByDescending(x => x.TimeStamp).ToList();
+            List<Notification> visibleNots = GetVisibleNotifications(MyNotifications);
+            
             App.MainViewModel.Notifications = visibleNots;
+            
             if (visibleNots.Count == 0)
             {
                 App.MainViewModel.NotCount = 0;
@@ -71,7 +71,16 @@ namespace ProjectLighthouse.ViewModel
                 App.MainViewModel.NoNotifications = false;
                 App.MainViewModel.NoNewNotifications = App.MainViewModel.NotCount == 0;
             }
+        }
 
+        private static List<Notification> GetVisibleNotifications(List<Notification> nots)
+        {
+            List<Notification> result = new();
+
+            result.AddRange(nots.Where(x => x.Seen && x.SeenTimeStamp > DateTime.Now.AddDays(-1)));
+            result.AddRange(nots.Where(x => !x.Seen && x.TimeStamp > DateTime.Now.AddDays(-7)));
+
+            return result;
         }
 
         private void CreateTimer()
@@ -149,12 +158,12 @@ namespace ProjectLighthouse.ViewModel
         {
             for (int i = 0; i < MyNotifications.Count; i++)
             {
-                if (!MyNotifications[i].Seen)
+                if (MyNotifications[i].Seen)
                 {
-                    MyNotifications[i].Seen = true;
-                    MyNotifications[i].SeenTimeStamp = DateTime.Now;
-                    DatabaseHelper.Update(MyNotifications[i]);
+                    continue;
                 }
+
+                MarkRead(MyNotifications[i]);
             }
 
             CheckForNotifications(false);
@@ -254,10 +263,34 @@ namespace ProjectLighthouse.ViewModel
             {
                 return;
             }
-            notification.Seen = true;
-            notification.SeenTimeStamp = DateTime.Now;
-            DatabaseHelper.Update(notification);
+
+            if (string.IsNullOrEmpty(notification.ToastAction))
+            {
+                MarkRead(notification);
+            }
+            else
+            {
+                MarkActionExecuted(notification.ToastAction);
+            }
+
             CheckForNotifications(false);
+        }
+
+        private void MarkActionExecuted(string action)
+        {
+            List<Notification> toMarkRead = MyNotifications.Where(x => x.ToastAction == action && !x.Seen).ToList();
+
+            for (int i = 0; i < toMarkRead.Count; i++)
+            {
+                MarkRead(toMarkRead[i]);
+            }
+        }
+
+        private void MarkRead(Notification not)
+        {
+            not.Seen = true;
+            not.SeenTimeStamp = DateTime.Now;
+            DatabaseHelper.Update(not);
         }
     }
 }
