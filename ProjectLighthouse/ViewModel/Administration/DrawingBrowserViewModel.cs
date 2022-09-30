@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using View;
 
 namespace ProjectLighthouse.ViewModel
 {
@@ -187,7 +188,6 @@ namespace ProjectLighthouse.ViewModel
 
         private void LoadData()
         {
-            Drawings.Clear();
             Drawings = DatabaseHelper.Read<TechnicalDrawing>();
             Drawings = Drawings.OrderBy(d => d.DrawingName).ThenBy(d => d.Revision).ThenBy(x => x.Created).ToList();
 
@@ -234,8 +234,6 @@ namespace ProjectLighthouse.ViewModel
 
         private void FilterDrawings(string searchString = "")
         {
-            FilteredDrawings = null; // force UI refresh
-            FilteredDrawings = new();
             if (string.IsNullOrEmpty(searchString))
             {
                 FilteredDrawingGroups = new(DrawingGroups);
@@ -274,7 +272,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 string DrawingName = window.NewDrawing.DrawingName;
                 LoadData();
-                SelectedGroup = DrawingGroups.Find(x => x.Name == DrawingName);
+                SelectedGroup = FilteredDrawingGroups.Find(x => x.Name == DrawingName);
             }
         }
 
@@ -430,35 +428,14 @@ namespace ProjectLighthouse.ViewModel
             SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));
 
         }
+
         public void OpenPdfDrawing()
         {
-            //SelectedDrawing.PrepareMarkedPdf();
-
-            //return;
-
-            Process fileopener = new();
-            fileopener.StartInfo.FileName = "explorer";
-            string tmpPath = Path.Join(Path.GetTempPath(), selectedDrawing.GetSafeFileName());
-
-            if (File.Exists(tmpPath))
-            {
-                try
-                {
-                    File.Delete(tmpPath);
-                    File.Copy(Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore), tmpPath);
-                }
-                catch (IOException)
-                {
-                    MessageBox.Show("This file is already open - the version being opened is cached on your computer.", "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
-            }
-            else
-            {
-                File.Copy(Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore), tmpPath);
-            }
-
-            fileopener.StartInfo.Arguments = "\"" + tmpPath + "\"";
-            _ = fileopener.Start();
+            ApproveDrawingWindow approveDrawingWindow = new(SelectedDrawing, SelectedGroup);
+            approveDrawingWindow.ShowDialog();
+            return;
+            SelectedDrawing.CopyToAppData();
+            SelectedDrawing.ShellOpen();
         }
 
         public void WithdrawDrawing()

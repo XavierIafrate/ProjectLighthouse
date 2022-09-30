@@ -71,20 +71,7 @@ namespace ProjectLighthouse.ViewModel
             }
         }
 
-
-        private DateTime lastDataRefresh;
-        public DateTime LastDataRefresh
-        {
-            get { return lastDataRefresh; }
-            set
-            {
-                lastDataRefresh = value;
-                OnPropertyChanged();
-            }
-        }
-
         private int notCount;
-
         public int NotCount
         {
             get { return notCount; }
@@ -96,7 +83,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private bool noNewNotifications;
-
         public bool NoNewNotifications
         {
             get { return noNewNotifications; }
@@ -108,7 +94,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private bool noNotifications = true;
-
         public bool NoNotifications
         {
             get { return noNotifications; }
@@ -121,7 +106,6 @@ namespace ProjectLighthouse.ViewModel
 
 
         private List<Notification> nots;
-
         public List<Notification> Notifications
         {
             get { return nots; }
@@ -133,7 +117,6 @@ namespace ProjectLighthouse.ViewModel
         }
 
         private Visibility notificationsBarVis = Visibility.Collapsed;
-
         public Visibility NotificationsBarVis
         {
             get { return notificationsBarVis; }

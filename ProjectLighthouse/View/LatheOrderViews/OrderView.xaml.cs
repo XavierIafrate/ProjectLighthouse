@@ -21,7 +21,6 @@ namespace ProjectLighthouse.View
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             SearchBox.Text = "";
-            Debug.WriteLine($"{this.DataContext}");
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)

@@ -8,13 +8,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
-using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel
 {
-    public class OrderViewModel : BaseViewModel, IRefreshableViewModel
+    public class OrderViewModel : BaseViewModel
     {
         #region Variables
 
@@ -84,7 +83,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedFilter = value;
-                FilterOrders(value);
+                FilterOrders();
                 OnPropertyChanged(nameof(FilteredOrders));
             }
         }
@@ -193,14 +192,11 @@ namespace ProjectLighthouse.ViewModel
         public Brush BarAllocatedIconBrush { get; set; }
         #endregion
 
-        public Timer DataRefreshTimer;
-
         #endregion Variables
 
         public OrderViewModel()
         {
             InitialiseVariables();
-            CreateTimer();
             Refresh();
         }
 
@@ -232,58 +228,88 @@ namespace ProjectLighthouse.ViewModel
             NewOrderCommand = new(this);
         }
 
-        private void CreateTimer()
-        {
-            DataRefreshTimer = new();
-
-            DataRefreshTimer.Elapsed += OnTimedEvent;
-            DataRefreshTimer.Interval = 5 * 60 * 1000; // 5 minutes
-            DataRefreshTimer.Enabled = true;
-            if (App.CurrentUser.EnableDataSync)
-            {
-                DataRefreshTimer.Start();
-            }
-        }
-
         #region Data Refreshing
 
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        public void Refresh()
         {
-            Refresh(silent: true);
-        }
-
-        public void Refresh(bool silent = false) // Check behaviour
-        {
-            LoadData();
-            if (silent)
+            // Store user selection
+            int? userSelection = null;  
+            if (SelectedOrder != null)
             {
-                UpdateOrders();
-                LoadOrderCard();
-                OnPropertyChanged(nameof(SelectedOrder));
+                userSelection = SelectedOrder.Id;
+            }
+
+            LoadData();
+            CheckForClosedOrders();
+            CheckForReopenedOrders();
+
+            if (!string.IsNullOrEmpty(SearchTerm))
+            {
+                Search();
             }
             else
             {
-                FilterOrders(SelectedFilter);
+                FilterOrders();
             }
-            OnPropertyChanged(nameof(FilteredOrders));
 
-            if (!string.IsNullOrEmpty(SearchTerm)) Search();
-
-            App.MainViewModel.LastDataRefresh = DateTime.Now;
-
-            if (!silent)
+            // If available, scope to user selection
+            if (userSelection != null)
             {
-                if (FilteredOrders.Count > 0)
+                if (FilteredOrders.Any(x => x.Id == userSelection))
                 {
-                    SelectedOrder = FilteredOrders[0];
-                }
-                else
-                {
-                    SelectedOrder = null;
+                    SelectedOrder = FilteredOrders.First(x => x.Id == userSelection);
                 }
             }
+        }
 
-            OnPropertyChanged(nameof(SelectedOrder));
+        private void CheckForReopenedOrders()
+        {
+            List<LatheManufactureOrder> notClosed = Orders.Where(x => x.IsClosed  && x.State < OrderState.Complete).ToList();
+            for (int i = 0; i < notClosed.Count; i++)
+            {
+                notClosed[i].MarkAsNotClosed();
+                Orders.Find(x => x.Id == notClosed[i].Id).IsClosed = false;
+            }
+        }
+
+        private void CheckForClosedOrders()
+        {
+            List<LatheManufactureOrder> doneButNotClosed = Orders.Where(x => x.State > OrderState.Running && !x.IsClosed).ToList();
+            for (int i = 0; i < doneButNotClosed.Count; i++)
+            {
+                LatheManufactureOrder order = doneButNotClosed[i];
+                List<LatheManufactureOrderItem> items = OrderItems.Where(x => x.AssignedMO == order.Name).ToList();
+                List<Lot> lots = Lots.Where(x => x.Order == order.Name).ToList();
+
+                if (!OrderCanBeClosed(order, items, lots))
+                {
+                    continue;
+                }
+
+                order.MarkAsClosed();
+                Orders.Find(x => x.Id == doneButNotClosed[i].Id).IsClosed = true;
+            }
+        }
+
+        private bool OrderCanBeClosed(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<Lot> lots)
+        {
+            if (order.ModifiedAt.AddDays(1) > DateTime.Now)
+            {
+                return false;
+            }
+
+            if (order.State > OrderState.Running)
+            {
+                List<LatheManufactureOrderItem> itemsWithBadCycleTimes = items.Where(i => i.CycleTime == 0 && i.QuantityMade > 0).ToList();
+                List<Lot> unresolvedLots = lots.Where(l => l.Quantity != 0 && !l.IsDelivered && !l.IsReject && l.AllowDelivery).ToList();
+
+                return itemsWithBadCycleTimes.Count == 0 // ensure cycle time is updated
+                    && unresolvedLots.Count == 0; // ensure lots are fully processed
+            }
+            else
+            {
+                return false;
+            }
         }
 
         #endregion
@@ -291,51 +317,31 @@ namespace ProjectLighthouse.ViewModel
         #region Loading
         private void LoadData()
         {
-            Orders.Clear();
             Orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
 
-            OrderItems.Clear();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
-            Notes.Clear();
             Notes = DatabaseHelper.Read<Note>().ToList();
 
-            Drawings.Clear();
             Drawings = DatabaseHelper.Read<TechnicalDrawing>().ToList();
 
-            OrderDrawings.Clear();
             OrderDrawings = DatabaseHelper.Read<OrderDrawing>().ToList();
 
-            Lathes.Clear();
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
 
-            Lots.Clear();
             Lots = DatabaseHelper.Read<Lot>().ToList();
 
-            BarStock.Clear();
             BarStock = DatabaseHelper.Read<BarStock>().ToList();
 
             MachineStatistics = MachineStatsHelper.GetStats();
         }
 
-        private void UpdateOrders()
-        {
-            for (int i = 0; i < FilteredOrders.Count; i++)
-            {
-                LatheManufactureOrder masterOrder = Orders.Find(x => x.Name == FilteredOrders[i].Name);
-                if (FilteredOrders[i].IsUpdated(masterOrder))
-                {
-                    FilteredOrders[i].Update(masterOrder);
-                }
-            }
-        }
-
-        private void FilterOrders(string filter)
+        private void FilterOrders()
         {
             FilteredOrders.Clear();
 
             List<LatheManufactureOrder> orders = new();
-            switch (filter)
+            switch (SelectedFilter)
             {
                 case "All Active":
                     orders = Orders.Where(x => x.State == OrderState.Running)
@@ -378,6 +384,8 @@ namespace ProjectLighthouse.ViewModel
             }
 
             if (FilteredOrders.Count > 0) SelectedOrder = FilteredOrders.First();
+            OnPropertyChanged(nameof(FilteredOrders));
+
         }
 
         #endregion Loading
@@ -578,7 +586,6 @@ namespace ProjectLighthouse.ViewModel
 
         public void EditLMO()
         {
-            DataRefreshTimer.Enabled = false;
             bool editable = true;
             if (SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)
             {
@@ -594,15 +601,16 @@ namespace ProjectLighthouse.ViewModel
             };
             editWindow.ShowDialog();
 
-            Refresh(silent: true);
-
-            DataRefreshTimer.Enabled = true;
+            Refresh();
         }
 
         public void CreateNewOrder()
         {
-            LMOContructorWindow window = new(null, null);
-            window.Owner = Application.Current.MainWindow;
+            LMOContructorWindow window = new(null, null)
+            {
+                Owner = Application.Current.MainWindow
+            };
+
             window.ShowDialog();
 
             if (window.Cancelled)
@@ -611,7 +619,7 @@ namespace ProjectLighthouse.ViewModel
             }
             else
             {
-                Refresh(silent: false);
+                Refresh();
             }
         }
 

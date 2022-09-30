@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using Color = System.Drawing.Color;
 
 namespace ProjectLighthouse.Model
@@ -22,23 +23,35 @@ namespace ProjectLighthouse.Model
         public string CreatedBy { get; set; }
         public bool IsArchetype { get; set; }
         public string Customer { get; set; }
-
         public string DrawingName { get; set; }
         public string DrawingStore { get; set; }
         public string RawDrawingStore { get; set; }
-        public bool IsApproved { get; set; }
-        public bool IsRejected { get; set; }
+
         public bool IsWithdrawn { get; set; }
         public string WithdrawnBy { get; set; }
         public DateTime WithdrawnDate { get; set; }
-        public DateTime RejectedDate { get; set; }
+
+        public bool IsRejected { get; set; }
         public string RejectedBy { get; set; }
+        public DateTime RejectedDate { get; set; }
         public string RejectionReason { get; set; }
+
+        public bool IsApproved { get; set; }
         public string ApprovedBy { get; set; }
         public DateTime ApprovedDate { get; set; }
+
+        public bool ManufacturingApproved { get; set; }
+        public string ManufacturingApprovalBy { get; set; }
+        public DateTime ManufacturingApprovalDate { get; set; }
+        
+        public bool EngineeringApprived { get; set; }
+        public string EngineeringApprovalBy { get; set; }
+        public DateTime EngineeringApprovalDate { get; set; }
+
         public string ProductGroup { get; set; }
         public string ToolingGroup { get; set; }
         public string MaterialConstraint { get; set; }
+
         public Type DrawingType { get; set; }
         public Amendment AmendmentType { get; set; }
         public string IssueDetails { get; set; }
@@ -319,6 +332,43 @@ namespace ProjectLighthouse.Model
                   XStringFormats.Center);
 
             gfx.Dispose();
+        }
+
+        public string GetLocalPath()
+        {
+            return Path.Join(Path.GetTempPath(), GetSafeFileName());
+        }
+
+        public bool CopyToAppData()
+        {
+            string tmpPath = GetLocalPath();
+
+            if (File.Exists(tmpPath))
+            {
+                try
+                {
+                    File.Delete(tmpPath);
+                    File.Copy(Path.Join(App.ROOT_PATH, DrawingStore), tmpPath);
+                }
+                catch (IOException)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                File.Copy(Path.Join(App.ROOT_PATH, DrawingStore), tmpPath);
+            }
+
+            return true;
+        }
+
+        public void ShellOpen()
+        {
+            System.Diagnostics.Process fileopener = new();
+            fileopener.StartInfo.FileName = "explorer";
+            fileopener.StartInfo.Arguments = "\"" + GetLocalPath() + "\"";
+            _ = fileopener.Start();
         }
     }
 }

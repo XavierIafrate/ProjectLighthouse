@@ -230,22 +230,6 @@ namespace ProjectLighthouse.View
             Close();
         }
 
-        private void CheckIfOrderIsClosed()
-        {
-            if (Order.State > OrderState.Running)
-            {
-                List<LatheManufactureOrderItem> itemsWithBadCycleTimes = Items.Where(i => i.CycleTime == 0 && i.QuantityMade > 0).ToList();
-                List<Lot> unresolvedLots = Lots.Where(l => l.Quantity != 0 && !l.IsDelivered && !l.IsReject && l.AllowDelivery).ToList();
-
-                Order.IsClosed = itemsWithBadCycleTimes.Count == 0 // ensure cycle time is updated
-                    && unresolvedLots.Count == 0; // ensure lots are fully processed
-            }
-            else
-            {
-                Order.IsClosed = false;
-            }
-        }
-
         private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DisplayLMOItems control = sender as DisplayLMOItems;
@@ -377,7 +361,6 @@ namespace ProjectLighthouse.View
         {
             CalculateTime();
             CalculateBarRequirements();
-            CheckIfOrderIsClosed(); // running to closed is broken
 
             if (savedOrder.IsUpdated(Order))
             {

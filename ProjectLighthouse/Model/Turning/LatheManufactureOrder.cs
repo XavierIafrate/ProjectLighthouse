@@ -308,5 +308,10 @@ namespace ProjectLighthouse.Model
         {
             DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {true} WHERE Id={Id}");
         }
+
+        public void MarkAsNotClosed()
+        {
+            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {false} WHERE Id={Id}");
+        }
     }
 }
