@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ProjectLighthouse.ViewModel.Quality;
 
 namespace ProjectLighthouse.ViewModel.Commands.Calibration
 {

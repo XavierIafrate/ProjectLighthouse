@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using ProjectLighthouse.Model.Orders;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -7,15 +8,15 @@ namespace ProjectLighthouse.View.UserControls
     {
 
 
-        public Model.LatheManufactureOrderItem Item
+        public LatheManufactureOrderItem Item
         {
-            get { return (Model.LatheManufactureOrderItem)GetValue(ItemProperty); }
+            get { return (LatheManufactureOrderItem)GetValue(ItemProperty); }
             set { SetValue(ItemProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Item.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemProperty =
-            DependencyProperty.Register("Item", typeof(Model.LatheManufactureOrderItem), typeof(DisplayManifestItem), new PropertyMetadata(null, SetValues));
+            DependencyProperty.Register("Item", typeof(LatheManufactureOrderItem), typeof(DisplayManifestItem), new PropertyMetadata(null, SetValues));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

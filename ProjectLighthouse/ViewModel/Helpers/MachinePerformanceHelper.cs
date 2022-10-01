@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Analytics;
 using System;
 using System.Collections.Generic;
 using System.Linq;

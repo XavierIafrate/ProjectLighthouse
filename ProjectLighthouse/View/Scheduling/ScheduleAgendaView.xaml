@@ -1,0 +1,200 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Scheduling.ScheduleAgendaView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Scheduling"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
+    d:Background="White"
+    d:DesignHeight="784.72"
+    d:DesignWidth="1111.297"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <local:ScheduleTemplateSelector x:Key="templateSelector" />
+        <userControls:DisplayLMOScheduling x:Key="DisplayLMOScheduling" />
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock
+                Margin="0,0,0,3"
+                VerticalAlignment="Center"
+                Style="{StaticResource title}"
+                Text="{Binding ViewTitle, FallbackValue='Schedule for C00'}" />
+
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Command="{Binding AddServiceCommand}"
+                    Content="+ Maintenance"
+                    Style="{StaticResource BlueButton}"
+                    Visibility="{Binding AddButtonsVis}" />
+            </StackPanel>
+            <!--<Button Content="Left" />
+            <Button Content="Right" />-->
+            <Button
+                VerticalAlignment="Center"
+                Command="{Binding PrintScheduleCommand}"
+                Style="{StaticResource PDFButton}"
+                Visibility="{Binding PrintButtonVis}" />
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="300"
+                    MinWidth="200"
+                    MaxWidth="350" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <ListView
+                    FontSize="18"
+                    ItemsSource="{Binding FilterOptions}"
+                    SelectedValue="{Binding Filter, Mode=TwoWay}"
+                    SelectionMode="Single"
+                    SelectionChanged="ListView_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="10,3">
+                                <TextBlock FontWeight="SemiBold" Text="{Binding}" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Border
+                    Grid.Row="1"
+                    Margin="5"
+                    Padding="15"
+                    Background="{StaticResource Surface}"
+                    CornerRadius="10"
+                    TextElement.Foreground="{StaticResource OnSurface}"
+                    Visibility="{Binding InsightsVis}">
+                    <StackPanel>
+                        <!--<TextBlock
+                            Margin="0,0,0,4"
+                            FontSize="22"
+                            Text="Overview" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            FontStyle="Italic"
+                            Text="{Binding MachineInfoInsights, FallbackValue='MACHINE_MAKE_MODEL'}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            FontStyle="Italic"
+                            Text="{Binding MachineCapabilitiesInsights, FallbackValue='MAX_LENGTH_DIAMETER'}"
+                            TextWrapping="Wrap" />-->
+                        <TextBlock
+                            Margin="0,0,0,2"
+                            FontSize="22"
+                            Text="Workload" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            Text="{Binding NumberOfOrdersInsights, FallbackValue='NUM_ORDERS'}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            Text="{Binding BookedUntilInsights, FallbackValue='BOOKED_TO'}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Margin="5,0"
+                            FontSize="16"
+                            Text="{Binding WorkloadInsights, FallbackValue='NUM_DAYS_WORKLOAD'}"
+                            TextWrapping="Wrap" />
+                        <!--<TextBlock
+                            Margin="0,4,0,0"
+                            FontStyle="Italic"
+                            Opacity="0.6"
+                            Text="*workload calculations factor in approximations for setting and gaps between orders."
+                            TextWrapping="Wrap" />-->
+
+                    </StackPanel>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Margin="5"
+                    Background="{StaticResource Surface}"
+                    CornerRadius="10">
+
+                    <Grid Margin="20,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource subtitle}" Text="Agenda" />
+                        <ScrollViewer Grid.Row="1" Margin="0,10,0,0">
+                            <Grid>
+                                <ItemsControl ItemsSource="{Binding Agenda}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <userControls:AgendaItem Day="{Binding}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Border Background="#00ffffff" />
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch"
+                Background="{StaticResource Background}" />
+            <ListView
+                Grid.Column="2"
+                HorizontalAlignment="Stretch"
+                ItemTemplateSelector="{DynamicResource templateSelector}"
+                ItemsSource="{Binding FilteredItems}"
+                x:Name="mainScheduleView">
+                <ItemsControl.Resources>
+
+                    <DataTemplate x:Key="LatheManufactureOrder">
+                        <userControls:DisplayLMOScheduling orderObject="{Binding Path=., Mode=TwoWay}" />
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="ResearchTime">
+                        <userControls:DisplayResearch Research="{Binding Path=., Mode=TwoWay}" />
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="MachineService">
+                        <userControls:DisplayMachineService Service="{Binding Path=., Mode=TwoWay}" />
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="ScheduleWarning">
+                        <userControls:DisplayScheduleWarning Warning="{Binding Path=., Mode=OneWay}" />
+                    </DataTemplate>
+
+                </ItemsControl.Resources>
+            </ListView>
+            <TextBlock
+                Grid.Column="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="30"
+                FontStyle="Italic"
+                Foreground="{StaticResource DisabledElement}"
+                Text="No orders found"
+                Visibility="{Binding NoneFoundVis}" />
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;

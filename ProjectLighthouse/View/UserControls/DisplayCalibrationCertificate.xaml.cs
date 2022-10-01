@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Quality;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;

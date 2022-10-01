@@ -1,5 +1,6 @@
 ﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using ProjectLighthouse.Model.Deliveries;
 
 namespace ProjectLighthouse.Model.Reporting.Internal
 {

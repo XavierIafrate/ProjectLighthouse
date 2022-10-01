@@ -1,0 +1,491 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Quality.CalibrationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:valueConverter="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
+    d:Background="White"
+    d:DesignWidth="1324"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Grid.Resources>
+            <valueConverter:boolToVisibleOrCollapsed x:Key="visibleConverter" />
+            <valueConverter:dateToLastModified x:Key="modifiedFormatter" />
+
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="350" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="SearchBox"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="search..."
+                    Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    x:Name="ClearButton"
+                    Grid.Column="1"
+                    Click="ClearButton_Click"
+                    Style="{StaticResource ClearButton}" />
+            </Grid>
+
+            <ListView
+                Grid.Row="1"
+                HorizontalContentAlignment="Stretch"
+                ItemsSource="{Binding FilteredEquipment}"
+                SelectedItem="{Binding SelectedEquipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <uc:DisplayCalibratedEquipment Equipment="{Binding}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Foreground="Gray"
+                    Text="Filter by " />
+                <ComboBox
+                    Grid.Column="1"
+                    Margin="5"
+                    Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="Active" IsSelected="True" />
+                    <ComboBoxItem Content="Out of Service" />
+                    <ComboBoxItem Content="Calibration Lapsed" />
+                    <ComboBoxItem Content="Near Expiry" />
+                    <ComboBoxItem Content="All Items" />
+                </ComboBox>
+
+                <Button
+                    Grid.Column="2"
+                    Margin="5,0"
+                    Command="{Binding AddNewEquipmentCmd}"
+                    Content="Add"
+                    Style="{StaticResource BlueButton}"
+                    Visibility="{Binding CanModify, Converter={StaticResource visibleConverter}}" />
+                <Button
+                    Grid.Column="3"
+                    Margin="5,0"
+                    Command="{Binding GenerateReportCmd}"
+                    Content="Download Report"
+                    Style="{StaticResource CSVButton}"
+                    Visibility="{Binding CanModify, Converter={StaticResource visibleConverter}}" />
+            </Grid>
+        </Grid>
+
+        <TextBlock
+            Grid.Column="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Style="{StaticResource GhostText}"
+            Text="No Equipment Found"
+            Visibility="{Binding NothingVis}" />
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Visibility="{Binding CardVis}">
+                <Grid MaxWidth="700" Margin="20,20,20,50">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Background="White" CornerRadius="10">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="30"
+                                Opacity="0.4"
+                                ShadowDepth="0"
+                                Color="Black" />
+                        </Border.Effect>
+                    </Border>
+                    <StackPanel Margin="20">
+                        <Grid>
+
+                            <StackPanel>
+                                <TextBlock
+                                    d:Text="CE0"
+                                    Style="{StaticResource title}"
+                                    Text="{Binding SelectedEquipment.EquipmentId}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="0,0,0,5"
+                                        d:Text="Make"
+                                        Style="{StaticResource subtitle}"
+                                        Text="{Binding SelectedEquipment.Make}" />
+                                    <TextBlock
+                                        Margin="0,0,0,5"
+                                        d:Text=" Model"
+                                        Foreground="{StaticResource Purple}"
+                                        Style="{StaticResource subtitle}"
+                                        Text="{Binding SelectedEquipment.Model, StringFormat='{} {0}'}" />
+                                </StackPanel>
+                                <Grid Margin="0,5" Visibility="{Binding RegularCalVis}">
+
+                                    <Border
+                                        Background="{StaticResource Green}"
+                                        CornerRadius="3"
+                                        Opacity="0.15" />
+                                    <Border
+                                        BorderBrush="{StaticResource Green}"
+                                        BorderThickness="3,0,0,0"
+                                        CornerRadius="3">
+                                        <Grid Margin="15,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path
+                                                Width="20"
+                                                Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
+                                                Fill="{StaticResource Green}"
+                                                Stretch="Uniform" />
+                                            <StackPanel Grid.Column="1" Margin="8,0">
+                                                <TextBlock
+                                                    FontSize="16"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Green}"
+                                                    Text="In regular calibration" />
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    Foreground="{StaticResource Green}"
+                                                    Text="This item has been calibrated within the defined interval and is ready for use unless it becomes damaged."
+                                                    TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                                <Grid Margin="0,5" Visibility="{Binding CalLapsedVis}">
+                                    <Border
+                                        Background="{StaticResource Red}"
+                                        CornerRadius="3"
+                                        Opacity="0.15" />
+                                    <Border
+                                        BorderBrush="{StaticResource Red}"
+                                        BorderThickness="3,0,0,0"
+                                        CornerRadius="3">
+                                        <Grid Margin="15,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path
+                                                Width="20"
+                                                Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
+                                                Fill="{StaticResource Red}"
+                                                Stretch="Uniform" />
+                                            <StackPanel Grid.Column="1" Margin="8,0">
+                                                <TextBlock
+                                                    FontSize="16"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Red}"
+                                                    Text="Calibration lapsed" />
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    Foreground="{StaticResource Red}"
+                                                    Text="This item requires re-calibration and should not be used."
+                                                    TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                                <Grid Margin="0,5" Visibility="{Binding OutOfServiceVis}">
+                                    <Border
+                                        Background="{StaticResource Red}"
+                                        CornerRadius="3"
+                                        Opacity="0.15" />
+                                    <Border
+                                        BorderBrush="{StaticResource Red}"
+                                        BorderThickness="3,0,0,0"
+                                        CornerRadius="3">
+                                        <Grid Margin="15,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path
+                                                Width="20"
+                                                Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
+                                                Fill="{StaticResource Red}"
+                                                Stretch="Uniform" />
+                                            <StackPanel Grid.Column="1" Margin="8,0">
+                                                <TextBlock
+                                                    FontSize="16"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Red}"
+                                                    Text="Out of service" />
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    Foreground="{StaticResource Red}"
+                                                    Text="This item has failed calibration and must no longer be used."
+                                                    TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                                <Grid Margin="0,5" Visibility="{Binding IndicationOnlyVis}">
+                                    <Border
+                                        Background="{StaticResource Purple}"
+                                        CornerRadius="3"
+                                        Opacity="0.15" />
+                                    <Border
+                                        BorderBrush="{StaticResource Purple}"
+                                        BorderThickness="3,0,0,0"
+                                        CornerRadius="3">
+                                        <Grid Margin="15,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path
+                                                Width="20"
+                                                Data="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5M11,7H13V13H11M11,15H13V17H11"
+                                                Fill="{StaticResource Purple}"
+                                                Stretch="Uniform" />
+                                            <StackPanel Grid.Column="1" Margin="8,0">
+                                                <TextBlock
+                                                    FontSize="16"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Purple}"
+                                                    Text="For indication only" />
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    Foreground="{StaticResource Purple}"
+                                                    Text="This item has not had it's accuracy verified in a way that is traceable to a national standard, and should be used for non-critical measurements only."
+                                                    TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+
+                            <Image
+                                Height="60"
+                                Margin="20,0,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Source="/Resources/UkasLight.png"
+                                ToolTip="UKAS Accredited Calibration is required for this equipment."
+                                Visibility="{Binding SelectedEquipment.UKAS, Converter={StaticResource visibleConverter}}" />
+                        </Grid>
+                        <Grid>
+                            <TextBlock Style="{StaticResource section}" Text="Instrument Details" />
+                            <Button Content="Edit" Style="{StaticResource BlueButton}" HorizontalAlignment="Right" Command="{Binding EditEquipmentCmd}" CommandParameter="{Binding SelectedEquipment.Id}" />
+                        </Grid>
+                        <Grid Margin="20,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Margin="5,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="Serial Number" />
+                            <Border
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Background="{StaticResource Surface}">
+                                <TextBlock
+                                    Margin="10,3"
+                                    d:Text="SERIAL_NUMBER"
+                                    FontFamily="Consolas"
+                                    Text="{Binding SelectedEquipment.SerialNumber}" />
+
+                            </Border>
+
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Margin="5,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="Instrument Type" />
+                            <Border
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Background="{StaticResource Surface}">
+                                <TextBlock
+                                    Margin="10,3"
+                                    d:Text="IC00"
+                                    FontFamily="Consolas"
+                                    Text="{Binding SelectedEquipment.Type}" />
+
+                            </Border>
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Margin="5,0"
+                                HorizontalAlignment="Right"
+                                FontWeight="SemiBold"
+                                Text="Location" />
+                            <Border
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Background="{StaticResource Surface}">
+                                <TextBlock
+                                    Margin="10,3"
+                                    d:Text="LOCATION"
+                                    FontFamily="Consolas"
+                                    Text="{Binding SelectedEquipment.Location}" />
+
+                            </Border>
+
+                            <TextBlock
+                                Grid.Row="3"
+                                Margin="5,0"
+                                HorizontalAlignment="Right"
+                                FontWeight="SemiBold"
+                                Text="Last Calibrated"
+                                Visibility="{Binding SelectedEquipment.RequiresCalibration, Converter={StaticResource visibleConverter}}" />
+                            <Border
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Background="{StaticResource Surface}"
+                                Visibility="{Binding SelectedEquipment.RequiresCalibration, Converter={StaticResource visibleConverter}}">
+                                <TextBlock
+                                    Margin="10,3"
+                                    d:Text="LAST_CALIBRATED_DATE"
+                                    FontFamily="Consolas"
+                                    Text="{Binding SelectedEquipment.LastCalibrated, StringFormat='{}{0:dd/MM/yyyy}'}" />
+
+                            </Border>
+
+                            <TextBlock
+                                Grid.Row="4"
+                                Margin="5,0"
+                                HorizontalAlignment="Right"
+                                FontWeight="SemiBold"
+                                Text="Calibration Interval"
+                                Visibility="{Binding SelectedEquipment.RequiresCalibration, Converter={StaticResource visibleConverter}}" />
+                            <Border
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Background="{StaticResource Surface}"
+                                Visibility="{Binding SelectedEquipment.RequiresCalibration, Converter={StaticResource visibleConverter}}">
+                                <TextBlock
+                                    Margin="10,3"
+                                    d:Text="CALIBRATION_INTERVAL_MONTHS"
+                                    FontFamily="Consolas"
+                                    Text="{Binding SelectedEquipment.CalibrationIntervalMonths, StringFormat='{}{0} month(s)'}" />
+
+                            </Border>
+
+                            <TextBlock
+                                Grid.Row="5"
+                                Margin="5,0"
+                                HorizontalAlignment="Right"
+                                FontWeight="SemiBold"
+                                Text="Next Due"
+                                Visibility="{Binding SelectedEquipment.RequiresCalibration, Converter={StaticResource visibleConverter}}" />
+                            <Border
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Background="{StaticResource Surface}"
+                                Visibility="{Binding SelectedEquipment.RequiresCalibration, Converter={StaticResource visibleConverter}}">
+                                <TextBlock
+                                    Margin="10,3"
+                                    d:Text="NEXT_CALIBRATION_DATE"
+                                    FontFamily="Consolas"
+                                    Text="{Binding SelectedEquipment.NextDue, StringFormat='{}{0:dd/MM/yyyy}'}" />
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <Grid>
+                            <TextBlock
+                                Margin="0,15,0,0"
+                                Style="{StaticResource section}"
+                                Text="Certificates" />
+                            <Button
+                                Margin="0,15,25,5"
+                                HorizontalAlignment="Right"
+                                Command="{Binding AddCertificateCmd}"
+                                Content="+ New"
+                                Style="{StaticResource GreenButton}" />
+                        </Grid>
+                        <ItemsControl
+                            Margin="25,10"
+                            ItemsSource="{Binding FilteredCertificates}"
+                            Visibility="{Binding CertsFound}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:DisplayCalibrationCertificate Certificate="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource GhostText}"
+                            Text="None Found"
+                            Visibility="{Binding NoCertsVis}" />
+
+
+                    </StackPanel>
+                </Grid>
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    Opacity="0.4"
+                    Orientation="Horizontal">
+                    <Path
+                        Height="12"
+                        Margin="0,2,0,0"
+                        Data="M18.5 2H5.5C3.6 2 2 3.6 2 5.5V18.5C2 20.4 3.6 22 5.5 22H16L22 16V5.5C22 3.6 20.4 2 18.5 2M13 16H11V13H8V11H11V8H13V11H16V13H13V16M15 20V18.5C15 16.6 16.6 15 18.5 15H20L15 20Z"
+                        Fill="{StaticResource OnBackground}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        FontSize="13"
+                        FontStyle="Italic"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource OnBackground}"
+                        Text="{Binding SelectedEquipment.EnteredSystem, Converter={StaticResource modifiedFormatter}, StringFormat='{}Equipment registered {0}'}" />
+                    <TextBlock
+                        FontSize="13"
+                        FontStyle="Italic"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource OnBackground}"
+                        Text="{Binding SelectedEquipment.AddedBy, StringFormat='{} by {0}'}" />
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,58 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Requests.RaiseSpecialRequest"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    Title="Special Request"
+    Width="500"
+    SizeToContent="Height"
+    mc:Ignorable="d">
+    <StackPanel Margin="20">
+        <TextBlock Style="{StaticResource title}" Text="Add Bespoke Product" />
+        <Grid Margin="10">
+            <Border
+                Background="{StaticResource Orange}"
+                CornerRadius="3"
+                Opacity="0.15" />
+            <Border
+                BorderBrush="{StaticResource Orange}"
+                BorderThickness="3,0,0,0"
+                CornerRadius="3">
+                <TextBlock
+                    Margin="10,5"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Orange}"
+                    Text="This function is for non-standard items only- please do not add items listed in the catalogue!"
+                    TextWrapping="Wrap" />
+            </Border>
+        </Grid>
+
+        <TextBlock
+            FontStyle="Italic"
+            Foreground="{StaticResource Blue}"
+            Text="Provide a product name and either a drawing or a note explaining the specification. After submitting a request someone with authorisation will fill in the product data."
+            TextWrapping="Wrap" />
+        <TextBox
+            Margin="5,10"
+            MaxLength="16"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Product Name"
+            x:Name="productName" />
+        <TextBlock Text="Technical Specification" Style="{StaticResource section}"/>
+        <TextBlock Text="PDF, jpg, or png accepted." Style="{StaticResource annotation}"/>
+        <uc:FilePicker x:Name="specDocument" AllowedFileTypes="PDF Files(*.pdf) | *.pdf|JPG(*.jpg) | *.jpg|PNG Files(*.png) | *.png" />
+
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Or give written details here..."
+            x:Name="specDetails" />
+        <Button
+            x:Name="SubmitButton"
+            HorizontalAlignment="Right"
+            Click="SubmitButton_Click"
+            Content="Add Product"
+            Style="{StaticResource BlueButton}" />
+    </StackPanel>
+</Window>

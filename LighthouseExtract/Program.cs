@@ -1,4 +1,10 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Analytics;
+using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;

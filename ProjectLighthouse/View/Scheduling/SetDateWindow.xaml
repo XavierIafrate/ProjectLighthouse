@@ -1,0 +1,42 @@
+﻿<Window x:Class="ProjectLighthouse.View.Scheduling.SetDateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:ProjectLighthouse.View"
+        xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+        mc:Ignorable="d"
+        WindowStyle="SingleBorderWindow"
+        SizeToContent="Height"
+        Width="300"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Title="Edit Timings">
+    
+    <Grid Height="auto" VerticalAlignment="Center" Margin="20,10">
+        <StackPanel>
+            <TextBlock x:Name="TitleText" Text="Editing: M00000" Style="{StaticResource subtitle}"/>
+            <TextBlock Text="Set Start Date" Style="{StaticResource subsubtitle}"/>
+            <Calendar Margin="10" x:Name="calendar">
+                <Calendar.CalendarDayButtonStyle>
+                    <Style TargetType="CalendarDayButton" BasedOn="{StaticResource {x:Type CalendarDayButton}}">
+                        <EventSetter Event="Loaded" Handler="CalendarButton_Loaded" />
+                    </Style>
+                </Calendar.CalendarDayButtonStyle>
+            </Calendar>
+            <TextBlock Text="Assign Machine" Style="{StaticResource subsubtitle}"/>
+            <ComboBox Margin="5" x:Name="machine">
+                <ComboBoxItem Content="C01"/>
+                <ComboBoxItem Content="C02"/>
+                <ComboBoxItem Content="C03"/>
+                <ComboBoxItem Content="C04"/>
+                <ComboBoxItem Content=""/>
+            </ComboBox>
+            <Grid HorizontalAlignment="Right">
+                <Button Content="Save" Style="{StaticResource GreenButton}" x:Name="ConfirmButton" Click="ConfirmButton_Click"/>
+            </Grid>
+            
+        </StackPanel>
+    </Grid>
+</Window>

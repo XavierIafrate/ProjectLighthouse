@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
+using ProjectLighthouse.ViewModel.Orders;
 
-namespace ProjectLighthouse.ViewModel.Commands
+namespace ProjectLighthouse.ViewModel.Commands.Printing
 {
     public class PrintBarRequisitionCommand : ICommand
     {

@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
 using System.Windows;

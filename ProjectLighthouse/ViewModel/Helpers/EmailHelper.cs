@@ -1,5 +1,8 @@
 ﻿using IO.ClickSend.ClickSend.Model;
-using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Requests;
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +12,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
     {
         public void SendDailyRuntimeReport(List<EmailRecipient> to, AnalyticsHelper data, DateTime? fromDate = null)
         {
-            Model.Email email = new();
+            Model.Core.Email email = new();
             email.TOs = to;
 
             DateTime startingDate;
@@ -45,7 +48,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static void NotifyRequestApproved(Request approvedRequest)
         {
-            Model.Email email = new();
+            Model.Core.Email email = new();
 
             List<User> users = DatabaseHelper.Read<User>();
             User PersonWhoRaisedRequest = new();
@@ -79,7 +82,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static void NotifyRequestDeclined(Request declinedRequest)
         {
-            Model.Email email = new();
+            Model.Core.Email email = new();
             List<User> users = DatabaseHelper.Read<User>();
 
             User PersonWhoRaisedRequest = new();
@@ -115,12 +118,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static void NotifyNewRequest(Request request, TurnedProduct turnedProduct, User personWhoRaised)
         {
-            Model.Email email = new();
+            Model.Core.Email email = new();
             List<User> users = DatabaseHelper.Read<User>();
 
             foreach (User user in users)
             {
-                if ((user.Role >= UserRole.Scheduling) && user.CanApproveRequests && !string.IsNullOrEmpty(user.EmailAddress) && user.ReceivesNotifications)
+                if ((user.Role >= UserRole.Scheduling) && user.HasPermission(PermissionType.ApproveRequest) && !string.IsNullOrEmpty(user.EmailAddress) && user.ReceivesNotifications)
                 {
                     email.TOs.Add(new EmailRecipient(
                         email: user.EmailAddress,

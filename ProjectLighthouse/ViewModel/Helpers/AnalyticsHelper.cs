@@ -1,7 +1,12 @@
 ﻿using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
-using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Analytics;
+using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Requests;
+using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;
 using System.Linq;

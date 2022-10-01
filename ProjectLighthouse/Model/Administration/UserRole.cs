@@ -1,4 +1,4 @@
-﻿namespace ProjectLighthouse.Model
+﻿namespace ProjectLighthouse.Model.Administration
 {
     public enum UserRole
     {

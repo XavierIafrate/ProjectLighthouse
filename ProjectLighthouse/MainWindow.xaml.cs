@@ -1,5 +1,6 @@
-﻿using ProjectLighthouse.View;
-using ProjectLighthouse.ViewModel;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.View;
+using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -81,7 +82,7 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            AdminModule.Visibility = App.CurrentUser.Role == Model.UserRole.Administrator
+            AdminModule.Visibility = App.CurrentUser.Role == UserRole.Administrator
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
@@ -90,7 +91,7 @@ namespace ProjectLighthouse
                 : Visibility.Collapsed;
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
-            LoggedInUserRole.Text = App.CurrentUser.UserRole;
+            LoggedInUserRole.Text = App.CurrentUser.Role.ToString();
         }
 
         private void Rectangle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

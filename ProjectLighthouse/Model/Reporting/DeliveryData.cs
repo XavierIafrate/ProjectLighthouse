@@ -1,4 +1,6 @@
-﻿namespace ProjectLighthouse.Model.Reporting
+﻿using ProjectLighthouse.Model.Deliveries;
+
+namespace ProjectLighthouse.Model.Reporting
 {
     public class DeliveryData
     {

@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Analytics;
 using System.Collections.Generic;
 using System.IO;
 

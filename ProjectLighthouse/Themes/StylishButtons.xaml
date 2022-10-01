@@ -396,6 +396,35 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="CloseWindowButton" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Width="26"
+                        Height="26"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0">
+                        <Path
+                            Width="12"
+                            Data="M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource Red}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="IconEditButton" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource Blue}" />
         <Setter Property="Background" Value="{StaticResource SelectedElement}" />

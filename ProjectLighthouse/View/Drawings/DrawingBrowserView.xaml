@@ -1,0 +1,689 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Drawings.DrawingBrowserView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:local="clr-namespace:ProjectLighthouse.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:vc="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    xmlns:viewModel="clr-namespace:ProjectLighthouse.ViewModel"
+    d:Background="White"
+    SizeChanged="UserControl_SizeChanged"
+    d:DesignWidth="1350"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:stringCoalesce x:Key="stringCoalesce" />
+        <converters:boolToVisibleOrCollapsed x:Key="showIfTrue" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="250" />
+            <ColumnDefinition Width="*" MinWidth="220" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="searchBox"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="Search..."
+                    Text="{Binding SearchBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="TextBox_TextChanged" />
+
+                <Button
+                    x:Name="ClearButton"
+                    Grid.Column="1"
+                    Click="ClearButton_Click"
+                    IsEnabled="False"
+                    Style="{StaticResource ClearButton}" />
+            </Grid>
+            <ListView
+                Grid.Row="1"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
+                ItemsSource="{Binding FilteredDrawingGroups}"
+                SelectedItem="{Binding SelectedGroup}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <userControls:DisplayDrawingGroup Group="{Binding Path=.}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button
+                    HorizontalAlignment="Right"
+                    Command="{Binding AddNewCmd}"
+                    Content="+ Add New"
+                    Style="{StaticResource BlueButton}"
+                    Visibility="{Binding EditControlsVis}" />
+                <CheckBox Content="Show Withdrawn" IsChecked="{Binding ShowOldGroups}" />
+            </StackPanel>
+        </Grid>
+
+
+
+        <StackPanel
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="{Binding NoneFoundVis}">
+            <Border
+                Canvas.Left="55"
+                Canvas.Top="30"
+                Width="auto"
+                Margin="0,10"
+                VerticalAlignment="Top"
+                CornerRadius="18">
+                <Border.Effect>
+                    <DropShadowEffect
+                        BlurRadius="20"
+                        Direction="220"
+                        Opacity="0.2"
+                        ShadowDepth="20"
+                        Color="Black" />
+                </Border.Effect>
+                <Border Name="ReceiverColor" CornerRadius="15">
+                    <Grid>
+                        <Border
+                            Name="Mask"
+                            Background="{StaticResource Blue}"
+                            CornerRadius="20" />
+                        <StackPanel x:Name="image">
+                            <Image
+                                Name="Receiver"
+                                MaxWidth="400"
+                                gif:ImageBehavior.AnimateInDesignMode="True"
+                                gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/milhouse.gif"
+                                gif:ImageBehavior.RepeatBehavior="3"
+                                RenderOptions.BitmapScalingMode="HighQuality" />
+                            <StackPanel.OpacityMask>
+                                <VisualBrush Visual="{Binding ElementName=Mask}" />
+                            </StackPanel.OpacityMask>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Border>
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="30"
+                Opacity="0.6"
+                Text="No results" />
+        </StackPanel>
+        <Grid
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Margin="20,5,20,40"
+            Visibility="{Binding DrawingVis}">
+            <StackPanel>
+                <TextBlock
+                    d:Text="Drawing for P0130.000"
+                    Style="{StaticResource title}"
+                    Text="{Binding SelectedGroup.Name, StringFormat='{}Viewing Drawing for {0}'}" />
+                <TextBlock
+                    d:Text="Last Issue, Monday, 01 January 1970"
+                    Style="{StaticResource subtitle}"
+                    Text="{Binding SelectedGroup.LastIssue, StringFormat='{}Last Issue: {0:dddd, dd MMMM yyyy}'}" />
+            </StackPanel>
+            <Grid HorizontalAlignment="Right" Visibility="{Binding SelectedGroup.IsArchetypeGroup, Converter={StaticResource showIfTrue}}">
+                <Border
+                    Background="{StaticResource Teal}"
+                    CornerRadius="3"
+                    Opacity="0.15" />
+                <Border
+                    BorderBrush="{StaticResource Teal}"
+                    BorderThickness="3,0,0,0"
+                    CornerRadius="3" />
+                <StackPanel Margin="10,7" Orientation="Horizontal">
+                    <Path
+                        x:Name="ArchetypeBadge"
+                        Grid.Column="3"
+                        Width="30"
+                        Margin="15,0"
+                        Data="M19.5 17C19.37 17 19.24 17 19.11 17.04L17.5 13.79C17.95 13.34 18.25 12.71 18.25 12C18.25 10.62 17.13 9.5 15.75 9.5C15.62 9.5 15.5 9.5 15.36 9.54L13.73 6.29C14.21 5.84 14.5 5.21 14.5 4.5C14.5 3.12 13.38 2 12 2S9.5 3.12 9.5 4.5C9.5 5.21 9.79 5.84 10.26 6.29L8.64 9.54C8.5 9.5 8.38 9.5 8.25 9.5C6.87 9.5 5.75 10.62 5.75 12C5.75 12.71 6.05 13.34 6.5 13.79L4.89 17.04C4.76 17 4.63 17 4.5 17C3.12 17 2 18.12 2 19.5C2 20.88 3.12 22 4.5 22S7 20.88 7 19.5C7 18.8 6.71 18.16 6.24 17.71L7.86 14.46C8 14.5 8.12 14.5 8.25 14.5C8.38 14.5 8.5 14.5 8.64 14.46L10.27 17.71C9.8 18.16 9.5 18.8 9.5 19.5C9.5 20.88 10.62 22 12 22S14.5 20.88 14.5 19.5C14.5 18.12 13.38 17 12 17C11.87 17 11.74 17 11.61 17.04L10 13.79C10.46 13.34 10.75 12.71 10.75 12S10.46 10.66 10 10.21L11.61 6.96C11.74 7 11.87 7 12 7S12.26 7 12.39 6.96L14 10.21C13.55 10.66 13.25 11.3 13.25 12C13.25 13.38 14.37 14.5 15.75 14.5C15.88 14.5 16 14.5 16.14 14.46L17.77 17.71C17.3 18.16 17 18.8 17 19.5C17 20.88 18.12 22 19.5 22S22 20.88 22 19.5C22 18.12 20.88 17 19.5 17Z"
+                        Fill="{StaticResource Teal}"
+                        Stretch="Uniform" />
+                    <StackPanel Margin="0,0,10,0" VerticalAlignment="Center" x:Name="archtypeAnnotations">
+                        <TextBlock
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Teal}"
+                            Text="Archetype Drawing" />
+                        <TextBlock
+                            MaxWidth="450"
+                            FontSize="13"
+                            Foreground="{StaticResource Teal}"
+                            Text="This drawing is representitive of a group of products and therefore it should be used in conjunction with the data sheet."
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            Visibility="{Binding DrawingVis}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="18"
+                FontWeight="SemiBold"
+                Text="Revision History" />
+            <ListView
+                Grid.Row="1"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
+                Background="{StaticResource Background}"
+                ItemsSource="{Binding FilteredDrawings, Mode=OneWay}"
+                ScrollViewer.CanContentScroll="False"
+                SelectedValue="{Binding Path=SelectedDrawing}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <userControls:DisplayDrawingTimelineItem Drawing="{Binding Path=.}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        <ScrollViewer
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Visibility="{Binding DrawingVis}">
+            <StackPanel>
+                <Grid
+                    MaxWidth="700"
+                    Margin="20"
+                    VerticalAlignment="Top">
+                    <Grid.Resources>
+                        <vc:isResearchToHiddenCollapsed x:Key="researchToCollapsed" />
+                        <vc:boolToCollapsedOrVisible x:Key="collapseIfTrue" />
+                        <vc:boolToVisibleOrCollapsed x:Key="showIfTrue" />
+                    </Grid.Resources>
+                    <Border Background="{StaticResource Surface}" CornerRadius="0,0,5,5">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="30"
+                                Opacity="0.4"
+                                ShadowDepth="0"
+                                Color="Black" />
+                        </Border.Effect>
+                    </Border>
+                    <StackPanel>
+                        <Border
+                            Padding="20,5"
+                            Background="{StaticResource OnBackground}"
+                            CornerRadius="5,5,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontFamily="Consolas"
+                                    FontSize="25"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Background}"
+                                    Text="Release Candidate"
+                                    Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource collapseIfTrue}}" />
+                                <TextBlock
+                                    FontFamily="Consolas"
+                                    FontSize="25"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Background}"
+                                    Text="{Binding SelectedDrawing.Revision, StringFormat='{}Revision {0}'}"
+                                    Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    FontFamily="Consolas"
+                                    FontSize="25"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Background}"
+                                    Text="{Binding SelectedDrawing.AmendmentType}"
+                                    Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}" />
+                                <Border
+                                    Grid.Column="2"
+                                    Margin="8,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource Blue}"
+                                    Visibility="{Binding SelectedDrawing.IsCurrent, Converter={StaticResource showIfTrue}}">
+                                    <TextBlock
+                                        Margin="8,2"
+                                        VerticalAlignment="Center"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="CURRENT" />
+                                </Border>
+                                <Border
+                                    Grid.Column="2"
+                                    Margin="8,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource Red}"
+                                    Visibility="{Binding SelectedDrawing.IsRejected, Converter={StaticResource showIfTrue}}">
+                                    <TextBlock
+                                        Margin="8,2"
+                                        VerticalAlignment="Center"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="REJECTED" />
+                                </Border>
+                                <Button
+                                    x:Name="openButton"
+                                    Grid.Column="3"
+                                    Margin="0"
+                                    IsEnabled="{Binding OpenFileButtonEnabled}"
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding OpenDrawingCmd}"
+                                    Content="{Binding OpenFileButtonText}"
+                                    Style="{StaticResource BlueButton}" />
+                            </Grid>
+
+                        </Border>
+
+                        <Border
+                            Background="{StaticResource Blue}"
+                            CornerRadius="0"
+                            Visibility="{Binding SelectedDrawing.DrawingType, Converter={StaticResource researchToCollapsed}}">
+                            <StackPanel Orientation="Horizontal">
+                                <Path
+                                    Margin="12,5,0,7"
+                                    VerticalAlignment="Center"
+                                    Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                                    Fill="{StaticResource OnBlue}" />
+
+                                <TextBlock
+                                    Margin="10,5"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource OnBlue}"
+                                    Text="This drawing is only for research and development purposes." />
+                            </StackPanel>
+                        </Border>
+
+
+                        <Grid Margin="10,10,10,10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+
+                            <Grid Grid.Row="0" Margin="10,5,10,0">
+                                <Border
+                                    Background="{StaticResource Blue}"
+                                    CornerRadius="3"
+                                    Opacity="0.15" />
+                                <Border
+                                    BorderBrush="{StaticResource Blue}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3" />
+                                <Grid Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Path
+                                        Grid.RowSpan="2"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Data="M4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2M12.19,5.5C11.3,5.5 10.59,5.68 10.05,6.04C9.5,6.4 9.22,7 9.27,7.69H11.24C11.24,7.41 11.34,7.2 11.5,7.06C11.7,6.92 11.92,6.85 12.19,6.85C12.5,6.85 12.77,6.93 12.95,7.11C13.13,7.28 13.22,7.5 13.22,7.8C13.22,8.08 13.14,8.33 13,8.54C12.83,8.76 12.62,8.94 12.36,9.08C11.84,9.4 11.5,9.68 11.29,9.92C11.1,10.16 11,10.5 11,11H13C13,10.72 13.05,10.5 13.14,10.32C13.23,10.15 13.4,10 13.66,9.85C14.12,9.64 14.5,9.36 14.79,9C15.08,8.63 15.23,8.24 15.23,7.8C15.23,7.1 14.96,6.54 14.42,6.12C13.88,5.71 13.13,5.5 12.19,5.5M11,12V14H13V12H11Z"
+                                        Fill="{StaticResource Blue}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        FontSize="18"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Blue}"
+                                        Text="Proposal Submitted" />
+
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Blue}"
+                                        TextWrapping="Wrap">
+
+                                        <Run Text="This drawing was submitted on" />
+                                        <Run Text="{Binding SelectedDrawing.Created, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
+                                        <Run Text="by" />
+                                        <Run Text="{Binding SelectedDrawing.CreatedBy}" />
+                                    </TextBlock>
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        d:Text="Issue Details: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+                                        FontSize="13"
+                                        FontStyle="Italic"
+                                        Foreground="{StaticResource Blue}"
+                                        Text="{Binding SelectedDrawing.IssueDetails, StringFormat='{}Issue Details: {0}', TargetNullValue='No issue details given.'}"
+                                        TextWrapping="Wrap" />
+                                </Grid>
+
+                            </Grid>
+
+                            <Grid
+                                x:Name="approvedControls"
+                                Grid.Row="3"
+                                Margin="10,5,10,0"
+                                Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}">
+                                <Border
+                                    Background="{StaticResource Green}"
+                                    CornerRadius="3"
+                                    Opacity="0.15" />
+                                <Border
+                                    BorderBrush="{StaticResource Green}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3" />
+                                <Grid Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Path
+                                        Grid.RowSpan="2"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,15L18,7L16.59,5.58L10,12.17L7.41,9.59L6,11L10,15Z"
+                                        Fill="{StaticResource Green}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        FontSize="18"
+                                        FontStyle="Normal"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Green}"
+                                        Text="Drawing Approved" />
+
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Green}"
+                                        TextWrapping="Wrap">
+
+                                        <Run Text="This drawing was approved on" />
+                                        <Run Text="{Binding SelectedDrawing.ApprovedDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
+                                        <Run Text="by" />
+                                        <Run Text="{Binding SelectedDrawing.ApprovedBy}" />
+                                    </TextBlock>
+
+                                </Grid>
+
+                            </Grid>
+
+                            <Grid
+                                Grid.Row="4"
+                                Margin="10,5,10,0"
+                                Visibility="{Binding SelectedDrawing.IsWithdrawn, Converter={StaticResource showIfTrue}}">
+                                <Border
+                                    Background="{StaticResource OnBackground}"
+                                    CornerRadius="3"
+                                    Opacity="0.15" />
+                                <Border
+                                    BorderBrush="{StaticResource OnBackground}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3" />
+                                <Grid Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Path
+                                        Grid.RowSpan="2"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12C4,13.85 4.63,15.55 5.68,16.91L16.91,5.68C15.55,4.63 13.85,4 12,4M12,20A8,8 0 0,0 20,12C20,10.15 19.37,8.45 18.32,7.09L7.09,18.32C8.45,19.37 10.15,20 12,20Z"
+                                        Fill="{StaticResource OnBackground}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        FontSize="18"
+                                        FontStyle="Normal"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource OnBackground}"
+                                        Text="Drawing Withdrawn" />
+
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        FontSize="13"
+                                        FontStyle="Italic"
+                                        Foreground="{StaticResource OnBackground}"
+                                        TextWrapping="Wrap">
+
+                                        <Run Text="{Binding SelectedDrawing.WithdrawnBy}" />
+                                        <Run Text="has withdrawn this drawing on" />
+                                        <Run Text="{Binding SelectedDrawing.WithdrawnDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}.'}" />
+                                        <Run Text="It will not be available for new manufacture orders but may remain on past orders." />
+                                    </TextBlock>
+
+                                </Grid>
+
+                            </Grid>
+
+
+                            <Grid
+                                x:Name="rejectedControls"
+                                Grid.Row="2"
+                                Margin="10,5,10,0"
+                                Visibility="{Binding SelectedDrawing.IsRejected, Converter={StaticResource showIfTrue}}">
+                                <Border
+                                    Background="{StaticResource Red}"
+                                    CornerRadius="3"
+                                    Opacity="0.15" />
+                                <Border
+                                    BorderBrush="{StaticResource Red}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3" />
+                                <Grid Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Path
+                                        Grid.RowSpan="2"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M9.41,6L8,7.41L10.59,10L8,12.59L9.41,14L12,11.41L14.59,14L16,12.59L13.41,10L16,7.41L14.59,6L12,8.59L9.41,6Z"
+                                        Fill="{StaticResource Red}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        FontSize="18"
+                                        FontStyle="Normal"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Red}"
+                                        Text="Drawing Rejected" />
+
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Red}"
+                                        TextWrapping="Wrap">
+
+                                        <Run Text="Drawing rejected on" />
+                                        <Run Text="{Binding SelectedDrawing.RejectedDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
+                                        <Run Text="by" />
+                                        <Run Text="{Binding SelectedDrawing.RejectedBy}" />
+                                    </TextBlock>
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        d:Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+                                        FontSize="13"
+                                        FontStyle="Italic"
+                                        Foreground="{StaticResource Red}"
+                                        Text="{Binding SelectedDrawing.RejectionReason, StringFormat='{}Citing: {0}'}"
+                                        TextWrapping="Wrap" />
+                                </Grid>
+
+                            </Grid>
+
+                            <Grid
+                                x:Name="pendingControls"
+                                Grid.Row="1"
+                                Margin="10,5,10,0"
+                                Visibility="{Binding PendingApprovalVis}">
+                                <Border
+                                    Background="{StaticResource Purple}"
+                                    CornerRadius="3"
+                                    Opacity="0.15" />
+                                <Border
+                                    BorderBrush="{StaticResource Purple}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3" />
+                                <Grid Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Path
+                                        Grid.RowSpan="2"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Data="M20,12V16C20,17.11 19.11,18 18,18H13.9L10.2,21.71C10,21.89 9.76,22 9.5,22H9A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V6C2,4.89 2.9,4 4,4H9.5C8.95,4.67 8.5,5.42 8.14,6.25L7.85,7L8.14,7.75C9.43,10.94 12.5,13 16,13C17.44,13 18.8,12.63 20,12M16,6C16.56,6 17,6.44 17,7C17,7.56 16.56,8 16,8C15.44,8 15,7.56 15,7C15,6.44 15.44,6 16,6M16,3C18.73,3 21.06,4.66 22,7C21.06,9.34 18.73,11 16,11C13.27,11 10.94,9.34 10,7C10.94,4.66 13.27,3 16,3M16,4.5A2.5,2.5 0 0,0 13.5,7A2.5,2.5 0 0,0 16,9.5A2.5,2.5 0 0,0 18.5,7A2.5,2.5 0 0,0 16,4.5"
+                                        Fill="{StaticResource Purple}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        FontSize="18"
+                                        FontStyle="Normal"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Purple}"
+                                        Text="Pending Approval" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        FontSize="13"
+                                        FontStyle="Italic"
+                                        Foreground="{StaticResource Purple}"
+                                        Text="A user with authorisation is required to approve or reject the drawing."
+                                        TextWrapping="Wrap" />
+                                </Grid>
+
+                            </Grid>
+
+
+                        </Grid>
+
+
+                        <StackPanel
+                            x:Name="approvalControls"
+                            Margin="20,0,20,10"
+                            Visibility="{Binding ApprovalControlsVis}">
+                            <TextBlock Style="{StaticResource section}" Text="Approval" />
+                            <TextBox
+                                x:Name="rejectionReason"
+                                Background="{StaticResource Background}"
+                                FontSize="15"
+                                Text="{Binding RejectionStatement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource DefaultTextBox}"
+                                Tag="Enter reason for rejecting"
+                                TextChanged="TextBox_TextChanged" />
+                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                <!--<TextBlock VerticalAlignment="Center" Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" />-->
+                                <Button
+                                    Command="{Binding RejectDrawingCmd}"
+                                    Content="Reject Drawing"
+                                    Style="{StaticResource CancelButton}" />
+                                <Button
+                                    Content="Approve Drawing"
+                                    Command="{Binding ApproveDrawingCmd}"
+                                    Style="{StaticResource GreenButton}" />
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <StackPanel x:Name="Comments" Margin="20,0,20,0">
+                            <TextBlock Style="{StaticResource section}" Text="Comments" />
+                            <userControls:DisplayListOfNotes
+                                x:Name="notesDisplay"
+                                Notes="{Binding SelectedDrawingNotes, Mode=OneWay}"
+                                ShowingEditControls="False" />
+                            <Grid Margin="10,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="71*" />
+                                    <ColumnDefinition Width="99*" />
+                                    <ColumnDefinition Width="490*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    x:Name="Message"
+                                    Grid.ColumnSpan="3"
+                                    Margin="5,5,5,15"
+                                    Background="{StaticResource Background}"
+                                    FontSize="14"
+                                    Foreground="{StaticResource OnSurface}"
+                                    PreviewKeyDown="Message_PreviewKeyDown"
+                                    Style="{StaticResource DefaultTextBox}"
+                                    Tag="Compose message..."
+                                    Text="{Binding NewNoteText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    TextWrapping="WrapWithOverflow" />
+                                <Button
+                                    x:Name="SendButton"
+                                    Grid.Column="3"
+                                    Margin="10,0,0,17"
+                                    HorizontalAlignment="Left"
+                                    Background="{StaticResource Surface}"
+                                    Command="{Binding AddCommentToDrawingCmd}"
+                                    Style="{StaticResource SendButton}" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+                <Button
+                    HorizontalAlignment="Center"
+                    Command="{Binding WithdrawCmd}"
+                    Style="{StaticResource WithdrawButton}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

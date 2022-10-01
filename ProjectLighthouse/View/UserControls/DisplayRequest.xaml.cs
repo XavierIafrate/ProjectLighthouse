@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Requests;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;

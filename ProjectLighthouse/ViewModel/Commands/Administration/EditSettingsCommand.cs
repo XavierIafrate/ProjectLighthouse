@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
+using ProjectLighthouse.ViewModel.Core;
 
-namespace ProjectLighthouse.ViewModel.Commands
+namespace ProjectLighthouse.ViewModel.Commands.Administration
 {
     public class EditSettingsCommand : ICommand
     {

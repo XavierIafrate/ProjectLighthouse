@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Linq;
 using System.Windows;

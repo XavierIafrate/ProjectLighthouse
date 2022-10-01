@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
+using ProjectLighthouse.ViewModel.Drawings;
 
-namespace ProjectLighthouse.ViewModel.Commands
+namespace ProjectLighthouse.ViewModel.Commands.Drawings
 {
     public class AddNewDrawingCommand : ICommand
     {

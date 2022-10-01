@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Quality;
+using System;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.Calibration
@@ -14,7 +16,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Calibration
         }
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.CanModifyCalibration;
+            return App.CurrentUser.HasPermission(PermissionType.ModifyCalibration);
         }
 
         public void Execute(object parameter)

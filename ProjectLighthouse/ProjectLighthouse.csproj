@@ -172,7 +172,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="View\ScheduleViews\CreateResearch.xaml.cs">
+    <Compile Update="View\Scheduling\CreateResearch.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -200,7 +200,7 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\ScheduleViews\CreateResearch.xaml">
+    <Page Update="View\Scheduling\CreateResearch.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

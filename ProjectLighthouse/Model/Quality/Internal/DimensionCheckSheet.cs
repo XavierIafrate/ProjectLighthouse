@@ -1,7 +1,8 @@
 ﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
-using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.Model.Reporting.Internal;
 using System;
@@ -13,7 +14,7 @@ using Paragraph = MigraDoc.DocumentObjectModel.Paragraph;
 using Section = MigraDoc.DocumentObjectModel.Section;
 using Table = MigraDoc.DocumentObjectModel.Tables.Table;
 
-namespace Model.Quality.Internal
+namespace ProjectLighthouse.Model.Quality.Internal
 {
     public class DimensionCheckSheet
     {
@@ -39,7 +40,7 @@ namespace Model.Quality.Internal
             section.PageSetup.FooterDistance = Size.HeaderFooterMargin;
         }
 
-        public void BuildContent(TechnicalDrawing drawing, List<CheckSheetDimension> dimensions, TurnedProduct? product)
+        public void BuildContent(TechnicalDrawing drawing, List<CheckSheetDimension> dimensions, TurnedProduct product)
         {
             Section content = new();
             SetupSection(content);
@@ -77,14 +78,14 @@ namespace Model.Quality.Internal
         private Table AddRows(Table t, List<CheckSheetDimension> dims)
         {
             Row row;
-            
+
             for (int i = 0; i < dims.Count; i++)
             {
                 row = t.AddRow();
                 row.Cells[0].AddParagraph(dims[i].Name);
-                row.Cells[1].AddParagraph(dims[i].IsNumeric ? dims[i].NumericValue.ToString(dims[i].StringFormatter) : dims[i].StringValue); 
-                row.Cells[2].AddParagraph(dims[i].LowerLimit); 
-                row.Cells[3].AddParagraph(dims[i].UpperLimit); 
+                row.Cells[1].AddParagraph(dims[i].IsNumeric ? dims[i].NumericValue.ToString(dims[i].StringFormatter) : dims[i].StringValue);
+                row.Cells[2].AddParagraph(dims[i].LowerLimit);
+                row.Cells[3].AddParagraph(dims[i].UpperLimit);
 
                 for (int j = 0; j < 12; j++)
                 {
@@ -186,9 +187,9 @@ namespace Model.Quality.Internal
 
             for (int i = 1; i < 9; i++)
             {
-                row.Cells[i+3].AddParagraph(i.ToString());
-                row.Cells[i+3].Borders.Color = Colors.Black;
-                row.Cells[i+3].Borders.Width = 1;
+                row.Cells[i + 3].AddParagraph(i.ToString());
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
             }
 
             row.BottomPadding = 5;

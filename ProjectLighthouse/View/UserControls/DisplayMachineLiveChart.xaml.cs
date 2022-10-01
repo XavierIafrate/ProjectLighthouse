@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Analytics;
 using System.Windows;
 using System.Windows.Controls;
 

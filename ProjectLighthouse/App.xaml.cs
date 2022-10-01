@@ -1,7 +1,8 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
-using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.View;
-using ProjectLighthouse.ViewModel;
+using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;

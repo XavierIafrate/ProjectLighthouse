@@ -1,4 +1,8 @@
-﻿namespace ProjectLighthouse.Model.Reporting
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Analytics;
+using ProjectLighthouse.Model.Orders;
+
+namespace ProjectLighthouse.Model.Reporting
 {
     public class DailyPerformanceForLathe
     {

@@ -1,7 +1,10 @@
-﻿using SQLite;
+﻿using ProjectLighthouse.Model.Core;
+using SQLite;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace ProjectLighthouse.Model
+namespace ProjectLighthouse.Model.Administration
 {
     public class User
     {
@@ -11,62 +14,29 @@ namespace ProjectLighthouse.Model
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
-        public string EmailAddress { get; set; }
         public string Password { get; set; }
+        public UserRole Role { get; set; }
+
+        public string EmailAddress { get; set; }
         public string computerUsername { get; set; }
-        public string UserRole { get; set; }
-
-        private DateTime lastLogin;
-        public DateTime LastLogin
-        {
-            get { return lastLogin; }
-            set
-            {
-                lastLogin = value;
-                LastLoginText = value.ToString("s");
-            }
-        }
-
-        public string LastLoginText { get; set; }
-
+        public DateTime LastLogin { get; set; }
         public bool IsBlocked { get; set; }
-        public bool CanApproveRequests { get; set; }
-        public bool CanEditLMOs { get; set; }
-        public bool CanUpdateLMOs { get; set; }
-        public bool CanRaiseDelivery { get; set; }
-        public bool CanCreateAssemblyProducts { get; set; }
-        public bool CanRaiseRequest { get; set; }
-        public bool CanCreateSpecial { get; set; }
-        public bool CanModifyCalibration { get; set; }
-        public bool CanAddCalibrationCertificates { get; set; }
-        public bool EnableDataSync { get; set; }
         public string DefaultView { get; set; }
         public bool ReceivesNotifications { get; set; }
-        public bool CanApproveDrawings { get; set; }
         public bool HasQualityNotifications { get; set; }
-        public bool CanIssueBarStock { get; set; }
         public string Locale { get; set; }
+
+        [Ignore]
+        public List<Permission> UserPermissions { get; set; } = new();
 
         public string GetFullName()
         {
             return $"{FirstName} {LastName}";
         }
 
-        public UserRole Role
+        public bool HasPermission(PermissionType action)
         {
-            get
-            {
-                return UserRole switch
-                {
-                    "Viewer" => Model.UserRole.Viewer,
-                    "Purchasing" => Model.UserRole.Purchasing,
-                    "Production" => Model.UserRole.Production,
-                    "Scheduling" => Model.UserRole.Scheduling,
-                    "admin" => Model.UserRole.Administrator,
-                    _ => Model.UserRole.Viewer,
-                };
-            }
-            set { }
+            return UserPermissions.Any(x => x.PermittedAction == action) || Role == UserRole.Administrator;
         }
     }
 }

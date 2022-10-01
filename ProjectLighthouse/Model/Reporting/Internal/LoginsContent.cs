@@ -1,5 +1,6 @@
 ﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using ProjectLighthouse.Model.Core;
 using System;
 using System.Collections.Generic;
 
@@ -15,7 +16,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         private void AddItems(Section section, UserLoginRecords user)
         {
             AddTableTitle(section, user.User.GetFullName());
-            AddTableSubtitle(section, user.User.UserRole);
+            AddTableSubtitle(section, user.User.Role.ToString());
             if (user.UserLogins.Count > 0)
             {
                 AddItemsTable(section, user.UserLogins);

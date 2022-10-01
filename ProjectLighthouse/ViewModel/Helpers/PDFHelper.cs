@@ -2,7 +2,11 @@
 using PdfSharp.Drawing.BarCodes;
 using PdfSharp.Drawing.Layout;
 using PdfSharp.Pdf;
-using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Analytics;
+using ProjectLighthouse.Model.Deliveries;
+using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.Model.Orders;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

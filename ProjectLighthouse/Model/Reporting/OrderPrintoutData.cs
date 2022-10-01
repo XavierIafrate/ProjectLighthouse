@@ -1,4 +1,7 @@
-﻿namespace ProjectLighthouse.Model.Reporting
+﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Orders;
+
+namespace ProjectLighthouse.Model.Reporting
 {
     public class OrderPrintoutData
     {

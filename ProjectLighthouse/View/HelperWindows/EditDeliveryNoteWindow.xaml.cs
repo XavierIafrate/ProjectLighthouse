@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Deliveries;
 using System.Windows;
 
 namespace ProjectLighthouse.View.HelperWindows

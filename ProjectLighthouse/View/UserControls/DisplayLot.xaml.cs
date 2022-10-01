@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Orders;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -60,7 +61,7 @@ namespace ProjectLighthouse.View.UserControls
 
             }
 
-            if (App.CurrentUser.UserRole is "admin")
+            if (App.CurrentUser.Role == UserRole.Administrator)
             {
                 control.EditButton.Visibility = Visibility.Visible;
             }
@@ -73,7 +74,6 @@ namespace ProjectLighthouse.View.UserControls
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            //LabelPrintingHelper.PrintLot(Lot);
             EditCommand.Execute(Lot.ID);
         }
 

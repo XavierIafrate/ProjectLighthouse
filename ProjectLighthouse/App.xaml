@@ -2,9 +2,18 @@
     x:Class="ProjectLighthouse.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:ProjectLighthouse"
-    xmlns:views="clr-namespace:ProjectLighthouse.View"
-    xmlns:vms="clr-namespace:ProjectLighthouse.ViewModel">
+    xmlns:adminView="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:adminVm="clr-namespace:ProjectLighthouse.ViewModel.Administration"
+    xmlns:drawingsView="clr-namespace:ProjectLighthouse.View.Drawings"
+    xmlns:drawingsVm="clr-namespace:ProjectLighthouse.ViewModel.Drawings"
+    xmlns:ordersView="clr-namespace:ProjectLighthouse.View.Orders"
+    xmlns:ordersVm="clr-namespace:ProjectLighthouse.ViewModel.Orders"
+    xmlns:qualityView="clr-namespace:ProjectLighthouse.View.Quality"
+    xmlns:qualityVm="clr-namespace:ProjectLighthouse.ViewModel.Quality"
+    xmlns:requestsView="clr-namespace:ProjectLighthouse.View.Requests"
+    xmlns:requestsVm="clr-namespace:ProjectLighthouse.ViewModel.Requests"
+    xmlns:scheduleView="clr-namespace:ProjectLighthouse.View.Scheduling"
+    xmlns:views="clr-namespace:ProjectLighthouse.View">
 
     <Application.Resources>
         <ResourceDictionary>
@@ -36,56 +45,56 @@
                 </Grid>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:RequestViewModel}">
-                <views:RequestView />
+            <DataTemplate DataType="{x:Type requestsVm:RequestViewModel}">
+                <requestsView:RequestView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:NewRequestViewModel}">
-                <views:NewRequestView />
+            <DataTemplate DataType="{x:Type requestsVm:NewRequestViewModel}">
+                <requestsView:NewRequestView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:OrderViewModel}">
-                <views:OrderView />
+            <DataTemplate DataType="{x:Type ordersVm:OrderViewModel}">
+                <ordersView:OrderView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:ScheduleViewModel}">
-                <views:ScheduleAgendaView />
+            <DataTemplate DataType="{x:Type ordersVm:ScheduleViewModel}">
+                <scheduleView:ScheduleAgendaView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:BarStockViewModel}">
-                <views:BarStockView />
+            <DataTemplate DataType="{x:Type ordersVm:BarStockViewModel}">
+                <adminView:BarStockView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:DrawingBrowserViewModel}">
-                <views:DrawingBrowserView />
+            <DataTemplate DataType="{x:Type drawingsVm:DrawingBrowserViewModel}">
+                <drawingsView:DrawingBrowserView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:DeliveriesViewModel}">
-                <views:DeliveriesView />
+            <DataTemplate DataType="{x:Type ordersVm:DeliveriesViewModel}">
+                <adminView:DeliveriesView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:CalibrationViewModel}">
-                <views:CalibrationView />
+            <DataTemplate DataType="{x:Type qualityVm:CalibrationViewModel}">
+                <qualityView:CalibrationView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:AnalyticsViewModel}">
-                <views:AnalyticsView />
+            <DataTemplate DataType="{x:Type adminVm:AnalyticsViewModel}">
+                <adminView:AnalyticsView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:ManageUsersViewModel}">
-                <views:ManageUsersView />
+            <DataTemplate DataType="{x:Type adminVm:ManageUsersViewModel}">
+                <adminView:ManageUsersView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:DebugViewModel}">
+            <!--<DataTemplate DataType="{x:Type vms:DebugViewModel}">
                 <views:DebugView />
+            </DataTemplate>-->
+
+            <DataTemplate DataType="{x:Type adminVm:LatheViewModel}">
+                <adminView:LatheView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vms:LatheViewModel}">
-                <views:LatheView />
-            </DataTemplate>
-
-            <DataTemplate DataType="{x:Type vms:QualityCheckViewModel}">
-                <views:QualityCheckView />
+            <DataTemplate DataType="{x:Type qualityVm:QualityCheckViewModel}">
+                <qualityView:QualityCheckView />
             </DataTemplate>
             <!--#endregion-->
 

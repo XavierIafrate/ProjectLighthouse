@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Core;
 using System;
 using System.Diagnostics;
 using System.IO;

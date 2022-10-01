@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.View.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;

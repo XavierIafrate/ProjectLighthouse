@@ -1,10 +1,11 @@
 ﻿using IO.ClickSend.ClickSend.Model;
-using ProjectLighthouse.ViewModel.Commands;
+using ProjectLighthouse.ViewModel.Commands.Administration;
+using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 
-namespace ProjectLighthouse.ViewModel
+namespace ProjectLighthouse.ViewModel.Administration
 {
     public class AnalyticsViewModel : BaseViewModel
     {

@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Deliveries;
+using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;

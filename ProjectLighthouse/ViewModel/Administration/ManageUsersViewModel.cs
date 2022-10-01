@@ -1,7 +1,8 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Reporting;
-using ProjectLighthouse.ViewModel.Commands;
-using ProjectLighthouse.ViewModel.Commands.Administration;
+using ProjectLighthouse.ViewModel.Commands.UserManagement;
+using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,18 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 
-namespace ProjectLighthouse.ViewModel
+namespace ProjectLighthouse.ViewModel.Administration
 {
     public class ManageUsersViewModel : BaseViewModel
     {
         #region Vars
-        public List<string> roles { get; set; }
+        public Array roles { get; set; }
         public List<string> views { get; set; }
         public List<Login> Logins { get; set; }
-
         public List<Login> UserLogins { get; set; }
 
-        private string selectedRole;
-        public string SelectedRole
+        private UserRole selectedRole;
+        public UserRole SelectedRole
         {
             get { return selectedRole; }
             set
@@ -30,9 +30,9 @@ namespace ProjectLighthouse.ViewModel
                 selectedRole = value;
                 if (SelectedUser == null)
                     return;
-                if (SelectedUser.UserRole != value)
-                    SelectedUser.UserRole = value.ToString();
-                OnPropertyChanged("SelectedRole");
+                if (SelectedUser.Role != value)
+                    SelectedUser.Role = value;
+                OnPropertyChanged();
             }
         }
 
@@ -47,7 +47,7 @@ namespace ProjectLighthouse.ViewModel
                     return;
                 if (SelectedUser.DefaultView != value)
                     SelectedUser.DefaultView = value.ToString();
-                OnPropertyChanged("SelectedView");
+                OnPropertyChanged();
             }
         }
 
@@ -69,21 +69,23 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 selectedUser = value;
-                if (value != null)
+                if (value == null)
                 {
-                    if (roles != null && value.UserRole != null)
-                        SelectedRole = roles.Where(n => n.ToString() == value.UserRole).Single();
-                    if (views != null && value.DefaultView != null)
-                        SelectedView = views.Where(n => n.ToString() == (string.IsNullOrEmpty(value.DefaultView) ? "Orders" : value.DefaultView)).Single();
-                    if (value.UserName != null)
-                    {
-                        UserLogins = Logins.Where(x => x.User == value.UserName && x.Time.AddDays(14) > DateTime.Now).ToList() ?? new();
-                        OnPropertyChanged(nameof(UserLogins));
-                    }
-
+                    return;
                 }
 
-                OnPropertyChanged("SelectedUser");
+                SelectedRole = value.Role;
+
+
+                if (views != null && value.DefaultView != null)
+                {
+                    SelectedView = views.Find(n => n == (string.IsNullOrEmpty(value.DefaultView) ? "Orders" : value.DefaultView));
+                }
+
+                UserLogins = Logins.Where(x => x.User == value.UserName && x.Time.AddDays(14) > DateTime.Now).ToList() ?? new();
+                OnPropertyChanged(nameof(UserLogins));
+
+                OnPropertyChanged();
             }
         }
 
@@ -97,7 +99,7 @@ namespace ProjectLighthouse.ViewModel
             {
                 editControlsVis = value;
                 editMode = value == Visibility.Visible;
-                OnPropertyChanged("EditControlsVis");
+                OnPropertyChanged();
                 OnPropertyChanged("editMode");
             }
         }
@@ -109,7 +111,7 @@ namespace ProjectLighthouse.ViewModel
             set
             {
                 readControlsVis = value;
-                OnPropertyChanged("ReadControlsVis");
+                OnPropertyChanged();
             }
         }
 
@@ -121,10 +123,9 @@ namespace ProjectLighthouse.ViewModel
         #endregion
         public ManageUsersViewModel()
         {
-            roles = new() { "admin", "Purchasing", "Scheduling", "Production", "Viewer" };
+            roles = Enum.GetValues(typeof(UserRole));
             views = new() { "View Requests", "Orders", "Schedule", "New Request" };
 
-            SelectedRole = string.Empty;
             Users = new();
             SelectedUser = new();
             Logins = new();
@@ -162,7 +163,6 @@ namespace ProjectLighthouse.ViewModel
 
             if (!IsValidEmail(SelectedUser.EmailAddress) && !string.IsNullOrEmpty(SelectedUser.EmailAddress))
             {
-                Console.WriteLine($"email invalid: '{SelectedUser.EmailAddress}'");
                 MessageBox.Show("Invalid email address", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
@@ -170,7 +170,7 @@ namespace ProjectLighthouse.ViewModel
             ReadControlsVis = Visibility.Visible;
             EditControlsVis = Visibility.Collapsed;
 
-            DatabaseHelper.Update<User>(SelectedUser);
+            DatabaseHelper.Update(SelectedUser);
             string username = SelectedUser.UserName;
             LoadData();
             if (Users.Count > 0)
@@ -185,7 +185,7 @@ namespace ProjectLighthouse.ViewModel
 
             if (Result == MessageBoxResult.Yes)
             {
-                DatabaseHelper.Delete<User>(SelectedUser);
+                DatabaseHelper.Delete(SelectedUser);
                 LoadData();
                 if (Users.Count > 0)
                     SelectedUser = Users.FirstOrDefault();
@@ -257,7 +257,7 @@ namespace ProjectLighthouse.ViewModel
         public void GenerateReport()
         {
             ReportPdf reportService = new();
-            List<User> reportUsers = Users.Where(u => u.UserRole is "Purchasing" or "Production" or "Scheduling").ToList();
+            List<User> reportUsers = Users.Where(u => u.Role is UserRole.Purchasing or UserRole.Production or UserRole.Scheduling).ToList();
             LoginReportData reportData = new(reportUsers, Logins, DateTime.Today.AddDays(-7), DateTime.Now);
             string path = $@"C:\Users\x.iafrate\Documents\LoginReport_{DateTime.Now:yyMMdd_HHmmss}.pdf";
 

@@ -1,5 +1,7 @@
 ﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using ProjectLighthouse.Model.Analytics;
+using ProjectLighthouse.Model.Orders;
 using System;
 using System.Collections.Generic;
 using System.Linq;

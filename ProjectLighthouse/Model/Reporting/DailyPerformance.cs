@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model.Universal;
+﻿using ProjectLighthouse.Model.Deliveries;
 using System;
 
 namespace ProjectLighthouse.Model.Reporting

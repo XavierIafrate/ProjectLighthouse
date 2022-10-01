@@ -1,5 +1,7 @@
 ﻿using DbfDataReader;
-using ProjectLighthouse.Model;
+using ProjectLighthouse.Model.Deliveries;
+using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.Model.Products;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Core;
 using SQLite;
 using System;
 using System.Collections.Generic;

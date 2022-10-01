@@ -1,5 +1,6 @@
-﻿using ProjectLighthouse.Model;
-using ProjectLighthouse.View.ScheduleViews;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.View.Scheduling;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,7 +30,7 @@ namespace ProjectLighthouse.View.UserControls
             }
 
             control.DataContext = control.Service;
-            control.Edit_Button.Visibility = App.CurrentUser.UserRole is "admin" or "Scheduling"
+            control.Edit_Button.Visibility = App.CurrentUser.Role >= UserRole.Scheduling
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }

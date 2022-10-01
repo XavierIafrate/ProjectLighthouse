@@ -1,4 +1,4 @@
-﻿using ProjectLighthouse.Model;
+﻿using ProjectLighthouse.Model.Analytics;
 using System;
 using System.Globalization;
 using System.Windows.Data;

@@ -1,5 +1,8 @@
 ﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using ProjectLighthouse.Model.Deliveries;
+using ProjectLighthouse.Model.Orders;
+
 namespace ProjectLighthouse.Model.Reporting.Internal
 {
     class Metadata

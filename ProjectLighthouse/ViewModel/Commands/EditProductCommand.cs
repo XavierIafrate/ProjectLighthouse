@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ProjectLighthouse.ViewModel.Requests;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
