@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using Model.Core;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -11,7 +12,7 @@ namespace ProjectLighthouse.View
     public partial class EditSettingsWindow : Window
     {
         public User user { get; set; }
-        public List<PermissionOverview> permissionsYesNo;
+        public List<EditablePermission> permissionsYesNo;
 
         public EditSettingsWindow()
         {
@@ -100,21 +101,10 @@ namespace ProjectLighthouse.View
 
             foreach (PermissionType i in Enum.GetValues(typeof(PermissionType)))
             {
-                permissionsYesNo.Add(item: new()
-                {
-                    Action = i,
-                    DisplayText = Permission.PermissionNames[i],
-                    UserHasPermission = App.CurrentUser.HasPermission(i)
-                });
+                permissionsYesNo.Add(item: new(i, App.CurrentUser.HasPermission(i), App.CurrentUser.PermissionInherited(i)));
             }
-            PermissionsList.ItemsSource = permissionsYesNo;
-        }
 
-        public class PermissionOverview
-        {
-            public PermissionType Action { get; set; }
-            public string DisplayText { get; set; }
-            public bool UserHasPermission { get; set; }
+            PermissionsList.ItemsSource = permissionsYesNo;
         }
     }
 }

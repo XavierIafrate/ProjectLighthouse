@@ -18,7 +18,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Deliveries
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.Role >= UserRole.Scheduling;
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.EditDelivery);
         }
 
         public void Execute(object parameter)

@@ -17,7 +17,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Orders
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.Role >= UserRole.Purchasing;
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.RaiseRequest);
         }
 
         public void Execute(object parameter)

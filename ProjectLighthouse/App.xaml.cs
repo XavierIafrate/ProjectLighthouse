@@ -32,21 +32,15 @@ namespace ProjectLighthouse
             base.OnStartup(e);
             this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 
-            ROOT_PATH = Environment.UserName == "xavier"
-                ? @"C:\Users\xavie\Documents\lighthouse_test\"
-                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\";
-
-            if (!Directory.Exists(ROOT_PATH))
+            if (!EnvironmentContext.Setup())
             {
-                MessageBox.Show("Could not locate root directory.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Something wen't wrong while setting up the environment, Lighthouse cannot start.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
                 return;
             }
 
             EnsureAppData();
 
-            DevMode = Debugger.IsAttached;
-            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
 
             //CheckSheetEditor editor = new();
             //editor.ShowDialog();

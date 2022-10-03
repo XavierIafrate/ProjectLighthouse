@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:DesignHeight="832.899"
     d:DesignWidth="800"
     Background="White"
@@ -217,204 +218,14 @@
                     Margin="0,20,0,0"
                     Style="{StaticResource section}"
                     Text="Permissions" />
-                <Separator Margin="0,5,0,15" />
-                <Grid>
-                    <!--  Raise Request  -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <CheckBox
-                        Margin="5,0"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding SelectedUser.CanRaiseRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding EditControlsVis}" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="0"
-                        Text="Raise Production Request" />
-                    <TextBlock
-                        Grid.Column="3"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedUser.CanRaiseRequest, Converter='{StaticResource boolConverter}'}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.ColumnSpan="4"
-                        Margin="20,1,20,6"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Blue}"
-                        Text="User can create requests for turned parts" />
-                </Grid>
-                <Grid>
-                    <!--  Approve Request  -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <CheckBox
-                        Margin="5,0"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding SelectedUser.CanApproveRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding EditControlsVis}" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="0"
-                        Text="Approve Production Requests" />
-                    <TextBlock
-                        Grid.Column="3"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedUser.CanApproveRequests, Converter='{StaticResource boolConverter}'}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.ColumnSpan="4"
-                        Margin="20,1,20,6"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Blue}"
-                        Text="User can approve or decline requests for turned parts" />
-                </Grid>
-                <Grid>
-                    <!--  Update Orders  -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <CheckBox
-                        Margin="5,0"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding SelectedUser.CanUpdateLMOs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding EditControlsVis}" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="0"
-                        Text="Update Manufacture Orders" />
-                    <TextBlock
-                        Grid.Column="3"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedUser.CanUpdateLMOs, Converter='{StaticResource boolConverter}'}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.ColumnSpan="4"
-                        Margin="20,1,20,6"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Blue}"
-                        Text="User can update notes and production information" />
-                </Grid>
-                <Grid>
-                    <!--  Edit Orders  -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <CheckBox
-                        Margin="5,0"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding SelectedUser.CanEditLMOs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding EditControlsVis}" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="0"
-                        Text="Edit Manufacture Orders" />
-                    <TextBlock
-                        Grid.Column="3"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedUser.CanEditLMOs, Converter='{StaticResource boolConverter}'}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.ColumnSpan="4"
-                        Margin="20,1,20,6"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Blue}"
-                        Text="User can edit all parts of a manufacture order" />
-                </Grid>
-                <Grid>
-                    <!--  Raise Delivery  -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <CheckBox
-                        Margin="5,0"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding SelectedUser.CanRaiseDelivery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding EditControlsVis}" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="0"
-                        Text="Raise Deliveries" />
-                    <TextBlock
-                        Grid.Column="3"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedUser.CanRaiseDelivery, Converter='{StaticResource boolConverter}'}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.ColumnSpan="4"
-                        Margin="20,1,20,6"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Blue}"
-                        Text="User can create deliveries from completed lots" />
-                </Grid>
-                <Grid>
-                    <!--  Create Specials  -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <CheckBox
-                        Margin="5,0"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding SelectedUser.CanCreateSpecial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding EditControlsVis}" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="0"
-                        Text="Create Special Products" />
-                    <TextBlock
-                        Grid.Column="3"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedUser.CanCreateSpecial, Converter='{StaticResource boolConverter}'}" />
-                </Grid>
+                <ListView MinHeight="50" ItemsSource="{Binding SelectedUserPermissions}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <uc:DisplayEditablePermission Permission="{Binding}" Margin="10,2,10,3"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
                 <Grid Margin="0,20,0,5">
                     <Rectangle
                         Grid.RowSpan="2"

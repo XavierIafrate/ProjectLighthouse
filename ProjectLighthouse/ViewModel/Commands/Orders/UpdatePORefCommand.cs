@@ -16,7 +16,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Orders
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.UpdateOrder);
         }
 
         public void Execute(object parameter)

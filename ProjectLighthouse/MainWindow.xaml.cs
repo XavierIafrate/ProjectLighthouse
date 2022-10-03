@@ -47,9 +47,10 @@ namespace ProjectLighthouse
 
 #if DEBUG
             Title += $" - {DatabaseHelper.DatabasePath}";
+            userArea.Fill = (Brush)App.Current.Resources["Red"];
 #endif
 
-            DebugTile.Visibility = App.DevMode ? Visibility.Collapsed : Visibility.Collapsed;
+            DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -96,6 +97,7 @@ namespace ProjectLighthouse
 
         private void Rectangle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            //MessageBox.Show(DatabaseHelper.DatabasePath);
             AboutWindow window = new();
             window.ShowDialog();
         }

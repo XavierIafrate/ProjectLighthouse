@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using Model.Core;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.ViewModel.Commands.UserManagement;
@@ -10,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Windows.Web.Syndication;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
@@ -21,6 +23,21 @@ namespace ProjectLighthouse.ViewModel.Administration
         public List<Login> Logins { get; set; }
         public List<Login> UserLogins { get; set; }
 
+        private List<Permission> allPermissionsGiven;
+
+        private List<EditablePermission> selectedUserPermissions;
+
+        public List<EditablePermission> SelectedUserPermissions
+        {
+            get { return selectedUserPermissions; }
+            set
+            {
+                selectedUserPermissions = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private UserRole selectedRole;
         public UserRole SelectedRole
         {
@@ -28,10 +45,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             set
             {
                 selectedRole = value;
-                if (SelectedUser == null)
-                    return;
-                if (SelectedUser.Role != value)
-                    SelectedUser.Role = value;
                 OnPropertyChanged();
             }
         }
@@ -69,22 +82,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             set
             {
                 selectedUser = value;
-                if (value == null)
-                {
-                    return;
-                }
-
-                SelectedRole = value.Role;
-
-
-                if (views != null && value.DefaultView != null)
-                {
-                    SelectedView = views.Find(n => n == (string.IsNullOrEmpty(value.DefaultView) ? "Orders" : value.DefaultView));
-                }
-
-                UserLogins = Logins.Where(x => x.User == value.UserName && x.Time.AddDays(14) > DateTime.Now).ToList() ?? new();
-                OnPropertyChanged(nameof(UserLogins));
-
+                LoadUserDetails();
                 OnPropertyChanged();
             }
         }
@@ -126,9 +124,10 @@ namespace ProjectLighthouse.ViewModel.Administration
             roles = Enum.GetValues(typeof(UserRole));
             views = new() { "View Requests", "Orders", "Schedule", "New Request" };
 
+            SelectedUserPermissions = new();
+            Logins = new();
             Users = new();
             SelectedUser = new();
-            Logins = new();
             UserLogins = new();
 
             EditControlsVis = Visibility.Collapsed;
@@ -143,12 +142,21 @@ namespace ProjectLighthouse.ViewModel.Administration
             LoadData();
 
             if (Users.Count > 0)
+            {
                 SelectedUser = Users.FirstOrDefault();
+            }
         }
 
         private void LoadData()
         {
             Users = DatabaseHelper.Read<User>().OrderBy(n => n.UserName).ToList();
+            allPermissionsGiven = DatabaseHelper.Read<Permission>().ToList();
+
+            for (int i = 0; i < Users.Count; i++)
+            {
+                Users[i].UserPermissions = allPermissionsGiven.Where(x => x.UserId == Users[i].Id).ToList();
+            }
+
             Logins = DatabaseHelper.Read<Login>().OrderByDescending(x => x.Time).ToList();
         }
 
@@ -171,24 +179,37 @@ namespace ProjectLighthouse.ViewModel.Administration
             EditControlsVis = Visibility.Collapsed;
 
             DatabaseHelper.Update(SelectedUser);
-            string username = SelectedUser.UserName;
+            int user = SelectedUser.Id;
             LoadData();
-            if (Users.Count > 0)
-                foreach (User u in Users)
-                    if (u.UserName == username)
-                        SelectedUser = u;
+
+            if (Users.Count == 0)
+            {
+                return;
+            }
+    
+            if (Users.Any(x => x.Id == user))
+            {
+                SelectedUser = Users.Find(x => x.Id == user);
+            }
+            else
+            {
+                SelectedUser = Users.First();
+            }
         }
 
         public void DeleteUser()
         {
             MessageBoxResult Result = MessageBox.Show($"Are you sure you want to delete {SelectedUser.GetFullName()}?\nThis cannot be undone.", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
-            if (Result == MessageBoxResult.Yes)
+            if (Result != MessageBoxResult.Yes)
             {
-                DatabaseHelper.Delete(SelectedUser);
-                LoadData();
-                if (Users.Count > 0)
-                    SelectedUser = Users.FirstOrDefault();
+                return;
+            }
+            DatabaseHelper.Delete(SelectedUser);
+            LoadData();
+            if (Users.Count > 0)
+            {
+                SelectedUser = Users.FirstOrDefault();
             }
         }
 
@@ -203,6 +224,31 @@ namespace ProjectLighthouse.ViewModel.Administration
             SaveEdit();
 
             MessageBox.Show($"{SelectedUser.GetFullName()}'s new password is {newPassword}.\nOnce logged in, the password can be changed in the settings.", "Password Reset", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        void LoadUserDetails()
+        {
+            if (SelectedUser == null)
+            {
+                return;
+            }
+
+            Array allPermissions = Enum.GetValues(typeof(PermissionType));
+            List<EditablePermission> newPermissions = new();
+            
+            for (int i = 0; i < allPermissions.Length; i++)
+            {
+                PermissionType p = (PermissionType)allPermissions.GetValue(i);
+                newPermissions.Add(new(p, SelectedUser.HasPermission(p), SelectedUser.PermissionInherited(p)));
+            }
+
+            SelectedUserPermissions = newPermissions;
+
+            SelectedRole = SelectedUser.Role;            
+            SelectedView = views.Find(n => n == (string.IsNullOrEmpty(SelectedUser.DefaultView) ? "Orders" : SelectedUser.DefaultView));
+           
+            UserLogins = Logins.Where(x => x.User == SelectedUser.UserName && x.Time.AddDays(14) > DateTime.Now).ToList() ?? new();
+            OnPropertyChanged(nameof(UserLogins));
         }
 
         public void CreateNewUser()

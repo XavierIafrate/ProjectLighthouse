@@ -12,8 +12,7 @@
     xmlns:qualityVm="clr-namespace:ProjectLighthouse.ViewModel.Quality"
     xmlns:requestsView="clr-namespace:ProjectLighthouse.View.Requests"
     xmlns:requestsVm="clr-namespace:ProjectLighthouse.ViewModel.Requests"
-    xmlns:scheduleView="clr-namespace:ProjectLighthouse.View.Scheduling"
-    xmlns:views="clr-namespace:ProjectLighthouse.View">
+    xmlns:scheduleView="clr-namespace:ProjectLighthouse.View.Scheduling">
 
     <Application.Resources>
         <ResourceDictionary>
