@@ -11,6 +11,7 @@ namespace ProjectLighthouse.Model.Material
         public double BarsRequiredForOrders { get; set; }
         public double FreeBar { get; set; }
         public int Priority { get; set; }
+        public bool UrgentProblem { get; set; }
 
 
         public BarStockRequirementOverview(BarStock barStock, List<LatheManufactureOrder> orders)
@@ -39,6 +40,8 @@ namespace ProjectLighthouse.Model.Material
             {
                 Priority = 0; // Need to buy
             }
+
+            // TODO flag orders without bar in time
         }
 
         public override string ToString()

@@ -1,29 +1,26 @@
-﻿using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.ViewModel.Administration;
+﻿using ProjectLighthouse.ViewModel.Administration;
 using System;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.UserManagement
 {
-    public class EditUserCommand : ICommand
+    public class GrantPermissionCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-
         private ManageUsersViewModel viewModel;
 
-        public EditUserCommand(ManageUsersViewModel vm)
+        public GrantPermissionCommand(ManageUsersViewModel vm)
         {
             viewModel = vm;
         }
-
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.Role == UserRole.Administrator && viewModel.SelectedUser.Role != UserRole.Administrator;
+            return true;
         }
 
         public void Execute(object parameter)
         {
-            viewModel.EnableEdit();
+            viewModel.AddPermission();
         }
     }
 }

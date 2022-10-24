@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Windows.Media.Media3D;
 
 namespace ProjectLighthouse.Model.Orders
 {
@@ -303,9 +302,10 @@ namespace ProjectLighthouse.Model.Orders
 
         public void UpdateStartDate(DateTime date, string machine)
         {
-            StartDate = date;
-            AllocatedMachine = machine;
-            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Date.AddHours(12).Ticks}, AllocatedMachine='{AllocatedMachine}' WHERE Id={Id}");
+            StartDate = date.Date == DateTime.MinValue.Date ? DateTime.MinValue : date.Date.AddHours(12);
+            AllocatedMachine = string.IsNullOrEmpty(machine) ? null : machine;
+            string dbMachineEntry = string.IsNullOrEmpty(AllocatedMachine) ? "NULL" : $"'{AllocatedMachine}'";
+            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
         }
 
         public void MarkAsClosed()

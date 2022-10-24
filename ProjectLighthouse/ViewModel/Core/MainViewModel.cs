@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Core
 {
@@ -126,8 +125,8 @@ namespace ProjectLighthouse.ViewModel.Core
             }
         }
 
-        public ICommand UpdateViewCommand { get; set; }
-        public ICommand EditCommand { get; set; }
+        public UpdateViewCommand UpdateViewCommand { get; set; }
+        public EditSettingsCommand EditCommand { get; set; }
         public ToggleNotificationsBarViewCommand ToggleShowNotsCommand { get; set; }
         public ReadAllNotificationsCommand ReadAllCommand { get; set; }
 
@@ -143,12 +142,10 @@ namespace ProjectLighthouse.ViewModel.Core
 
         public MainViewModel()
         {
-            EditCommand = new EditSettingsCommand(this);
-            UpdateViewCommand = new UpdateViewCommand(this);
+            EditCommand = new(this);
+            UpdateViewCommand = new(this);
             ToggleShowNotsCommand = new(this);
             ReadAllCommand = new();
-            NoNotifications = true;
-            OnPropertyChanged(nameof(NoNotifications));
         }
 
 

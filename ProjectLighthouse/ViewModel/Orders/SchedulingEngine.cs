@@ -76,12 +76,12 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void CategoriseThread(ScheduleThread thread, Lathe lathe, bool softlimit)
         {
-            int min = softlimit ? lathe.SoftMinDiameter : 0;
-            int max = softlimit ? lathe.SoftMaxDiameter : lathe.MaxDiameter;
-            if (thread.Bar.Size >= min && thread.Bar.Size <= max)
-            {
-                thread.AvailableToMachines.Add(lathe);
-            }
+            //int min = softlimit ? lathe.SoftMinDiameter : 0;
+            //int max = softlimit ? lathe.SoftMaxDiameter : lathe.MaxDiameter;
+            //if (thread.Bar.Size >= min && thread.Bar.Size <= max)
+            //{
+            //    thread.AvailableToMachines.Add(lathe);
+            //}
         }
 
         public void CreateBlankSchedule()

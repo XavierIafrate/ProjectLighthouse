@@ -8,6 +8,7 @@
     * 2xx = Orders & Delivery Permission
     * 3xx = Drawings Permission
     * 4xx = Quality Permissions
+    * 5xx = Maintenance Permissions
     * 
     */
 
@@ -24,5 +25,6 @@
         ApproveDrawings = 301,
         ModifyCalibration = 401,
         UpdateCalibration = 402,
+        ConfigureMaintenance = 501,
     }
 }

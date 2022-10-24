@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using View.HelperWindows;
 
 namespace ProjectLighthouse
 {
@@ -18,11 +19,6 @@ namespace ProjectLighthouse
         public MainWindow()
         {
             InitializeComponent();
-
-            if (App.CurrentUser == null)
-            {
-                return;
-            }
         }
 
         public void AddVersionNumber()
@@ -48,29 +44,32 @@ namespace ProjectLighthouse
 
 #if DEBUG
             Title += $" - {DatabaseHelper.DatabasePath}";
+            userArea.Fill = (Brush)App.Current.Resources["Red"];
 #endif
 
-            DebugTile.Visibility = App.DevMode ? Visibility.Collapsed : Visibility.Collapsed;
+            DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
-            if (depObj != null)
+            if (depObj == null)
             {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                yield return null;
+            }
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                if (child is not null and T t)
                 {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child is not null and T t)
-                    {
-                        yield return t;
-                    }
+                    yield return t;
+                }
 
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
+                foreach (T childOfChild in FindVisualChildren<T>(child))
+                {
+                    yield return childOfChild;
                 }
             }
+            
         }
 
         public void SelectButton(string buttonName)
@@ -87,18 +86,17 @@ namespace ProjectLighthouse
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            manage_lathes_button.Visibility = App.CurrentUser.UserName == "xav"
-                ? Visibility.Collapsed
-                : Visibility.Collapsed;
-
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.Role.ToString();
         }
 
         private void Rectangle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            AboutWindow window = new();
-            window.ShowDialog();
+            CalculationsHelperWindow test = new();
+            test.Show();
+
+            //AboutWindow window = new();
+            //window.ShowDialog();
         }
 
         private void Rectangle_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)

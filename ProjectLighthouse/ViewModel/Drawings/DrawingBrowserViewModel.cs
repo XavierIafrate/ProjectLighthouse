@@ -374,7 +374,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public void ApproveDrawing()
         {
             int MaxRev = SelectedGroup.Drawings.Max(x => x.Revision);
-            TechnicalDrawing.Amendment maxAmd = SelectedGroup.Drawings.Max(x => x.AmendmentType);
+            TechnicalDrawing.Amendment maxAmd = SelectedGroup.Drawings.Where(x => x.Revision == MaxRev).Max(x => x.AmendmentType);
 
             // No input required, only one move to make as first revision or max amendment per rev
             if (MaxRev == 0 || maxAmd == Enum.GetValues(typeof(TechnicalDrawing.Amendment)).Cast<TechnicalDrawing.Amendment>().Max())
@@ -390,6 +390,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 DrawingToApprove = SelectedDrawing,
                 DrawingsInGroup = SelectedGroup.Drawings
             };
+
             window.SetupInterface();
             window.ShowDialog();
 
@@ -416,7 +417,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
             SelectedDrawing.PrepareMarkedPdf();
 
-            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == SelectedDrawing.CreatedBy).ToList();
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings)).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
                 DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Approved: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has approved this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
@@ -431,9 +432,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public void OpenPdfDrawing()
         {
             // TODO
-            ApproveDrawingWindow approveDrawingWindow = new(SelectedDrawing, SelectedGroup);
-            approveDrawingWindow.ShowDialog();
-            return;
+            //ApproveDrawingWindow approveDrawingWindow = new(SelectedDrawing, SelectedGroup);
+            //approveDrawingWindow.ShowDialog();
+            //return;
+
             SelectedDrawing.CopyToAppData();
             SelectedDrawing.ShellOpen();
         }
@@ -460,6 +462,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             SelectedDrawing.IsWithdrawn = true;
             SelectedDrawing.WithdrawnDate = DateTime.Now;
             SelectedDrawing.WithdrawnBy = App.CurrentUser.GetFullName();
+
             string thisGroup = SelectedGroup.Name;
             int thisDrawing = SelectedDrawing.Id;
 

@@ -18,7 +18,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Scheduling
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.Role >= UserRole.Scheduling;
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.ApproveRequest);
         }
 
         public void Execute(object parameter)

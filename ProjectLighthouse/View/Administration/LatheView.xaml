@@ -6,178 +6,255 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    d:DesignHeight="1000"
+    d:DesignWidth="1200"
     mc:Ignorable="d">
-    <ScrollViewer d:Background="White">
-        <StackPanel Margin="10">
-            <TextBlock Style="{StaticResource title}" Text="Lathes" />
-            <!--<Button Content="+ Lathe"/>-->
-
-            <!--<TextBlock Style="{StaticResource title}" Text="Title" />
-        <TextBlock Style="{StaticResource subtitle}" Text="subtitle" />
-        <TextBlock Style="{StaticResource subsubtitle}" Text="subsubtitle" />
-        <TextBlock Style="{StaticResource statement}" Text="statement" />
-        <TextBlock Style="{StaticResource annotation}" Text="annotation" />-->
-
-
-            <ItemsControl
-                MaxWidth="900"
-                Background="White"
-                ItemsSource="{Binding Lathes}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border
-                            Margin="5"
-                            Padding="20,10"
-                            Background="White"
-                            BorderBrush="{StaticResource DisabledElement}"
-                            BorderThickness="2"
-                            CornerRadius="8">
-                            <StackPanel>
-                                <TextBlock
-                                    FontSize="30"
-                                    Style="{StaticResource subtitle}"
-                                    Text="{Binding FullName}" />
-                                <StackPanel MaxWidth="700">
-                                    <Grid>
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource section}"
-                                            Text="IP Address" />
-                                        <TextBox
-                                            Width="250"
-                                            HorizontalAlignment="Right"
-                                            Style="{StaticResource DefaultTextBox}"
-                                            Tag="IP Address"
-                                            Text="{Binding IPAddress}"
-                                            TextAlignment="Right" />
-                                    </Grid>
-
-                                    <Grid>
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource section}"
-                                            Text="Controller Reference" />
-                                        <TextBox
-                                            Width="250"
-                                            HorizontalAlignment="Right"
-                                            Style="{StaticResource DefaultTextBox}"
-                                            Tag="Controller Reference"
-                                            Text="{Binding ControllerReference}"
-                                            TextAlignment="Right" />
-                                    </Grid>
-
-                                    <Grid>
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource section}"
-                                            Text="Max Length" />
-                                        <TextBox
-                                            Width="250"
-                                            HorizontalAlignment="Right"
-                                            Style="{StaticResource DefaultTextBox}"
-                                            Tag="Max Length"
-                                            Text="{Binding MaxLength}"
-                                            TextAlignment="Right" />
-
-                                    </Grid>
-
-                                    <Grid>
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource section}"
-                                            Text="Max Diameter" />
-                                        <TextBox
-                                            Width="250"
-                                            HorizontalAlignment="Right"
-                                            Style="{StaticResource DefaultTextBox}"
-                                            Tag="Max Diameter"
-                                            Text="{Binding MaxDiameter}"
-                                            TextAlignment="Right" />
-                                    </Grid>
-
-                                    <Grid>
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource section}"
-                                            Text="Serial Number" />
-                                        <TextBox
-                                            Width="250"
-                                            HorizontalAlignment="Right"
-                                            Style="{StaticResource DefaultTextBox}"
-                                            Tag="Serial Number"
-                                            Text="{Binding SerialNumber}"
-                                            TextAlignment="Right" />
-                                    </Grid>
-
-                                    <Grid>
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource section}"
-                                            Text="Make" />
-                                        <TextBox
-                                            Width="250"
-                                            HorizontalAlignment="Right"
-                                            Style="{StaticResource DefaultTextBox}"
-                                            Tag="Make"
-                                            Text="{Binding Make}"
-                                            TextAlignment="Right" />
-                                    </Grid>
-
-                                    <Grid>
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource section}"
-                                            Text="Model" />
-                                        <TextBox
-                                            Width="250"
-                                            HorizontalAlignment="Right"
-                                            Style="{StaticResource DefaultTextBox}"
-                                            Tag="Model"
-                                            Text="{Binding Model}"
-                                            TextAlignment="Right" />
-                                    </Grid>
+    <Grid d:Background="White">
+        <Grid.Resources>
+            <converters:boolToVisibleOrCollapsed x:Key="ShowIfTrue"/>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="280" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
 
 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                x:Name="SearchBox"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Search..."
+                Text="{Binding Path=SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Button
+                x:Name="ClearButton"
+                Grid.Column="1"
+                Click="ClearButton_Click"
+                Style="{StaticResource ClearButton}" />
+        </Grid>
+
+        <ListView
+            d:ItemsSource="{d:SampleData ItemCount=6}"
+            Grid.Row="1"
+            HorizontalContentAlignment="Stretch"
+            ItemsSource="{Binding Path=FilteredLathes}"
+            SelectedValue="{Binding Path=SelectedLathe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SelectionChanged="ListView_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="15,10">
+                        <TextBlock
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Text="{Binding FullName}" />
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource Blue}"
+                            Text="{Binding Model}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Grid Grid.Row="2">
+            <Button Content="+ Add Machine" HorizontalAlignment="Right"/>
+        </Grid>
+
+        <ScrollViewer Grid.RowSpan="3" Grid.Column="1">
+            <StackPanel Margin="25,10">
+                <Grid MaxWidth="700" Margin="0,15,0,50">
+                    <Border Background="White" CornerRadius="10">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="30"
+                                Opacity="0.4"
+                                ShadowDepth="0"
+                                Color="Black" />
+                        </Border.Effect>
+                    </Border>
+                    <StackPanel Margin="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border Background="{StaticResource Blue}" Margin="0,0,7,0" CornerRadius="5" VerticalAlignment="Center">
+                                <TextBlock d:Text="M_ID" Foreground="{StaticResource OnBlue}" Text="{Binding SelectedLathe.Id}"  VerticalAlignment="Center" Margin="10,3" FontSize="25" FontWeight="Bold" FontFamily="Consolas"/>
+                            </Border>
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="30"
+                                Style="{StaticResource title}"
+                                Text="{Binding SelectedLathe.FullName}" d:Text="MACHINE_FULL_NAME" />
+                            <Button Grid.Column="2" Style="{StaticResource HeroEditButton}" />
+                        </Grid>
+
+                        <Grid Margin="10,20,10,0" Visibility="{Binding SelectedLathe.OutOfService, Converter={StaticResource ShowIfTrue}}">
+                            <Border Background="{StaticResource Orange}" Opacity="0.15" CornerRadius="3"/>
+                            <Border BorderBrush="{StaticResource Orange}" BorderThickness="3,0,0,0" CornerRadius="3">
+                                <StackPanel Margin="10,5">
+                                    <TextBlock Text="Out of Service" Foreground="{StaticResource Orange}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="This machine is no longer in service, it will not be available for scheduling." Foreground="{StaticResource Orange}" FontStyle="Italic"/>
+                                    
                                 </StackPanel>
-                                <TextBlock Style="{StaticResource section}" Text="Maintenance Plan" />
-                                <ListView ItemsSource="{Binding Maintenance}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="20,10">
-                                                <TextBlock Style="{StaticResource statement}" Text="{Binding}" />
-                                                <StackPanel HorizontalAlignment="Right">
-                                                    <TextBlock
-                                                        HorizontalAlignment="Right"
-                                                        Style="{StaticResource statement}"
-                                                        Text="{Binding IntervalMonths, StringFormat='{}Every {0} Months'}" />
-                                                    <TextBlock
-                                                        HorizontalAlignment="Right"
-                                                        Style="{StaticResource statement}"
-                                                        Text="{Binding StartingDate, StringFormat='{}Starting from {0:dd/MM/yyyy}'}" />
-                                                    <TextBlock
-                                                        HorizontalAlignment="Right"
-                                                        Style="{StaticResource statement}"
-                                                        Text="{Binding LastCompleted, StringFormat='{}Last completed {0:dd/MM/yyyy}'}" />
-                                                    <TextBlock
-                                                        HorizontalAlignment="Right"
-                                                        Style="{StaticResource statement}"
-                                                        Text="{Binding LastCompleted, StringFormat='{}Next Due {0:dd/MM/yyyy}'}" />
+                            </Border>
+                        </Grid>
+                        
+                        <StackPanel>
+                            <TextBlock Text="Hardware" Style="{StaticResource section}" Margin="0,15,0,0"/>
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="Make" />
+                                <TextBlock
+                                    Width="250"
+                                    HorizontalAlignment="Right"
+                                    Tag="Make"
+                                    Foreground="{StaticResource Blue}"
+                                    d:Text="MACHINE_MAKE"
+                                    Text="{Binding SelectedLathe.Make}"
+                                    TextAlignment="Right" />
+                            </Grid>
 
-                                                </StackPanel>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="Model" />
+                                <TextBlock
+                                    d:Text="MACHINE_MODEL"
+                                    Width="250"
+                                    HorizontalAlignment="Right"
+                                    Foreground="{StaticResource Blue}"
+                                    Tag="Model"
+                                    Text="{Binding SelectedLathe.Model}"
+                                    TextAlignment="Right" />
+                            </Grid>
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="Serial Number" />
+                                <TextBlock
+                                    Width="250"
+                                    HorizontalAlignment="Right"
+                                    d:Text="MACHINE_SERIAL"
+                                    Foreground="{StaticResource Blue}"
+                                    Tag="Serial Number"
+                                    Text="{Binding SelectedLathe.SerialNumber}"
+                                    TextAlignment="Right" />
+                            </Grid>
+                            <TextBlock Text="Limits" Style="{StaticResource section}"  Margin="0,15,0,0"/>
 
-                            </StackPanel>
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="Max Length" />
+                                <TextBlock
+                                    Width="250"
+                                    HorizontalAlignment="Right"
+                                    d:Text="MAX_PART_LENGTH"
+                                    Foreground="{StaticResource Blue}"
+                                    Tag="Max Length"
+                                    Text="{Binding SelectedLathe.MaxLength, StringFormat='{}{0:0.0} mm'}"
+                                    TextAlignment="Right" />
 
+                            </Grid>
+
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="Max Diameter" />
+                                <TextBlock
+                                    Width="250"
+                                    HorizontalAlignment="Right"
+                                    d:Text="MAX_PART_DIAMETER"
+                                    Foreground="{StaticResource Blue}"
+                                    Tag="Max Diameter"
+                                    Text="{Binding SelectedLathe.MaxDiameter, StringFormat='{}{0:0.0} mm'}"
+                                    TextAlignment="Right" />
+                            </Grid>
+
+                            <TextBlock Text="Comms" Style="{StaticResource section}"  Margin="0,15,0,0"/>
+
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="IP Address" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    Foreground="{StaticResource Blue}"
+                                    d:Text="IP_ADDRESS"
+                                    Tag="IP Address"
+                                    Text="{Binding SelectedLathe.IPAddress}"
+                                    TextAlignment="Right" />
+                            </Grid>
+
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="Controller Reference"/>
+                                <TextBlock
+                                    HorizontalAlignment="Right"                                
+                                    Foreground="{StaticResource Blue}"
+                                    d:Text="CONTROLLER_REF"
+                                    Tag="Controller Reference"
+                                    Text="{Binding SelectedLathe.ControllerReference}"
+                                    TextAlignment="Right" />
+                            </Grid>
+
+
+                        </StackPanel>
+                        <Grid>
+                            <TextBlock Style="{StaticResource section}" Text="Schedule of Maintenance" Margin="0,15,0,0"/>
+                            <Button Content="+Add" Command="{Binding AddMaintenanceEventCmd}" HorizontalAlignment="Right" Margin="5,0" VerticalAlignment="Bottom"/>
+                        </Grid>
+                        <ListView ItemsSource="{Binding SelectedLathe.Maintenance}" d:ItemsSource="{d:SampleData ItemCount=2}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:DisplayMaintenanceEvent MaintenanceEvent="{Binding}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Grid>
+                            <TextBlock Style="{StaticResource section}" Text="Attached Documents" Margin="0,15,0,0"/>
+                            <Button Content="+Add" Command="" HorizontalAlignment="Right" Margin="5,0" VerticalAlignment="Bottom"/>
+                        </Grid>
+                        <ListView ItemsSource="{Binding SelectedLathe.Maintenance}" d:ItemsSource="{d:SampleData ItemCount=2}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:DisplayAttachment/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Grid>
+                            <TextBlock Style="{StaticResource section}" Text="Remarks" Margin="0,15,0,0"/>
+                        </Grid>
+                        <Border Background="{StaticResource Surface}" CornerRadius="8" MinHeight="50" Margin="5">
+                            <TextBlock/>
                         </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-    </ScrollViewer>
+                    </StackPanel>
+
+                </Grid>
+
+                <TextBlock Text="{Binding SelectedLathe.CreatedAt, StringFormat='{}Added {0:dd MMMM yyyy}'}" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
 
 </UserControl>

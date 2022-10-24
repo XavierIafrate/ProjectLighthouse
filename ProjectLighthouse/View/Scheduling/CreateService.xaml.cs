@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -22,7 +23,7 @@ namespace ProjectLighthouse.View.Scheduling
 
             if (lathes == null)
             {
-                Lathes = DatabaseHelper.Read<Lathe>();
+                Lathes = DatabaseHelper.Read<Lathe>().Where(x => !x.OutOfService).ToList();
             }
             else
             {

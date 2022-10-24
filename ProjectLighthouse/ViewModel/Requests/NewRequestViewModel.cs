@@ -142,7 +142,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         private void GetLeadTimes()
         {
-            List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>().Where(x => !x.OutOfService).ToList();
             Lathes = new();
 
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(x => x.State < OrderState.Complete).ToList();

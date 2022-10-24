@@ -1,10 +1,11 @@
-﻿using SQLite;
+﻿using ProjectLighthouse.Model.Core;
+using SQLite;
 using System;
 using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model.Quality
 {
-    public class CalibratedEquipment : ICloneable
+    public class CalibratedEquipment : ICloneable, IAutoIncrementPrimaryKey
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

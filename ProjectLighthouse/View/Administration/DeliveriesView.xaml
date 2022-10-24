@@ -7,7 +7,6 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:Background="White"
     d:DesignHeight="590.975"
     d:DesignWidth="1123.47"
@@ -136,7 +135,7 @@
                                         <uc:DisplayDeliveryNoteItem
                                             Margin="0,5"
                                             EditCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.EditDeliveryNoteItemCmd}"
-                                            Item="{Binding Path=.}" />
+                                            Item="{Binding}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

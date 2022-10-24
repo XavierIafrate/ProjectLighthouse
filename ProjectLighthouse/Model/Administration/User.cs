@@ -36,7 +36,30 @@ namespace ProjectLighthouse.Model.Administration
 
         public bool HasPermission(PermissionType action)
         {
-            return UserPermissions.Any(x => x.PermittedAction == action) || Role == UserRole.Administrator;
+            return ExplicitGrantsPermission(action) || RoleGrantsPermission(action);
+        }
+
+        public bool ExplicitGrantsPermission(PermissionType action)
+        {
+            return UserPermissions.Any(x => x.PermittedAction == action);
+        }
+
+        public bool RoleGrantsPermission(PermissionType action)
+        {
+            return Role switch
+            {
+                UserRole.Viewer => false,
+                UserRole.Purchasing => action is PermissionType.RaiseRequest or PermissionType.UpdateOrder,
+                UserRole.Production => action is PermissionType.UpdateOrder or PermissionType.CreateDelivery,
+                UserRole.Scheduling => action is PermissionType.RaiseRequest or PermissionType.ApproveRequest or PermissionType.EditOrder or PermissionType.UpdateOrder or PermissionType.CreateDelivery,
+                UserRole.Administrator => true,
+                _ => false
+            };
+        }
+
+        public bool PermissionInherited(PermissionType action)
+        {
+            return !ExplicitGrantsPermission(action) && RoleGrantsPermission(action);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace ProjectLighthouse.Model.Drawings
         public string ManufacturingApprovalBy { get; set; }
         public DateTime ManufacturingApprovalDate { get; set; }
 
-        public bool EngineeringApprived { get; set; }
+        public bool EngineeringApproved { get; set; }
         public string EngineeringApprovalBy { get; set; }
         public DateTime EngineeringApprovalDate { get; set; }
 

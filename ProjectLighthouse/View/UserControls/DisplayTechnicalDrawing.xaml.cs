@@ -37,6 +37,11 @@ namespace ProjectLighthouse.View.UserControls
                 control.rev.Text = control.Drawing.DrawingType == TechnicalDrawing.Type.Production
                     ? $"Revision {control.Drawing.Revision}{control.Drawing.AmendmentType}"
                     : $"Development v.{control.Drawing.Revision}{control.Drawing.AmendmentType}";
+                control.issueDate.Text = $"Issued {control.Drawing.ApprovedDate:dd/MM/yyyy}";
+                control.newBadge.Visibility = control.Drawing.ApprovedDate.AddDays(7) > System.DateTime.Now 
+                    ? Visibility.Visible 
+                    : Visibility.Collapsed;
+
 
                 if (!File.Exists(filePath))
                 {

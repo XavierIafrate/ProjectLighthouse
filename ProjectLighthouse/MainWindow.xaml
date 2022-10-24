@@ -236,7 +236,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource Blue}" />
+                <Rectangle Grid.ColumnSpan="2" x:Name="userArea" Fill="{StaticResource Blue}" />
                 <StackPanel Margin="20,10" VerticalAlignment="Center">
                     <TextBlock
                         x:Name="LoggedInUserName"

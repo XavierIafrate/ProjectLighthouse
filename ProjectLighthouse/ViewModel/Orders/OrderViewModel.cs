@@ -51,10 +51,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             get { return selectedOrder; }
             set
             {
-                //if (value == null)
-                //{
-                //    return;
-                //}
                 selectedOrder = value;
 
                 LoadOrderCard();
@@ -381,6 +377,10 @@ namespace ProjectLighthouse.ViewModel.Orders
                     orders = Orders.Where(n => n.State > OrderState.Running && n.IsClosed).OrderByDescending(n => n.ModifiedAt).ToList();
                     break;
 
+                case "Development":
+                    orders = Orders.Where(n => n.IsResearch).OrderByDescending(n => n.CreatedAt).ToList();
+                    break;
+
                 case "All":
                     orders = Orders.OrderByDescending(n => n.CreatedAt).ToList();
                     break;
@@ -393,7 +393,6 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             if (FilteredOrders.Count > 0) SelectedOrder = FilteredOrders.First();
             OnPropertyChanged(nameof(FilteredOrders));
-
         }
 
         #endregion Loading

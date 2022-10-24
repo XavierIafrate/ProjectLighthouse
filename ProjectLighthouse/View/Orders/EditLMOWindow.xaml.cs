@@ -138,13 +138,13 @@ namespace ProjectLighthouse.View.Orders
             NotesScroller.ScrollToBottom();
 
             PurchaseOrderTextBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.UpdateOrder) && canEdit;
-            BarStockComboBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && !Order.BarIsVerified && canEdit;
-            SpareBarsTextBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit;
-            researchCheckBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit;
+            BarStockComboBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && !Order.BarIsVerified && canEdit;
+            SpareBarsTextBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
+            researchCheckBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             composeMessageControls.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
 
-            AddItemButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && Order.State < OrderState.Complete && canEdit;
-            GetDrawingUpdatesButton.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit && Order.State < OrderState.Complete;
+            AddItemButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && Order.State < OrderState.Complete && canEdit;
+            GetDrawingUpdatesButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit && Order.State < OrderState.Complete;
 
             SaveButton.IsEnabled = canEdit;
 
@@ -224,7 +224,7 @@ namespace ProjectLighthouse.View.Orders
             Running_Checkbox.IsEnabled = tier3;
 
             Complete_Checkbox.IsEnabled = tier4 && !Order.IsCancelled;
-            Cancelled_Checkbox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit;
+            Cancelled_Checkbox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -581,6 +581,7 @@ namespace ProjectLighthouse.View.Orders
             }
 
             MessageBox.Show("Updated drawings were found and the order records amended.", "Now up to date", MessageBoxButton.OK, MessageBoxImage.Information);
+            Drawings = new(Drawings);
             OnPropertyChanged(nameof(Drawings));
         }
 

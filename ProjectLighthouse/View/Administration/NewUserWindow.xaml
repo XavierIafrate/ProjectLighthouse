@@ -5,11 +5,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="NewUserWindow"
-    Width="800"
-    Height="450"
-    mc:Ignorable="d">
-    <StackPanel>
-        <TextBlock Style="{StaticResource title}" Text="Create New User" />
+    Title="Add New Window"
+    mc:Ignorable="d"
+    SizeToContent="Height" Width="444">
+    <StackPanel Margin="20">
+        <TextBlock Style="{StaticResource title}" Text="Create New User"  Margin="0,0,0,20"/>
+        <TextBox Style="{StaticResource DefaultTextBox}" Tag="Username" TextChanged="username_TextChanged" x:Name="username" LostFocus="username_LostFocus"/>
+        <TextBox Style="{StaticResource DefaultTextBox}" Tag="First Name" x:Name="firstName" TextChanged="firstName_TextChanged" LostFocus="firstName_LostFocus"/>
+        <TextBox Style="{StaticResource DefaultTextBox}" Tag="Last Name" x:Name="lastName" TextChanged="lastName_TextChanged" LostFocus="lastName_LostFocus"/>
+        <TextBlock Text="Password:" Style="{StaticResource section}" Margin="0,10,0,0"/>
+        <PasswordBox Style="{StaticResource PasswordBox}" FontSize="14" Height="30" PasswordChanged="PasswordBox_PasswordChanged" x:Name="password" MaxLength="16"/>
+        <Button Content="Create User" Margin="5,20,5,0" HorizontalAlignment="Right" x:Name="createButton" Click="createButton_Click"/>
     </StackPanel>
 </Window>

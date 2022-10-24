@@ -142,6 +142,7 @@
                 <ComboBoxItem Content="No Program" />
                 <ComboBoxItem Content="Ready" />
                 <ComboBoxItem Content="Complete" />
+                <ComboBoxItem Content="Development" />
                 <ComboBoxItem Content="All" />
             </ComboBox>
         </StatusBar>
@@ -196,8 +197,7 @@
                 HorizontalAlignment="Center"
                 FontSize="30"
                 Opacity="0.6"
-                Text="No results :("
-                 />
+                Text="No results :(" />
         </StackPanel>
         <ScrollViewer
             x:Name="OrderScroller"
@@ -241,9 +241,9 @@
                                             Margin="10,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
+                                            d:BorderBrush="Black"
                                             BorderBrush="{Binding SelectedOrder.State, Converter={StaticResource stateBrush}}"
                                             BorderThickness="3,0,0,0"
-                                            d:BorderBrush="Black"
                                             CornerRadius="5">
                                             <Grid>
                                                 <Border
@@ -291,13 +291,15 @@
 
                                 <StackPanel
                                     Grid.Column="2"
+                                    HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
-                                    Orientation="Horizontal" HorizontalAlignment="Right">
+                                    Orientation="Horizontal">
                                     <Button
                                         x:Name="printButton"
                                         Grid.Column="3"
+                                        Margin="0,0,10,0"
                                         Command="{Binding Path=PrintOrderCommand}"
-                                        Style="{StaticResource HeroPdfButton}" Margin="0,0,10,0" />
+                                        Style="{StaticResource HeroPdfButton}" />
                                     <Button
                                         Command="{Binding EditCommand}"
                                         CommandParameter="{Binding Path=SelectedOrder.Status}"
@@ -307,8 +309,14 @@
                             </Grid>
 
                             <Grid Margin="0,10,0,0" Visibility="{Binding SelectedOrder.IsResearch, Converter={StaticResource boolToVisible}}">
-                                <Border Background="{StaticResource Blue}" CornerRadius="3" Opacity="0.15"/>
-                                <Border BorderBrush="{StaticResource Blue}" BorderThickness="3,0,0,0" CornerRadius="3">
+                                <Border
+                                    Background="{StaticResource Blue}"
+                                    CornerRadius="3"
+                                    Opacity="0.15" />
+                                <Border
+                                    BorderBrush="{StaticResource Blue}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3">
                                     <StackPanel Margin="10,5" Orientation="Horizontal">
                                         <Path
                                             Width="12"
@@ -651,9 +659,7 @@
                             </Grid>
 
                             <Grid Margin="20,10,20,0">
-                                <Border
-                                    Background="{StaticResource Surface}"
-                                    CornerRadius="3" />
+                                <Border Background="{StaticResource Surface}" CornerRadius="3" />
                                 <Grid Margin="15,7">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto" />
@@ -661,13 +667,13 @@
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
+                                        <RowDefinition />
+                                        <RowDefinition />
                                     </Grid.RowDefinitions>
                                     <Path
+                                        Grid.RowSpan="2"
                                         Width="18"
                                         Height="18"
-                                        Grid.RowSpan="2"
                                         Margin="0,2,15,0"
                                         VerticalAlignment="Center"
                                         Data="M10,12A2,2 0 0,0 8,14A2,2 0 0,0 10,16A2,2 0 0,0 12,14A2,2 0 0,0 10,12M6,8A2,2 0 0,0 4,10A2,2 0 0,0 6,12A2,2 0 0,0 8,10A2,2 0 0,0 6,8M6,16A2,2 0 0,0 4,18A2,2 0 0,0 6,20A2,2 0 0,0 8,18A2,2 0 0,0 6,16M18,8A2,2 0 0,0 20,6A2,2 0 0,0 18,4A2,2 0 0,0 16,6A2,2 0 0,0 18,8M14,16A2,2 0 0,0 12,18A2,2 0 0,0 14,20A2,2 0 0,0 16,18A2,2 0 0,0 14,16M18,12A2,2 0 0,0 16,14A2,2 0 0,0 18,16A2,2 0 0,0 20,14A2,2 0 0,0 18,12M14,8A2,2 0 0,0 12,10A2,2 0 0,0 14,12A2,2 0 0,0 16,10A2,2 0 0,0 14,8M10,4A2,2 0 0,0 8,6A2,2 0 0,0 10,8A2,2 0 0,0 12,6A2,2 0 0,0 10,4Z"
@@ -675,36 +681,36 @@
                                         Stretch="UniformToFill" />
                                     <TextBlock
                                         Grid.Column="1"
+                                        FontSize="18"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource OnBackground}"
-                                        FontSize="18"
                                         Text="Bar Stock"
                                         TextWrapping="Wrap" />
                                     <TextBlock
-                                        Grid.Column="1"
                                         Grid.Row="1"
+                                        Grid.Column="1"
+                                        d:Text="PRB000-0000-000"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource OnBackground}"
                                         Text="{Binding SelectedOrder.BarID}"
-                                        d:Text="PRB000-0000-000"
                                         TextWrapping="Wrap" />
                                     <TextBlock
-                                        Grid.Column="1"
                                         Grid.Row="1"
+                                        Grid.Column="1"
                                         HorizontalAlignment="Right"
+                                        d:Text="5 of "
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource OnBackground}"
                                         Text="{Binding SelectedOrder.NumberOfBarsIssued, StringFormat='{}{0} of '}"
-                                        d:Text="5 of "
                                         TextWrapping="Wrap" />
                                     <TextBlock
-                                        Grid.Column="2"
                                         Grid.Row="1"
+                                        Grid.Column="2"
                                         HorizontalAlignment="Right"
+                                        d:Text="10 Issued"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource OnBackground}"
                                         Text="{Binding SelectedOrder.NumberOfBars, StringFormat='{}{0} Issued'}"
-                                        d:Text="10 Issued"
                                         TextWrapping="Wrap" />
                                 </Grid>
                             </Grid>
@@ -759,11 +765,11 @@
                                 Text="Notes" />
                             <Grid Visibility="{Binding NoNotes, Converter={StaticResource boolToCollapsed}}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="157*"/>
-                                    <ColumnDefinition Width="503*"/>
+                                    <ColumnDefinition Width="157*" />
+                                    <ColumnDefinition Width="503*" />
                                 </Grid.ColumnDefinitions>
-                                <uc:DisplayListOfNotes Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}" Grid.ColumnSpan="2" />
-                                <Rectangle Fill="#01ffffff" Grid.ColumnSpan="2" />
+                                <uc:DisplayListOfNotes Grid.ColumnSpan="2" Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}" />
+                                <Rectangle Grid.ColumnSpan="2" Fill="#01ffffff" />
                             </Grid>
                             <TextBlock
                                 HorizontalAlignment="Center"

@@ -49,7 +49,13 @@ namespace ProjectLighthouse.ViewModel.Core
         {
             if (App.CurrentUser is null) return;
             if (App.CurrentUser.UserName is null) return;
+
             users = DatabaseHelper.Read<User>().ToList();
+            List<Permission> permissionsList = DatabaseHelper.Read<Permission>();
+            for (int i = 0; i < users.Count; i++)
+            {
+                users[i].UserPermissions = permissionsList.Where(x => x.UserId == users[i].Id).ToList();
+            }
 
             MyNotifications = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName).ToList();
 
@@ -83,7 +89,9 @@ namespace ProjectLighthouse.ViewModel.Core
             result.AddRange(nots.Where(x => x.Seen && x.SeenTimeStamp > DateTime.Now.AddDays(-1)));
             result.AddRange(nots.Where(x => !x.Seen && x.TimeStamp > DateTime.Now.AddDays(-7)));
 
-            return result;
+            // TODO Deduplicated toast actions
+
+            return result.OrderBy(x => x.Seen).ThenByDescending(x => x.TimeStamp).ToList();
         }
 
         private void CreateTimer()
@@ -231,6 +239,7 @@ namespace ProjectLighthouse.ViewModel.Core
             {
                 EditLMOWindow window = new(action.Replace("viewManufactureOrder:", ""), App.CurrentUser.HasPermission(PermissionType.UpdateOrder));
                 window.ShowDialog();
+                window.Activate();
             }
             else if (action == "showNotifications")
             {

@@ -17,7 +17,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Requests
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.ApproveRequest);
         }
 
         public void Execute(object parameter)

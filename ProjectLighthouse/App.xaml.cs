@@ -9,7 +9,9 @@ using System.Collections.Generic;
 using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Navigation;
 using Windows.Foundation.Collections;
 
 namespace ProjectLighthouse
@@ -29,42 +31,31 @@ namespace ProjectLighthouse
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            DateTime startTime = DateTime.Now;
             base.OnStartup(e);
             this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 
-            ROOT_PATH = Environment.UserName == "xavier"
-                ? @"C:\Users\xavie\Documents\lighthouse_test\"
-                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\";
-
-            if (!Directory.Exists(ROOT_PATH))
+            if (!EnvironmentContext.Setup())
             {
-                MessageBox.Show("Could not locate root directory.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Something wen't wrong while setting up the environment, Lighthouse cannot start.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
                 return;
             }
 
-            EnsureAppData();
-
-            DevMode = Debugger.IsAttached;
-            DatabaseHelper.DatabasePath = $"{ROOT_PATH}manufactureDB_debug.db3";
-
-            //CheckSheetEditor editor = new();
-            //editor.ShowDialog();
-
-            //return;
-
+            Task.Run(() => EnsureAppData());
+            
             Window = new();
-            MainViewModel VM = new()
+            MainViewModel = new()
             {
                 MainWindow = Window
             };
 
-            MainViewModel = VM;
+            Window.DataContext = MainViewModel;
+            Window.viewModel = MainViewModel;
 
-            Window.DataContext = VM;
-            Window.viewModel = VM;
+            Debug.WriteLine("Load time: " + (DateTime.Now - startTime).TotalMilliseconds.ToString());
 
-            bool userLoggedIn = VM.LoginRoutine();
+            bool userLoggedIn = MainViewModel.LoginRoutine();
 
             if (!userLoggedIn)
             {
@@ -73,7 +64,6 @@ namespace ProjectLighthouse
             }
 
             Window.Show();
-
             Window.AddVersionNumber();
 
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
@@ -175,23 +165,6 @@ namespace ProjectLighthouse
             DbCommand.Dispose();
             DbConnection.Close();
 
-        }
-
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-        private static string? GetWorkstationLogistics()
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-        {
-            string jsonLogisticsMachines = File.ReadAllText($"{ROOT_PATH}/PackingStations.json");
-            Dictionary<string, string> machines = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonLogisticsMachines);
-            foreach (string key in machines.Keys)
-            {
-                if (key.ToUpper() == Environment.MachineName.ToUpper())
-                {
-                    return machines[key];
-                }
-            }
-
-            return null;
         }
 
         protected override void OnExit(ExitEventArgs e)

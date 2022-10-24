@@ -8,7 +8,6 @@
     xmlns:view="clr-namespace:ProjectLighthouse.View"
     Title="Lighthouse User Settings"
     Width="800"
-    d:DataContext="{d:DesignInstance Type=model:User}"
     SizeToContent="Height"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">

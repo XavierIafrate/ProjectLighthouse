@@ -41,19 +41,19 @@
                     Click="ClearButton_Click"
                     Style="{StaticResource ClearButton}" />
             </Grid>
-            <ListBox
+            <ListView
                 Grid.Row="1"
                 Margin="5"
                 HorizontalContentAlignment="Stretch"
                 d:ItemsSource="{d:SampleData ItemCount=10}"
                 ItemsSource="{Binding FilteredBarOverviews}"
                 SelectedValue="{Binding SelectedBarStock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ListBox.ItemTemplate>
+                <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayBarOverview Bar="{Binding}" />
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ListView.ItemTemplate>
+            </ListView>
             <CheckBox
                 Grid.Row="2"
                 Margin="0,0,0,7"
@@ -224,17 +224,18 @@
                         Command="{Binding IssueBarCmd}"
                         Content="New Issue" />
                 </Grid>
-                <ListBox
+                <ListView
+                    Margin="5,5,5,50"
                     HorizontalContentAlignment="Stretch"
                     ItemsSource="{Binding SelectedBarStock.Orders}"
                     SelectedValue="{Binding SelectedOrder}"
                     Visibility="{Binding DependentOrdersVis}">
-                    <ListBox.ItemTemplate>
+                    <ListView.ItemTemplate>
                         <DataTemplate>
                             <uc:DisplayOrderBarIssues Order="{Binding}" />
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </ListView.ItemTemplate>
+                </ListView>
             </StackPanel>
         </ScrollViewer>
     </Grid>
