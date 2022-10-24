@@ -1,5 +1,5 @@
-﻿using ProjectLighthouse.Model.Scheduling;
-using SQLite;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model.Administration
@@ -14,11 +14,12 @@ namespace ProjectLighthouse.Model.Administration
         public string Model { get; set; }
         public string IPAddress { get; set; }
         public string ControllerReference { get; set; }
-        public int MaxDiameter { get; set; }
-        public int MaxLength { get; set; }
-        public int SoftMinDiameter { get; set; }
-        public int SoftMaxDiameter { get; set; }
+        public double MaxDiameter { get; set; }
+        public double MaxLength { get; set; }
         public double PartOff { get; set; }
+        public bool OutOfService { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string CreatedBy { get; set; }
 
         [Ignore]
         public List<MaintenanceEvent> Maintenance { get; set; }

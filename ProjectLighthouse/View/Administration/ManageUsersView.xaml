@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:DesignHeight="832.899"
-    d:DesignWidth="800"
+    d:DesignWidth="1200"
     Background="White"
     mc:Ignorable="d">
 
@@ -69,9 +69,9 @@
             <Button
                 Grid.Row="1"
                 HorizontalAlignment="Right"
-                Command="{Binding getLoginReportCommand}"
-                Content="Download Report"
-                Style="{StaticResource BlueButton}" />
+                Command="{Binding addUserCommand}"
+                Content="+ New User"
+                Style="{StaticResource GreenButton}" />
         </Grid>
 
         <StackPanel
@@ -198,13 +198,13 @@
                     <TextBlock
                         Grid.Column="3"
                         Style="{StaticResource section}"
-                        Text="{Binding SelectedUser.UserRole, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                        Text="{Binding SelectedUser.Role, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         Visibility="{Binding ReadControlsVis}" />
                     <ComboBox
                         Grid.Column="3"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         ItemsSource="{Binding roles, Mode=OneTime}"
-                        SelectedItem="{Binding SelectedRole, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                        SelectedValue="{Binding SelectedRole, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                         Visibility="{Binding EditControlsVis}" />
                 </Grid>
                 <Grid HorizontalAlignment="Center">
@@ -214,14 +214,33 @@
                         Content="Reset Password"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
-                <TextBlock
-                    Margin="0,20,0,0"
-                    Style="{StaticResource section}"
-                    Text="Permissions" />
-                <ListView MinHeight="50" ItemsSource="{Binding SelectedUserPermissions}">
+                <Grid>
+                    <TextBlock
+                        Margin="0,20,0,0"
+                        Style="{StaticResource section}"
+                        Text="Permissions" />
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button
+                        Margin="5,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Content="Grant"
+                        Style="{StaticResource BlueButton}"
+                        Command="{Binding addPermissionCommand}"/>
+                        <Button
+                        Margin="5,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Content="Revoke"
+                        Style="{StaticResource CancelButton}"
+                        Command="{Binding removePermissionCommand}"/>
+                        
+                    </StackPanel>
+                </Grid>
+                <ListView MinHeight="50" ItemsSource="{Binding SelectedUserPermissions}" SelectedValue="{Binding SelectedPermission, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <uc:DisplayEditablePermission Permission="{Binding}" Margin="10,2,10,3"/>
+                            <uc:DisplayEditablePermission Margin="10,2,10,3" Permission="{Binding}" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

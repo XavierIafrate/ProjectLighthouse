@@ -9,7 +9,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vc="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
-    xmlns:viewModel="clr-namespace:ProjectLighthouse.ViewModel"
     d:Background="White"
     SizeChanged="UserControl_SizeChanged"
     d:DesignWidth="1350"
@@ -299,7 +298,7 @@
                                     IsEnabled="{Binding OpenFileButtonEnabled}"
                                     HorizontalAlignment="Right"
                                     Command="{Binding OpenDrawingCmd}"
-                                    Content="{Binding OpenFileButtonText}"
+                                    Content="{Binding OpenFileButtonText, FallbackValue='FILE_OPEN'}"
                                     Style="{StaticResource BlueButton}" />
                             </Grid>
 
@@ -412,8 +411,10 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <Path
                                         Grid.RowSpan="2"
@@ -421,6 +422,7 @@
                                         VerticalAlignment="Center"
                                         Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,15L18,7L16.59,5.58L10,12.17L7.41,9.59L6,11L10,15Z"
                                         Fill="{StaticResource Green}" />
+                                    
                                     <TextBlock
                                         Grid.Column="1"
                                         FontSize="18"
@@ -437,16 +439,48 @@
                                         Foreground="{StaticResource Green}"
                                         TextWrapping="Wrap">
 
-                                        <Run Text="This drawing was approved on" />
+                                        <Run Text="Formal approval granted on" />
                                         <Run Text="{Binding SelectedDrawing.ApprovedDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
                                         <Run Text="by" />
                                         <Run Text="{Binding SelectedDrawing.ApprovedBy}" />
                                     </TextBlock>
 
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        FontSize="13"
+                                        Visibility="{Binding SelectedDrawing.ManufacturingApproved, Converter={StaticResource showIfTrue}}"
+                                        FontStyle="Italic"
+                                        Foreground="{StaticResource Green}"
+                                        TextWrapping="Wrap">
+
+                                        <Run Text="Manufacturing approval granted on" />
+                                        <Run Text="{Binding SelectedDrawing.ManufacturingApprovalDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
+                                        <Run Text="by" />
+                                        <Run Text="{Binding SelectedDrawing.ManufacturingApprovalBy}" />
+                                    </TextBlock>
+
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        FontSize="13"
+                                        Visibility="{Binding SelectedDrawing.EngineeringApproved, Converter={StaticResource showIfTrue}}"
+                                        FontStyle="Italic"
+                                        Foreground="{StaticResource Green}"
+                                        TextWrapping="Wrap">
+
+                                        <Run Text="Engineering approval granted on" />
+                                        <Run Text="{Binding SelectedDrawing.EngineeringApprovalDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
+                                        <Run Text="by" />
+                                        <Run Text="{Binding SelectedDrawing.EngineeringApprovalBy}" />
+                                    </TextBlock>
+
+                                    
+
                                 </Grid>
 
                             </Grid>
-
+                            
                             <Grid
                                 Grid.Row="4"
                                 Margin="10,5,10,0"

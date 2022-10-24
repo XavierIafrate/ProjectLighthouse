@@ -162,30 +162,6 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         }
 
-        void MigrateBarModel()
-        {
-            List<LatheManufactureOrder> allOrders = DatabaseHelper.Read<LatheManufactureOrder>();
-
-            foreach (LatheManufactureOrder order in allOrders)
-            {
-                if (!order.BarIsAllocated) continue;  /////// CHECK THIS BEFORE RUNNING
-
-                order.NumberOfBarsIssued = (int)System.Math.Ceiling(order.NumberOfBars);
-                BarIssue retrospectiveIssue = new()
-                {
-                    Date = order.CreatedAt,
-                    IssuedBy = "system",
-                    BarId = order.BarID,
-                    MaterialBatch = "n/a",
-                    OrderId = order.Name,
-                    Quantity = order.NumberOfBarsIssued,
-                    MaterialInfo = "n/a"
-                };
-
-                DatabaseHelper.Update(order);
-                DatabaseHelper.Insert(retrospectiveIssue);
-            }
-        }
         public void LoadData()
         {
             BarStock = DatabaseHelper.Read<BarStock>()

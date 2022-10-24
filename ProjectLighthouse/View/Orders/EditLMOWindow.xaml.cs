@@ -581,6 +581,7 @@ namespace ProjectLighthouse.View.Orders
             }
 
             MessageBox.Show("Updated drawings were found and the order records amended.", "Now up to date", MessageBoxButton.OK, MessageBoxImage.Information);
+            Drawings = new(Drawings);
             OnPropertyChanged(nameof(Drawings));
         }
 

@@ -2,15 +2,19 @@
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Reporting;
+using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.ViewModel.Commands.UserManagement;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows;
+using ViewModel.Commands.UserManagement;
 using Windows.Web.Syndication;
 
 namespace ProjectLighthouse.ViewModel.Administration
@@ -37,6 +41,13 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
+        private EditablePermission selectedPermission;
+
+        public EditablePermission SelectedPermission
+        {
+            get { return selectedPermission; }
+            set { selectedPermission = value; OnPropertyChanged(); }
+        }
 
         private UserRole selectedRole;
         public UserRole SelectedRole
@@ -115,9 +126,14 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public EditUserCommand editCommand { get; set; }
         public SaveUserEditCommand saveCommand { get; set; }
+        public AddUserCommand addUserCommand { get; set; }
         public DeleteUserCommand deleteUserCommand { get; set; }
         public ResetUserPasswordCommand resetPasswordCommand { get; set; }
         public GetLoginReportCommand getLoginReportCommand { get; set; }
+        public GrantPermissionCommand addPermissionCommand { get; set; }
+        public RevokePermissionCommand removePermissionCommand { get; set; }
+
+
         #endregion
         public ManageUsersViewModel()
         {
@@ -138,6 +154,9 @@ namespace ProjectLighthouse.ViewModel.Administration
             deleteUserCommand = new(this);
             resetPasswordCommand = new(this);
             getLoginReportCommand = new(this);
+            addPermissionCommand = new(this);
+            removePermissionCommand = new(this);
+            addUserCommand = new(this);
 
             LoadData();
 
@@ -168,7 +187,6 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void SaveEdit()
         {
-
             if (!IsValidEmail(SelectedUser.EmailAddress) && !string.IsNullOrEmpty(SelectedUser.EmailAddress))
             {
                 MessageBox.Show("Invalid email address", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -177,7 +195,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             ReadControlsVis = Visibility.Visible;
             EditControlsVis = Visibility.Collapsed;
-
+            SelectedUser.Role = SelectedRole;
             DatabaseHelper.Update(SelectedUser);
             int user = SelectedUser.Id;
             LoadData();
@@ -253,7 +271,73 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void CreateNewUser()
         {
+            NewUserWindow window = new();
+            window.ShowDialog();
 
+            if(window.SaveExit)
+            {
+                LoadData();
+
+                SelectedUser = Users.Find(x => x.UserName == window.username.Text);
+            }
+        }
+
+        public void AddPermission()
+        {
+            if (SelectedPermission == null)
+            {
+                MessageBox.Show("No permission is selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (SelectedUser.HasPermission(SelectedPermission.Action))
+            {
+                MessageBox.Show($"User already has permission to {SelectedPermission.DisplayText}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            Permission newPermission = new()
+            {
+                UserId = SelectedUser.Id,
+                PermittedAction = SelectedPermission.Action
+            };
+
+            DatabaseHelper.Insert(newPermission);
+
+            allPermissionsGiven.Add(newPermission);
+            SelectedUser.UserPermissions.Add(newPermission);
+
+            LoadUserDetails();
+        }
+
+        public void RevokePermission()
+        {
+            if (SelectedPermission == null)
+            {
+                MessageBox.Show("No permission is selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (!SelectedUser.HasPermission(SelectedPermission.Action))
+            {
+                MessageBox.Show($"User already unable to '{SelectedPermission.DisplayText}'", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (SelectedUser.RoleGrantsPermission(SelectedPermission.Action))
+            {
+                MessageBox.Show($"The action '{SelectedPermission.DisplayText}' cannot be revoked as it is granted by the user type.", "Cannot revoke permission", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Permission toDelete = SelectedUser.UserPermissions.Find(x => x.PermittedAction == SelectedPermission.Action);
+
+            DatabaseHelper.Delete(toDelete);
+
+            allPermissionsGiven.Remove(toDelete);
+            SelectedUser.UserPermissions.Remove(toDelete);
+
+            LoadUserDetails();
         }
 
         public static bool IsValidEmail(string email)  // Stolen from MS Docs

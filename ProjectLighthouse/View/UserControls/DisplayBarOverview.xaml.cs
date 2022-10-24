@@ -1,7 +1,6 @@
 ﻿using ProjectLighthouse.Model.Material;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -27,7 +26,9 @@ namespace ProjectLighthouse.View.UserControls
 
             control.WarningFlag.Visibility = control.Bar.Priority == 0 ? Visibility.Visible : Visibility.Collapsed;
             control.WaitingFlag.Visibility = control.Bar.Priority == 1 ? Visibility.Visible : Visibility.Collapsed;
-            control.OKFlag.Visibility = control.Bar.Priority >=2 ? Visibility.Visible : Visibility.Collapsed;
+            control.OKFlag.Visibility = control.Bar.Priority >= 2 ? Visibility.Visible : Visibility.Collapsed;
+
+            control.AlarmFlag.Visibility = control.Bar.UrgentProblem ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public DisplayBarOverview()

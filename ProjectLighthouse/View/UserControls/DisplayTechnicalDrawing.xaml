@@ -18,31 +18,52 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
             <TextBlock
                 x:Name="filename"
                 VerticalAlignment="Center"
-                FontSize="18"
+                FontSize="16"
                 FontWeight="SemiBold"
                 Text="Product_Name" />
-            <TextBlock
-                x:Name="rev"
-                Grid.Row="1"
-                VerticalAlignment="Center"
-                FontSize="16"
-                FontStyle="Italic"
-                Foreground="{StaticResource Purple}"
-                Text="Revision 0A" />
+                <Border x:Name="newBadge" Margin="5,2,0,0" Background="{StaticResource Teal}" Padding="5,2" CornerRadius="2" VerticalAlignment="Center">
+                    <TextBlock Text="New!" Foreground="{StaticResource OnTeal}" FontSize="10" FontStyle="Italic"/>
+                </Border>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <TextBlock
+                    x:Name="rev"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource Purple}"
+                    Text="Revision 0A" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource Purple}"
+                    Text=" - " />
+                <TextBlock
+                    x:Name="issueDate"
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource Purple}"
+                    Text="Issued 01/01/1970" />
+            </StackPanel>
 
             <Button
                 x:Name="openButton"
                 Grid.RowSpan="2"
                 Grid.Column="2"
+                VerticalAlignment="Center"
                 Click="OpenButton_Click"
-                Content="Open" />
+                Content="Open"
+                Style="{StaticResource OpenPdfButton}" />
         </Grid>
     </Grid>
 </UserControl>

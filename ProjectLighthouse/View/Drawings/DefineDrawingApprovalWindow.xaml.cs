@@ -20,7 +20,7 @@ namespace ProjectLighthouse.View.Drawings
         public void SetupInterface()
         {
             int MaxRev = DrawingsInGroup.Max(x => x.Revision);
-            TechnicalDrawing.Amendment maxAmd = DrawingsInGroup.Max(x => x.AmendmentType);
+            TechnicalDrawing.Amendment maxAmd = DrawingsInGroup.Where(x => x.Revision == MaxRev).Max(x => x.AmendmentType);
 
             revPreview.Text = $"Rev.{MaxRev + 1}{TechnicalDrawing.Amendment.A}";
             amdPreview.Text = $"Rev.{MaxRev}{maxAmd + 1}";
@@ -62,7 +62,7 @@ namespace ProjectLighthouse.View.Drawings
             }
 
             int MaxRev = DrawingsInGroup.Max(x => x.Revision);
-            TechnicalDrawing.Amendment maxAmd = DrawingsInGroup.Max(x => x.AmendmentType);
+            TechnicalDrawing.Amendment maxAmd = DrawingsInGroup.Where(x => x.Revision == MaxRev).Max(x => x.AmendmentType);
 
             if ((bool)amendmentOpt.IsChecked)
             {

@@ -112,7 +112,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
             }
 
-            Lathes = DatabaseHelper.Read<Lathe>();
+            Lathes = DatabaseHelper.Read<Lathe>().Where(x => !x.OutOfService).ToList();
             FilterOptions = new()
             {
                 "Unallocated"
@@ -269,7 +269,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                     if (Math.Abs((nextStarting - ending).TotalHours) >= resolution)
                     {
                         Problems.Add(new() { WarningText = $"{FilteredItems[i].Name} will overflow by {(ending - nextStarting).TotalHours:0} hours", StartDate = nextStarting.AddSeconds(-1), TimeToComplete = 0, Important = true });
-
                     }
                 }
                 else

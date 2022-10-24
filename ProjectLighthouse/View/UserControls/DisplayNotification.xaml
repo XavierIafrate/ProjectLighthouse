@@ -36,11 +36,11 @@
                         CornerRadius="5" />
                     <TextBlock
                         Grid.Column="1"
+                        MaxWidth="230"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         d:Text="NOTIFICATION_HEADER"
                         FontSize="18"
-                        MaxWidth="230"
                         FontWeight="Bold"
                         Text="{Binding Header}"
                         TextTrimming="CharacterEllipsis" />

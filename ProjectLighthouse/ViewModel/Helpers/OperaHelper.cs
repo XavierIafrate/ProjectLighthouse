@@ -48,7 +48,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             List<PurchaseLine> line = lines.Where(x => x.Product == item && x.PurchaseReference == order).ToList();
             if (line.Count == 0)
             {
-                errs.Add($"No lines found for {order}.");
+                errs.Add($"No lines found for {item} on {order}.");
                 return errs;
             }
 
