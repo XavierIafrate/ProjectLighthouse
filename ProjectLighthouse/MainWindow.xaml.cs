@@ -2,6 +2,7 @@
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
@@ -114,6 +115,7 @@ namespace ProjectLighthouse
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
+
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
         }
@@ -121,6 +123,11 @@ namespace ProjectLighthouse
         private void viewPort_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             App.MainViewModel.NotificationsBarVis = Visibility.Collapsed;
+        }
+
+        private void OpenGithubButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo() { FileName= "https://github.com/XavierIafrate/ProjectLighthouse",  UseShellExecute = true });
         }
     }
 }

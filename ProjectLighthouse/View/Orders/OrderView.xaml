@@ -107,6 +107,7 @@
         </Grid>
 
         <ListView
+            d:ItemsSource="{d:SampleData ItemCount=10}"
             Grid.Row="2"
             HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding Path=FilteredOrders}"

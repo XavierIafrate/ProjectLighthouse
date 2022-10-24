@@ -9,7 +9,7 @@
     xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Lighthouse"
     Width="1500"
-    Height="849"
+    Height="850"
     MinWidth="1200"
     MinHeight="700"
     MaxWidth="2000"
@@ -54,28 +54,28 @@
             </Grid.RowDefinitions>
 
             <!--#region Logo area-->
-            <StackPanel VerticalAlignment="Center" Margin="20">
+            <StackPanel Margin="20" VerticalAlignment="Center">
                 <Viewbox MaxWidth="200" MaxHeight="80">
                     <Grid>
                         <Image
-                        x:Name="LogoMono"
-                        Width="150"
-                        VerticalAlignment="Center"
-                        RenderOptions.BitmapScalingMode="Fant"
-                        Source="/Resources/LighthouseLogo_Mono.png" />
+                            x:Name="LogoMono"
+                            Width="150"
+                            VerticalAlignment="Center"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            Source="/Resources/LighthouseLogo_Mono.png" />
                         <Image
-                        x:Name="LogoColour"
-                        Width="150"
-                        VerticalAlignment="Center"
-                        RenderOptions.BitmapScalingMode="Fant"
-                        Source="/Resources/LighthouseLogo.png"
-                        Visibility="Hidden" />
+                            x:Name="LogoColour"
+                            Width="150"
+                            VerticalAlignment="Center"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            Source="/Resources/LighthouseLogo.png"
+                            Visibility="Hidden" />
                         <Rectangle
-                        Cursor="Hand"
-                        Fill="Transparent"
-                        MouseDown="Rectangle_MouseDown"
-                        MouseEnter="Rectangle_MouseEnter"
-                        MouseLeave="Rectangle_MouseLeave" />
+                            Cursor="Hand"
+                            Fill="Transparent"
+                            MouseDown="Rectangle_MouseDown"
+                            MouseEnter="Rectangle_MouseEnter"
+                            MouseLeave="Rectangle_MouseLeave" />
                     </Grid>
                 </Viewbox>
             </StackPanel>
@@ -97,7 +97,7 @@
                             Foreground="{StaticResource OnRed}"
                             Text="Development Build" />
                     </Grid>
-                    <StackPanel Margin="0,20" x:Name="PurchasingModule">
+                    <StackPanel x:Name="PurchasingModule" Margin="0,20">
                         <ToggleButton
                             x:Name="new_request_button"
                             Command="{Binding UpdateViewCommand}"
@@ -112,7 +112,7 @@
                             Style="{StaticResource ViewRequests_MenuItem}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,20" x:Name="ProductionModule">
+                    <StackPanel x:Name="ProductionModule" Margin="0,20">
                         <ToggleButton
                             x:Name="orders_button"
                             Command="{Binding UpdateViewCommand}"
@@ -142,7 +142,7 @@
                             Style="{StaticResource Drawings_MenuItem}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,20" x:Name="AssemblyModule">
+                    <StackPanel x:Name="AssemblyModule" Margin="0,20">
                         <ToggleButton
                             x:Name="calibration_button"
                             Command="{Binding UpdateViewCommand}"
@@ -163,8 +163,7 @@
                             Style="{StaticResource Deliveries_MenuItem}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,20" x:Name="AdminModule">
-                        
+                    <StackPanel x:Name="AdminModule" Margin="0,20">
                         <ToggleButton
                             x:Name="analytics_button"
                             Command="{Binding UpdateViewCommand}"
@@ -188,8 +187,7 @@
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Dev Area / Debug"
                             Content="Dev Area"
-                            Style="{StaticResource Debug_MenuItem}"
-                            Visibility="Collapsed" />
+                            Style="{StaticResource Debug_MenuItem}" />
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
@@ -264,30 +262,45 @@
         <!--#region Window adorners-->
         <Grid Grid.Column="1" Visibility="Visible">
 
-            <Grid Margin="20,5,10,5" 
-                  HorizontalAlignment="Left" VerticalAlignment="Center"
+            <Grid
+                Margin="20,5,10,5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
                 Visibility="{Binding BetaWarningVis}">
                 <Border
-                        Background="{StaticResource Red}"
-                        CornerRadius="5"
-                        Opacity="0.15"/>
-                <Border BorderBrush="{StaticResource Red}" BorderThickness="5,0,0,0" CornerRadius="3">
+                    Background="{StaticResource Red}"
+                    CornerRadius="5"
+                    Opacity="0.15" />
+                <Border
+                    BorderBrush="{StaticResource Red}"
+                    BorderThickness="5,0,0,0"
+                    CornerRadius="3">
                     <StackPanel Orientation="Horizontal">
-                        <Path Margin="10,0,0,0" Data="M11 13H13V14H11V13M21 5V11C21 16.5 17.2 21.7 12 23C6.8 21.7 3 16.5 3 11V5L12 1L21 5M17 10H14.8C14.6 9.4 14.2 8.9 13.7 8.5L14.9 7.3L14.2 6.6L12.8 8H12C11.8 8 11.5 8 11.3 8.1L9.9 6.6L9.1 7.4L10.3 8.6C9.8 8.9 9.4 9.4 9.2 10H7V11H9V12H7V13H9V14H7V15H9.2C9.6 16.2 10.7 17 12 17S14.4 16.2 14.8 15H17V14H15V13H17V12H15V11H17V10M11 12H13V11H11V12Z"
-                              Height="35" Stretch="UniformToFill" Fill="{StaticResource Red}"/>
-                        <StackPanel 
-                    Margin="15,5">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Foreground="{StaticResource Red}"
-                            Text="Module in Beta" />
+                        <Path
+                            Height="35"
+                            Margin="10,0,0,0"
+                            Data="M11 13H13V14H11V13M21 5V11C21 16.5 17.2 21.7 12 23C6.8 21.7 3 16.5 3 11V5L12 1L21 5M17 10H14.8C14.6 9.4 14.2 8.9 13.7 8.5L14.9 7.3L14.2 6.6L12.8 8H12C11.8 8 11.5 8 11.3 8.1L9.9 6.6L9.1 7.4L10.3 8.6C9.8 8.9 9.4 9.4 9.2 10H7V11H9V12H7V13H9V14H7V15H9.2C9.6 16.2 10.7 17 12 17S14.4 16.2 14.8 15H17V14H15V13H17V12H15V11H17V10M11 12H13V11H11V12Z"
+                            Fill="{StaticResource Red}"
+                            Stretch="UniformToFill" />
+                        <StackPanel Margin="15,5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource Red}"
+                                Text="Module in Beta" />
 
-                        <TextBlock Foreground="{StaticResource Red}" FontStyle="Italic" Opacity="0.6" FontSize="13" Text="Core actions have been tested but may break in edge cases. Please report any bugs you encounter!" MaxWidth="350" TextWrapping="Wrap"/>
+                            <TextBlock
+                                MaxWidth="350"
+                                FontSize="13"
+                                FontStyle="Italic"
+                                Foreground="{StaticResource Red}"
+                                Opacity="0.6"
+                                Text="Core actions have been tested but may break in edge cases. Please report any bugs you encounter!"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
                     </StackPanel>
-                    </StackPanel>
-                    
+
                 </Border>
             </Grid>
             <Image
@@ -318,13 +331,12 @@
             Grid.Row="1"
             Grid.Column="1"
             Content="{Binding SelectedViewModel}"
-            MouseDown="viewPort_MouseDown"/>
+            MouseDown="viewPort_MouseDown" />
         <!--#endregion-->
 
         <!--#region Notifications Bar-->
         <Grid
             Grid.Row="1"
-            HorizontalAlignment="Right"
             Grid.Column="2"
             Width="420"
             Visibility="{Binding NotificationsBarVis}">
@@ -333,7 +345,12 @@
                 Background="{StaticResource Surface}"
                 CornerRadius="8">
                 <Border.Effect>
-                    <DropShadowEffect Color="Black" BlurRadius="50" ShadowDepth="8" Opacity="0.5" Direction="220"/>
+                    <DropShadowEffect
+                        BlurRadius="50"
+                        Direction="220"
+                        Opacity="0.5"
+                        ShadowDepth="8"
+                        Color="Black" />
                 </Border.Effect>
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
@@ -364,14 +381,14 @@
                         </Button>
                     </Grid>
                     <ListView
-                        d:ItemsSource="{d:SampleData ItemCount=10}"
                         Grid.Row="1"
                         MaxWidth="380"
                         Margin="10,0"
+                        d:ItemsSource="{d:SampleData ItemCount=10}"
                         ItemsSource="{Binding Notifications}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <userControls:DisplayNotification Notification="{Binding Path=.}" MaxWidth="320" />
+                                <userControls:DisplayNotification MaxWidth="320" Notification="{Binding Path=.}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ListView>
@@ -385,9 +402,9 @@
                             CornerRadius="15">
                             <Grid>
                                 <Border
-                                    HorizontalAlignment="Center"
-                                    Width="250"
                                     Name="Mask"
+                                    Width="250"
+                                    HorizontalAlignment="Center"
                                     Background="{StaticResource Blue}"
                                     CornerRadius="20" />
                                 <StackPanel x:Name="image">
