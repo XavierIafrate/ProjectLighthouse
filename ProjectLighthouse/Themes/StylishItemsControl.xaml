@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
                         <ScrollViewer
                             x:Name="PART_ContentHost"
                             Margin="10"

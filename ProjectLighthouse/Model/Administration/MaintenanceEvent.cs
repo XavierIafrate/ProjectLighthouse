@@ -19,12 +19,14 @@ namespace ProjectLighthouse.Model.Administration
         [NotNull]
         public int IntervalMonths { get; set; }
         public bool Active { get; set; }
+        public bool RequireDocumentation { get; set; }
 
         [Ignore]
         public bool IsDue { 
             get {
-                return LastCompleted == DateTime.MinValue 
-                    || LastCompleted < DateTime.Now.AddMonths(-1 * IntervalMonths);
+                return Active && 
+                      (LastCompleted == DateTime.MinValue 
+                    || LastCompleted < DateTime.Now.AddMonths(-1 * IntervalMonths));
             } 
         }
 
@@ -33,8 +35,14 @@ namespace ProjectLighthouse.Model.Administration
         {
             get
             {
-                return LastCompleted.AddMonths(IntervalMonths);
+                // TODO : Figure this out
+                return Active ? StartingDate.AddMonths(IntervalMonths) : LastCompleted;
             }
+        }
+
+        public DateTime GetNextDue()
+        {
+
         }
 
         public override string ToString()

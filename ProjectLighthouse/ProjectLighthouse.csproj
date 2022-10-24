@@ -51,6 +51,7 @@
     <None Remove="Resources\GIF\fireworks.gif" />
     <None Remove="Resources\GIF\milhouse.gif" />
     <None Remove="Resources\GIF\sylvester.gif" />
+    <None Remove="Resources\GIF\zoolander.gif" />
     <None Remove="Resources\LighthouseLogo_Mono.png" />
     <None Remove="Resources\Lighthouse_Mono_L_Embedded.png" />
     <None Remove="Resources\Lighthouse_Splash_Screen.png" />
@@ -111,6 +112,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\GIF\travolta.gif" />
+    <Resource Include="Resources\GIF\zoolander.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\LighthouseLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

@@ -19,10 +19,10 @@
                     FontWeight="SemiBold"
                     VerticalAlignment="Center"
                     Text="{Binding MaintenanceEvent, RelativeSource={RelativeSource AncestorType=UserControl}}" d:Text="EVENT_DESCRIPTION" />
-                <Border BorderBrush="{StaticResource Red}" BorderThickness="3,0,0,0" CornerRadius="3" HorizontalAlignment="Left" Margin="7,0" Visibility="{Binding MaintenanceEvent.IsDue, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource showIfTrue}}">
+                <Border BorderBrush="{StaticResource Red}" BorderThickness="3,0,0,0" CornerRadius="3" HorizontalAlignment="Left" Margin="7,0" VerticalAlignment="Center" Visibility="{Binding MaintenanceEvent.IsDue, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource showIfTrue}}">
                     <Grid>
                         <Border Background="{StaticResource Red}" Opacity="0.15" CornerRadius="3"/>
-                        <TextBlock Text="Due Now" Foreground="{StaticResource Red}" FontWeight="SemiBold" Margin="5,3"/>
+                        <TextBlock Text="Due Now" Foreground="{StaticResource Red}" FontWeight="SemiBold" FontSize="11" Margin="5,2"/>
                     </Grid>
                 </Border>
             </StackPanel>

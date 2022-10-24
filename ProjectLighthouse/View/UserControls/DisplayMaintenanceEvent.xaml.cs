@@ -51,6 +51,12 @@ namespace ProjectLighthouse.View.UserControls
 
                 control.NextDueText.Foreground = (Brush)Application.Current.Resources[colour];
             }
+
+            if (!control.MaintenanceEvent.Active)
+            {
+                control.NextDueText.Foreground = (Brush)Application.Current.Resources["OnBackground"];
+                control.NextDueText.Text = "Event Inactive";
+            }
         }
 
         public DisplayMaintenanceEvent()

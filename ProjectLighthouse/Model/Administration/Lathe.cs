@@ -1,4 +1,6 @@
-﻿using SQLite;
+﻿using Microsoft.Xaml.Behaviors;
+using ProjectLighthouse.Model.Core;
+using SQLite;
 using System;
 using System.Collections.Generic;
 
@@ -20,9 +22,14 @@ namespace ProjectLighthouse.Model.Administration
         public bool OutOfService { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
+        public string Remarks { get; set; }
 
         [Ignore]
         public List<MaintenanceEvent> Maintenance { get; set; }
+        [Ignore]
+        public List<Attachment> Attachments { get; set; }
+        [Ignore]
+        public List<Attachment> ServiceRecords { get; set; }
 
         public override string ToString()
         {

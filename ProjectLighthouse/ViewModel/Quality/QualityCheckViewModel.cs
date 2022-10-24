@@ -222,17 +222,13 @@ namespace ProjectLighthouse.ViewModel.Quality
                 return;
             }
 
-            string storeName = $@"lib\{Path.GetRandomFileName()}";
-            File.Copy(filePicker.FileName, $"{App.ROOT_PATH}{storeName}");
-
             Attachment newAttachment = new()
             {
                 DocumentReference = "q" + SelectedCheck.Id,
-                AttachmentStore = storeName,
-                Extension = Path.GetExtension(filePicker.FileName),
-                FileName = Path.GetFileNameWithoutExtension(filePicker.FileName),
                 Remark = "",
             };
+
+            newAttachment.CopyToStore(filePicker.FileName);
 
             DatabaseHelper.Insert(newAttachment);
 

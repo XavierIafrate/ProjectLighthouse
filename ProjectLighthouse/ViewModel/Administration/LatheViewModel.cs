@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
@@ -25,7 +26,12 @@ namespace ProjectLighthouse.ViewModel.Administration
         public Lathe SelectedLathe
         {
             get { return selectedLathe; }
-            set { selectedLathe = value; OnPropertyChanged(); }
+            set 
+            { 
+                selectedLathe = value; 
+                OnPropertyChanged(); 
+                LatheSelected = value != null; 
+            }
         }
 
         private List<MaintenanceEvent> maintenanceEvents;
@@ -51,12 +57,26 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
+        public MaintenanceEvent SelectedMaintenanceEvent { get; set; }
+
         public AddMaintenanceEventCommand AddMaintenanceEventCmd { get; set; }
+        public EditMaintenanceCommand EditMaintenanceEventCmd { get; set; }
+
+        public List<Attachment> Attachments { get; set; }
+
+        private bool latheSelected;
+        public bool LatheSelected
+        {
+            get { return latheSelected; }
+            set { latheSelected = value; }
+        }
+
 
 
         public LatheViewModel()
         {
             AddMaintenanceEventCmd = new(this);
+            EditMaintenanceEventCmd = new(this);
 
             GetData();
             FilterData();
@@ -71,12 +91,16 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
             MaintenanceEvents = DatabaseHelper.Read<MaintenanceEvent>().ToList();
+            Attachments = DatabaseHelper.Read<Attachment>().ToList();
 
             foreach (Lathe lathe in Lathes)
             {
                 lathe.Maintenance = MaintenanceEvents
                     .Where(x => x.Lathe == lathe.Id)
                     .ToList();
+
+                lathe.Attachments = Attachments.Where(x => x.DocumentReference == $"l{lathe.Id}").ToList();
+                lathe.ServiceRecords = Attachments.Where(x => lathe.Maintenance.Any(y => $"s{y.Id}" == x.DocumentReference)).ToList();
             }
         }
 
@@ -97,10 +121,60 @@ namespace ProjectLighthouse.ViewModel.Administration
             ).ToList();
         }
 
+        public void AddLathe()
+        {
+
+        }
+
+        public void EditLathe()
+        {
+
+        }
+
+        public void AddAttachment()
+        {
+
+        }
+
+        public void RemoveAttachment()
+        {
+
+        }
+
         public void AddMaintenanceEvent()
         {
             CreateMaintenanceEventWindow window = new(SelectedLathe);
-            window.Show();
+            window.ShowDialog();
+
+            if (!window.SaveExit)
+            {
+                return;
+            }
+            MaintenanceEvents.Add(window.addedEvent);
+            string currLathe = SelectedLathe.Id;
+            GetData();
+            FilterData();
+            SelectedLathe = FilteredLathes.Find(x => x.Id == currLathe);            
+        }
+
+        public void EditMaintenanceEvent()
+        {
+            CreateMaintenanceEventWindow window = new(SelectedLathe, SelectedMaintenanceEvent)
+            {
+                Owner = App.MainViewModel.MainWindow
+            };
+
+            window.ShowDialog();
+
+            if (!window.SaveExit)
+            {
+                return;
+            }
+
+            string currLathe = SelectedLathe.Id;
+            GetData();
+            FilterData();
+            SelectedLathe = FilteredLathes.Find(x => x.Id == currLathe);
         }
     }
 }

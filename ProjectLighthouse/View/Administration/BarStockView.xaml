@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vc="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:Background="White"
     d:DesignHeight="900"
     d:DesignWidth="1350"

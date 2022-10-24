@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
+using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Administration
 {
@@ -14,9 +16,16 @@ namespace ProjectLighthouse.View.Administration
             SearchBox.Text = "";
         }
 
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void MaintenanceListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (sender is not ListView lst) return;
+            EditMaintenanceButton.IsEnabled = lst.SelectedValue is MaintenanceEvent;
+        }
 
+        private void AttachmentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is not ListView lst) return;
+            RemoveAttachmentButton.IsEnabled = lst.SelectedValue is Attachment;
         }
     }
 }
