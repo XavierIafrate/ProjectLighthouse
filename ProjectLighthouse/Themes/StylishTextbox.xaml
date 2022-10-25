@@ -2,6 +2,13 @@
     <Style x:Key="Default" TargetType="TextBox">
         <Setter Property="Margin" Value="5" />
         <Setter Property="Background" Value="{StaticResource Surface}" />
+
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource Red}" />
+                <Setter Property="Background" Value="MistyRose" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!--  Don't touch  -->

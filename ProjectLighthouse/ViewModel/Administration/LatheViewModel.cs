@@ -158,7 +158,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             {
                 return;
             }
-            MaintenanceEvents.Add(window.addedEvent);
+            MaintenanceEvents.Add(window.AddedEvent);
             string currLathe = SelectedLathe.Id;
             GetData();
             FilterData();

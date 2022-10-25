@@ -16,7 +16,7 @@ namespace View.Administration
     {
         private Lathe lathe;
         public bool SaveExit;
-        public MaintenanceEvent addedEvent;
+        public MaintenanceEvent AddedEvent;
         public MaintenanceEvent existingEvent;
         public bool editing;
 
