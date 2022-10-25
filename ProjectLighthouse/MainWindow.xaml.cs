@@ -93,7 +93,7 @@ namespace ProjectLighthouse
             //CalculationsHelperWindow test = new();
             //test.Show();
 
-            AboutWindow window = new();
+            AboutWindow window = new() { Owner = this };
             window.ShowDialog();
         }
 
@@ -119,11 +119,6 @@ namespace ProjectLighthouse
         private void viewPort_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             App.MainViewModel.NotificationsBarVis = Visibility.Collapsed;
-        }
-
-        private void OpenGithubButton_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo() { FileName= "https://github.com/XavierIafrate/ProjectLighthouse",  UseShellExecute = true });
         }
     }
 }

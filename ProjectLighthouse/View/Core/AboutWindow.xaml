@@ -10,35 +10,48 @@
     Width="571"
     ResizeMode="NoResize"
     SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <StackPanel Margin="30" VerticalAlignment="Center">
         <Image
             Width="150"
-            Margin="0,0,0,20"
+            Margin="0,0,0,10"
             RenderOptions.BitmapScalingMode="Fant"
             Source="/Resources/LighthouseLogo.png" />
         <StackPanel Margin="30,0">
             <TextBlock
-                Margin="0,0,0,20"
+                Margin="0,0,0,10"
                 HorizontalAlignment="Center"
                 Style="{StaticResource title}"
-                Text="About" />
-            <TextBlock Style="{StaticResource subtitle}" Text="Project Lighthouse" />
+                Text="About Lighthouse" />
 
-            <TextBlock Foreground="{StaticResource Blue}" Text="Written by Xavier Iafrate" />
 
-            <Grid Height="20" />
             <TextBlock
-                x:Name="CopyRightText"
-                Margin="0,0,0,10"
+                Margin="0,0,0,20"
                 HorizontalAlignment="Center"
-                Style="{StaticResource statement}"
-                Text="copyright 2021" />
-            <Grid Height="20" />
+                FontFamily="Consolas"
+                FontSize="18"
+                Foreground="{StaticResource Purple}"
+                Text="Written by Xavier Iafrate" />
 
             <TextBlock
                 Margin="0,0,0,10"
                 HorizontalAlignment="Center"
+                FontFamily="Consolas"
+                Text="Lighthouse is published by Wixroyd under GNU GPL v3, which ensures the source code will always be available for anyone to see."
+                TextWrapping="Wrap" />
+            <Button
+                x:Name="githubButton"
+                Click="githubButton_Click"
+                Style="{StaticResource ViewGithubButton}" />
+            <Grid Height="20" />
+
+            <TextBlock
+                Margin="0,0,0,10"
+                HorizontalAlignment="Center"
+                FontSize="13"
+                FontWeight="SemiBold"
+                Foreground="{StaticResource Purple}"
                 Style="{StaticResource statement}"
                 Text="Lighthouse is made possible by Open Source Libraries" />
             <StackPanel Margin="30,0">
@@ -127,7 +140,7 @@
                     <TextBlock
                         Grid.Column="1"
                         Margin="5,0"
-                        Text="" />
+                        Text="n/a" />
                     <TextBlock Grid.Column="3" Text="SQLite-net" />
                 </Grid>
                 <Grid>
@@ -146,18 +159,40 @@
                 </Grid>
 
             </StackPanel>
-            <TextBlock
-                Margin="0,30,0,5"
-                HorizontalAlignment="Center"
-                FontStyle="Italic"
-                FontWeight="SemiBold"
-                Foreground="{StaticResource Blue}"
-                Text="If I have seen further, it is by standing upon the shoulders of giants" />
-            <TextBlock HorizontalAlignment="Center" Text="Isaac Newton" />
+            <Border
+                Margin="10"
+                BorderBrush="{StaticResource Purple}"
+                BorderThickness="0,0,0,3"
+                CornerRadius="3">
+                <Grid>
+                    <Border
+                        Background="{StaticResource Purple}"
+                        CornerRadius="3"
+                        Opacity="0.15" />
+                    <StackPanel Margin="10">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Purple}"
+                            Text="If I have seen further, it is by standing upon the shoulders of giants."
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Margin="10,5,10,0"
+                            HorizontalAlignment="Right"
+                            FontStyle="Italic"
+                            Foreground="{StaticResource Purple}"
+                            Text="- Isaac Newton" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <TextBlock Text="With thanks to Emily Rose for the logo design." HorizontalAlignment="Center" FontStyle="Italic"/>
+
         </StackPanel>
         <Image
-            Width="100"
-            Margin="0,30,0,0"
+            Width="150"
+            Margin="0,15,0,0"
             RenderOptions.BitmapScalingMode="Fant"
             Source="/Resources/mwl-dark.png" />
     </StackPanel>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 
 namespace ProjectLighthouse.View
@@ -8,7 +9,11 @@ namespace ProjectLighthouse.View
         public AboutWindow()
         {
             InitializeComponent();
-            CopyRightText.Text = $"Copyright Wixroyd Group {DateTime.Now:yyyy}";
+        }
+
+        private void githubButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo() { FileName = "https://github.com/XavierIafrate/ProjectLighthouse", UseShellExecute = true });
         }
     }
 }
