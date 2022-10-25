@@ -40,10 +40,10 @@ namespace ProjectLighthouse.Model.Administration
             }
         }
 
-        public DateTime GetNextDue()
-        {
+        //public DateTime GetNextDue()
+        //{
 
-        }
+        //}
 
         public override string ToString()
         {

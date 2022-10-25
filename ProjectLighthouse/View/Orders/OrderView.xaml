@@ -83,10 +83,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Button
-            HorizontalAlignment="Left"
-            Command="{Binding NewOrderCommand}"
-            Content="+  New Order" />
+        
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -121,22 +118,41 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <StatusBar
+        <Grid
             Grid.Row="3"
-            Margin="10,5"
-            HorizontalAlignment="Left"
+            Margin="5,5"
             Background="Transparent">
-            <TextBlock Foreground="{StaticResource OnBackground}" Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Margin="0"
+                Grid.Column="0"
+            HorizontalAlignment="Left"
+            Command="{Binding NewOrderCommand}"
+            Content="+  New" />
             <Separator
+                Grid.Column="1"
+                Margin="5,0"
+                Background="{StaticResource OnBackground}"
+                Opacity="0.25" />
+            <TextBlock Grid.Column="2" d:Text="99 order(s)" Foreground="{StaticResource OnBackground}" Opacity="0.6" VerticalAlignment="Center" Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
+            <Separator
+                Grid.Column="3"
                 Margin="5,0"
                 Background="{StaticResource OnBackground}"
                 Opacity="0.25" />
             <TextBlock
+                Grid.Column="4"
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
                 Foreground="{StaticResource OnBackground}"
                 Text="Filter:" />
-            <ComboBox Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox Grid.Column="5" Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="All Active" IsSelected="True" />
                 <ComboBoxItem Content="Not Ready" />
                 <ComboBoxItem Content="No Program" />
@@ -145,7 +161,7 @@
                 <ComboBoxItem Content="Development" />
                 <ComboBoxItem Content="All" />
             </ComboBox>
-        </StatusBar>
+        </Grid>
 
         <!--#region Display Order-->
         <StackPanel

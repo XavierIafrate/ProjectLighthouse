@@ -122,7 +122,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            SetDateWindow dateWindow = new(orderObject);
+            SetDateWindow dateWindow = new(orderObject) { Owner = App.MainViewModel.MainWindow};
             dateWindow.ShowDialog();
 
             if (dateWindow.SaveExit)

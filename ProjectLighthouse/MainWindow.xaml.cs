@@ -92,11 +92,11 @@ namespace ProjectLighthouse
 
         private void Rectangle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            CalculationsHelperWindow test = new();
-            test.Show();
+            //CalculationsHelperWindow test = new();
+            //test.Show();
 
-            //AboutWindow window = new();
-            //window.ShowDialog();
+            AboutWindow window = new();
+            window.ShowDialog();
         }
 
         private void Rectangle_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)

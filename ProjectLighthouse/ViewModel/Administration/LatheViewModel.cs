@@ -61,6 +61,8 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public AddMaintenanceEventCommand AddMaintenanceEventCmd { get; set; }
         public EditMaintenanceCommand EditMaintenanceEventCmd { get; set; }
+        public AddLatheCommand AddLatheCmd { get; set; }
+        public EditLatheCommand EditLatheCmd { get; set; }
 
         public List<Attachment> Attachments { get; set; }
 
@@ -77,6 +79,9 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             AddMaintenanceEventCmd = new(this);
             EditMaintenanceEventCmd = new(this);
+
+            AddLatheCmd = new(this);
+            EditLatheCmd = new(this);
 
             GetData();
             FilterData();
@@ -123,12 +128,15 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void AddLathe()
         {
-
+            AddLatheWindow window = new(Lathes) { Owner = App.MainViewModel.MainWindow };
+            window.ShowDialog();
         }
 
         public void EditLathe()
         {
+            AddLatheWindow window = new(Lathes, SelectedLathe) { Owner = App.MainViewModel.MainWindow };
 
+            window.ShowDialog();
         }
 
         public void AddAttachment()

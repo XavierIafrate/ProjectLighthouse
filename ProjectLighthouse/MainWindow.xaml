@@ -236,7 +236,10 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <Rectangle Grid.ColumnSpan="2" x:Name="userArea" Fill="{StaticResource Blue}" />
+                <Rectangle
+                    x:Name="userArea"
+                    Grid.ColumnSpan="2"
+                    Fill="{StaticResource Blue}" />
                 <StackPanel Margin="20,10" VerticalAlignment="Center">
                     <TextBlock
                         x:Name="LoggedInUserName"
@@ -339,6 +342,7 @@
             Grid.Row="1"
             Grid.Column="2"
             Width="420"
+            HorizontalAlignment="Right"
             Visibility="{Binding NotificationsBarVis}">
             <Border
                 Margin="5,10,20,10"

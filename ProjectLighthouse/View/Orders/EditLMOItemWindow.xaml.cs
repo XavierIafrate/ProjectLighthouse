@@ -325,7 +325,7 @@ namespace ProjectLighthouse.View.Orders
             }
 
 
-            EditLotWindow editWindow = new((int)_toEdit, CanEdit);
+            EditLotWindow editWindow = new((int)_toEdit, CanEdit) { Owner = this };
             Hide();
             editWindow.ShowDialog();
 

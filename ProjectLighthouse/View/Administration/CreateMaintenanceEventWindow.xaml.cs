@@ -36,6 +36,7 @@ namespace View.Administration
                 editing = true;
                 this.existingEvent = existingEvent;
                 titleText.Text = $"Editing '{existingEvent.Description}'";
+                this.Title= "Editing Maintenance Event";
                 descriptionTextBox.IsEnabled = App.CurrentUser.Role == UserRole.Administrator;
                 descriptionTextBox.Text = existingEvent.Description;
                 intervalText.Text = existingEvent.IntervalMonths.ToString("0");
