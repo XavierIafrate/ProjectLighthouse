@@ -76,7 +76,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         public bool LatheSelected
         {
             get { return latheSelected; }
-            set { latheSelected = value; }
+            set { latheSelected = value; OnPropertyChanged(); }
         }
 
         public LatheViewModel()
@@ -92,11 +92,6 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             GetData();
             FilterData();
-
-            if (FilteredLathes.Count > 0)
-            {
-                SelectedLathe = Lathes[0];
-            }
         }
 
         private void GetData()
@@ -121,16 +116,23 @@ namespace ProjectLighthouse.ViewModel.Administration
             if (string.IsNullOrEmpty(SearchTerm))
             {
                 FilteredLathes = new(Lathes);
-                return;
+
+            }
+            else
+            {
+                FilteredLathes = Lathes.Where(x =>
+                       x.IPAddress.Contains(SearchTerm)
+                    || x.FullName.ToUpperInvariant().Contains(SearchTerm)
+                    || x.Id.ToUpperInvariant().Contains(SearchTerm)
+                    || x.Make.ToUpperInvariant().Contains(SearchTerm)
+                    || x.Model.ToUpperInvariant().Contains(SearchTerm)
+                    ).ToList();
             }
 
-            FilteredLathes = Lathes.Where(x =>
-               x.IPAddress.Contains(SearchTerm)
-            || x.FullName.ToUpperInvariant().Contains(SearchTerm)
-            || x.Id.ToUpperInvariant().Contains(SearchTerm)
-            || x.Make.ToUpperInvariant().Contains(SearchTerm)
-            || x.Model.ToUpperInvariant().Contains(SearchTerm)
-            ).ToList();
+            if (FilteredLathes.Count > 0)
+            {
+                SelectedLathe = FilteredLathes.First();
+            }
         }
 
         public void AddLathe()

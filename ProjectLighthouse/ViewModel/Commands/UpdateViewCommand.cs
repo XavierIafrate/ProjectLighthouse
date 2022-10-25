@@ -146,13 +146,6 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Deliveries"
                 };
             }
-            else if (parameter.ToString() == "Dev Area / Debug")
-            {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new DebugViewModel();
-                viewModel.NavText = "Dev Area";
-            }
             else if (parameter.ToString() == "Manage Users")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;

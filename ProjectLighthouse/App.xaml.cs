@@ -27,7 +27,6 @@ namespace ProjectLighthouse
         public static MainViewModel MainViewModel { get; set; }
         public static NotificationManager NotificationsManager { get; set; }
         public static string AppDataDirectory { get; set; }
-        public static List<string> AppTrace = new();
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -43,7 +42,7 @@ namespace ProjectLighthouse
             }
 
             Task.Run(() => EnsureAppData());
-            
+
             Window = new();
             MainViewModel = new()
             {
@@ -51,7 +50,8 @@ namespace ProjectLighthouse
             };
 
             Window.DataContext = MainViewModel;
-            Window.viewModel = MainViewModel;
+            Window.viewModel = MainViewModel; 
+            Window.AddVersionNumber();
 
             Debug.WriteLine("Load time: " + (DateTime.Now - startTime).TotalMilliseconds.ToString());
 
@@ -64,8 +64,7 @@ namespace ProjectLighthouse
             }
 
             Window.Show();
-            Window.AddVersionNumber();
-
+            
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {
                 ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
@@ -78,6 +77,11 @@ namespace ProjectLighthouse
                 });
             };
 
+            Task.Run(() => StartNotificationsManager());
+        }
+
+        private void StartNotificationsManager()
+        {
             NotificationsManager = new();
             NotificationsManager.Initialise();
             NotificationsManager.DataRefreshTimer.Start();

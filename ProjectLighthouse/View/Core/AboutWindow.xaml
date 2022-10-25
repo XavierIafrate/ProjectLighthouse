@@ -137,7 +137,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock FontWeight="SemiBold" Text="WpfAnimatedGif" />
+                    <TextBlock FontWeight="SemiBold" Text="XamlAnimatedGif" />
                     <TextBlock
                         Grid.Column="1"
                         Margin="5,0"

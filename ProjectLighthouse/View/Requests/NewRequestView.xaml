@@ -5,7 +5,7 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:Background="White"
@@ -128,8 +128,8 @@
                                 <Image
                                     Name="Receiver"
                                     MaxWidth="400"
-                                    gif:ImageBehavior.AnimateInDesignMode="True"
-                                    gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/GIF/travolta.gif"
+                                    gif:AnimationBehavior.AnimateInDesignMode="True"
+                                    gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/travolta.gif"
                                     RenderOptions.BitmapScalingMode="HighQuality" />
                                 <StackPanel.OpacityMask>
                                     <VisualBrush Visual="{Binding ElementName=Mask}" />

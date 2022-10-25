@@ -81,9 +81,8 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            AdminModule.Visibility = App.CurrentUser.Role == UserRole.Administrator
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            manage_users_button.IsEnabled = App.CurrentUser.Role == UserRole.Administrator;
+            manage_lathes_button.IsEnabled = App.CurrentUser.HasPermission(Model.Core.PermissionType.ConfigureMaintenance);
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.Role.ToString();

@@ -84,10 +84,6 @@
                 <adminView:ManageUsersView />
             </DataTemplate>
 
-            <!--<DataTemplate DataType="{x:Type vms:DebugViewModel}">
-                <views:DebugView />
-            </DataTemplate>-->
-
             <DataTemplate DataType="{x:Type adminVm:LatheViewModel}">
                 <adminView:LatheView />
             </DataTemplate>

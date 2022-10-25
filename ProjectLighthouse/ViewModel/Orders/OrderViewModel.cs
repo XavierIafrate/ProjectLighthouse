@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -234,7 +235,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         #region Data Refreshing
 
-        public void Refresh()
+        async public void Refresh()
         {
             // Store user selection
             int? userSelection = null;
@@ -243,7 +244,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 userSelection = SelectedOrder.Id;
             }
 
-            LoadData();
+            await LoadData();
             CheckForClosedOrders();
             CheckForReopenedOrders();
 
@@ -319,7 +320,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         #endregion
 
         #region Loading
-        private void LoadData()
+        async private Task LoadData()
         {
             Orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
 
