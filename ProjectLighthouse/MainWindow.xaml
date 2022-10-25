@@ -61,13 +61,13 @@
                             x:Name="LogoMono"
                             Width="150"
                             VerticalAlignment="Center"
-                            RenderOptions.BitmapScalingMode="Fant"
+                            RenderOptions.BitmapScalingMode="HighQuality"
                             Source="/Resources/LighthouseLogo_Mono.png" />
                         <Image
                             x:Name="LogoColour"
                             Width="150"
                             VerticalAlignment="Center"
-                            RenderOptions.BitmapScalingMode="Fant"
+                            RenderOptions.BitmapScalingMode="HighQuality"
                             Source="/Resources/LighthouseLogo.png"
                             Visibility="Hidden" />
                         <Rectangle
@@ -306,13 +306,13 @@
 
                 </Border>
             </Grid>
-            <Image
+            <!--<Image
                 Width="120"
                 Margin="30,0"
                 HorizontalAlignment="Left"
                 RenderOptions.BitmapScalingMode="Fant"
                 Source="/Resources/MiB_Logo_Stacked_Colour.jpg"
-                Visibility="{Binding MiBVis}" />
+                Visibility="{Binding MiBVis}" />-->
             <Viewbox
                 MaxHeight="70"
                 Margin="50,15"

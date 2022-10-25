@@ -44,7 +44,6 @@ namespace ProjectLighthouse
 
 #if DEBUG
             Title += $" - {DatabaseHelper.DatabasePath}";
-            userArea.Fill = (Brush)App.Current.Resources["Red"];
 #endif
 
             DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;

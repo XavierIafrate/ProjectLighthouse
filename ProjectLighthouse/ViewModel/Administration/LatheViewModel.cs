@@ -1,12 +1,16 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using Microsoft.Win32;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using View.Administration;
 using ViewModel.Commands.Administration;
+using Windows.Storage.Pickers;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
@@ -61,6 +65,8 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public AddMaintenanceEventCommand AddMaintenanceEventCmd { get; set; }
         public EditMaintenanceCommand EditMaintenanceEventCmd { get; set; }
+        public AddAttachmentToLatheCommand AddAttachmentCmd { get; set; }
+        public RemoveAttachmentFromLatheCommand RemoveAttachmentCmd { get; set; }
         public AddLatheCommand AddLatheCmd { get; set; }
         public EditLatheCommand EditLatheCmd { get; set; }
 
@@ -73,12 +79,13 @@ namespace ProjectLighthouse.ViewModel.Administration
             set { latheSelected = value; }
         }
 
-
-
         public LatheViewModel()
         {
             AddMaintenanceEventCmd = new(this);
             EditMaintenanceEventCmd = new(this);
+
+            AddAttachmentCmd = new(this);
+            RemoveAttachmentCmd = new(this);
 
             AddLatheCmd = new(this);
             EditLatheCmd = new(this);
@@ -141,7 +148,13 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void AddAttachment()
         {
-
+            OpenFileDialog openFileDialog = new()
+            {
+                Filter = "PDF documents|*.pdf|Text files (*.txt)|*.txt|Excel Workbooks|*.xlsx|Images|*.png;*.jpg",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+            };
+            if (openFileDialog.ShowDialog() == false) return;
+            MessageBox.Show(openFileDialog.FileName);
         }
 
         public void RemoveAttachment()

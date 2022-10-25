@@ -1,5 +1,4 @@
-﻿
-using ProjectLighthouse;
+﻿using ProjectLighthouse;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -94,7 +93,7 @@ namespace View.Administration
 
                 if (SaveExit)
                 {
-                    addedEvent = newEvent;
+                    AddedEvent = newEvent;
                 }
             }
             else

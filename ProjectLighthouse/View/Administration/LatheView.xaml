@@ -331,7 +331,7 @@
                                         Margin="5,0"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
-                                        Command=""
+                                        Command="{Binding RemoveAttachmentCmd}"
                                         Content="Remove"
                                         IsEnabled="False"
                                         Style="{StaticResource CancelButton}" />
@@ -339,7 +339,7 @@
                                         Margin="5,0"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
-                                        Command=""
+                                        Command="{Binding AddAttachmentCmd}"
                                         Content="+Upload"
                                         Style="{StaticResource GreenButton}" />
                                 </StackPanel>
