@@ -5,17 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
              mc:Ignorable="d" d:Background="White" d:DesignWidth="220.765">
-    <Grid Margin="5">
+    <Grid Margin="15,8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel>
         <TextBlock FontWeight="SemiBold" Text="DOCUMENT_NAME" x:Name="FileName" VerticalAlignment="Center" MaxWidth="400" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
-        <TextBlock Text="N/A" x:Name="FileSize" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="Gray"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="N/A" x:Name="FileSize" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="{StaticResource Purple}"/>
+                <TextBlock Text=" N/A" x:Name="Date" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="Gray" Margin="5,0"/>
+                
+            </StackPanel>
             
         </StackPanel>
-        <Button x:Name="OpenButton" Click="OpenButton_Click" Content="Open" HorizontalAlignment="Right"/>
+        <Button x:Name="OpenButton" Click="OpenButton_Click" Content="Open" HorizontalAlignment="Right" Margin="0"/>
         <!--<Image x:Name="imgPreview"/>-->
     </Grid>
 </UserControl>

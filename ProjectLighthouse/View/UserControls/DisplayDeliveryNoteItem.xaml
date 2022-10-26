@@ -25,12 +25,12 @@
             Grid.Column="1"
             FontSize="16"
             FontWeight="SemiBold"
-            Text="{Binding Path=DelItem.Product, FallbackValue='PRODUCT_NAME', Mode=OneWay}" />
+            Text="{Binding Path=Item.Product, FallbackValue='PRODUCT_NAME', Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
         <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
             <TextBlock
                 FontSize="14"
                 Foreground="{StaticResource Blue}"
-                Text="{Binding Path=DelItem.ItemManufactureOrderNumber, FallbackValue='M00001'}" />
+                Text="{Binding Path=Item.ItemManufactureOrderNumber, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='M00001'}" />
             <TextBlock
                 FontSize="14"
                 Foreground="{StaticResource Blue}"
@@ -38,7 +38,7 @@
             <TextBlock
                 FontSize="14"
                 Foreground="{StaticResource Blue}"
-                Text="{Binding Path=DelItem.PurchaseOrderReference, FallbackValue='P012345'}" />
+                Text="{Binding Path=Item.PurchaseOrderReference, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='P012345'}" />
         </StackPanel>
 
         <TextBlock
@@ -48,6 +48,6 @@
             VerticalAlignment="Center"
             FontSize="15"
             FontFamily="Consolas"
-            Text="{Binding Path=DelItem.QuantityThisDelivery, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" FontWeight="SemiBold" />
+            Text="{Binding Path=Item.QuantityThisDelivery, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" FontWeight="SemiBold" />
     </Grid>
 </UserControl>

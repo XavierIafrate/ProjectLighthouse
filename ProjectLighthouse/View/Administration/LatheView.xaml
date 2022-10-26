@@ -350,7 +350,7 @@
                                 SelectionChanged="AttachmentListView_SelectionChanged">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <uc:DisplayAttachment />
+                                        <uc:DisplayAttachment Attachment="{Binding}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>

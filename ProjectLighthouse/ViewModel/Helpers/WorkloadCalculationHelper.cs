@@ -8,12 +8,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class WorkloadCalculationHelper
     {
-        public static Tuple<TimeSpan, DateTime> GetMachineWorkload(List<ScheduleItem> items)
+        public static Tuple<TimeSpan, DateTime> GetMachineWorkload(List<ScheduleItem> allItems)
         {
             double secondsOfRuntime = 0;
             DateTime lastItemFinished = DateTime.MinValue;
 
-            items = items.OrderBy(x => x.StartDate).ToList();
+
+            List<ScheduleItem> items = allItems.Where(x => x is not ScheduleWarning).OrderBy(x => x.StartDate).ToList();
 
             for (int i = 0; i < items.Count; i++)
             {

@@ -187,7 +187,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void CreateNewDelivery()
         {
-            CreateNewDeliveryWindow window = new();
+            CreateNewDeliveryWindow window = new() { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
             if (!window.SaveExit)
                 return;

@@ -21,7 +21,7 @@ namespace ProjectLighthouse.View.UserControls
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not DisplayAttachment control) return;
-            control.FileName.Text = control.Attachment.FileName;
+            control.FileName.Text = control.Attachment.FileName + control.Attachment.Extension;
             string fullPath = Path.Join(App.ROOT_PATH, control.Attachment.AttachmentStore);
             if (File.Exists(fullPath))
             {
@@ -31,6 +31,11 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.OpenButton.IsEnabled = false;
                 control.OpenButton.Content = "not found";
+            }
+
+            if (control.Attachment.CreatedAt != DateTime.MinValue)
+            {
+                control.Date.Text = control.Attachment.CreatedAt.ToString("dd/MM/yyyy");
             }
         }
 

@@ -155,8 +155,21 @@ namespace ProjectLighthouse.ViewModel.Administration
                 Filter = "PDF documents|*.pdf|Text files (*.txt)|*.txt|Excel Workbooks|*.xlsx|Images|*.png;*.jpg",
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
             };
+
             if (openFileDialog.ShowDialog() == false) return;
-            MessageBox.Show(openFileDialog.FileName);
+            if (!File.Exists(openFileDialog.FileName))
+            {
+                return;
+            }
+
+            Attachment attachment = new($"l{SelectedLathe.Id}");
+            attachment.CopyToStore(openFileDialog.FileName);
+            DatabaseHelper.Insert(attachment);
+
+            string currLathe = SelectedLathe.Id;
+            GetData();
+            FilterData();
+            SelectedLathe = FilteredLathes.Find(x => x.Id == currLathe);
         }
 
         public void RemoveAttachment()

@@ -24,6 +24,13 @@ namespace ProjectLighthouse.Model.Core
 
         }
 
+        public Attachment(string docReference)
+        {
+            DocumentReference = docReference;
+            CreatedAt = DateTime.Now;
+            CreatedBy = App.CurrentUser.UserName;
+        }
+
         public bool CopyToStore(string FilePath)
         {
             AttachmentStore = $@"lib\{Path.GetRandomFileName()}";

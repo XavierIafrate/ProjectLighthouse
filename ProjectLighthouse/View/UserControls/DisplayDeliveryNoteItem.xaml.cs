@@ -6,13 +6,8 @@ using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DisplayDeliveryNoteItem.xaml
-    /// </summary>
     public partial class DisplayDeliveryNoteItem : UserControl
     {
-
-
         public EditDeliveryNoteItemCommand EditCommand
         {
             get { return (EditDeliveryNoteItemCommand)GetValue(EditCommandProperty); }
@@ -23,8 +18,6 @@ namespace ProjectLighthouse.View.UserControls
         public static readonly DependencyProperty EditCommandProperty =
             DependencyProperty.Register("EditCommand", typeof(EditDeliveryNoteItemCommand), typeof(DisplayDeliveryNoteItem), new PropertyMetadata(null, SetValues));
 
-
-
         public DeliveryItem Item
         {
             get { return (DeliveryItem)GetValue(ItemProperty); }
@@ -34,19 +27,10 @@ namespace ProjectLighthouse.View.UserControls
         public static readonly DependencyProperty ItemProperty =
             DependencyProperty.Register("Item", typeof(DeliveryItem), typeof(DisplayDeliveryNoteItem), new PropertyMetadata(null, SetValues));
 
-        public DeliveryItem DelItem { get; set; }
-        public EditDeliveryNoteItemCommand EditCmd { get; set; }
-
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not DisplayDeliveryNoteItem control)
                 return;
-
-            control.DataContext = control;
-            if (e.Property.Name == nameof(Item))
-            {
-                control.DelItem = (DeliveryItem)e.NewValue;
-            }
 
             control.EditButton.Visibility = App.CurrentUser.Role == UserRole.Administrator ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -58,7 +42,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            EditCommand?.Execute(DelItem.Id);
+            EditCommand?.Execute(Item.Id);
         }
     }
 }

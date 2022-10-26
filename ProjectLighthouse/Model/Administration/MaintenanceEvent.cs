@@ -35,15 +35,36 @@ namespace ProjectLighthouse.Model.Administration
         {
             get
             {
-                // TODO : Figure this out
                 return Active ? StartingDate.AddMonths(IntervalMonths) : LastCompleted;
             }
         }
 
-        //public DateTime GetNextDue()
-        //{
+        public DateTime GetNextDue()
+        {
+            if (StartingDate > DateTime.Now)
+            {
+                return StartingDate;
+            }
 
-        //}
+            if (LastCompleted == DateTime.MinValue)
+            {
+                return StartingDate;
+            }
+
+            int paddingWeeks = 3;
+            if (IntervalMonths == 1)
+            {
+                paddingWeeks = 1;
+            }
+
+            DateTime dateTime = StartingDate;
+            while (dateTime < LastCompleted.AddDays(7*paddingWeeks))
+            {
+                dateTime.AddMonths(1);
+            }
+
+            return dateTime;
+        }
 
         public override string ToString()
         {

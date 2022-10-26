@@ -261,7 +261,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             Product matchedProduct = ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant());
             string toastImage = matchedProduct == null ? null : $@"lib\renders\{matchedProduct.ImageUrl}";
 
-            // TODO
             int newRequestId = DatabaseHelper.Read<sqlite_sequence>().Find(x => x.name == nameof(Request)).seq + 1;
 
             for (int i = 0; i < ToNotify.Count; i++)

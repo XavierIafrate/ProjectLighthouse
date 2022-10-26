@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:ProjectLighthouse.Model"
     xmlns:view="clr-namespace:ProjectLighthouse.View"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Lighthouse User Settings"
     Width="800"
     SizeToContent="Height"
@@ -61,10 +62,7 @@
                         d:ItemsSource="{d:SampleData ItemCount=10}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="10,2">
-                                    <TextBlock Text="{Binding DisplayText}" />
-                                    <TextBlock HorizontalAlignment="Right" Text="{Binding UserHasPermission}" />
-                                </Grid>
+                                <uc:DisplayEditablePermission Permission="{Binding}" Margin="10,3"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>

@@ -152,7 +152,6 @@ namespace ProjectLighthouse.View.Quality
                 return;
             }
 
-            // TODO
             sqlite_sequence sequence = DatabaseHelper.Read<sqlite_sequence>().ToList().Find(x => x.name == nameof(CalibratedEquipment));
             NewEquipment.EquipmentId = $"CE{sequence.seq + 1:0}";
             NewEquipment.EnteredSystem = System.DateTime.Now;

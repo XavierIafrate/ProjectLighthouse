@@ -123,7 +123,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 FilterOptions.Add(lathe.FullName);
             }
 
-            OnPropertyChanged(nameof(FilterOptions)); // TODO Is this right
+            OnPropertyChanged(nameof(FilterOptions));
         }
 
         private void SetView()
@@ -233,8 +233,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void GetProblems()
         {
-            // TODO: 
-            // Factor in required product times
+            // TODO: Factor in required product times
 
             for (int i = 0; i < FilteredItems.Count - 1; i++)
             {
@@ -300,17 +299,17 @@ namespace ProjectLighthouse.ViewModel.Orders
             MachineInfoInsights = $"{SelectedLathe.Make} {SelectedLathe.Model} [ID: {SelectedLathe.Id}]";
             MachineCapabilitiesInsights = $"Max part length: {SelectedLathe.MaxLength}mm\nMax part diameter: {SelectedLathe.MaxDiameter}mm";
 
-            if (FilteredItems.Count == 0)
+            if (FilteredItems.Where(x => x is LatheManufactureOrder).ToList().Count == 0)
             {
                 NumberOfOrdersInsights = "No orders assigned.";
             }
-            else if (FilteredItems.Count == 1)
+            else if (FilteredItems.Where(x => x is LatheManufactureOrder).ToList().Count == 1)
             {
                 NumberOfOrdersInsights = "1 order assigned";
             }
             else
             {
-                NumberOfOrdersInsights = $"{FilteredItems.Count} orders assigned";
+                NumberOfOrdersInsights = $"{FilteredItems.Where(x => x is LatheManufactureOrder).ToList().Count} orders assigned";
             }
 
             Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredItems);
@@ -340,7 +339,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void AddMaintenance()
         {
-            CreateService window = new(new MachineService(), Lathes);
+            CreateService window = new(new MachineService(), Lathes) { Owner = App.MainViewModel.MainWindow };
 
             window.ShowDialog();
 

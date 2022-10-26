@@ -431,7 +431,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void OpenPdfDrawing()
         {
-            // TODO
+            // TODO Implement new drawing system
             //ApproveDrawingWindow approveDrawingWindow = new(SelectedDrawing, SelectedGroup);
             //approveDrawingWindow.ShowDialog();
             //return;

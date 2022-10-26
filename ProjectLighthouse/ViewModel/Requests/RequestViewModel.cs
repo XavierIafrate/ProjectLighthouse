@@ -361,7 +361,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             window.ShowDialog();
         }
 
-        //TODO
+        //TODO Auto Append stuff
         private void CheckForAppendOppurtunities()
         {
             //List<TurnedProduct> productsOnOrder = new();

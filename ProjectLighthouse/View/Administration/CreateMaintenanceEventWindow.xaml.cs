@@ -25,6 +25,9 @@ namespace View.Administration
             forLatheText.Text = $"For {lathe.FullName}";
             StartDate.SelectedDate = DateTime.Today;
 
+            StartDate.DisplayDateStart = new DateTime(year: 2020, month: 1, day: 1);
+            StartDate.DisplayDateEnd = DateTime.Now.AddYears(1);
+
             this.lathe = lathe;
             ActiveCheckBox.Visibility = Visibility.Collapsed;
             RequireDocs.Visibility = Visibility.Collapsed;

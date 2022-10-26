@@ -89,7 +89,23 @@ namespace ProjectLighthouse.ViewModel.Core
             result.AddRange(nots.Where(x => x.Seen && x.SeenTimeStamp > DateTime.Now.AddDays(-1)));
             result.AddRange(nots.Where(x => !x.Seen && x.TimeStamp > DateTime.Now.AddDays(-7)));
 
-            // TODO Deduplicated toast actions
+
+            //TODO verify this
+            List<Notification> deduplicatedNots = new();
+            
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (string.IsNullOrEmpty(result[i].ToastAction))
+                {
+                    deduplicatedNots.Add(result[i]);
+                    continue;
+                }
+
+                if (!deduplicatedNots.Any(x => x.ToastAction == result[i].ToastAction))
+                {
+                    deduplicatedNots.Add(result[i]);
+                }
+            }
 
             return result.OrderBy(x => x.Seen).ThenByDescending(x => x.TimeStamp).ToList();
         }
@@ -110,6 +126,9 @@ namespace ProjectLighthouse.ViewModel.Core
 
         public void CheckForNotifications(bool multiToast)
         {
+            // TODO check this works with deduplication
+
+
             if (App.CurrentUser == null) return;
             List<Notification> nots = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName && x.TimeStamp.AddDays(7) > DateTime.Now).ToList();
 

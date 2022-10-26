@@ -160,7 +160,7 @@
 
             </StackPanel>
             <Border
-                Margin="10"
+                Margin="20"
                 BorderBrush="{StaticResource Purple}"
                 BorderThickness="0,0,0,3"
                 CornerRadius="3">
@@ -179,15 +179,17 @@
                             TextWrapping="Wrap" />
                         <TextBlock
                             Margin="10,5,10,0"
-                            HorizontalAlignment="Right"
-                            FontStyle="Italic"
+                            HorizontalAlignment="Center"
                             Foreground="{StaticResource Purple}"
-                            Text="- Isaac Newton" />
+                            Text="Isaac Newton" />
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <TextBlock Text="With thanks to Emily Rose for the logo design." HorizontalAlignment="Center" FontStyle="Italic"/>
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontStyle="Italic"
+                Text="With thanks to Emily Rose for the logo design." />
 
         </StackPanel>
         <Image
