@@ -128,7 +128,7 @@ namespace ProjectLighthouse.View.Drawings
             }
 
 
-            List<User> ToNotify = DatabaseHelper.Read<User>().Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.UserName != App.CurrentUser.UserName).ToList();
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.UserName != App.CurrentUser.UserName).ToList();
 
             for (int i = 0; i < ToNotify.Count; i++)
             {

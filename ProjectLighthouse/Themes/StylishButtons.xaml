@@ -184,7 +184,7 @@
         BasedOn="{StaticResource Default}"
         TargetType="Button">
         <Setter Property="Background" Value="{StaticResource Red}" />
-        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Setter Property="Foreground" Value="{StaticResource OnRed}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource RedDark}" />

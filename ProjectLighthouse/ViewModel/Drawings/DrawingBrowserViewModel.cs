@@ -417,7 +417,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
             SelectedDrawing.PrepareMarkedPdf();
 
-            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings)).ToList();
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.GetFullName() != App.CurrentUser.GetFullName()).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
                 DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Approved: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has approved this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));

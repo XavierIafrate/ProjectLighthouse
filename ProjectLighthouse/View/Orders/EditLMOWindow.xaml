@@ -12,6 +12,7 @@
     Width="700"
     MinHeight="600"
     MaxHeight="900"
+    d:MaxHeight="1500"
     Background="{StaticResource Background}"
     Closing="Window_Closing"
     ResizeMode="NoResize"
@@ -417,7 +418,7 @@
                             IsEnabled="False"
                             Visibility="{Binding Order.IsClosed, Converter={StaticResource boolToCollapsedOrVisible}}" />
                     </Grid>
-                    <ListView MinHeight="50" ItemsSource="{Binding Drawings}">
+                    <ListView MinHeight="50" ItemsSource="{Binding Drawings}" d:ItemsSource="{d:SampleData ItemCount=1}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <uc:DisplayTechnicalDrawing Drawing="{Binding Path=.}" />

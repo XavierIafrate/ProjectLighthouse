@@ -321,11 +321,11 @@ namespace ProjectLighthouse.View.Orders
             List<string> otherUsers;
             if (App.CurrentUser.Role >= UserRole.Scheduling)
             {
-                otherUsers = DatabaseHelper.Read<User>().Where(x => x.Role == UserRole.Production && x.ReceivesNotifications).Select(x => x.UserName).ToList();
+                otherUsers = App.NotificationsManager.users.Where(x => x.Role == UserRole.Production && x.ReceivesNotifications).Select(x => x.UserName).ToList();
             }
             else
             {
-                otherUsers = DatabaseHelper.Read<User>().Where(x => x.Role >= UserRole.Scheduling && x.ReceivesNotifications).Select(x => x.UserName).ToList();
+                otherUsers = App.NotificationsManager.users.Where(x => x.Role >= UserRole.Scheduling && x.ReceivesNotifications).Select(x => x.UserName).ToList();
             }
 
             toUpdate.AddRange(otherUsers);

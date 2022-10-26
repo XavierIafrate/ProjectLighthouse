@@ -9,9 +9,8 @@
     mc:Ignorable="d">
     <Grid>
         <Border
-            Grid.ColumnSpan="3"
             Background="{StaticResource Surface}"
-            CornerRadius="10" />
+            CornerRadius="3" />
         <Grid Margin="15,5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
