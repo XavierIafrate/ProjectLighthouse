@@ -12,7 +12,6 @@
     d:DesignWidth="1701"
     mc:Ignorable="d">
 
-
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:boolToHasProgram x:Key="boolToHasProgram" />
@@ -83,7 +82,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        
+
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -104,9 +103,9 @@
         </Grid>
 
         <ListView
-            d:ItemsSource="{d:SampleData ItemCount=10}"
             Grid.Row="2"
             HorizontalContentAlignment="Stretch"
+            d:ItemsSource="{d:SampleData ItemCount=10}"
             ItemsSource="{Binding Path=FilteredOrders}"
             SelectedValue="{Binding Path=SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             SelectionChanged="ListView_SelectionChanged">
@@ -123,36 +122,38 @@
             Margin="5,5"
             Background="Transparent">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button Margin="0"
+            <Button
                 Grid.Column="0"
-            HorizontalAlignment="Left"
-            Command="{Binding NewOrderCommand}"
-            Content="+  New" />
-            <Separator
+                Margin="0,0,5,0"
+                HorizontalAlignment="Left"
+                Style="{StaticResource BlueButton}"
+                Visibility="{Binding NewOrderButtonVis}"
+                Command="{Binding NewOrderCommand}"
+                Content="+  New" />
+
+            <Button
                 Grid.Column="1"
-                Margin="5,0"
-                Background="{StaticResource OnBackground}"
-                Opacity="0.25" />
-            <TextBlock Grid.Column="2" d:Text="99 order(s)" Foreground="{StaticResource OnBackground}" Opacity="0.6" VerticalAlignment="Center" Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
-            <Separator
-                Grid.Column="3"
-                Margin="5,0"
-                Background="{StaticResource OnBackground}"
-                Opacity="0.25" />
+                Margin="0,0,5,0"
+                HorizontalAlignment="Left"
+                Command="{Binding GetProgramPlannerCmd}"
+                Style="{StaticResource CSVButton}"
+                ToolTip="Programming Planner"/>
+
             <TextBlock
-                Grid.Column="4"
-                Margin="0,0,10,0"
+                Grid.Column="2"
                 VerticalAlignment="Center"
+                d:Text="99 order(s)"
+                Margin="0,0,5,0"
                 Foreground="{StaticResource OnBackground}"
-                Text="Filter:" />
-            <ComboBox Grid.Column="5" Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                Opacity="0.6"
+                Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
+
+            <ComboBox Grid.Column="3" Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBoxItem Content="All Active" IsSelected="True" />
                 <ComboBoxItem Content="Not Ready" />
                 <ComboBoxItem Content="No Program" />
@@ -199,8 +200,8 @@
                                 MaxWidth="400"
                                 MaxHeight="300"
                                 gif:AnimationBehavior.AnimateInDesignMode="True"
-                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/sylvester.gif"
                                 gif:AnimationBehavior.RepeatBehavior="3"
+                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/sylvester.gif"
                                 RenderOptions.BitmapScalingMode="HighQuality" />
                             <StackPanel.OpacityMask>
                                 <VisualBrush Visual="{Binding ElementName=Mask}" />

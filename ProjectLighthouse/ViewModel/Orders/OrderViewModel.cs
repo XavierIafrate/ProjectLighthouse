@@ -19,6 +19,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using ViewModel.Commands.Orders;
+using ViewModel.Helpers;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -181,13 +183,22 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
+        private Visibility newOrderButtonVis;
+
+        public Visibility NewOrderButtonVis
+        {
+            get { return newOrderButtonVis; }
+            set { newOrderButtonVis = value; OnPropertyChanged(); }
+        }
+
+
         #endregion Visibility variables
 
         #region Commands
         public PrintOrderCommand PrintOrderCommand { get; set; }
         public EditManufactureOrderCommand EditCommand { get; set; }
-
         public CreateNewOrderCommand NewOrderCommand { get; set; }
+        public GetProgramPlannerCommand GetProgramPlannerCmd { get; set; }
         #endregion
 
         #region Icon Brushes
@@ -231,6 +242,9 @@ namespace ProjectLighthouse.ViewModel.Orders
             PrintOrderCommand = new(this);
             EditCommand = new(this);
             NewOrderCommand = new(this);
+            GetProgramPlannerCmd = new(this);
+
+            NewOrderButtonVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         #region Data Refreshing
@@ -453,7 +467,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 FilteredOrders.Add(Results[i]);
             }
-            //CardVis = FilteredOrders.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+
             OnPropertyChanged(nameof(FilteredOrders));
             if (FilteredOrders.Count > 0) SelectedOrder = FilteredOrders.First();
         }
@@ -590,6 +604,13 @@ namespace ProjectLighthouse.ViewModel.Orders
         private static string GetTempPdfPath()
         {
             return System.IO.Path.GetTempFileName() + ".pdf";
+        }
+
+        public void CreateProgramPlanner()
+        {
+            List<LatheManufactureOrder> ordersNeedingProgramming = Orders.Where(x => !x.HasProgram && x.StartDate != DateTime.MinValue && x.State < OrderState.Complete).OrderBy(x => x.StartDate).ToList();
+            ordersNeedingProgramming.AddRange(Orders.Where(x => !x.HasProgram && x.StartDate == DateTime.MinValue && x.State < OrderState.Complete));
+            ExcelHelper.CreateProgrammingPlanner(ordersNeedingProgramming);
         }
 
         public void EditLMO()

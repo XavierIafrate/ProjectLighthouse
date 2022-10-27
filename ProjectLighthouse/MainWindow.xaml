@@ -435,10 +435,10 @@
                             Opacity="0.6"
                             Text="No notifications to show" />
                     </StackPanel>
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <!--<StackPanel Grid.Row="2" Orientation="Horizontal">
                         <Button Content="Archive All" />
                         <ToggleButton Content="Mute" />
-                    </StackPanel>
+                    </StackPanel>-->
                 </Grid>
             </Border>
         </Grid>
