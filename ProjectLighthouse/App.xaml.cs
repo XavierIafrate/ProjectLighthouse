@@ -51,7 +51,6 @@ namespace ProjectLighthouse
 
             Window.DataContext = MainViewModel;
             Window.viewModel = MainViewModel; 
-            Window.AddVersionNumber();
 
             Debug.WriteLine("Load time: " + (DateTime.Now - startTime).TotalMilliseconds.ToString());
 
@@ -63,6 +62,7 @@ namespace ProjectLighthouse
                 return;
             }
 
+            Window.AddVersionNumber();
             Window.Show();
             
             ToastNotificationManagerCompat.OnActivated += toastArgs =>

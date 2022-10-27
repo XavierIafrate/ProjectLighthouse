@@ -9,7 +9,7 @@
     d:DesignWidth="281.387"
     mc:Ignorable="d">
 
-    <Grid Margin="10,5"  TextElement.FontFamily="Consolas">
+    <Grid Margin="10,5" TextElement.FontFamily="Consolas">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
@@ -20,13 +20,22 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Button Click="Button_Click" Grid.RowSpan="2" Style="{StaticResource IconEditButton}" x:Name="EditButton" Margin="0,0,10,0" Visibility="Visible"/>
+        <Button
+            x:Name="EditButton"
+            Grid.RowSpan="2"
+            Margin="0,0,10,0"
+            Click="Button_Click"
+            Style="{StaticResource IconEditButton}"
+            Visibility="Visible" />
         <TextBlock
             Grid.Column="1"
             FontSize="16"
             FontWeight="SemiBold"
             Text="{Binding Path=Item.Product, FallbackValue='PRODUCT_NAME', Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Orientation="Horizontal">
             <TextBlock
                 FontSize="14"
                 Foreground="{StaticResource Blue}"
@@ -44,10 +53,11 @@
         <TextBlock
             Grid.RowSpan="2"
             Grid.Column="3"
-            Padding="0,0,10,0"
+            Padding="0,0,0,0"
             VerticalAlignment="Center"
-            FontSize="15"
             FontFamily="Consolas"
-            Text="{Binding Path=Item.QuantityThisDelivery, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" FontWeight="SemiBold" />
+            FontSize="15"
+            FontWeight="SemiBold"
+            Text="{Binding Path=Item.QuantityThisDelivery, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat='{}{0:#,##0} pcs', FallbackValue='1,000 pcs'}" />
     </Grid>
 </UserControl>

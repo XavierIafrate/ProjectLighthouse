@@ -1,7 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
-using ProjectLighthouse.View;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -92,7 +91,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
             //TODO verify this
             List<Notification> deduplicatedNots = new();
-            
+
             for (int i = 0; i < result.Count; i++)
             {
                 if (string.IsNullOrEmpty(result[i].ToastAction))
@@ -107,7 +106,7 @@ namespace ProjectLighthouse.ViewModel.Core
                 }
             }
 
-            return result.OrderBy(x => x.Seen).ThenByDescending(x => x.TimeStamp).ToList();
+            return deduplicatedNots.OrderBy(x => x.Seen).ThenByDescending(x => x.TimeStamp).ToList();
         }
 
         private void CreateTimer()

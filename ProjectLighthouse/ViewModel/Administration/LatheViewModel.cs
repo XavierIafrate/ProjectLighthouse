@@ -61,6 +61,15 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
+        private Attachment selectedAttachment;
+
+        public Attachment SelectedAttachment
+        {
+            get { return selectedAttachment; }
+            set { selectedAttachment = value; OnPropertyChanged(); }
+        }
+
+
         public MaintenanceEvent SelectedMaintenanceEvent { get; set; }
 
         public AddMaintenanceEventCommand AddMaintenanceEventCmd { get; set; }
@@ -144,7 +153,6 @@ namespace ProjectLighthouse.ViewModel.Administration
         public void EditLathe()
         {
             AddLatheWindow window = new(Lathes, SelectedLathe) { Owner = App.MainViewModel.MainWindow };
-
             window.ShowDialog();
         }
 
@@ -174,7 +182,22 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void RemoveAttachment()
         {
+            if (SelectedAttachment == null)
+            {
+                return;
+            }
 
+            if (MessageBox.Show($"Are you sure you want to remove {SelectedAttachment.FileName + SelectedAttachment.Extension}?{Environment.NewLine}This cannot be un-done.", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            DatabaseHelper.Delete(SelectedAttachment);
+
+            string currLathe = SelectedLathe.Id;
+            GetData();
+            FilterData();
+            SelectedLathe = FilteredLathes.Find(x => x.Id == currLathe);
         }
 
         public void AddMaintenanceEvent()

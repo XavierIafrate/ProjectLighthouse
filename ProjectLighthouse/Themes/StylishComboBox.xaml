@@ -8,15 +8,10 @@
 
     <ControlTemplate x:Key="ComboBoxToggleButtonTemplate" TargetType="ToggleButton">
         <Grid Width="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="20" />
-            </Grid.ColumnDefinitions>
-            <Border Grid.Column="1" Background="{StaticResource Surface}" />
+            <Border Name="Bg" Background="{StaticResource Surface}" CornerRadius="4" Opacity="0.5" />
 
             <Path
                 Name="Arrow"
-                Grid.Column="1"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
@@ -26,6 +21,10 @@
 
             <Trigger Property="ToggleButton.IsChecked" Value="True">
                 <Setter TargetName="Arrow" Property="Shape.Fill" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Arrow" Property="Shape.Fill" Value="{StaticResource OnPurple}" />
+                <Setter TargetName="Bg" Property="Background" Value="{StaticResource Purple}" />
             </Trigger>
             <Trigger Property="UIElement.IsEnabled" Value="False">
                 <Setter Property="TextElement.Foreground" Value="{StaticResource ComboBoxDisabledForegroundBrush}" />
@@ -53,6 +52,7 @@
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
                         <Border
+                            Name="Border"
                             Grid.ColumnSpan="2"
                             Background="{StaticResource Surface}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -68,7 +68,7 @@
 
                         <ContentPresenter
                             Name="ContentSite"
-                            Margin="10,5"
+                            Margin="10,5,0,5"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Content="{TemplateBinding ComboBox.SelectionBoxItem}"

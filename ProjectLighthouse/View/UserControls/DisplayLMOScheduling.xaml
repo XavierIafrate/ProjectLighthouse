@@ -31,7 +31,7 @@
         <Border
             x:Name="bg"
             Background="{StaticResource Red}"
-            CornerRadius="5,0,0,5" />
+            CornerRadius="3,0,0,3" />
 
 
         <Grid x:Name="MainCanvas" Grid.Column="1">

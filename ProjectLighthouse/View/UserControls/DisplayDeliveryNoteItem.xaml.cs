@@ -32,7 +32,8 @@ namespace ProjectLighthouse.View.UserControls
             if (d is not DisplayDeliveryNoteItem control)
                 return;
 
-            control.EditButton.Visibility = App.CurrentUser.Role == UserRole.Administrator ? Visibility.Visible : Visibility.Collapsed;
+            // TODO: Edit Delivery Notes
+            control.EditButton.Visibility = Visibility.Collapsed; //App.CurrentUser.Role == UserRole.Administrator ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public DisplayDeliveryNoteItem()
