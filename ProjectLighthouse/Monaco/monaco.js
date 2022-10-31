@@ -1,0 +1,270 @@
+
+monaco.languages.register({id: 'gcode'});
+
+monaco.editor.defineTheme('lighthouseTheme', {
+	base: 'vs-dark', // can also be vs or hc-black
+	inherit: true,
+	rules: [
+		{ token: 'custom-region', foreground: 'c5e478', fontStyle: 'italic underline' },
+		{ token: 'custom-var', foreground: 'c5e478' },
+		{ token: 'custom-op', foreground: '7fdbca' },
+		{ token: 'custom-logical', foreground: 'c792ea' },
+		{ token: 'custom-command', foreground: 'c792ea' },
+		{ token: 'custom-comment', foreground: '#637777' },
+		{ token: 'custom-number', foreground: '#F78C6C' },
+        
+		// { token: 'comment', foreground: 'ff0044' },
+	],
+    colors: {
+		'editor.foreground': '#d6deeb',
+        'editor.background': '#011627',
+        'editorCursor.foreground': '#80a4c2',
+		'editor.lineHighlightBackground': '#0000FF20',
+		'editorLineNumber.foreground': '#4b6479',
+		'editor.selectionBackground': '#1d3b53',
+		'editor.inactiveSelectionBackground': '#88000015'
+	}
+});
+
+// let keywords = ['IF', 'THEN', 'WHILE', 'GOTO'];
+// let operators = [ 'LT', 'GT', 'EQ'];
+
+monaco.languages.setMonarchTokensProvider('gcode', {
+
+    tokenizer: {
+        root: [
+            [/\!(end)?region/, 'custom-region'],
+            [/(IF|THEN|WHILE|GOTO)/, 'custom-logical'],
+            [/(GT|LT|EQ)/, 'custom-op'],
+            
+            [/-?\d+(\.\d{1,2})?/, 'custom-number'],
+            
+            // var (with #)
+            [/\#\d{1,3}/, 'custom-var'],
+            
+            // [/".*?"/, 'string'],
+            [/\(([^)]+)\)/, 'custom-comment'],
+            
+            [/(M|G|X|Y|Z){1}/, 'custom-command'],
+        
+        ]
+    }
+});
+
+
+var editor = monaco.editor.create(document.getElementById('container'), { 
+    value: `O104(SHL SCREW P0130 A4)
+$1
+(<MACHINEID>L62</MACHINEID>)
+(P0130 A4 SHOULDER SCREWS)
+(SIZES P0130.040 TO P0130.100 A4 ONLY)
+
+(L32 PROGRAM ONLY)
+
+(Lighthouse ID #104r2)
+
+!region Setup
+
+(TOOLS)
+(T1 PART OFF 3.0MM WIDE)
+(T2 SCREWCUT)
+(T4 NOT USED)
+(T3 FINISH TURN)
+(T5 D1 UNDERCUT & L1 LENGTH  ONLY)
+
+(T35 SUB FACE)
+(T36 10MM SPOT)
+(T37 HORN BROACH)
+(T34 DRILL)
+(T31 NOT USED)
+
+!endregion
+
+#511=8.0(D2=#511)
+#512=10.0(D1=#512)
+#513=14.0(D3=#513)
+#514=12.0(L2=#514)
+#515=50.0(L1=#515)
+#516=7.0(H=#516)
+#517=5.0(A/F=#517)
+#518=0.025(L1 TOL)
+#519=0.0125(D1 TOL)
+
+
+(ADD-THIS-LINE-TO-OTHER-PRG)
+(IN ORDER TO RUN SCHEDULE PROG)
+IF[#17GT#0]THEN#515=#560
+
+
+#520=[#515-#518]
+#521=[#512-#519]
+
+#522=5.0(BORE SIZE)
+#523=5.03(A/F SIZE)
+#524=2500(FEEDRATE/MIN)
+#525=4.5(HEXAGON DEPTH)
+#526=0.05(DEPTH OF CUT)
+#527=6.0(NUMBER OF BROACHES)
+
+
+!L1
+
+IF[#599EQ1]GOTO99
+
+(START UP)
+
+
+#555=[#514+#520+#516](OAL)
+
+M9
+M52
+G50Z[#500-#501]-#502
+M6
+M436(AGB CLOSED)
+
+M350Z10000
+M360X3Y3Z3
+G13.1G18G97G99G113
+M89M94M96M124
+G0X#814+1.0Z-1.0
+
+(CHECKS BAR HAS GONE)
+M51
+
+G630(MAIN/SUB SIMULTANEOUS)
+
+(FACE + TURN FOR THREAD)
+(HOLDER SDJCR1212-E11S)`,
+            language: 'gcode',
+            theme: "lighthouseTheme",
+            automaticLayout: true,
+        }); 
+
+
+monaco.languages.registerFoldingRangeProvider('gcode', {
+    provideFoldingRanges: function (model, context, token) {
+        return [
+
+            // region1
+            {
+                start: 11,
+                end: 26,
+                kind: monaco.languages.FoldingRangeKind.Region
+            },
+        ];
+    }
+});
+
+monaco.languages.registerCompletionItemProvider('gcode', {
+	provideCompletionItems: function (model, position) {
+
+		var word = model.getWordUntilPosition(position);
+
+		var range = {
+			startLineNumber: position.lineNumber,
+			endLineNumber: position.lineNumber,
+			startColumn: word.startColumn,
+			endColumn: word.endColumn
+		};
+		return {
+
+			suggestions: createDependencyProposals(range)
+		};
+	}
+});
+
+function createDependencyProposals(range) {
+	// returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
+	// here you could do a server side lookup
+	return [
+        {
+			label: 'tool comment',
+			kind: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+			documentation: 'Test.',
+			insertText: '(T${1:0} ${2:NOT USED})',
+			insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+		},
+        {
+			label: 'tools',
+			kind: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+			documentation: 'Test.',
+			insertText: '(TOOLS)\n(T1 ${1:NOT USED})\n(T2 ${2:NOT USED})\n(T4 ${3:NOT USED})\n(T3 ${4:NOT USED})\n(T5 ${5:NOT USED})\n(T35 ${6:NOT USED})\n(T36 ${7:NOT USED})\n(T37 ${8:NOT USED})\n(T34 ${9:NOT USED})\n(T31 ${10:NOT USED})',
+			insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+		},
+
+        {
+			label: '"express"',
+			kind: monaco.languages.CompletionItemKind.Function,
+			documentation: 'Fast, unopinionated, minimalist web framework',
+			insertText: '"express": "*"',
+			range: range
+		},
+
+        {
+			label: 'region',
+			kind: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+			documentation: 'Test.',
+			insertText: '!region ${1:Region Name}\n\n\n!endregion',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+		},
+
+        {
+			label: 'endregion',
+			kind: monaco.languages.CompletionItemKind.Function,
+			documentation: 'Test.',
+			insertText: '!endregion',
+            range: range
+		},
+
+		{
+			label: 'GXYZ',
+			kind: monaco.languages.CompletionItemKind.Function,
+			documentation: 'GXYZ',
+			insertText: 'G${1:_}X${2:_}Y${3:_}Z${4:_}',
+			insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+			range: range
+		}
+	];
+}
+
+
+
+// G Code stuff
+// monaco.languages.registerHoverProvider('gcode', {
+// 	provideHover: function (model, position) {
+
+// console.log(position)
+
+// 			return {
+// 				range: new monaco.Range(
+// 					1,
+// 					1,
+// 					model.getLineCount(),
+// 					model.getLineMaxColumn(model.getLineCount())
+// 				),
+// 				contents: [
+// 					{ value: '**SOURCE**' },
+// 					{ value: '```html\n' + '\n```' }
+// 				]
+// 			};
+// 	}
+// });
+
+
+function test() {
+    monaco.editor.getModels()[0].setValue('some text')
+}
+
+// var originalModel = monaco.editor.createModel('#511=8.0(D2=#511)\n(Test)', 'gcode');
+// var modifiedModel = monaco.editor.createModel('#511=12.0(D2=#511)\n(Test)\n(Test)', 'gcode');
+
+// var diffEditor = monaco.editor.createDiffEditor(document.getElementById('container'));
+// diffEditor.setModel({
+// 	original: originalModel,
+// 	modified: modifiedModel,
+// });
+
+// diffEditor.updateOptions({ theme: 'vs-dark', automaticLayout: true });
