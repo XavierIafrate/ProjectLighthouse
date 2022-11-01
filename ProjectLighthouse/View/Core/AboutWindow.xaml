@@ -157,6 +157,20 @@
                         Text="Apache-2.0" />
                     <TextBlock Grid.Column="3" Text="Thomas Levesque" />
                 </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontWeight="SemiBold" Text="SpreadsheetLight" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0"
+                        Text="MIT License" />
+                    <TextBlock Grid.Column="3" Text="Vincent Tan" />
+                </Grid>
 
             </StackPanel>
             <Border

@@ -68,8 +68,14 @@
     <None Remove="Resources\UkasDark.png" />
     <None Remove="Resources\UkasLight.png" />
   </ItemGroup>
-   
-  <ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Monaco\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 

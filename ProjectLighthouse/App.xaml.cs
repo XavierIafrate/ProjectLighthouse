@@ -12,6 +12,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
+using View.HelperWindows;
 using Windows.Foundation.Collections;
 
 namespace ProjectLighthouse
@@ -68,6 +69,9 @@ namespace ProjectLighthouse
             };
 
             Task.Run(() => StartNotificationsManager());
+
+            Monaco monacoEditor = new();
+            monacoEditor.Show();
         }
 
         private static MainViewModel LoadMain()
