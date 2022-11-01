@@ -93,6 +93,8 @@
             </DataTemplate>
             <!--#endregion-->
 
+
+            <FontFamily x:Key="MontserratSemiBold">Resources/Fonts/Montserrat-SemiBold.ttf</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

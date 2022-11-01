@@ -7,6 +7,7 @@ using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Orders;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
+using ViewModel.Programs;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
@@ -27,9 +28,11 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            App.ActiveViewModel = parameter.ToString();
+            string targetView = parameter.ToString();
 
-            if (parameter.ToString() == "Schedule")
+            App.ActiveViewModel = targetView;
+
+            if (targetView == "Schedule")
             {
                 viewModel.BetaWarningVis = Visibility.Hidden;
                 viewModel.MiBVis = Visibility.Visible;
@@ -42,7 +45,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Schedule"
                 };
             }
-            else if (parameter.ToString() == "View Requests")
+            else if (targetView == "View Requests")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Visible;
@@ -55,7 +58,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "View Requests"
                 };
             }
-            else if (parameter.ToString() == "New Request")
+            else if (targetView == "New Request")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Visible;
@@ -68,7 +71,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "New Request"
                 };
             }
-            else if (parameter.ToString() == "Orders")
+            else if (targetView == "Orders")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Visible;
@@ -81,9 +84,9 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Manufacture Orders"
                 };
             }
-            else if (parameter.ToString() == "Bar Stock")
+            else if (targetView == "Bar Stock")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new BarStockViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
@@ -94,9 +97,9 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Bar Stock"
                 };
             }
-            else if (parameter.ToString() == "Drawings")
+            else if (targetView == "Drawings")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DrawingBrowserViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
@@ -107,7 +110,21 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Technical Drawings"
                 };
             }
-            else if (parameter.ToString() == "Calibration")
+            else if (targetView == "Programs")
+            {
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new ProgramManagerViewModel();
+                viewModel.NavText = "Program Manager";
+                //viewModel.NavText = App.CurrentUser.Locale switch
+                //{
+                //    "Polish" => "Rysunek Techniczney",
+                //    "Persian" => "نقشه های فنی",
+                //    "Welsh" => "Darluniau Technegol",
+                //    _ => "Technical Drawings"
+                //};
+            }
+            else if (targetView == "Calibration")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;
@@ -120,7 +137,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Calibration"
                 };
             }
-            else if (parameter.ToString() == "Quality Check")
+            else if (targetView == "Quality Check")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;
@@ -133,7 +150,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Quality Check"
                 };
             }
-            else if (parameter.ToString() == "Deliveries")
+            else if (targetView == "Deliveries")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Visible;
@@ -146,21 +163,21 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Deliveries"
                 };
             }
-            else if (parameter.ToString() == "Manage Users")
+            else if (targetView == "Manage Users")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ManageUsersViewModel();
                 viewModel.NavText = "Manage Users";
             }
-            else if (parameter.ToString() == "Lathe Config")
+            else if (targetView == "Lathe Config")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new LatheViewModel();
                 viewModel.NavText = "Lathe Configuration";
             }
-            else if (parameter.ToString() == "Analytics")
+            else if (targetView == "Analytics")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.MiBVis = Visibility.Collapsed;

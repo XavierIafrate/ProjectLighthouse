@@ -140,6 +140,14 @@
                             CommandParameter="Drawings"
                             Content="Drawings"
                             Style="{StaticResource Drawings_MenuItem}" />
+
+                        <ToggleButton
+                            x:Name="programs_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Programs"
+                            Content="Programs"
+                            Style="{StaticResource Programs_MenuItem}" />
+                        
                     </StackPanel>
 
                     <StackPanel x:Name="AssemblyModule" Margin="0,20">
