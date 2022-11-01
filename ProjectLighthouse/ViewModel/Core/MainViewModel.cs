@@ -160,7 +160,8 @@ namespace ProjectLighthouse.ViewModel.Core
             }
 
             App.CurrentUser = login.auth_user;
-            List<Permission> userPermissions = DatabaseHelper.Read<Permission>().Where(x => x.UserId == App.CurrentUser.Id).ToList();
+            App.CurrentUser.UserPermissions = DatabaseHelper.Read<Permission>().Where(x => x.UserId == App.CurrentUser.Id).ToList();
+
 
             string TargetView = string.IsNullOrEmpty(App.CurrentUser.DefaultView)
                 ? "Orders"

@@ -15,7 +15,6 @@ using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows;
 using ViewModel.Commands.UserManagement;
-using Windows.Web.Syndication;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {

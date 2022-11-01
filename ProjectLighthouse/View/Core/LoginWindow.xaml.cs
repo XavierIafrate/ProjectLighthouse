@@ -25,6 +25,8 @@ namespace ProjectLighthouse.View
             InitializeComponent();
             AddVersionNumber();
 
+            dbPath.Text = DatabaseHelper.DatabasePath;
+
             MessageBadge.Visibility = Visibility.Hidden;
             Users = DatabaseHelper.Read<User>().ToList();
 
@@ -138,10 +140,7 @@ namespace ProjectLighthouse.View
 
             App.Login = login;
 
-            if (!Debugger.IsAttached)
-            {
-                _ = DatabaseHelper.Insert(login);
-            }
+            _ = DatabaseHelper.Insert(login);
 
             auth_user = User;
 

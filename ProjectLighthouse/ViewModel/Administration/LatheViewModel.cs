@@ -10,7 +10,6 @@ using System.Linq;
 using System.Windows;
 using View.Administration;
 using ViewModel.Commands.Administration;
-using Windows.Storage.Pickers;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {

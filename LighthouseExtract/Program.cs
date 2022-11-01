@@ -18,7 +18,7 @@ namespace LighthouseExtract
         {
             PrintApplicationHeader();
 
-            DatabaseHelper.DatabasePath = @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\manufactureDB.db3";
+            DatabaseHelper.DatabasePath = @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\beacon_test.db3";
 
             // Orders
             Console.WriteLine("Fetching Lathe Manufacture Orders...");

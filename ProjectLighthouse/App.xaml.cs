@@ -41,20 +41,9 @@ namespace ProjectLighthouse
                 return;
             }
 
-            Task.Run(() => EnsureAppData());
+            MainViewModel VM = LoadMain();
 
-            Window = new();
-            MainViewModel = new()
-            {
-                MainWindow = Window
-            };
-
-            Window.DataContext = MainViewModel;
-            Window.viewModel = MainViewModel; 
-
-            Debug.WriteLine("Load time: " + (DateTime.Now - startTime).TotalMilliseconds.ToString());
-
-            bool userLoggedIn = MainViewModel.LoginRoutine();
+            bool userLoggedIn = VM.LoginRoutine();
 
             if (!userLoggedIn)
             {
@@ -62,9 +51,10 @@ namespace ProjectLighthouse
                 return;
             }
 
-            Window.AddVersionNumber();
             Window.Show();
-            
+            Window.AddVersionNumber();
+            Task.Run(() => EnsureAppData());
+
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {
                 ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
@@ -79,6 +69,23 @@ namespace ProjectLighthouse
 
             Task.Run(() => StartNotificationsManager());
         }
+
+        private static MainViewModel LoadMain()
+        {
+            Window = new();
+            MainViewModel VM = new()
+            {
+                MainWindow = Window
+            };
+
+            MainViewModel = VM;
+
+            Window.DataContext = VM;
+            Window.viewModel = VM;
+
+            return VM;
+        }
+
 
         private void StartNotificationsManager()
         {

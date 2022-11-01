@@ -12,7 +12,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
 
             if (count == 0)
             {
-                return "No notificatons";
+                return "No notifications";
             }
             else if (count == 1)
             {

@@ -53,6 +53,8 @@
             Click="ExitButton_Click"
             Style="{StaticResource ExitButton}" />
 
+        <TextBlock  Text="DB_PATH" x:Name="dbPath" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="20" Foreground="{StaticResource Red}" FontWeight="Bold"/>
+
         <Border
             Margin="50"
             HorizontalAlignment="Left"
