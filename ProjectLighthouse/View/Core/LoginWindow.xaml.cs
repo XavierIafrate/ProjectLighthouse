@@ -153,5 +153,12 @@ namespace ProjectLighthouse.View
                ? Visibility.Visible
                : Visibility.Hidden;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            DatabaseHelper.DatabasePath = $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3";
+            dbPath.Text = DatabaseHelper.DatabasePath;
+
+        }
     }
 }

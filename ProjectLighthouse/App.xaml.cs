@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Sockets;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
@@ -42,6 +44,15 @@ namespace ProjectLighthouse
                 return;
             }
 
+            //string ip = GetLocalIPAddress();
+
+            //if (!ip.StartsWith("192.168.100."))
+            //{
+            //    MessageBox.Show("Currently unable to allow the manufacturing network to connect.", "Computer blocked.", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    Application.Current.Shutdown();
+            //    return;
+            //}
+
             MainViewModel VM = LoadMain();
 
             bool userLoggedIn = VM.LoginRoutine();
@@ -70,8 +81,21 @@ namespace ProjectLighthouse
 
             Task.Run(() => StartNotificationsManager());
 
-            Monaco monacoEditor = new();
-            monacoEditor.Show();
+            //Monaco monacoEditor = new();
+            //monacoEditor.Show();
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
         private static MainViewModel LoadMain()

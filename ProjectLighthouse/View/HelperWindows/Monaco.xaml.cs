@@ -1,6 +1,10 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Wpf;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -36,9 +40,27 @@ namespace View.HelperWindows
             DragDrop.DoDragDrop(_lbl, _lbl.Content, DragDropEffects.Move);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.webView21.CoreWebView2.ExecuteScriptAsync("test()");
+            string content = File.ReadAllText(@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\12.PRG");
+            //string content = "test";
+
+            await ExecuteScriptFunctionAsync(webView21, "setContent", content.ToString());
+        }
+
+        public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
+        {
+            string script = functionName + "(";
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                script += JsonConvert.SerializeObject(parameters[i]);
+                if (i < parameters.Length - 1)
+                {
+                    script += ", ";
+                }
+            }
+            script += ");";
+            return await webView2.ExecuteScriptAsync(script);
         }
     }
 }

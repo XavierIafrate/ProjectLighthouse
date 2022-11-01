@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.IO;
 
 namespace ProjectLighthouse
@@ -14,6 +15,7 @@ namespace ProjectLighthouse
 #else
             App.ROOT_PATH = ApplicationRootPaths.RELEASE_ROOT;
             DatabaseHelper.DatabasePath = $"{ApplicationRootPaths.RELEASE_ROOT}{ApplicationRootPaths.RELEASE_DB_NAME}";
+            //DatabaseHelper.DatabasePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{ApplicationRootPaths.RELEASE_DB_NAME}";
             App.DevMode = false;
 #endif
 

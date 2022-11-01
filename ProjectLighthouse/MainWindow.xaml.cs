@@ -93,8 +93,11 @@ namespace ProjectLighthouse
             //CalculationsHelperWindow test = new();
             //test.Show();
 
-            AboutWindow window = new() { Owner = this };
-            window.ShowDialog();
+            Monaco monacoEditor = new();
+            monacoEditor.Show();
+
+            //AboutWindow window = new() { Owner = this };
+            //window.ShowDialog();
         }
 
         private void Rectangle_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)

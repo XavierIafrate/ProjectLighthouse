@@ -52,8 +52,11 @@
             VerticalAlignment="Top"
             Click="ExitButton_Click"
             Style="{StaticResource ExitButton}" />
-
-        <TextBlock  Text="DB_PATH" x:Name="dbPath" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="20" Foreground="{StaticResource Red}" FontWeight="Bold"/>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock  Text="DB_PATH" x:Name="dbPath" FontSize="18" Foreground="{StaticResource Red}" FontWeight="Bold"/>
+            <TextBox Width="200" x:Name="dbFileName" HorizontalAlignment="Left"/>
+            <Button Content="Change db" Click="Button_Click" HorizontalAlignment="Left"/>
+        </StackPanel>
 
         <Border
             Margin="50"

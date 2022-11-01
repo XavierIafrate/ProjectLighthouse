@@ -33,7 +33,7 @@ monaco.languages.setMonarchTokensProvider('gcode', {
 
     tokenizer: {
         root: [
-            [/\!(end)?region/, 'custom-region'],
+            [/\#(end)?region/, 'custom-region'],
             [/(IF|THEN|WHILE|GOTO)/, 'custom-logical'],
             [/(GT|LT|EQ)/, 'custom-op'],
             
@@ -45,7 +45,7 @@ monaco.languages.setMonarchTokensProvider('gcode', {
             // [/".*?"/, 'string'],
             [/\(([^)]+)\)/, 'custom-comment'],
             
-            [/(M|G|X|Y|Z){1}/, 'custom-command'],
+            [/(M|G|X|Y|Z|S|W|C|F|P|Q){1}/, 'custom-command'],
         
         ]
     }
@@ -63,7 +63,7 @@ $1
 
 (Lighthouse ID #104r2)
 
-!region Setup
+#region Setup
 
 (TOOLS)
 (T1 PART OFF 3.0MM WIDE)
@@ -78,7 +78,7 @@ $1
 (T34 DRILL)
 (T31 NOT USED)
 
-!endregion
+#endregion
 
 #511=8.0(D2=#511)
 #512=10.0(D1=#512)
@@ -170,7 +170,9 @@ monaco.languages.registerCompletionItemProvider('gcode', {
 
 			suggestions: createDependencyProposals(range)
 		};
-	}
+
+	},
+	triggerCharacters: ["#"]
 });
 
 function createDependencyProposals(range) {
@@ -193,32 +195,21 @@ function createDependencyProposals(range) {
 			insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range: range
 		},
-
         {
-			label: '"express"',
-			kind: monaco.languages.CompletionItemKind.Function,
-			documentation: 'Fast, unopinionated, minimalist web framework',
-			insertText: '"express": "*"',
-			range: range
-		},
-
-        {
-			label: 'region',
+			label: '#region',
 			kind: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
 			documentation: 'Test.',
-			insertText: '!region ${1:Region Name}\n\n\n!endregion',
+			insertText: 'region ${1:Region Name}\n\n\n#endregion',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range: range
 		},
-
         {
-			label: 'endregion',
+			label: '#endregion',
 			kind: monaco.languages.CompletionItemKind.Function,
 			documentation: 'Test.',
-			insertText: '!endregion',
+			insertText: 'endregion',
             range: range
 		},
-
 		{
 			label: 'GXYZ',
 			kind: monaco.languages.CompletionItemKind.Function,
@@ -254,9 +245,11 @@ function createDependencyProposals(range) {
 // });
 
 
-function test() {
-    monaco.editor.getModels()[0].setValue('some text')
+function setContent(content) {
+	monaco.editor.getModels()[0].setValue(content);
 }
+
+// setContent("Hello, world");
 
 // var originalModel = monaco.editor.createModel('#511=8.0(D2=#511)\n(Test)', 'gcode');
 // var modifiedModel = monaco.editor.createModel('#511=12.0(D2=#511)\n(Test)\n(Test)', 'gcode');

@@ -13,7 +13,6 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
-using Windows.Devices.Sensors;
 
 namespace ViewModel.Helpers
 {
