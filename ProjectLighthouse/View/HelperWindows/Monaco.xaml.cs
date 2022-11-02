@@ -84,8 +84,8 @@ namespace View.HelperWindows
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            await ExecuteScriptFunctionAsync(dollarOne, "pushSnippet", "penis", "this is a penis", "inserted ${1:penis}");
-            await ExecuteScriptFunctionAsync(dollarTwo, "pushSnippet", "penis", "this is a penis", "inserted ${1:penis}");
+            await ExecuteScriptFunctionAsync(dollarOne, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
+            await ExecuteScriptFunctionAsync(dollarTwo, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
         }
     }
 
