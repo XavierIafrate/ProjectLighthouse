@@ -156,6 +156,7 @@ namespace ProjectLighthouse.View
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            System.IO.File.Copy($@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\base.db3", $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3");
             DatabaseHelper.DatabasePath = $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3";
             dbPath.Text = DatabaseHelper.DatabasePath;
 
