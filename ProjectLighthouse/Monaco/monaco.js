@@ -108,7 +108,7 @@ monaco.languages.setMonarchTokensProvider('gcode', {
 
 			[/(?<!L)-?\d+(\.\d{1,2})?/, 'constant.numeric'],
 			[/\#\d{1,3}/, 'variable.other.readwrite.instance'],
-			[/\(([^)]+)\)/, 'comment'],
+			[/\(([^)]+)?\)/, 'comment'],
 
 			[/(M|G|X|Y|Z|S|W|C|F|P|Q){1}/, 'support.function'],
 
@@ -323,17 +323,13 @@ function pushSnippet(text, doc, toInsert) {
 	
 // }
 
-function setTheme(themeName) {
-	
-	fetch(`/themes/${themeName}.json`)
-	.then(data => data.json())
-	.then(data => {
-	monaco.editor.defineTheme('monokai', data);
+function setTheme(themeData) {
+	monaco.editor.defineTheme('monokai', themeData);
 	monaco.editor.setTheme('monokai');
-	})
 }
 
 setTheme("Cobalt2")
+
 
 // setContent("Hello, world");
 

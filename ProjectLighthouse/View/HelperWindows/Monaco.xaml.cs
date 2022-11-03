@@ -1,19 +1,24 @@
-﻿using Microsoft.Web.WebView2.Wpf;
+﻿using DocumentFormat.OpenXml.Drawing;
+using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Path = System.IO.Path;
 
 namespace View.HelperWindows
 {
-    /// <summary>
-    /// Interaction logic for Monaco.xaml
-    /// </summary>
     public partial class Monaco : Window
     {
+        List<string> themes;
+
         public Monaco()
         {
             InitializeComponent();
@@ -30,6 +35,44 @@ namespace View.HelperWindows
                     new Uri(System.IO.Path.Combine(
                         System.AppDomain.CurrentDomain.BaseDirectory,
                         @"Monaco\index.html"));
+
+            themes = Directory.GetFiles(Path.Join(System.AppDomain.CurrentDomain.BaseDirectory, @"Monaco\themes")).ToList();
+
+            List<string> fileNames = new();
+
+            for (int i = 0; i < themes.Count; i++)
+            {
+                string f = Path.GetFileNameWithoutExtension(themes[i]);
+                if (f == "themelist")
+                {
+                    continue;
+                }
+                fileNames.Add(f);
+            }
+
+            themeName.ItemsSource = fileNames;
+            themeName.Text = "Cobalt2";
+
+            dollarOne.CoreWebView2InitializationCompleted += DollarOne_CoreWebView2InitializationCompleted;
+            dollarTwo.CoreWebView2InitializationCompleted += DollarTwo_CoreWebView2InitializationCompleted;
+        } 
+
+        private void DollarOne_Loaded(object sender, RoutedEventArgs e)
+        {
+            dollarOne.Visibility = Visibility.Visible;
+            SetTheme(dollarOne, "Cobalt2");
+        }
+
+        private void DollarTwo_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+        {
+            dollarTwo.Visibility = Visibility.Visible;
+            SetTheme(dollarTwo, "Cobalt2");
+        }
+
+        private void DollarOne_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+        {
+            SetTheme(dollarOne, "Cobalt2");
+            dollarOne.Visibility = Visibility.Visible;
         }
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
@@ -40,9 +83,8 @@ namespace View.HelperWindows
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            //string content = File.ReadAllText(@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\12.PRG");
-            NcProgram prog = GetProgramFromFile(@"C:\Users\xavie\Downloads\127.PRG");
-            //string content = "test";
+            //NcProgram prog = GetProgramFromFile(@"C:\Users\xavie\Downloads\127.PRG");
+            NcProgram prog = GetProgramFromFile(@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\12.PRG");
 
             await ExecuteScriptFunctionAsync(dollarOne, "setContent", prog.dollarOneCode);
             await ExecuteScriptFunctionAsync(dollarTwo, "setContent", prog.dollarTwoCode);
@@ -87,8 +129,23 @@ namespace View.HelperWindows
             await ExecuteScriptFunctionAsync(dollarOne, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
             await ExecuteScriptFunctionAsync(dollarTwo, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
         }
-    }
 
+        private void SetThemeButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetTheme(dollarOne, themeName.Text);
+            SetTheme(dollarTwo, themeName.Text);
+        }
+
+        private async void SetTheme(WebView2 window, string name)
+        {
+            string path = themes.Find(x => x.Contains(name));
+
+            string data = File.ReadAllText(path);
+            dynamic d = JObject.Parse(data);
+            await ExecuteScriptFunctionAsync(window, "setTheme", d);
+        }
+
+    }
     internal class NcProgram
     {
         public string header { get; set; }

@@ -53,6 +53,8 @@ namespace ProjectLighthouse
             //    return;
             //}
 
+
+
             MainViewModel VM = LoadMain();
 
             bool userLoggedIn = VM.LoginRoutine();

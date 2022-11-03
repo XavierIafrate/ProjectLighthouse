@@ -59,19 +59,27 @@
                 Grid.Row="1"
                 Grid.Column="0"
                 Width="Auto"
-                Height="Auto" />
+                Height="Auto"
+                d:Visibility="Visible"
+                Visibility="Hidden" />
 
             <wv2:WebView2
                 x:Name="dollarTwo"
                 Grid.Row="1"
                 Grid.Column="1"
                 Width="Auto"
-                Height="Auto" />
+                Height="Auto"
+                d:Visibility="Visible"
+                Visibility="Hidden" />
         </Grid>
         <StackPanel Grid.RowSpan="2" Grid.Column="1">
             <Button Click="Button_Click" Content="Test" />
             <Button Click="Button_Click_1" Content="add snippet" />
-            <Label Content="Howdy, World!" MouseDown="Label_MouseDown" />
+            <ComboBox x:Name="themeName" />
+            <Button
+                x:Name="SetThemeButton"
+                Click="SetThemeButton_Click"
+                Content="Set Theme" />
         </StackPanel>
 
         <Border
