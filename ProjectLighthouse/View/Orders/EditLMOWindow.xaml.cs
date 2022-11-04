@@ -71,6 +71,7 @@ namespace ProjectLighthouse.View.Orders
 
             if (BarStock == null)
             {
+                // TODO handle bad inputs
                 BarStock = DatabaseHelper.Read<BarStock>();
                 BarStock currentBar = BarStock.Find(x => x.Id == Order.BarID);
                 BarStock = BarStock.Where(x => x.Material == currentBar.Material).ToList();

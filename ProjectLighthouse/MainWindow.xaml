@@ -142,6 +142,7 @@
                             Style="{StaticResource Drawings_MenuItem}" />
 
                         <ToggleButton
+                            Visibility="Collapsed"
                             x:Name="programs_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Programs"

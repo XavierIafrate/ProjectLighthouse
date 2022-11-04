@@ -25,7 +25,7 @@ namespace ProjectLighthouse.View
             InitializeComponent();
             AddVersionNumber();
 
-            dbPath.Text = DatabaseHelper.DatabasePath;
+            //dbPath.Text = DatabaseHelper.DatabasePath;
 
             MessageBadge.Visibility = Visibility.Hidden;
             Users = DatabaseHelper.Read<User>().ToList();
@@ -154,11 +154,11 @@ namespace ProjectLighthouse.View
                : Visibility.Hidden;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            System.IO.File.Copy($@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\test.db3", $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3");
-            DatabaseHelper.DatabasePath = $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3";
-            dbPath.Text = DatabaseHelper.DatabasePath;
-        }
+        //private void Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    System.IO.File.Copy($@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\test.db3", $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3");
+        //    DatabaseHelper.DatabasePath = $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3";
+        //    dbPath.Text = DatabaseHelper.DatabasePath;
+        //}
     }
 }
