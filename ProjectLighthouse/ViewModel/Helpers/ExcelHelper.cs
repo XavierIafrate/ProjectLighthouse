@@ -28,7 +28,8 @@ namespace ViewModel.Helpers
 
             AddProgramPlannerContent(sl, orders);
 
-            sl.SaveAs(@"C:\Users\x.iafrate\Desktop\Test_FastExcel.xlsx");
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"programs_todo_{DateTime.Now:ddMMyy}_{DateTime.Now:HHmmss}";
+            sl.SaveAs(path);
         }
 
         public static SLDocument AddProgramPlannerHeader(SLDocument doc)

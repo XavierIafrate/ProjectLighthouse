@@ -244,7 +244,9 @@ namespace ProjectLighthouse.ViewModel.Orders
             NewOrderCommand = new(this);
             GetProgramPlannerCmd = new(this);
 
-            NewOrderButtonVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) ? Visibility.Visible : Visibility.Collapsed;
+            NewOrderButtonVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
         }
 
         #region Data Refreshing
@@ -412,7 +414,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         #endregion Loading
 
-        public void Search() // use linq
+        public void Search() // TODO use linq
         {
             if (string.IsNullOrEmpty(SearchTerm))
             {
@@ -476,7 +478,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             if (SelectedOrder == null)
             {
-                CardVis = Visibility.Hidden; // implicitly sets NothingVis
+                CardVis = Visibility.Hidden;
                 return;
             }
             else
@@ -608,8 +610,22 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void CreateProgramPlanner()
         {
-            List<LatheManufactureOrder> ordersNeedingProgramming = Orders.Where(x => !x.HasProgram && x.StartDate != DateTime.MinValue && x.State < OrderState.Complete).OrderBy(x => x.StartDate).ToList();
-            ordersNeedingProgramming.AddRange(Orders.Where(x => !x.HasProgram && x.StartDate == DateTime.MinValue && x.State < OrderState.Complete));
+            List<LatheManufactureOrder> ordersNeedingProgramming = Orders
+                .Where(x => 
+                    !x.HasProgram && 
+                     x.StartDate != DateTime.MinValue && 
+                     x.State < OrderState.Complete)
+                .OrderBy(x => x.StartDate)
+                .ToList();
+
+            // Adds unscheduled items to the bottom
+            ordersNeedingProgramming
+                .AddRange(
+                    Orders.Where(x => 
+                        !x.HasProgram && 
+                         x.StartDate == DateTime.MinValue && 
+                         x.State < OrderState.Complete));
+            
             ExcelHelper.CreateProgrammingPlanner(ordersNeedingProgramming);
         }
 

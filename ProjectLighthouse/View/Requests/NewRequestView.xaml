@@ -355,6 +355,9 @@
                                     <Grid Margin="10,5">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock
+                                                VerticalAlignment="Center"
+                                                d:Text="C00"
+                                                FontFamily="Consolas"
                                                 FontSize="18"
                                                 FontWeight="SemiBold"
                                                 Text="{Binding Lathe.Id}" />
@@ -371,17 +374,22 @@
                                             <Border
                                                 Margin="10,0"
                                                 VerticalAlignment="Center"
-                                                Background="{StaticResource Yellow}"
-                                                BorderBrush="{StaticResource OnYellow}"
-                                                BorderThickness="2"
+                                                BorderBrush="{StaticResource Orange}"
+                                                BorderThickness="2,0,0,0"
                                                 CornerRadius="3"
                                                 Visibility="{Binding IsHigh, Converter={StaticResource showIfTrue}}">
-                                                <TextBlock
-                                                    Margin="10,3"
-                                                    FontFamily="Consolas"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{StaticResource OnYellow}"
-                                                    Text="HIGH" />
+                                                <Grid>
+                                                    <Border
+                                                        Background="{StaticResource Orange}"
+                                                        CornerRadius="3"
+                                                        Opacity="0.15" />
+                                                    <TextBlock
+                                                        Margin="7,2"
+                                                        FontWeight="SemiBold"
+                                                        FontSize="12"
+                                                        Foreground="{StaticResource Orange}"
+                                                        Text="Elevated" />
+                                                </Grid>
                                             </Border>
                                             <TextBlock
                                                 HorizontalAlignment="Right"

@@ -37,6 +37,7 @@
         <TextBox
             Margin="5,10"
             MaxLength="16"
+            PreviewKeyDown="productName_PreviewKeyDown"
             Style="{StaticResource DefaultTextBox}"
             Tag="Product Name"
             x:Name="productName" />

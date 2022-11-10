@@ -660,6 +660,7 @@
         x:Key="CSVButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
+        <Setter Property="ToolTip" Value="Download CSV"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -669,7 +670,7 @@
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
                         CornerRadius="12"
-                        ToolTip="Download as CSV">
+                        ToolTip="{TemplateBinding ToolTip}">
                         <Path
                             Width="10"
                             Height="10"

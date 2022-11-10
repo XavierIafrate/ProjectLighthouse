@@ -60,7 +60,16 @@ let snippets = [
 		label: 'var',
 		kind: monaco.languages.CompletionItemKind.Function,
 		documentation: 'test',
-		insertText: '#${1:var}=${2:0.0}\t(${3:DIM}=#${1})',
+		insertText: 'N301(M5 THREAD)\nX6.0\nG76X4.019Z#514+1.5P0.491Q0.2F0.8\nGOTO6',
+		insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+
+	},
+
+	{
+		label: 'M5 Thread',
+		kind: monaco.languages.CompletionItemKind.Function,
+		documentation: 'test',
+		insertText: 'N301(M5 THREAD)\nX6.0\nG76X4.019Z#514+1.5P0.491Q0.2F0.8\nGOTO6',
 		insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
 
 	},

@@ -66,5 +66,10 @@ namespace ProjectLighthouse.View.Requests
                 MessageBox.Show($"Something bad happened, please notify an administrator.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void productName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateKeyPressForProductName(e);
+        }
     }
 }
