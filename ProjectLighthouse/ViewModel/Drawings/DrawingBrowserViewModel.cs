@@ -262,7 +262,11 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void AddNewDrawing()
         {
-            AddNewDrawingWindow window = new(Drawings);
+            AddNewDrawingWindow window = new(Drawings)
+            {
+                Owner = Application.Current.MainWindow
+            };
+
             window.ShowDialog();
             if (window.SaveExit)
             {
@@ -388,7 +392,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
             DefineDrawingApprovalWindow window = new()
             {
                 DrawingToApprove = SelectedDrawing,
-                DrawingsInGroup = SelectedGroup.Drawings
+                DrawingsInGroup = SelectedGroup.Drawings,
+                Owner = Application.Current.MainWindow,
             };
 
             window.SetupInterface();

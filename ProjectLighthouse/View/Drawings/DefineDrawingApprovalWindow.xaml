@@ -8,6 +8,7 @@
     Title="Choose Publish Options"
     SizeToContent="Height"
     ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d" Width="931">
     <Grid>
         <Grid.ColumnDefinitions>

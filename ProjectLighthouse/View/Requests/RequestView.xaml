@@ -359,6 +359,7 @@
                                 Text="14 days" />
                             <Button
                                 Grid.Column="4"
+                                 Visibility ="{Binding  DataRequired, Converter={StaticResource boolToCollapsed}}"
                                 Command="{Binding ViewMakeOrBuyCommand}"
                                 Content="Order Builder" />
 
@@ -444,7 +445,7 @@
                                     Visibility="{Binding MergeVis}" />
                             </Grid>
                         </StackPanel>
-                        <Border Margin="0,10" Visibility="{Binding CompleteProductVis}" BorderBrush="{StaticResource Orange}" BorderThickness="3" CornerRadius="8">
+                        <Border Margin="0,10" Visibility="{Binding DataRequired, Converter={StaticResource boolToVisible}}" BorderBrush="{StaticResource Orange}" BorderThickness="3" CornerRadius="8">
                             <StackPanel Margin="20">
                                 <Grid>
                                     <Grid.ColumnDefinitions>

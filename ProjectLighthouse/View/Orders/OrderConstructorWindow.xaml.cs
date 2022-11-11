@@ -105,6 +105,13 @@ namespace ProjectLighthouse.View.Orders
             {
                 Request = request;
                 RequiredProduct = Products.Find(x => x.ProductName == Request.Product);
+
+                if (!RequiredProduct.DataIsComplete())
+                {
+                    MessageBox.Show("Product data is incomplete", "Cancelling", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Close();
+                }
+
                 if (!RequiredProduct.isSpecialPart)
                 {
                     Products = Products.Where(x => !x.isSpecialPart).ToList();

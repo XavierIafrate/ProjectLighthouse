@@ -187,9 +187,13 @@ namespace ProjectLighthouse.Model.Orders
                 StartDate = StartDate,
                 CompletedAt = CompletedAt,
                 ToolingReady = ToolingReady,
+                ToolingOrdered = ToolingOrdered,
                 NumberOfBarsIssued = NumberOfBarsIssued,
                 BarToolingReady = BarToolingReady,
+                BarToolingOrdered = BarToolingOrdered,
                 GaugingReady = GaugingReady,
+                GaugingOrdered = GaugingOrdered,
+                BaseProgramExists= BaseProgramExists,
                 HasProgram = HasProgram,
                 HasStarted = HasStarted,
                 BarID = BarID,
@@ -230,8 +234,8 @@ namespace ProjectLighthouse.Model.Orders
                 {
 #if DEBUG
                     Debug.WriteLine($"'{property.Name}' has been modified:");
-                    Debug.WriteLine($"   Main Order: '{property.GetValue(this)}'");
-                    Debug.WriteLine($"  Clone Order: '{property.GetValue(OtherOrder)}'");
+                    Debug.WriteLine($"   After: '{property.GetValue(this)}'");
+                    Debug.WriteLine($"  Before: '{property.GetValue(OtherOrder)}'");
 #endif
                     return true;
                 }

@@ -10,6 +10,7 @@
     Width="644"
     ResizeMode="NoResize"
     SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <StackPanel Margin="30">
         <TextBlock Style="{StaticResource title}" Text="Add New Drawing" />

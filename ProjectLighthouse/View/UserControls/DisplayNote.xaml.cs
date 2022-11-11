@@ -1,9 +1,11 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.InkML;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -72,6 +74,11 @@ namespace ProjectLighthouse.View.UserControls
             ControlGrid.ColumnDefinitions[2].Width = !right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
             MetadataStackPanel.HorizontalAlignment = right ? HorizontalAlignment.Right : HorizontalAlignment.Left;
             bg.CornerRadius = right ? new(10, 10, 0, 10) : new(10, 10, 10, 0);
+
+            string hexCode = right ? "#d9eefc" : "#d9f4e0";
+
+            bg.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(hexCode);
+            //MetadataStackPanel.TextElement.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(hexCode);
         }
 
         public DisplayNote()

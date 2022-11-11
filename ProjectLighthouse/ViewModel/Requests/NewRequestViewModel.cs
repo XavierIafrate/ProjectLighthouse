@@ -14,6 +14,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Requests
 {
@@ -240,7 +241,11 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void AddSpecialRequest()
         {
-            RaiseSpecialRequest window = new();
+            RaiseSpecialRequest window = new()
+            {
+                Owner = Application.Current.MainWindow
+            };
+
             window.ShowDialog();
 
             if (window.productAdded)

@@ -278,14 +278,13 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
         }
 
-        private Visibility completeProductVis;
-
-        public Visibility CompleteProductVis
+        private bool dataRequired;
+        public bool DataRequired
         {
-            get { return completeProductVis; }
+            get { return dataRequired; }
             set
             {
-                completeProductVis = value;
+                dataRequired = value;
                 OnPropertyChanged();
             }
         }
@@ -432,9 +431,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            CompleteProductVis = !SelectedRequestProduct.DataIsComplete() && !request.IsDeclined && !request.IsAccepted
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            DataRequired = !SelectedRequestProduct.DataIsComplete() && !request.IsDeclined && !request.IsAccepted;
 
             DecisionVis = request.IsDeclined || request.IsAccepted ? Visibility.Collapsed : Visibility.Visible;
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;

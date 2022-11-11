@@ -18,7 +18,7 @@
     ResizeMode="NoResize"
     SizeToContent="Height"
     TextElement.Foreground="{StaticResource OnBackground}"
-    WindowStartupLocation="CenterScreen"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Grid Margin="20,20,0,20">
         <Grid.RowDefinitions>

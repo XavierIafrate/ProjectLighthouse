@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using View.Scheduling;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -339,6 +340,11 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void AddMaintenance()
         {
+            GanttView test = new();
+            test.MakeGantt(FilteredItems);
+            test.Show();
+
+            return;
             CreateService window = new(new MachineService(), Lathes) { Owner = App.MainViewModel.MainWindow };
 
             window.ShowDialog();
