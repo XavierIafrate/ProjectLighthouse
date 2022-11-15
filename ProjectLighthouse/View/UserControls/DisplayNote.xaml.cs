@@ -75,10 +75,14 @@ namespace ProjectLighthouse.View.UserControls
             MetadataStackPanel.HorizontalAlignment = right ? HorizontalAlignment.Right : HorizontalAlignment.Left;
             bg.CornerRadius = right ? new(10, 10, 0, 10) : new(10, 10, 10, 0);
 
-            string hexCode = right ? "#d9eefc" : "#d9f4e0";
+            System.Windows.Media.Brush brush = (System.Windows.Media.Brush)Application.Current.Resources[right ? "Blue" : "Green"];
 
-            bg.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(hexCode);
-            //MetadataStackPanel.TextElement.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(hexCode);
+            bg.Background = brush;
+            SentByTextBlock.Foreground = brush;
+            SentAtTextBlock.Foreground = brush;
+            UserRoleBadge.Foreground = brush;
+            EditedAtTextBlock.Foreground = brush;
+        
         }
 
         public DisplayNote()

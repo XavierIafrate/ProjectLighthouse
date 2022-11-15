@@ -24,5 +24,10 @@ namespace ProjectLighthouse.View.Requests
             if (sender is not TextBox textBox) return;
             SendButton.IsEnabled = !string.IsNullOrWhiteSpace(textBox.Text);
         }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            searchBox.Text = "";
+        }
     }
 }

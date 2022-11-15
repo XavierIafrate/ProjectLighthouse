@@ -42,6 +42,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             {
                 selectedGroup = value;
 
+                // TODO refactor
                 if (selectedGroup == null)
                 {
                     NoneFoundVis = Visibility.Visible;
@@ -104,18 +105,22 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public OpenDrawingCommand OpenDrawingCmd { get; set; }
         public WithdrawDrawingCommand WithdrawCmd { get; set; }
         public AddCommentToDrawingCommand AddCommentToDrawingCmd { get; set; }
-        private string rejectionStatement;
 
+
+
+        private string rejectionStatement;
         public string RejectionStatement
         {
             get { return rejectionStatement; }
-            set { rejectionStatement = value; OnPropertyChanged(); }
+            set 
+            { 
+                rejectionStatement = value; 
+                OnPropertyChanged(); 
+            }
         }
 
         public ApproveDrawingCommand ApproveDrawingCmd { get; set; }
         public RejectDrawingCommand RejectDrawingCmd { get; set; }
-
-        private bool showOldGroups;
 
         private string newNoteText;
         public string NewNoteText
@@ -128,6 +133,9 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
         }
 
+
+
+        private bool showOldGroups;
         public bool ShowOldGroups
         {
             get { return showOldGroups; }
@@ -138,6 +146,28 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 FilterDrawings(SearchBoxText);
             }
         }
+
+        private bool hideRejected;
+
+        public bool HideRejected
+        {
+            get { return hideRejected; }
+            set 
+            { 
+                hideRejected = value; 
+                if (hideRejected)
+                {
+                    FilteredDrawings = selectedGroup.Drawings.Where(x => !x.IsRejected && !x.IsWithdrawn).ToList();
+                }
+                else
+                {
+                    FilteredDrawings = selectedGroup.Drawings;
+                }
+                OnPropertyChanged(); 
+            }
+        }
+
+
 
         private bool openFileButtonEnabled;
         public bool OpenFileButtonEnabled

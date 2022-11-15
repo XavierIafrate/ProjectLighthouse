@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using ProjectLighthouse.Model.Orders;
+using SQLite;
 using System;
 
 namespace ProjectLighthouse.Model.Requests
@@ -29,6 +30,8 @@ namespace ProjectLighthouse.Model.Requests
         public bool CanAppend;
         public string ExistingOrder;
         public bool UpdateOrder;
+        [Ignore]
+        public LatheManufactureOrder SubsequentOrder { get; set; } = new();
 
         public bool CleanCustomerRequirement { get; set; }
 

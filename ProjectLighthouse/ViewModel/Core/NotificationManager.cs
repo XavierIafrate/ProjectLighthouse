@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using System.Windows;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel.Core
 {
@@ -269,11 +271,16 @@ namespace ProjectLighthouse.ViewModel.Core
                 App.MainViewModel.UpdateViewCommand.Execute("Drawings");
                 if (App.MainViewModel.SelectedViewModel is DrawingBrowserViewModel drawingBrowserVM)
                 {
-                    drawingBrowserVM.SelectedGroup = drawingBrowserVM.DrawingGroups.Find(x => x.Drawings.Any(y => y.Id.ToString("0") == targetDrawing));
-                    if (drawingBrowserVM.SelectedGroup != null)
+                    TechnicalDrawingGroup? targetGroup = drawingBrowserVM.DrawingGroups.Find(x => x.Drawings.Any(y => y.Id.ToString("0") == targetDrawing));
+                    
+                    if (targetGroup == null)
                     {
-                        drawingBrowserVM.SelectedDrawing = drawingBrowserVM.SelectedGroup.Drawings.Find(x => x.Id.ToString("0") == targetDrawing);
+                        MessageBox.Show($"Drawing with internal ID '{targetDrawing}' cannot be found. It might have been deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
                     }
+                        
+                    drawingBrowserVM.SelectedGroup = targetGroup;
+                    drawingBrowserVM.SelectedDrawing = drawingBrowserVM.SelectedGroup.Drawings.Find(x => x.Id.ToString("0") == targetDrawing);
                 }
 
             }

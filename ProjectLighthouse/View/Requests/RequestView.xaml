@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:DesignWidth="1445"
     Background="{StaticResource Background}"
@@ -22,12 +23,22 @@
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Style="{StaticResource SearchBox}" x:Name="searchBox" Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Style="{StaticResource ClearButton}" Grid.Column="1" x:Name="ClearButton" Click="ClearButton_Click"/>
+        </Grid>
 
         <ListView
+            Grid.Row="1"
             x:Name="requests_ListView"
             HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding FilteredRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -41,7 +52,7 @@
         </ListView>
 
         <StatusBar
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="10,5"
             HorizontalAlignment="Left"
             Background="Transparent">
@@ -52,7 +63,8 @@
                 VerticalAlignment="Center"
                 Text="Filter by:" />
             <ComboBox x:Name="filterComboBox" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ComboBoxItem Content="Last 14 Days" IsSelected="True" />
+                <ComboBoxItem Content="Active" IsSelected="True" />
+                <ComboBoxItem Content="Last 14 Days" />
                 <ComboBoxItem Content="My Requests" />
                 <ComboBoxItem Content="Pending" />
                 <ComboBoxItem Content="Accepted" />
@@ -64,22 +76,51 @@
                 Command="{Binding ExportCommand}"
                 Style="{StaticResource CSVButton}" />
         </StatusBar>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+        <StackPanel HorizontalAlignment="Center" Grid.Column="2" Grid.RowSpan="2" Visibility="{Binding ShowingRequest, Converter={StaticResource boolToCollapsed}}" VerticalAlignment="Center">
+            <Border
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Canvas.Left="55"
+                Canvas.Top="30"
+                Width="auto"
+                Margin="0,10"
+                VerticalAlignment="Top"
+                CornerRadius="18">
+                <Border.Effect>
+                    <DropShadowEffect
+                        BlurRadius="20"
+                        Direction="220"
+                        Opacity="0.2"
+                        ShadowDepth="20"
+                        Color="Black" />
+                </Border.Effect>
+                <Border Name="ReceiverColor" CornerRadius="15">
+                    <Grid>
+                        <Border
+                            Name="Mask"
+                            Background="{StaticResource Blue}"
+                            CornerRadius="20" />
+                        <StackPanel x:Name="image">
+                            <Image
+                                Name="Receiver"
+                                MaxWidth="400"
+                                MaxHeight="300"
+                                gif:AnimationBehavior.AnimateInDesignMode="True"
+                                gif:AnimationBehavior.RepeatBehavior="3"
+                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/frodo-keep-your-secrets.gif"
+                                RenderOptions.BitmapScalingMode="HighQuality" />
+                            <StackPanel.OpacityMask>
+                                <VisualBrush Visual="{Binding ElementName=Mask}" />
+                            </StackPanel.OpacityMask>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Border>
             <TextBlock
-                Grid.Column="2"
                 HorizontalAlignment="Center"
                 FontSize="30"
-                Foreground="#dddddd"
-                Text="none found :("
-                Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock
-                Grid.Column="2"
-                HorizontalAlignment="Center"
-                FontSize="20"
-                FontStyle="Italic"
-                Foreground="#dddddd"
-                Text="try changing the filter"
-                Visibility="{Binding NothingVis, UpdateSourceTrigger=PropertyChanged}" />
+                Opacity="0.6"
+                Text="No results :(" />
         </StackPanel>
         <ScrollViewer
             x:Name="scroller"
@@ -89,7 +130,7 @@
             <Grid
                 MaxWidth="700"
                 Margin="0,20,0,50"
-                Visibility="{Binding CardVis, UpdateSourceTrigger=PropertyChanged}">
+                Visibility="{Binding ShowingRequest, Converter={StaticResource boolToVisible}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
@@ -319,29 +360,30 @@
                             </StackPanel>
                         </Grid>
 
-                        <TextBlock Style="{StaticResource section}" Text="Recommended Order" />
-                        <Grid Margin="0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
+                        <StackPanel  Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToCollapsed}}">
+                            <TextBlock Style="{StaticResource section}" Text="Recommended Order" />
+                            <Grid Margin="0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
                                 Padding="10,0,0,0"
                                 VerticalAlignment="Center"
                                 Foreground="{StaticResource Blue}"
                                 Style="{StaticResource statement}"
                                 Text="{Binding TargetRuntime, StringFormat='{}Runtime Cap [{0:N0} day(s)]'}" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Column="1"
                                 Padding="10,0"
                                 VerticalAlignment="Center"
                                 Foreground="{StaticResource OnBackground}"
                                 Style="{StaticResource statement}"
                                 Text="1 day" />
-                            <Slider
+                                <Slider
                                 Grid.Column="2"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
@@ -350,41 +392,41 @@
                                 Minimum="1"
                                 TickPlacement="BottomRight"
                                 Value="{Binding TargetRuntime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Column="3"
                                 Padding="10,0"
                                 VerticalAlignment="Center"
                                 Foreground="{StaticResource OnBackground}"
                                 Style="{StaticResource statement}"
                                 Text="14 days" />
-                            <Button
+                                <Button
                                 Grid.Column="4"
                                  Visibility ="{Binding  DataRequired, Converter={StaticResource boolToCollapsed}}"
                                 Command="{Binding ViewMakeOrBuyCommand}"
                                 Content="Order Builder" />
 
-                        </Grid>
-                        <Grid>
-                            <ListView ItemsSource="{Binding RecommendedManifest}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <uc:DisplayManifestItem Margin="10,2" Item="{Binding}" />
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <Rectangle Fill="#01ffffff" />
-                        </Grid>
+                            </Grid>
+                            <Grid>
+                                <ListView ItemsSource="{Binding RecommendedManifest}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <uc:DisplayManifestItem Margin="10,2" Item="{Binding}" />
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <Rectangle Fill="#01ffffff" />
+                            </Grid>
 
-                        <StackPanel
+                            <StackPanel
                             Margin="10,0"
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
-                            <TextBlock
+                                <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="11"
                                 Opacity="0.25"
                                 Text="Lighthouse Requests Engine" />
-                            <Path
+                                <Path
                                 Width="12"
                                 Height="12"
                                 Margin="3,1,0,0"
@@ -392,6 +434,11 @@
                                 Fill="Black"
                                 Opacity="0.25"
                                 Stretch="Uniform" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel  Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToVisible}}">
+            
                         </StackPanel>
                         <StackPanel Margin="0,10" Visibility="{Binding ApprovalControlsVis}">
                             <TextBlock Style="{StaticResource section}" Text="Approval" />

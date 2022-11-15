@@ -27,6 +27,11 @@ namespace ProjectLighthouse.Model.Scheduling
             RequestToEdit?.Invoke();
         }
 
+        public DateTime EndsAt()
+        {
+            return StartDate.AddSeconds(TimeToComplete);
+        }
+
 
         public class UpdateWatch : Attribute
         {

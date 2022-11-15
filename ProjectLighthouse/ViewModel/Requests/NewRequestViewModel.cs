@@ -332,7 +332,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 get
                 {
-                    return Workload.TotalDays > 7 * 6;
+                    return Math.Round(Workload.TotalDays / 7 + 1) >= 6; // 6 weeks or more
                 }
             }
 

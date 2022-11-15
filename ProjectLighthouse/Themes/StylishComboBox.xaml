@@ -8,7 +8,11 @@
 
     <ControlTemplate x:Key="ComboBoxToggleButtonTemplate" TargetType="ToggleButton">
         <Grid Width="20">
-            <Border Name="Bg" Background="{StaticResource Surface}" CornerRadius="4" Opacity="0.5" />
+            <Border
+                Name="Bg"
+                Background="{StaticResource Surface}"
+                CornerRadius="4"
+                Opacity="0.5" />
 
             <Path
                 Name="Arrow"

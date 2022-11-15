@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using Model.Scheduling;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.View.Scheduling;
@@ -340,11 +341,30 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void AddMaintenance()
         {
+#if DEBUG
             GanttView test = new();
-            test.MakeGantt(FilteredItems);
+            GanttData chartData = new()
+            {
+                Title = "Schedule"
+            };
+
+            foreach (Lathe lathe in Lathes)
+            {
+                List<ScheduleItem> events = new();
+                events.AddRange(ActiveOrders.Where(x => x.AllocatedMachine == lathe.Id).ToList());
+                GanttDivision div = new() 
+                { 
+                    Title = lathe.FullName, 
+                    Events = events
+                };
+                chartData.Data.Add(div);
+            }
+
+            test.Draw(chartData);
             test.Show();
 
             return;
+#else
             CreateService window = new(new MachineService(), Lathes) { Owner = App.MainViewModel.MainWindow };
 
             window.ShowDialog();
@@ -354,6 +374,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 LoadData();
                 SetView();
             }
+#endif
         }
 
         public void PrintSchedule()

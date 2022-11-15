@@ -1,0 +1,85 @@
+﻿<UserControl
+    x:Class="View.UserControls.DisplayRequestProgress"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="White"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <StackPanel>
+        <TextBlock Style="{StaticResource section}" Text="Progress" />
+        <Grid Margin="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="35" />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="35" />
+            </Grid.ColumnDefinitions>
+            <Border
+                x:Name="Link1"
+                Grid.Column="1"
+                Grid.ColumnSpan="3"
+                Height="10"
+                Background="{StaticResource DisabledElement}" />
+            <Border
+                x:Name="Link2"
+                Grid.Column="9"
+                Grid.ColumnSpan="3"
+                Height="10"
+                Background="{StaticResource DisabledElement}"  />
+            <Border
+                x:Name="Link3"
+                Grid.Column="5"
+                Grid.ColumnSpan="3"
+                Height="10"
+                Background="{StaticResource DisabledElement}" />
+            <Border
+                x:Name="Stage1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Width="40"
+                Height="40"
+                Background="{StaticResource Green}" 
+                CornerRadius="20" >
+                
+            </Border>
+            <Border
+                x:Name="Stage2"
+                Grid.Column="3"
+                Grid.ColumnSpan="3"
+                Width="40"
+                Height="40"
+                Background="{StaticResource DisabledElement}" 
+                CornerRadius="20" />
+            <Border
+                x:Name="Stage3"
+                Grid.Column="7"
+                Grid.ColumnSpan="3"
+                Width="40"
+                Height="40"
+                Background="{StaticResource DisabledElement}" 
+                CornerRadius="20" />
+            <Border
+                x:Name="Stage4"
+                Grid.Column="11"
+                Grid.ColumnSpan="2"
+                Width="40"
+                Height="40"
+                Background="{StaticResource DisabledElement}" 
+                CornerRadius="20" />
+        </Grid>
+
+    </StackPanel>
+</UserControl>

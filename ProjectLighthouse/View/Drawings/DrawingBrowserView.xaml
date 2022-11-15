@@ -10,8 +10,8 @@
     xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:vc="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     d:Background="White"
-    SizeChanged="UserControl_SizeChanged"
     d:DesignWidth="1350"
+    SizeChanged="UserControl_SizeChanged"
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:stringCoalesce x:Key="stringCoalesce" />
@@ -112,8 +112,8 @@
                                 Name="Receiver"
                                 MaxWidth="400"
                                 gif:AnimationBehavior.AnimateInDesignMode="True"
-                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/milhouse.gif"
                                 gif:AnimationBehavior.RepeatBehavior="3"
+                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/milhouse.gif"
                                 RenderOptions.BitmapScalingMode="HighQuality" />
                             <StackPanel.OpacityMask>
                                 <VisualBrush Visual="{Binding ElementName=Mask}" />
@@ -161,7 +161,10 @@
                         Data="M19.5 17C19.37 17 19.24 17 19.11 17.04L17.5 13.79C17.95 13.34 18.25 12.71 18.25 12C18.25 10.62 17.13 9.5 15.75 9.5C15.62 9.5 15.5 9.5 15.36 9.54L13.73 6.29C14.21 5.84 14.5 5.21 14.5 4.5C14.5 3.12 13.38 2 12 2S9.5 3.12 9.5 4.5C9.5 5.21 9.79 5.84 10.26 6.29L8.64 9.54C8.5 9.5 8.38 9.5 8.25 9.5C6.87 9.5 5.75 10.62 5.75 12C5.75 12.71 6.05 13.34 6.5 13.79L4.89 17.04C4.76 17 4.63 17 4.5 17C3.12 17 2 18.12 2 19.5C2 20.88 3.12 22 4.5 22S7 20.88 7 19.5C7 18.8 6.71 18.16 6.24 17.71L7.86 14.46C8 14.5 8.12 14.5 8.25 14.5C8.38 14.5 8.5 14.5 8.64 14.46L10.27 17.71C9.8 18.16 9.5 18.8 9.5 19.5C9.5 20.88 10.62 22 12 22S14.5 20.88 14.5 19.5C14.5 18.12 13.38 17 12 17C11.87 17 11.74 17 11.61 17.04L10 13.79C10.46 13.34 10.75 12.71 10.75 12S10.46 10.66 10 10.21L11.61 6.96C11.74 7 11.87 7 12 7S12.26 7 12.39 6.96L14 10.21C13.55 10.66 13.25 11.3 13.25 12C13.25 13.38 14.37 14.5 15.75 14.5C15.88 14.5 16 14.5 16.14 14.46L17.77 17.71C17.3 18.16 17 18.8 17 19.5C17 20.88 18.12 22 19.5 22S22 20.88 22 19.5C22 18.12 20.88 17 19.5 17Z"
                         Fill="{StaticResource Teal}"
                         Stretch="Uniform" />
-                    <StackPanel Margin="0,0,10,0" VerticalAlignment="Center" x:Name="archtypeAnnotations">
+                    <StackPanel
+                        x:Name="archtypeAnnotations"
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center">
                         <TextBlock
                             FontSize="18"
                             FontWeight="SemiBold"
@@ -191,6 +194,10 @@
                 FontSize="18"
                 FontWeight="SemiBold"
                 Text="Revision History" />
+            <ToggleButton
+                HorizontalAlignment="Right"
+                IsChecked="{Binding HideRejected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource HideToggleButton}" />
             <ListView
                 Grid.Row="1"
                 d:ItemsSource="{d:SampleData ItemCount=10}"
@@ -295,10 +302,10 @@
                                     x:Name="openButton"
                                     Grid.Column="3"
                                     Margin="0"
-                                    IsEnabled="{Binding OpenFileButtonEnabled}"
                                     HorizontalAlignment="Right"
                                     Command="{Binding OpenDrawingCmd}"
                                     Content="{Binding OpenFileButtonText, FallbackValue='FILE_OPEN'}"
+                                    IsEnabled="{Binding OpenFileButtonEnabled}"
                                     Style="{StaticResource BlueButton}" />
                             </Grid>
 
@@ -411,10 +418,10 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Path
                                         Grid.RowSpan="2"
@@ -422,7 +429,7 @@
                                         VerticalAlignment="Center"
                                         Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,15L18,7L16.59,5.58L10,12.17L7.41,9.59L6,11L10,15Z"
                                         Fill="{StaticResource Green}" />
-                                    
+
                                     <TextBlock
                                         Grid.Column="1"
                                         FontSize="18"
@@ -449,10 +456,10 @@
                                         Grid.Row="2"
                                         Grid.Column="1"
                                         FontSize="13"
-                                        Visibility="{Binding SelectedDrawing.ManufacturingApproved, Converter={StaticResource showIfTrue}}"
                                         FontStyle="Italic"
                                         Foreground="{StaticResource Green}"
-                                        TextWrapping="Wrap">
+                                        TextWrapping="Wrap"
+                                        Visibility="{Binding SelectedDrawing.ManufacturingApproved, Converter={StaticResource showIfTrue}}">
 
                                         <Run Text="Manufacturing approval granted on" />
                                         <Run Text="{Binding SelectedDrawing.ManufacturingApprovalDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
@@ -464,10 +471,10 @@
                                         Grid.Row="3"
                                         Grid.Column="1"
                                         FontSize="13"
-                                        Visibility="{Binding SelectedDrawing.EngineeringApproved, Converter={StaticResource showIfTrue}}"
                                         FontStyle="Italic"
                                         Foreground="{StaticResource Green}"
-                                        TextWrapping="Wrap">
+                                        TextWrapping="Wrap"
+                                        Visibility="{Binding SelectedDrawing.EngineeringApproved, Converter={StaticResource showIfTrue}}">
 
                                         <Run Text="Engineering approval granted on" />
                                         <Run Text="{Binding SelectedDrawing.EngineeringApprovalDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
@@ -475,12 +482,12 @@
                                         <Run Text="{Binding SelectedDrawing.EngineeringApprovalBy}" />
                                     </TextBlock>
 
-                                    
+
 
                                 </Grid>
 
                             </Grid>
-                            
+
                             <Grid
                                 Grid.Row="4"
                                 Margin="10,5,10,0"
@@ -658,9 +665,9 @@
                                 x:Name="rejectionReason"
                                 Background="{StaticResource Background}"
                                 FontSize="15"
-                                Text="{Binding RejectionStatement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource DefaultTextBox}"
                                 Tag="Enter reason for rejecting"
+                                Text="{Binding RejectionStatement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextChanged="TextBox_TextChanged" />
                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                 <!--<TextBlock VerticalAlignment="Center" Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" />-->
@@ -669,8 +676,8 @@
                                     Content="Reject Drawing"
                                     Style="{StaticResource CancelButton}" />
                                 <Button
-                                    Content="Approve Drawing"
                                     Command="{Binding ApproveDrawingCmd}"
+                                    Content="Approve Drawing"
                                     Style="{StaticResource GreenButton}" />
                             </StackPanel>
 

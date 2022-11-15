@@ -21,12 +21,12 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
-                MaxWidth="400"
-                TextTrimming="CharacterEllipsis"
                 x:Name="filename"
+                MaxWidth="400"
                 VerticalAlignment="Center"
                 FontSize="18"
-                Text="FILE_PATH" />
+                Text="FILE_PATH"
+                TextTrimming="CharacterEllipsis" />
 
             <Button
                 x:Name="openButton"

@@ -41,8 +41,9 @@
                 x:Name="bg"
                 Grid.RowSpan="3"
                 Grid.Column="1"
-                Background="#d9eefc"
-                BorderBrush="Gray"
+                Background="{StaticResource Blue}"
+                Opacity="0.10"
+                BorderBrush="Black"
                 BorderThickness="2"
                 CornerRadius="10,10,10,0" />
             <StackPanel
@@ -137,7 +138,7 @@
                             MaxWidth="450"
                             Padding="4,0,4,2"
                             FontSize="14"
-                            Foreground="DarkSlateGray"
+                            Foreground="#2a2a2a"
                             Text="{Binding Path=Message, FallbackValue='Lorem Ipsum'}"
                             TextWrapping="Wrap" />
                         <TextBox

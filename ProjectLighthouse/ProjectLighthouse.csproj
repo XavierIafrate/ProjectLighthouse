@@ -27,6 +27,7 @@
     <Platforms>AnyCPU;x64</Platforms>
     <Title>Lighthouse</Title>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -58,6 +59,7 @@
     <None Remove="Resources\Font\Montserrat-SemiBold.ttf" />
     <None Remove="Resources\GIF\excellent.gif" />
     <None Remove="Resources\GIF\fireworks.gif" />
+    <None Remove="Resources\GIF\frodo-keep-your-secrets.gif" />
     <None Remove="Resources\GIF\milhouse.gif" />
     <None Remove="Resources\GIF\sylvester.gif" />
     <None Remove="Resources\GIF\zoolander.gif" />
@@ -133,6 +135,7 @@
     </Resource>
     <Resource Include="Resources\GIF\excited.gif" />
     <Resource Include="Resources\GIF\fireworks.gif" />
+    <Resource Include="Resources\GIF\frodo-keep-your-secrets.gif" />
     <Resource Include="Resources\GIF\milhouse.gif" />
     <Resource Include="Resources\GIF\moderate.gif" />
     <Resource Include="Resources\GIF\no.gif" />

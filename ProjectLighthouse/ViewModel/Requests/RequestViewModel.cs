@@ -4,7 +4,6 @@ using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
-using ProjectLighthouse.View;
 using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.View.Requests;
@@ -28,8 +27,8 @@ namespace ProjectLighthouse.ViewModel.Requests
         public List<Request> Requests { get; set; }
         public ObservableCollection<Request> FilteredRequests { get; set; }
         public List<TurnedProduct> Products { get; set; }
-        public List<LatheManufactureOrder> ActiveOrders { get; set; }
-        public List<LatheManufactureOrderItem> ActiveOrderItems { get; set; }
+        public List<LatheManufactureOrder> Orders { get; set; }
+        public List<LatheManufactureOrderItem> OrderItems { get; set; }
         public List<LatheManufactureOrderItem> RecommendedManifest { get; set; }
 
         public List<Note> FilteredNotes { get; set; }
@@ -47,6 +46,18 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
         }
 
+        private string searchString;
+
+        public string SearchString
+        {
+            get { return searchString; }
+            set
+            {
+                searchString = value.ToUpperInvariant();
+                FilterRequests(search: true);
+                OnPropertyChanged();
+            }
+        }
 
         private double targetRuntime;
 
@@ -74,16 +85,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             set
             {
                 selectedFilter = value;
-                FilterRequests(value);
-                if (FilteredRequests.Count > 0)
-                {
-                    SelectedRequest = FilteredRequests.First();
-                    CardVis = Visibility.Visible;
-                }
-                else
-                {
-                    CardVis = Visibility.Hidden;
-                }
+                FilterRequests();
             }
         }
 
@@ -95,7 +97,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 selectedRequest = value;
                 OnPropertyChanged();
-
                 LoadRequestCard(value);
             }
         }
@@ -132,7 +133,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                     return;
                 }
                 UpdateButtonEnabled = App.CurrentUser.Role is UserRole.Purchasing or UserRole.Administrator;
-                OnPropertyChanged("UpdateButtonEnabled");
+                OnPropertyChanged(nameof(UpdateButtonEnabled));
                 OnPropertyChanged();
             }
         }
@@ -206,33 +207,14 @@ namespace ProjectLighthouse.ViewModel.Requests
         }
 
 
-        private Visibility cardVis;
-        public Visibility CardVis
+        private bool showingRequest;
+
+        public bool ShowingRequest
         {
-            get { return cardVis; }
-            set
-            {
-                cardVis = value;
-                OnPropertyChanged();
-                if (value == Visibility.Visible)
-                {
-                    NothingVis = Visibility.Hidden;
-                    return;
-                }
-                NothingVis = Visibility.Visible;
-            }
+            get { return showingRequest; }
+            set { showingRequest = value; OnPropertyChanged(); }
         }
 
-        private Visibility nothingVis;
-        public Visibility NothingVis
-        {
-            get { return nothingVis; }
-            set
-            {
-                nothingVis = value;
-                OnPropertyChanged();
-            }
-        }
 
         private Visibility decisionVis;
         public Visibility DecisionVis
@@ -307,6 +289,13 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public RequestViewModel()
         {
+            InitialiseVariables();
+            LoadData();
+            CheckForAppendOppurtunities();
+        }
+
+        private void InitialiseVariables()
+        {
             RecommendedManifest = new();
             Requests = new();
             FilteredRequests = new();
@@ -320,38 +309,11 @@ namespace ProjectLighthouse.ViewModel.Requests
             UpdateRequestCmd = new(this);
             SendMessageCommand = new(this);
             Notes = new();
-            Notes = DatabaseHelper.Read<Note>().ToList();
-
             SelectedRequest = new();
-
-            TargetRuntime = 5;
-
-            approvalControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest)
+            ApprovalControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-
-
-            GetRequests();
-
-            Products = DatabaseHelper.Read<TurnedProduct>();
-            ProductGroups = DatabaseHelper.Read<Product>();
-
-            ActiveOrders = DatabaseHelper.Read<LatheManufactureOrder>()
-                .Where(x => x.State < OrderState.Complete)
-                .ToList();
-            string[] activeOrders = ActiveOrders.Select(x => x.Name).ToArray();
-            ActiveOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>()
-                .Where(x => activeOrders.Contains(x.AssignedMO))
-                .ToList();
-
-            for (int i = 0; i < ActiveOrders.Count; i++)
-            {
-                ActiveOrders[i].OrderItems = ActiveOrderItems.Where(x => x.AssignedMO == ActiveOrders[i].Name).ToList();
-            }
-
-            CheckForAppendOppurtunities();
-
-            SelectedFilter = "Last 14 Days";
+            TargetRuntime = 5;
         }
 
         public void EditProduct()
@@ -397,22 +359,26 @@ namespace ProjectLighthouse.ViewModel.Requests
             //}
         }
 
-        public void LoadRequestCard(Request request)
+        public void LoadRequestCard(Request? request)
         {
             if (request == null)
             {
+                ShowingRequest = false;
                 return;
             }
-
-            if (request.Product == null)
+            else if (request.Product == null)
             {
+                ShowingRequest = false;
                 return;
             }
+            ShowingRequest = true;
 
-            if (!string.IsNullOrEmpty(SelectedRequest.Product))
-            {
-                SelectedRequestProduct = Products.Find(x => x.ProductName == SelectedRequest.Product);
-            }
+            approvalControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+
+            SelectedRequestProduct = Products.Find(x => x.ProductName == SelectedRequest.Product);
 
             CleaningVis = request.CleanCustomerRequirement
                 ? Visibility.Visible
@@ -436,6 +402,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             DecisionVis = request.IsDeclined || request.IsAccepted ? Visibility.Collapsed : Visibility.Visible;
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
             DeclinedVis = request.IsDeclined ? Visibility.Visible : Visibility.Collapsed;
+
             CanEditRequirements = !request.IsAccepted && !request.IsDeclined;
 
             DropboxEnabled = request.Status == "Pending approval" &&
@@ -464,9 +431,12 @@ namespace ProjectLighthouse.ViewModel.Requests
                 SelectedRequest.QuantityRequired,
                 TimeSpan.FromDays(Math.Round(TargetRuntime)),
                 SelectedRequest.DateRequired);
-            OnPropertyChanged("RecommendedManifest");
+
+            OnPropertyChanged(nameof(RecommendedManifest));
         }
 
+
+        //TODO remove
         public void UpdateOrderPurchaseRef()
         {
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(n => n.Name == SelectedRequest.ResultingLMO).ToList();
@@ -500,7 +470,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             if (DatabaseHelper.Update(SelectedRequest))
             {
-                OnPropertyChanged("SelectedRequest");
+                OnPropertyChanged(nameof(SelectedRequest));
                 ModifiedVis = Visibility.Visible;
             }
             else
@@ -525,7 +495,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             if (DatabaseHelper.Update(SelectedRequest))
             {
-                OnPropertyChanged("SelectedRequest");
+                OnPropertyChanged(nameof(SelectedRequest));
                 ModifiedVis = Visibility.Visible;
             }
             else
@@ -536,8 +506,10 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void ShowMakeOrBuy()
         {
-            LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest, withAuthority: false);
-            creationWindow.Owner = Application.Current.MainWindow;
+            LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest, withAuthority: false)
+            {
+                Owner = Application.Current.MainWindow
+            };
             creationWindow.ShowDialog();
         }
 
@@ -545,8 +517,10 @@ namespace ProjectLighthouse.ViewModel.Requests
         {
             if (!merge)
             {
-                LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest);
-                creationWindow.Owner = Application.Current.MainWindow;
+                LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest)
+                {
+                    Owner = Application.Current.MainWindow
+                };
                 creationWindow.ShowDialog();
 
                 if (creationWindow.Cancelled)
@@ -563,6 +537,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             SelectedRequest.MarkAsAccepted();
 
+            //TODO refactor
             User ToNotify = DatabaseHelper.Read<User>().Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
 
             Notification not = new(
@@ -585,7 +560,9 @@ namespace ProjectLighthouse.ViewModel.Requests
                    .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
                    .AddText("You have successfully approved this request.")
                    .Show();
-                FilterRequests(SelectedFilter);
+
+                FilterRequests();
+
                 foreach (Request request in FilteredRequests)
                 {
                     if (request.Id == id)
@@ -624,8 +601,8 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                FilterRequests(SelectedFilter);
-                OnPropertyChanged("SelectedRequest");
+                FilterRequests();
+                OnPropertyChanged(nameof(SelectedRequest));
                 SelectedRequest = Requests.First();
             }
             else
@@ -634,35 +611,89 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
         }
 
-        public void GetRequests()
+        public void LoadData()
         {
-            Requests.Clear();
-            Requests = DatabaseHelper.Read<Request>().ToList();
+            Notes = DatabaseHelper.Read<Note>().ToList();
+            Products = DatabaseHelper.Read<TurnedProduct>();
+            ProductGroups = DatabaseHelper.Read<Product>();
+
+            TargetRuntime = 5;
+
+            Orders = DatabaseHelper.Read<LatheManufactureOrder>();
+            OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
+            for (int i = 0; i < Orders.Count; i++)
+            {
+                Orders[i].OrderItems = OrderItems.Where(x => x.AssignedMO == Orders[i].Name).ToList();
+            }
+
+            List<Request> requests = DatabaseHelper.Read<Request>();
+            for(int i = 0; i < requests.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(requests[i].ResultingLMO))
+                {
+                    requests[i].SubsequentOrder = Orders.Find(x => x.Name == requests[i].ResultingLMO);
+                }
+            }
+
+            Requests = requests;
+
+            SelectedFilter = "Active";
         }
 
-        public void FilterRequests(string filter)
+        public void FilterRequests(bool search = false)
         {
             List<Request> requests = new(Requests);
-            switch (filter)
+
+            if (search)
             {
-                case "Last 14 Days":
-                    requests = requests.Where(n => n.DateRaised.AddDays(14) > DateTime.Now).ToList();
-                    break;
-                case "All":
-                    // no filter
-                    break;
-                case "Pending":
-                    requests = requests.Where(n => !n.IsAccepted && !n.IsDeclined).ToList();
-                    break;
-                case "Accepted":
-                    requests = requests.Where(n => n.IsAccepted).ToList();
-                    break;
-                case "Declined":
-                    requests = requests.Where(n => n.IsDeclined).ToList();
-                    break;
-                case "My Requests":
-                    requests = requests.Where(n => n.RaisedBy == App.CurrentUser.GetFullName()).ToList();
-                    break;
+                if (string.IsNullOrWhiteSpace(SearchString))
+                {
+                    SelectedFilter = "Active";
+                    return;
+                }
+
+                selectedFilter = "All";
+                OnPropertyChanged(nameof(SelectedFilter));
+
+                requests = requests
+                    .Where(x =>
+                        (x.POReference ?? "").ToUpperInvariant().Contains(searchString) ||
+                        x.Product.Contains(searchString))
+                    .ToList();
+            }
+            else
+            {
+                searchString = "";
+                OnPropertyChanged(nameof(SearchString));
+
+                switch (SelectedFilter)
+                {
+                    case "All":
+                        break;
+                    case "Active":
+                        requests = requests.Where(x => 
+                        (!x.IsDeclined && !x.IsAccepted) || 
+                        (x.SubsequentOrder.State < OrderState.Complete && !string.IsNullOrEmpty(x.ResultingLMO)))
+                            .ToList();
+                        break;
+                    case "Last 14 Days":
+                        requests = requests.Where(n => n.DateRaised.AddDays(14) > DateTime.Now).ToList();
+                        break;
+                    case "Pending":
+                        requests = requests.Where(n => !n.IsAccepted && !n.IsDeclined).ToList();
+                        break;
+                    case "Accepted":
+                        requests = requests.Where(n => n.IsAccepted).ToList();
+                        break;
+                    case "Declined":
+                        requests = requests.Where(n => n.IsDeclined).ToList();
+                        break;
+                    case "My Requests":
+                        requests = requests.Where(n => n.RaisedBy == App.CurrentUser.GetFullName()).ToList();
+                        break;
+                    default:
+                        break;
+                }
             }
 
             FilteredRequests = new ObservableCollection<Request>(requests.OrderByDescending(x => x.DateRaised));
@@ -671,9 +702,13 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 SelectedRequest = FilteredRequests.First();
             }
+            else
+            {
+                ShowingRequest = false;
+            }
 
-            OnPropertyChanged("FilteredRequests");
-            OnPropertyChanged("SelectedFilter");
+            OnPropertyChanged(nameof(FilteredRequests));
+            OnPropertyChanged(nameof(SelectedFilter));
         }
 
         public void SendMessage()
