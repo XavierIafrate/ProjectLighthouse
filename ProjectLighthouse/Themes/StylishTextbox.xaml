@@ -206,10 +206,10 @@
                                 Margin="16,3"
                                 VerticalAlignment="Center"
                                 FontSize="{TemplateBinding FontSize}"
+                                FontStyle="Normal"
                                 Foreground="{StaticResource OnSurface}"
                                 Opacity="0.6"
                                 Style="{StaticResource GhostText}"
-                                FontStyle="Normal"
                                 Text="{TemplateBinding Tag}"
                                 TextWrapping="Wrap"
                                 Visibility="Hidden" />

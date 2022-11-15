@@ -507,9 +507,9 @@
                     <Border
                         Width="24"
                         Height="24"
-                        ToolTip="{TemplateBinding ToolTip}"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="12">
+                        CornerRadius="12"
+                        ToolTip="{TemplateBinding ToolTip}">
                         <Path
                             x:Name="path"
                             Width="12"

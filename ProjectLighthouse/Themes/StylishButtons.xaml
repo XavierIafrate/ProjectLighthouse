@@ -660,7 +660,7 @@
         x:Key="CSVButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
-        <Setter Property="ToolTip" Value="Download CSV"/>
+        <Setter Property="ToolTip" Value="Download CSV" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
