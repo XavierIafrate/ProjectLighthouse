@@ -24,6 +24,7 @@ namespace ProjectLighthouse.View.UserControls
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not DisplayRequestProgress control) return;
+            if (control.TheRequest is null) return;
             if (control.TheRequest.SubsequentOrder is null) return;
 
             LatheManufactureOrder order = control.TheRequest.SubsequentOrder;

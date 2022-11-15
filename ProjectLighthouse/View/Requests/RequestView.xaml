@@ -77,6 +77,13 @@
                 Style="{StaticResource CSVButton}" />
         </StatusBar>
         <StackPanel HorizontalAlignment="Center" Grid.Column="2" Grid.RowSpan="2" Visibility="{Binding ShowingRequest, Converter={StaticResource boolToCollapsed}}" VerticalAlignment="Center">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="40"
+                Opacity="0.6"
+                FontStyle="Italic"
+                Text="What is this?" />
+            
             <Border
                 Grid.Row="3"
                 Grid.ColumnSpan="2"
@@ -95,24 +102,49 @@
                         Color="Black" />
                 </Border.Effect>
                 <Border Name="ReceiverColor" CornerRadius="15">
-                    <Grid>
+                    <Grid 
+                                MaxWidth="400"
+                                MaxHeight="300">
                         <Border
                             Name="Mask"
-                            Background="{StaticResource Blue}"
+                            Background="{StaticResource Purple}"
                             CornerRadius="20" />
-                        <StackPanel x:Name="image">
+                        <Grid x:Name="image">
                             <Image
                                 Name="Receiver"
                                 MaxWidth="400"
                                 MaxHeight="300"
                                 gif:AnimationBehavior.AnimateInDesignMode="True"
                                 gif:AnimationBehavior.RepeatBehavior="3"
-                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/frodo-keep-your-secrets.gif"
+                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/zoolander-what-is-this.gif"
                                 RenderOptions.BitmapScalingMode="HighQuality" />
-                            <StackPanel.OpacityMask>
+                            <Grid.OpacityMask>
                                 <VisualBrush Visual="{Binding ElementName=Mask}" />
-                            </StackPanel.OpacityMask>
-                        </StackPanel>
+                            </Grid.OpacityMask>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Viewbox VerticalAlignment="Bottom" Margin="20" MaxHeight="60">
+                                <TextBlock  Text="{Binding SearchString}" Foreground="White">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect BlurRadius="4" Color="Black" Opacity="0.8" ShadowDepth="0"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                            </Viewbox>
+
+                            <Viewbox VerticalAlignment="Bottom" Grid.Column="1" MaxWidth="100" Margin="0,0,20,40">
+                                <TextBlock  Text="Lighthouse" Foreground="White">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect BlurRadius="4" Color="Black" Opacity="0.8" ShadowDepth="0"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                            </Viewbox>
+                        </Grid>
                     </Grid>
                 </Border>
             </Border>
@@ -120,9 +152,11 @@
                 HorizontalAlignment="Center"
                 FontSize="30"
                 Opacity="0.6"
-                Text="No results :(" />
+                FontStyle="Italic"
+                Text="{Binding SearchString, StringFormat='{}A {0} for ants?!'}" />
         </StackPanel>
         <ScrollViewer
+            d:Visibility="Collapsed"
             x:Name="scroller"
             Grid.RowSpan="2"
             Grid.Column="2"

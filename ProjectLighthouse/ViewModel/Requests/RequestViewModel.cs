@@ -53,7 +53,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             get { return searchString; }
             set
             {
-                searchString = value.ToUpperInvariant();
+                searchString = value;
                 FilterRequests(search: true);
                 OnPropertyChanged();
             }
@@ -109,7 +109,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             set
             {
                 selectedRequestProduct = value;
-                if (value.ProductName != null)
+                if (value != null)
                 {
                     selectedRequestProduct.Group = ProductGroups.Find(x => selectedRequestProduct.ProductName.StartsWith(x.Name));
                 }
@@ -379,6 +379,13 @@ namespace ProjectLighthouse.ViewModel.Requests
 
 
             SelectedRequestProduct = Products.Find(x => x.ProductName == SelectedRequest.Product);
+
+            // TODO throw 
+            if (SelectedRequestProduct == null)
+            {
+                MessageBox.Show($"{request.Product} Not found, please notify an administrator.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             CleaningVis = request.CleanCustomerRequirement
                 ? Visibility.Visible
@@ -657,8 +664,8 @@ namespace ProjectLighthouse.ViewModel.Requests
 
                 requests = requests
                     .Where(x =>
-                        (x.POReference ?? "").ToUpperInvariant().Contains(searchString) ||
-                        x.Product.Contains(searchString))
+                        (x.POReference ?? "").ToUpperInvariant().Contains(searchString.ToUpperInvariant()) ||
+                        x.Product.Contains(searchString.ToUpperInvariant()))
                     .ToList();
             }
             else

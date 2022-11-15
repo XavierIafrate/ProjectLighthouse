@@ -62,6 +62,7 @@
     <None Remove="Resources\GIF\frodo-keep-your-secrets.gif" />
     <None Remove="Resources\GIF\milhouse.gif" />
     <None Remove="Resources\GIF\sylvester.gif" />
+    <None Remove="Resources\GIF\zoolander-what-is-this.gif" />
     <None Remove="Resources\GIF\zoolander.gif" />
     <None Remove="Resources\LighthouseLogo_Mono.png" />
     <None Remove="Resources\Lighthouse_Mono_L_Embedded.png" />
@@ -143,6 +144,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\GIF\travolta.gif" />
+    <Resource Include="Resources\GIF\zoolander-what-is-this.gif" />
     <Resource Include="Resources\GIF\zoolander.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
