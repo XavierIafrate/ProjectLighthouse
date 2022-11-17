@@ -5,7 +5,6 @@ using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Reporting;
-using ProjectLighthouse.View;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Commands.Printing;
@@ -45,6 +44,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<LatheManufactureOrderItem> FilteredOrderItems { get; set; }
         public List<Note> FilteredNotes { get; set; }
         public List<TechnicalDrawing> FilteredDrawings { get; set; }
+        public BarStock SelectedOrderBar { get; set; }
         #endregion
 
         #region User Demands
@@ -228,6 +228,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             Lathes = new();
             Lots = new();
             BarStock = new();
+            SelectedOrderBar = new();
 
             FilteredDrawings = new();
             FilteredNotes = new();
@@ -244,8 +245,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             NewOrderCommand = new(this);
             GetProgramPlannerCmd = new(this);
 
-            NewOrderButtonVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) 
-                ? Visibility.Visible 
+            NewOrderButtonVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest)
+                ? Visibility.Visible
                 : Visibility.Collapsed;
         }
 
@@ -481,11 +482,8 @@ namespace ProjectLighthouse.ViewModel.Orders
                 CardVis = Visibility.Hidden;
                 return;
             }
-            else
-            {
-                CardVis = Visibility.Visible;
-            }
 
+            CardVis = Visibility.Visible;
             LoadOrderObjects();
             SetUiElements();
         }
@@ -582,9 +580,12 @@ namespace ProjectLighthouse.ViewModel.Orders
                 .Where(d => drawings.Contains(d.Id))
                 .ToList();
 
+            SelectedOrderBar = BarStock.Find(x => x.Id == SelectedOrder.BarID);
+
             OnPropertyChanged(nameof(FilteredOrderItems));
             OnPropertyChanged(nameof(FilteredNotes));
             OnPropertyChanged(nameof(FilteredDrawings));
+            OnPropertyChanged(nameof(SelectedOrderBar));
         }
 
         public void PrintSelectedOrder()
@@ -611,9 +612,9 @@ namespace ProjectLighthouse.ViewModel.Orders
         public void CreateProgramPlanner()
         {
             List<LatheManufactureOrder> ordersNeedingProgramming = Orders
-                .Where(x => 
-                    !x.HasProgram && 
-                     x.StartDate != DateTime.MinValue && 
+                .Where(x =>
+                    !x.HasProgram &&
+                     x.StartDate != DateTime.MinValue &&
                      x.State < OrderState.Complete)
                 .OrderBy(x => x.StartDate)
                 .ToList();
@@ -621,11 +622,11 @@ namespace ProjectLighthouse.ViewModel.Orders
             // Adds unscheduled items to the bottom
             ordersNeedingProgramming
                 .AddRange(
-                    Orders.Where(x => 
-                        !x.HasProgram && 
-                         x.StartDate == DateTime.MinValue && 
+                    Orders.Where(x =>
+                        !x.HasProgram &&
+                         x.StartDate == DateTime.MinValue &&
                          x.State < OrderState.Complete));
-            
+
             ExcelHelper.CreateProgrammingPlanner(ordersNeedingProgramming);
         }
 

@@ -185,15 +185,28 @@
                     <TextBlock
                         Grid.ColumnSpan="2"
                         Margin="0,0,0,5"
+                        d:Text="PRODUCT_NAME"
                         FontWeight="SemiBold"
                         Style="{StaticResource section}"
                         Text="{Binding SelectedProduct.ProductName}" />
-                    <Image
-                        Grid.Row="1"
-                        Height="120"
-                        MaxWidth="120"
-                        RenderOptions.BitmapScalingMode="Fant"
-                        Source="{Binding SelectedProduct.Group.LocalRenderPath}" />
+
+                    <Border  Grid.Row="1" Height="120" Width="120" Background="{StaticResource Background}" CornerRadius="5">
+                        <Grid>
+                        <Path
+                            Height="40"
+                            Margin="0,0,2,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
+                            Fill="{StaticResource OnBackground}"
+                            Opacity="0.3"
+                            Stretch="Uniform" />
+                        <Image
+                            RenderOptions.BitmapScalingMode="Fant"
+                            Source="{Binding SelectedProduct.Group.LocalRenderPath}" />
+                    </Grid>
+                    </Border>
+
                     <Grid
                         Grid.Row="1"
                         Grid.Column="1"
@@ -211,6 +224,7 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <TextBlock
                             Grid.Row="0"
@@ -220,7 +234,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
-                            d:Text="P0123.456-789-A2"
+                            d:Text="QTY_IN_STOCK"
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.QuantityInStock, StringFormat='{}{0:#,##0} pcs'}" />
 
@@ -232,7 +246,7 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
-                            d:Text="P0123.456-789-A2"
+                            d:Text="QTY_ON_SO"
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.QuantityOnSO, StringFormat='{}{0:#,##0} pcs'}" />
 
@@ -244,7 +258,7 @@
                             Grid.Row="2"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
-                            d:Text="P0123.456-789-A2"
+                            d:Text="QTY_ON_PO"
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.QuantityOnPO, StringFormat='{}{0:#,##0} pcs'}" />
 
@@ -256,7 +270,7 @@
                             Grid.Row="3"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
-                            d:Text="P0123.456-789-A2"
+                            d:Text="TOOLING_GROUP"
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.ProductGroup}" />
 
@@ -268,7 +282,7 @@
                             Grid.Row="4"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
-                            d:Text="P0123.456-789-A2"
+                            d:Text="MATERIAL"
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.Material}" />
 
@@ -280,7 +294,7 @@
                             Grid.Row="5"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
-                            d:Text="P0123.456-789-A2"
+                            d:Text="TARGET_STOCK"
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.TargetStock, StringFormat='{}{0:#,##0} pcs'}" />
 
@@ -292,9 +306,21 @@
                             Grid.Row="6"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
-                            d:Text="P0123.456-789-A2"
+                            d:Text="QTY_GUARANTEED"
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.LighthouseGuaranteedQuantity, StringFormat='{}{0:#,##0} pcs'}" />
+
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="0"
+                            Text="Total Manufactured" />
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            d:Text="QTY_MANUFACTURED"
+                            FontWeight="SemiBold"
+                            Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />
                     </Grid>
                 </Grid>
             </Border>
@@ -385,8 +411,8 @@
                                                         Opacity="0.15" />
                                                     <TextBlock
                                                         Margin="7,2"
-                                                        FontWeight="SemiBold"
                                                         FontSize="12"
+                                                        FontWeight="SemiBold"
                                                         Foreground="{StaticResource Orange}"
                                                         Text="Elevated" />
                                                 </Grid>

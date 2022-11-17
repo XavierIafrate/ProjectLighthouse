@@ -8,13 +8,13 @@
     mc:Ignorable="d">
     <Grid>
 
-        <Border Background="{StaticResource Background}" CornerRadius="10"/>
-        <Border x:Name="elementBackground" Background="{StaticResource Red}" Opacity="0.15" CornerRadius="10"/>
+        <Border Background="{StaticResource Background}" CornerRadius="6"/>
+        <Border x:Name="elementBackground" Background="{StaticResource Red}" Opacity="0.15" CornerRadius="5"/>
         <Border
             x:Name="elementBorder"
             BorderBrush="{StaticResource Red}"
             BorderThickness="1"
-            CornerRadius="10">
+            CornerRadius="5">
             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
                 <Path
                     x:Name="icon"

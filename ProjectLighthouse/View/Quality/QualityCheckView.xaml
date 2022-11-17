@@ -34,8 +34,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBox
                     x:Name="searchBox"
-                    Style="{StaticResource DefaultTextBox}"
-                    Tag="search..."
+                    Style="{StaticResource SearchBox}"
                     Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
                     x:Name="clearButton"

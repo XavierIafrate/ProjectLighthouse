@@ -439,8 +439,9 @@
 
     <Style x:Key="IconEditButton" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource Blue}" />
-        <Setter Property="Background" Value="{StaticResource SelectedElement}" />
+        <Setter Property="Background" Value="#01ffffff" />
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Tag" Value="edit" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -448,27 +449,35 @@
                         Height="20"
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
-                        CornerRadius="10">
+                        CornerRadius="3">
                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                             <Path
                                 Width="12"
                                 Height="12"
-                                Margin="7,0"
+                                Margin="5,0,4,0"
                                 HorizontalAlignment="Center"
                                 Data="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z"
                                 Fill="{TemplateBinding Foreground}"
-                                Stretch="Uniform">
-                                <Path.RenderTransform>
-                                    <TranslateTransform X="0.00" />
-                                </Path.RenderTransform>
-                            </Path>
-                            <ContentPresenter
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,5,1"
                                 VerticalAlignment="Center"
-                                Content="{TemplateBinding Content}"
-                                TextElement.Foreground="{TemplateBinding Foreground}" />
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </StackPanel>
-
                     </Border>
+
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -829,20 +838,40 @@
     </Style>
 
     <Style x:Key="HeroPdfButton" TargetType="Button">
+        <Setter Property="Tag" Value="" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
-                        Width="40"
                         Height="40"
+                        MinWidth="40"
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
                         CornerRadius="3">
-                        <Path
-                            Width="16"
-                            Data="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19M10.59,10.08C10.57,10.13 10.3,11.84 8.5,14.77C8.5,14.77 5,16.58 5.83,17.94C6.5,19 8.15,17.9 9.56,15.27C9.56,15.27 11.38,14.63 13.79,14.45C13.79,14.45 17.65,16.19 18.17,14.34C18.69,12.5 15.12,12.9 14.5,13.09C14.5,13.09 12.46,11.75 12,9.89C12,9.89 13.13,5.95 11.38,6C9.63,6.05 10.29,9.12 10.59,10.08M11.4,11.13C11.43,11.13 11.87,12.33 13.29,13.58C13.29,13.58 10.96,14.04 9.9,14.5C9.9,14.5 10.9,12.75 11.4,11.13M15.32,13.84C15.9,13.69 17.64,14 17.58,14.32C17.5,14.65 15.32,13.84 15.32,13.84M8.26,15.7C7.73,16.91 6.83,17.68 6.6,17.67C6.37,17.66 7.3,16.07 8.26,15.7M11.4,8.76C11.39,8.71 11.03,6.57 11.4,6.61C11.94,6.67 11.4,8.71 11.4,8.76Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                            <Path
+                                Width="16"
+                                Margin="10"
+                                Data="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19M10.59,10.08C10.57,10.13 10.3,11.84 8.5,14.77C8.5,14.77 5,16.58 5.83,17.94C6.5,19 8.15,17.9 9.56,15.27C9.56,15.27 11.38,14.63 13.79,14.45C13.79,14.45 17.65,16.19 18.17,14.34C18.69,12.5 15.12,12.9 14.5,13.09C14.5,13.09 12.46,11.75 12,9.89C12,9.89 13.13,5.95 11.38,6C9.63,6.05 10.29,9.12 10.59,10.08M11.4,11.13C11.43,11.13 11.87,12.33 13.29,13.58C13.29,13.58 10.96,14.04 9.9,14.5C9.9,14.5 10.9,12.75 11.4,11.13M15.32,13.84C15.9,13.69 17.64,14 17.58,14.32C17.5,14.65 15.32,13.84 15.32,13.84M8.26,15.7C7.73,16.91 6.83,17.68 6.6,17.67C6.37,17.66 7.3,16.07 8.26,15.7M11.4,8.76C11.39,8.71 11.03,6.57 11.4,6.61C11.94,6.67 11.4,8.71 11.4,8.76Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,10,1"
+                                FontWeight="SemiBold"
+                                VerticalAlignment="Center"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

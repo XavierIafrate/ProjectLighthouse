@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:valueConverter="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
-    xmlns:vm="clr-namespace:ProjectLighthouse.ViewModel"
     d:Background="White"
     d:DesignWidth="1324"
     mc:Ignorable="d">
@@ -16,7 +15,6 @@
         <Grid.Resources>
             <valueConverter:boolToVisibleOrCollapsed x:Key="visibleConverter" />
             <valueConverter:dateToLastModified x:Key="modifiedFormatter" />
-
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="350" />
@@ -35,8 +33,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBox
                     x:Name="SearchBox"
-                    Style="{StaticResource DefaultTextBox}"
-                    Tag="search..."
+                    Style="{StaticResource SearchBox}"
                     Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
                     x:Name="ClearButton"

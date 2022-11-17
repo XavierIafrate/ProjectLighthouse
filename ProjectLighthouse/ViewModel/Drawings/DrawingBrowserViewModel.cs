@@ -147,21 +147,21 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
         }
 
-        private bool hideRejected;
+        private bool showRejected;
 
-        public bool HideRejected
+        public bool ShowRejected
         {
-            get { return hideRejected; }
+            get { return showRejected; }
             set 
-            { 
-                hideRejected = value; 
-                if (hideRejected)
+            {
+                showRejected = value; 
+                if (showRejected)
                 {
-                    FilteredDrawings = selectedGroup.Drawings.Where(x => !x.IsRejected && !x.IsWithdrawn).ToList();
+                    FilteredDrawings = selectedGroup.Drawings;
                 }
                 else
                 {
-                    FilteredDrawings = selectedGroup.Drawings;
+                    FilteredDrawings = selectedGroup.Drawings.Where(x => !x.IsRejected && !x.IsWithdrawn).ToList();
                 }
                 OnPropertyChanged(); 
             }
@@ -198,7 +198,9 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         private void InitialiseVariables()
         {
-            EditControlsVis = App.CurrentUser.HasPermission(PermissionType.CreateSpecial) ? Visibility.Visible : Visibility.Collapsed;
+            EditControlsVis = App.CurrentUser.HasPermission(PermissionType.CreateSpecial) 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
 
             Drawings = new();
             FilteredDrawings = new();
@@ -336,6 +338,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 && selectedDrawing.CreatedBy != App.CurrentUser.GetFullName()
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+
             OnPropertyChanged(nameof(ApprovalControlsVis));
         }
 

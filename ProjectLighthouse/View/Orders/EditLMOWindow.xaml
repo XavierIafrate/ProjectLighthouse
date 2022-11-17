@@ -361,6 +361,7 @@
                                                     Foreground="{StaticResource Blue}"
                                                     Text="{Binding BarId}" />
                                             </TextBlock>
+                                            <TextBlock Text="{Binding MaterialBatch}" HorizontalAlignment="Center"/>
                                             <TextBlock HorizontalAlignment="Right" Text="{Binding Quantity, StringFormat='{}{0:#,##0} bar(s) Issued'}" />
 
                                         </Grid>

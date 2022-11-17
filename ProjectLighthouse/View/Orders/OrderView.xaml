@@ -703,6 +703,20 @@
                                         Text="Bar Stock"
                                         TextWrapping="Wrap" />
                                     <TextBlock
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        FontSize="13"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Opacity="0.6"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource OnBackground}"
+                                        TextWrapping="Wrap" >
+                                        <Run Text="{Binding SelectedOrderBar.MaterialText}"/>
+                                        <Run Text="-"/>
+                                        <Run Text="{Binding SelectedOrderBar.GradeText}"/>
+                                    </TextBlock>
+                                    <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="1"
                                         d:Text="PRB000-0000-000"
