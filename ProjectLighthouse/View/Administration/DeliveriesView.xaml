@@ -42,8 +42,8 @@
                     Style="{StaticResource GreenButton}" />
             </Grid>
             <ListView
-                d:ItemsSource="{d:SampleData ItemCount=10}"
                 Grid.Row="1"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
                 IsEnabled="{Binding DisableControls}"
                 ItemsSource="{Binding DeliveryNotes}"
                 SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -111,36 +111,43 @@
                                             Text="{Binding SelectedDeliveryNote.DeliveredBy, StringFormat='{} by {0}'}" />
                                     </StackPanel>
                                 </StackPanel>
-                                <StackPanel Grid.Column="1">
-                                    <Button
-                                        HorizontalAlignment="Right"
-                                        Command="{Binding GenerateDeliveryNotePDFCommand}"
-                                        IsEnabled="{Binding PdfEnabled}"
-                                        Style="{StaticResource PDFButton}" />
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Margin="0,10,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Orientation="Horizontal">
                                     <Button
                                         HorizontalAlignment="Right"
                                         Command="{Binding VerifyCommand}"
                                         Content="Verify"
                                         IsEnabled="{Binding NoteIsNotVerified}"
                                         Style="{StaticResource BlueButton}" />
-                                    <StackPanel Margin="50,10,0,0" Visibility="{Binding CheckingOperaVis}">
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            Foreground="{StaticResource Purple}"
-                                            Style="{StaticResource statement}"
-                                            FontStyle="Normal"
-                                            Text="Cross-referencing ERP data - please wait" />
-                                        <ProgressBar
-                                            Height="10"
-                                            Margin="0,5,0,0"
-                                            Foreground="{StaticResource Purple}"
-                                            IsIndeterminate="True"
-                                            Style="{x:Null}" />
-                                    </StackPanel>
+                                    <Button
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding GenerateDeliveryNotePDFCommand}"
+                                        IsEnabled="{Binding PdfEnabled}"
+                                        Style="{StaticResource HeroPdfButton}"
+                                        Tag="View PDF" />
+
 
                                 </StackPanel>
                             </Grid>
 
+                            <StackPanel Margin="20" Visibility="{Binding CheckingOperaVis}">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Purple}"
+                                    Style="{StaticResource statement}"
+                                    Text="Cross-referencing - please wait" />
+                                <ProgressBar
+                                    Height="10"
+                                    Margin="0,5,0,0"
+                                    Foreground="{StaticResource Purple}"
+                                    IsIndeterminate="True"
+                                    Style="{x:Null}" />
+                            </StackPanel>
                             <TextBlock Style="{StaticResource section}" Text="{Binding FilteredDeliveryItems.Count, StringFormat='{}Items ({0})', FallbackValue='Items (5)'}" />
 
                             <ItemsControl

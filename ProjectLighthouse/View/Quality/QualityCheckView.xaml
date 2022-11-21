@@ -26,6 +26,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -34,8 +35,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBox
                     x:Name="searchBox"
-                    Style="{StaticResource DefaultTextBox}"
-                    Tag="search..."
+                    Style="{StaticResource SearchBox}"
                     Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
                     x:Name="clearButton"
@@ -53,6 +53,15 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
+            <Button
+                Grid.Row="2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Tag="New Quality Check"
+            Command="{Binding AddNewCheckCommand}"
+            Style="{StaticResource RequestQcButton}"
+            Visibility="{Binding CanAddCheck, Converter={StaticResource showIfTrue}}" />
         </Grid>
 
         <TextBlock
@@ -280,7 +289,7 @@
                             Command="{Binding ResolveCommand}"
                             CommandParameter="false"
                             Content="Reject Samples"
-                            Style="{StaticResource CancelButton}" />
+                            Style="{StaticResource RedButton}"/>
                     </StackPanel>
 
                     <Grid
@@ -407,14 +416,6 @@
             </Grid>
         </ScrollViewer>
 
-        <Button
-            Grid.Column="1"
-            Margin="20"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Command="{Binding AddNewCheckCommand}"
-            Content="New"
-            Style="{StaticResource HeroAddButton}"
-            Visibility="{Binding CanAddCheck, Converter={StaticResource showIfTrue}}" />
+   
     </Grid>
 </UserControl>

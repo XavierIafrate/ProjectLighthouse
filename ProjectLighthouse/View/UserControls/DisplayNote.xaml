@@ -96,7 +96,7 @@
                 Grid.Column="1"
                 MaxWidth="450"
                 Margin="15,3"
-                d:Text="Unedited message"
+                d:Text="ORIGINAL_MESSAGE_TEXT"
                 FontSize="12"
                 Foreground="{StaticResource Red}"
                 Text="{Binding OriginalMessage}"
@@ -116,6 +116,7 @@
                     <Button
                         x:Name="EditButton"
                         Click="EditButton_Click"
+                        Tag=""
                         Style="{StaticResource IconEditButton}" />
                     <Button
                         x:Name="CancelButton"
@@ -139,7 +140,8 @@
                             Padding="4,0,4,2"
                             FontSize="14"
                             Foreground="#2a2a2a"
-                            Text="{Binding Path=Message, FallbackValue='Lorem Ipsum'}"
+                            d:Text="MESSAGE_TEXT"
+                            Text="{Binding Path=Message}"
                             TextWrapping="Wrap" />
                         <TextBox
                             x:Name="EditBox"

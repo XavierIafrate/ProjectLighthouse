@@ -169,6 +169,8 @@ namespace ProjectLighthouse.Model.Orders
 
         public object Clone()
         {
+
+            // TODO refactor
             return new LatheManufactureOrder
             {
                 Id = Id,

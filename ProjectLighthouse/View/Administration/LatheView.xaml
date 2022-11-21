@@ -336,7 +336,7 @@
                                         Command="{Binding RemoveAttachmentCmd}"
                                         Content="Remove"
                                         IsEnabled="False"
-                                        Style="{StaticResource CancelButton}" />
+                                        Style="{StaticResource RedButton}" />
                                     <Button
                                         Margin="5,0"
                                         HorizontalAlignment="Right"

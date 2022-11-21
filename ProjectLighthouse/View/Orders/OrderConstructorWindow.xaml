@@ -85,7 +85,7 @@
                     x:Name="RemoveButton"
                     Click="RemoveButton_Click"
                     Content="&lt;"
-                    Style="{StaticResource CancelButton}" />
+                    Style="{StaticResource RedButton}" />
             </StackPanel>
 
             <TextBlock
@@ -216,7 +216,7 @@
                 <Button
                     Click="CancelButton_Click"
                     Content="Cancel"
-                    Style="{StaticResource CancelButton}" />
+                    Style="{StaticResource RedButton}" />
                 <Button
                     x:Name="ApproveButton"
                     Click="ConfirmButton_Click"

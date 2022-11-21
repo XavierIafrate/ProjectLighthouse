@@ -40,7 +40,8 @@
             <Button
                 VerticalAlignment="Center"
                 Command="{Binding PrintScheduleCommand}"
-                Style="{StaticResource PDFButton}"
+                Style="{StaticResource HeroPdfButton}"
+                Tag="View PDF"
                 Visibility="{Binding PrintButtonVis}" />
         </StackPanel>
         <Grid Grid.Row="1">
@@ -75,9 +76,9 @@
                 <Border
                     Grid.Row="1"
                     Margin="5"
-                    Padding="15"
+                    Padding="15,10"
                     Background="{StaticResource Surface}"
-                    CornerRadius="10"
+                    CornerRadius="5"
                     TextElement.Foreground="{StaticResource OnSurface}"
                     Visibility="{Binding InsightsVis}">
                     <StackPanel>

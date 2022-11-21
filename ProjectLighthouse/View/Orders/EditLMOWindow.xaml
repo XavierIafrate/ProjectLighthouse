@@ -361,6 +361,7 @@
                                                     Foreground="{StaticResource Blue}"
                                                     Text="{Binding BarId}" />
                                             </TextBlock>
+                                            <TextBlock Text="{Binding MaterialBatch}" HorizontalAlignment="Center"/>
                                             <TextBlock HorizontalAlignment="Right" Text="{Binding Quantity, StringFormat='{}{0:#,##0} bar(s) Issued'}" />
 
                                         </Grid>
@@ -387,7 +388,7 @@
                                 Click="RemoveItemButton_Click"
                                 Content="Remove"
                                 IsEnabled="False"
-                                Style="{StaticResource CancelButton}" />
+                                Style="{StaticResource RedButton}" />
                         </StackPanel>
                     </Grid>
                     <ListView

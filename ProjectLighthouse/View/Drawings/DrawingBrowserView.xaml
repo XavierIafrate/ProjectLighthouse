@@ -42,7 +42,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBox
                     x:Name="searchBox"
-                    Style="{StaticResource SearchBox }"
+                    Style="{StaticResource SearchBox}"
                     Text="{Binding SearchBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     TextChanged="TextBox_TextChanged" />
 
@@ -195,7 +195,7 @@
                 Text="Revision History" />
             <ToggleButton
                 HorizontalAlignment="Right"
-                IsChecked="{Binding HideRejected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IsChecked="{Binding ShowRejected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource HideToggleButton}" />
             <ListView
                 Grid.Row="1"
@@ -673,7 +673,7 @@
                                 <Button
                                     Command="{Binding RejectDrawingCmd}"
                                     Content="Reject Drawing"
-                                    Style="{StaticResource CancelButton}" />
+                                    Style="{StaticResource RedButton}" />
                                 <Button
                                     Command="{Binding ApproveDrawingCmd}"
                                     Content="Approve Drawing"

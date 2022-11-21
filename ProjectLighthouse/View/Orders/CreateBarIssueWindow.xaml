@@ -40,7 +40,7 @@
                 Style="{StaticResource DefaultTextBox}"
                 Tag="Batch Ref" Width="350" HorizontalAlignment="Left" />
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,20,0,0">
-                <Button Content="Cancel" Style="{StaticResource CancelButton}" x:Name="CancelButton" Click="CancelButton_Click" />
+                <Button Content="Cancel" Style="{StaticResource RedButton}" x:Name="CancelButton" Click="CancelButton_Click" />
                 <Button Content="Create Issue" Style="{StaticResource GreenButton}" x:Name="ConfirmButton" Click="ConfirmButton_Click" />
             </StackPanel>
         </StackPanel>

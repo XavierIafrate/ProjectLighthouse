@@ -7,36 +7,43 @@
     <SolidColorBrush x:Key="OnSurface" Color="#000000" />
 
     <SolidColorBrush x:Key="Purple" Color="#512DA8" />
+    <SolidColorBrush x:Key="PurpleFaded" Color="#e5e0f2" />
     <SolidColorBrush x:Key="PurpleLight" Color="#8559da" />
     <SolidColorBrush x:Key="PurpleDark" Color="#140078" />
     <SolidColorBrush x:Key="OnPurple" Color="#FFFFFF" />
 
     <SolidColorBrush x:Key="Red" Color="#b71c1c" />
+    <SolidColorBrush x:Key="RedFaded" Color="#f4dddd" />
     <SolidColorBrush x:Key="RedLight" Color="#f05545" />
     <SolidColorBrush x:Key="RedDark" Color="#7f0000" />
     <SolidColorBrush x:Key="OnRed" Color="#FFFFFF" />
 
     <SolidColorBrush x:Key="Green" Color="#009688" />
+    <SolidColorBrush x:Key="GreenFaded" Color="#d9efed" />
     <SolidColorBrush x:Key="GreenLight" Color="#00b5a4" />
     <SolidColorBrush x:Key="GreenDark" Color="#006b61" />
     <SolidColorBrush x:Key="OnGreen" Color="#FFFFFF" />
 
     <SolidColorBrush x:Key="Teal" Color="#00695c" />
+    <SolidColorBrush x:Key="TealFaded" Color="#d9e9e7" />
     <SolidColorBrush x:Key="TealLight" Color="#439889" />
     <SolidColorBrush x:Key="TealDark" Color="#003d33" />
     <SolidColorBrush x:Key="OnTeal" Color="#FFFFFF" />
 
     <SolidColorBrush x:Key="Blue" Color="#1565C0" />
+    <SolidColorBrush x:Key="BlueFaded" Color="#dce8f6" />
     <SolidColorBrush x:Key="BlueLight" Color="#5e92f3" />
     <SolidColorBrush x:Key="BlueDark" Color="#003c8f" />
     <SolidColorBrush x:Key="OnBlue" Color="#FFFFFF" />
 
     <SolidColorBrush x:Key="Yellow" Color="#ffee58" />
+    <SolidColorBrush x:Key="YellowFaded" Color="#fffce6" />
     <SolidColorBrush x:Key="YellowLight" Color="#ffff8b" />
     <SolidColorBrush x:Key="YellowDark" Color="#c9bc1f" />
     <SolidColorBrush x:Key="OnYellow" Color="#000000" />
 
     <SolidColorBrush x:Key="Orange" Color="#F57C00" />
+    <SolidColorBrush x:Key="OrangeFaded" Color="#feebd9" />
     <SolidColorBrush x:Key="OrangeLight" Color="#ffad42" />
     <SolidColorBrush x:Key="OrangeDark" Color="#bb4d00" />
     <SolidColorBrush x:Key="OnOrange" Color="#000000" />

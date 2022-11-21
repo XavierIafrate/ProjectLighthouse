@@ -247,7 +247,8 @@ namespace ProjectLighthouse.ViewModel.Quality
 
         public void AddQualityCheck()
         {
-            RequestNewQualityCheckWindow window = new();
+            RequestNewQualityCheckWindow window = new() { Owner = App.MainViewModel.MainWindow };
+            
             window.ShowDialog();
             if (window.RequestAdded)
             {

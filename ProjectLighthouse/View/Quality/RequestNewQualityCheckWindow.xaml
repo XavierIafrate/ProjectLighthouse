@@ -8,6 +8,7 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="New Quality Check"
     Width="500"
+    WindowStartupLocation="CenterOwner"
     SizeToContent="Height"
     mc:Ignorable="d">
     <Grid>

@@ -27,10 +27,12 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+                <Setter Property="Cursor" Value="Hand" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="LightGray" />
                 <Setter Property="Foreground" Value="Gray" />
+                <Setter Property="Cursor" Value="Cross" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="{StaticResource PurpleLight}" />
@@ -43,7 +45,7 @@
 
 
 
-    <!--  Sub Styles  -->
+    <!--#region Notifications-->
 
     <Style x:Key="NotificationsMainButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource Red}" />
@@ -105,50 +107,9 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="SentryDownloadButton" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource Red}" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="Foreground" Value="{StaticResource OnRed}" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        x:Name="border"
-                        Height="35"
-                        Padding="20,0"
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0">
-                        <StackPanel Orientation="Horizontal">
-                            <Path
-                                Width="12"
-                                Height="12"
-                                Margin="0,0,5,0"
-                                Data="M19.92,12.08L12,20L4.08,12.08L5.5,10.67L11,16.17V2H13V16.17L18.5,10.66L19.92,12.08M12,20H2V22H22V20H12Z"
-                                Fill="{StaticResource OnRed}"
-                                Stretch="Uniform" />
-                            <ContentPresenter
-                                Margin="0,0,0,2"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource RedDark}" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" Value="LightGray" />
-                <Setter Property="Foreground" Value="Gray" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+    <!--#endregion-->
 
+    <!--#region Standard Colours-->
     <Style
         x:Key="GreenButton"
         BasedOn="{StaticResource Default}"
@@ -180,7 +141,7 @@
     </Style>
 
     <Style
-        x:Key="CancelButton"
+        x:Key="RedButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
         <Setter Property="Background" Value="{StaticResource Red}" />
@@ -194,108 +155,8 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <!--#endregion-->
 
-    <Style
-        x:Key="Inverting"
-        BasedOn="{StaticResource Default}"
-        TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource OnYellow}" />
-        <Setter Property="Background" Value="{StaticResource Yellow}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        x:Name="border"
-                        Height="26"
-                        Padding="10,0"
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        CornerRadius="13">
-                        <ContentPresenter
-                            x:Name="content"
-                            Margin="3,3,3,4"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            TextElement.Foreground="{TemplateBinding Foreground}" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource OnPurple}" />
-                            <Setter TargetName="border" Property="Background" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="SubtleButtonTemplate" TargetType="Button">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource Blue}" />
-        <Setter Property="FontSize" Value="10" />
-        <Setter Property="FontStyle" Value="Italic" />
-        <Setter Property="Margin" Value="5" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        Height="24"
-                        Padding="5,0,7,0"
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        CornerRadius="12">
-                        <ContentPresenter
-                            Margin="5,0,5,2"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Blue}" />
-                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="LightGray" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="SubtleGreenButtonTemplate" TargetType="Button">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource Green}" />
-        <Setter Property="FontSize" Value="10" />
-        <Setter Property="FontStyle" Value="Italic" />
-        <Setter Property="Margin" Value="5" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        Height="18"
-                        Padding="10,0"
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        CornerRadius="9">
-                        <ContentPresenter
-                            Margin="5,0,5,2"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Green}" />
-                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="LightGray" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
 
     <Style x:Key="ModernGreenButtonTemplate" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
@@ -437,10 +298,13 @@
         </Style.Triggers>
     </Style>
 
+    <!--#region Icon Buttons-->
+
     <Style x:Key="IconEditButton" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource Blue}" />
-        <Setter Property="Background" Value="{StaticResource SelectedElement}" />
+        <Setter Property="Background" Value="#01ffffff" />
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Tag" Value="edit" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -448,27 +312,35 @@
                         Height="20"
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
-                        CornerRadius="10">
+                        CornerRadius="3">
                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                             <Path
                                 Width="12"
                                 Height="12"
-                                Margin="7,0"
+                                Margin="5,0,4,0"
                                 HorizontalAlignment="Center"
                                 Data="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z"
                                 Fill="{TemplateBinding Foreground}"
-                                Stretch="Uniform">
-                                <Path.RenderTransform>
-                                    <TranslateTransform X="0.00" />
-                                </Path.RenderTransform>
-                            </Path>
-                            <ContentPresenter
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,5,1"
                                 VerticalAlignment="Center"
-                                Content="{TemplateBinding Content}"
-                                TextElement.Foreground="{TemplateBinding Foreground}" />
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </StackPanel>
-
                     </Border>
+
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -558,6 +430,208 @@
         </Style.Triggers>
     </Style>
 
+    <!--  TODO refactor  -->
+    <Style
+        x:Key="PDFButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="24"
+                        Padding="20,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="12">
+                        <StackPanel Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Margin="0,0,5,0"
+                                Data="M19.92,12.08L12,20L4.08,12.08L5.5,10.67L11,16.17V2H13V16.17L18.5,10.66L19.92,12.08M12,20H2V22H22V20H12Z"
+                                Fill="{StaticResource OnPurple}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Padding="0,0,0,2"
+                                VerticalAlignment="Center"
+                                Text="PDF" />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style
+        x:Key="RequestQcButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="30"
+                            MinWidth="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M9.46,6.28L11.05,9C8.47,9.26 6.5,11.41 6.5,14A5,5 0 0,0 11.5,19C13.55,19 15.31,17.77 16.08,16H13.5V14H21.5V16H19.25C18.84,17.57 17.97,18.96 16.79,20H19.5V22H3.5V20H6.21C4.55,18.53 3.5,16.39 3.5,14C3.5,10.37 5.96,7.2 9.46,6.28M12.74,2.07L13.5,3.37L14.36,2.87L17.86,8.93L14.39,10.93L10.89,4.87L11.76,4.37L11,3.07L12.74,2.07Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,0"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Purple}" />
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="NewOrderButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="30"
+                            MinWidth="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="16"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M11 15H6L13 1V9H18L11 23V15Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Purple}" />
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource Red}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="OpenPdfButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="3">
+                        <StackPanel Margin="10,5" Orientation="Horizontal">
+                            <Path
+                                Width="16"
+                                Data="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19M10.59,10.08C10.57,10.13 10.3,11.84 8.5,14.77C8.5,14.77 5,16.58 5.83,17.94C6.5,19 8.15,17.9 9.56,15.27C9.56,15.27 11.38,14.63 13.79,14.45C13.79,14.45 17.65,16.19 18.17,14.34C18.69,12.5 15.12,12.9 14.5,13.09C14.5,13.09 12.46,11.75 12,9.89C12,9.89 13.13,5.95 11.38,6C9.63,6.05 10.29,9.12 10.59,10.08M11.4,11.13C11.43,11.13 11.87,12.33 13.29,13.58C13.29,13.58 10.96,14.04 9.9,14.5C9.9,14.5 10.9,12.75 11.4,11.13M15.32,13.84C15.9,13.69 17.64,14 17.58,14.32C17.5,14.65 15.32,13.84 15.32,13.84M8.26,15.7C7.73,16.91 6.83,17.68 6.6,17.67C6.37,17.66 7.3,16.07 8.26,15.7M11.4,8.76C11.39,8.71 11.03,6.57 11.4,6.61C11.94,6.67 11.4,8.71 11.4,8.76Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Margin="7,0,0,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Foreground="{TemplateBinding Foreground}"
+                                Text="Open PDF" />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource Surface}" />
+                <Setter Property="Foreground" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource Red}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <Style
         x:Key="SubmitButton"
@@ -624,37 +698,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style
-        x:Key="PDFButton"
-        BasedOn="{StaticResource Default}"
-        TargetType="Button">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        Height="24"
-                        Padding="20,0"
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        CornerRadius="12">
-                        <StackPanel Orientation="Horizontal">
-                            <Path
-                                Width="12"
-                                Height="12"
-                                Margin="0,0,5,0"
-                                Data="M19.92,12.08L12,20L4.08,12.08L5.5,10.67L11,16.17V2H13V16.17L18.5,10.66L19.92,12.08M12,20H2V22H22V20H12Z"
-                                Fill="{StaticResource OnPurple}"
-                                Stretch="Uniform" />
-                            <TextBlock
-                                Padding="0,0,0,2"
-                                VerticalAlignment="Center"
-                                Text="PDF" />
-                        </StackPanel>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+
+
 
     <Style
         x:Key="CSVButton"
@@ -685,6 +730,8 @@
         </Setter>
     </Style>
 
+
+    <!--#region Hero Buttons-->
     <Style x:Key="HeroEditButton" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
@@ -717,8 +764,6 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
-
 
     <Style x:Key="HeroSaveButton" TargetType="Button">
         <Setter Property="Template">
@@ -753,6 +798,91 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="HeroAddButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Width="60"
+                        Height="60"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="30">
+                        <Path
+                            Width="20"
+                            Data="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Green}" />
+        <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+                <Setter Property="Background" Value="{StaticResource GreenDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="HeroPdfButton" TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="40"
+                        MinWidth="40"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="3">
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                            <Path
+                                Width="16"
+                                Margin="10"
+                                Data="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19M10.59,10.08C10.57,10.13 10.3,11.84 8.5,14.77C8.5,14.77 5,16.58 5.83,17.94C6.5,19 8.15,17.9 9.56,15.27C9.56,15.27 11.38,14.63 13.79,14.45C13.79,14.45 17.65,16.19 18.17,14.34C18.69,12.5 15.12,12.9 14.5,13.09C14.5,13.09 12.46,11.75 12,9.89C12,9.89 13.13,5.95 11.38,6C9.63,6.05 10.29,9.12 10.59,10.08M11.4,11.13C11.43,11.13 11.87,12.33 13.29,13.58C13.29,13.58 10.96,14.04 9.9,14.5C9.9,14.5 10.9,12.75 11.4,11.13M15.32,13.84C15.9,13.69 17.64,14 17.58,14.32C17.5,14.65 15.32,13.84 15.32,13.84M8.26,15.7C7.73,16.91 6.83,17.68 6.6,17.67C6.37,17.66 7.3,16.07 8.26,15.7M11.4,8.76C11.39,8.71 11.03,6.57 11.4,6.61C11.94,6.67 11.4,8.71 11.4,8.76Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,10,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource Surface}" />
+                <Setter Property="Foreground" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Unique Buttons-->
     <Style x:Key="ViewGithubButton" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
@@ -797,158 +927,6 @@
         </Style.Triggers>
     </Style>
 
-
-
-    <Style x:Key="HeroAddButton" TargetType="Button">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        Width="60"
-                        Height="60"
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        CornerRadius="30">
-                        <Path
-                            Width="20"
-                            Data="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Background" Value="{StaticResource Green}" />
-        <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
-                <Setter Property="Background" Value="{StaticResource GreenDark}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="HeroPdfButton" TargetType="Button">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        Width="40"
-                        Height="40"
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        CornerRadius="3">
-                        <Path
-                            Width="16"
-                            Data="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19M10.59,10.08C10.57,10.13 10.3,11.84 8.5,14.77C8.5,14.77 5,16.58 5.83,17.94C6.5,19 8.15,17.9 9.56,15.27C9.56,15.27 11.38,14.63 13.79,14.45C13.79,14.45 17.65,16.19 18.17,14.34C18.69,12.5 15.12,12.9 14.5,13.09C14.5,13.09 12.46,11.75 12,9.89C12,9.89 13.13,5.95 11.38,6C9.63,6.05 10.29,9.12 10.59,10.08M11.4,11.13C11.43,11.13 11.87,12.33 13.29,13.58C13.29,13.58 10.96,14.04 9.9,14.5C9.9,14.5 10.9,12.75 11.4,11.13M15.32,13.84C15.9,13.69 17.64,14 17.58,14.32C17.5,14.65 15.32,13.84 15.32,13.84M8.26,15.7C7.73,16.91 6.83,17.68 6.6,17.67C6.37,17.66 7.3,16.07 8.26,15.7M11.4,8.76C11.39,8.71 11.03,6.57 11.4,6.61C11.94,6.67 11.4,8.71 11.4,8.76Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Background" Value="{StaticResource Surface}" />
-        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
-        <Style.Triggers>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource Surface}" />
-                <Setter Property="Foreground" Value="{StaticResource Purple}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
-                <Setter Property="Background" Value="{StaticResource Purple}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="OpenPdfButton" TargetType="Button">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        CornerRadius="3">
-                        <StackPanel Margin="10,5" Orientation="Horizontal">
-                            <Path
-                                Width="16"
-                                Data="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19M10.59,10.08C10.57,10.13 10.3,11.84 8.5,14.77C8.5,14.77 5,16.58 5.83,17.94C6.5,19 8.15,17.9 9.56,15.27C9.56,15.27 11.38,14.63 13.79,14.45C13.79,14.45 17.65,16.19 18.17,14.34C18.69,12.5 15.12,12.9 14.5,13.09C14.5,13.09 12.46,11.75 12,9.89C12,9.89 13.13,5.95 11.38,6C9.63,6.05 10.29,9.12 10.59,10.08M11.4,11.13C11.43,11.13 11.87,12.33 13.29,13.58C13.29,13.58 10.96,14.04 9.9,14.5C9.9,14.5 10.9,12.75 11.4,11.13M15.32,13.84C15.9,13.69 17.64,14 17.58,14.32C17.5,14.65 15.32,13.84 15.32,13.84M8.26,15.7C7.73,16.91 6.83,17.68 6.6,17.67C6.37,17.66 7.3,16.07 8.26,15.7M11.4,8.76C11.39,8.71 11.03,6.57 11.4,6.61C11.94,6.67 11.4,8.71 11.4,8.76Z"
-                                Fill="{TemplateBinding Foreground}"
-                                Stretch="Uniform" />
-                            <TextBlock
-                                Margin="7,0,0,1"
-                                VerticalAlignment="Center"
-                                FontWeight="SemiBold"
-                                Foreground="{TemplateBinding Foreground}"
-                                Text="Open PDF" />
-                        </StackPanel>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Background" Value="{StaticResource Surface}" />
-        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
-        <Style.Triggers>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource Surface}" />
-                <Setter Property="Foreground" Value="{StaticResource Purple}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
-                <Setter Property="Background" Value="{StaticResource Purple}" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
-                <Setter Property="Background" Value="{StaticResource Red}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-
-    <Style x:Key="EditButton" TargetType="Button">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border
-                            Height="20"
-                            Background="{TemplateBinding Background}"
-                            BorderThickness="0"
-                            CornerRadius="10" />
-                        <StackPanel Margin="8,0" Orientation="Horizontal">
-
-                            <Path
-                                Width="10"
-                                Height="10"
-                                Margin="0,0,3,0"
-                                Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
-                                Fill="{TemplateBinding Foreground}"
-                                Stretch="Uniform" />
-                            <TextBlock
-                                Padding="0,0,0,2"
-                                VerticalAlignment="Center"
-                                FontSize="12"
-                                Foreground="{TemplateBinding Foreground}"
-                                Text="edit" />
-                        </StackPanel>
-                    </Grid>
-
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Background" Value="{StaticResource Surface}" />
-        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
-        <Style.Triggers>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
-                <Setter Property="Background" Value="{StaticResource BlueLight}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
-                <Setter Property="Background" Value="{StaticResource BlueDark}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
 
     <Style
         x:Key="SettingsButton"
@@ -1012,6 +990,121 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="ExitButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+
+                    <Border
+                        Width="30"
+                        Height="30"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="15">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                Width="8"
+                                Height="8"
+                                Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Red}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="LoginButton" TargetType="Button">
+        <Setter Property="Background" Value="#01ffffff" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+
+                    <Border
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="3">
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M10,17V14H3V10H10V7L15,12L10,17M10,2H19A2,2 0 0,1 21,4V20A2,2 0 0,1 19,22H10A2,2 0 0,1 8,20V18H10V20H19V4H10V6H8V4A2,2 0 0,1 10,2Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+
+
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Background}" />
+                <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!--#endregion-->
+
+    <Style x:Key="EditButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border
+                            Height="20"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="10" />
+                        <StackPanel Margin="8,0" Orientation="Horizontal">
+
+                            <Path
+                                Width="10"
+                                Height="10"
+                                Margin="0,0,3,0"
+                                Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Padding="0,0,0,2"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{TemplateBinding Foreground}"
+                                Text="edit" />
+                        </StackPanel>
+                    </Grid>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+                <Setter Property="Background" Value="{StaticResource BlueLight}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+                <Setter Property="Background" Value="{StaticResource BlueDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style
         x:Key="SendButton"
         BasedOn="{StaticResource Default}"
@@ -1040,44 +1133,6 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Blue}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style
-        x:Key="FirebaseButton"
-        BasedOn="{StaticResource Default}"
-        TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border Background="{StaticResource Surface}" CornerRadius="5">
-                            <StackPanel Margin="10,5" Orientation="Horizontal">
-                                <Path
-                                    Width="20"
-                                    Height="20"
-                                    Data="M20,18.69L12.7,22.74C12.2,23 11.7,23 11.2,22.74L4,18.69L17.05,5.54L17.4,5.44C17.7,5.44 17.87,5.57 17.9,5.84L20,18.69M9.35,5.74L4.8,13.29L6.7,1.34C6.73,1.07 6.9,0.94 7.2,0.94C7.4,0.94 7.53,1 7.6,1.19L9.75,5.14L9.35,5.74M13.85,7L4.3,16.59L11.55,4.29C11.65,4.09 11.8,4 12,4C12.2,4 12.33,4.09 12.4,4.29L13.85,7Z"
-                                    Fill="{TemplateBinding Foreground}"
-                                    Stretch="Uniform" />
-                                <TextBlock
-                                    Margin="5,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontWeight="SemiBold"
-                                    Foreground="{TemplateBinding Foreground}"
-                                    Text="Synchronise Firebase" />
-                            </StackPanel>
-                        </Border>
-
-
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Orange}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -1218,74 +1273,9 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="ExitButton" TargetType="Button">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource OnRed}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-
-                    <Border
-                        Width="30"
-                        Height="30"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="15">
-                        <Grid HorizontalAlignment="Center">
-                            <Path
-                                Width="8"
-                                Height="8"
-                                Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
-                                Fill="{TemplateBinding Foreground}"
-                                Stretch="Uniform" />
-
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Red}" />
-                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="LoginButton" TargetType="Button">
-        <Setter Property="Background" Value="#01ffffff" />
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-
-                    <Border
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="3">
-                        <Path
-                            Width="15"
-                            Height="15"
-                            Margin="10"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M10,17V14H3V10H10V7L15,12L10,17M10,2H19A2,2 0 0,1 21,4V20A2,2 0 0,1 19,22H10A2,2 0 0,1 8,20V18H10V20H19V4H10V6H8V4A2,2 0 0,1 10,2Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
 
 
 
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Background}" />
-                <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
 
 
 </ResourceDictionary>
