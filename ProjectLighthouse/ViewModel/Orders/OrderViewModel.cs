@@ -566,7 +566,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             .Where(n =>
                 n.DocumentReference == SelectedOrder.Name &&
                 !n.IsDeleted)
-            .OrderBy(x => x.DateSent)
+            .OrderBy(x => x.Id) // Time is not synchronised
             .ToList();
 
             // Order Drawings

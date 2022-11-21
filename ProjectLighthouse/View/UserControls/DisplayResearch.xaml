@@ -46,7 +46,7 @@
                     Click="Edit_Button_Click"
                     Content="edit"
                     Foreground="{StaticResource Blue}"
-                    Style="{StaticResource Inverting}" />
+                    Style="{StaticResource EditButton}" />
             </StackPanel>
             <StackPanel
                 Grid.Column="1"

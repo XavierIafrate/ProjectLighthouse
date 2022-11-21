@@ -134,7 +134,7 @@
                     HorizontalAlignment="Left"
                     Click="EditButton_Click"
                     Content="edit"
-                    Style="{StaticResource SubtleButtonTemplate}" />
+                    Style="{StaticResource EditButton}" />
             </StackPanel>
 
             <Grid

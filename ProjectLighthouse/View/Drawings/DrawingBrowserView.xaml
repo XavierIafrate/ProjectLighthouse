@@ -673,7 +673,7 @@
                                 <Button
                                     Command="{Binding RejectDrawingCmd}"
                                     Content="Reject Drawing"
-                                    Style="{StaticResource CancelButton}" />
+                                    Style="{StaticResource RedButton}" />
                                 <Button
                                     Command="{Binding ApproveDrawingCmd}"
                                     Content="Approve Drawing"

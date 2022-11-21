@@ -388,7 +388,7 @@
                                 Click="RemoveItemButton_Click"
                                 Content="Remove"
                                 IsEnabled="False"
-                                Style="{StaticResource CancelButton}" />
+                                Style="{StaticResource RedButton}" />
                         </StackPanel>
                     </Grid>
                     <ListView

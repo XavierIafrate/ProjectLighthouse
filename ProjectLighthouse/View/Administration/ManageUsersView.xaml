@@ -220,24 +220,27 @@
                         Style="{StaticResource section}"
                         Text="Permissions" />
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button
-                        Margin="5,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom"
-                        Content="Grant"
-                        Style="{StaticResource BlueButton}"
-                        Command="{Binding addPermissionCommand}"/>
                         <Button
-                        Margin="5,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom"
-                        Content="Revoke"
-                        Style="{StaticResource CancelButton}"
-                        Command="{Binding removePermissionCommand}"/>
-                        
+                            Margin="5,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding addPermissionCommand}"
+                            Content="Grant"
+                            Style="{StaticResource BlueButton}" />
+                        <Button
+                            Margin="5,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding removePermissionCommand}"
+                            Content="Revoke"
+                            Style="{StaticResource RedButton}" />
+
                     </StackPanel>
                 </Grid>
-                <ListView MinHeight="50" ItemsSource="{Binding SelectedUserPermissions}" SelectedValue="{Binding SelectedPermission, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView
+                    MinHeight="50"
+                    ItemsSource="{Binding SelectedUserPermissions}"
+                    SelectedValue="{Binding SelectedPermission, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <uc:DisplayEditablePermission Margin="10,2,10,3" Permission="{Binding}" />
@@ -298,7 +301,7 @@
                         Width="150"
                         Command="{Binding deleteUserCommand}"
                         Content="Delete User"
-                        Style="{StaticResource CancelButton}"
+                        Style="{StaticResource RedButton}"
                         Visibility="{Binding EditControlsVis}" />
                 </StackPanel>
             </StackPanel>
