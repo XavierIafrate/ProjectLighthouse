@@ -1,9 +1,0 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="LighthouseMonitoring" GeneratedClassName="Settings1">
-  <Profiles />
-  <Settings>
-    <Setting Name="MTConnectHost" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://192.168.103.102</Value>
-    </Setting>
-  </Settings>
-</SettingsFile>

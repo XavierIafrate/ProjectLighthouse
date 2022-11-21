@@ -16,8 +16,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentry", "..\Sentry\Sentry\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LighthouseExtract", "LighthouseExtract\LighthouseExtract.csproj", "{E5A4BE0B-BF2E-4861-BBC4-64C4E5AEC161}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LighthouseMonitoring", "LighthouseMonitoring\LighthouseMonitoring.csproj", "{556842B8-15EA-4488-8BA2-5B0410446A80}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +48,7 @@ Global
 		{A293B101-F5CA-40BA-9107-411462FCEBA1}.Release|x86.ActiveCfg = Release|Any CPU
 		{A293B101-F5CA-40BA-9107-411462FCEBA1}.Release|x86.Build.0 = Release|Any CPU
 		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{F65152BA-902B-4770-BAB8-BDC741302D15}.Debug|x86.Build.0 = Debug|Any CPU
@@ -67,18 +66,6 @@ Global
 		{E5A4BE0B-BF2E-4861-BBC4-64C4E5AEC161}.Release|x64.Build.0 = Release|x64
 		{E5A4BE0B-BF2E-4861-BBC4-64C4E5AEC161}.Release|x86.ActiveCfg = Release|Any CPU
 		{E5A4BE0B-BF2E-4861-BBC4-64C4E5AEC161}.Release|x86.Build.0 = Release|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Debug|x64.Build.0 = Debug|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Debug|x86.Build.0 = Debug|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Release|Any CPU.Build.0 = Release|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Release|x64.ActiveCfg = Release|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Release|x64.Build.0 = Release|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Release|x86.ActiveCfg = Release|Any CPU
-		{556842B8-15EA-4488-8BA2-5B0410446A80}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
