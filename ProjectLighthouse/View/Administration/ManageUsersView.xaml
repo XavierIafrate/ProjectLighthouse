@@ -18,8 +18,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="200" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" MinWidth="280" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -70,8 +70,8 @@
                 Grid.Row="1"
                 HorizontalAlignment="Right"
                 Command="{Binding addUserCommand}"
-                Content="+ New User"
-                Style="{StaticResource GreenButton}" />
+                Style="{StaticResource Action_New_Button}"
+                Tag="New User" />
         </Grid>
 
         <StackPanel

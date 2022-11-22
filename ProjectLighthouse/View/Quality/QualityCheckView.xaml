@@ -56,12 +56,12 @@
 
             <Button
                 Grid.Row="2"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Tag="New Quality Check"
-            Command="{Binding AddNewCheckCommand}"
-            Style="{StaticResource RequestQcButton}"
-            Visibility="{Binding CanAddCheck, Converter={StaticResource showIfTrue}}" />
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Command="{Binding AddNewCheckCommand}"
+                Style="{StaticResource Action_New_Button}"
+                Tag="New Quality Check"
+                Visibility="{Binding CanAddCheck, Converter={StaticResource showIfTrue}}" />
         </Grid>
 
         <TextBlock
@@ -289,7 +289,7 @@
                             Command="{Binding ResolveCommand}"
                             CommandParameter="false"
                             Content="Reject Samples"
-                            Style="{StaticResource RedButton}"/>
+                            Style="{StaticResource RedButton}" />
                     </StackPanel>
 
                     <Grid
@@ -416,6 +416,6 @@
             </Grid>
         </ScrollViewer>
 
-   
+
     </Grid>
 </UserControl>

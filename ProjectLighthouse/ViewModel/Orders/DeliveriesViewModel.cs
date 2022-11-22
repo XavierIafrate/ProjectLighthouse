@@ -8,6 +8,7 @@ using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,6 +29,29 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
+        private List<DeliveryNote> filteredDeliveryNotes;
+
+        public List<DeliveryNote> FilteredDeliveryNotes
+        {
+            get { return filteredDeliveryNotes; }
+            set { filteredDeliveryNotes = value; OnPropertyChanged(); }
+        }
+
+
+        private string searchText;
+
+        public string SearchText
+        {
+            get { return searchText; }
+            set 
+            { 
+                searchText = value;
+                OnPropertyChanged(); 
+                FilterDeliveries();
+            }
+        }
+
+
         public List<DeliveryItem> DeliveryItems { get; set; }
 
         public List<DeliveryItem> FilteredDeliveryItems { get; set; }
@@ -39,6 +63,9 @@ namespace ProjectLighthouse.ViewModel.Orders
             set
             {
                 selectedDeliveryNote = value;
+
+                ShowingDelivery = value != null;
+
                 if (value == null)
                     return;
 
@@ -49,6 +76,14 @@ namespace ProjectLighthouse.ViewModel.Orders
                 OnPropertyChanged();
             }
         }
+
+        private bool showingDelivery;
+        public bool ShowingDelivery
+        {
+            get { return showingDelivery; }
+            set { showingDelivery = value; OnPropertyChanged(); }
+        }
+
 
         public NewDeliveryCommand CreateDeliveryCommand { get; set; }
         public PrintDeliveryNoteCommand GenerateDeliveryNotePDFCommand { get; set; }
@@ -108,6 +143,17 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public DeliveriesViewModel()
         {
+            InitialiseVariables();
+
+            LoadDeliveryItems();
+            LoadDeliveryNotes();
+
+            FilterDeliveries();
+        }
+
+        private void InitialiseVariables()
+        {
+            FilteredDeliveryNotes = new();
             DeliveryNotes = new();
             DeliveryItems = new();
             SelectedDeliveryNote = new();
@@ -119,9 +165,29 @@ namespace ProjectLighthouse.ViewModel.Orders
             EditDeliveryNoteItemCmd = new(this);
 
             CheckingOperaVis = Visibility.Collapsed;
+        }
 
-            LoadDeliveryItems();
-            LoadDeliveryNotes();
+        private void FilterDeliveries()
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                FilteredDeliveryNotes = DeliveryNotes.Where(x => x.DeliveryDate.AddMonths(1) > System.DateTime.Now).ToList();
+            }
+            else
+            {
+                string userQuery = SearchText.ToUpper().Replace(" ", "");
+                List<string> matchedDeliveryIds = new();
+
+                matchedDeliveryIds.AddRange(DeliveryNotes.Where(x => x.Name.Contains(userQuery)).Select(x => x.Name));
+                matchedDeliveryIds.AddRange(DeliveryItems
+                    .Where(x => x.Product.Contains(userQuery) || x.PurchaseOrderReference.Contains(userQuery))
+                    .Select(x => x.AllocatedDeliveryNote));
+
+
+                FilteredDeliveryNotes = DeliveryNotes.Where(x => matchedDeliveryIds.Contains(x.Name)).ToList();
+            }
+
+            SelectedDeliveryNote = FilteredDeliveryNotes.First(); 
         }
 
         public async void VerifySelectedDeliveryNote()
@@ -158,7 +224,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void EditItem(int id)
         {
-            DeliveryItem targetItem = (DeliveryItem)DeliveryItems.Find(x => x.Id == id).Clone();
+            DeliveryItem targetItem = (DeliveryItem)DeliveryItems.Find(x => x.Id == id)?.Clone();
             EditDeliveryNoteWindow window = new(targetItem);
             window.ShowDialog();
             return;
@@ -171,12 +237,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                 .OrderByDescending(n => n.DeliveryDate)
                 .Where(d => d.DeliveryDate.AddDays(90) > System.DateTime.Now)
                 .ToList();
-
-
-            if (deliveryNotes.Count != 0)
-            {
-                SelectedDeliveryNote = DeliveryNotes.First();
-            }
         }
 
         private void LoadDeliveryItems()

@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cv="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
@@ -15,6 +16,8 @@
 
         <Grid.Resources>
             <cv:dateToLastModified x:Key="dateFormatter" />
+            <cv:boolToVisibleOrCollapsed x:Key="boolToShow" />
+            <cv:boolToCollapsedOrVisible x:Key="boolToCollapsed" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="280" />
@@ -26,26 +29,28 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="searchBox"
+                    Style="{StaticResource SearchBox}"
+                    Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
-                    x:Name="newDeliveryButton"
+                    x:Name="clearButton"
                     Grid.Column="1"
-                    Margin="0,0,0,5"
-                    Command="{Binding CreateDeliveryCommand}"
-                    Content="+ New Delivery"
-                    IsEnabled="{Binding DisableControls}"
-                    Style="{StaticResource GreenButton}" />
+                    Click="clearButton_Click"
+                    Style="{StaticResource ClearButton}" />
             </Grid>
             <ListView
                 Grid.Row="1"
                 d:ItemsSource="{d:SampleData ItemCount=10}"
                 IsEnabled="{Binding DisableControls}"
-                ItemsSource="{Binding DeliveryNotes}"
+                ItemsSource="{Binding FilteredDeliveryNotes}"
                 SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -53,6 +58,16 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Grid Grid.Row="2">
+                <Button
+                    x:Name="newDeliveryButton"
+                    HorizontalAlignment="Left"
+                    Command="{Binding CreateDeliveryCommand}"
+                    IsEnabled="{Binding DisableControls}"
+                    Style="{StaticResource Action_New_Button}"
+                    Tag="New Delivery" />
+                <TextBlock HorizontalAlignment="Right" Opacity="0.6" Margin="5" VerticalAlignment="Center" Text="{Binding FilteredDeliveryNotes.Count, StringFormat='{}{0} deliveries'}" />
+            </Grid>
         </Grid>
         <GridSplitter
             Grid.Row="0"
@@ -63,7 +78,65 @@
             VerticalAlignment="Stretch"
             Background="White" />
         <Grid Grid.Column="2" Background="{StaticResource Background}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                d:Visibility="Collapsed"
+                Visibility="{Binding ShowingDelivery, Converter={StaticResource boolToCollapsed}}">
+                <Border
+                    Canvas.Left="55"
+                    Canvas.Top="30"
+                    Width="auto"
+                    Margin="0,10"
+                    VerticalAlignment="Top"
+                    CornerRadius="18">
+                    <Border.Effect>
+                        <DropShadowEffect
+                            BlurRadius="20"
+                            Direction="220"
+                            Opacity="0.2"
+                            ShadowDepth="20"
+                            Color="Black" />
+                    </Border.Effect>
+                    <Border Name="ReceiverColor" CornerRadius="15">
+                        <Grid MaxWidth="400" MaxHeight="300">
+                            <Border
+                                Name="Mask"
+                                Background="{StaticResource Purple}"
+                                CornerRadius="20" />
+                            <Grid x:Name="image">
+                                <Image
+                                    Name="Receiver"
+                                    MaxWidth="400"
+                                    MaxHeight="300"
+                                    gif:AnimationBehavior.AnimateInDesignMode="True"
+                                    gif:AnimationBehavior.RepeatBehavior="3"
+                                    gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/panic.gif"
+                                    RenderOptions.BitmapScalingMode="HighQuality" />
+                                <Grid.OpacityMask>
+                                    <VisualBrush Visual="{Binding ElementName=Mask}" />
+                                </Grid.OpacityMask>
+                            </Grid>
+
+                            <Viewbox
+                                MaxHeight="60"
+                                Margin="20"
+                                VerticalAlignment="Top">
+                                <TextBlock Foreground="White" Text="{Binding SearchText}">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect
+                                            BlurRadius="4"
+                                            Opacity="0.8"
+                                            ShadowDepth="0"
+                                            Color="Black" />
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                            </Viewbox>
+                        </Grid>
+                    </Border>
+                </Border>
+            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding ShowingDelivery, Converter={StaticResource boolToShow}}">
                 <Grid
                     MaxWidth="700"
                     Margin="30"

@@ -41,10 +41,9 @@
                 x:Name="bg"
                 Grid.RowSpan="3"
                 Grid.Column="1"
-                Background="{StaticResource Blue}"
-                Opacity="0.10"
-                BorderBrush="Black"
-                BorderThickness="2"
+                Background="{StaticResource BlueFaded}"
+                BorderBrush="#aaa"
+                BorderThickness="1"
                 CornerRadius="10,10,10,0" />
             <StackPanel
                 x:Name="MetadataStackPanel"

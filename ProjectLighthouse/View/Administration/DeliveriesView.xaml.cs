@@ -8,5 +8,10 @@ namespace ProjectLighthouse.View.Administration
         {
             InitializeComponent();
         }
+
+        private void clearButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            searchBox.Text = "";
+        }
     }
 }

@@ -52,12 +52,16 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <CheckBox
+            <Grid Grid.Row="2">
+                <Button Style="{StaticResource Action_New_Button}"
+                        HorizontalAlignment="Left"
+                        Tag="New Bar"/>
+                <CheckBox
                 Grid.Row="2"
-                Margin="0,0,0,7"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Right"
                 Content="Requisitions Only"
                 IsChecked="{Binding ShowRequisitionsOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
         </Grid>
         <TextBlock
             Grid.Column="1"
@@ -219,8 +223,9 @@
                     <Button
                         Margin="0,5"
                         HorizontalAlignment="Right"
+                        Style="{StaticResource Action_New_Button}"
                         Command="{Binding IssueBarCmd}"
-                        Content="New Issue" />
+                        Tag="New Issue" />
                 </Grid>
                 <ListView
                     Margin="5,5,5,50"

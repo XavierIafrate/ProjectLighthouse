@@ -131,7 +131,7 @@
                 Margin="0,0,5,0"
                 HorizontalAlignment="Left"
                 Tag="New Order"
-                Style="{StaticResource NewOrderButton}"
+                Style="{StaticResource Action_New_Button}"
                 Visibility="{Binding NewOrderButtonVis}"
                 Command="{Binding NewOrderCommand}"/>
 

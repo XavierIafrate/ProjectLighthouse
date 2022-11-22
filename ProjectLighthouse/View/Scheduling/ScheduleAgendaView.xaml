@@ -31,8 +31,8 @@
             <StackPanel Orientation="Horizontal">
                 <Button
                     Command="{Binding AddServiceCommand}"
-                    Content="+ Maintenance"
-                    Style="{StaticResource BlueButton}"
+                    Tag="Maintenance"
+                    Style="{StaticResource Action_New_Button}"
                     Visibility="{Binding AddButtonsVis}" />
             </StackPanel>
             <!--<Button Content="Left" />

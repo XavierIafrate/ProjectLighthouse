@@ -76,8 +76,9 @@ namespace ProjectLighthouse.View.UserControls
             bg.CornerRadius = right ? new(10, 10, 0, 10) : new(10, 10, 10, 0);
 
             System.Windows.Media.Brush brush = (System.Windows.Media.Brush)Application.Current.Resources[right ? "Blue" : "Green"];
+            System.Windows.Media.Brush bgBrush = (System.Windows.Media.Brush)Application.Current.Resources[right ? "BlueFaded" : "GreenFaded"];
 
-            bg.Background = brush;
+            bg.Background = bgBrush;
             SentByTextBlock.Foreground = brush;
             SentAtTextBlock.Foreground = brush;
             UserRoleBadge.Foreground = brush;

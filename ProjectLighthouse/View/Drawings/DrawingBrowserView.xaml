@@ -53,6 +53,7 @@
                     IsEnabled="False"
                     Style="{StaticResource ClearButton}" />
             </Grid>
+
             <ListView
                 Grid.Row="1"
                 d:ItemsSource="{d:SampleData ItemCount=10}"
@@ -64,15 +65,19 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Grid Grid.Row="2">
                 <Button
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Left"
                     Command="{Binding AddNewCmd}"
-                    Content="+ Add New"
-                    Style="{StaticResource BlueButton}"
+                    Style="{StaticResource Action_New_Button}"
+                    Tag="New Drawing"
                     Visibility="{Binding EditControlsVis}" />
-                <CheckBox Content="Show Withdrawn" IsChecked="{Binding ShowOldGroups}" />
-            </StackPanel>
+                <CheckBox
+                    Margin="0,8"
+                    HorizontalAlignment="Right"
+                    Content="Show Hidden"
+                    IsChecked="{Binding ShowOldGroups}" />
+            </Grid>
         </Grid>
 
 

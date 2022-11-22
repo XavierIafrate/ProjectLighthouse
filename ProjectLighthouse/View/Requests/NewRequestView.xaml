@@ -150,18 +150,19 @@
 
             <StackPanel
                 Grid.Row="4"
-                Margin="10,0"
-                Orientation="Horizontal">
+                Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock
-                    Margin="0,0,0,4"
+                    Margin="0,0,5,4"
                     VerticalAlignment="Center"
-                    Style="{StaticResource annotation}"
+                    FontWeight="SemiBold"
+                    Opacity="0.4"
                     Text="Need something else?" />
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
+                    Style="{StaticResource Action_New_Button}"
                     Command="{Binding AddSpecialCommand}"
-                    Content="Add Bespoke Item" />
+                    Tag="Add Bespoke Item" />
             </StackPanel>
 
 
@@ -435,8 +436,9 @@
             <Button
                 x:Name="SubmitButton"
                 HorizontalAlignment="Right"
+                Style="{StaticResource Action_Button}"
                 Command="{Binding SubmitRequestCommand}"
-                Content="Submit"
+                Tag="Submit Request"
                 IsEnabled="False" />
         </StackPanel>
         <Border
