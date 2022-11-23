@@ -71,6 +71,8 @@
                 <TextBlock Style="{StaticResource section}" Text="Default View" />
                 <TextBlock Foreground="{StaticResource Purple}" Text="This is the view that will be loaded on login." />
                 <ComboBox
+                    HorizontalAlignment="Right"
+                    Width="250"
                     x:Name="defaultViewComboBox"
                     Margin="30,10"
                     SelectionChanged="defaultViewComboBox_SelectionChanged">
@@ -114,7 +116,7 @@
                                     Grid.Column="1"
                                     Margin="15,5,0,0"
                                     VerticalAlignment="Center"
-                                    FontSize="20"
+                                    FontSize="16"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource Red}"
                                     Text="Security Alert"
@@ -124,7 +126,7 @@
                                     Grid.Column="1"
                                     Margin="15,0,20,8"
                                     VerticalAlignment="Center"
-                                    FontSize="13"
+                                    FontSize="12"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource Red}"
                                     Text="Lighthouse does not securely store passwords. Do not re-use passwords under any circumstances."
@@ -204,11 +206,10 @@
 
                     <Button
                         x:Name="ChangePasswordButton"
-                        Width="150"
                         HorizontalAlignment="Right"
                         Click="ChangePasswordButton_Click"
-                        Content="Change Password"
-                        Style="{StaticResource GreenButton}" />
+                        Tag="Change Password"
+                        Style="{StaticResource Action_Button}" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

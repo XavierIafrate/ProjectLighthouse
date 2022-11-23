@@ -22,8 +22,7 @@
                 BorderThickness="3,0,0,0"
                 CornerRadius="3">
                 <TextBlock
-                    Margin="10,5"
-                    FontWeight="SemiBold"
+                    Margin="16,10"
                     Foreground="{StaticResource Orange}"
                     Text="This function is for non-standard items only- please do not add items listed in the catalogue!"
                     TextWrapping="Wrap" />
@@ -31,7 +30,7 @@
         </Grid>
 
         <TextBlock
-            FontStyle="Italic"
+            Margin="10"
             Foreground="{StaticResource Blue}"
             Text="Provide a product name and either a drawing or a note explaining the specification. After submitting a request someone with authorisation will fill in the product data."
             TextWrapping="Wrap" />
@@ -54,7 +53,7 @@
             x:Name="SubmitButton"
             HorizontalAlignment="Right"
             Click="SubmitButton_Click"
-            Content="Add Product"
-            Style="{StaticResource BlueButton}" />
+            Tag="Add Product"
+            Style="{StaticResource Action_New_Button}" />
     </StackPanel>
 </Window>

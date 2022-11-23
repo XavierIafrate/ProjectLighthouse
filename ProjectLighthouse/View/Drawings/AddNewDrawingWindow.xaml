@@ -115,8 +115,8 @@
                 <TextBox
                     x:Name="SearchBox"
                     Margin="0"
-                    Style="{StaticResource DefaultTextBox}"
-                    Tag="Search for a product..." />
+                    Style="{StaticResource SearchBox}"
+                    Tag="search products" />
                 <Button
                     x:Name="SearchButton"
                     Grid.Column="1"
@@ -163,20 +163,20 @@
                     <Button
                         x:Name="ChooseFileButton"
                         Grid.Column="1"
-                        Click="ChooseFileButton_Click"
-                        Content="Choose File" />
+                        Style="{StaticResource Choose_File_Button}"
+                        Click="ChooseFileButton_Click" />
                 </Grid>
             </Border>
 
             <TextBox x:Name="revisionInfoTextBox" Style="{StaticResource DefaultTextBox}" Tag="Revision details..."/>
 
-            <CheckBox x:Name="researchCheckBox" Content="Drawing is for R&amp;D" />
+            <CheckBox x:Name="researchCheckBox" Content="Drawing is for R&amp;D" Margin="10,5" />
             <Button
                 x:Name="AddButton"
                 HorizontalAlignment="Right"
                 Click="AddButton_Click"
-                Content="Add"
-                Style="{StaticResource GreenButton}" />
+                Tag="Add"
+                Style="{StaticResource Action_New_Button}" />
         </StackPanel>
 
 

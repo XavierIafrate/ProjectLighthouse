@@ -6,15 +6,49 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Add New Window"
-    mc:Ignorable="d"
-    SizeToContent="Height" Width="444">
+    Width="444"
+    SizeToContent="Height"
+    mc:Ignorable="d">
     <StackPanel Margin="20">
-        <TextBlock Style="{StaticResource title}" Text="Create New User"  Margin="0,0,0,20"/>
-        <TextBox Style="{StaticResource DefaultTextBox}" Tag="Username" TextChanged="username_TextChanged" x:Name="username" LostFocus="username_LostFocus"/>
-        <TextBox Style="{StaticResource DefaultTextBox}" Tag="First Name" x:Name="firstName" TextChanged="firstName_TextChanged" LostFocus="firstName_LostFocus"/>
-        <TextBox Style="{StaticResource DefaultTextBox}" Tag="Last Name" x:Name="lastName" TextChanged="lastName_TextChanged" LostFocus="lastName_LostFocus"/>
-        <TextBlock Text="Password:" Style="{StaticResource section}" Margin="0,10,0,0"/>
-        <PasswordBox Style="{StaticResource PasswordBox}" FontSize="14" Height="30" PasswordChanged="PasswordBox_PasswordChanged" x:Name="password" MaxLength="16"/>
-        <Button Content="Create User" Margin="5,20,5,0" HorizontalAlignment="Right" x:Name="createButton" Click="createButton_Click"/>
+        <TextBlock
+            Margin="0,0,0,20"
+            Style="{StaticResource title}"
+            Text="Create New User" />
+        <TextBox
+            x:Name="username"
+            LostFocus="username_LostFocus"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Username"
+            TextChanged="username_TextChanged" />
+        <TextBox
+            x:Name="firstName"
+            LostFocus="firstName_LostFocus"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="First Name"
+            TextChanged="firstName_TextChanged" />
+        <TextBox
+            x:Name="lastName"
+            LostFocus="lastName_LostFocus"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="Last Name"
+            TextChanged="lastName_TextChanged" />
+        <TextBlock
+            Margin="0,10,0,0"
+            Style="{StaticResource section}"
+            Text="Password" />
+        <PasswordBox
+            x:Name="password"
+            Height="30"
+            FontSize="14"
+            MaxLength="16"
+            PasswordChanged="PasswordBox_PasswordChanged"
+            Style="{StaticResource PasswordBox}" />
+        <Button
+            x:Name="createButton"
+            Margin="5,20,5,0"
+            HorizontalAlignment="Right"
+            Click="createButton_Click"
+            Style="{StaticResource Action_New_Button}"
+            Tag="Add User" />
     </StackPanel>
 </Window>

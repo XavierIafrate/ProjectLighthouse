@@ -22,7 +22,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBoxBase">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
                         <Grid Margin="5,2">
                             <TextBox
                                 x:Name="searchbox"
@@ -112,7 +112,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
                         <Grid Margin="8">
                             <ScrollViewer
                                 x:Name="PART_ContentHost"
@@ -145,7 +145,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8" />
+                                CornerRadius="5" />
                             <ScrollViewer
                                 x:Name="PART_ContentHost"
                                 Margin="12,7"
@@ -180,7 +180,7 @@
         BasedOn="{StaticResource Default}"
         TargetType="{x:Type TextBox}">
         <Style.Setters>
-            <Setter Property="Tag" Value="message"/>
+            <Setter Property="Tag" Value="message" />
             <Setter Property="FontSize" Value="16" />
             <Setter Property="BorderBrush" Value="{StaticResource Surface}" />
             <Setter Property="BorderThickness" Value="2" />
@@ -192,7 +192,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8" />
+                                CornerRadius="5" />
                             <ScrollViewer
                                 x:Name="PART_ContentHost"
                                 Margin="12,7"
@@ -204,9 +204,9 @@
                                 Margin="16,5"
                                 VerticalAlignment="Center"
                                 FontSize="{TemplateBinding FontSize}"
+                                FontStyle="Normal"
                                 Foreground="{StaticResource OnSurface}"
                                 Opacity="0.6"
-                                FontStyle="Normal"
                                 Style="{StaticResource GhostText}"
                                 Text="{TemplateBinding Tag}"
                                 TextWrapping="Wrap"

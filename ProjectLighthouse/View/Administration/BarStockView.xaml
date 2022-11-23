@@ -222,12 +222,16 @@
                         Text="{Binding SelectedBarStock.Orders.Count, StringFormat='{}Dependent Orders [{0}]'}" />
                     <Button
                         Margin="0,5"
+                        IsEnabled="false"
                         HorizontalAlignment="Right"
+                        x:Name="NewIssueButton"
                         Style="{StaticResource Action_New_Button}"
                         Command="{Binding IssueBarCmd}"
                         Tag="New Issue" />
                 </Grid>
                 <ListView
+                    x:Name="OrderListView"
+                    SelectionChanged="OrderListView_SelectionChanged"
                     Margin="5,5,5,50"
                     HorizontalContentAlignment="Stretch"
                     ItemsSource="{Binding SelectedBarStock.Orders}"

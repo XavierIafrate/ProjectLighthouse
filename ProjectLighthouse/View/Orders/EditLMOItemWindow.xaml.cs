@@ -33,7 +33,6 @@ namespace ProjectLighthouse.View.Orders
 
             LoadData(ItemId);
 
-            //ProducedOnMachine = MachineID;
             DataContext = this;
 
             LoadUI();
@@ -42,6 +41,10 @@ namespace ProjectLighthouse.View.Orders
         private void LoadData(int id)
         {
             Item = DatabaseHelper.Read<LatheManufactureOrderItem>().Find(x => x.Id == id);
+
+            // TODO
+
+
             Lots = DatabaseHelper.Read<Lot>().Where(x => x.ProductName == Item.ProductName && x.Order == Item.AssignedMO).ToList();
 
             Item.QuantityMade = Lots.Where(x => !x.IsReject).Sum(x => x.Quantity);
@@ -52,10 +55,6 @@ namespace ProjectLighthouse.View.Orders
 
         private void LoadUI()
         {
-            //QuantityRequiredTextbox.Text = Item.RequiredQuantity.ToString();
-            //QuantityTargetTextbox.Text = Item.TargetQuantity.ToString();
-            //DateRequiredPicker.SelectedDate = Item.DateRequired;
-
             SchedulingGrid.Visibility = App.CurrentUser.Role >= UserRole.Scheduling
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -220,8 +219,8 @@ namespace ProjectLighthouse.View.Orders
                 AddedBy = App.CurrentUser.UserName,
                 Quantity = n,
                 Date = DateTime.Now,
-                IsReject = (bool)RejectCheckBox.IsChecked,
-                IsAccepted = (bool)AcceptedCheckBox.IsChecked,
+                IsReject = RejectCheckBox.IsChecked ?? false,
+                IsAccepted = AcceptedCheckBox.IsChecked ?? false,
                 IsDelivered = false,
                 MaterialBatch = BatchTextBox.Text.Trim(),
                 FromMachine = ProducedOnMachine,
@@ -251,30 +250,9 @@ namespace ProjectLighthouse.View.Orders
             RejectCheckBox.IsChecked = false;
         }
 
-        //private void EditLot(Lot lotToEdit)
-        //{
-        //    EditLotWindow window = new(lotToEdit.ID);
-        //    window.Owner = Application.Current.MainWindow;
-        //    window.ShowDialog();
-        //}
-
-        private void BatchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            BatchGhost.Visibility = string.IsNullOrEmpty(BatchTextBox.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
-        }
-
-        private void QuantityNewLotTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            QuantityGhost.Visibility = string.IsNullOrEmpty(QuantityNewLotTextBox.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
-        }
-
         private void RejectCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if ((bool)AcceptedCheckBox.IsChecked)
+            if (AcceptedCheckBox.IsChecked ?? false)
             {
                 AcceptedCheckBox.IsChecked = false;
             }
@@ -282,17 +260,10 @@ namespace ProjectLighthouse.View.Orders
 
         private void AcceptedCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if ((bool)RejectCheckBox.IsChecked)
+            if (RejectCheckBox.IsChecked ?? false)
             {
                 RejectCheckBox.IsChecked = false;
             }
-        }
-
-        private void RemarksTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            RemarksGhost.Visibility = string.IsNullOrEmpty(RemarksTextBox.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
         }
 
         private ICommand _saveCommand;

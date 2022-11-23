@@ -2,13 +2,11 @@
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using View.HelperWindows;
 
 namespace ProjectLighthouse
 {
@@ -68,7 +66,7 @@ namespace ProjectLighthouse
                     yield return childOfChild;
                 }
             }
-            
+
         }
 
         public void SelectButton(string buttonName)

@@ -13,5 +13,10 @@ namespace ProjectLighthouse.View.Administration
         {
             searchBox.Clear();
         }
+
+        private void OrderListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            NewIssueButton.IsEnabled = OrderListView.SelectedValue != null;
+        }
     }
 }

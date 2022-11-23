@@ -27,8 +27,8 @@
             </ListView>
         </ScrollViewer>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="1" Margin="0,10,0,0">
-            <Button Content="Cancel" x:Name="CancelButton" Click="CancelButton_Click" Style="{StaticResource RedButton}" />
-            <Button Content="Add Items [0]" x:Name="AddButton" Click="AddButton_Click" Style="{StaticResource GreenButton}" />
+            <Button Tag="Cancel"  x:Name="CancelButton" Click="CancelButton_Click" Style="{StaticResource Action_Cancel_Button}" />
+            <Button Tag="Add Items [0]" x:Name="AddButton" Click="AddButton_Click" Style="{StaticResource Action_New_Button}" />
         </StackPanel>
     </Grid>
 </Window>

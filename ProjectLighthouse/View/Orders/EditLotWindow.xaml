@@ -13,36 +13,50 @@
     WindowStartupLocation="CenterOwner">
     <StackPanel Margin="20">
         <TextBlock Style="{StaticResource title}" Text="Edit Lot" />
-        <Separator Margin="0,5" />
-        <TextBlock Style="{StaticResource section}" Text="Batch" />
+
+        <TextBlock
+            Margin="5,10,0,0"
+            Style="{StaticResource section}"
+            Text="Batch" />
         <TextBox
             x:Name="BatchTextBox"
             Style="{StaticResource DefaultTextBox}"
             Tag="Batch ID"
             TextChanged="BatchTextBox_TextChanged"
             TextWrapping="Wrap" />
-        <TextBlock Text="Quantity" />
+        <TextBlock
+            Margin="5,10,0,0"
+            Style="{StaticResource section}"
+            Text="Quantity" />
+
         <TextBox
             x:Name="QuantityTextBox"
             PreviewKeyDown="QuantityTextBox_PreviewKeyDown"
             Style="{StaticResource DefaultTextBox}"
             Tag="Quantity In Lot"
             TextChanged="QuantityTextBox_TextChanged" />
-        <TextBlock Text="Date Produced" />
-        <Grid>
-            <DatePicker
-                x:Name="ProducedDatePicker"
-                Margin="5"
-                SelectedDateChanged="ProducedDatePicker_SelectedDateChanged" />
-        </Grid>
+        <TextBlock
+            Margin="5,10,0,0"
+            Style="{StaticResource section}"
+            Text="Date of Production" />
 
-        <TextBlock Text="Remarks" />
+        <DatePicker
+            x:Name="ProducedDatePicker"
+            Margin="5"
+            SelectedDateChanged="ProducedDatePicker_SelectedDateChanged" />
+
+        <TextBlock
+            Margin="5,10,0,0"
+            Style="{StaticResource section}"
+            Text="Remarks" />
+
         <TextBox
             x:Name="RemarksTextBox"
             MinHeight="50"
             MaxHeight="200"
             MaxLength="512"
             Style="{StaticResource DefaultTextBox}"
+            Tag="Remarks"
             TextChanged="BatchTextBox_TextChanged"
             TextWrapping="Wrap" />
 
@@ -67,16 +81,20 @@
             Checked="AllowDeliveryCheckbox_Checked"
             Content="Allow Delivery"
             FontSize="16" />
-        <Button
-            x:Name="PrintButton"
-            HorizontalAlignment="Right"
-            Click="PrintButton_Click"
-            Content="Print" />
-        <Button
-            x:Name="SaveButton"
-            HorizontalAlignment="Right"
-            Click="SaveButton_Click"
-            Content="Save"
-            Style="{StaticResource GreenButton}" />
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button
+                x:Name="PrintButton"
+                HorizontalAlignment="Right"
+                Click="PrintButton_Click"
+                Style="{StaticResource Action_Button}"
+                Tag="Print Label" />
+            <Button
+                x:Name="SaveButton"
+                HorizontalAlignment="Right"
+                Click="SaveButton_Click"
+                Style="{StaticResource Action_Update_Button}"
+                Tag="Save Changes" />
+
+        </StackPanel>
     </StackPanel>
 </Window>

@@ -30,10 +30,9 @@
 
                 <Button
                     x:Name="SaveButton"
-                    Width="125"
                     HorizontalAlignment="Right"
                     Click="SaveButton_Click"
-                    Content="Save Changes" />
+                    Style="{StaticResource HeroSaveButton}"/>
             </Grid>
             <Separator />
             <StackPanel Orientation="Horizontal">
@@ -200,12 +199,8 @@
                     <TextBox
                         x:Name="QuantityNewLotTextBox"
                         PreviewKeyDown="Allow_Nums_Only"
-                        Style="{StaticResource UsernameTextBox}"
-                        TextChanged="QuantityNewLotTextBox_TextChanged" />
-                    <TextBlock
-                        x:Name="QuantityGhost"
-                        Style="{StaticResource GhostText}"
-                        Text="Quantity in Lot" />
+                        Style="{StaticResource DefaultTextBox}"
+                        Tag="Quantity" />
                 </Grid>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -224,37 +219,23 @@
                 </StackPanel>
 
 
-                <Grid Grid.Row="1" Grid.ColumnSpan="2">
                     <TextBox
+                         Grid.Row="1" Grid.ColumnSpan="2"
                         x:Name="BatchTextBox"
                         MaxLength="256"
-                        Style="{StaticResource UsernameTextBox}"
-                        TextChanged="BatchTextBox_TextChanged"
+                        Tag="Batch"
+                        Style="{StaticResource DefaultTextBox}"
                         TextWrapping="Wrap" />
-                    <TextBlock
-                        x:Name="BatchGhost"
-                        Style="{StaticResource GhostText}"
-                        Text="Batch" />
-                </Grid>
-                <ScrollViewer
-                    Grid.Row="3"
-                    Grid.ColumnSpan="2"
-                    MaxHeight="200">
-                    <Grid>
-                        <TextBox
+
+
+                    <TextBox
+                        Grid.Row="2" Grid.ColumnSpan="2"
                             x:Name="RemarksTextBox"
                             MaxLength="512"
-                            Style="{StaticResource UsernameTextBox}"
-                            TextChanged="RemarksTextBox_TextChanged"
+                            Tag="Remarks"
+                            Style="{StaticResource DefaultTextBox}"
                             TextWrapping="Wrap" />
 
-                        <TextBlock
-                            x:Name="RemarksGhost"
-                            Style="{StaticResource GhostText}"
-                            Text="Remarks" />
-                    </Grid>
-
-                </ScrollViewer>
 
 
                 <Button
@@ -262,8 +243,8 @@
                     Grid.Row="4"
                     Grid.Column="2"
                     Click="AddLotButton_Click"
-                    Content="+ Add Lot"
-                    Style="{StaticResource GreenButton}" />
+                    Tag="Add Lot"
+                    Style="{StaticResource Action_New_Button}" />
             </Grid>
 
         </StackPanel>

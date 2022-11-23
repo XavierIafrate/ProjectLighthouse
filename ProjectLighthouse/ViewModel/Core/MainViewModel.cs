@@ -142,6 +142,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
         public MainViewModel()
         {
+            NoNewNotifications = true;
             EditCommand = new(this);
             UpdateViewCommand = new(this);
             ToggleShowNotsCommand = new(this);

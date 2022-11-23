@@ -215,13 +215,13 @@
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button
                     Click="CancelButton_Click"
-                    Content="Cancel"
-                    Style="{StaticResource RedButton}" />
+                    Tag="Cancel"
+                    Style="{StaticResource Action_Cancel_Button}" />
                 <Button
                     x:Name="ApproveButton"
                     Click="ConfirmButton_Click"
-                    Content="Confirm Order"
-                    Style="{StaticResource GreenButton}" />
+                    Tag="Create Order"
+                    Style="{StaticResource Action_New_Button}" />
             </StackPanel>
         </Grid>
         <!--#endregion-->

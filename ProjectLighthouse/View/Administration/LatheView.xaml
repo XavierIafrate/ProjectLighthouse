@@ -34,8 +34,7 @@
             </Grid.ColumnDefinitions>
             <TextBox
                 x:Name="SearchBox"
-                Style="{StaticResource DefaultTextBox}"
-                Tag="Search..."
+                Style="{StaticResource SearchBox}"
                 Text="{Binding Path=SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Button
@@ -111,8 +110,8 @@
                                 Name="Receiver"
                                 MaxWidth="400"
                                 gif:AnimationBehavior.AnimateInDesignMode="True"
-                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/travolta.gif"
                                 gif:AnimationBehavior.RepeatBehavior="3"
+                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/travolta.gif"
                                 RenderOptions.BitmapScalingMode="LowQuality" />
                             <StackPanel.OpacityMask>
                                 <VisualBrush Visual="{Binding ElementName=Mask}" />
@@ -172,10 +171,10 @@
                                 Style="{StaticResource title}"
                                 Text="{Binding SelectedLathe.FullName}" />
                             <Button
-                                Visibility="Collapsed"
                                 Grid.Column="2"
                                 Command="{Binding EditLatheCmd}"
-                                Style="{StaticResource HeroEditButton}" />
+                                Style="{StaticResource HeroEditButton}"
+                                Visibility="Collapsed" />
                         </Grid>
 
                         <Grid Margin="10,20,10,0" Visibility="{Binding SelectedLathe.OutOfService, Converter={StaticResource ShowIfTrue}}">
@@ -334,16 +333,16 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         Command="{Binding RemoveAttachmentCmd}"
-                                        Content="Remove"
                                         IsEnabled="False"
-                                        Style="{StaticResource RedButton}" />
+                                        Style="{StaticResource Action_Remove_Button}"
+                                        Tag="Remove" />
                                     <Button
                                         Margin="5,0"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         Command="{Binding AddAttachmentCmd}"
-                                        Content="+Upload"
-                                        Style="{StaticResource GreenButton}" />
+                                        Style="{StaticResource Action_New_Button}"
+                                        Tag="Upload" />
                                 </StackPanel>
                             </Grid>
                             <ListView
@@ -372,16 +371,16 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
                                     Command="{Binding EditMaintenanceEventCmd}"
-                                    Content="Update"
                                     IsEnabled="False"
-                                    Style="{StaticResource BlueButton}" />
+                                    Style="{StaticResource Action_Update_Button}"
+                                    Tag="Update" />
                                 <Button
                                     Margin="5,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
                                     Command="{Binding AddMaintenanceEventCmd}"
-                                    Content="+Add"
-                                    Style="{StaticResource GreenButton}" />
+                                    Style="{StaticResource Action_New_Button}"
+                                    Tag="New" />
                             </StackPanel>
                         </Grid>
                         <ListView

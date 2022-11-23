@@ -8,29 +8,34 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="New Quality Check"
     Width="500"
-    WindowStartupLocation="CenterOwner"
     SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Grid>
         <StackPanel Margin="20">
             <TextBlock Style="{StaticResource title}" Text="Request Quality Check" />
-            <TextBlock Text="Product Name" Style="{StaticResource section}"/>
-            <TextBlock Text="This should match the code in Opera"/>
+            <TextBlock Style="{StaticResource section}" Text="Product Name" />
+            <TextBlock Text="This should match the code in Opera" />
             <TextBox
+                x:Name="productNameTextBox"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Product Name"
-                x:Name="productNameTextBox" />
-            <TextBlock Text="Product Spec" Style="{StaticResource section}"/>
-            <TextBlock Text="What dimensions are being examined? You can either attach a file (pdf, jpg, png) or give written details. If we are checking against the catalog then please just write 'Catalog'" TextWrapping="Wrap"/>
+                Tag="Product Name" />
+            <TextBlock Style="{StaticResource section}" Text="Product Spec" />
+            <TextBlock Text="What dimensions are being examined? You can either attach a file (pdf, jpg, png) or give written details. If we are checking against the catalog then please just write 'Catalog'" TextWrapping="Wrap" />
             <TextBox
+                x:Name="specDetailsTextBox"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Specification Details"
-                x:Name="specDetailsTextBox" />
+                Tag="Specification Details" />
             <uc:FilePicker x:Name="FilePicker" AllowedFileTypes="PDF Files(*.pdf) | *.pdf|Image Files (*.jpg, *.png) | *.jpg;*.png" />
-            <TextBlock Text="Required Date" Style="{StaticResource section}"/>
-            <TextBlock Text="When do you need the work done at the latest?"/>
-            <DatePicker Name="RequiredDate" Margin="5"/>
-            <Button HorizontalAlignment="Right" Content="Submit" x:Name="SubmitButton" Click="SubmitButton_Click" Style="{StaticResource GreenButton}"/>
+            <TextBlock Style="{StaticResource section}" Text="Required Date" />
+            <TextBlock Text="When do you need the work done at the latest?" />
+            <DatePicker Name="RequiredDate" Margin="5" />
+            <Button
+                x:Name="SubmitButton"
+                HorizontalAlignment="Right"
+                Click="SubmitButton_Click"
+                Style="{StaticResource Action_Button}"
+                Tag="Submit" />
         </StackPanel>
     </Grid>
 </Window>

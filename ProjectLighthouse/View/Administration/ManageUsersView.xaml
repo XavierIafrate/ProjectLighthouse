@@ -97,6 +97,7 @@
                             Padding="15,5,15,7"
                             HorizontalAlignment="Center"
                             FontSize="20"
+                            FontWeight="SemiBold"
                             Foreground="{StaticResource Blue}"
                             Text="editing" />
 
@@ -207,33 +208,33 @@
                         SelectedValue="{Binding SelectedRole, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                         Visibility="{Binding EditControlsVis}" />
                 </Grid>
-                <Grid HorizontalAlignment="Center">
-                    <Button
-                        Margin="0,5"
-                        Command="{Binding resetPasswordCommand}"
-                        Content="Reset Password"
-                        IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-                </Grid>
+                <Button
+                    HorizontalAlignment="Right"
+                    Command="{Binding resetPasswordCommand}"
+                    IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource Action_Button}"
+                    Tag="Reset Password" />
                 <Grid>
                     <TextBlock
                         Margin="0,20,0,0"
                         Style="{StaticResource section}"
                         Text="Permissions" />
-                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        Orientation="Horizontal">
                         <Button
                             Margin="5,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Command="{Binding addPermissionCommand}"
-                            Content="Grant"
-                            Style="{StaticResource BlueButton}" />
-                        <Button
-                            Margin="5,0"
-                            HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
                             Command="{Binding removePermissionCommand}"
-                            Content="Revoke"
-                            Style="{StaticResource RedButton}" />
+                            Style="{StaticResource Action_Remove_Button}"
+                            Tag="Revoke" />
+                        <Button
+                            Margin="5,0"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding addPermissionCommand}"
+                            Style="{StaticResource Action_New_Button}"
+                            Tag="Add" />
 
                     </StackPanel>
                 </Grid>
@@ -249,59 +250,59 @@
                 </ListView>
 
                 <Grid Margin="0,20,0,5">
-                    <Rectangle
+                    <Border
                         Grid.RowSpan="2"
                         Grid.ColumnSpan="4"
-                        Fill="{StaticResource Red}"
-                        RadiusX="10"
-                        RadiusY="10" />
-                    <Grid Margin="20,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
+                        Background="{StaticResource RedFaded}"
+                        CornerRadius="5">
+                        <Grid Margin="20,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <CheckBox
-                            Margin="5,0"
-                            VerticalAlignment="Center"
-                            IsChecked="{Binding SelectedUser.IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Visibility="{Binding EditControlsVis}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="0"
-                            FontWeight="Bold"
-                            Foreground="{StaticResource OnRed}"
-                            Text="Block Sign In" />
-                        <TextBlock
-                            Grid.Column="3"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Foreground="{StaticResource OnRed}"
-                            Text="{Binding SelectedUser.IsBlocked, Converter='{StaticResource boolConverter}'}" />
-                    </Grid>
+                            <CheckBox
+                                Margin="5,0"
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding SelectedUser.IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Visibility="{Binding EditControlsVis}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="0"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Red}"
+                                Text="Block Sign In" />
+                            <TextBlock
+                                Grid.Column="3"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Red}"
+                                Text="{Binding SelectedUser.IsBlocked, Converter='{StaticResource boolConverter}'}" />
+                        </Grid>
+
+                    </Border>
                 </Grid>
                 <StackPanel
                     Margin="0,20"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Right"
                     Orientation="Horizontal">
                     <Button
-                        Width="150"
                         Command="{Binding editCommand}"
-                        Content="Edit User"
+                        Style="{StaticResource Action_Edit_Button}"
+                        Tag="Edit User"
                         Visibility="{Binding ReadControlsVis}" />
                     <Button
-                        Width="150"
+                        d:Visibility="Visible"
                         Command="{Binding saveCommand}"
-                        Content="Save"
-                        Style="{StaticResource GreenButton}"
+                        Style="{StaticResource Action_Update_Button}"
+                        Tag="Save Changes"
                         Visibility="{Binding EditControlsVis, FallbackValue='Collapsed'}" />
                     <Button
-                        Width="150"
                         Command="{Binding deleteUserCommand}"
-                        Content="Delete User"
-                        Style="{StaticResource RedButton}"
+                        Style="{StaticResource Action_Remove_Button}"
+                        Tag="Delete User"
                         Visibility="{Binding EditControlsVis}" />
                 </StackPanel>
             </StackPanel>

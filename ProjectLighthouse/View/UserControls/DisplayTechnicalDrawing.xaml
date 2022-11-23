@@ -61,8 +61,8 @@
                 Grid.Column="2"
                 VerticalAlignment="Center"
                 Click="OpenButton_Click"
-                Content="Open"
-                Style="{StaticResource OpenPdfButton}" />
+                Tag="Open PDF"
+                Style="{StaticResource HeroPdfButton}" />
         </Grid>
     </Grid>
 </UserControl>
