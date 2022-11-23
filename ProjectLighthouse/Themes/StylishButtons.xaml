@@ -80,7 +80,10 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="NoNotificationsMainButton" TargetType="Button" BasedOn="{StaticResource Default}">
+    <Style
+        x:Key="NoNotificationsMainButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Background" Value="{StaticResource Green}" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -895,8 +898,8 @@
                                 x:Name="textBlock"
                                 Padding="0,0,7,1"
                                 VerticalAlignment="Center"
-                                FontWeight="SemiBold"
                                 FontSize="12"
+                                FontWeight="SemiBold"
                                 Text="{TemplateBinding Tag}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -1077,8 +1080,10 @@
 
 
     <!--#region Hero Buttons-->
-    <Style x:Key="HeroEditButton" TargetType="Button" 
-        BasedOn="{StaticResource Default}">
+    <Style
+        x:Key="HeroEditButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -1111,8 +1116,10 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="HeroSaveButton" TargetType="Button" 
-        BasedOn="{StaticResource Default}">
+    <Style
+        x:Key="HeroSaveButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -1145,8 +1152,10 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="HeroAddButton" TargetType="Button" 
-        BasedOn="{StaticResource Default}">
+    <Style
+        x:Key="HeroAddButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -1175,8 +1184,10 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="HeroPdfButton" TargetType="Button" 
-        BasedOn="{StaticResource Default}">
+    <Style
+        x:Key="HeroPdfButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Tag" Value="" />
         <Setter Property="Template">
             <Setter.Value>
@@ -1446,8 +1457,8 @@
                                 x:Name="textBlock"
                                 Padding="0,0,7,1"
                                 VerticalAlignment="Center"
-                                FontWeight="SemiBold"
                                 FontSize="12"
+                                FontWeight="SemiBold"
                                 Text="{TemplateBinding Tag}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">

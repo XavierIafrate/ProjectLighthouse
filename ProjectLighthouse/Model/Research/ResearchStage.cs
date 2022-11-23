@@ -2,10 +2,10 @@
 {
     public enum ResearchStage
     {
-        Scope,
+        Research,
         Design,
-        Develop,
-        Scale,
-        Disseminate
+        Prototype,
+        Production,
+        Marketing
     }
 }

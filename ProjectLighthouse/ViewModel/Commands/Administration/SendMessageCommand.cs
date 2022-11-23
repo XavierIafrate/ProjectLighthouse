@@ -3,6 +3,7 @@ using System.Windows.Input;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
+using ViewModel.Research;
 
 namespace ProjectLighthouse.ViewModel.Commands.Administration
 {
@@ -30,6 +31,10 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
             else if (viewModel is QualityCheckViewModel qcvm)
             {
                 qcvm.SendMessage();
+            }
+            else if (viewModel is ResearchViewModel devvm)
+            {
+                devvm.SendMessage();
             }
         }
     }

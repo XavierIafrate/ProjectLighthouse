@@ -670,7 +670,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
             else
             {
-                searchString = "";
+                searchString = null;
                 OnPropertyChanged(nameof(SearchString));
 
                 switch (SelectedFilter)
@@ -733,7 +733,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             List<string> otherUsers = FilteredNotes.Select(x => x.SentBy).ToList();
             otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveRequest)).Select(x => x.UserName));
-            otherUsers.Add(App.NotificationsManager.users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy).UserName);
+            otherUsers.Add(App.NotificationsManager.users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy)!.UserName);
 
             otherUsers = otherUsers.Where(x => x != App.CurrentUser.UserName).Distinct().ToList();
 

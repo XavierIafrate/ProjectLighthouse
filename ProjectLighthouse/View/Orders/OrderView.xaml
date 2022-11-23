@@ -223,7 +223,6 @@
             Visibility="{Binding Path=CardVis, UpdateSourceTrigger=PropertyChanged}">
             <StackPanel>
                 <StackPanel Margin="25,10">
-
                     <Grid
                         x:Name="OrderCardGrid"
                         MaxWidth="700"

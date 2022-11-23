@@ -12,6 +12,7 @@ using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Windows.ApplicationModel.Store;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -187,7 +188,10 @@ namespace ProjectLighthouse.ViewModel.Orders
                 FilteredDeliveryNotes = DeliveryNotes.Where(x => matchedDeliveryIds.Contains(x.Name)).ToList();
             }
 
-            SelectedDeliveryNote = FilteredDeliveryNotes.First(); 
+            if (FilteredDeliveryNotes.Count > 0)
+            {
+                SelectedDeliveryNote = FilteredDeliveryNotes.First(); 
+            }
         }
 
         public async void VerifySelectedDeliveryNote()

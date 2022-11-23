@@ -563,11 +563,11 @@ namespace ProjectLighthouse.ViewModel.Orders
             FilteredNotes = null;
             OnPropertyChanged(nameof(FilteredNotes));
             FilteredNotes = Notes
-            .Where(n =>
-                n.DocumentReference == SelectedOrder.Name &&
-                !n.IsDeleted)
-            .OrderBy(x => x.Id) // Time is not synchronised
-            .ToList();
+                .Where(n =>
+                    n.DocumentReference == SelectedOrder.Name &&
+                    !n.IsDeleted)
+                .OrderBy(x => x.Id) // Time is not synchronised
+                .ToList();
 
             // Order Drawings
             FilteredDrawings.Clear();

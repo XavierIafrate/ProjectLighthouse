@@ -86,16 +86,17 @@
                     <Grid
                         x:Name="DebugTile"
                         Margin="10"
-                        Background="{StaticResource Red}"
-                        Visibility="Collapsed">
+                        Background="{StaticResource RedFaded}"
+                        Visibility="Collapsed"
+                        d:Visibility="Visible">
                         <TextBlock
                             Margin="0,5"
                             HorizontalAlignment="Center"
                             FontFamily="Consolas"
                             FontSize="20"
                             FontWeight="Bold"
-                            Foreground="{StaticResource OnRed}"
-                            Text="Development Build" />
+                            Foreground="{StaticResource Red}"
+                            Text="DEV BUILD" />
                     </Grid>
                     <StackPanel x:Name="PurchasingModule" Margin="0,20">
                         <ToggleButton
@@ -148,10 +149,18 @@
                             CommandParameter="Programs"
                             Content="Programs"
                             Style="{StaticResource Programs_MenuItem}" />
-                        
+
+                        <ToggleButton
+                            Visibility="Visible"
+                            x:Name="research_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Research"
+                            Content="R&amp;D"
+                            Style="{StaticResource Research_MenuItem}" />
+
                     </StackPanel>
 
-                    <StackPanel x:Name="AssemblyModule" Margin="0,20">
+                    <StackPanel Margin="0,20">
                         <ToggleButton
                             x:Name="calibration_button"
                             Command="{Binding UpdateViewCommand}"

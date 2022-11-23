@@ -8,6 +8,7 @@ using ProjectLighthouse.ViewModel.Orders;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
 using ViewModel.Programs;
+using ViewModel.Research;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
@@ -116,6 +117,20 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ProgramManagerViewModel();
                 viewModel.NavText = "Program Manager";
+                //viewModel.NavText = App.CurrentUser.Locale switch
+                //{
+                //    "Polish" => "Rysunek Techniczney",
+                //    "Persian" => "نقشه های فنی",
+                //    "Welsh" => "Darluniau Technegol",
+                //    _ => "Technical Drawings"
+                //};
+            }
+            else if (targetView == "Research")
+            {
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new ResearchViewModel();
+                viewModel.NavText = "Development";
                 //viewModel.NavText = App.CurrentUser.Locale switch
                 //{
                 //    "Polish" => "Rysunek Techniczney",

@@ -12,6 +12,8 @@
     xmlns:qualityVm="clr-namespace:ProjectLighthouse.ViewModel.Quality"
     xmlns:requestsView="clr-namespace:ProjectLighthouse.View.Requests"
     xmlns:requestsVm="clr-namespace:ProjectLighthouse.ViewModel.Requests"
+    xmlns:researchView="clr-namespace:View.Research"
+    xmlns:researchVm="clr-namespace:ViewModel.Research"
     xmlns:scheduleView="clr-namespace:ProjectLighthouse.View.Scheduling">
 
     <Application.Resources>
@@ -66,6 +68,10 @@
 
             <DataTemplate DataType="{x:Type drawingsVm:DrawingBrowserViewModel}">
                 <drawingsView:DrawingBrowserView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type researchVm:ResearchViewModel}">
+                <researchView:ResearchView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type ordersVm:DeliveriesViewModel}">

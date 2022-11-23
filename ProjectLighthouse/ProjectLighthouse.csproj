@@ -62,6 +62,7 @@
     <None Remove="Resources\GIF\frodo-keep-your-secrets.gif" />
     <None Remove="Resources\GIF\milhouse.gif" />
     <None Remove="Resources\GIF\panic.gif" />
+    <None Remove="Resources\GIF\ron_swanson.gif" />
     <None Remove="Resources\GIF\sylvester.gif" />
     <None Remove="Resources\GIF\zoolander-what-is-this.gif" />
     <None Remove="Resources\GIF\zoolander.gif" />
@@ -142,6 +143,7 @@
     <Resource Include="Resources\GIF\moderate.gif" />
     <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\GIF\panic.gif" />
+    <Resource Include="Resources\GIF\ron_swanson.gif" />
     <Resource Include="Resources\GIF\sylvester.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
