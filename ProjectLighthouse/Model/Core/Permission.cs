@@ -26,6 +26,7 @@ namespace ProjectLighthouse.Model.Core
              { PermissionType.UpdateCalibration, "Update Calibration" },
              { PermissionType.IssueBar, "Issue Bar Stock" },
              { PermissionType.ConfigureMaintenance, "Configure Maintenance" },
+             { PermissionType.CreateProject, "Create Development Projects" },
         };
     }
 }

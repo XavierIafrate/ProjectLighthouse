@@ -82,7 +82,7 @@
             </Grid.ColumnDefinitions>
             <Button
                 Margin="0"
-                IsEnabled="False"
+                Command="{Binding AddProjectCmd}"
                 Style="{StaticResource Action_New_Button}"
                 Tag="New Project" />
             <TextBlock
@@ -105,7 +105,12 @@
             Visibility="{Binding ProjectShowing, Converter={StaticResource boolToCollapsed}}">
 
 
-            <TextBlock Text="nothing found" Opacity="0.6" HorizontalAlignment="Center" FontStyle="Italic" FontSize="18"/>
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="18"
+                FontStyle="Italic"
+                Opacity="0.6"
+                Text="nothing found" />
 
             <Border
                 Grid.Row="3"
@@ -152,95 +157,165 @@
             Grid.RowSpan="2"
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged">
-            <Grid
-                MaxWidth="700"
-                Margin="25,20,25,50"
-                Visibility="{Binding ProjectShowing, Converter={StaticResource boolToVisible}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <StackPanel>
 
-                <Border Background="White" CornerRadius="10">
-                    <Border.Effect>
-                        <DropShadowEffect
-                            BlurRadius="30"
-                            Opacity="0.4"
-                            ShadowDepth="0"
-                            Color="Black" />
-                    </Border.Effect>
-                </Border>
+                <Grid
+                    MaxWidth="700"
+                    Margin="25,20,25,50"
+                    Visibility="{Binding ProjectShowing, Converter={StaticResource boolToVisible}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                <StackPanel Margin="20">
-                    <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        d:Text="D00000"
-                        Foreground="{StaticResource Teal}"
-                        FontFamily="Consolas"
-                        Style="{StaticResource title}"
-                        Text="{Binding SelectedProject.ProjectCode}" />
-                    <TextBlock
-                        FontFamily="Consolas"
-                        Style="{StaticResource title}"
-                        Text=" - " />
-                    <TextBlock
-                        d:Text="PROJECT_NAME"
-                        FontFamily="Consolas"
-                        Style="{StaticResource title}"
-                        Text="{Binding SelectedProject.ProjectName}" />
+                    <Border Background="White" CornerRadius="10">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="30"
+                                Opacity="0.4"
+                                ShadowDepth="0"
+                                Color="Black" />
+                        </Border.Effect>
+                    </Border>
+
+                    <StackPanel Margin="20">
+                        <Grid Margin="0,0,0,30">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    d:Text="D00000"
+                                    FontFamily="Consolas"
+                                    Foreground="{StaticResource Teal}"
+                                    Style="{StaticResource title}"
+                                    Text="{Binding SelectedProject.ProjectCode}" />
+                                <TextBlock
+                                    FontFamily="Consolas"
+                                    Style="{StaticResource title}"
+                                    Text=" - " />
+                                <TextBlock
+                                    d:Text="PROJECT_NAME"
+                                    FontFamily="Consolas"
+                                    Style="{StaticResource title}"
+                                    Text="{Binding SelectedProject.ProjectName}" />
+                            </StackPanel>
+
+                            <Border
+                                HorizontalAlignment="Right"
+                                Background="{StaticResource BlueFaded}"
+                                BorderBrush="{StaticResource Blue}"
+                                BorderThickness="3,0,0,0"
+                                CornerRadius="3">
+                                <TextBlock
+                                    Margin="20,5"
+                                    d:Text="STAGE"
+                                    FontSize="20"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Blue}"
+                                    Text="{Binding SelectedProject.Stage}" />
+                            </Border>
+
+
+                        </Grid>
+
+                        <Button HorizontalAlignment="Left" Style="{StaticResource Action_Button}" Tag="{Binding SelectedProject.RootDirectory, TargetNullValue='Set Directory'}" d:Tag="DIRECTORY_LINK" Command="{Binding OpenRootDirectoryCmd}"/>
+
+                        <TextBlock Style="{StaticResource section}" Text="{Binding SelectedProject.Archetypes.Count, StringFormat='{}Archetypes [{0}]'}" d:Text="Archetypes [0]" />
+                        <ListView ItemsSource="{Binding SelectedProject.Archetypes}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Margin="13,7"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Grid Margin="0,15,0,0">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Style="{StaticResource section}"
+                                Text="Attachments" />
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                <Button
+                                    Margin="5,0"
+                                    IsEnabled="False"
+                                    Style="{StaticResource Action_Remove_Button}"
+                                    Tag="Remove" />
+                                <Button
+                                    Margin="5,0"
+                                    IsEnabled="False"
+                                    Style="{StaticResource Action_New_Button}"
+                                    Tag="Add" />
+                            </StackPanel>
+                        </Grid>
+
+                        <ListView ItemsSource="{Binding SelectedProject.Attachments}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:DisplayAttachment Attachment="{Binding}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        
+                        <TextBlock Style="{StaticResource section}" Text="Comments" />
+                        <uc:DisplayListOfNotes
+                            MinHeight="50"
+                            Notes="{Binding SelectedProject.Notes}"
+                            ShowingEditControls="False" />
+                        <Grid
+                            x:Name="composeMessageControls"
+                            Grid.Row="2"
+                            Margin="5">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                Style="{StaticResource MessageComposer}"
+                                Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextChanged="TextBox_TextChanged"
+                                TextWrapping="WrapWithOverflow" />
+                            <Button
+                                x:Name="SendButton"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Background="Transparent"
+                                Command="{Binding SendMessageCmd}"
+                                IsEnabled="False"
+                                Style="{StaticResource SendButton}" />
+
+                        </Grid>
                     </StackPanel>
-
-
-
-
-                    <TextBlock Style="{StaticResource section}" Text="{Binding SelectedProject.Archetypes.Count, StringFormat='{}Archetypes [{0}]'}" />
-                    <ListView ItemsSource="{Binding SelectedProject.Archetypes}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}" Margin="13,7" FontWeight="SemiBold"/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-
-                    <Grid Margin="0,15,0,0">
-                        <TextBlock Style="{StaticResource section}" Text="Attachments" VerticalAlignment="Center"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Style="{StaticResource Action_Remove_Button}" Tag="Remove" Margin="5,0" IsEnabled="False"/>
-                            <Button Style="{StaticResource Action_New_Button}" Tag="Add" Margin="5,0" IsEnabled="False"/>
-                        </StackPanel>
-                    </Grid>
-                    <TextBlock Style="{StaticResource section}" Text="Comments" />
-
-                    <uc:DisplayListOfNotes
-                        MinHeight="50"
-                        Notes="{Binding SelectedProject.Notes}"
-                        ShowingEditControls="False" />
-                    <Grid
-                        x:Name="composeMessageControls"
-                        Grid.Row="2"
-                        Margin="5">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox
-                            Style="{StaticResource MessageComposer}"
-                            Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            TextChanged="TextBox_TextChanged"
-                            TextWrapping="WrapWithOverflow" />
-                        <Button
-                            x:Name="SendButton"
-                            Grid.Column="1"
-                            Margin="10,0,0,0"
-                            Background="Transparent"
-                            Command="{Binding SendMessageCmd}"
-                            IsEnabled="False"
-                            Style="{StaticResource SendButton}" />
-
-                    </Grid>
+                </Grid>
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    Opacity="0.4"
+                    Visibility="{Binding ProjectShowing, Converter={StaticResource boolToVisible}}"
+                    Orientation="Horizontal">
+                    <Path
+                        Height="12"
+                        Margin="0,2,0,0"
+                        Data="M18.5 2H5.5C3.6 2 2 3.6 2 5.5V18.5C2 20.4 3.6 22 5.5 22H16L22 16V5.5C22 3.6 20.4 2 18.5 2M13 16H11V13H8V11H11V8H13V11H16V13H13V16M15 20V18.5C15 16.6 16.6 15 18.5 15H20L15 20Z"
+                        Fill="{StaticResource OnBackground}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        d:Text="Created DATETIME"
+                        FontSize="13"
+                        FontStyle="Italic"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource OnBackground}"
+                        Text="{Binding SelectedProject.CreatedAt, Converter={StaticResource modifiedFormatter}, StringFormat='{}Created {0}'}" />
+                    <TextBlock
+                        d:Text=" by USERNAME"
+                        FontSize="13"
+                        FontStyle="Italic"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource OnBackground}"
+                        Text="{Binding SelectedProject.CreatedBy, StringFormat='{} by {0}'}" />
                 </StackPanel>
-            </Grid>
+            </StackPanel>
         </ScrollViewer>
         <Border
             x:Name="grad"

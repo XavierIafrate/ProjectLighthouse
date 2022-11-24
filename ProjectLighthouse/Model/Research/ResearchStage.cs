@@ -4,7 +4,7 @@
     {
         Research,
         Design,
-        Prototype,
+        Prototyping,
         Production,
         Marketing
     }

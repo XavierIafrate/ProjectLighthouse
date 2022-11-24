@@ -9,6 +9,7 @@
     * 3xx = Drawings Permission
     * 4xx = Quality Permissions
     * 5xx = Maintenance Permissions
+    * 6xx = Development Permissions
     * 
     */
 
@@ -26,5 +27,6 @@
         ModifyCalibration = 401,
         UpdateCalibration = 402,
         ConfigureMaintenance = 501,
+        CreateProject = 601,
     }
 }

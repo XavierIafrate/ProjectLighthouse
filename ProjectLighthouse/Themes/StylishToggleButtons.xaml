@@ -299,7 +299,7 @@
                         <TextBlock
                             Grid.Column="1"
                             FontSize="{TemplateBinding FontSize}"
-                            Text="R&amp;D" />
+                            Text="Development" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

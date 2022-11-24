@@ -56,6 +56,7 @@
                 <TextBlock Foreground="{StaticResource Purple}" Text="An administrator is required to modify these." />
                 <StackPanel Margin="20,10">
                     <ListView
+                        MaxHeight="300"
                         x:Name="PermissionsList"
                         MinHeight="20"
                         HorizontalContentAlignment="Stretch"

@@ -1,12 +1,20 @@
-﻿using Model.Research;
+﻿using Microsoft.Win32;
+using Model.Research;
 using ProjectLighthouse;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.View.Research;
 using ProjectLighthouse.ViewModel.Commands.Administration;
+using ProjectLighthouse.ViewModel.Commands.Research;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Windows;
+using Windows.Storage.Pickers;
 
 namespace ViewModel.Research
 {
@@ -47,11 +55,11 @@ namespace ViewModel.Research
         public ResearchProject SelectedProject
         {
             get { return selectedProject; }
-            set 
-            { 
-                selectedProject = value; 
-                ProjectShowing = value is not null; 
-                OnPropertyChanged(); 
+            set
+            {
+                selectedProject = value;
+                ProjectShowing = value is not null;
+                OnPropertyChanged();
             }
         }
 
@@ -73,13 +81,24 @@ namespace ViewModel.Research
         #endregion
 
         public SendMessageCommand SendMessageCmd { get; set; }
+        public AddProjectCommand AddProjectCmd { get; set; }
+        public OpenRootDirectoryCommand OpenRootDirectoryCmd { get; set; }
 
+        // TODO network config
+        public const string projectRoot = @"\\groupfile01\Marketing\Product Development";
 
         public ResearchViewModel()
         {
+            InitialiseCommands();
             LoadData();
             Filter();
+        }
 
+        private void InitialiseCommands()
+        {
+            AddProjectCmd = new(this);
+            SendMessageCmd = new(this);
+            OpenRootDirectoryCmd = new(this);
         }
 
         private void LoadData()
@@ -98,9 +117,6 @@ namespace ViewModel.Research
                     .Where(x => x.ProjectId == Projects[i].Id)
                     .ToList();
             }
-
-            SendMessageCmd = new(this);
-
         }
 
 
@@ -167,5 +183,84 @@ namespace ViewModel.Research
 
             NewMessage = "";
         }
+
+        public void CreateProject()
+        {
+            NewProjectWindow Window = new()
+            {
+                Owner = App.MainViewModel.MainWindow
+            };
+
+            Window.ShowDialog();
+
+            if (!Window.SaveExit)
+            {
+                return;
+            }
+            int id = DatabaseHelper.InsertAndReturnId(Window.NewProject);
+
+
+            if (id == 0)
+            {
+                MessageBox.Show("Failed to insert to database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
+            Projects.Add(Window.NewProject);
+
+            Filter();
+
+            if (FilteredProjects.Any(x => x.Id == id))
+            {
+                SelectedProject = FilteredProjects.Find(x => x.Id == id);
+            }
+        }
+
+        public void OpenRoot()
+        {
+            if (string.IsNullOrWhiteSpace(SelectedProject.RootDirectory))
+            {
+                if (!DirectoryFound(SelectedProject.ProjectCode))
+                {
+                    MessageBox.Show($"{SelectedProject.ProjectCode} could not be found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+
+            string targetFolder = Path.Join(projectRoot, SelectedProject.RootDirectory);
+
+            if (!Directory.Exists(targetFolder))
+            {
+                MessageBox.Show($"{SelectedProject.RootDirectory} could not be found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName = targetFolder,
+                UseShellExecute = true,
+                Verb = "open"
+            });
+        }
+
+        private bool DirectoryFound(string code)
+        {
+            List<string> subdirectories = Directory.GetDirectories(projectRoot).ToList();
+            subdirectories = subdirectories
+                .Where(x => Path.GetFileName(x).ToUpper().StartsWith(code.ToUpper()))
+                .ToList();
+
+            if(subdirectories.Count > 0)
+            {
+                SelectedProject.RootDirectory = Path.GetFileName(subdirectories.First());
+                DatabaseHelper.Update(SelectedProject);
+                return true;
+            }
+
+            return false;
+        }
     }
 }
+

@@ -5,16 +5,26 @@ using System.Collections.Generic;
 
 namespace Model.Research
 {
-    public class ResearchProject
+    public class ResearchProject : IAutoIncrementPrimaryKey
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string ProjectCode { get; set; }
+        public string ProjectCode { get { return $"D{Id:00000}"; } }
         public string ProjectName { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
         public DateTime ModifiedAt { get; set; }
         public string ModifiedBy { get; set; }
+
+
+        public string RootDirectory { get; set; }
+
+        [Ignore]
+        public Uri Uri { get
+            {
+                return RootDirectory is null ? null : new(RootDirectory);
+            }
+        }
 
         public ResearchStage Stage { get; set; }
 
@@ -22,6 +32,8 @@ namespace Model.Research
         public List<Note> Notes { get; set; }
         [Ignore]
         public List<ResearchArchetype> Archetypes { get; set; }
+        [Ignore]
+        public List<Attachment> Attachments { get; set; }
 
     }
 }
