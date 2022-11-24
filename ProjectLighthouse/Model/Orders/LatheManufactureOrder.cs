@@ -150,7 +150,8 @@ namespace ProjectLighthouse.Model.Orders
         public int TargetCycleTime { get; set; }
         public bool TargetCycleTimeEstimated { get; set; }
 
-        public BarStock Bar;
+        [Ignore]
+        public BarStock Bar { get; set; }
         [Ignore]
         public List<LatheManufactureOrderItem> OrderItems { get; set; } = new();
         [Ignore]

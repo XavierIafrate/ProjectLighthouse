@@ -8,8 +8,14 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            TimeSpan t = TimeSpan.FromSeconds((int)value);
+            if(value is not int cycleTime) throw new InvalidCastException();
 
+            if (cycleTime == 0)
+            {
+                return "Unknown";
+            }
+
+            TimeSpan t = TimeSpan.FromSeconds(cycleTime);
             return ($"{t.Minutes}m {t.Seconds}s");
         }
 

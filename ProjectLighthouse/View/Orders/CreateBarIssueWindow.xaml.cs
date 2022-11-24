@@ -12,6 +12,7 @@ namespace ProjectLighthouse.View.Orders
         public bool Confirmed;
         public BarStock Bar;
         public LatheManufactureOrder Order;
+
         public CreateBarIssueWindow()
         {
             InitializeComponent();
@@ -33,6 +34,12 @@ namespace ProjectLighthouse.View.Orders
 
         private bool ValidateInputs()
         {
+            if (Bar.MaterialData is null)
+            {
+                MessageBox.Show("Bar material data is null.", "Internal error");
+                return false;
+            }
+
             if (int.TryParse(QtyTextBox.Text, out int quantity))
             {
                 if (quantity <= 0 || quantity > Bar.InStock)
@@ -89,9 +96,10 @@ namespace ProjectLighthouse.View.Orders
                 MaterialBatch = BatchInfoTextBox.Text.Trim().ToUpperInvariant(),
                 OrderId = Order.Name,
                 Quantity = qty,
-                MaterialInfo = $"{Bar.MaterialText.ToUpperInvariant()}, {Bar.GradeText.ToUpperInvariant()}" 
+                MaterialInfo = $"{Bar.MaterialData.MaterialText.ToUpperInvariant()}, GRADE {Bar.MaterialData.GradeText.ToUpperInvariant()}" 
             };
 
+            //TODO direct sql
             LatheManufactureOrder freshCopyOfOrder = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == Order.Name);
             freshCopyOfOrder.ModifiedAt = DateTime.Now;
             freshCopyOfOrder.ModifiedBy = App.CurrentUser.GetFullName();

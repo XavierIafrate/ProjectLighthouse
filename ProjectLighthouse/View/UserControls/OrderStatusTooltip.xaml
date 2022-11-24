@@ -13,15 +13,15 @@
     <Grid>
         <Border
             Background="{StaticResource Surface}"
-            BorderBrush="{StaticResource Purple}"
+            BorderBrush="{StaticResource OnSurface}"
             BorderThickness="2"
-            CornerRadius="10" />
+            CornerRadius="3" />
         <StackPanel Margin="20,10">
             <TextBlock
-                d:Text="Peek: M00000"
+                d:Text="Status: M00000"
                 FontSize="18"
                 FontWeight="SemiBold"
-                Text="{Binding Name, StringFormat='{}Peek: {0}'}" />
+                Text="{Binding Name, StringFormat='{}Status: {0}'}" />
             <Grid Margin="0,10,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />

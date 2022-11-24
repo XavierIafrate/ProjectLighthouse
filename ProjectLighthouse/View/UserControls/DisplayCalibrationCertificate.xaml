@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="83.437"
     d:DesignWidth="550.625"
     mc:Ignorable="d">
     <Grid>
@@ -15,7 +14,6 @@
             CornerRadius="10" />
         <Grid Margin="15,5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
@@ -42,26 +40,23 @@
                     Stretch="Uniform" />
                 <TextBlock Text="UKAS" Foreground="{StaticResource Blue}" FontWeight="SemiBold" Margin="0,1,0,0" VerticalAlignment="Center" x:Name="ukasText"/>
             </StackPanel>
-
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
             <TextBlock
-                Grid.Row="1"
-                VerticalAlignment="Center"
-                FontSize="16"
-                FontStyle="Italic"
-                Foreground="{StaticResource Purple}"
-                Text="{Binding Path=CalibrationHouse, FallbackValue='CAL_HOUSE'}" />
-            <TextBlock
-                Grid.Row="2"
                 VerticalAlignment="Center"
                 FontSize="16"
                 Foreground="{StaticResource OnBackground}"
                 Text="{Binding Path=DateIssued, FallbackValue='Issued 01/01/1970', StringFormat='{}Issued {0:dd/MM/yyyy}'}" />
-
-
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="{Binding Path=CalibrationHouse, FallbackValue=' by CAL_HOUSE', StringFormat='{} by {0}'}" />
+                
+            </StackPanel>
 
             <StackPanel
-                Grid.RowSpan="3"
+                Grid.RowSpan="2"
                 Grid.Column="1"
+                Margin="10,0"
                 VerticalAlignment="Center">
                 <StackPanel
                     x:Name="pass"
@@ -104,9 +99,10 @@
 
             <Button
                 x:Name="openButton"
-                Grid.RowSpan="3"
+                Grid.RowSpan="2"
                 Grid.Column="2"
                 Click="OpenButton_Click"
+                Style="{StaticResource OpenPdfButton}"
                 Content="Open" />
         </Grid>
     </Grid>

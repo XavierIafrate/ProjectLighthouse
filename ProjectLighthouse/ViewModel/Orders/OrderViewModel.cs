@@ -37,6 +37,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<MachineStatistics> MachineStatistics { get; set; }
         public List<Lot> Lots { get; set; }
         public List<BarStock> BarStock { get; set; }
+        public List<MaterialInfo> MaterialInfo { get; set; }
         #endregion
 
         #region Observable
@@ -228,6 +229,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             Lathes = new();
             Lots = new();
             BarStock = new();
+            MaterialInfo = new();
             SelectedOrderBar = new();
 
             FilteredDrawings = new();
@@ -252,7 +254,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         #region Data Refreshing
 
-        async public void Refresh()
+        public void Refresh()
         {
             // Store user selection
             int? userSelection = null;
@@ -261,7 +263,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 userSelection = SelectedOrder.Id;
             }
 
-            await LoadData();
+            LoadData();
             CheckForClosedOrders();
             CheckForReopenedOrders();
 
@@ -337,7 +339,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         #endregion
 
         #region Loading
-        async private Task LoadData()
+        private void LoadData()
         {
             Orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
 
@@ -354,6 +356,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             Lots = DatabaseHelper.Read<Lot>().ToList();
 
             BarStock = DatabaseHelper.Read<BarStock>().ToList();
+            MaterialInfo = DatabaseHelper.Read<MaterialInfo>().ToList();
+            BarStock.ForEach(x => x.MaterialData = MaterialInfo.Find(y => y.Id == x.MaterialId));
 
             MachineStatistics = MachineStatsHelper.GetStats();
         }

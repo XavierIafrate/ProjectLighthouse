@@ -3,15 +3,10 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace View.HelperWindows
 {
@@ -57,7 +52,7 @@ namespace View.HelperWindows
             AcrossFlatsErrorText.Text = "Failed to parse Across Corners value to double";
             AcrossFlatsErrorText.Visibility = Visibility.Hidden;
         }
-        
+
         private void AcrossFlatsValue_KeyUp(object sender, KeyEventArgs e)
         {
             if (double.TryParse(AcrossFlatsValue.Text, out double af))
@@ -83,16 +78,17 @@ namespace View.HelperWindows
 
 
         private List<BarStock> bars;
+        private List<MaterialInfo> materials;
 
         // Inputs validated
-        private int     userQuantity    = 0;
-        private double  userDiameter    = 0;
-        private double  userLength      = 0;
-        private int     userBarLength   = 0;
-        private double  userBarCost     = 0;
-        private int     userCtMin       = 2;
-        private int     userCtSec       = 0;
-        private int     userToolingCost = 0;
+        private int userQuantity = 0;
+        private double userDiameter = 0;
+        private double userLength = 0;
+        private int userBarLength = 0;
+        private double userBarCost = 0;
+        private int userCtMin = 2;
+        private int userCtSec = 0;
+        private int userToolingCost = 0;
 
 
         // Calculated
@@ -104,12 +100,21 @@ namespace View.HelperWindows
         private double totalMachineCost = 0;
         public double totalCost = 0;
 
-        
+
         private void LoadCostingData()
         {
-            bars = DatabaseHelper.Read<BarStock>().OrderBy(x => x.Material).ThenBy(x => x.Size).ToList();
+            bars = DatabaseHelper.Read<BarStock>()
+                .OrderBy(x => x.MaterialId)
+                .ThenBy(x => x.Size)
+                .ToList();
+
+            materials = DatabaseHelper.Read<MaterialInfo>().ToList();
+
+            bars.ForEach(b => b.MaterialData = materials.Find(x => x.Id == b.MaterialId));
+
             costingBarId.ItemsSource = bars;
-            costingMaterialCombo.ItemsSource = bars.Select(x => x.Material).Distinct().OrderBy(x => x).Prepend("-");
+            //TODO
+            costingMaterialCombo.ItemsSource = bars.Select(x => x.MaterialData).Distinct().OrderBy(x => x).Prepend(null);
             costingMaterialCombo.SelectedIndex = 0;
         }
 
@@ -117,7 +122,7 @@ namespace View.HelperWindows
         {
             if (userLength > 0 && userBarLength > 300)
             {
-                partsPerBar = (int)Math.Floor((userBarLength - 300)/ userLength);
+                partsPerBar = (int)Math.Floor((userBarLength - 300) / userLength);
                 costingPartsPerBar.Text = $"{partsPerBar:0} parts per bar.";
             }
 
@@ -127,7 +132,7 @@ namespace View.HelperWindows
                 costingNumBars.Text = $"# bar required: {numberOfBarsRequired:0}";
             }
 
-            if(numberOfBarsRequired > 0 && userBarCost > 0)
+            if (numberOfBarsRequired > 0 && userBarCost > 0)
             {
                 totalBarCost = numberOfBarsRequired * userBarCost;
                 costingTotalBarCost.Text = $"Cost of Bar: £{totalBarCost:#,##0.00}";
@@ -141,7 +146,7 @@ namespace View.HelperWindows
 
                 costingEstimatedTotalTime.Text = $"Appx. time to make: {totalTime.TotalDays:0.0} days";
 
-                totalMachineCost = Math.Max(totalTime.TotalMinutes, 24*60) * machineTimePerMin;
+                totalMachineCost = Math.Max(totalTime.TotalMinutes, 24 * 60) * machineTimePerMin;
                 costingTotalMachineCost.Text = $"Total Machine Cost: £{totalMachineCost:#,##0.00}";
             }
 
@@ -161,8 +166,8 @@ namespace View.HelperWindows
 
             if (int.TryParse(costingQuantity.Text, out int q))
             {
-                if (q > 0) 
-                { 
+                if (q > 0)
+                {
                     valid = true;
                     userQuantity = q;
                 }
@@ -176,7 +181,7 @@ namespace View.HelperWindows
         {
             bool valid = false;
 
-            if(double.TryParse(costingDiameter.Text, out double d))
+            if (double.TryParse(costingDiameter.Text, out double d))
             {
                 if (d > 0) valid = true;
             }
@@ -192,15 +197,15 @@ namespace View.HelperWindows
 
             if (double.TryParse(costingLength.Text, out double l))
             {
-                if (l > 0) 
-                { 
+                if (l > 0)
+                {
                     valid = true;
                     userLength = l;
                 }
             }
 
-            costingLength.BorderBrush = valid 
-                ? Brushes.Transparent 
+            costingLength.BorderBrush = valid
+                ? Brushes.Transparent
                 : (Brush)Application.Current.Resources["Red"];
         }
 
@@ -212,14 +217,14 @@ namespace View.HelperWindows
             }
             else
             {
-                if (double.TryParse(costingDiameter.Text, out double diameter))
-                {
-                    costingBarId.ItemsSource = bars.Where(x => x.Material == (string)costingMaterialCombo.SelectedValue && x.Size >= diameter);
-                }
-                else
-                {
-                    costingBarId.ItemsSource = bars.Where(x => x.Material == (string)costingMaterialCombo.SelectedValue);
-                }
+                //if (double.TryParse(costingDiameter.Text, out double diameter))
+                //{
+                //    costingBarId.ItemsSource = bars.Where(x => x.Material == (string)costingMaterialCombo.SelectedValue && x.Size >= diameter);
+                //}
+                //else
+                //{
+                //    costingBarId.ItemsSource = bars.Where(x => x.Material == (string)costingMaterialCombo.SelectedValue);
+                //}
             }
         }
 
@@ -231,7 +236,7 @@ namespace View.HelperWindows
             userBarCost = bar.Cost / 100;
 
             costingBarLength.Text = bar.Length.ToString("0");
-            costingBarCost.Text = (bar.Cost/100).ToString("0.00");
+            costingBarCost.Text = (bar.Cost / 100).ToString("0.00");
         }
 
         private void costingBarLength_KeyUp(object sender, KeyEventArgs e)

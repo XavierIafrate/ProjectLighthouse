@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.View.Orders;
@@ -17,6 +18,7 @@ namespace ProjectLighthouse.ViewModel.Orders
     {
         #region Variables
         public List<BarStock> BarStock { get; set; }
+        public List<MaterialInfo> MaterialData { get; set; }
 
         public List<BarStockRequirementOverview> BarOverviews { get; set; }
         public List<BarIssue> BarIssues { get; set; }
@@ -107,6 +109,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public BarStockViewModel()
         {
             BarStock = new();
+            MaterialData = new();
             Orders = new();
             BarOverviews = new();
             BarStockOverview = new();
@@ -165,9 +168,13 @@ namespace ProjectLighthouse.ViewModel.Orders
         public void LoadData()
         {
             BarStock = DatabaseHelper.Read<BarStock>()
-                .OrderBy(b => b.Material)
+                .OrderBy(b => b.MaterialId)
                 .ThenBy(b => b.Size)
                 .ToList();
+
+            MaterialData = DatabaseHelper.Read<MaterialInfo>().ToList();
+
+            BarStock.ForEach(x => x.MaterialData = MaterialData.Find(d => d.Id == x.MaterialId));
 
             BarOverviews = null;
             OnPropertyChanged(nameof(BarOverviews));
@@ -208,7 +215,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 FilteredBarOverviews = FilteredBarOverviews.Where(x => x.Orders.Any(o => o.RequiresBar())).ToList();
             }
 
-            FilteredBarOverviews = FilteredBarOverviews.OrderBy(x => x.Priority).ThenBy(x => x.BarStock.Material).ThenBy(x => x.BarStock.Id).ToList();
+            FilteredBarOverviews = FilteredBarOverviews.OrderBy(x => x.Priority).ThenBy(x => x.BarStock.MaterialId).ThenBy(x => x.BarStock.Size).ToList();
 
             if (FilteredBarOverviews.Count > 0)
             {

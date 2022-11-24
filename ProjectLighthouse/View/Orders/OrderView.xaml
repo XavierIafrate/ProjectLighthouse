@@ -710,11 +710,8 @@
                                         Opacity="0.6"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource OnBackground}"
-                                        TextWrapping="Wrap" >
-                                        <Run Text="{Binding SelectedOrderBar.MaterialText}"/>
-                                        <Run Text="-"/>
-                                        <Run Text="{Binding SelectedOrderBar.GradeText}"/>
-                                    </TextBlock>
+                                        TextWrapping="Wrap"
+                                        Text="{Binding SelectedOrderBar.MaterialData, TargetNullValue='NOT FOUND'}"/>
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="1"

@@ -1,0 +1,94 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Administration.NewBarWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="NewBarWindow"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Style="{StaticResource title}" Text="New Bar" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource section}"
+                    Text="Bar ID" />
+                <TextBox
+                    Grid.Column="1"
+                    Width="250"
+                    MaxLength="16"
+                    HorizontalAlignment="Right"
+                    PreviewKeyDown="ValidateProductNumber"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="Bar ID" />
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource section}"
+                    Text="Length (mm)" />
+                <TextBox
+                    Grid.Column="1"
+                    Width="200"
+                    MaxLength="4"
+                    HorizontalAlignment="Right"
+                    PreviewKeyDown="ValidateInt"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="Bar Length" />
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource section}"
+                    Text="Size (mm)" />
+                <TextBox
+                    Grid.Column="1"
+                    Width="150"
+                    MaxLength="2"
+                    HorizontalAlignment="Right"
+                    PreviewKeyDown="ValidateInt"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="Bar Size" />
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource section}"
+                    Text="Size (mm)" />
+                <TextBox
+                    Grid.Column="1"
+                    Width="150"
+                    MaxLength="2"
+                    HorizontalAlignment="Right"
+                    PreviewKeyDown="ValidateInt"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="Bar Size" />
+            </Grid>
+
+        </StackPanel>
+    </Grid>
+</Window>

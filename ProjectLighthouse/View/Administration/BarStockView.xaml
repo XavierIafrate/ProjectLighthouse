@@ -97,12 +97,10 @@
                     </Grid>
                 </Grid>
                 <TextBlock Style="{StaticResource subtitle}">
-                    <Run d:Text="Stainless Steel," Text="{Binding SelectedBarStock.BarStock.MaterialText, StringFormat='{}{0},'}" />
-                    <Run d:Text="Grade AISI 303" Text="{Binding SelectedBarStock.BarStock.GradeText, StringFormat='{}Grade {0}'}" />
+                    <Run d:Text="Stainless Steel," Text="{Binding SelectedBarStock.BarStock.MaterialData, TargetNullValue='MATERIAL INFO NOT FOUND', Mode=OneWay}" />
                 </TextBlock>
                 <TextBlock Style="{StaticResource subsubtitle}">
-                    <Run d:Text="3,000mm long" Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}{0:#,##0}mm long'}" />
-                    <Run d:Text="round bar," Text="{Binding SelectedBarStock.BarStock.Form, StringFormat='{}{0} bar,'}" />
+                    <Run d:Text="3,000mm long" Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}{0:#,##0}mm long,'}" />
                     <Run d:Text="size 7mm" Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}size {0}mm'}" />
                 </TextBlock>
                 <!--<TextBlock Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Unit Cost {0}', Converter='{StaticResource priceConverter}'}" />-->

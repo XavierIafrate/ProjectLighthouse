@@ -69,12 +69,17 @@ namespace ProjectLighthouse.View.Orders
 
             Order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == id);
 
+            if (Order is null) throw new Exception($"Cannot find order {id}");
+
             if (BarStock == null)
             {
                 // TODO handle bad inputs
                 BarStock = DatabaseHelper.Read<BarStock>();
                 BarStock currentBar = BarStock.Find(x => x.Id == Order.BarID);
-                BarStock = BarStock.Where(x => x.Material == currentBar.Material).ToList();
+
+                if (currentBar is null) throw new Exception($"Cannot find bar {Order.BarID}");
+
+                BarStock = BarStock.Where(x => x.MaterialId == currentBar.MaterialId).ToList();
                 OnPropertyChanged(nameof(BarStock));
             }
 
