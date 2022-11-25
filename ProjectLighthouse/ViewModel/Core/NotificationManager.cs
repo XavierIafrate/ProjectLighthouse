@@ -1,7 +1,9 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using DocumentFormat.OpenXml.Presentation;
+using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -51,7 +53,7 @@ namespace ProjectLighthouse.ViewModel.Core
             if (App.CurrentUser is null) return;
             if (App.CurrentUser.UserName is null) return;
 
-            users = DatabaseHelper.Read<User>().ToList();
+            users = DatabaseHelper.Read<User>().Where(x => !x.IsBlocked && x.ReceivesNotifications).ToList();
             List<Permission> permissionsList = DatabaseHelper.Read<Permission>();
             for (int i = 0; i < users.Count; i++)
             {
@@ -330,6 +332,39 @@ namespace ProjectLighthouse.ViewModel.Core
             not.Seen = true;
             not.SeenTimeStamp = DateTime.Now;
             DatabaseHelper.Update(not);
+        }
+
+        public void NotifyQualityPassed(QualityCheck check, List<string> mentionedUsers = null)
+        {
+            List<User> toNotify = users.Where(x => x.HasQualityNotifications).ToList();
+
+            for(int i = 0; i < mentionedUsers.Count; i++)
+            {
+                if (!toNotify.Any(x => x.UserName == mentionedUsers[i]))
+                {
+                    User? u = users.Find(x => x.UserName == mentionedUsers[i]);
+
+                    if(u != null)
+                    {
+                        toNotify.Add(u);
+                    }
+                }
+            }
+
+            toNotify = toNotify.Where(x => x.UserName != App.CurrentUser.UserName).ToList();
+
+            string title = check.IsAccepted ? "Accepted" : "Rejected";
+            for (int i = 0; i < toNotify.Count; i++)
+            {
+                Notification newNotification = new(
+                    to: toNotify[i].UserName, 
+                    from:App.CurrentUser.UserName, 
+                    header: $"{title}: {check.Product}", 
+                    body: $"This quality check request has been resolved", 
+                    toastAction: $"viewQC:{check.Id}");
+
+                _ = DatabaseHelper.Insert(newNotification);
+            }
         }
     }
 }

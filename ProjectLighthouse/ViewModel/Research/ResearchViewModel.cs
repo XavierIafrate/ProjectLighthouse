@@ -1,8 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using DocumentFormat.OpenXml.InkML;
 using Model.Research;
 using ProjectLighthouse;
 using ProjectLighthouse.Model.Core;
-using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.View.Research;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Research;
@@ -14,7 +13,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Windows.Storage.Pickers;
 
 namespace ViewModel.Research
 {
@@ -24,6 +22,8 @@ namespace ViewModel.Research
         public List<ResearchProject> Projects { get; set; }
         public List<ResearchArchetype> Archetypes { get; set; }
         public List<Note> Notes { get; set; }
+        public Array Stages { get; set; }
+
         #endregion
 
         #region Full Properties
@@ -84,6 +84,8 @@ namespace ViewModel.Research
         public AddProjectCommand AddProjectCmd { get; set; }
         public OpenRootDirectoryCommand OpenRootDirectoryCmd { get; set; }
 
+        public NewProjectArchetypeCommand NewProjectArchetypeCmd { get; set; }
+
         // TODO network config
         public const string projectRoot = @"\\groupfile01\Marketing\Product Development";
 
@@ -99,6 +101,7 @@ namespace ViewModel.Research
             AddProjectCmd = new(this);
             SendMessageCmd = new(this);
             OpenRootDirectoryCmd = new(this);
+            NewProjectArchetypeCmd = new(this);
         }
 
         private void LoadData()
@@ -117,6 +120,8 @@ namespace ViewModel.Research
                     .Where(x => x.ProjectId == Projects[i].Id)
                     .ToList();
             }
+
+            Stages = Enum.GetValues(typeof(ResearchStage));
         }
 
 
@@ -197,6 +202,7 @@ namespace ViewModel.Research
             {
                 return;
             }
+
             int id = DatabaseHelper.InsertAndReturnId(Window.NewProject);
 
 
@@ -206,6 +212,12 @@ namespace ViewModel.Research
                 return;
             }
 
+            if (Directory.Exists($@"{projectRoot}\@template"))
+            {
+                Window.NewProject.RootDirectory = $"{Window.NewProject.ProjectCode} - {Window.NewProject.ProjectName}";
+                DatabaseHelper.Update(Window.NewProject);
+                CreateProjectFolder($@"{projectRoot}\@template", $@"{projectRoot}\{Window.NewProject.RootDirectory}");
+            }
 
             Projects.Add(Window.NewProject);
 
@@ -214,6 +226,64 @@ namespace ViewModel.Research
             if (FilteredProjects.Any(x => x.Id == id))
             {
                 SelectedProject = FilteredProjects.Find(x => x.Id == id);
+            }
+        }
+
+        private void CreateProjectFolder(string templateDirectory, string newDirectory)
+        {
+            string[] allDirectories = Directory.GetDirectories(templateDirectory, "*", SearchOption.AllDirectories);
+
+            foreach (string dir in allDirectories)
+            {
+                string dirToCreate = dir.Replace(templateDirectory, newDirectory);
+                Directory.CreateDirectory(dirToCreate);
+            }
+
+            string[] allFiles = Directory.GetFiles(templateDirectory, "*.*", SearchOption.AllDirectories);
+            foreach (string newPath in allFiles)
+            {
+                File.Copy(newPath, newPath.Replace(templateDirectory, newDirectory));
+            }
+        }
+
+        public void AddArchetype()
+        {
+            ResearchArchetype newArchetype = new()
+            {
+                Name = "New_archetype",
+                ProjectId = SelectedProject.Id,
+            };
+
+            string[] projectFolders = Directory.GetDirectories($@"{projectRoot}\{SelectedProject.RootDirectory}\", "*", SearchOption.TopDirectoryOnly);
+
+            for(int i = 0; i < projectFolders.Length; i++) 
+            { 
+                string folder = projectFolders[i];
+
+                if (Directory.Exists($@"{folder}\@archetype"))
+                {
+                    CopyAndRenameFolder($@"{folder}\@archetype", $@"{folder}\{newArchetype.Name}");
+                }
+            }
+        }
+
+        private static void CopyAndRenameFolder(string from, string to)
+        {
+            string[] allDirectories = Directory.GetDirectories(from, "*", SearchOption.AllDirectories);
+
+            foreach (string dir in allDirectories)
+            {
+                string dirToCreate = dir.Replace(from, to);
+                Directory.CreateDirectory(dirToCreate);
+            }
+
+            string[] allFiles = Directory.GetFiles(from, "*.*", SearchOption.AllDirectories);
+            foreach (string newPath in allFiles)
+            {
+                if (!File.Exists(newPath.Replace(from, to)))
+                {
+                    File.Copy(newPath, newPath.Replace(from, to));
+                }
             }
         }
 
@@ -252,7 +322,7 @@ namespace ViewModel.Research
                 .Where(x => Path.GetFileName(x).ToUpper().StartsWith(code.ToUpper()))
                 .ToList();
 
-            if(subdirectories.Count > 0)
+            if (subdirectories.Count > 0)
             {
                 SelectedProject.RootDirectory = Path.GetFileName(subdirectories.First());
                 DatabaseHelper.Update(SelectedProject);

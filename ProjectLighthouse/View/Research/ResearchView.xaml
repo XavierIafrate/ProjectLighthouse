@@ -218,7 +218,19 @@
 
                         <Button HorizontalAlignment="Left" Style="{StaticResource Action_Button}" Tag="{Binding SelectedProject.RootDirectory, TargetNullValue='Set Directory'}" d:Tag="DIRECTORY_LINK" Command="{Binding OpenRootDirectoryCmd}"/>
 
-                        <TextBlock Style="{StaticResource section}" Text="{Binding SelectedProject.Archetypes.Count, StringFormat='{}Archetypes [{0}]'}" d:Text="Archetypes [0]" />
+                        <TextBlock Style="{StaticResource section}" Text="Configuration"  />
+                        <StackPanel Margin="20,0">
+                            <TextBlock Text="Stage" Style="{StaticResource InputLabel}"/>
+                            <ComboBox HorizontalAlignment="Left" MinWidth="200" ItemsSource="{Binding Stages}" SelectedValue="{Binding SelectedProject.Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+
+                        <Grid>
+                            <TextBlock Style="{StaticResource section}" Text="{Binding SelectedProject.Archetypes.Count, StringFormat='{}Archetypes [{0}]'}" d:Text="Archetypes [0]" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Tag="Remove" Style="{StaticResource Action_Remove_Button}"/>
+                                <Button Tag="Add" Style="{StaticResource Action_New_Button}" Command="{Binding NewProjectArchetypeCmd}"/>
+                            </StackPanel>
+                        </Grid>
                         <ListView ItemsSource="{Binding SelectedProject.Archetypes}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>

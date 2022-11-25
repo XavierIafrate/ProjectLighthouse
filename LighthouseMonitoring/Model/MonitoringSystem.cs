@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace LighthouseMonitoring.Model
@@ -14,36 +15,85 @@ namespace LighthouseMonitoring.Model
         public List<Lathe> Lathes { get; set; } = new();
         public List<LatheState> LatheStates { get; set; } = new();
 
-        private Timer timer;
+        #region Timer Variables
+        private Timer? timer;
 
         private DateTime lastPolled;
-
         public DateTime LastPolled
         {
             get { return lastPolled; }
             set { lastPolled = value; OnPropertyChanged();  }
         }
 
+        private double secondsSinceLastPoll;
+        public double SecondsSinceLastPoll
+        {
+            get { return secondsSinceLastPoll; }
+            set { secondsSinceLastPoll = value; OnPropertyChanged(); }
+        }
+        #endregion
+
+
+        #region Setup
         public void Initialise()
         {
-            Lathes = DatabaseHelper.Read<Lathe>().Where(x => !x.OutOfService).ToList();
+            SetupLathes();
+            SetupTimer();
 
             MachineDataHelper.Initialise();
 
+            timer?.Start();
+        }
+
+        private void SetupTimer()
+        {
             timer = new(200);
             timer.Elapsed += Timer_Elapsed;
-            timer.Start();
+        }
 
+        private void SetupLathes()
+        {
+            Lathes = DatabaseHelper.Read<Lathe>().Where(x => !x.OutOfService).ToList();
+            for(int i = 0; i < Lathes.Count; i++)
+            {
+                LatheState newLatheState = new(Lathes[i]);
 
-            MachineDataHelper.GetMachineData(Lathes.First());
+                newLatheState.OnNewError += NewLatheState_OnNewError;
+
+                LatheStates.Add(new(Lathes[i]));
+            }
+        }
+        #endregion
+
+        private void NewLatheState_OnNewError(object? sender, List<string> e)
+        {
+            throw new NotImplementedException();
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            LastPolled = DateTime.Now;
-            Debug.WriteLine($"Last Polled set to : {LastPolled:s}");
+            SecondsSinceLastPoll = (DateTime.Now - LastPolled).TotalSeconds;
+
+            if(SecondsSinceLastPoll > Settings1.Default.PollInterval)
+            {
+                LastPolled = DateTime.Now;
+                //Task.Run(() => PollMachines());
+                PollMachines();
+            }
         }
 
+        private void PollMachines()
+        {
+            Debug.WriteLine($"{DateTime.Now:s} Polling Machines");
 
+            for (int i = 0; i < LatheStates.Count; i++)
+            {
+                LatheState latheData = LatheStates[i];
+
+                MachineData mtConnectInfo = MachineDataHelper.GetMachineData(latheData.Lathe);
+
+                latheData.Update(mtConnectInfo);
+            }
+        }
     }
 }

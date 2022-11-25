@@ -6,24 +6,24 @@
     xmlns:local="clr-namespace:LighthouseMonitoring.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:LighthouseMonitoring.ViewModel"
+    xmlns:usercontrols="clr-namespace:LighthouseMonitoring.View.UserControls"
     d:Background="White"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid Background="Coral">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Text="Monitoring" />
-        <TextBlock Text="{Binding MonitoringSystem.LastPolled, StringFormat='{}{0:s}'}" Grid.Row="1"/>
-        <ItemsControl Grid.Row="2" ItemsSource="{Binding MonitoringSystem.Lathes}" >
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding MonitoringSystem.LatheStates}" d:ItemsSource="{d:SampleData ItemCount=5}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <!--<uc:LatheState Lathe="{Binding}"/>-->
+                    <usercontrols:DisplayLatheState Lathe="{Binding Path=.}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <TextBlock Grid.Row="2" Text="{Binding MonitoringSystem.SecondsSinceLastPoll, StringFormat='{}{0:0} seconds since last poll'}" />
     </Grid>
 </UserControl>

@@ -73,4 +73,10 @@
         <Setter Property="Foreground" Value="#aaa" />
     </Style>
 
+    <Style x:Key="InputLabel"
+           BasedOn="{StaticResource Default}"
+           TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,8,0,5"/>
+    </Style>
+
 </ResourceDictionary>

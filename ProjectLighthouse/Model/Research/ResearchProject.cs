@@ -34,6 +34,5 @@ namespace Model.Research
         public List<ResearchArchetype> Archetypes { get; set; }
         [Ignore]
         public List<Attachment> Attachments { get; set; }
-
     }
 }

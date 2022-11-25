@@ -12,7 +12,7 @@
     <Grid Margin="30,20">
         <StackPanel>
             <TextBlock Text="Create New Project" Style="{StaticResource title}"/>
-            <TextBox x:Name="projectNameTextBox" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewProject.ProjectName}" Tag="Project Name" Style="{StaticResource DefaultTextBox}" Margin="10,20"/>
+            <TextBox x:Name="projectNameTextBox" PreviewKeyDown="projectNameTextBox_PreviewKeyDown" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewProject.ProjectName}" Tag="Project Name" Style="{StaticResource DefaultTextBox}" Margin="10,20"/>
             <Button x:Name="SubmitButton" Style="{StaticResource Action_New_Button}" Click="SubmitButton_Click" Tag="Create" HorizontalAlignment="Right"/>
         </StackPanel>
     </Grid>

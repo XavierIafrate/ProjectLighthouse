@@ -217,7 +217,8 @@ namespace ProjectLighthouse.ViewModel.Quality
                 Filter = "Pdf Files (*.pdf)|*.pdf|Image Files (*.png, *.jpg)|*.png;*.jpg|Excel Workbooks (*.xlsx)|*.xlsx|Word Docs (*.docx)|*.docx",
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
             };
-            if (!(bool)filePicker.ShowDialog())
+
+            if (!(filePicker.ShowDialog() ?? false))
             {
                 return;
             }
@@ -271,17 +272,9 @@ namespace ProjectLighthouse.ViewModel.Quality
 
             UpdateCurrentCheck();
 
-            List<string> otherUsers = FilteredNotes.Select(x => x.SentBy).ToList();
-            otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.HasQualityNotifications).Select(x => x.UserName));
-            otherUsers.Add(App.NotificationsManager.users.Find(x => x.UserName == SelectedCheck.RaisedBy).UserName);
+            List<string> mentionedUsers = FilteredNotes.Select(x => x.SentBy).ToList();
 
-            otherUsers = otherUsers.Where(x => x != App.CurrentUser.UserName).Distinct().ToList();
-            string title = approved ? "Accepted" : "Rejected";
-            for (int i = 0; i < otherUsers.Count; i++)
-            {
-                Notification newNotification = new(otherUsers[i], App.CurrentUser.UserName, $"{title}: {SelectedCheck.Product}", $"This quality check request has been resolved", toastAction: $"viewQC:{SelectedCheck.Id}");
-                _ = DatabaseHelper.Insert(newNotification);
-            }
+            App.NotificationsManager.NotifyQualityPassed(SelectedCheck);
         }
 
         public class UploadEvidenceCommand : ICommand

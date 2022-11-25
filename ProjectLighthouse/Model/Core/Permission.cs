@@ -27,6 +27,7 @@ namespace ProjectLighthouse.Model.Core
              { PermissionType.IssueBar, "Issue Bar Stock" },
              { PermissionType.ConfigureMaintenance, "Configure Maintenance" },
              { PermissionType.CreateProject, "Create Development Projects" },
+             { PermissionType.ModifyProject, "Modify Development Projects" },
         };
     }
 }

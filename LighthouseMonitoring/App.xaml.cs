@@ -2,12 +2,6 @@
 using LighthouseMonitoring.ViewModel;
 using ProjectLighthouse;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -16,8 +10,8 @@ namespace LighthouseMonitoring
     public partial class App : Application
     {
         public static MainViewModel ViewModel { get; set; }
-        public const string DEBUG_ROOT = @"C:\Users\xavie\Documents\lighthouse_test\";
-        public const string DEBUG_DB_NAME = "manufactureDB.db3";
+        public const string DEBUG_ROOT = ApplicationRootPaths.DEBUG_ROOT;
+        public const string DEBUG_DB_NAME = ApplicationRootPaths.DEBUG_DB_NAME;
 
         public static MonitoringSystem MonitoringSystem { get; set; }
 
@@ -40,7 +34,7 @@ namespace LighthouseMonitoring
 
         private void EstablishDatabaseContext()
         {
-            
+
             DatabaseHelper.DatabasePath = $"{ApplicationRootPaths.DEBUG_ROOT}{ApplicationRootPaths.DEBUG_DB_NAME}";
         }
 

@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using Model.Research;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;
 using System.Windows.Media;
@@ -53,6 +54,11 @@ namespace ProjectLighthouse.View.Research
 
             SaveExit = true;
             Close();
+        }
+
+        private void projectNameTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            e.Handled = TextBoxHelper.ValidateAlphanumeric(e);
         }
     }
 }
