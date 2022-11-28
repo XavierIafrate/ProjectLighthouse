@@ -14,28 +14,29 @@
             Margin="0,0,0,20"
             Style="{StaticResource title}"
             Text="Create New User" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="UserName" />
         <TextBox
             x:Name="username"
             LostFocus="username_LostFocus"
             Style="{StaticResource DefaultTextBox}"
-            Tag="Username"
+            Tag="username"
             TextChanged="username_TextChanged" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="First Name" />
         <TextBox
             x:Name="firstName"
             LostFocus="firstName_LostFocus"
             Style="{StaticResource DefaultTextBox}"
-            Tag="First Name"
+            Tag="first name"
             TextChanged="firstName_TextChanged" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="Last Name" />
         <TextBox
             x:Name="lastName"
             LostFocus="lastName_LostFocus"
             Style="{StaticResource DefaultTextBox}"
-            Tag="Last Name"
+            Tag="last name"
             TextChanged="lastName_TextChanged" />
-        <TextBlock
-            Margin="0,10,0,0"
-            Style="{StaticResource section}"
-            Text="Password" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Password" />
         <PasswordBox
             x:Name="password"
             Height="30"

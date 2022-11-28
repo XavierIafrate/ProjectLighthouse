@@ -1,11 +1,11 @@
 ﻿<UserControl
-    x:Class="View.Research.ResearchView"
+    x:Class="ProjectLighthouse.View.Research.ResearchView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
-    xmlns:local="clr-namespace:View.Research"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Research"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
@@ -17,6 +17,8 @@
             <converters:dateToLastModified x:Key="modifiedFormatter" />
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisible" />
             <converters:boolToCollapsedOrVisible x:Key="boolToCollapsed" />
+            <converters:ResearchStageToBrush x:Key="stageToBrush" />
+            <converters:ObjectIsNotNull x:Key="NotNull" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="280" />
@@ -52,25 +54,7 @@
             SelectedItem="{Binding SelectedProject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="12,7">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontFamily="Consolas"
-                            FontSize="16"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Teal}"
-                            Text="{Binding ProjectCode}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="5,0"
-                            VerticalAlignment="Center"
-                            FontWeight="SemiBold"
-                            Text="{Binding ProjectName}" />
-                    </Grid>
+                    <uc:DisplayResearchProject Project="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -154,7 +138,7 @@
 
         <ScrollViewer
             x:Name="scroller"
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged">
             <StackPanel>
@@ -179,8 +163,8 @@
                     </Border>
 
                     <StackPanel Margin="20">
-                        <Grid Margin="0,0,0,30">
-                            <StackPanel Orientation="Horizontal">
+                        <Grid Margin="0,0,0,18">
+                            <StackPanel>
                                 <TextBlock
                                     d:Text="D00000"
                                     FontFamily="Consolas"
@@ -188,50 +172,97 @@
                                     Style="{StaticResource title}"
                                     Text="{Binding SelectedProject.ProjectCode}" />
                                 <TextBlock
-                                    FontFamily="Consolas"
-                                    Style="{StaticResource title}"
-                                    Text=" - " />
-                                <TextBlock
                                     d:Text="PROJECT_NAME"
                                     FontFamily="Consolas"
+                                    FontSize="25"
                                     Style="{StaticResource title}"
                                     Text="{Binding SelectedProject.ProjectName}" />
                             </StackPanel>
 
                             <Border
+                                VerticalAlignment="Center"
                                 HorizontalAlignment="Right"
-                                Background="{StaticResource BlueFaded}"
-                                BorderBrush="{StaticResource Blue}"
+                                Background="{Binding SelectedProject.Stage, Converter={StaticResource stageToBrush}, ConverterParameter='Faded'}"
                                 BorderThickness="3,0,0,0"
-                                CornerRadius="3">
+                                CornerRadius="3"
+                                BorderBrush="{Binding SelectedProject.Stage, Converter={StaticResource stageToBrush}}">
                                 <TextBlock
-                                    Margin="20,5"
+                                    Margin="20,8,20,10"
                                     d:Text="STAGE"
                                     FontSize="20"
                                     FontWeight="SemiBold"
-                                    Foreground="{StaticResource Blue}"
+                                    Foreground="{Binding SelectedProject.Stage, Converter={StaticResource stageToBrush}}"
                                     Text="{Binding SelectedProject.Stage}" />
                             </Border>
 
 
                         </Grid>
 
-                        <Button HorizontalAlignment="Left" Style="{StaticResource Action_Button}" Tag="{Binding SelectedProject.RootDirectory, TargetNullValue='Set Directory'}" d:Tag="DIRECTORY_LINK" Command="{Binding OpenRootDirectoryCmd}"/>
+                        <Button
+                            HorizontalAlignment="Left"
+                            d:Tag="DIRECTORY_LINK"
+                            Command="{Binding OpenRootDirectoryCmd}"
+                            Style="{StaticResource Action_Button}"
+                            Tag="{Binding SelectedProject.RootDirectory, TargetNullValue='Set Directory'}" />
 
-                        <TextBlock Style="{StaticResource section}" Text="Configuration"  />
-                        <StackPanel Margin="20,0">
-                            <TextBlock Text="Stage" Style="{StaticResource InputLabel}"/>
-                            <ComboBox HorizontalAlignment="Left" MinWidth="200" ItemsSource="{Binding Stages}" SelectedValue="{Binding SelectedProject.Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        </StackPanel>
+                        <Button
+                            HorizontalAlignment="Left"
+                            Command="{Binding SaveProjectCmd}"
+                            Style="{StaticResource Action_Update_Button}"
+                            Tag="Save Changes" />
 
+                        <TextBlock Style="{StaticResource SectionLabel}" Text="Configuration" />
+                        <Grid Margin="20,0" IsEnabled="{Binding CanManage}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource InputLabel}" Text="Stage" />
+                                <ComboBox
+                                    MinWidth="200"
+                                    HorizontalAlignment="Left"
+                                    ItemsSource="{Binding Stages}"
+                                    SelectedValue="{Binding SelectedProject.Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Style="{StaticResource InputLabel}" Text="Project Owner" />
+                                <ComboBox
+                                    MinWidth="250"
+                                    HorizontalAlignment="Left"
+                                    ItemsSource="{Binding Designers}"
+                                    SelectedValue="{Binding SelectedProject.Owner, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectedValuePath="Id" />
+                            </StackPanel>
+
+                        </Grid>
                         <Grid>
-                            <TextBlock Style="{StaticResource section}" Text="{Binding SelectedProject.Archetypes.Count, StringFormat='{}Archetypes [{0}]'}" d:Text="Archetypes [0]" />
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Tag="Remove" Style="{StaticResource Action_Remove_Button}"/>
-                                <Button Tag="Add" Style="{StaticResource Action_New_Button}" Command="{Binding NewProjectArchetypeCmd}"/>
+                            <TextBlock
+                                d:Text="Archetypes [0]"
+                                Style="{StaticResource SectionLabel}"
+                                Text="{Binding SelectedProject.Archetypes.Count, StringFormat='{}Archetypes [{0}]'}" />
+                            <StackPanel
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Orientation="Horizontal">
+                                <Button
+                                    Margin="5,0"
+                                    IsEnabled="{Binding SelectedArchetype, Converter={StaticResource NotNull}}"
+                                    Command="{Binding RemoveArchetypeCmd}"
+                                    Style="{StaticResource Action_Remove_Button}"
+                                    Tag="Remove" />
+                                <Button
+                                    Margin="5,0"
+                                    Command="{Binding NewProjectArchetypeCmd}"
+                                    Style="{StaticResource Action_New_Button}"
+                                    Tag="Add" />
                             </StackPanel>
                         </Grid>
-                        <ListView ItemsSource="{Binding SelectedProject.Archetypes}">
+                        <ListView
+                            MinHeight="40"
+                            ItemsSource="{Binding SelectedProject.Archetypes}"
+                            SelectedValue="{Binding SelectedArchetype, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock
@@ -242,36 +273,80 @@
                             </ListView.ItemTemplate>
                         </ListView>
 
-                        <Grid Margin="0,15,0,0">
+                        <Grid>
                             <TextBlock
-                                VerticalAlignment="Center"
-                                Style="{StaticResource section}"
-                                Text="Attachments" />
-                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                d:Text="Purchases [0]"
+                                Style="{StaticResource SectionLabel}"
+                                Text="{Binding SelectedProject.Purchases.Count, StringFormat='{}Purchases [{0}]'}" />
+                            <StackPanel
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Orientation="Horizontal">
                                 <Button
                                     Margin="5,0"
-                                    IsEnabled="False"
+                                    IsEnabled="{Binding SelectedPurchase, Converter={StaticResource NotNull}}"
+                                    Command="{Binding RemovePurchaseCmd}"
                                     Style="{StaticResource Action_Remove_Button}"
                                     Tag="Remove" />
                                 <Button
                                     Margin="5,0"
-                                    IsEnabled="False"
+                                    Command="{Binding NewPurchaseCmd}"
+                                    Style="{StaticResource Action_New_Button}"
+                                    Tag="Add" />
+                            </StackPanel>
+                        </Grid>
+                        <ListView
+                            MinHeight="40"
+                            ItemsSource="{Binding SelectedProject.Purchases}"
+                            SelectedValue="{Binding SelectedPurchase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Margin="13,7"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Grid>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                d:Text="Attachments [0]"
+                                Style="{StaticResource SectionLabel}"
+                                Text="{Binding SelectedProject.Attachments.Count, StringFormat='{}Attachments [{0}]'}" />
+                            <StackPanel
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Orientation="Horizontal">
+                                <Button
+                                    Margin="5,0"
+                                    IsEnabled="{Binding SelectedAttachment, Converter={StaticResource NotNull}}"
+                                    Command="{Binding RemoveAttachmentCmd}"
+                                    Style="{StaticResource Action_Remove_Button}"
+                                    Tag="Remove" />
+                                <Button
+                                    Margin="5,0"
+                                    Command="{Binding AddAttachmentCmd}"
                                     Style="{StaticResource Action_New_Button}"
                                     Tag="Add" />
                             </StackPanel>
                         </Grid>
 
-                        <ListView ItemsSource="{Binding SelectedProject.Attachments}">
+                        <ListView
+                            MinHeight="40"
+                            ItemsSource="{Binding SelectedProject.Attachments}"
+                            SelectedValue="{Binding SelectedAttachment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <uc:DisplayAttachment Attachment="{Binding}"/>
+                                    <uc:DisplayAttachment Attachment="{Binding}" />
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        
-                        <TextBlock Style="{StaticResource section}" Text="Comments" />
+
+                        <TextBlock Style="{StaticResource SectionLabel}" Text="Comments" />
                         <uc:DisplayListOfNotes
-                            MinHeight="50"
+                            MinHeight="80"
                             Notes="{Binding SelectedProject.Notes}"
                             ShowingEditControls="False" />
                         <Grid
@@ -284,6 +359,7 @@
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <TextBox
+                                Margin="0"
                                 Style="{StaticResource MessageComposer}"
                                 Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextChanged="TextBox_TextChanged"
@@ -303,8 +379,8 @@
                 <StackPanel
                     HorizontalAlignment="Center"
                     Opacity="0.4"
-                    Visibility="{Binding ProjectShowing, Converter={StaticResource boolToVisible}}"
-                    Orientation="Horizontal">
+                    Orientation="Horizontal"
+                    Visibility="{Binding ProjectShowing, Converter={StaticResource boolToVisible}}">
                     <Path
                         Height="12"
                         Margin="0,2,0,0"
@@ -327,6 +403,7 @@
                         Foreground="{StaticResource OnBackground}"
                         Text="{Binding SelectedProject.CreatedBy, StringFormat='{} by {0}'}" />
                 </StackPanel>
+                <Grid Height="100"/>
             </StackPanel>
         </ScrollViewer>
         <Border

@@ -1,14 +1,14 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Input;
-using ProjectLighthouse.ViewModel.Administration;
+﻿using ProjectLighthouse.ViewModel.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Orders;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
+using ProjectLighthouse.ViewModel.Research;
+using System;
+using System.Windows;
+using System.Windows.Input;
 using ViewModel.Programs;
-using ViewModel.Research;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {

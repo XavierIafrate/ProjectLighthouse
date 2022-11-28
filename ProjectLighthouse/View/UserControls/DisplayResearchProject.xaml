@@ -1,0 +1,40 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.DisplayResearchProject"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="White"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <Grid Margin="10,5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock
+            d:Text="CODE"
+            FontFamily="Consolas"
+            FontSize="18"
+            FontWeight="SemiBold"
+            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=Project.ProjectCode}" />
+        <TextBlock
+            Grid.Column="1"
+            Margin="5,0"
+            VerticalAlignment="Center"
+            d:Text="CODE"
+            FontSize="14"
+            FontWeight="SemiBold"
+            Foreground="{StaticResource Teal}"
+            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=Project.ProjectName}" />
+        <TextBlock
+            Grid.Column="2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            d:Text="CODE"
+            FontSize="13"
+            FontWeight="SemiBold"
+            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=Project.Stage}" />
+    </Grid>
+</UserControl>

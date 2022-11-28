@@ -73,10 +73,22 @@
         <Setter Property="Foreground" Value="#aaa" />
     </Style>
 
-    <Style x:Key="InputLabel"
-           BasedOn="{StaticResource Default}"
-           TargetType="TextBlock">
-        <Setter Property="Margin" Value="0,8,0,5"/>
+    <Style
+        x:Key="InputLabel"
+        BasedOn="{StaticResource Default}"
+        TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,8,0,5" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="15" />
+    </Style>
+
+    <Style
+        x:Key="SectionLabel"
+        BasedOn="{StaticResource Default}"
+        TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,25,0,5" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="20" />
     </Style>
 
 </ResourceDictionary>

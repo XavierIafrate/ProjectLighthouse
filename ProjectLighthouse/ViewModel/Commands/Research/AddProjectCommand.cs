@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ProjectLighthouse.ViewModel.Research;
+using System;
 using System.Windows.Input;
-using ViewModel.Research;
 
 namespace ProjectLighthouse.ViewModel.Commands.Research
 {
@@ -19,7 +17,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Research
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.HasPermission(Model.Core.PermissionType.CreateProject);
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.ManageProjects);
         }
 
         public void Execute(object parameter)

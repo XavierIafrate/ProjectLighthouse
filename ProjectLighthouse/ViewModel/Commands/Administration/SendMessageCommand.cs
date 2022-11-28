@@ -1,9 +1,9 @@
-﻿using System;
-using System.Windows.Input;
-using ProjectLighthouse.ViewModel.Core;
+﻿using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
-using ViewModel.Research;
+using ProjectLighthouse.ViewModel.Research;
+using System;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.Administration
 {

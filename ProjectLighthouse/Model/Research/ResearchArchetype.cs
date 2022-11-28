@@ -1,13 +1,50 @@
 ﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
+using System.Runtime.CompilerServices;
 
-namespace Model.Research
+namespace ProjectLighthouse.Model.Research
 {
-    public class ResearchArchetype : IAutoIncrementPrimaryKey
+    public class ResearchArchetype : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string Name { get; set; }    
+        private string name;
+
+        public string Name
+        {
+            get { return name; }
+            set { name = value; ValidateProperty(); OnPropertyChanged(); }
+        }
+
         public int ProjectId { get; set; }
+
+        public void ValidateAll()
+        {
+            ValidateProperty(nameof(Name));
+        }
+
+        public void ValidateProperty([CallerMemberName] string propertyName = "")
+        {
+            if (propertyName == nameof(Name))
+            {
+                ClearErrors(nameof(Name));
+                if (string.IsNullOrWhiteSpace(Name))
+                {
+                    AddError(nameof(Name), "Name cannot be empty");
+                    return;
+                }
+
+                if (!ValidationHelper.StringIsAlphanumeric(Name, allowSpace: true))
+                {
+                    AddError(nameof(Name), "Name must consist of alphanumeric characters or space");
+                }
+
+                if (Name.Length > 25)
+                {
+                    AddError(nameof(Name), "Name must be less than or equal to 25 charaters long");
+                }
+            }
+        }
     }
 }

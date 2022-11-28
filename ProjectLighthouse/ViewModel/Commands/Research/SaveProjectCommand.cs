@@ -1,29 +1,28 @@
-﻿using ProjectLighthouse.Model.Core;
+﻿using ProjectLighthouse;
 using ProjectLighthouse.ViewModel.Research;
 using System;
 using System.Windows.Input;
 
-namespace ProjectLighthouse.ViewModel.Commands.Research
+namespace ViewModel.Commands.Research
 {
-    public class OpenRootDirectoryCommand : ICommand
+    public class SaveProjectCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-
         private ResearchViewModel viewModel;
 
-        public OpenRootDirectoryCommand(ResearchViewModel viewModel)
+        public SaveProjectCommand(ResearchViewModel viewModel)
         {
             this.viewModel = viewModel;
         }
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.HasPermission(PermissionType.ModifyProjects);
+            return App.CurrentUser.HasPermission(ProjectLighthouse.Model.Core.PermissionType.ModifyProjects);
         }
 
         public void Execute(object parameter)
         {
-            viewModel.OpenRoot();
+            viewModel.SaveProject();
         }
     }
 }

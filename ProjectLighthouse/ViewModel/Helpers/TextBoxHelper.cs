@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -96,7 +97,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return true;
         }
 
-        public static bool ValidateAlphanumeric(KeyEventArgs e)
+        public static bool ValidateAlphanumeric(KeyEventArgs e, bool allowSpace=false)
         {
             string strKey = e.Key.ToString();
 
@@ -107,6 +108,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             if (strKey.Length == 1)
                 if ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".Contains(strKey))
                     return false;
+
+            if (strKey == "Space" && allowSpace)
+            {
+                return false;
+            }
 
             List<string> nonNumericAllowedKeys = new()
             {

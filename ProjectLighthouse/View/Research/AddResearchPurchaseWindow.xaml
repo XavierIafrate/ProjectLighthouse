@@ -1,0 +1,72 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Research.AddResearchPurchaseWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Research"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="New Project Purchase"
+    Width="550"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <StackPanel Margin="20">
+        <TextBlock Style="{StaticResource title}" Text="Add Purchase Record" />
+        <StackPanel Margin="30,20,20,20">
+            <TextBlock Style="{StaticResource InputLabel}" Text="Item Name" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Name"
+                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.Name, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Vendor Name" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Vendor"
+                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.Vendor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Vendor Item Name" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Vendor Code"
+                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.VendorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Item Value" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Value"
+                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.Value, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Pack Size" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Pack Size"
+                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.PackSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Hyperlink" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Url"
+                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="For Archetype" />
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+            <ComboBox
+                x:Name="ArchetypeComboBox"
+                Margin="5"
+                DisplayMemberPath="Name"
+                SelectedValuePath="Id"
+                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Project.Archetypes, Mode=OneWay}"
+                SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.ArchetypeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button x:Name="ClearButton" Click="ClearButton_Click" Style="{StaticResource ClearButton}" Grid.Column="1" VerticalAlignment="Center" Margin="0,5,5,5"/>
+            </Grid>
+
+            <Button
+                x:Name="SubmitButton"
+                HorizontalAlignment="Right"
+                Click="SubmitButton_Click"
+                IsEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.NoErrors, Mode=OneWay}"
+                Style="{StaticResource Action_Button}"
+                Tag="Submit" />
+        </StackPanel>
+    </StackPanel>
+</Window>

@@ -1,7 +1,6 @@
-﻿using DocumentFormat.OpenXml.InkML;
-using Model.Research;
-using ProjectLighthouse;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Research;
 using ProjectLighthouse.View.Research;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Research;
@@ -13,8 +12,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using ViewModel.Commands.Research;
 
-namespace ViewModel.Research
+namespace ProjectLighthouse.ViewModel.Research
 {
     public class ResearchViewModel : BaseViewModel
     {
@@ -22,7 +22,10 @@ namespace ViewModel.Research
         public List<ResearchProject> Projects { get; set; }
         public List<ResearchArchetype> Archetypes { get; set; }
         public List<Note> Notes { get; set; }
+        public List<ResearchPurchase> Purchases { get; set; }
         public Array Stages { get; set; }
+        public List<User> Designers { get; set; }
+        public List<Attachment> Attachments { get; set; }
 
         #endregion
 
@@ -78,13 +81,55 @@ namespace ViewModel.Research
             set { projectShowing = value; OnPropertyChanged(); }
         }
 
+        private ResearchArchetype? selectedArchetype;
+
+        public ResearchArchetype? SelectedArchetype
+        {
+            get { return selectedArchetype; }
+            set { selectedArchetype = value; OnPropertyChanged(); }
+        }
+
+        private ResearchPurchase? selectedPurchase;
+
+        public ResearchPurchase? SelectedPurchase
+        {
+            get { return selectedPurchase; }
+            set { selectedPurchase = value; OnPropertyChanged(); }
+        }
+
+        private Attachment? selectedAttachment;
+
+        public Attachment? SelectedAttachment
+        {
+            get { return selectedAttachment; }
+            set { selectedAttachment = value; OnPropertyChanged(); }
+        }
+
+        private bool canManage;
+
+        public bool CanManage
+        {
+            get { return canManage; }
+            set { canManage = value; OnPropertyChanged(); }
+        }
+
+
+
         #endregion
 
+        #region Commands
         public SendMessageCommand SendMessageCmd { get; set; }
         public AddProjectCommand AddProjectCmd { get; set; }
         public OpenRootDirectoryCommand OpenRootDirectoryCmd { get; set; }
-
         public NewProjectArchetypeCommand NewProjectArchetypeCmd { get; set; }
+        public NewPurchaseCommand NewPurchaseCmd { get; set; }
+        public AddAttachmentCommand AddAttachmentCmd { get; set; }
+        public RemoveAttachmentCommand RemoveAttachmentCmd { get; set; }
+        public RemoveArchetypeCommand RemoveArchetypeCmd { get; set; }
+        public RemovePurchaseCommand RemovePurchaseCmd { get; set; }
+        public SaveProjectCommand SaveProjectCmd { get; set; }
+
+        #endregion
 
         // TODO network config
         public const string projectRoot = @"\\groupfile01\Marketing\Product Development";
@@ -102,13 +147,27 @@ namespace ViewModel.Research
             SendMessageCmd = new(this);
             OpenRootDirectoryCmd = new(this);
             NewProjectArchetypeCmd = new(this);
+            NewPurchaseCmd = new(this);
+            AddAttachmentCmd = new(this);
+            RemoveAttachmentCmd = new(this);
+            RemoveArchetypeCmd = new(this);
+            RemovePurchaseCmd = new(this);
+            SaveProjectCmd = new(this);
         }
 
         private void LoadData()
         {
+            CanManage = App.CurrentUser.HasPermission(PermissionType.ManageProjects);
+
+            Designers = App.NotificationsManager.users
+                .Where(x => x.HasPermission(PermissionType.ManageProjects) || x.HasPermission(PermissionType.ModifyProjects))
+                .ToList();
+
             Projects = DatabaseHelper.Read<ResearchProject>().ToList();
             Archetypes = DatabaseHelper.Read<ResearchArchetype>().ToList();
             Notes = DatabaseHelper.Read<Note>().ToList();
+            Purchases = DatabaseHelper.Read<ResearchPurchase>().ToList();
+            Attachments = DatabaseHelper.Read<Attachment>().ToList();
 
             for (int i = 0; i < Projects.Count; i++)
             {
@@ -118,6 +177,14 @@ namespace ViewModel.Research
 
                 Projects[i].Archetypes = Archetypes
                     .Where(x => x.ProjectId == Projects[i].Id)
+                    .ToList();
+
+                Projects[i].Purchases = Purchases
+                    .Where(x => x.ProjectId == Projects[i].Id)
+                    .ToList();
+
+                Projects[i].Attachments = Attachments
+                    .Where(x => x.DocumentReference == $"dev{Projects[i].Id}")
                     .ToList();
             }
 
@@ -132,7 +199,7 @@ namespace ViewModel.Research
             {
                 string userRequest = searchString.Replace(" ", "").ToLowerInvariant();
                 projects = Projects
-                    .Where(x => x.ProjectName.Contains(userRequest) || x.ProjectCode.Contains(userRequest))
+                    .Where(x => x.ProjectName.ToLowerInvariant().Replace(" ", "").Contains(userRequest) || x.ProjectCode.Contains(userRequest))
                     .ToList();
             }
             else
@@ -164,17 +231,7 @@ namespace ViewModel.Research
 
             _ = DatabaseHelper.Insert(newNote);
 
-            //List<string> otherUsers = FilteredNotes.Select(x => x.SentBy).ToList();
-            //otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveRequest)).Select(x => x.UserName));
-            //otherUsers.Add(App.NotificationsManager.users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy).UserName);
-
-            //otherUsers = otherUsers.Where(x => x != App.CurrentUser.UserName).Distinct().ToList();
-
-            //for (int i = 0; i < otherUsers.Count; i++)
-            //{
-            //    Notification newNotification = new(otherUsers[i], App.CurrentUser.UserName, $"Comment: Request #{SelectedRequest.Id:0}", $"{App.CurrentUser.FirstName} left a comment: {NewMessage}");
-            //    _ = DatabaseHelper.Insert(newNotification);
-            //}
+            // TODO notifications
 
             Notes.Add(newNote);
             Projects.Find(x => x.Id == SelectedProject.Id)!.Notes.Add(newNote);
@@ -184,7 +241,6 @@ namespace ViewModel.Research
 
             SelectedProject = null;
             SelectedProject = FilteredProjects.Find(x => x.Id == id);
-            //LoadRequestCard(SelectedRequest);
 
             NewMessage = "";
         }
@@ -226,6 +282,7 @@ namespace ViewModel.Research
             if (FilteredProjects.Any(x => x.Id == id))
             {
                 SelectedProject = FilteredProjects.Find(x => x.Id == id);
+                OnPropertyChanged(nameof(SelectedProject));
             }
         }
 
@@ -248,26 +305,75 @@ namespace ViewModel.Research
 
         public void AddArchetype()
         {
-            ResearchArchetype newArchetype = new()
+            AddNewArchetypeWindow window = new(SelectedProject) { Owner = App.MainViewModel.MainWindow };
+            window.ShowDialog();
+
+            if (!window.SaveExit) return;
+
+            ResearchArchetype newArchetype = window.NewArchetype;
+
+            if (!DatabaseHelper.Insert(newArchetype))
             {
-                Name = "New_archetype",
-                ProjectId = SelectedProject.Id,
-            };
+                MessageBox.Show("Failed to insert to database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Archetypes.Add(newArchetype);
 
             string[] projectFolders = Directory.GetDirectories($@"{projectRoot}\{SelectedProject.RootDirectory}\", "*", SearchOption.TopDirectoryOnly);
 
-            for(int i = 0; i < projectFolders.Length; i++) 
-            { 
+            for (int i = 0; i < projectFolders.Length; i++)
+            {
                 string folder = projectFolders[i];
 
                 if (Directory.Exists($@"{folder}\@archetype"))
                 {
-                    CopyAndRenameFolder($@"{folder}\@archetype", $@"{folder}\{newArchetype.Name}");
+                    CopyAndRenameFolder($@"{folder}\@archetype", $@"{folder}\{newArchetype.Name}", archetype: newArchetype.Name);
                 }
+            }
+
+            Projects.Find(x => x.Id == newArchetype.ProjectId)!.Archetypes.Add(newArchetype);
+
+            Filter();
+
+            if (FilteredProjects.Any(x => x.Id == newArchetype.ProjectId))
+            {
+                SelectedProject = FilteredProjects.Find(x => x.Id == newArchetype.ProjectId);
+                OnPropertyChanged(nameof(SelectedProject));
             }
         }
 
-        private static void CopyAndRenameFolder(string from, string to)
+        public void AddAttachment()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAttachment()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void RemovePurchase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveArchetype()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveProject()
+        {
+            if (!DatabaseHelper.Update(SelectedProject))
+            {
+                MessageBox.Show("Failed to update the database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+        }
+
+        private static void CopyAndRenameFolder(string from, string to, string? archetype = null)
         {
             string[] allDirectories = Directory.GetDirectories(from, "*", SearchOption.AllDirectories);
 
@@ -280,9 +386,19 @@ namespace ViewModel.Research
             string[] allFiles = Directory.GetFiles(from, "*.*", SearchOption.AllDirectories);
             foreach (string newPath in allFiles)
             {
-                if (!File.Exists(newPath.Replace(from, to)))
+                string fileToWrite = newPath.Replace(from, to);
+
+                if (Path.GetFileNameWithoutExtension(fileToWrite) == "archetype" && archetype is not null)
                 {
-                    File.Copy(newPath, newPath.Replace(from, to));
+                    string path = new FileInfo(fileToWrite).DirectoryName;
+                    string newFileName = Path.GetFileName(fileToWrite).Replace("archetype", archetype);
+
+                    fileToWrite = Path.Join(path, newFileName);
+                }
+
+                if (!File.Exists(fileToWrite))
+                {
+                    File.Copy(newPath, fileToWrite);
                 }
             }
         }
@@ -296,6 +412,8 @@ namespace ViewModel.Research
                     MessageBox.Show($"{SelectedProject.ProjectCode} could not be found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
+
+                OnPropertyChanged(nameof(SelectedProject));
             }
 
 
@@ -324,12 +442,47 @@ namespace ViewModel.Research
 
             if (subdirectories.Count > 0)
             {
-                SelectedProject.RootDirectory = Path.GetFileName(subdirectories.First());
+                string dir = Path.GetFileName(subdirectories.First());
+                SelectedProject.RootDirectory = dir;
+                Projects.Find(x => x.Id == SelectedProject.Id)!.RootDirectory = dir;
                 DatabaseHelper.Update(SelectedProject);
                 return true;
             }
 
             return false;
+        }
+
+        public void AddPurchaseToProject()
+        {
+            AddResearchPurchaseWindow window = new(SelectedProject)
+            {
+                Owner = App.MainViewModel.MainWindow,
+            };
+
+            window.ShowDialog();
+
+            if (!window.SaveExit)
+            {
+                return;
+            }
+
+            ResearchPurchase newPurchase = window.NewPurchase;
+
+            if (!DatabaseHelper.Insert(newPurchase))
+            {
+                MessageBox.Show("Failed to insert to database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Projects.Find(x => x.Id == newPurchase.ProjectId)!.Purchases.Add(newPurchase);
+
+            Filter();
+
+            if (FilteredProjects.Any(x => x.Id == newPurchase.ProjectId))
+            {
+                SelectedProject = FilteredProjects.Find(x => x.Id == newPurchase.ProjectId);
+                OnPropertyChanged(nameof(SelectedProject));
+            }
         }
     }
 }

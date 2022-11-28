@@ -12,8 +12,8 @@
     xmlns:qualityVm="clr-namespace:ProjectLighthouse.ViewModel.Quality"
     xmlns:requestsView="clr-namespace:ProjectLighthouse.View.Requests"
     xmlns:requestsVm="clr-namespace:ProjectLighthouse.ViewModel.Requests"
-    xmlns:researchView="clr-namespace:View.Research"
-    xmlns:researchVm="clr-namespace:ViewModel.Research"
+    xmlns:researchView="clr-namespace:ProjectLighthouse.View.Research"
+    xmlns:researchVm="clr-namespace:ProjectLighthouse.ViewModel.Research"
     xmlns:scheduleView="clr-namespace:ProjectLighthouse.View.Scheduling">
 
     <Application.Resources>

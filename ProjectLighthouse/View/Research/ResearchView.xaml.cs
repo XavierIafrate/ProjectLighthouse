@@ -1,21 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace View.Research
+namespace ProjectLighthouse.View.Research
 {
-    /// <summary>
-    /// Interaction logic for ResearchView.xaml
-    /// </summary>
     public partial class ResearchView : UserControl
     {
         public ResearchView()
@@ -41,6 +28,5 @@ namespace View.Research
         {
             searchBox.Text = "";
         }
-
     }
 }

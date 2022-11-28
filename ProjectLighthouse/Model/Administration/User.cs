@@ -61,5 +61,7 @@ namespace ProjectLighthouse.Model.Administration
         {
             return !ExplicitGrantsPermission(action) && RoleGrantsPermission(action);
         }
+
+        public override string ToString() => GetFullName();
     }
 }

@@ -27,7 +27,7 @@
         ModifyCalibration = 401,
         UpdateCalibration = 402,
         ConfigureMaintenance = 501,
-        CreateProject = 601,
-        ModifyProject = 602,
+        ManageProjects = 601,
+        ModifyProjects = 602,
     }
 }

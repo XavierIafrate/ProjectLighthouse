@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using Model.Research;
+﻿using ProjectLighthouse.Model.Research;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;
@@ -25,7 +24,7 @@ namespace ProjectLighthouse.View.Research
             Brush transparent = Brushes.Transparent;
             Brush error = (Brush)Application.Current.Resources["Red"];
 
-            if(string.IsNullOrWhiteSpace(NewProject.ProjectName))
+            if (string.IsNullOrWhiteSpace(NewProject.ProjectName))
             {
                 result = false;
                 projectNameTextBox.BorderBrush = error;
@@ -58,7 +57,7 @@ namespace ProjectLighthouse.View.Research
 
         private void projectNameTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            e.Handled = TextBoxHelper.ValidateAlphanumeric(e);
+            e.Handled = TextBoxHelper.ValidateAlphanumeric(e, allowSpace: true); ;
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Research;
 using SQLite;
 using System;
 using System.Collections.Generic;
 
-namespace Model.Research
+namespace ProjectLighthouse.Model.Research
 {
     public class ResearchProject : IAutoIncrementPrimaryKey
     {
@@ -15,7 +16,7 @@ namespace Model.Research
         public string CreatedBy { get; set; }
         public DateTime ModifiedAt { get; set; }
         public string ModifiedBy { get; set; }
-
+        public int? Owner { get; set; }
 
         public string RootDirectory { get; set; }
 
@@ -34,5 +35,7 @@ namespace Model.Research
         public List<ResearchArchetype> Archetypes { get; set; }
         [Ignore]
         public List<Attachment> Attachments { get; set; }
+        [Ignore]
+        public List<ResearchPurchase> Purchases { get; set; }
     }
 }

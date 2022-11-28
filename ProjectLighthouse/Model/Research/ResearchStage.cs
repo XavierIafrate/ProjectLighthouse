@@ -1,4 +1,4 @@
-﻿namespace Model.Research
+﻿namespace ProjectLighthouse.Model.Research
 {
     public enum ResearchStage
     {
