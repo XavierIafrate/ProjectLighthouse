@@ -49,9 +49,9 @@ namespace ProjectLighthouse.Model.Drawings
         public string EngineeringApprovalBy { get; set; }
         public DateTime EngineeringApprovalDate { get; set; }
 
-        public string ProductGroup { get; set; }
-        public string ToolingGroup { get; set; }
-        public string MaterialConstraint { get; set; }
+        public int? ProductId { get; set; }
+        public int? GroupId { get; set; }
+        public int? MaterialId { get; set; }
 
         public Type DrawingType { get; set; }
         public Amendment AmendmentType { get; set; }
@@ -69,12 +69,12 @@ namespace ProjectLighthouse.Model.Drawings
         [Ignore]
         public List<Note> Notes { get; set; }
 
-        public static List<TechnicalDrawing> FindDrawings(List<TechnicalDrawing> drawings, List<LatheManufactureOrderItem> items, string group)
+        public static List<TechnicalDrawing> FindDrawings(List<TechnicalDrawing> drawings, List<LatheManufactureOrderItem> items, int groupId)
         {
             List<TechnicalDrawing> drawingsList = new();
             for (int i = 0; i < items.Count; i++)
             {
-                TechnicalDrawing d = FindDrawing(drawings, items[i], group);
+                TechnicalDrawing d = FindDrawing(drawings, items[i], groupId);
                 if (d != null)
                 {
                     drawingsList.Add(d);
@@ -84,7 +84,7 @@ namespace ProjectLighthouse.Model.Drawings
             return drawingsList.Distinct().ToList();
         }
 
-        public static TechnicalDrawing FindDrawing(List<TechnicalDrawing> drawings, LatheManufactureOrderItem item, string group)
+        public static TechnicalDrawing FindDrawing(List<TechnicalDrawing> drawings, LatheManufactureOrderItem item, int groupId)
         {
             drawings = drawings.Where(x => x.IsApproved && !x.IsWithdrawn).ToList();
             if (item.IsSpecialPart)
@@ -102,9 +102,10 @@ namespace ProjectLighthouse.Model.Drawings
                 List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
                 if (matches.Count == 0)
                 {
+                    // TODO
                     return GetBestDrawingForProduct(
-                        family: item.ProductName[..5],
-                        group: group,
+                        productId: 0,
+                        groupId: groupId,
                         //material: RequiredProduct.Material,
                         drawings: drawings);
                 }
@@ -115,23 +116,24 @@ namespace ProjectLighthouse.Model.Drawings
             }
         }
 
-        private static TechnicalDrawing GetBestDrawingForProduct(string family, string group, List<TechnicalDrawing> drawings)
+        // TODO factor in Material
+        private static TechnicalDrawing GetBestDrawingForProduct(int productId, int groupId, List<TechnicalDrawing> drawings)
         {
-            List<TechnicalDrawing> matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group).ToList(); // && d.MaterialConstraint == material
+            List<TechnicalDrawing> matches = drawings.Where(d => d.IsArchetype && d.ProductId == productId && d.GroupId == groupId).ToList();
             if (matches.Count > 0)
             {
                 matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
                 return matches.First();
             }
 
-            matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && d.ToolingGroup == group).ToList();
+            matches = drawings.Where(d => d.IsArchetype && d.ProductId == productId && d.GroupId == groupId).ToList();
             if (matches.Count > 0)
             {
                 matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
                 return matches.First();
             }
 
-            matches = drawings.Where(d => d.IsArchetype && d.ProductGroup == family && string.IsNullOrEmpty(d.ToolingGroup)).ToList();
+            matches = drawings.Where(d => d.IsArchetype && d.ProductId == productId && d.GroupId == null).ToList();
             if (matches.Count > 0)
             {
                 matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
@@ -160,9 +162,9 @@ namespace ProjectLighthouse.Model.Drawings
                 RejectionReason = RejectionReason,
                 ApprovedBy = ApprovedBy,
                 ApprovedDate = ApprovedDate,
-                ProductGroup = ProductGroup,
-                ToolingGroup = ToolingGroup,
-                MaterialConstraint = MaterialConstraint,
+                ProductId = ProductId,
+                GroupId = GroupId,
+                MaterialId = MaterialId,
                 DrawingType = DrawingType,
                 AmendmentType = AmendmentType,
                 IssueDetails = IssueDetails,

@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model.Material;
-using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.View.Orders;

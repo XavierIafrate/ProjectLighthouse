@@ -42,13 +42,27 @@ namespace ProjectLighthouse.View.Orders
         void LoadData(string orderId)
         {
             LatheManufactureOrder order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == orderId);
+            if (order is null)
+            {
+                throw new System.Exception($"Order '{orderId}' not found.");
+            }
+
             List<LatheManufactureOrderItem> currentOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(x => x.AssignedMO == orderId).ToList();
-            PossibleProducts = DatabaseHelper.Read<TurnedProduct>().Where(x => x.BarID == order.BarID && x.ProductGroup == order.ToolingGroup && !currentOrderItems.Any(y => y.ProductName == x.ProductName)).ToList();
+            PossibleProducts = DatabaseHelper.Read<TurnedProduct>()
+                .Where(x => 
+                    x.MaterialId == order.MaterialId && 
+                    x.GroupId == order.GroupId && 
+                    !currentOrderItems.Any(y => y.ProductName == x.ProductName)
+                ).ToList();
+
             List<LatheManufactureOrderItem> items = new();
+            
+            
             for (int i = 0; i < PossibleProducts.Count; i++)
             {
                 items.Add(new(PossibleProducts[i]));
             }
+
             PossibleItems = new(items);
         }
 

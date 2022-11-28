@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Media.Media3D;
 
 namespace ProjectLighthouse.Model.Orders
 {
@@ -143,7 +144,8 @@ namespace ProjectLighthouse.Model.Orders
         #endregion
 
         public double MajorDiameter { get; set; }
-        public string ToolingGroup { get; set; }
+        public int GroupId { get; set; }
+        public int MaterialId { get; set; }
         [UpdateWatch]
         public bool IsResearch { get; set; }
 
@@ -208,7 +210,8 @@ namespace ProjectLighthouse.Model.Orders
                 OrderItems = new(OrderItems ?? new()),
                 TargetCycleTime = TargetCycleTime,
                 TargetCycleTimeEstimated = TargetCycleTimeEstimated,
-                ToolingGroup = ToolingGroup,
+                GroupId = GroupId,
+                MaterialId = MaterialId,
             };
         }
 

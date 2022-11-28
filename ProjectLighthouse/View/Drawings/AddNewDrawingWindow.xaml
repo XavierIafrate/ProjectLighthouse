@@ -18,9 +18,7 @@
             <CheckBox
                 x:Name="ArchetypeCheckbox"
                 Margin="0,0,0,15"
-                Checked="ArchetypeCheckbox_Checked"
-                Content="Archetype Drawing"
-                Unchecked="ArchetypeCheckbox_Unchecked" />
+                Content="Archetype Drawing" />
             <StackPanel x:Name="ChooseArchetypeControls" Margin="0,0,0,20">
                 <TextBlock Style="{StaticResource section}" Text="Constrain Archetype" />
                 <Grid Margin="30,3">
@@ -33,8 +31,7 @@
                         x:Name="ProductGroupComboBox"
                         Grid.Column="1"
                         Width="250"
-                        HorizontalAlignment="Right"
-                        SelectionChanged="ProductGroupComboBox_SelectionChanged" />
+                        HorizontalAlignment="Right"/>
                 </Grid>
 
 
@@ -58,8 +55,7 @@
                         x:Name="ToolingGroupConstraintComboBox"
                         Grid.Column="2"
                         Width="250"
-                        HorizontalAlignment="Right"
-                        SelectionChanged="ToolingGroupConstraintComboBox_SelectionChanged" />
+                        HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="90,3,30,3">
                     <Grid.ColumnDefinitions>
@@ -82,8 +78,7 @@
                         x:Name="MaterialConstraintComboBox"
                         Grid.Column="2"
                         Width="250"
-                        HorizontalAlignment="Right"
-                        SelectionChanged="MaterialConstraintComboBox_SelectionChanged" />
+                        HorizontalAlignment="Right"/>
                 </Grid>
 
                 <TextBlock Style="{StaticResource section}" Text="Preview" />
@@ -117,12 +112,6 @@
                     Margin="0"
                     Style="{StaticResource SearchBox}"
                     Tag="search products" />
-                <Button
-                    x:Name="SearchButton"
-                    Grid.Column="1"
-                    Margin="20,0,0,0"
-                    Click="SearchButton_Click"
-                    Content="Search" />
                 <TextBlock
                     Grid.Row="1"
                     Grid.ColumnSpan="2"
@@ -135,8 +124,7 @@
                     Grid.ColumnSpan="2"
                     MinHeight="100"
                     MaxHeight="300"
-                    HorizontalContentAlignment="Stretch"
-                    SelectionChanged="SearchResults_SelectionChanged">
+                    HorizontalContentAlignment="Stretch">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <userControls:DisplayTurnedProduct Product="{Binding}" />

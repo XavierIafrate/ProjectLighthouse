@@ -9,30 +9,53 @@
     Width="420"
     SizeToContent="Height"
     mc:Ignorable="d">
-    <StackPanel Margin="10">
-        <TextBlock Text="{Binding Product.ProductName, StringFormat='{}Editing: {0}'}" d:Text="Editing: P0123.456-789-A2" Margin="0,0,0,10" Style="{StaticResource subtitle}" />
-        
-        <TextBlock Text="Major Diameter"/>
-        <TextBox x:Name="MajorDiameterTextBox" TextChanged="TextBox_TextChanged" />
+    <StackPanel Margin="20">
+        <TextBlock Style="{StaticResource title}" Text="Edit Product" />
+        <TextBlock
+            d:Text="PRODUCT_NAME"
+            Style="{StaticResource subtitle}"
+            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Product.ProductName, Mode=OneWay}" />
 
-        <TextBlock Text="Major Length"/>
-        <TextBox x:Name="MajorLengthTextBox" TextChanged="TextBox_TextChanged" />
-        
-        <TextBlock Text="Tooling Group"/>
-        <TextBox Text="{Binding Product.ProductGroup}" />
-        <TextBlock Text="Material"/>
-        <TextBox Text="{Binding Product.Material}" />
-        <TextBlock Text="Bar ID"/> 
-        <ComboBox ItemsSource="{Binding BarStock}" Text="{Binding Product.BarID}" Margin="5" />
-        <TextBlock Text="Thread Size"/>
-        <TextBox Text="{Binding Product.ThreadSize}" />
-        <TextBlock Text="Drive Type"/>
-        <TextBox Text="{Binding Product.DriveType}" />
-        <TextBlock Text="Drive Size"/>
-        <TextBox Text="{Binding Product.DriveSize}"/>
-        <TextBlock Text="Customer Reference"/>
-        <TextBox Text="{Binding Product.CustomerRef}" />
-        <CheckBox Content="Product is a bespoke item" IsChecked="{Binding Product.isSpecialPart}" Margin="10,5" />
-        <Button Content="Save" Name="SaveButton" Click="SaveButton_Click" Style="{StaticResource GreenButton}" HorizontalAlignment="Right"/>
+        <TextBlock Style="{StaticResource InputLabel}" Text="Major Diameter" />
+        <TextBox
+            x:Name="MajorDiameterTextBox"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="major diameter"
+            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Product.MajorDiameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Major Length" />
+        <TextBox
+            x:Name="MajorLengthTextBox"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="major length"
+            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Product.MajorLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Group" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="product group"
+            Text="{Binding Product.ProductGroup}" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Material" />
+        <ComboBox
+            Margin="5"
+            ItemsSource="{Binding Materials}"
+            Text="{Binding Product.BarID}" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Bar ID" />
+        <ComboBox
+            Margin="5"
+            ItemsSource="{Binding BarStock}"
+            Text="{Binding Product.BarID}" />
+        <CheckBox
+            Margin="5"
+            Content="Bespoke Item"
+            IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Product.IsSpecialPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+        <Button
+            Name="SaveButton"
+            HorizontalAlignment="Right"
+            Click="SaveButton_Click"
+            Style="{StaticResource Action_Update_Button}"
+            Tag="Update" />
     </StackPanel>
 </Window>

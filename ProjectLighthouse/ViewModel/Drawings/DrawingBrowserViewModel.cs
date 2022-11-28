@@ -34,8 +34,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
         }
 
-        private TechnicalDrawingGroup selectedGroup;
-        public TechnicalDrawingGroup SelectedGroup
+        private TechnicalDrawingGroup? selectedGroup;
+        public TechnicalDrawingGroup? SelectedGroup
         {
             get { return selectedGroup; }
             set
@@ -62,8 +62,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
         }
 
-        private TechnicalDrawing selectedDrawing;
-        public TechnicalDrawing SelectedDrawing
+        private TechnicalDrawing? selectedDrawing;
+        public TechnicalDrawing? SelectedDrawing
         {
             get { return selectedDrawing; }
             set
@@ -294,21 +294,22 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void AddNewDrawing()
         {
-            AddNewDrawingWindow window = new(Drawings)
-            {
-                Owner = Application.Current.MainWindow
-            };
+            // TODO
+            //AddNewDrawingWindow window = new(Drawings)
+            //{
+            //    Owner = Application.Current.MainWindow
+            //};
 
-            window.ShowDialog();
-            if (window.SaveExit)
-            {
-                int newId = window.NewDrawing.Id;
-                LoadData();
-                FilterDrawings();
-                Debug.WriteLine($"{FilteredDrawingGroups.Count}");
+            //window.ShowDialog();
+            //if (window.SaveExit)
+            //{
+            //    int newId = window.NewDrawing.Id;
+            //    LoadData();
+            //    FilterDrawings();
+            //    Debug.WriteLine($"{FilteredDrawingGroups.Count}");
 
-                SelectedGroup = FilteredDrawingGroups.Find(x => x.Drawings.Any(d => d.Id == newId));
-            }
+            //    SelectedGroup = FilteredDrawingGroups.Find(x => x.Drawings.Any(d => d.Id == newId));
+            //}
         }
 
         private void SetDrawingUi()

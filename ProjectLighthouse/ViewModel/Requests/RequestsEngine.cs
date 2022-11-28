@@ -25,7 +25,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             compatibleProducts.AddRange(turnedProducts
                 .Where(p => p.IsScheduleCompatible(requiredProduct)
-                    && !p.isSpecialPart
+                    && !p.IsSpecialPart
                     && Math.Abs(p.MajorLength - requiredProduct.MajorLength) <= 40
                     && p.ProductName != requiredProduct.ProductName)
                 .OrderByDescending(p => p.GetRecommendedQuantity())
@@ -176,7 +176,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                         products[i].AppendableOrder = activeOrders[j];
                         products[i].LighthouseGuaranteedQuantity = activeOrders[j].OrderItems.Find(x => x.ProductName == products[i].ProductName).RequiredQuantity;
                     }
-                    else if (activeOrders[j].ToolingGroup == products[i].ProductGroup)
+                    else if (activeOrders[j].GroupId == products[i].GroupId)
                     {
                         products[i].ZeroSetOrder = activeOrders[j];
                     }

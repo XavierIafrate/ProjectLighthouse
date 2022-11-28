@@ -116,10 +116,13 @@ namespace ProjectLighthouse.View.Orders
             product.CycleTime = cycleTime;
             if (LotAdded)
             {
-                product.lastManufactured = DateTime.Now;
+                product.LastManufactured = DateTime.Now;
             }
 
-            DatabaseHelper.Update(product);
+            if (!DatabaseHelper.Update(product))
+            {
+                MessageBox.Show("An error occurred while updating the product record", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             SaveExit = true;
             Close();
         }

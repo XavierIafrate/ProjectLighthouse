@@ -57,24 +57,26 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public List<DeliveryItem> FilteredDeliveryItems { get; set; }
 
-        private DeliveryNote selectedDeliveryNote;
-        public DeliveryNote SelectedDeliveryNote
+        private DeliveryNote? selectedDeliveryNote;
+        public DeliveryNote? SelectedDeliveryNote
         {
             get { return selectedDeliveryNote; }
             set
             {
                 selectedDeliveryNote = value;
-
+                OnPropertyChanged();
                 ShowingDelivery = value != null;
 
-                if (value == null)
+
+                if (selectedDeliveryNote == null)
+                {
                     return;
+                }
 
                 NoteIsNotVerified = !selectedDeliveryNote.Verified;
                 PdfEnabled = selectedDeliveryNote.Verified || App.CurrentUser.Role == UserRole.Administrator;
-                FilteredDeliveryItems = new List<DeliveryItem>(DeliveryItems.Where(n => n.AllocatedDeliveryNote == value.Name));
+                FilteredDeliveryItems = new List<DeliveryItem>(DeliveryItems.Where(n => n.AllocatedDeliveryNote == selectedDeliveryNote.Name));
                 OnPropertyChanged(nameof(FilteredDeliveryItems));
-                OnPropertyChanged();
             }
         }
 
@@ -82,7 +84,11 @@ namespace ProjectLighthouse.ViewModel.Orders
         public bool ShowingDelivery
         {
             get { return showingDelivery; }
-            set { showingDelivery = value; OnPropertyChanged(); }
+            set 
+            { 
+                showingDelivery = value; 
+                OnPropertyChanged(); 
+            }
         }
 
 
@@ -191,6 +197,10 @@ namespace ProjectLighthouse.ViewModel.Orders
             if (FilteredDeliveryNotes.Count > 0)
             {
                 SelectedDeliveryNote = FilteredDeliveryNotes.First(); 
+            }
+            else
+            {
+                SelectedDeliveryNote = null;
             }
         }
 

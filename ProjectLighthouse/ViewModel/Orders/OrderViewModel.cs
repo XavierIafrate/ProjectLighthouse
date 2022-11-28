@@ -665,21 +665,19 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void CreateNewOrder()
         {
-            LMOContructorWindow window = new(null, null)
+            OrderConstructorWindow window = new()
             {
                 Owner = Application.Current.MainWindow
             };
 
             window.ShowDialog();
 
-            if (window.Cancelled)
+            if (!window.SaveExit)
             {
                 return;
-            }
-            else
-            {
-                Refresh();
-            }
+            }    
+
+            Refresh();
         }
 
         private static string GetDaySuffix(int day)

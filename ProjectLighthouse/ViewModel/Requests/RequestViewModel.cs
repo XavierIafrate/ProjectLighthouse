@@ -111,7 +111,8 @@ namespace ProjectLighthouse.ViewModel.Requests
                 selectedRequestProduct = value;
                 if (value != null)
                 {
-                    selectedRequestProduct.Group = ProductGroups.Find(x => selectedRequestProduct.ProductName.StartsWith(x.Name));
+                    // TODO check
+                    //selectedRequestProduct.Group = ProductGroups.Find(x => selectedRequestProduct.ProductName.StartsWith(x.Name));
                 }
                 OnPropertyChanged();
             }
@@ -379,6 +380,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
 
             SelectedRequestProduct = Products.Find(x => x.ProductName == SelectedRequest.Product);
+            SelectedRequestProduct.ValidateAll();
 
             // TODO throw 
             if (SelectedRequestProduct == null)
@@ -399,12 +401,16 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            ApprovalControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) && request.Status == "Pending approval" && SelectedRequestProduct.DataIsComplete() ? Visibility.Visible : Visibility.Collapsed;
+            ApprovalControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) && request.Status == "Pending approval" && SelectedRequestProduct.NoErrors 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
+
             EditControlsVis = App.CurrentUser.GetFullName() == request.RaisedBy && !request.IsAccepted && !request.IsDeclined
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            DataRequired = !SelectedRequestProduct.DataIsComplete() && !request.IsDeclined && !request.IsAccepted;
+            SelectedRequestProduct.ValidateAll();
+            DataRequired = SelectedRequestProduct.HasErrors && !request.IsDeclined && !request.IsAccepted;
 
             DecisionVis = request.IsDeclined || request.IsAccepted ? Visibility.Collapsed : Visibility.Visible;
             ApprovedVis = request.IsAccepted ? Visibility.Visible : Visibility.Collapsed;
@@ -513,28 +519,31 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void ShowMakeOrBuy()
         {
-            LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest, withAuthority: false)
-            {
-                Owner = Application.Current.MainWindow
-            };
-            creationWindow.ShowDialog();
+            // TODO this
+            throw new NotImplementedException();
+            //LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest, withAuthority: false)
+            //{
+            //    Owner = Application.Current.MainWindow
+            //};
+            //creationWindow.ShowDialog();
         }
 
         public void ApproveRequest(bool merge = false)
         {
+            // TODO this
             if (!merge)
             {
-                LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest)
-                {
-                    Owner = Application.Current.MainWindow
-                };
-                creationWindow.ShowDialog();
+                //LMOContructorWindow creationWindow = new(request: SelectedRequest, preselectedItems: RecommendedManifest)
+                //{
+                //    Owner = Application.Current.MainWindow
+                //};
+                //creationWindow.ShowDialog();
 
-                if (creationWindow.Cancelled)
-                {
-                    return;
-                }
-                SelectedRequest.ResultingLMO = creationWindow.NewOrder.Name;
+                //if (creationWindow.Cancelled)
+                //{
+                //    return;
+                //}
+                //SelectedRequest.ResultingLMO = creationWindow.NewOrder.Name;
             }
             else
             {
@@ -561,32 +570,28 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             if (DatabaseHelper.Update(SelectedRequest))
             {
-                int id = SelectedRequest.Id;
-                new ToastContentBuilder()
-                   .AddText($"Order {SelectedRequest.ResultingLMO} created.")
-                   .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
-                   .AddText("You have successfully approved this request.")
-                   .Show();
+                MessageBox.Show("An error occurred while updating the request.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-                FilterRequests();
+            int id = SelectedRequest.Id;
+            new ToastContentBuilder()
+                .AddText($"Order {SelectedRequest.ResultingLMO} created.")
+                .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
+                .AddText("You have successfully approved this request.")
+                .Show();
 
-                foreach (Request request in FilteredRequests)
+            FilterRequests();
+
+            foreach (Request request in FilteredRequests)
+            {
+                if (request.Id == id)
                 {
-                    if (request.Id == id)
-                    {
-                        SelectedRequest = request;
-                        OnPropertyChanged(nameof(SelectedRequest));
-                    }
+                    SelectedRequest = request;
+                    OnPropertyChanged(nameof(SelectedRequest));
                 }
             }
-            else
-            {
-                new ToastContentBuilder()
-                   .AddText("An error occurred.")
-                   .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
-                   .AddText("Lighthouse encountered an error while updating request")
-                   .Show();
-            }
+
         }
 
         public void DeclineRequest()

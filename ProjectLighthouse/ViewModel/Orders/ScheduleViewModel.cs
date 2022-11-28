@@ -219,7 +219,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 for (int i = 1; i < orders.Count; i++)
                 {
                     LatheManufactureOrder currentOrder = orders[i] as LatheManufactureOrder;
-                    ordersOnAgenda.Find(x => x.Id == currentOrder.Id).IsZeroSet = currentOrder.ToolingGroup == lastOrder.ToolingGroup;
+                    ordersOnAgenda.Find(x => x.Id == currentOrder.Id).IsZeroSet = currentOrder.GroupId == lastOrder.GroupId;
                     lastOrder = currentOrder;
                 }
             }

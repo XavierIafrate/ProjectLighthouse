@@ -79,10 +79,11 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ProductIsSelected = value != null;
                 if (value != null)
                 {
-                    if (value.ProductName != null)
-                    {
-                        selectedProduct.Group = ProductGroups.Find(x => selectedProduct.ProductName.StartsWith(x.Name));
-                    }
+                    // TODO Check this
+                    //if (value.ProductName != null)
+                    //{
+                    //    selectedProduct.GroupId = ProductGroups.Find(x => selectedProduct.ProductName.StartsWith(x.Name));
+                    //}
                 }
                 OnPropertyChanged(nameof(ProductIsSelected));
                 OnPropertyChanged();
@@ -224,7 +225,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 FilteredList = TurnedProducts
                     .Where(x => x.FreeStock() < 0)
-                    .OrderBy(n => n.Material)
+                    .OrderBy(n => n.MaterialId)
                     .ThenBy(n => n.ProductName)
                     .ToList();
 

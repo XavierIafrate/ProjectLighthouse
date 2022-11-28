@@ -37,7 +37,7 @@
                         <Border Padding="0,4">
                             <Track
                                 x:Name="PART_Track"
-                                Width="8"
+                                MinWidth="8"
                                 HorizontalAlignment="Center"
                                 IsDirectionReversed="true"
                                 IsEnabled="{TemplateBinding IsMouseOver}">

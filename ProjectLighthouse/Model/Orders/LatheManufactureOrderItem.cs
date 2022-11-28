@@ -64,7 +64,7 @@ namespace ProjectLighthouse.Model.Orders
             MajorLength = fromProduct.MajorLength;
             DateAdded = DateTime.Now;
             AddedBy = App.CurrentUser.GetFullName();
-            IsSpecialPart = fromProduct.isSpecialPart;
+            IsSpecialPart = fromProduct.IsSpecialPart;
 
             RequiredQuantity = 0;
             TargetQuantity = fromProduct.GetRecommendedQuantity(forManufacture: true);
@@ -80,7 +80,7 @@ namespace ProjectLighthouse.Model.Orders
             MajorLength = fromProduct.MajorLength;
             DateAdded = DateTime.Now;
             AddedBy = App.CurrentUser.GetFullName();
-            IsSpecialPart = fromProduct.isSpecialPart;
+            IsSpecialPart = fromProduct.IsSpecialPart;
 
             RequiredQuantity = requiredQuantity;
             TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity(forManufacture: true);
@@ -97,7 +97,7 @@ namespace ProjectLighthouse.Model.Orders
             MajorLength = fromProduct.MajorLength;
             DateAdded = DateTime.Now;
             AddedBy = App.CurrentUser.GetFullName();
-            IsSpecialPart = fromProduct.isSpecialPart;
+            IsSpecialPart = fromProduct.IsSpecialPart;
 
             RequiredQuantity = requiredQuantity;
             TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity(forManufacture: true);

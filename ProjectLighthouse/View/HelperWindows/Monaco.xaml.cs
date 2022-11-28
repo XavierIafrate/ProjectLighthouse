@@ -24,7 +24,7 @@ namespace View.HelperWindows
             InitializeComponent();
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.dollarOne.Source =
                     new Uri(System.IO.Path.Combine(
@@ -100,7 +100,7 @@ namespace View.HelperWindows
 
             NcProgram prog = new()
             {
-                header = programData.Substring(0, programData.IndexOf("$1")).Trim(),
+                header = programData[..programData.IndexOf("$1")].Trim(),
                 dollarOneCode = programData.Substring(programData.IndexOf("$1") + 2, programData.IndexOf("$2") - programData.IndexOf("$1") - 2).Trim(),
                 dollarTwoCode = programData.Substring(programData.IndexOf("$2") + 2, programData.IndexOf("$0") - programData.IndexOf("$2") - 2).Trim(),
                 dollarZeroCode = programData.Substring(programData.IndexOf("$0") + 2, programData.Length - programData.IndexOf("$0") - 2).Trim()

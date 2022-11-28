@@ -548,7 +548,7 @@ namespace ProjectLighthouse.View.Orders
         private void GetDrawingUpdatesButton_Click(object sender, RoutedEventArgs e)
         {
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == (Order.IsResearch ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production)).ToList();
-            List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, Items, Order.ToolingGroup);
+            List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, Items, Order.GroupId);
 
             int[] currentDrawingIds = DrawingReferences.Select(x => x.DrawingId).ToArray();
             int[] upToDateDrawingIds = drawings.Select(x => x.Id).ToArray();

@@ -405,6 +405,11 @@ namespace ProjectLighthouse.ViewModel.Research
 
         public void OpenRoot()
         {
+            if (!Directory.Exists(projectRoot))
+            {
+                MessageBox.Show($"'{projectRoot}' not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
             if (string.IsNullOrWhiteSpace(SelectedProject.RootDirectory))
             {
                 if (!DirectoryFound(SelectedProject.ProjectCode))

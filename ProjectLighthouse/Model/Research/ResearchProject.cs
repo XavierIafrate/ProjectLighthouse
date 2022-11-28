@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model.Core;
-using ProjectLighthouse.Model.Research;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -21,7 +20,9 @@ namespace ProjectLighthouse.Model.Research
         public string RootDirectory { get; set; }
 
         [Ignore]
-        public Uri Uri { get
+        public Uri Uri
+        {
+            get
             {
                 return RootDirectory is null ? null : new(RootDirectory);
             }

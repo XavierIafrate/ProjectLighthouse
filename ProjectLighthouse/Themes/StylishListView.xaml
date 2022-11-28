@@ -30,7 +30,44 @@
 
     <!--  Don't touch  -->
     <Style BasedOn="{StaticResource Default}" TargetType="ListView" />
+    
+    <Style x:Key="HorizontalListView" TargetType="ListView">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="SelectionMode" Value="Single" />
+       
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border
+                        HorizontalAlignment="Stretch"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="5">
+                        <ScrollViewer
+                            x:Name="PART_ContentHost"
+                            Margin="10"
+                            HorizontalContentAlignment="Left"
+                            CanContentScroll="True"
+                            Focusable="false"
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Hidden">
+                         
 
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!--<Style x:Key="ListViewWithNone" BasedOn="{StaticResource Default}" TargetType="ListView">
         <Setter Property="MinHeight" Value="50"/>

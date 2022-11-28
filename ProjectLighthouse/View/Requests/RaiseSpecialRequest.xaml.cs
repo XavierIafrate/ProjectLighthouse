@@ -12,7 +12,7 @@ namespace ProjectLighthouse.View.Requests
         public RaiseSpecialRequest()
         {
             InitializeComponent();
-            NewProduct = new() { isSpecialPart = true };
+            NewProduct = new() { IsSpecialPart = true };
         }
 
 

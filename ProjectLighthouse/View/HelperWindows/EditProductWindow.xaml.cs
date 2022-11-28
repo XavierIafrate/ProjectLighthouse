@@ -10,37 +10,27 @@ namespace ProjectLighthouse.View.HelperWindows
     {
         public TurnedProduct Product { get; set; }
         public List<BarStock> BarStock { get; set; }
+        public bool SaveExit = false;
+
         public EditProductWindow(TurnedProduct product)
         {
             InitializeComponent();
 
             Product = product;
             BarStock = DatabaseHelper.Read<BarStock>();
-            DataContext = this;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!Product.DataIsComplete())
+            Product.ValidateAll();
+
+            if (Product.HasErrors)
             {
-                MessageBox.Show("Please fill out all of the fields before saving.", "More data required", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            DatabaseHelper.Update(Product);
-        }
-
-        private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            if (double.TryParse(MajorDiameterTextBox.Text, out double diameter))
-            {
-                Product.MajorDiameter = diameter;
-            }
-
-            if (double.TryParse(MajorLengthTextBox.Text, out double length))
-            {
-                Product.MajorLength = length;
-            }
+            SaveExit = true;
+            Close();
         }
     }
 }

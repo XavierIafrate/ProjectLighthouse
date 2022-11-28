@@ -10,8 +10,17 @@ namespace Model.Products
     {
         [PrimaryKey, AutoIncrement] 
         public int Id { get; set; }
-        public int ProductId { get; set; }
+        [NotNull]
         public string Name { get; set; }
+
+
+        public int ProductId { get; set; }
         public string BarId { get; set; }
+        public int MaterialId { get; set;}
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

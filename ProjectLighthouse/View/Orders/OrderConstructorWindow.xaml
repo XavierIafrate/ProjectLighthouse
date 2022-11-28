@@ -1,5 +1,5 @@
 ﻿<Window
-    x:Class="ProjectLighthouse.View.Orders.LMOContructorWindow"
+    x:Class="ProjectLighthouse.View.Orders.OrderConstructorWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
@@ -18,12 +18,16 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <!--#region Header-->
         <Grid>
-            <TextBlock Style="{StaticResource title}" Text="New Manufacture Order" x:Name="TitleText"/>
+            <TextBlock
+                x:Name="TitleText"
+                Style="{StaticResource title}"
+                Text="New Manufacture Order" />
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <TextBlock
                     VerticalAlignment="Center"
@@ -43,28 +47,81 @@
             </StackPanel>
         </Grid>
         <!--#endregion-->
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource SectionLabel}" Text="Products" />
+            <ListView
+                Grid.Row="1"
+                d:ItemsSource="{d:SampleData ItemCount=15}"
+                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Products, Mode=OneWay}"
+                SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource HorizontalListView}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid MaxWidth="150" Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Border Background="{StaticResource Background}" CornerRadius="5">
+                                <Image
+                                    MaxWidth="60"
+                                    MaxHeight="60"
+                                    Margin="10"
+                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                    Source="{Binding LocalRenderPath}" />
+                            </Border>
+                            <TextBlock
+                                Grid.Row="1"
+                                Margin="5"
+                                FontFamily="Consolas"
+                                VerticalAlignment="Center"
+                                FontSize="22"
+                                FontWeight="SemiBold"
+                                Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </Grid>
+
         <!--#region Body-->
-        <Grid Grid.Row="1" Margin="20">
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="250" />
             </Grid.ColumnDefinitions>
-
             <TextBlock
                 Grid.Column="0"
-                Margin="10,0,0,0"
-                Style="{StaticResource section}"
+                Style="{StaticResource SectionLabel}"
+                Text="Groups" />
+            <ListView
+                Grid.Column="0"
+                Grid.Row="1"
+                SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedGroup}"
+                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AvailableProductGroups}">
+
+            </ListView>
+
+            <TextBlock
+                Grid.Column="1"
+                Style="{StaticResource SectionLabel}"
                 Text="Available Products" />
             <ListView
-                x:Name="AvailableProductsListView"
+                Grid.Column="1"
                 Grid.Row="1"
-                ItemsSource="{Binding Path=ProductsInToolingGroup}">
+                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AvailableTurnedProducts}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <userControls:LMOConstructionDisplayProducts Product="{Binding}" />
@@ -72,9 +129,10 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+
             <StackPanel
                 Grid.Row="1"
-                Grid.Column="1"
+                Grid.Column="2"
                 VerticalAlignment="Center">
                 <Button
                     x:Name="AddButton"
@@ -89,14 +147,13 @@
             </StackPanel>
 
             <TextBlock
-                Grid.Column="2"
-                Margin="10,0,0,0"
-                Style="{StaticResource section}"
+                Grid.Column="3"
+                Style="{StaticResource SectionLabel}"
                 Text="New Order Items" />
             <ListView
                 x:Name="NewOrderItemsListView"
                 Grid.Row="1"
-                Grid.Column="2"
+                Grid.Column="3"
                 ItemsSource="{Binding Path=NewOrderItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -105,22 +162,20 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Border
+            <!--<Border
                 Grid.Row="1"
                 Grid.Column="3"
                 Margin="20,0,0,0"
                 VerticalAlignment="Top"
-                Background="{StaticResource Blue}"
-                CornerRadius="10">
+                Background="{StaticResource BlueFaded}"
+                CornerRadius="5"
+                TextElement.Foreground="{StaticResource Blue}">
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock
-                        FontSize="23"
-                        Foreground="{StaticResource OnBlue}"
-                        Text="Insights" />
+                    <TextBlock Style="{StaticResource subtitle}" Text="Insights" />
                     <TextBlock
                         x:Name="NoInsights"
                         Grid.Row="1"
@@ -130,7 +185,7 @@
                         Opacity="0.6"
                         Text="Add items to see Insights" />
                     <ScrollViewer Grid.Row="1">
-                        <StackPanel x:Name="InsightsStackPanel" TextElement.Foreground="{StaticResource OnBlue}">
+                        <StackPanel x:Name="InsightsStackPanel" TextElement.Foreground="{StaticResource Blue}">
                             <StackPanel.Resources>
                                 <converters:boolToVisibleOrCollapsed x:Key="visConverter" />
                                 <converters:intToPrice x:Key="priceConverter" />
@@ -196,32 +251,25 @@
                     </ScrollViewer>
 
                 </Grid>
-            </Border>
+            </Border>-->
         </Grid>
         <!--#endregion-->
 
         <!--#region Footer Controls-->
-        <Grid x:Name="Footer" Grid.Row="2">
-            <StackPanel x:Name="ChooseToolingGroupControls" Orientation="Horizontal">
-                <TextBlock Style="{StaticResource section}" Text="Choose a Tooling Group:" />
-                <ComboBox
-                    x:Name="ToolingGroupComboBox"
-                    MinWidth="200"
-                    Margin="15,0,0,0"
-                    ItemsSource="{Binding Path=ToolingGroups}"
-                    SelectedValue="{Binding Path=SelectedToolingGroup}" />
-            </StackPanel>
-
+        <Grid
+            x:Name="Footer"
+            Grid.Row="3"
+            Margin="0,10,0,0">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button
-                    Click="CancelButton_Click"
-                    Tag="Cancel"
-                    Style="{StaticResource Action_Cancel_Button}" />
+                    Click="Button_Click"
+                    Style="{StaticResource Action_Cancel_Button}"
+                    Tag="Cancel" />
                 <Button
                     x:Name="ApproveButton"
-                    Click="ConfirmButton_Click"
-                    Tag="Create Order"
-                    Style="{StaticResource Action_New_Button}" />
+                    Click="ApproveButton_Click"
+                    Style="{StaticResource Action_New_Button}"
+                    Tag="Create Order" />
             </StackPanel>
         </Grid>
         <!--#endregion-->

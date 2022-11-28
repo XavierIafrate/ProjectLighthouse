@@ -79,7 +79,8 @@ namespace ViewModel.Helpers
             }
             Product? productInfo = GetProductFromOrder(order);
 
-            doc.SetCellValue(row, 4, order.ToolingGroup);
+            // TODO patch
+            //doc.SetCellValue(row, 4, order.ToolingGroup);
             
             if (productInfo != null)
             {
@@ -116,12 +117,16 @@ namespace ViewModel.Helpers
 
         private static Product GetProductFromOrder(LatheManufactureOrder order)
         {
-            if (string.IsNullOrEmpty(order.ToolingGroup))
-            {
-                return null;
-            }
+            // TODO redo
 
-            return ProductGroups.Find(x => x.Name == order.ToolingGroup[..5]);
+            return null;
+
+            //if (string.IsNullOrEmpty(order.ToolingGroup))
+            //{
+            //    return null;
+            //}
+
+            //return ProductGroups.Find(x => x.Name == order.ToolingGroup[..5]);
         }
 
         public static SLDocument AddHeaderCell(SLDocument sl, int colNum, string cellContent)

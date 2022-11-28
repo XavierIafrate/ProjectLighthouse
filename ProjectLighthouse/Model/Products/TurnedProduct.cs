@@ -4,55 +4,187 @@ using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.ViewModel.Requests;
 using SQLite;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Products
 {
-    public class TurnedProduct : IAutoIncrementPrimaryKey
+    public class TurnedProduct : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation
     {
+        // TODO refactor to network constants or calculated
         public const double MaxDiameter = 38;
         public const double MaxLength = 150;
 
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
 
+        #region Full Members
+        private string productName;
         [Indexed]
-        public string ProductName { get; set; }
-        public string ExportProductName { get; set; }
+        public string ProductName
+        {
+            get { return productName; }
+            set 
+            { 
+                productName = value; 
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
 
-        public int CycleTime { get; set; }
-        public string Material { get; set; }
-        public string BarID { get; set; }
+        private string exportProductName;
 
-        public double MajorLength { get; set; }
-        public double PartOffLength { get; set; }
-        public double MajorDiameter { get; set; }
-        public DateTime lastManufactured { get; set; }
-        public int SellPrice { get; set; }
+        public string ExportProductName
+        {
+            get { return exportProductName; }
+            set 
+            { 
+                exportProductName = value;
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
+        private int cycleTime;
+        public int CycleTime
+        {
+            get { return cycleTime; }
+            set 
+            { 
+                cycleTime = value;
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
+        private double majorLength;
+        public double MajorLength
+        {
+            get { return majorLength; }
+            set 
+            { 
+                majorLength = value; 
+                ValidateProperty(); 
+                OnPropertyChanged(); 
+            }
+        }
+
+        // TODO review
+        private double majorDiameter;
+        public double MajorDiameter
+        {
+            get { return majorDiameter; }
+            set 
+            { 
+                majorDiameter = value; 
+                ValidateProperty(); 
+                OnPropertyChanged(); 
+            }
+        }
+
+        private double partOffLength;
+        public double PartOffLength
+        {
+            get { return partOffLength; }
+            set 
+            { 
+                partOffLength = value;
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region Validation
+
+
+        public void ValidateAll()
+        {
+            ValidateProperty(nameof(ProductName));
+            ValidateProperty(nameof(ExportProductName));
+            ValidateProperty(nameof(CycleTime));
+            ValidateProperty(nameof(MajorLength));
+            ValidateProperty(nameof(MajorDiameter));
+            ValidateProperty(nameof(PartOffLength));
+        }
+
+        public void ValidateProperty([CallerMemberName] string propertyName = "")
+        {
+            if (propertyName == nameof(ProductName))
+            {
+                ClearErrors(propertyName);
+                if (string.IsNullOrEmpty(ProductName))
+                {
+                    AddError(nameof(ProductName), "Product Name cannot be empty");
+                    return;
+                }
+
+                // TODO validationhelper
+                //if(!Validate)
+
+                return;
+            }
+            else if (propertyName == nameof(ExportProductName))
+            {
+                ClearErrors(propertyName);
+
+                return;
+            }
+            else if (propertyName == nameof(CycleTime))
+            {
+                ClearErrors(propertyName);
+                return;
+            }
+            else if (propertyName == nameof(MajorLength))
+            {
+                ClearErrors(propertyName);
+                return;
+            }
+            else if (propertyName == nameof(MajorDiameter))
+            {
+                ClearErrors(propertyName);
+                return;
+            }
+            else if (propertyName == nameof(PartOffLength))
+            {
+                ClearErrors(propertyName);
+                return;
+            }
+            throw new NotImplementedException();
+        }
+
+
+        #endregion
+
+
+        #region Regular Properties
+        public int GroupId { get; set; }
+        public int MaterialId { get; set; }
+        public bool IsSpecialPart { get; set; }
+
+
+        public string AddedBy { get; set; }
+        public DateTime AddedDate { get; set; }
+
+
+        public DateTime LastManufactured { get; set; }
         public int QuantitySold { get; set; }
         public int NumberOfOrders { get; set; }
+        public int SellPrice { get; set; }
         public int QuantityInStock { get; set; }
         public int QuantityOnPO { get; set; }
         public int QuantityOnSO { get; set; }
-
-        public string ThreadSize { get; set; }
-        public string DriveType { get; set; }
-        public string DriveSize { get; set; }
-        //public string Product { get; set; }
-        public string ProductGroup { get; set; }
         public int QuantityManufactured { get; set; }
-
-        public bool isSpecialPart { get; set; }
-        public string CustomerRef { get; set; }
-        public string AddedBy { get; set; }
-        public DateTime AddedDate { get; set; }
 
         public string SpecificationDocument { get; set; }
         public string SpecificationDetails { get; set; }
 
         public bool Retired { get; set; }
+        #endregion
 
-        [Ignore]
-        public Product Group { get; set; }
+
+        #region Helper Functions
+
         [Ignore]
         public int TargetStock
         {
@@ -78,6 +210,7 @@ namespace ProjectLighthouse.Model.Products
 
         public int GetRecommendedQuantity(bool forManufacture = false)
         {
+            // TODO refactor to constants
             const int targetMonthsStock = 12;
             double scaleFactor = Convert.ToDouble(targetMonthsStock) / 18;
             double toMake = Math.Max(QuantitySold * scaleFactor - QuantityInStock, 0);
@@ -94,58 +227,18 @@ namespace ProjectLighthouse.Model.Products
             return TimeSpan.FromSeconds(quantity * GetCycleTime());
         }
 
-        public bool CanBeManufactured()
-        {
-            return MajorLength <= MaxLength && MajorDiameter <= MaxDiameter;
-        }
-
-        public string GetReasonCannotBeMade()
-        {
-            string reason = "";
-            if (MajorDiameter > MaxDiameter)
-            {
-                reason += "Diameter too large";
-            }
-            if (MajorLength > MaxLength)
-            {
-                if (reason == "")
-                {
-                    reason += "Too long";
-                }
-                else
-                {
-                    reason += Environment.NewLine + "Too long";
-                }
-            }
-            return reason;
-        }
-
         public bool IsScheduleCompatible(TurnedProduct otherProduct)
         {
-            return
-                otherProduct.MajorDiameter == MajorDiameter &&
-                otherProduct.DriveSize == DriveSize &&
-                otherProduct.DriveType == DriveType &&
-                otherProduct.ThreadSize == ThreadSize &&
-                otherProduct.ProductGroup == ProductGroup &&
-                otherProduct.Material == Material;
+            return otherProduct.GroupId == GroupId && otherProduct.MaterialId == MaterialId;
         }
-
-        public bool DataIsComplete()
+        public int FreeStock()
         {
-            return MajorDiameter > 0
-                && MajorLength > 0
-                && !string.IsNullOrWhiteSpace(ProductName)
-                && !string.IsNullOrWhiteSpace(ProductGroup)
-                && !string.IsNullOrWhiteSpace(Material)
-                && !string.IsNullOrWhiteSpace(BarID)
-                && !string.IsNullOrWhiteSpace(ThreadSize)
-                && !string.IsNullOrWhiteSpace(DriveSize)
-                && !string.IsNullOrWhiteSpace(DriveType);
-
+            return QuantityInStock + LighthouseGuaranteedQuantity - QuantityOnSO;
         }
 
-        // For requests engine
+        #endregion
+
+        #region Scheduling Members
         [Ignore]
         public Request DeclinedRequest { get; set; }
         [Ignore]
@@ -154,10 +247,7 @@ namespace ProjectLighthouse.Model.Products
         public LatheManufactureOrder ZeroSetOrder { get; set; }
         [Ignore]
         public int LighthouseGuaranteedQuantity { get; set; }
+        #endregion
 
-        public int FreeStock()
-        {
-            return QuantityInStock + LighthouseGuaranteedQuantity - QuantityOnSO;
-        }
     }
 }
