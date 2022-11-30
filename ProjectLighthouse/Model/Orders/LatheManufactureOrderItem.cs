@@ -12,6 +12,7 @@ namespace ProjectLighthouse.Model.Orders
         public string AssignedMO { get; set; }
         [NotNull]
         public string ProductName { get; set; }
+        public int ProductId { get; set; }
         public int RequiredQuantity { get; set; }
         [NotNull]
         public int TargetQuantity { get; set; }
@@ -59,6 +60,7 @@ namespace ProjectLighthouse.Model.Orders
         public LatheManufactureOrderItem(TurnedProduct fromProduct)
         {
             ProductName = fromProduct.ProductName;
+            ProductId = fromProduct.Id;
             CycleTime = fromProduct.CycleTime;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
@@ -75,6 +77,7 @@ namespace ProjectLighthouse.Model.Orders
         public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity)
         {
             ProductName = fromProduct.ProductName;
+            ProductId = fromProduct.Id;
             CycleTime = fromProduct.CycleTime;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
@@ -92,6 +95,7 @@ namespace ProjectLighthouse.Model.Orders
         public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity, DateTime dateRequired, bool needsCleaning = false)
         {
             ProductName = fromProduct.ProductName;
+            ProductId = fromProduct.Id;
             CycleTime = fromProduct.CycleTime;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;

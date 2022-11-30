@@ -542,6 +542,72 @@
     </Style>
 
     <Style
+        x:Key="Action_New_Button_Small"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="20"
+                            MinWidth="30"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="8"
+                                Height="12"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                FontSize="12"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource GreenFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Green}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+                <Setter Property="Background" Value="{StaticResource Green}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+                <Setter Property="Background" Value="{StaticResource GreenDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style
         x:Key="Action_Update_Button"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
@@ -965,6 +1031,137 @@
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource OnRed}" />
                 <Setter Property="Background" Value="{StaticResource Red}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="ListBox_Add_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="40"
+                            Width="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="16"
+                                Height="16"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M4,10V14H13L9.5,17.5L11.92,19.92L19.84,12L11.92,4.08L9.5,6.5L13,10H4Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource GreenFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Green}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+                <Setter Property="Background" Value="{StaticResource Green}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
+                <Setter Property="Background" Value="{StaticResource GreenDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style
+        x:Key="ListBox_Remove_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="40"
+                            Width="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="16"
+                                Height="16"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M20,10V14H11L14.5,17.5L12.08,19.92L4.16,12L12.08,4.08L14.5,6.5L11,10H20Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource RedFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource Red}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>

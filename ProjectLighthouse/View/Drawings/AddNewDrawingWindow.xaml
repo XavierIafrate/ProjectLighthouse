@@ -15,23 +15,27 @@
     <StackPanel Margin="30">
         <TextBlock Style="{StaticResource title}" Text="Add New Drawing" />
         <StackPanel Margin="20">
-            <CheckBox
-                x:Name="ArchetypeCheckbox"
-                Margin="0,0,0,15"
-                Content="Archetype Drawing" />
-            <StackPanel x:Name="ChooseArchetypeControls" Margin="0,0,0,20">
-                <TextBlock Style="{StaticResource section}" Text="Constrain Archetype" />
+            <CheckBox Content="Archetype Drawing" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ArchetypeMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <StackPanel
+                x:Name="ChooseArchetypeControls"
+                Margin="0,0,0,20"
+                Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ArchetypeMode, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                <TextBlock Style="{StaticResource SectionLabel}" Text="New Archetype Drawing" />
                 <Grid Margin="30,3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" Text="Product Family (required)" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Style="{StaticResource InputLabel}"
+                        Text="Product Family*" />
                     <ComboBox
-                        x:Name="ProductGroupComboBox"
                         Grid.Column="1"
                         Width="250"
-                        HorizontalAlignment="Right"/>
+                        HorizontalAlignment="Right"
+                        ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Products}"
+                        SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
 
 
@@ -50,18 +54,21 @@
                     <TextBlock
                         Grid.Column="1"
                         VerticalAlignment="Center"
-                        Text="Tooling Group" />
+                        Style="{StaticResource InputLabel}"
+                        Text="Product Group*" />
                     <ComboBox
-                        x:Name="ToolingGroupConstraintComboBox"
                         Grid.Column="2"
                         Width="250"
-                        HorizontalAlignment="Right" />
+                        HorizontalAlignment="Right"
+                        ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=FilteredGroups}"
+                        SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
                 <Grid Margin="90,3,30,3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <Path
                         Width="20"
@@ -73,98 +80,77 @@
                     <TextBlock
                         Grid.Column="1"
                         VerticalAlignment="Center"
+                        Style="{StaticResource InputLabel}"
                         Text="Material" />
                     <ComboBox
-                        x:Name="MaterialConstraintComboBox"
+                        x:Name="MaterialComboBox"
                         Grid.Column="2"
-                        Width="250"
-                        HorizontalAlignment="Right"/>
+                        Width="225"
+                        HorizontalAlignment="Right"
+                        ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=FilteredMaterials}"
+                        SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedMaterial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        x:Name="ClearMaterialButton"
+                        Click="ClearMaterialButton_Click"
+                        Grid.Column="3"
+                        Width="25"
+                        Style="{StaticResource ClearButton}" />
                 </Grid>
 
-                <TextBlock Style="{StaticResource section}" Text="Preview" />
-                <ListBox
-                    x:Name="PreviewBox"
-                    Grid.Row="2"
-                    Grid.ColumnSpan="2"
-                    MinHeight="100"
-                    MaxHeight="300"
-                    HorizontalContentAlignment="Stretch">
-                    <ListBox.ItemTemplate>
+                <TextBlock Style="{StaticResource InputLabel}" Text="Products in Archetype" />
+                <ItemsControl MaxHeight="250" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=FilteredTurnedProducts}">
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <userControls:DisplayTurnedProduct Product="{Binding}" />
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
 
-            <Grid x:Name="FindProductControls" Margin="0,0,0,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
+            <StackPanel x:Name="FindProductControls" Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ArchetypeMode, Converter={StaticResource boolToCollapsedOrVisible}}">
+
+                <TextBlock Style="{StaticResource SectionLabel}" Text="New Drawing" />
+                <TextBlock Style="{StaticResource InputLabel}" Text="Search for product" />
+
                 <TextBox
                     x:Name="SearchBox"
-                    Margin="0"
                     Style="{StaticResource SearchBox}"
-                    Tag="search products" />
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.ColumnSpan="2"
-                    Margin="0,10,0,0"
-                    Style="{StaticResource section}"
-                    Text="Search Results" />
-                <ListBox
-                    x:Name="SearchResults"
-                    Grid.Row="2"
-                    Grid.ColumnSpan="2"
+                    Tag="search products"
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Style="{StaticResource InputLabel}" Text="Search Results" />
+                <ListView
                     MinHeight="100"
-                    MaxHeight="300"
-                    HorizontalContentAlignment="Stretch">
-                    <ListBox.ItemTemplate>
+                    MaxHeight="250"
+                    HorizontalContentAlignment="Stretch"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=FilteredTurnedProducts}"
+                    SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedTurnedProduct}">
+                    <ListView.ItemTemplate>
                         <DataTemplate>
                             <userControls:DisplayTurnedProduct Product="{Binding}" />
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
 
+            <TextBlock Style="{StaticResource InputLabel}" Text="Choose File" />
+            <userControls:FilePicker x:Name="FilePicker" AllowedFileTypes="PDF Files (*.pdf)|*.pdf" FilePath="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=TargetFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Border
-                Margin="0,20"
-                Background="{StaticResource Surface}"
-                CornerRadius="10">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        x:Name="FilePathDisplayText"
-                        Margin="10"
-                        VerticalAlignment="Center"
-                        Text="[FileName]" />
-                    <Button
-                        x:Name="ChooseFileButton"
-                        Grid.Column="1"
-                        Style="{StaticResource Choose_File_Button}"
-                        Click="ChooseFileButton_Click" />
-                </Grid>
-            </Border>
+            <TextBlock Style="{StaticResource InputLabel}" Text="Revision Details" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="revision details"
+                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewDrawing.IssueDetails, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <TextBox x:Name="revisionInfoTextBox" Style="{StaticResource DefaultTextBox}" Tag="Revision details..."/>
-
-            <CheckBox x:Name="researchCheckBox" Content="Drawing is for R&amp;D" Margin="10,5" />
+            <!--<CheckBox
+                Margin="10,5"
+                Content="Drawing is for R&amp;D"
+                IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewDrawing., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
             <Button
                 x:Name="AddButton"
                 HorizontalAlignment="Right"
                 Click="AddButton_Click"
-                Tag="Add"
-                Style="{StaticResource Action_New_Button}" />
+                Style="{StaticResource Action_New_Button}"
+                Tag="Add Drawing" />
         </StackPanel>
 
 

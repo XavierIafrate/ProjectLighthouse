@@ -31,24 +31,24 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;NU1701</NoWarn>
-    <Optimize>True</Optimize>
+    <NoWarn>1701;1702;NU1701;CS8632</NoWarn>
+    <Optimize>False</Optimize>
     <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NoWarn>1701;1702;NU1701</NoWarn>
-    <Optimize>True</Optimize>
+    <NoWarn>1701;1702;NU1701;CS8632</NoWarn>
+    <Optimize>False</Optimize>
     <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
     <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
     <DebugType>full</DebugType>
   </PropertyGroup>
 

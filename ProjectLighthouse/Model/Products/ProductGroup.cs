@@ -1,22 +1,19 @@
 ﻿using ProjectLighthouse.Model.Core;
 using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Model.Products
+namespace ProjectLighthouse.Model.Products
 {
-    public class ProductGroup : IAutoIncrementPrimaryKey    
+    public class ProductGroup : IAutoIncrementPrimaryKey
     {
-        [PrimaryKey, AutoIncrement] 
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         [NotNull]
         public string Name { get; set; }
 
 
         public int ProductId { get; set; }
-        public string BarId { get; set; }
-        public int MaterialId { get; set;}
+        public double? MinBarSize { get; set; }
+        public double MajorDiameter { get; set; }
 
         public override string ToString()
         {

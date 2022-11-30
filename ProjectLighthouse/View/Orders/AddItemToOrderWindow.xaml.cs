@@ -17,7 +17,8 @@ namespace ProjectLighthouse.View.Orders
         public event PropertyChangedEventHandler PropertyChanged;
 
         private List<LatheManufactureOrderItem> possibleItems;
-        string parentOrderId;
+        int parentOrderId;
+        string parentOrderName;
         public bool ItemsWereAdded { get; set; }
 
         public List<LatheManufactureOrderItem> PossibleItems
@@ -30,7 +31,7 @@ namespace ProjectLighthouse.View.Orders
             }
         }
 
-        public AddItemToOrderWindow(string OrderId)
+        public AddItemToOrderWindow(int OrderId)
         {
             InitializeComponent();
             parentOrderId = OrderId;
@@ -39,15 +40,18 @@ namespace ProjectLighthouse.View.Orders
 
         }
 
-        void LoadData(string orderId)
+        void LoadData(int orderId)
         {
-            LatheManufactureOrder order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == orderId);
+            LatheManufactureOrder order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Id == orderId);
             if (order is null)
             {
-                throw new System.Exception($"Order '{orderId}' not found.");
+                throw new System.Exception($"Order with ID '{orderId}' not found.");
             }
 
-            List<LatheManufactureOrderItem> currentOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(x => x.AssignedMO == orderId).ToList();
+            parentOrderName = order.Name;
+
+            List<LatheManufactureOrderItem> currentOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(x => x.AssignedMO == order.Name).ToList();
+            
             PossibleProducts = DatabaseHelper.Read<TurnedProduct>()
                 .Where(x => 
                     x.MaterialId == order.MaterialId && 
@@ -93,7 +97,7 @@ namespace ProjectLighthouse.View.Orders
             for (int i = 0; i < newItems.Count; i++)
             {
                 LatheManufactureOrderItem newItem = (LatheManufactureOrderItem)newItems[i];
-                newItem.AssignedMO = parentOrderId;
+                newItem.AssignedMO = parentOrderName;
                 DatabaseHelper.Insert(newItem);
             }
 

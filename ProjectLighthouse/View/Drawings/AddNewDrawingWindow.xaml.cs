@@ -2,251 +2,385 @@
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Drawings
 {
-    public partial class AddNewDrawingWindow : Window
+    public partial class AddNewDrawingWindow : Window, INotifyPropertyChanged
     {
+        private TechnicalDrawing newDrawing;
+
+        public TechnicalDrawing NewDrawing
+        {
+            get { return newDrawing; }
+            set 
+            { 
+                newDrawing = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public List<Product> Products { get; set; }
+        public List<ProductGroup> ProductGroups { get; set; }
+        public List<TurnedProduct> TurnedProducts { get; set; }
+        public List<TechnicalDrawing> Drawings { get; set; }
+        public List<MaterialInfo> Materials { get; set; }
+
+        private bool archetypeMode;
+
+        public bool ArchetypeMode
+        {
+            get { return archetypeMode; }
+            set 
+            {
+                archetypeMode = value;
+                SetArchetypeMode();
+                NewDrawing.IsArchetype = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
+        private List<ProductGroup> filteredGroups;
+
+        public List<ProductGroup> FilteredGroups
+        {
+            get { return filteredGroups; }
+            set 
+            { 
+                filteredGroups = value; 
+                OnPropertyChanged(); 
+            }
+        }
+
+        private Product? selectedProduct;
+
+        public Product? SelectedProduct
+        {
+            get { return selectedProduct; }
+            set
+            {
+                selectedProduct = value;
+                FilterGroups();
+                OnPropertyChanged();
+            }
+        }
+
+        private ProductGroup? selectedGroup;
+
+        public ProductGroup? SelectedGroup
+        {
+            get { return selectedGroup; }
+            set 
+            { 
+                selectedGroup = value;
+                NewDrawing.GroupId = SelectedGroup?.Id;
+
+                FilterMaterials();
+                FilterProducts();
+                OnPropertyChanged();
+            }
+        }
+
+        private MaterialInfo? selectedMaterial;
+
+        public MaterialInfo? SelectedMaterial
+        {
+            get { return selectedMaterial; }
+            set 
+            { 
+                selectedMaterial = value;
+                NewDrawing.MaterialId = SelectedMaterial?.Id;
+
+                FilterProducts();
+                OnPropertyChanged();
+            }
+        }
+
+
+        private TurnedProduct? selectedTurnedProduct;
+
+        public TurnedProduct? SelectedTurnedProduct
+        {
+            get { return selectedTurnedProduct; }
+            set 
+            { 
+                selectedTurnedProduct = value;
+                NewDrawing.TurnedProductId = SelectedTurnedProduct?.Id;
+
+                OnPropertyChanged();
+            }
+        }
+
+
+
+        private List<MaterialInfo> filteredMaterials;
+
+        public List<MaterialInfo> FilteredMaterials
+        {
+            get { return filteredMaterials; }
+            set 
+            { 
+                filteredMaterials = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private List<TurnedProduct> filteredTurnedProducts = new();
+
+        public List<TurnedProduct> FilteredTurnedProducts
+        {
+            get { return filteredTurnedProducts; }
+            set 
+            { 
+                filteredTurnedProducts = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private string targetFilePath;
+
+        public string TargetFilePath
+        {
+            get { return targetFilePath; }
+            set 
+            { 
+                targetFilePath = value;
+                OnPropertyChanged();    
+            }
+        }
+
+        private string searchText = "";
+
+        public string SearchText
+        {
+            get { return searchText; }
+            set 
+            { 
+                searchText = value;
+                FilterProducts();
+                OnPropertyChanged();
+            }
+        }
+
+        public bool SaveExit = false;
+
+        public AddNewDrawingWindow(List<TechnicalDrawing> drawings)
+        {
+            InitializeComponent();
+            Drawings = drawings;
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            NewDrawing = new();
+            ArchetypeMode = false;
+
+            Products = DatabaseHelper.Read<Product>();
+            ProductGroups = DatabaseHelper.Read<ProductGroup>();
+            TurnedProducts = DatabaseHelper.Read<TurnedProduct>();
+            Materials = DatabaseHelper.Read<MaterialInfo>();
+        }
+
+        private void SetArchetypeMode()
+        {
+            if (ArchetypeMode)
+            {
+                NewDrawing.IsArchetype = true;
+                SearchText = "";
+                FilteredTurnedProducts = new();
+            }
+            else
+            {
+                NewDrawing.IsArchetype = false;
+                SelectedProduct = null;
+                FilteredTurnedProducts = new();
+            }
+        }
+
+        private void FilterGroups()
+        {
+            if (SelectedProduct is null)
+            {
+                FilteredGroups = new();
+                return;
+            }
+
+            FilteredGroups = ProductGroups
+                .Where(x => x.ProductId == SelectedProduct.Id)
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+        private void FilterMaterials()
+        {
+            if (SelectedGroup is null)
+            {
+                FilteredMaterials = new();
+                return;
+            }
+
+            FilteredMaterials = Materials
+                .Where(x => FilteredTurnedProducts.Any(y => y.MaterialId == x.Id))
+                .OrderBy(x => x.Id)
+                .ToList();
+        }
+
+        private void FilterProducts()
+        {
+            if (ArchetypeMode)
+            {
+                if (SelectedGroup is null)
+                {
+                    FilteredTurnedProducts= new();
+                    return;
+                }
+
+                FilteredTurnedProducts = TurnedProducts
+                    .Where(x => x.GroupId == SelectedGroup.Id && !x.IsSpecialPart)
+                    .ToList();
+
+                if (SelectedMaterial is not null)
+                {
+                    FilteredTurnedProducts = FilteredTurnedProducts
+                        .Where(x => x.MaterialId == SelectedMaterial.Id)
+                        .ToList();
+                }
+
+                return;
+            }
+
+            // User search
+            string userRequest = (SearchText ?? "").ToUpperInvariant().Replace(" ", "");
+            List<TurnedProduct> foundProducts = TurnedProducts
+                .Where(x => x.ProductName.Contains(userRequest))
+                .ToList();
+
+            if (userRequest.Length < 3)
+            {
+                foundProducts = foundProducts
+                    .Where(x => x.ProductName == userRequest)
+                    .ToList();
+            }
+
+            FilteredTurnedProducts = foundProducts;
+        }
+
+        private bool DataOk()
+        {
+            if (string.IsNullOrWhiteSpace(TargetFilePath))
+            {
+                MessageBox.Show("Choose a file", "Error");
+                return false;   
+            }
+
+            if (ArchetypeMode)
+            {
+                if (SelectedGroup is null)
+                {
+                    MessageBox.Show("You need to select a product group for the archetype", "Error");
+                    return false;
+                }
+            }
+            else
+            {
+                if (SelectedTurnedProduct is null)
+                {
+                    MessageBox.Show("You need to select a product", "Error");
+                    return false;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(NewDrawing.IssueDetails))
+            {
+                MessageBox.Show("Issue details are required", "Error");
+                return false;
+            }
+
+            return true;
+        }
+
+
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!DataOk())
+            {
+                return;
+            }
 
+            GetDrawingName();
+
+            if (!NewDrawing.MoveToDrawingStore(TargetFilePath))
+            {
+                MessageBox.Show("An error occurred while moving the file into Lighthouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            NewDrawing.IssueDetails = NewDrawing.IssueDetails.Trim();
+            NewDrawing.Created = DateTime.Now;
+            NewDrawing.CreatedBy = App.CurrentUser.GetFullName();
+
+            NewDrawing.PrepareMarkedPdf();
+            if (!DatabaseHelper.Insert(NewDrawing))
+            {
+                MessageBox.Show("An error occurred when adding to the database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // TODO move to notifications manager
+            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.UserName != App.CurrentUser.UserName).ToList();
+
+            for (int i = 0; i < ToNotify.Count; i++)
+            {
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Drawing proposal - {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.Id}"));
+            }
+
+            SaveExit = true;
+            Close();
         }
 
-        private void ChooseFileButton_Click(object sender, RoutedEventArgs e)
+        private void GetDrawingName()
         {
-
+            if (NewDrawing.IsArchetype)
+            {
+                if (SelectedMaterial is null)
+                {
+                    NewDrawing.DrawingName = SelectedGroup!.Name;
+                }
+                else
+                {
+                    NewDrawing.DrawingName = $"{SelectedGroup!.Name}-{SelectedMaterial.MaterialCode}";
+                }
+            }
+            else
+            {
+                NewDrawing.DrawingName = SelectedTurnedProduct!.ProductName;
+            }
         }
-        //    public TechnicalDrawing NewDrawing = new();
 
-        //    private List<TechnicalDrawing> Drawings;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        //    string targetFilePath;
-        //    string destinationFilePath;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
-        //    private List<TurnedProduct> Products;
-        //    private List<string> ProductFamilies;
-
-        //    public bool SaveExit;
-
-        //    public AddNewDrawingWindow(List<TechnicalDrawing> drawings)
-        //    {
-        //        InitializeComponent();
-        //        Products = DatabaseHelper.Read<TurnedProduct>();
-        //        Drawings = drawings;
-
-        //        ProductFamilies = Products.Where(p => !p.IsSpecialPart).Select(p => p.ProductName[..5]).Distinct().OrderBy(f => f).ToList();
-        //        ProductGroupComboBox.ItemsSource = ProductFamilies;
-
-        //        MaterialConstraintComboBox.ItemsSource = new List<string>().Prepend("Any Material");
-        //        MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
-        //        MaterialConstraintComboBox.IsEnabled = false;
-
-        //        ToolingGroupConstraintComboBox.ItemsSource = new List<string>().Prepend("All Tooling Groups");
-        //        ToolingGroupConstraintComboBox.SelectedItem = ToolingGroupConstraintComboBox.Items[0];
-
-        //        ChooseArchetypeControls.Visibility = Visibility.Collapsed;
-        //    }
-
-        //    private void ArchetypeCheckbox_Checked(object sender, RoutedEventArgs e)
-        //    {
-        //        ChooseArchetypeControls.Visibility = Visibility.Visible;
-        //        FindProductControls.Visibility = Visibility.Collapsed;
-        //    }
-
-        //    private void ArchetypeCheckbox_Unchecked(object sender, RoutedEventArgs e)
-        //    {
-        //        ChooseArchetypeControls.Visibility = Visibility.Collapsed;
-        //        FindProductControls.Visibility = Visibility.Visible;
-        //    }
-
-        //    private void SearchButton_Click(object sender, RoutedEventArgs e)
-        //    {
-        //        string searchString = SearchBox.Text.Trim().ToLowerInvariant();
-        //        SearchResults.ItemsSource = Products
-        //            .Where(p => p.ProductName.ToLowerInvariant().Contains(searchString))
-        //            .ToList();
-        //    }
-
-        //    private void ChooseFileButton_Click(object sender, RoutedEventArgs e)
-        //    {
-        //        OpenFileDialog openFileDialog = new()
-        //        {
-        //            Filter = "PDF Files (*.pdf)|*.pdf"
-        //        };
-
-        //        string openDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        //        openFileDialog.InitialDirectory = openDir;
-
-        //        if ((bool)openFileDialog.ShowDialog())
-        //        {
-        //            targetFilePath = openFileDialog.FileName;
-        //            FilePathDisplayText.Text = Path.GetFileName(openFileDialog.FileName);
-        //        }
-        //    }
-
-        //    private void SetNewFileNames()
-        //    {
-        //        string bin = @"lib\";
-        //        NewDrawing.Revision = 0;
-        //        NewDrawing.RawDrawingStore = bin + Path.GetRandomFileName();
-        //        destinationFilePath = Path.Combine(App.ROOT_PATH, NewDrawing.RawDrawingStore);
-        //    }
-
-        //    private bool ImprintData()
-        //    {
-        //        SetNewFileNames();
-
-        //        if (!NewDrawing.IsArchetype)
-        //        {
-        //            NewDrawing.MaterialConstraint = "";
-        //        }
-
-        //        try
-        //        {
-        //            File.Copy(targetFilePath, destinationFilePath);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
-        //            return false;
-        //        }
-
-        //        NewDrawing.DrawingType = researchCheckBox.IsChecked ?? false
-        //            ? TechnicalDrawing.Type.Research
-        //            : TechnicalDrawing.Type.Production;
-
-        //        NewDrawing.IssueDetails = revisionInfoTextBox.Text.Trim();
-
-        //        NewDrawing.Created = DateTime.Now;
-        //        NewDrawing.CreatedBy = App.CurrentUser.GetFullName();
-
-        //        NewDrawing.PrepareMarkedPdf();
-        //        int id = DatabaseHelper.InsertAndReturnId(NewDrawing);
-
-        //        if (id == 0)
-        //        {
-        //            return false;
-        //        }
-
-
-        //        List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.UserName != App.CurrentUser.UserName).ToList();
-
-        //        for (int i = 0; i < ToNotify.Count; i++)
-        //        {
-        //            DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Drawing proposal - {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.Id}"));
-        //        }
-
-        //        return true;
-        //    }
-
-        //    private void ProductGroupComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //    {
-        //        NewDrawing.IsArchetype = true;
-        //        NewDrawing.Customer = "";
-
-        //        MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
-        //        ToolingGroupConstraintComboBox.SelectedItem = ToolingGroupConstraintComboBox.Items[0];
-
-        //        SetConstraints();
-        //    }
-
-        //    private void SetConstraints()
-        //    //{
-        //    //    if (ProductGroupComboBox.SelectedValue == null) return;
-
-        //    //    List<TurnedProduct> possibilities = Products.Where(x => x.ProductName[..5] == ProductGroupComboBox.SelectedValue.ToString() && !x.isSpecialPart).ToList();
-
-        //    //    if (ToolingGroupConstraintComboBox.SelectedValue.ToString() != "All Tooling Groups")
-        //    //    {
-        //    //        NewDrawing.ToolingGroup = ToolingGroupConstraintComboBox.SelectedValue.ToString();
-        //    //        possibilities = possibilities.Where(x => x.GroupId == NewDrawing.ToolingGroup).ToList();
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        NewDrawing.ToolingGroup = "";
-        //    //    }
-
-        //    //    if (MaterialConstraintComboBox.SelectedValue.ToString() != "Any Material")
-        //    //    {
-        //    //        NewDrawing.MaterialConstraint = MaterialConstraintComboBox.SelectedValue.ToString();
-        //    //        possibilities = possibilities.Where(x => x.Material == NewDrawing.MaterialConstraint).ToList();
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        NewDrawing.MaterialConstraint = "";
-        //    //    }
-
-        //    //    PreviewBox.ItemsSource = possibilities.ToList();
-
-        //    //    NewDrawing.ProductGroup = ProductGroupComboBox.SelectedValue.ToString();
-
-        //    //    if (ToolingGroupConstraintComboBox.SelectedValue.ToString() == "All Tooling Groups")
-        //    //    {
-        //    //        ToolingGroupConstraintComboBox.ItemsSource = possibilities.Select(x => x.ProductGroup).OrderBy(x => x).Distinct().ToList().Prepend("All Tooling Groups");
-        //    //        NewDrawing.DrawingName = ProductGroupComboBox.SelectedValue.ToString();
-        //    //        MaterialConstraintComboBox.SelectedItem = MaterialConstraintComboBox.Items[0];
-        //    //        MaterialConstraintComboBox.IsEnabled = false;
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        NewDrawing.DrawingName = ToolingGroupConstraintComboBox.SelectedValue.ToString();
-        //    //        MaterialConstraintComboBox.IsEnabled = true;
-        //    //    }
-
-        //    //    if (MaterialConstraintComboBox.SelectedValue.ToString() == "Any Material")
-        //    //    {
-        //    //        MaterialConstraintComboBox.ItemsSource = possibilities.Select(x=>x.Material).OrderBy(x => x).Distinct().ToList().Prepend("Any Material");
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        NewDrawing.DrawingName += $"-{MaterialConstraintComboBox.SelectedValue}";
-        //    //    }
-        //    }
-
-        //    //private void SearchResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //    //{
-        //    //    ListBox listBox = sender as ListBox;
-        //    //    TurnedProduct selectedProduct = listBox.SelectedValue as TurnedProduct;
-        //    //    NewDrawing.DrawingName = selectedProduct.ProductName;
-        //    //    NewDrawing.IsArchetype = false;
-        //    //    NewDrawing.Customer = selectedProduct.CustomerRef;
-        //    //}
-
-        //    //private bool DataIsValid()
-        //    //{
-        //    //    return !string.IsNullOrEmpty(targetFilePath) && !string.IsNullOrEmpty(NewDrawing.DrawingName) && !string.IsNullOrEmpty(revisionInfoTextBox.Text.Trim());
-        //    //}
-
-        //    private void AddButton_Click(object sender, RoutedEventArgs e)
-        //    {
-        //        //if (DataIsValid())
-        //        //{
-        //        //    if (!ImprintData())
-        //        //    {
-        //        //        return;
-        //        //    }
-        //        //    SaveExit = true;
-        //        //    Close();
-        //        //}
-        //    }
-
-        //    private void MaterialConstraintComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //    {
-        //        SetConstraints();
-        //    }
-
-        //    private void ToolingGroupConstraintComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //    {
-        //        SetConstraints();
-        //    }
-
+        private void ClearMaterialButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedMaterial = null;
+        }
     }
 }

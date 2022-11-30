@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:adminView="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:adminVm="clr-namespace:ProjectLighthouse.ViewModel.Administration"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:drawingsView="clr-namespace:ProjectLighthouse.View.Drawings"
     xmlns:drawingsVm="clr-namespace:ProjectLighthouse.ViewModel.Drawings"
     xmlns:ordersView="clr-namespace:ProjectLighthouse.View.Orders"
@@ -37,6 +38,15 @@
                 <ResourceDictionary Source="./Themes/StylishCheckbox.xaml" />
                 <ResourceDictionary Source="./Themes/StylishProgressBar.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!--#endregion-->
+
+            <!--#region Converters-->
+
+            <converters:boolToVisibleOrCollapsed x:Key="boolToVisibleOrCollapsed" />
+            <converters:boolToCollapsedOrVisible x:Key="boolToCollapsedOrVisible" />
+            <converters:ObjectIsNotNull x:Key="NotNullToBoolean" />
+            <converters:ObjectIsNotNullToVisibility x:Key="NotNullToVisibility" />
+            <converters:ObjectIsNullToVisibility x:Key="NullToVisibility" />
             <!--#endregion-->
 
             <!--#region DataTemplates-->

@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Requests;
+using ProjectLighthouse.ViewModel.Helpers;
 using ProjectLighthouse.ViewModel.Requests;
 using SQLite;
 using System;
@@ -106,6 +107,21 @@ namespace ProjectLighthouse.Model.Products
             ValidateProperty(nameof(MajorLength));
             ValidateProperty(nameof(MajorDiameter));
             ValidateProperty(nameof(PartOffLength));
+            ValidateProperty(nameof(GroupId));
+            ValidateProperty(nameof(MaterialId));
+        }
+
+        public void ValidateForOrder()
+        {
+            ValidateProperty(nameof(MajorLength));
+            ValidateProperty(nameof(MajorDiameter));
+            ValidateProperty(nameof(GroupId));
+            ValidateProperty(nameof(MaterialId));
+        }
+
+        public void ValidateForRequest()
+        {
+
         }
 
         public void ValidateProperty([CallerMemberName] string propertyName = "")
@@ -119,35 +135,94 @@ namespace ProjectLighthouse.Model.Products
                     return;
                 }
 
-                // TODO validationhelper
-                //if(!Validate)
+                if (!ValidationHelper.IsValidProductName(ProductName))
+                {
+                    AddError(nameof(ProductName), "Product Name contains a non-standard character");
+                    return;
+                }
 
                 return;
             }
             else if (propertyName == nameof(ExportProductName))
             {
                 ClearErrors(propertyName);
-
                 return;
             }
             else if (propertyName == nameof(CycleTime))
             {
                 ClearErrors(propertyName);
+                if (CycleTime < 0)
+                {
+                    AddError(nameof(CycleTime), "Cycle Time must be greater than zero");
+                }
                 return;
             }
             else if (propertyName == nameof(MajorLength))
             {
                 ClearErrors(propertyName);
+                if (MajorLength <= 0)
+                {
+                    AddError(nameof(MajorLength), "Major length must be greater than zero");
+                }
+
+                if (MajorLength > 25_000)
+                {
+                    AddError(nameof(MajorLength), "In 2022 the largest lathe had a max workpiece length of 25,000mm");
+                }
                 return;
             }
             else if (propertyName == nameof(MajorDiameter))
             {
                 ClearErrors(propertyName);
+                if (MajorDiameter <= 0)
+                {
+                    AddError(nameof(MajorDiameter), "Major diameter must be greater than zero");
+                }
+
+                if (MajorDiameter > 7_000)
+                {
+                    AddError(nameof(MajorDiameter), "In 2022 the largest lathe had a max turning diameter of 7,000mm");
+                }
+
                 return;
             }
             else if (propertyName == nameof(PartOffLength))
             {
                 ClearErrors(propertyName);
+                if (PartOffLength < 0)
+                {
+                    AddError(nameof(PartOffLength), "Part off length cannot be less than zero");
+                }
+                return;
+            }
+            else if (propertyName == nameof(GroupId))
+            {
+                ClearErrors(propertyName);
+                if (GroupId is null)
+                {
+                    AddError(nameof(GroupId), "The product must have a group associated with it");
+                    return;
+                }
+
+                if (GroupId == 0)
+                {
+                    AddError(nameof(GroupId), "The product must have a group associated with it");
+                }
+                return;
+            }
+            else if (propertyName == nameof(MaterialId))
+            {
+                ClearErrors(propertyName);
+                if (MaterialId is null)
+                {
+                    AddError(nameof(MaterialId), "The product must have a material associated with it");
+                    return;
+                }
+
+                if (MaterialId == 0)
+                {
+                    AddError(nameof(MaterialId), "The product must have a material associated with it");
+                }
                 return;
             }
             throw new NotImplementedException();
@@ -158,8 +233,8 @@ namespace ProjectLighthouse.Model.Products
 
 
         #region Regular Properties
-        public int GroupId { get; set; }
-        public int MaterialId { get; set; }
+        public int? GroupId { get; set; }
+        public int? MaterialId { get; set; }
         public bool IsSpecialPart { get; set; }
 
 
@@ -229,6 +304,9 @@ namespace ProjectLighthouse.Model.Products
 
         public bool IsScheduleCompatible(TurnedProduct otherProduct)
         {
+            if(GroupId is null) return false;
+            if(MaterialId is null) return false;
+
             return otherProduct.GroupId == GroupId && otherProduct.MaterialId == MaterialId;
         }
         public int FreeStock()

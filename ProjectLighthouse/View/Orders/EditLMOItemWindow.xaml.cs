@@ -41,10 +41,6 @@ namespace ProjectLighthouse.View.Orders
         private void LoadData(int id)
         {
             Item = DatabaseHelper.Read<LatheManufactureOrderItem>().Find(x => x.Id == id);
-
-            // TODO
-
-
             Lots = DatabaseHelper.Read<Lot>().Where(x => x.ProductName == Item.ProductName && x.Order == Item.AssignedMO).ToList();
 
             Item.QuantityMade = Lots.Where(x => !x.IsReject).Sum(x => x.Quantity);

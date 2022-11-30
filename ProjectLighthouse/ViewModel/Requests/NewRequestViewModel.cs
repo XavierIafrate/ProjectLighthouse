@@ -46,7 +46,6 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public bool ShowingLiveRequirements { get; set; }
         public bool NoSearchResults { get; set; }
-        public bool ProductIsSelected { get; set; }
 
         public List<TurnedProduct> TurnedProducts { get; set; }
         private List<TurnedProduct> filteredList;
@@ -69,33 +68,47 @@ namespace ProjectLighthouse.ViewModel.Requests
         public List<TurnedProduct> ItemsOnOrder;
         public List<Request> RecentlyDeclinedRequests;
 
-        private TurnedProduct selectedProduct;
-        public TurnedProduct SelectedProduct
+        private TurnedProduct? selectedProduct;
+        public TurnedProduct? SelectedProduct
         {
             get { return selectedProduct; }
             set
             {
                 selectedProduct = value;
-                ProductIsSelected = value != null;
-                if (value != null)
-                {
-                    // TODO Check this
-                    //if (value.ProductName != null)
-                    //{
-                    //    selectedProduct.GroupId = ProductGroups.Find(x => selectedProduct.ProductName.StartsWith(x.Name));
-                    //}
-                }
-                OnPropertyChanged(nameof(ProductIsSelected));
-                OnPropertyChanged();
                 SetRequest();
+                OnPropertyChanged();
             }
         }
+
+        private ProductGroup? selectedProductGroup;
+        public ProductGroup? SelectedProductGroup
+        {
+            get { return selectedProductGroup; }
+            set 
+            { 
+                selectedProductGroup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Product? selectedMainProduct;
+        public Product? SelectedMainProduct
+        {
+            get { return selectedMainProduct; }
+            set
+            {
+                selectedMainProduct = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public List<LeadTime> Lathes { get; set; }
 
         public List<User> ToNotify { get; set; }
 
-        public List<Product> ProductGroups { get; set; }
+        public List<Product> Products { get; set; }
+        public List<ProductGroup> ProductGroups { get; set; }
 
         public List<LatheManufactureOrderItem> RecommendedManifest { get; set; }
 
@@ -103,6 +116,8 @@ namespace ProjectLighthouse.ViewModel.Requests
         public NewRequestCommand SubmitRequestCommand { get; set; }
 
         #endregion
+
+        // TODO: Refactor
         public NewRequestViewModel()
         {
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
@@ -127,7 +142,8 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             TurnedProducts = RequestsEngine.PopulateInsightFields(TurnedProducts, ActiveOrders, recentlyDeclinedRequests);
 
-            ProductGroups = DatabaseHelper.Read<Product>();
+            Products = DatabaseHelper.Read<Product>();
+            ProductGroups = DatabaseHelper.Read<ProductGroup>();
 
             ToNotify = DatabaseHelper.Read<User>().Where(x => x.HasPermission(PermissionType.ApproveRequest) && x.ReceivesNotifications).ToList();
 
@@ -137,8 +153,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             FilteredList = new();
             SelectedProduct = new();
             SearchTerm = "";
-            ProductIsSelected = false;
-            OnPropertyChanged(nameof(ProductIsSelected));
             GetLeadTimes();
         }
 
@@ -186,9 +200,25 @@ namespace ProjectLighthouse.ViewModel.Requests
             if (SelectedProduct == null)
             {
                 NewRequest = null;
+                SelectedMainProduct= null;
+                SelectedProductGroup= null;
                 RecommendedManifest = null;
                 OnPropertyChanged(nameof(RecommendedManifest));
                 return;
+            }
+
+            if (SelectedProduct.GroupId is not null)
+            {
+                SelectedProductGroup = ProductGroups.Find(x => x.Id == SelectedProduct.GroupId);
+                if(SelectedProductGroup is not null)
+                {
+                    SelectedMainProduct = Products.Find(x => x.Id == SelectedProductGroup.ProductId);
+                }
+            }
+            else
+            {
+                SelectedProductGroup = null;
+                SelectedMainProduct = null;
             }
 
             NewRequest = new()
@@ -207,6 +237,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 return;
             }
+
             RecommendedManifest = null;
             RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(TurnedProducts,
                 SelectedProduct,
@@ -214,6 +245,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 TimeSpan.FromDays(5),
                 NewRequest.DateRequired,
                 enforceMOQ: false);
+
             OnPropertyChanged(nameof(RecommendedManifest));
         }
 
@@ -256,18 +288,25 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
         }
 
-        public bool SubmitRequest()
+        public void SubmitRequest()
         {
             newRequest.RaisedBy = App.CurrentUser.GetFullName();
             newRequest.DateRaised = DateTime.Now;
             newRequest.Product = selectedProduct.ProductName;
 
+            ProductGroup? group = ProductGroups.Find(x => x.Id == SelectedProduct.GroupId);
+            Product product = group == null 
+                ? null 
+                : Products.Find(x => x.Id == group.ProductId);
+
+            string toastImage = product == null 
+                ? null 
+                : $@"lib\renders\{product.ImageUrl}";
+
+            int newRequestId = DatabaseHelper.Read<sqlite_sequence>().Find(x => x.name == nameof(Request))!.seq + 1;
+
+            // TODO move to notifications manager
             int weeks = (int)Math.Round((NewRequest.DateRequired - DateTime.Now).TotalDays / 7);
-
-            Product matchedProduct = ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant());
-            string toastImage = matchedProduct == null ? null : $@"lib\renders\{matchedProduct.ImageUrl}";
-
-            int newRequestId = DatabaseHelper.Read<sqlite_sequence>().Find(x => x.name == nameof(Request)).seq + 1;
 
             for (int i = 0; i < ToNotify.Count; i++)
             {
@@ -286,15 +325,20 @@ namespace ProjectLighthouse.ViewModel.Requests
 
                 if (!DatabaseHelper.Insert(not))
                 {
-                    return false;
+                    return;
                 }
             }
 
-            if (ProductGroups.Any(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant()))
+            if (!DatabaseHelper.Insert(NewRequest))
             {
+                MessageBox.Show("Failed to add request to database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-                string renderPath = ProductGroups.Find(x => x.Name == selectedProduct.ProductName[..5].ToUpperInvariant()).LocalRenderPath;
 
+            if (product is not null)
+            {
+                string renderPath = product.LocalRenderPath;
                 new ToastContentBuilder()
                    .AddText("New Request Raised")
                    .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
@@ -313,15 +357,6 @@ namespace ProjectLighthouse.ViewModel.Requests
                     .Show();
             }
 
-            if (DatabaseHelper.Insert(NewRequest))
-            {
-                NewRequest = null;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         public class LeadTime
@@ -339,7 +374,6 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             public string DisplayLeadTime
             {
-                //get { return $"{(Workload.TotalDays/7):0} weeks"; }
                 get { return $"{Math.Round(Workload.TotalDays / 7 + 1):0} weeks"; }
             }
         }

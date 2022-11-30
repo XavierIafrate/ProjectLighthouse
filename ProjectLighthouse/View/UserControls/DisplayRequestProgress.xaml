@@ -111,7 +111,7 @@
                     Text="Delivered" />
             </Grid>
 
-            <Grid Margin="20" x:Name="amberAlert">
+            <Grid x:Name="amberAlert" Margin="20">
                 <Border
                     Background="{StaticResource Orange}"
                     CornerRadius="5"
@@ -148,7 +148,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Margin="20" x:Name="greenAlert">
+            <Grid x:Name="greenAlert" Margin="20">
                 <Border
                     Background="{StaticResource Green}"
                     CornerRadius="5"
@@ -176,8 +176,8 @@
                         Foreground="{StaticResource Green}"
                         Text="On Schedule" />
                     <TextBlock
-                        Grid.Row="1"
                         x:Name="greenContent"
+                        Grid.Row="1"
                         Grid.Column="2"
                         FontSize="13"
                         Foreground="{StaticResource Green}"
@@ -186,7 +186,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Margin="20" x:Name="redAlert">
+            <Grid x:Name="redAlert" Margin="20">
                 <Border
                     Background="{StaticResource Red}"
                     CornerRadius="5"
@@ -203,8 +203,8 @@
                     </Grid.RowDefinitions>
                     <Path
                         Grid.RowSpan="2"
-                        Margin="2"
                         Height="20"
+                        Margin="2"
                         Data="M23 7V13H21V7M21 15H23V17H21M12 2A2 2 0 0 0 10 4A2 2 0 0 0 10 4.29C7.12 5.14 5 7.82 5 11V17L3 19V20H21V19L19 17V11C19 7.82 16.88 5.14 14 4.29A2 2 0 0 0 14 4A2 2 0 0 0 12 2M10 21A2 2 0 0 0 12 23A2 2 0 0 0 14 21Z"
                         Fill="{StaticResource Red}"
                         Stretch="UniformToFill" />

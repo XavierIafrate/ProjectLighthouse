@@ -30,13 +30,13 @@
 
     <!--  Don't touch  -->
     <Style BasedOn="{StaticResource Default}" TargetType="ListView" />
-    
+
     <Style x:Key="HorizontalListView" TargetType="ListView">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="{StaticResource Surface}" />
         <Setter Property="Margin" Value="5" />
         <Setter Property="SelectionMode" Value="Single" />
-       
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -52,9 +52,9 @@
                             Focusable="false"
                             HorizontalScrollBarVisibility="Auto"
                             VerticalScrollBarVisibility="Hidden">
-                         
 
-                            <ItemsPresenter/>
+
+                            <ItemsPresenter />
                         </ScrollViewer>
                     </Border>
                 </ControlTemplate>
@@ -63,7 +63,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
+                    <StackPanel Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>

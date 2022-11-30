@@ -34,15 +34,16 @@
             Foreground="{StaticResource Blue}"
             Text="Provide a product name and either a drawing or a note explaining the specification. After submitting a request someone with authorisation will fill in the product data."
             TextWrapping="Wrap" />
+        <TextBlock Text="Product Name" Style="{StaticResource InputLabel}"/>
         <TextBox
-            Margin="5,10"
             MaxLength="16"
             PreviewKeyDown="productName_PreviewKeyDown"
             Style="{StaticResource DefaultTextBox}"
-            Tag="Product Name"
+            Tag="product name"
             x:Name="productName" />
-        <TextBlock Text="Technical Specification" Style="{StaticResource section}"/>
-        <TextBlock Text="PDF, jpg, or png accepted." Style="{StaticResource annotation}"/>
+        
+        <TextBlock Text="Technical Specification" Style="{StaticResource InputLabel}"/>
+        <TextBlock Text="PDF, jpg, or png accepted." Foreground="{StaticResource DisabledElement}"/>
         <uc:FilePicker x:Name="specDocument" AllowedFileTypes="PDF Files(*.pdf) | *.pdf|JPG(*.jpg) | *.jpg|PNG Files(*.png) | *.png" />
 
         <TextBox

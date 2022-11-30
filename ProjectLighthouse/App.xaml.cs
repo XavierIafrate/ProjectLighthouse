@@ -39,21 +39,11 @@ namespace ProjectLighthouse
 
             if (!EnvironmentContext.Setup())
             {
-                MessageBox.Show("Something wen't wrong while setting up the environment, Lighthouse cannot start.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                // TODO make a modal version
+                MessageBoxResult _ = MessageBox.Show("Something wen't wrong while setting up the environment, Lighthouse cannot start.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
                 return;
             }
-
-            //string ip = GetLocalIPAddress();
-
-            //if (!ip.StartsWith("192.168.100."))
-            //{
-            //    MessageBox.Show("Currently unable to allow the manufacturing network to connect.", "Computer blocked.", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    Application.Current.Shutdown();
-            //    return;
-            //}
-
-
 
             MainViewModel VM = LoadMain();
 

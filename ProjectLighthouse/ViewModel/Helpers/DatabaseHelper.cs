@@ -1,6 +1,8 @@
 ﻿using ProjectLighthouse.Model.Core;
 using SQLite;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -31,13 +33,14 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 try
                 {
                     int rows = conn.Insert(item);
-                if (rows > 0)
-                {
-                    result = true;
+                    if (rows > 0)
+                    {
+                        result = true;
+                    }
                 }
-                }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine(ex.Message);
                     result = false;
                 }
             }

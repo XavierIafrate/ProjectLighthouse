@@ -34,11 +34,12 @@
             <ListView
                 BorderThickness="0"
                 ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
                 ScrollViewer.CanContentScroll="False"
                 SelectedValue="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="7,2">
+                        <Grid Margin="7,5">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
@@ -53,7 +54,6 @@
                             <TextBlock
                                 x:Name="role"
                                 Grid.Row="1"
-                                FontStyle="Italic"
                                 Foreground="{StaticResource Blue}"
                                 Text="{Binding Role}" />
                         </Grid>

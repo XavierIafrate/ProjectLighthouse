@@ -27,10 +27,11 @@ namespace ProjectLighthouse.ViewModel.Requests
                 .Where(p => p.IsScheduleCompatible(requiredProduct)
                     && !p.IsSpecialPart
                     && Math.Abs(p.MajorLength - requiredProduct.MajorLength) <= 40
-                    && p.ProductName != requiredProduct.ProductName)
+                    && p.Id != requiredProduct.Id)
                 .OrderByDescending(p => p.GetRecommendedQuantity())
                 .ThenBy(p => p.QuantityInStock)
                 );
+
 
             foreach (TurnedProduct product in compatibleProducts)
             {

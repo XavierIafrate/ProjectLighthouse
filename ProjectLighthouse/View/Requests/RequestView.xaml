@@ -99,7 +99,7 @@
             Grid.Column="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="{Binding ShowingRequest, Converter={StaticResource boolToCollapsed}}">
+            Visibility="{Binding SelectedRequest, Converter={StaticResource NullToVisibility}}">
             <TextBlock
                 HorizontalAlignment="Center"
                 FontSize="40"
@@ -192,14 +192,14 @@
                 Text="{Binding SearchString, StringFormat='{}A {0} for ants?!', TargetNullValue=''}" />
         </StackPanel>
         <ScrollViewer
+            Visibility="{Binding SelectedRequest, Converter={StaticResource NotNullToVisibility}}"
             x:Name="scroller"
             Grid.RowSpan="2"
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged">
             <Grid
                 MaxWidth="700"
-                Margin="0,20,0,50"
-                Visibility="{Binding ShowingRequest, Converter={StaticResource boolToVisible}}">
+                Margin="0,20,0,50">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
@@ -435,7 +435,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         RenderOptions.BitmapScalingMode="Fant"
-                                        Source="{Binding SelectedRequestProduct.Group.LocalRenderPath}" />
+                                        Source="{Binding SelectedRequestMainProduct.LocalRenderPath}"/>
                                 </Grid>
 
                             </Border>
@@ -610,7 +610,8 @@
                             Margin="0,10"
                             BorderBrush="{StaticResource Orange}"
                             BorderThickness="3"
-                            CornerRadius="8"
+                            Background="{StaticResource Background}"
+                            CornerRadius="5"
                             Visibility="{Binding DataRequired, Converter={StaticResource boolToVisible}}">
                             <StackPanel Margin="20">
                                 <Grid>
@@ -622,17 +623,18 @@
                                         Width="25"
                                         Margin="0,3,7,0"
                                         Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
-                                        Fill="{StaticResource OnBackground}"
+                                        Fill="{StaticResource OnSurface}"
                                         Stretch="Uniform" />
                                     <TextBlock
                                         Grid.Column="1"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource OnSurface}"
                                         Style="{StaticResource section}"
                                         Text="Data Required" />
                                 </Grid>
                                 <TextBlock
                                     Margin="10"
-                                    FontStyle="Italic"
-                                    Foreground="{StaticResource Purple}"
+                                    Foreground="{StaticResource OnSurface}"
                                     Text="The required data for manufacture is not available for this product. Please review the specifications below and amend the product record."
                                     TextWrapping="Wrap" />
                                 <TextBlock
@@ -654,7 +656,7 @@
                                     Text="Spec Document" />
                                 <uc:DisplayPdf
                                     Margin="20,0"
-                                    HorizontalAlignment="Stretch"
+                                    Background="{StaticResource Background}"
                                     FilePath="{Binding SelectedRequestProduct.SpecificationDocument, TargetNullValue=''}" />
 
                                 <Grid Margin="0,20,0,0" HorizontalAlignment="Center">
@@ -666,8 +668,9 @@
                                     </Grid.ColumnDefinitions>
                                     <Button
                                         Margin="10,0"
+                                        Style="{StaticResource Action_Edit_Button}"
                                         Command="{Binding ModifyProductCommand}"
-                                        Content="Edit Product Data" />
+                                        Tag="Edit Product Data" />
                                 </Grid>
 
                             </StackPanel>
@@ -711,13 +714,12 @@
                     <TextBlock Style="{StaticResource section}" Text="Comments" />
 
                     <uc:DisplayListOfNotes
-                        MinHeight="50"
+                        MinHeight="80"
                         Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}"
                         ShowingEditControls="False" />
                     <Grid
                         x:Name="composeMessageControls"
-                        Grid.Row="2"
-                        Margin="5">
+                        Grid.Row="2">
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />

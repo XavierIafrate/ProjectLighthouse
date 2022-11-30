@@ -1,11 +1,16 @@
-﻿using Model.Products;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Orders
 {
@@ -43,27 +48,51 @@ namespace ProjectLighthouse.View.Orders
         }
 
         private List<ProductGroup> availableProductGroups;
-
         public List<ProductGroup> AvailableProductGroups
         {
             get { return availableProductGroups; }
-            set 
-            { 
+            set
+            {
                 availableProductGroups = value;
                 OnPropertyChanged();
             }
         }
 
 
-        private List<TurnedProduct> availableTurnedProducts;
-        public List<TurnedProduct> AvailableTurnedProducts
+        private ObservableCollection<TurnedProduct> availableTurnedProducts = new();
+        public ObservableCollection<TurnedProduct> AvailableTurnedProducts
         {
             get { return availableTurnedProducts; }
-            set 
+            set
             {
                 availableTurnedProducts = value;
                 OnPropertyChanged();
             }
+        }
+
+
+        private LatheManufactureOrder newOrder;
+        public LatheManufactureOrder NewOrder
+        {
+            get { return newOrder; }
+            set 
+            { 
+                newOrder = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<LatheManufactureOrderItem> newOrderItems = new();
+
+        public ObservableCollection<LatheManufactureOrderItem> NewOrderItems
+        {
+            get { return newOrderItems; }
+            set
+            {
+                newOrderItems = value; 
+                OnPropertyChanged();    
+            }
+
         }
 
 
@@ -85,6 +114,71 @@ namespace ProjectLighthouse.View.Orders
             LoadData();
         }
 
+        public OrderConstructorWindow(int requiredGroup, int materialId)
+        {
+            InitializeComponent();
+
+            ProductsControlGroup.Visibility = Visibility.Collapsed;
+            GroupsLabel.Visibility = Visibility.Collapsed;
+            GroupsListBox.Visibility = Visibility.Collapsed;
+
+            LoadData();
+
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup);
+
+            if (targetGroup is null)
+            {
+                throw new System.ArgumentNullException("Target group is null");
+            }
+
+
+            SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
+            SelectedGroup = targetGroup;
+            
+        }
+
+        public OrderConstructorWindow(int requiredGroup, int materialId, Dictionary<TurnedProduct, int> required)
+        {
+            InitializeComponent();
+
+            ProductsControlGroup.Visibility = Visibility.Collapsed;
+            GroupsLabel.Visibility = Visibility.Collapsed;
+            GroupsListBox.Visibility = Visibility.Collapsed;
+
+            LoadData();
+
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup);
+
+            if (targetGroup is null)
+            {
+                throw new System.ArgumentNullException("Target group is null");
+            }
+
+            SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
+            SelectedGroup = targetGroup;
+
+            for (int i = 0; i < required.Count; i++)
+            {
+                TurnedProduct product = required.ElementAt(i).Key;
+                int quantity = required.ElementAt(i).Value;
+
+                if (!AvailableTurnedProducts.Any(x => x.Id == product.Id))
+                {
+                    MessageBox.Show($"{product.ProductName} not in group ID '{requiredGroup}'.");
+                    continue;
+                }
+
+                NewOrderItems.Add(new(product, quantity));
+
+                TurnedProduct toRemove = AvailableTurnedProducts.ToList().Find(x => x.Id == product.Id);
+
+                if (toRemove != null)
+                {
+                    AvailableTurnedProducts.Remove(toRemove);
+                }
+            }
+        }
+
         private void LoadData()
         {
             Products = DatabaseHelper.Read<Product>();
@@ -103,6 +197,8 @@ namespace ProjectLighthouse.View.Orders
             AvailableProductGroups = ProductGroups
                 .Where(x => x.ProductId == SelectedProduct.Id)
                 .ToList();
+
+            NewOrderItems = new();
         }
 
         private void FilterTurnedProducts()
@@ -113,12 +209,16 @@ namespace ProjectLighthouse.View.Orders
                 return;
             }
 
-            AvailableTurnedProducts = TurnedProducts
+            TurnedProducts
                 .Where(x => x.GroupId == SelectedGroup.Id)
-                .ToList();
+                .ToList()
+                .ForEach(x => AvailableTurnedProducts.Add(x));
         }
 
-
+        public void SetConfirmButtonsVisibility(Visibility vis)
+        {
+            Footer.Visibility = vis;
+        }
 
         private void CalculateInsights()
         {
@@ -196,128 +296,138 @@ namespace ProjectLighthouse.View.Orders
             public double ValueProduced { get; set; }
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
-        {
-            //if (NewOrderItems.Count == 0)
-            //{
-            //    return;
-            //}
-            //CreateManufactureOrder();
-        }
-
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
+            if (AvailableItemsListBox.SelectedValue is not TurnedProduct product) return;
+
+            NewOrderItems.Add(new(product));
+            AvailableTurnedProducts.Remove(product);
 
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
+            if (NewOrderItemsListView.SelectedValue is not LatheManufactureOrderItem item) return;
 
+            if (item.RequiredQuantity > 0)
+            {
+                return;
+            }
+
+            NewOrderItems.Remove(item);
+            AvailableTurnedProducts.Add(TurnedProducts.Find(x => x.Id == item.ProductId));
         }
 
-        private void ApproveButton_Click(object sender, RoutedEventArgs e)
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
+            if (NewOrderItems.Count == 0)
+            {
+                return;
+            }
+            
+            throw new NotImplementedException();
 
+            CreateManufactureOrder();
+
+            SaveExit = true;
+            Close();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            Close();
+        }
+
+        private void CreateManufactureOrder()
+        {
+            NewOrder.Name = GetNewOrderId();
+            NewOrder.CreatedAt = DateTime.Now;
+            NewOrder.CreatedBy = App.CurrentUser.GetFullName();
+
+            NewOrder.MajorDiameter = NewOrderItems.First().MajorDiameter;
+
+            //NewOrder.BarsInStockAtCreation = Bars.Find(x => x.Id == NewOrder.BarID).InStock;
+            //NewOrder.NumberOfBars = Math.Ceiling(Insights.NumberOfBarsRequired);
+            //NewOrder.GroupId = SelectedToolingGroup;
+            //NewOrder.MaterialId = ;
+
+            int time = 0;
+            //List<TurnedProduct> comparableProducts = ProductsInToolingGroup.Where(x => x.CycleTime > 0).ToList();
+            //int lastCycleTime = comparableProducts.Count > 0
+            //    ? comparableProducts.Min(x => x.CycleTime)
+            //    : 0;
+
+            //List<LatheManufactureOrderItem> items = NewOrderItems.OrderByDescending(x => x.CycleTime).ToList();
+            //for (int i = 0; i < items.Count; i++)
+            //{
+            //    if (NewOrderItems[i].CycleTime > 0)
+            //    {
+            //        time += NewOrderItems[i].CycleTime * NewOrderItems[i].TargetQuantity;
+            //    }
+            //    else if (lastCycleTime > 0)
+            //    {
+            //        time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
+            //    }
+            //    else
+            //    {
+            //        time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
+            //    }
+
+            //    lastCycleTime = NewOrderItems[i].CycleTime;
+            //}
+
+            NewOrder.TimeToComplete = time;
+            //items = items.Where(x => x.CycleTime > 0).ToList();
+
+            //if (items.Count > 0)
+            //{
+            //    NewOrder.TargetCycleTime = items.Min(x => x.CycleTime);
+            //    NewOrder.TargetCycleTimeEstimated = false;
+            //}
+            //else
+            //{
+            //    NewOrder.TargetCycleTime = NewOrderItems[0].GetCycleTime();
+            //    NewOrder.TargetCycleTimeEstimated = true;
+            //}
+
+            List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == TechnicalDrawing.Type.Production).ToList();
+            List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.GroupId, NewOrder.MaterialId);
+
+            _ = DatabaseHelper.Insert(NewOrder);
+            
+            foreach (TechnicalDrawing drawing in drawings)
+            {
+                OrderDrawing o = new() { DrawingId = drawing.Id, OrderId = NewOrder.Name };
+                DatabaseHelper.Insert(o);
+            }
+            
+            foreach (LatheManufactureOrderItem item in NewOrderItems)
+            {
+                if (item.TargetQuantity == 0)
+                {
+                    continue;
+                }
+
+                item.CycleTime = 0; //force to update if different
+                item.AssignedMO = NewOrder.Name;
+                item.AddedBy = App.CurrentUser.GetFullName();
+                item.DateAdded = DateTime.Now;
+                DatabaseHelper.Insert(item);
+            };
+
 
         }
 
-        //private void CreateManufactureOrder()
-        //{
-        //    NewOrder.Name = GetNewOrderId();
-        //    NewOrder.CreatedAt = DateTime.Now;
-        //    NewOrder.CreatedBy = App.CurrentUser.GetFullName();
-        //    NewOrder.MajorDiameter = NewOrderItems.First().MajorDiameter;
-        //    NewOrder.BarsInStockAtCreation = Bars.Find(x => x.Id == NewOrder.BarID).InStock;
-        //    NewOrder.NumberOfBars = Math.Ceiling(Insights.NumberOfBarsRequired);
-        //    NewOrder.ToolingGroup = SelectedToolingGroup;
+        // TODO refactor
+        private static string GetNewOrderId()
+        {
+            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>();
+            int nOrders = orders.Count;
+            string strOrderNum = Convert.ToString(nOrders + 1);
+            int orderNumLen = strOrderNum.Length;
+            const string blank = "M00000";
 
-        //    int time = 0;
-        //    List<TurnedProduct> comparableProducts = ProductsInToolingGroup.Where(x => x.CycleTime > 0).ToList();
-        //    int lastCycleTime = comparableProducts.Count > 0
-        //        ? comparableProducts.Min(x => x.CycleTime)
-        //        : 0;
-        //    List<LatheManufactureOrderItem> items = NewOrderItems.OrderByDescending(x => x.CycleTime).ToList();
-        //    for (int i = 0; i < items.Count; i++)
-        //    {
-        //        if (NewOrderItems[i].CycleTime > 0)
-        //        {
-        //            time += NewOrderItems[i].CycleTime * NewOrderItems[i].TargetQuantity;
-        //        }
-        //        else if (lastCycleTime > 0)
-        //        {
-        //            time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
-        //        }
-        //        else
-        //        {
-        //            time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
-        //        }
-
-        //        lastCycleTime = NewOrderItems[i].CycleTime;
-        //    }
-        //    NewOrder.TimeToComplete = time;
-        //    items = items.Where(x => x.CycleTime > 0).ToList();
-
-        //    if (items.Count > 0)
-        //    {
-        //        NewOrder.TargetCycleTime = items.Min(x => x.CycleTime);
-        //        NewOrder.TargetCycleTimeEstimated = false;
-        //    }
-        //    else
-        //    {
-        //        NewOrder.TargetCycleTime = NewOrderItems[0].GetCycleTime();
-        //        NewOrder.TargetCycleTimeEstimated = true;
-        //    }
-
-        //    List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == TechnicalDrawing.Type.Production).ToList();
-        //    List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.ToolingGroup);
-
-        //    _ = DatabaseHelper.Insert(NewOrder);
-        //    foreach (LatheManufactureOrderItem item in NewOrderItems)
-        //    {
-        //        if (item.TargetQuantity == 0)
-        //        {
-        //            continue;
-        //        }
-
-        //        item.CycleTime = 0; //force to update if different
-        //        if (Request != null)
-        //        {
-        //            item.NeedsCleaning = Request.CleanCustomerRequirement && item.RequiredQuantity > 0;
-        //        }
-        //        item.AssignedMO = NewOrder.Name;
-        //        item.AddedBy = App.CurrentUser.GetFullName();
-        //        item.DateAdded = DateTime.Now;
-        //        DatabaseHelper.Insert(item);
-        //    };
-
-        //    foreach (TechnicalDrawing drawing in drawings)
-        //    {
-        //        OrderDrawing o = new() { DrawingId = drawing.Id, OrderId = NewOrder.Name };
-        //        DatabaseHelper.Insert(o);
-        //    }
-
-        //    Cancelled = false;
-        //    Close();
-        //}
-
-        //private static string GetNewOrderId()
-        //{
-        //    List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>();
-        //    int nOrders = orders.Count;
-        //    string strOrderNum = Convert.ToString(nOrders + 1);
-        //    int orderNumLen = strOrderNum.Length;
-        //    const string blank = "M00000";
-
-        //    return blank[..(6 - orderNumLen)] + strOrderNum;
-        //}
+            return blank[..(6 - orderNumLen)] + strOrderNum;
+        }
     }
 }

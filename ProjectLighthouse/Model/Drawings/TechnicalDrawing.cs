@@ -3,12 +3,14 @@ using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using Color = System.Drawing.Color;
 
 namespace ProjectLighthouse.Model.Drawings
@@ -18,7 +20,7 @@ namespace ProjectLighthouse.Model.Drawings
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        public int Revision { get; set; }
+        public int Revision { get; set; } = 0;
         public string URL { get; set; }
         public DateTime Created { get; set; }
         public string CreatedBy { get; set; }
@@ -49,7 +51,7 @@ namespace ProjectLighthouse.Model.Drawings
         public string EngineeringApprovalBy { get; set; }
         public DateTime EngineeringApprovalDate { get; set; }
 
-        public int? ProductId { get; set; }
+        public int? TurnedProductId { get; set; }
         public int? GroupId { get; set; }
         public int? MaterialId { get; set; }
 
@@ -69,12 +71,12 @@ namespace ProjectLighthouse.Model.Drawings
         [Ignore]
         public List<Note> Notes { get; set; }
 
-        public static List<TechnicalDrawing> FindDrawings(List<TechnicalDrawing> drawings, List<LatheManufactureOrderItem> items, int groupId)
+        public static List<TechnicalDrawing> FindDrawings(List<TechnicalDrawing> drawings, List<LatheManufactureOrderItem> items, int groupId, int materialId)
         {
             List<TechnicalDrawing> drawingsList = new();
             for (int i = 0; i < items.Count; i++)
             {
-                TechnicalDrawing d = FindDrawing(drawings, items[i], groupId);
+                TechnicalDrawing d = FindDrawing(drawings, items[i], groupId, materialId);
                 if (d != null)
                 {
                     drawingsList.Add(d);
@@ -84,66 +86,76 @@ namespace ProjectLighthouse.Model.Drawings
             return drawingsList.Distinct().ToList();
         }
 
-        public static TechnicalDrawing FindDrawing(List<TechnicalDrawing> drawings, LatheManufactureOrderItem item, int groupId)
+        public static TechnicalDrawing? FindDrawing(List<TechnicalDrawing> drawings, LatheManufactureOrderItem item, int groupId, int materialId)
         {
             drawings = drawings.Where(x => x.IsApproved && !x.IsWithdrawn).ToList();
+
             if (item.IsSpecialPart)
             {
-                List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
+                List<TechnicalDrawing> matches = drawings
+                    .Where(d => d.DrawingName == item.ProductName && !d.IsArchetype)
+                    .OrderByDescending(d => d.AmendmentType)
+                    .OrderByDescending(d => d.Revision)
+                    .ToList();
+
                 if (matches.Count > 0)
                 {
                     item.DrawingId = matches.First().Id;
                     return matches.First();
                 }
+
                 return null;
             }
             else
             {
-                List<TechnicalDrawing> matches = drawings.Where(d => d.DrawingName == item.ProductName && !d.IsArchetype).OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
+                List<TechnicalDrawing> matches = drawings
+                    .Where(d => d.TurnedProductId == item.ProductId && !d.IsArchetype)
+                    .OrderByDescending(d => d.AmendmentType)
+                    .OrderByDescending(d => d.Revision).ToList();
+
                 if (matches.Count == 0)
                 {
-                    // TODO
-                    return GetBestDrawingForProduct(
-                        productId: 0,
+                    return FindArchetype(
                         groupId: groupId,
-                        //material: RequiredProduct.Material,
+                        materialId: materialId,
                         drawings: drawings);
                 }
-                else
-                {
-                    return matches.First();
-                }
+
+                return matches.First();
             }
         }
 
-        // TODO factor in Material
-        private static TechnicalDrawing GetBestDrawingForProduct(int productId, int groupId, List<TechnicalDrawing> drawings)
+        private static TechnicalDrawing? FindArchetype(int groupId, int materialId, List<TechnicalDrawing> drawings)
         {
-            List<TechnicalDrawing> matches = drawings.Where(d => d.IsArchetype && d.ProductId == productId && d.GroupId == groupId).ToList();
-            if (matches.Count > 0)
+            List<TechnicalDrawing> matches = drawings
+                .Where(d =>
+                    d.IsArchetype &&
+                    d.GroupId == groupId
+                    && (d.MaterialId is null || d.MaterialId == materialId))
+                .OrderByDescending(d => d.AmendmentType)
+                .OrderByDescending(d => d.Revision)
+                .ToList();
+
+            if (matches.Count == 0)
             {
-                matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
+                return null;
+            }
+
+            if (!matches.Any(x => x.MaterialId == materialId))
+            {
                 return matches.First();
             }
 
-            matches = drawings.Where(d => d.IsArchetype && d.ProductId == productId && d.GroupId == groupId).ToList();
-            if (matches.Count > 0)
-            {
-                matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
-                return matches.First();
-            }
+            matches = matches
+                .Where(d => d.MaterialId == materialId)
+                .ToList();
 
-            matches = drawings.Where(d => d.IsArchetype && d.ProductId == productId && d.GroupId == null).ToList();
-            if (matches.Count > 0)
-            {
-                matches = matches.OrderByDescending(d => d.AmendmentType).OrderByDescending(d => d.Revision).ToList();
-                return matches.First();
-            }
-            return null;
+            return matches.First();
         }
 
         public object Clone()
         {
+            // TODO review
             return new TechnicalDrawing()
             {
                 Id = Id,
@@ -162,7 +174,7 @@ namespace ProjectLighthouse.Model.Drawings
                 RejectionReason = RejectionReason,
                 ApprovedBy = ApprovedBy,
                 ApprovedDate = ApprovedDate,
-                ProductId = ProductId,
+                TurnedProductId = TurnedProductId,
                 GroupId = GroupId,
                 MaterialId = MaterialId,
                 DrawingType = DrawingType,
@@ -176,18 +188,9 @@ namespace ProjectLighthouse.Model.Drawings
         {
             if (Revision == 0)
             {
-                return $"{MakeValidFileName(DrawingName)}_rc{Id:0}.pdf";
+                return $"{ValidationHelper.MakeValidFileName(DrawingName)}_rc{Id:0}.pdf";
             }
-            return $"{MakeValidFileName(DrawingName)}_R{Revision:0}{AmendmentType}.pdf";
-        }
-
-        private static string MakeValidFileName(string name)
-        {
-            name = name.Trim().ToUpperInvariant();
-            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(Path.GetInvalidFileNameChars()));
-            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
-
-            return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+            return $"{ValidationHelper.MakeValidFileName(DrawingName)}_R{Revision:0}{AmendmentType}.pdf";
         }
 
         public bool PrepareMarkedPdf()
@@ -369,6 +372,23 @@ namespace ProjectLighthouse.Model.Drawings
             fileopener.StartInfo.FileName = "explorer";
             fileopener.StartInfo.Arguments = "\"" + GetLocalPath() + "\"";
             _ = fileopener.Start();
+        }
+
+        public bool MoveToDrawingStore(string fromPath)
+        {
+            try
+            {
+                string bin = @"lib\";
+                RawDrawingStore = bin + Path.GetRandomFileName();
+                string toPath = Path.Combine(App.ROOT_PATH, RawDrawingStore);
+                File.Copy(fromPath, toPath);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
         }
     }
 }

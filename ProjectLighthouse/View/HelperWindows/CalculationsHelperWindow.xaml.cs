@@ -82,7 +82,7 @@ namespace View.HelperWindows
 
         // Inputs validated
         private int userQuantity = 0;
-        private double userDiameter = 0;
+        //private double userDiameter = 0;
         private double userLength = 0;
         private int userBarLength = 0;
         private double userBarCost = 0;

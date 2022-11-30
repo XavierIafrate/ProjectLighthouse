@@ -240,7 +240,8 @@ namespace ProjectLighthouse.View.Orders
 
         private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            DisplayLMOItems control = sender as DisplayLMOItems;
+            if (sender is not DisplayLMOItems control) return;
+
             if (App.CurrentUser.HasPermission(PermissionType.UpdateOrder) && CanEdit)
             {
                 SaveCommand.Execute(control.LatheManufactureOrderItem.Id);
@@ -438,7 +439,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void AddItemButton_Click(object sender, RoutedEventArgs e)
         {
-            AddItemToOrderWindow window = new(Order.Name);
+            AddItemToOrderWindow window = new(Order.Id);
             if (window.PossibleItems.Count == 0)
             {
                 MessageBox.Show("No further items are available to run on this order.", "Unavailable", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -548,7 +549,7 @@ namespace ProjectLighthouse.View.Orders
         private void GetDrawingUpdatesButton_Click(object sender, RoutedEventArgs e)
         {
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == (Order.IsResearch ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production)).ToList();
-            List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, Items, Order.GroupId);
+            List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, Items, Order.GroupId, Order.MaterialId);
 
             int[] currentDrawingIds = DrawingReferences.Select(x => x.DrawingId).ToArray();
             int[] upToDateDrawingIds = drawings.Select(x => x.Id).ToArray();

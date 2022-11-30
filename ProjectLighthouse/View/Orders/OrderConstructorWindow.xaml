@@ -12,6 +12,8 @@
     Height="850"
     MinWidth="1000"
     MinHeight="600"
+    MaxWidth="2100"
+    MaxHeight="1500"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
 
@@ -48,7 +50,7 @@
         </Grid>
         <!--#endregion-->
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="ProductsControlGroup" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -64,8 +66,8 @@
                     <DataTemplate>
                         <Grid MaxWidth="150" Margin="10">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Border Background="{StaticResource Background}" CornerRadius="5">
                                 <Image
@@ -78,8 +80,8 @@
                             <TextBlock
                                 Grid.Row="1"
                                 Margin="5"
-                                FontFamily="Consolas"
                                 VerticalAlignment="Center"
+                                FontFamily="Consolas"
                                 FontSize="22"
                                 FontWeight="SemiBold"
                                 Text="{Binding Name}" />
@@ -97,30 +99,33 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+
             <TextBlock
+                x:Name="GroupsLabel"
                 Grid.Column="0"
                 Style="{StaticResource SectionLabel}"
                 Text="Groups" />
             <ListView
-                Grid.Column="0"
+                x:Name="GroupsListBox"
                 Grid.Row="1"
-                SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedGroup}"
-                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AvailableProductGroups}">
-
-            </ListView>
+                Grid.Column="0"
+                Width="200"
+                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AvailableProductGroups}"
+                SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedGroup}" />
 
             <TextBlock
                 Grid.Column="1"
                 Style="{StaticResource SectionLabel}"
                 Text="Available Products" />
             <ListView
-                Grid.Column="1"
+                x:Name="AvailableItemsListBox"
                 Grid.Row="1"
+                Grid.Column="1"
                 ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AvailableTurnedProducts}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -137,13 +142,11 @@
                 <Button
                     x:Name="AddButton"
                     Click="AddButton_Click"
-                    Content="&gt;"
-                    Style="{StaticResource GreenButton}" />
+                    Style="{StaticResource ListBox_Add_Button}" />
                 <Button
                     x:Name="RemoveButton"
                     Click="RemoveButton_Click"
-                    Content="&lt;"
-                    Style="{StaticResource RedButton}" />
+                    Style="{StaticResource ListBox_Remove_Button}" />
             </StackPanel>
 
             <TextBlock
@@ -154,7 +157,7 @@
                 x:Name="NewOrderItemsListView"
                 Grid.Row="1"
                 Grid.Column="3"
-                ItemsSource="{Binding Path=NewOrderItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewOrderItems}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <userControls:LMOConstructionDisplayLMOItems Item="{Binding}" />
@@ -262,12 +265,12 @@
             Margin="0,10,0,0">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button
-                    Click="Button_Click"
+                    Click="CreateButton_Click"
                     Style="{StaticResource Action_Cancel_Button}"
                     Tag="Cancel" />
                 <Button
-                    x:Name="ApproveButton"
-                    Click="ApproveButton_Click"
+                    x:Name="CreateButton"
+                    Click="CreateButton_Click"
                     Style="{StaticResource Action_New_Button}"
                     Tag="Create Order" />
             </StackPanel>

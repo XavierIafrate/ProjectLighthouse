@@ -222,9 +222,15 @@ namespace ProjectLighthouse.ViewModel.Drawings
         private void LoadData()
         {
             Drawings = DatabaseHelper.Read<TechnicalDrawing>();
-            Drawings = Drawings.OrderBy(d => d.DrawingName).ThenBy(d => d.Revision).ThenBy(x => x.Created).ToList();
+            Drawings = Drawings
+                .OrderBy(d => d.DrawingName)
+                .ThenBy(d => d.Revision).
+                ThenBy(x => x.Created)
+                .ToList();
 
-            List<Note> Notes = DatabaseHelper.Read<Note>().ToList();
+            List<Note> Notes = DatabaseHelper.Read<Note>()
+                .ToList();
+
             for (int i = 0; i < Drawings.Count; i++)
             {
                 Drawings[i].Notes = Notes.Where(x => x.DocumentReference == Drawings[i].Id.ToString("0")).ToList() ?? new();
@@ -232,6 +238,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
             string[] drawingGroups = Drawings.Select(x => x.DrawingName).Distinct().ToArray();
             DrawingGroups = new();
+
             for (int i = 0; i < drawingGroups.Length; i++)
             {
                 List<TechnicalDrawing> d = Drawings.Where(x => x.DrawingName == drawingGroups[i]).ToList();
@@ -294,22 +301,23 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void AddNewDrawing()
         {
-            // TODO
-            //AddNewDrawingWindow window = new(Drawings)
-            //{
-            //    Owner = Application.Current.MainWindow
-            //};
+           AddNewDrawingWindow window = new(Drawings)
+           {
+               Owner = Application.Current.MainWindow
+           };
 
-            //window.ShowDialog();
-            //if (window.SaveExit)
-            //{
-            //    int newId = window.NewDrawing.Id;
-            //    LoadData();
-            //    FilterDrawings();
-            //    Debug.WriteLine($"{FilteredDrawingGroups.Count}");
+            window.ShowDialog();
 
-            //    SelectedGroup = FilteredDrawingGroups.Find(x => x.Drawings.Any(d => d.Id == newId));
-            //}
+            if (!window.SaveExit)
+            {
+                return;
+            }
+
+            int newId = window.NewDrawing.Id;
+            LoadData();
+            FilterDrawings();
+
+            SelectedGroup = FilteredDrawingGroups.Find(x => x.Drawings.Any(d => d.Id == newId));
         }
 
         private void SetDrawingUi()
@@ -475,12 +483,22 @@ namespace ProjectLighthouse.ViewModel.Drawings
             //approveDrawingWindow.ShowDialog();
             //return;
 
+            if (SelectedDrawing is null)
+            {
+                return;
+            }
+
             SelectedDrawing.CopyToAppData();
             SelectedDrawing.ShellOpen();
         }
 
         public void WithdrawDrawing()
         {
+            if(SelectedDrawing is null)
+            {
+                return;
+            }
+         
             if (SelectedDrawing.IsRejected)
             {
                 MessageBox.Show("You cannot withdraw this drawing, it has been rejected.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -502,18 +520,24 @@ namespace ProjectLighthouse.ViewModel.Drawings
             SelectedDrawing.WithdrawnDate = DateTime.Now;
             SelectedDrawing.WithdrawnBy = App.CurrentUser.GetFullName();
 
-            string thisGroup = SelectedGroup.Name;
+            string thisGroup = SelectedGroup!.Name;
             int thisDrawing = SelectedDrawing.Id;
 
-            DatabaseHelper.Update(SelectedDrawing);
+            if (!DatabaseHelper.Update(SelectedDrawing))
+            {
+                MessageBox.Show("Failed to update the database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             SelectedDrawing.PrepareMarkedPdf();
             ShowOldGroups = true;
+
             LoadData();
 
             SelectedGroup = FilteredDrawingGroups.Find(x => x.Name == thisGroup);
             SelectedDrawing = SelectedGroup.Drawings.Find(x => x.Id == thisDrawing);
 
-            MessageBox.Show($"{selectedDrawing.DrawingName} R{selectedDrawing.Revision}{selectedDrawing.AmendmentType} has been withdrawn for manufacture.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"{SelectedDrawing.DrawingName} R{SelectedDrawing.Revision}{SelectedDrawing.AmendmentType} has been withdrawn for manufacture.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

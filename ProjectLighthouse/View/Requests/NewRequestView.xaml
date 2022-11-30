@@ -32,14 +32,7 @@
             Grid.ColumnSpan="3"
             Margin="10"
             Style="{StaticResource title}"
-            Text="Select a product to get started."
-            Visibility="{Binding ProductIsSelected, Converter={StaticResource hideIfTrue}}" />
-        <TextBlock
-            Grid.ColumnSpan="3"
-            Margin="10"
-            Style="{StaticResource title}"
-            Text="{Binding NewRequest.Product, StringFormat='{}New Request for {0}'}"
-            Visibility="{Binding ProductIsSelected, Converter={StaticResource showIfTrue}}" />
+            Text="{Binding NewRequest.Product, StringFormat='{}New Request for {0}', TargetNullValue='Select a product to get started'}" />
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -151,7 +144,8 @@
 
             <StackPanel
                 Grid.Row="4"
-                Orientation="Horizontal" HorizontalAlignment="Right">
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
                 <TextBlock
                     Margin="0,0,5,4"
                     VerticalAlignment="Center"
@@ -161,8 +155,8 @@
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Style="{StaticResource Action_New_Button}"
                     Command="{Binding AddSpecialCommand}"
+                    Style="{StaticResource Action_New_Button}"
                     Tag="Add Bespoke Item" />
             </StackPanel>
 
@@ -191,21 +185,24 @@
                         Style="{StaticResource section}"
                         Text="{Binding SelectedProduct.ProductName}" />
 
-                    <Border  Grid.Row="1" Height="120" Width="120" Background="{StaticResource Background}" CornerRadius="5">
+                    <Border
+                        Grid.Row="1"
+                        Width="120"
+                        Height="120"
+                        Background="{StaticResource Background}"
+                        CornerRadius="5">
                         <Grid>
-                        <Path
-                            Height="40"
-                            Margin="0,0,2,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
-                            Fill="{StaticResource OnBackground}"
-                            Opacity="0.3"
-                            Stretch="Uniform" />
-                        <Image
-                            RenderOptions.BitmapScalingMode="Fant"
-                            Source="{Binding SelectedProduct.Group.LocalRenderPath}" />
-                    </Grid>
+                            <Path
+                                Height="40"
+                                Margin="0,0,2,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
+                                Fill="{StaticResource OnBackground}"
+                                Opacity="0.3"
+                                Stretch="Uniform" />
+                            <Image RenderOptions.BitmapScalingMode="Fant" Source="{Binding SelectedMainProduct.LocalRenderPath}" />
+                        </Grid>
                     </Border>
 
                     <Grid
@@ -223,7 +220,7 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
-                            <RowDefinition />
+                            <RowDefinition Height="16.393" />
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
@@ -274,7 +271,7 @@
                             HorizontalAlignment="Right"
                             d:Text="TOOLING_GROUP"
                             FontWeight="SemiBold"
-                            Text="{Binding SelectedProduct.ProductGroup}" />
+                            Text="{Binding SelectedProductGroup, TargetNullValue='None'}" />
 
                         <TextBlock
                             Grid.Row="4"
@@ -286,7 +283,7 @@
                             HorizontalAlignment="Right"
                             d:Text="MATERIAL"
                             FontWeight="SemiBold"
-                            Text="{Binding SelectedProduct.Material}" />
+                            Text="MATERIAL_ID" />
 
                         <TextBlock
                             Grid.Row="5"
@@ -450,10 +447,10 @@
             <Button
                 x:Name="SubmitButton"
                 HorizontalAlignment="Right"
-                Style="{StaticResource Action_Button}"
                 Command="{Binding SubmitRequestCommand}"
-                Tag="Submit Request"
-                IsEnabled="False" />
+                IsEnabled="False"
+                Style="{StaticResource Action_Button}"
+                Tag="Submit Request" />
         </StackPanel>
         <Border
             Grid.Row="1"
