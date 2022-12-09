@@ -19,15 +19,20 @@
                 Style="{StaticResource DefaultTextBox}"
                 Tag="Name"
                 Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.Name, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Item Code" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Item Code"
+                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.ProductCode, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Style="{StaticResource InputLabel}" Text="Vendor Name" />
             <TextBox
                 Style="{StaticResource DefaultTextBox}"
                 Tag="Vendor"
                 Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.Vendor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Style="{StaticResource InputLabel}" Text="Vendor Item Name" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Vendor Item Code" />
             <TextBox
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Vendor Code"
+                Tag="Vendor Item Code"
                 Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewPurchase.VendorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Style="{StaticResource InputLabel}" Text="Item Value" />
             <TextBox

@@ -43,6 +43,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Harmonogram",
                     "Persian" => "برنامه",
                     "Welsh" => "Amserlen",
+                    "Latvian" => "Grafiks",
                     _ => "Schedule"
                 };
             }
@@ -56,6 +57,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Wyświetl Prośby",
                     "Persian" => "مشاهده درخواست ها",
                     "Welsh" => "Gweld Ceisiadau",
+                    "Latvian" => "Pieprasījumi",
                     _ => "View Requests"
                 };
             }
@@ -69,6 +71,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Nowe Żądanie",
                     "Persian" => "درخواست جدید",
                     "Welsh" => "Cais Newydd",
+                    "Latvian" => "Jauns Pieprasījums",
                     _ => "New Request"
                 };
             }
@@ -82,6 +85,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Zamówienia Produkcje",
                     "Persian" => "سفارشات ساخت",
                     "Welsh" => "Gorchmynion Gweithgynhyrchu",
+                    "Latvian" => "Ražošanas Pasūtījumi",
                     _ => "Manufacture Orders"
                 };
             }
@@ -95,6 +99,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Materiał",
                     "Persian" => "ماده خام",
                     "Welsh" => "Deunydd Crai",
+                    "Latvian" => "Izejviela",
                     _ => "Bar Stock"
                 };
             }
@@ -108,6 +113,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Rysunek Techniczney",
                     "Persian" => "نقشه های فنی",
                     "Welsh" => "Darluniau Technegol",
+                    "Latvian" => "Tehniskie Rasējumi",
                     _ => "Technical Drawings"
                 };
             }
@@ -149,6 +155,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Kalibracja",
                     "Persian" => "تنظیم",
                     "Welsh" => "Calibradu",
+                    "Latvian" => "Tehniskie Rasējumi",
                     _ => "Calibration"
                 };
             }
@@ -162,6 +169,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Kontrola Jakości",
                     "Persian" => "بررسی کیفیت",
                     "Welsh" => "Gwiriad Ansawdd",
+                    "Latvian" => "Kvalitātes Kontrole",
                     _ => "Quality Check"
                 };
             }
@@ -175,6 +183,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Polish" => "Dostawy",
                     "Persian" => "تحویل",
                     "Welsh" => "Dosbarthu",
+                    "Latvian" => "Piegādes",
                     _ => "Deliveries"
                 };
             }

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Drawings
@@ -22,7 +23,9 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public List<TechnicalDrawingGroup> DrawingGroups { get; set; }
         public List<TechnicalDrawingGroup> FilteredDrawingGroups { get; set; }
         public List<TechnicalDrawing> Drawings { get; set; }
+        public List<Note> SelectedDrawingNotes { get; set; }
 
+        #region Full Properties
         private List<TechnicalDrawing> filteredDrawings;
         public List<TechnicalDrawing> FilteredDrawings
         {
@@ -41,26 +44,11 @@ namespace ProjectLighthouse.ViewModel.Drawings
             set
             {
                 selectedGroup = value;
-
-                // TODO refactor
-                if (selectedGroup == null)
-                {
-                    NoneFoundVis = Visibility.Visible;
-                    DrawingVis = Visibility.Hidden;
-                }
-                else
-                {
-                    FilteredDrawings = selectedGroup.Drawings;
-                    SelectedDrawing = FilteredDrawings.Last();
-                    NoneFoundVis = Visibility.Hidden;
-                    DrawingVis = Visibility.Visible;
-                }
+                LoadGroup();
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(FilteredDrawings));
-                OnPropertyChanged(nameof(NoneFoundVis));
-                OnPropertyChanged(nameof(DrawingVis));
             }
         }
+
 
         private TechnicalDrawing? selectedDrawing;
         public TechnicalDrawing? SelectedDrawing
@@ -74,9 +62,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
         }
 
-        public List<Note> SelectedDrawingNotes { get; set; }
-
-
         private string searchBoxText;
         public string SearchBoxText
         {
@@ -89,25 +74,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
         }
 
-        public Uri FilePath { get; set; }
-
-        public Visibility NoneFoundVis { get; set; } = Visibility.Hidden;
-        public Visibility DrawingVis { get; set; } = Visibility.Visible;
-
-        public Visibility ArchetypeWarningVis { get; set; } = Visibility.Collapsed;
-        public Visibility SelectedDrawingDisplayVis { get; set; } = Visibility.Visible;
-        public Visibility EditControlsVis { get; set; } = Visibility.Collapsed;
-
-        public Visibility ApprovalControlsVis { get; set; } = Visibility.Collapsed;
-        public Visibility PendingApprovalVis { get; set; } = Visibility.Collapsed;
-
-        public AddNewDrawingCommand AddNewCmd { get; set; }
-        public OpenDrawingCommand OpenDrawingCmd { get; set; }
-        public WithdrawDrawingCommand WithdrawCmd { get; set; }
-        public AddCommentToDrawingCommand AddCommentToDrawingCmd { get; set; }
-
-
-
         private string rejectionStatement;
         public string RejectionStatement
         {
@@ -119,9 +85,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
         }
 
-        public ApproveDrawingCommand ApproveDrawingCmd { get; set; }
-        public RejectDrawingCommand RejectDrawingCmd { get; set; }
-
         private string newNoteText;
         public string NewNoteText
         {
@@ -132,8 +95,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 OnPropertyChanged();
             }
         }
-
-
 
         private bool showOldGroups;
         public bool ShowOldGroups
@@ -148,26 +109,16 @@ namespace ProjectLighthouse.ViewModel.Drawings
         }
 
         private bool showRejected;
-
         public bool ShowRejected
         {
             get { return showRejected; }
             set 
             {
-                showRejected = value; 
-                if (showRejected)
-                {
-                    FilteredDrawings = selectedGroup.Drawings;
-                }
-                else
-                {
-                    FilteredDrawings = selectedGroup.Drawings.Where(x => !x.IsRejected && !x.IsWithdrawn).ToList();
-                }
+                showRejected = value;
+                LoadGroup();
                 OnPropertyChanged(); 
             }
         }
-
-
 
         private bool openFileButtonEnabled;
         public bool OpenFileButtonEnabled
@@ -176,7 +127,9 @@ namespace ProjectLighthouse.ViewModel.Drawings
             set
             {
                 openFileButtonEnabled = value;
-                OpenFileButtonText = value ? "Open File" : "Not Found";
+                OpenFileButtonText = value 
+                    ? "Open File" 
+                    : "Not Found";
                 OnPropertyChanged();
             }
         }
@@ -185,10 +138,32 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public string OpenFileButtonText
         {
             get { return openFileButtonText; }
-            set { openFileButtonText = value; OnPropertyChanged(); }
+            set 
+            { 
+                openFileButtonText = value; 
+                OnPropertyChanged(); 
+            }
         }
         #endregion
 
+        #region Visibilities
+        public Visibility EditControlsVis { get; set; } = Visibility.Collapsed;
+        public Visibility ApprovalControlsVis { get; set; } = Visibility.Collapsed;
+        public Visibility PendingApprovalVis { get; set; } = Visibility.Collapsed;
+        #endregion
+
+        #region Commands
+        public AddNewDrawingCommand AddNewCmd { get; set; }
+        public OpenDrawingCommand OpenDrawingCmd { get; set; }
+        public WithdrawDrawingCommand WithdrawCmd { get; set; }
+        public AddCommentToDrawingCommand AddCommentToDrawingCmd { get; set; }
+        public ApproveDrawingCommand ApproveDrawingCmd { get; set; }
+        public RejectDrawingCommand RejectDrawingCmd { get; set; }
+        #endregion
+
+        #endregion
+
+        #region Loading
         public DrawingBrowserViewModel()
         {
             InitialiseVariables();
@@ -224,8 +199,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
             Drawings = DatabaseHelper.Read<TechnicalDrawing>();
             Drawings = Drawings
                 .OrderBy(d => d.DrawingName)
-                .ThenBy(d => d.Revision).
-                ThenBy(x => x.Created)
+                .ThenBy(d => d.Revision)
+                .ThenBy(x => x.Created)
                 .ToList();
 
             List<Note> Notes = DatabaseHelper.Read<Note>()
@@ -266,6 +241,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 DrawingGroups.Add(newGroup);
             }
         }
+        #endregion
 
         private void FilterDrawings(string searchString = "")
         {
@@ -295,7 +271,47 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 SelectedGroup = null;
             }
 
+            if (SelectedGroup is not null)
+            {
+                if (ShowRejected)
+                {
+                    FilteredDrawings = SelectedGroup.Drawings;
+                }
+                else
+                {
+                    FilteredDrawings = SelectedGroup.Drawings
+                        .Where(x => !x.IsRejected && !x.IsWithdrawn)
+                        .ToList();
+                }
+            }
+
             OnPropertyChanged(nameof(FilteredDrawingGroups));
+            OnPropertyChanged(nameof(FilteredDrawings));
+        }
+
+        private void LoadGroup()
+        {
+            if (selectedGroup is null)
+            {
+                return;
+            }
+
+            if (!ShowRejected)
+            {
+                FilteredDrawings = selectedGroup.Drawings
+                    .Where(x => !x.IsRejected && !x.IsWithdrawn)
+                    .ToList();
+            }
+            else
+            {
+                FilteredDrawings = selectedGroup.Drawings;
+            }
+
+            if (FilteredDrawings.Count > 0)
+            {
+                SelectedDrawing = FilteredDrawings.Last();
+            }
+
             OnPropertyChanged(nameof(FilteredDrawings));
         }
 
@@ -328,6 +344,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
             string filePath = Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore);
 
+            // TODO Fix this
             SelectedDrawingNotes = null;
             OnPropertyChanged(nameof(SelectedDrawingNotes));
             SelectedDrawingNotes = selectedDrawing.Notes;
@@ -361,7 +378,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             Note newNote = new()
             {
                 DateSent = DateTime.Now.ToString("s"),
-                DocumentReference = $"{SelectedDrawing.Id:0}",
+                DocumentReference = $"{SelectedDrawing!.Id:0}",
                 SentBy = App.CurrentUser.UserName,
                 Message = newNoteText.Trim(),
                 OriginalMessage = newNoteText.Trim(),

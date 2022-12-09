@@ -14,7 +14,11 @@ namespace ProjectLighthouse.Model.Research
         public string Name
         {
             get { return name; }
-            set { name = value; ValidateProperty(); OnPropertyChanged(); }
+            set { 
+                name = value; 
+                ValidateProperty(); 
+                OnPropertyChanged(); 
+            }
         }
 
         public int ProjectId { get; set; }
@@ -35,9 +39,9 @@ namespace ProjectLighthouse.Model.Research
                     return;
                 }
 
-                if (!ValidationHelper.StringIsAlphanumeric(Name, allowSpace: true))
+                if (!ValidationHelper.IsValidProductName(Name))
                 {
-                    AddError(nameof(Name), "Name must consist of alphanumeric characters or space");
+                    AddError(nameof(Name), "Name must be a valid product name");
                 }
 
                 if (Name.Length > 25)

@@ -1,16 +1,17 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using ProjectLighthouse.Model.Drawings;
+﻿using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
+using ViewModel.Helpers;
 
 namespace ProjectLighthouse.View.Orders
 {
@@ -19,6 +20,7 @@ namespace ProjectLighthouse.View.Orders
         public List<Product> Products { get; set; }
         public List<ProductGroup> ProductGroups { get; set; }
         public List<TurnedProduct> TurnedProducts { get; set; }
+        public List<BarStock> BarStock { get; set; }
 
 
         #region Full Properties
@@ -75,9 +77,9 @@ namespace ProjectLighthouse.View.Orders
         public LatheManufactureOrder NewOrder
         {
             get { return newOrder; }
-            set 
-            { 
-                newOrder = value; 
+            set
+            {
+                newOrder = value;
                 OnPropertyChanged();
             }
         }
@@ -89,12 +91,12 @@ namespace ProjectLighthouse.View.Orders
             get { return newOrderItems; }
             set
             {
-                newOrderItems = value; 
-                OnPropertyChanged();    
+                newOrderItems = value;
+                OnPropertyChanged();
             }
-
         }
 
+        private int MaterialId;
 
 
         #endregion
@@ -131,13 +133,12 @@ namespace ProjectLighthouse.View.Orders
                 throw new System.ArgumentNullException("Target group is null");
             }
 
-
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
-            
+
         }
 
-        public OrderConstructorWindow(int requiredGroup, int materialId, Dictionary<TurnedProduct, int> required)
+        public OrderConstructorWindow(int requiredGroup, int materialId, (TurnedProduct, int, DateTime) required)
         {
             InitializeComponent();
 
@@ -151,31 +152,53 @@ namespace ProjectLighthouse.View.Orders
 
             if (targetGroup is null)
             {
-                throw new System.ArgumentNullException("Target group is null");
+                throw new Exception("Target group is null");
             }
+
 
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
 
-            for (int i = 0; i < required.Count; i++)
+
+            TurnedProduct product = required.Item1;
+
+            if (product.MaterialId is null)
             {
-                TurnedProduct product = required.ElementAt(i).Key;
-                int quantity = required.ElementAt(i).Value;
+                throw new($"Material Id for {product.ProductName} is not set.");
+            }
 
-                if (!AvailableTurnedProducts.Any(x => x.Id == product.Id))
+            int quantity = required.Item2;
+            DateTime date = required.Item3;
+
+            if (!AvailableTurnedProducts.Any(x => x.Id == product.Id))
+            {
+                throw new Exception($"{product.ProductName} not in group ID '{requiredGroup}'.");
+            }
+
+            NewOrderItems.Add(new(product, quantity, date));
+
+            TurnedProduct toRemove = AvailableTurnedProducts.ToList().Find(x => x.Id == product.Id);
+
+            if (toRemove == null)
+            {
+                return;
+            }
+
+            AvailableTurnedProducts.Remove(toRemove);
+
+            for (int j = AvailableTurnedProducts.Count - 1; j >= 0; j--)
+            {
+                MaterialId = (int)product.MaterialId;
+
+                if (AvailableTurnedProducts[j].MaterialId != product.MaterialId)
                 {
-                    MessageBox.Show($"{product.ProductName} not in group ID '{requiredGroup}'.");
-                    continue;
+                    AvailableTurnedProducts.RemoveAt(j);
                 }
+                //else if (NewOrderItems.Any(x => x.ProductId == AvailableTurnedProducts[j].Id))
+                //{
+                //    object test = AvailableItemsListBox.ItemsSource. disable stuff?
+                //}
 
-                NewOrderItems.Add(new(product, quantity));
-
-                TurnedProduct toRemove = AvailableTurnedProducts.ToList().Find(x => x.Id == product.Id);
-
-                if (toRemove != null)
-                {
-                    AvailableTurnedProducts.Remove(toRemove);
-                }
             }
         }
 
@@ -184,6 +207,9 @@ namespace ProjectLighthouse.View.Orders
             Products = DatabaseHelper.Read<Product>();
             ProductGroups = DatabaseHelper.Read<ProductGroup>();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>();
+            BarStock = DatabaseHelper.Read<BarStock>();
+
+            NewOrder = new();
         }
 
         private void FilterGroups()
@@ -209,8 +235,13 @@ namespace ProjectLighthouse.View.Orders
                 return;
             }
 
+            AvailableTurnedProducts.Clear();
+            NewOrderItems.Clear();
+
             TurnedProducts
                 .Where(x => x.GroupId == SelectedGroup.Id)
+                .OrderBy(x => x.ProductName)
+                .ThenBy(x => !x.IsSpecialPart)
                 .ToList()
                 .ForEach(x => AvailableTurnedProducts.Add(x));
         }
@@ -300,10 +331,28 @@ namespace ProjectLighthouse.View.Orders
         {
             if (AvailableItemsListBox.SelectedValue is not TurnedProduct product) return;
 
+
+            if (product.MaterialId is null)
+            {
+                MessageBox.Show("Material ID for selected product is not set.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            MaterialId = (int)product.MaterialId;
+
             NewOrderItems.Add(new(product));
             AvailableTurnedProducts.Remove(product);
 
+
+            for (int i = AvailableTurnedProducts.Count - 1; i >= 0; i--)
+            {
+                if (AvailableTurnedProducts[i].MaterialId != product.MaterialId)
+                {
+                    AvailableTurnedProducts.RemoveAt(i);
+                }
+            }
         }
+
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -316,6 +365,11 @@ namespace ProjectLighthouse.View.Orders
 
             NewOrderItems.Remove(item);
             AvailableTurnedProducts.Add(TurnedProducts.Find(x => x.Id == item.ProductId));
+
+            if (NewOrderItems.Count == 0)
+            {
+                FilterTurnedProducts();
+            }
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -324,10 +378,16 @@ namespace ProjectLighthouse.View.Orders
             {
                 return;
             }
-            
-            throw new NotImplementedException();
 
-            CreateManufactureOrder();
+            try
+            {
+                CreateManufactureOrder();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             SaveExit = true;
             Close();
@@ -338,69 +398,67 @@ namespace ProjectLighthouse.View.Orders
             Close();
         }
 
-        private void CreateManufactureOrder()
+        private bool CreateManufactureOrder()
         {
             NewOrder.Name = GetNewOrderId();
             NewOrder.CreatedAt = DateTime.Now;
             NewOrder.CreatedBy = App.CurrentUser.GetFullName();
 
-            NewOrder.MajorDiameter = NewOrderItems.First().MajorDiameter;
+            if (SelectedGroup is null)
+            {
+                throw new Exception("Selected group is null, cannot proceed.");
+            }
 
-            //NewOrder.BarsInStockAtCreation = Bars.Find(x => x.Id == NewOrder.BarID).InStock;
-            //NewOrder.NumberOfBars = Math.Ceiling(Insights.NumberOfBarsRequired);
-            //NewOrder.GroupId = SelectedToolingGroup;
-            //NewOrder.MaterialId = ;
+            ProductGroup group = SelectedGroup;
+            NewOrder.MajorDiameter = group.MajorDiameter;
 
-            int time = 0;
-            //List<TurnedProduct> comparableProducts = ProductsInToolingGroup.Where(x => x.CycleTime > 0).ToList();
-            //int lastCycleTime = comparableProducts.Count > 0
-            //    ? comparableProducts.Min(x => x.CycleTime)
-            //    : 0;
+            List<BarStock> potentialBar = BarStock
+                .Where(x => x.MaterialId == MaterialId && x.Size >= SelectedGroup.GetRequiredBarSize())
+                .OrderBy(x => x.Size)
+                .ToList();
 
-            //List<LatheManufactureOrderItem> items = NewOrderItems.OrderByDescending(x => x.CycleTime).ToList();
-            //for (int i = 0; i < items.Count; i++)
-            //{
-            //    if (NewOrderItems[i].CycleTime > 0)
-            //    {
-            //        time += NewOrderItems[i].CycleTime * NewOrderItems[i].TargetQuantity;
-            //    }
-            //    else if (lastCycleTime > 0)
-            //    {
-            //        time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
-            //    }
-            //    else
-            //    {
-            //        time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
-            //    }
+            if (potentialBar.Count == 0)
+            {
+                throw new Exception("No bar records available that meet the size or material requirements for the product.");
+            }
 
-            //    lastCycleTime = NewOrderItems[i].CycleTime;
-            //}
+            BarStock orderBar = potentialBar.First();
 
-            NewOrder.TimeToComplete = time;
-            //items = items.Where(x => x.CycleTime > 0).ToList();
+            NewOrder.BarsInStockAtCreation = orderBar.InStock;
+            NewOrder.MaterialId = MaterialId;
+            NewOrder.GroupId = SelectedGroup.Id;
+            NewOrder.NumberOfBars = NewOrderItems.CalculateNumberOfBars(orderBar, 0);
 
-            //if (items.Count > 0)
-            //{
-            //    NewOrder.TargetCycleTime = items.Min(x => x.CycleTime);
-            //    NewOrder.TargetCycleTimeEstimated = false;
-            //}
-            //else
-            //{
-            //    NewOrder.TargetCycleTime = NewOrderItems[0].GetCycleTime();
-            //    NewOrder.TargetCycleTimeEstimated = true;
-            //}
+            List<TurnedProduct> comparableProducts = TurnedProducts
+                .Where(x => x.GroupId == SelectedGroup.Id 
+                    && x.MaterialId == MaterialId 
+                    && x.CycleTime > 0)
+                .ToList();
+
+
+            int? defaultCycleTime = null;
+            if (comparableProducts.Count > 0)
+            {
+                defaultCycleTime = comparableProducts.Min(x => x.CycleTime);
+            }
+
+            (int totalTime, int targetCycleTime, bool estimated) = NewOrderItems.CalculateOrderRuntime(defaultCycleTime);
+
+            NewOrder.TimeToComplete = totalTime;
+            NewOrder.TargetCycleTime = targetCycleTime;
+            NewOrder.TargetCycleTimeEstimated = estimated;
 
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == TechnicalDrawing.Type.Production).ToList();
             List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.GroupId, NewOrder.MaterialId);
 
             _ = DatabaseHelper.Insert(NewOrder);
-            
+
             foreach (TechnicalDrawing drawing in drawings)
             {
                 OrderDrawing o = new() { DrawingId = drawing.Id, OrderId = NewOrder.Name };
                 DatabaseHelper.Insert(o);
             }
-            
+
             foreach (LatheManufactureOrderItem item in NewOrderItems)
             {
                 if (item.TargetQuantity == 0)
@@ -414,7 +472,7 @@ namespace ProjectLighthouse.View.Orders
                 item.DateAdded = DateTime.Now;
                 DatabaseHelper.Insert(item);
             };
-
+            return true;
 
         }
 

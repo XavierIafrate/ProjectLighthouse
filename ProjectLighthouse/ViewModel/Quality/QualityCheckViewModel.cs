@@ -227,10 +227,13 @@ namespace ProjectLighthouse.ViewModel.Quality
             {
                 DocumentReference = "q" + SelectedCheck.Id,
                 Remark = "",
+                CreatedAt = DateTime.Now,
+                CreatedBy = App.CurrentUser.UserName,
             };
 
             newAttachment.CopyToStore(filePicker.FileName);
 
+            // TODO handle failed
             DatabaseHelper.Insert(newAttachment);
 
             UpdateCurrentCheck();

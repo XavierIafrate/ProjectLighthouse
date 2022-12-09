@@ -48,19 +48,19 @@
 
 
         <Border
-            HorizontalAlignment="Center"
             x:Name="RequirementsBox"
-            Margin="10,10,10,5"
+            Margin="0,8,0,0"
             Grid.Row="1"
             Grid.ColumnSpan="3"
-            Background="{StaticResource Red}"
-            CornerRadius="10"
+            Background="{StaticResource OrangeFaded}"
+            CornerRadius="5"
             Padding="10,5"
-            TextElement.Foreground="{StaticResource OnRed}">
+            TextElement.Foreground="{StaticResource Orange}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock Text="{Binding RequiredQuantity,StringFormat='{}{0:#,##0} pcs'}" />
+                <Path Margin="5,0" Height="18" Width="15" Stretch="Uniform" Fill="{StaticResource Orange}"  Data="M19,19H5V8H19M19,3H18V1H16V3H8V1H6V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M16.53,11.06L15.47,10L10.59,14.88L8.47,12.76L7.41,13.82L10.59,17L16.53,11.06Z"/>
+                <TextBlock FontWeight="SemiBold" Text="{Binding RequiredQuantity,StringFormat='{}{0:#,##0} pcs'}" d:Text="10,000 pcs" />
                 <TextBlock Text=" guaranteed for " />
-                <TextBlock Text="{Binding DateRequired, StringFormat='{}{0:ddd dd/MM/yy}'}" />
+                <TextBlock FontWeight="SemiBold" Text="{Binding DateRequired, StringFormat='{}{0:dd MMMM yyyy}'}" d:Text="01 January 1970"/>
             </StackPanel>
             
         </Border>

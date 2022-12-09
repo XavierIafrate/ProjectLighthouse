@@ -30,6 +30,22 @@ namespace ProjectLighthouse.View
                 }
             }
 
+            if (string.IsNullOrEmpty(user.Locale))
+            {
+                user.Locale = "British";
+            }
+
+            foreach (ComboBoxItem item in locale.Items)
+            {
+
+                if ((string)item.Content == user.Locale)
+                {
+                    defaultViewComboBox.SelectedItem = item;
+                    break;
+                }
+            }
+
+
             GetUserPermissions();
         }
 
@@ -59,6 +75,11 @@ namespace ProjectLighthouse.View
             }
 
             user.Password = newPwd.Password;
+            if (user.Locale == "British")
+            {
+                user.Locale = "";
+            }
+
             if (DatabaseHelper.Update<User>(user))
             {
                 MessageBox.Show("Password successfully updated", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -72,11 +93,15 @@ namespace ProjectLighthouse.View
             }
         }
 
-        private void defaultViewComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void defaultViewComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox comboBox = sender as ComboBox;
-            ComboBoxItem item = (ComboBoxItem)comboBox.SelectedValue;
+            ComboBoxItem item = (ComboBoxItem)defaultViewComboBox.SelectedValue;
             user.DefaultView = item.Content.ToString();
+            if (user.Locale == "British")
+            {
+                user.Locale = "";
+            }
+
             DatabaseHelper.Update<User>(user);
         }
 
@@ -105,6 +130,19 @@ namespace ProjectLighthouse.View
             }
 
             PermissionsList.ItemsSource = permissionsYesNo;
+        }
+
+        private void locale_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBoxItem item = (ComboBoxItem)locale.SelectedValue;
+            user.Locale = item.Content.ToString();
+
+            if (user.Locale == "British")
+            {
+                user.Locale = "";
+            }
+
+            DatabaseHelper.Update<User>(user);
         }
     }
 }

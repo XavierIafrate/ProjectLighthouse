@@ -26,6 +26,7 @@ namespace ProjectLighthouse
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
         public static bool DevMode { get; set; }
+
         private static MainWindow Window;
         public static MainViewModel MainViewModel { get; set; }
         public static NotificationManager NotificationsManager { get; set; }
@@ -222,6 +223,14 @@ namespace ProjectLighthouse
             {
                 return;
             }
+
+            if (e.Exception is NotImplementedException)
+            {
+                MessageBox.Show("The action executed has not been implemented yet.", "Exception", MessageBoxButton.OK, MessageBoxImage.Stop);
+                e.Handled = true;
+                return;
+            }
+
             if (!App.DevMode && App.CurrentUser != null)
             {
                 RecordError(e);

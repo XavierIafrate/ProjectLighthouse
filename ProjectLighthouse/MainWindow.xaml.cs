@@ -35,6 +35,7 @@ namespace ProjectLighthouse
                 "Polish" => "Latarnia Morska",
                 "Persian" => "فانوس دریایی",
                 "Welsh" => "Goleudy",
+                "Latvian" => "Bāka",
                 _ => "Lighthouse"
             };
 

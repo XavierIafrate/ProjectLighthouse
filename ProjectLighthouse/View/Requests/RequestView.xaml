@@ -588,19 +588,16 @@
                                 </Grid.ColumnDefinitions>
                                 <Button
                                     x:Name="DeclineButton"
-                                    Margin="10,0"
                                     Command="{Binding DeclineCommand}"
                                     Style="{StaticResource DeclineButton}" />
                                 <Button
                                     x:Name="ApproveButton"
                                     Grid.Column="1"
-                                    Margin="10,0"
                                     Command="{Binding ApproveCommand}"
                                     Style="{StaticResource ApproveButton}" />
                                 <Button
                                     x:Name="MergeButton"
                                     Grid.Column="2"
-                                    Margin="10,0"
                                     Command="{Binding MergeCommand}"
                                     Style="{StaticResource MergeButton}"
                                     Visibility="{Binding MergeVis}" />

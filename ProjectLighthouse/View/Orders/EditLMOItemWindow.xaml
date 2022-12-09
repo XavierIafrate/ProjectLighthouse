@@ -170,7 +170,7 @@
                     <DataTemplate DataType="{x:Type mdl:Lot}">
                         <uc:DisplayLot
                             Margin="10,2"
-                            EditCommand="{Binding EditCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Window}}"
+                            EditCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=EditCommand}"
                             Lot="{Binding}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>

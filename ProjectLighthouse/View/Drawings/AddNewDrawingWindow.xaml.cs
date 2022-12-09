@@ -87,8 +87,8 @@ namespace ProjectLighthouse.View.Drawings
                 selectedGroup = value;
                 NewDrawing.GroupId = SelectedGroup?.Id;
 
-                FilterMaterials();
                 FilterProducts();
+                FilterMaterials();
                 OnPropertyChanged();
             }
         }
@@ -189,9 +189,15 @@ namespace ProjectLighthouse.View.Drawings
             NewDrawing = new();
             ArchetypeMode = false;
 
-            Products = DatabaseHelper.Read<Product>();
-            ProductGroups = DatabaseHelper.Read<ProductGroup>();
-            TurnedProducts = DatabaseHelper.Read<TurnedProduct>();
+            Products = DatabaseHelper.Read<Product>()
+                .OrderBy(x => x.Name)
+                .ToList();
+            ProductGroups = DatabaseHelper.Read<ProductGroup>()
+                .OrderBy(x => x.Name)
+                .ToList();
+            TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
+                .OrderBy(x => x.ProductName)
+                .ToList();
             Materials = DatabaseHelper.Read<MaterialInfo>();
         }
 
@@ -283,7 +289,7 @@ namespace ProjectLighthouse.View.Drawings
         {
             if (string.IsNullOrWhiteSpace(TargetFilePath))
             {
-                MessageBox.Show("Choose a file", "Error");
+                MessageBox.Show("Choose a file", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;   
             }
 
@@ -291,7 +297,7 @@ namespace ProjectLighthouse.View.Drawings
             {
                 if (SelectedGroup is null)
                 {
-                    MessageBox.Show("You need to select a product group for the archetype", "Error");
+                    MessageBox.Show("You need to select a product group for the archetype", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return false;
                 }
             }
@@ -299,20 +305,19 @@ namespace ProjectLighthouse.View.Drawings
             {
                 if (SelectedTurnedProduct is null)
                 {
-                    MessageBox.Show("You need to select a product", "Error");
+                    MessageBox.Show("You need to select a product", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return false;
                 }
             }
 
             if (string.IsNullOrWhiteSpace(NewDrawing.IssueDetails))
             {
-                MessageBox.Show("Issue details are required", "Error");
+                MessageBox.Show("Issue details are required", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
             return true;
         }
-
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
@@ -364,11 +369,10 @@ namespace ProjectLighthouse.View.Drawings
                 {
                     NewDrawing.DrawingName = $"{SelectedGroup!.Name}-{SelectedMaterial.MaterialCode}";
                 }
+                return;
             }
-            else
-            {
-                NewDrawing.DrawingName = SelectedTurnedProduct!.ProductName;
-            }
+
+            NewDrawing.DrawingName = SelectedTurnedProduct!.ProductName;    
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using Microsoft.Win32;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Research;
 using ProjectLighthouse.View.Research;
@@ -345,12 +346,77 @@ namespace ProjectLighthouse.ViewModel.Research
 
         public void AddAttachment()
         {
-            throw new NotImplementedException();
+            OpenFileDialog filePicker = new()
+            {
+                Filter = "Pdf Files (*.pdf)|*.pdf|Image Files (*.png, *.jpg)|*.png;*.jpg|Excel Workbooks (*.xlsx)|*.xlsx|Word Docs (*.docx)|*.docx",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+            };
+
+            if (!(filePicker.ShowDialog() ?? false))
+            {
+                return;
+            }
+
+            Attachment newAttachment = new()
+            {
+                DocumentReference = "dev" + SelectedProject.Id,
+                Remark = "",
+                CreatedAt = DateTime.Now,
+                CreatedBy = App.CurrentUser.UserName,
+            };
+
+            newAttachment.CopyToStore(filePicker.FileName);
+
+            if (!DatabaseHelper.Insert(newAttachment))
+            {
+                MessageBox.Show("An error occurred while inserting to the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Attachments.Add(newAttachment);
+            Projects.Find(x => x.Id == SelectedProject.Id)!.Attachments.Add(newAttachment);
+
+            int id = SelectedProject.Id;
+            Filter();
+
+            if (FilteredProjects.Any(x => x.Id == id))
+            {
+                SelectedProject = FilteredProjects.Find(x => x.Id == id);
+                OnPropertyChanged(nameof(SelectedProject));
+            }
         }
 
         public void RemoveAttachment()
         {
-            throw new NotImplementedException();
+            if (SelectedAttachment is null) return;
+
+            if (!SelectedAttachment.RemoveFromStore())
+            {
+                MessageBox.Show("An error occurred while attempting to remove the file.", "Error");
+                return;
+            }
+
+            if(!DatabaseHelper.Delete(SelectedAttachment))
+            {
+                MessageBox.Show("An error occurred while attempting to delete the record in the database", "Error");
+                return;
+            }
+
+            int attachmentId = SelectedAttachment.Id;
+
+            Attachments = Attachments.Where(x => x.Id != attachmentId).ToList();
+
+            Projects.Find(x => x.Id == SelectedProject.Id)!.Attachments = Projects.Find(x => x.Id == SelectedProject.Id)!.Attachments.Where(x => x.Id != attachmentId).ToList();
+            SelectedProject.Attachments = SelectedProject.Attachments.Where(x => x.Id != attachmentId).ToList();
+
+            int id = SelectedProject.Id;
+            Filter();
+
+            if (FilteredProjects.Any(x => x.Id == id))
+            {
+                SelectedProject = FilteredProjects.Find(x => x.Id == id);
+                OnPropertyChanged(nameof(SelectedProject));
+            }
         }
 
 

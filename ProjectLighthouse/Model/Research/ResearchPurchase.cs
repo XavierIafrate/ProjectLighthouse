@@ -21,7 +21,19 @@ namespace ProjectLighthouse.Model.Research
             get { return name; }
             set
             {
-                name = value.Trim();
+                name = value;
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
+        private string productCode = "";
+        public string ProductCode
+        {
+            get { return productCode; }
+            set
+            {
+                productCode = value.Trim();
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -31,15 +43,14 @@ namespace ProjectLighthouse.Model.Research
         public string Vendor
         {
             get { return vendor; }
-            set { vendor = value.Trim(); ValidateProperty(); OnPropertyChanged(); }
+            set { vendor = value; ValidateProperty(); OnPropertyChanged(); }
         }
 
         private string vendorCode = "";
-
         public string VendorCode
         {
             get { return vendorCode; }
-            set { vendorCode = value.Trim(); ValidateProperty(); OnPropertyChanged(); }
+            set { vendorCode = value; ValidateProperty(); OnPropertyChanged(); }
         }
 
         public bool Authorised { get; set; } = false;
@@ -81,12 +92,20 @@ namespace ProjectLighthouse.Model.Research
                     AddError(nameof(Name), "Name cannot be empty");
                     return;
                 }
-
-                if(!ValidationHelper.StringIsAlphanumeric(Name, allowSpace:true))
+            }
+            else if (propertyName == nameof(ProductCode))
+            {
+                ClearErrors(nameof(ProductCode));
+                if (string.IsNullOrWhiteSpace(ProductCode))
                 {
-                    AddError(nameof(Name), "Name must consist of alphanumeric characters or space");
+                    AddError(nameof(ProductCode), "Product Code cannot be empty");
+                    return;
                 }
 
+                if (!ValidationHelper.IsValidProductName(ProductCode))
+                {
+                    AddError(nameof(ProductCode), "Product Code is not a valid Product Code");
+                }
             }
             else if (propertyName == nameof(Value))
             {

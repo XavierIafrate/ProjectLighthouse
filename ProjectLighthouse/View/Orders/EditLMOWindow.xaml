@@ -12,7 +12,8 @@
     Width="700"
     Height="950"
     MinHeight="600"
-    MaxHeight="1200"
+    MaxHeight="1000"
+    MaxWidth="1000"
     Background="{StaticResource Background}"
     Closing="Window_Closing"
     ResizeMode="CanResize"
@@ -447,7 +448,7 @@
                             <DataTemplate>
                                 <uc:DisplayLMOItems
                                     Margin="10,2"
-                                    EditCommand="{Binding SaveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Window}}"
+                                    EditCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}},Path=SaveCommand}"
                                     LatheManufactureOrderItem="{Binding}"
                                     MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" />
                             </DataTemplate>

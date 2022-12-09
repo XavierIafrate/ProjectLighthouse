@@ -335,7 +335,7 @@
 
                         <ListView
                             MinHeight="40"
-                            ItemsSource="{Binding SelectedProject.Attachments}"
+                            ItemsSource="{Binding SelectedProject.Attachments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                             SelectedValue="{Binding SelectedAttachment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>

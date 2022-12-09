@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ViewModel.Helpers;
 
 namespace ProjectLighthouse.View.Orders
 {
@@ -98,7 +99,7 @@ namespace ProjectLighthouse.View.Orders
 
             for (int i = 0; i < Items.Count; i++)
             {
-                Items[i].ShowEdit = App.CurrentUser.HasPermission(PermissionType.UpdateOrder) && CanEdit;
+                Items[i].ShowEdit = App.CurrentUser.HasPermission(PermissionType.UpdateOrder);
             }
             OnPropertyChanged(nameof(Items));
 
@@ -119,10 +120,7 @@ namespace ProjectLighthouse.View.Orders
             OnPropertyChanged(nameof(Drawings));
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        
 
         private void FormatNoteDisplay()
         {
@@ -242,56 +240,11 @@ namespace ProjectLighthouse.View.Orders
         {
             if (sender is not DisplayLMOItems control) return;
 
-            if (App.CurrentUser.HasPermission(PermissionType.UpdateOrder) && CanEdit)
+            if (App.CurrentUser.HasPermission(PermissionType.UpdateOrder))
             {
                 SaveCommand.Execute(control.LatheManufactureOrderItem.Id);
             }
         }
-
-
-        #region Helpers
-        private void CalculateTime()
-        {
-            int estimatedTimeSeconds = 0;
-            int cycleTime = 0;
-            foreach (LatheManufactureOrderItem item in Items.OrderByDescending(x => x.CycleTime))
-            {
-                if (item.CycleTime == 0 && cycleTime > 0) // uses better cycle time if available
-                {
-                    estimatedTimeSeconds += item.GetCycleTime() * item.TargetQuantity;
-                }
-                else
-                {
-                    estimatedTimeSeconds += item.GetCycleTime() * item.TargetQuantity;
-                }
-            }
-
-            Order.TimeToComplete = estimatedTimeSeconds;
-        }
-
-        private void CalculateBarRequirements()
-        {
-            double totalLengthRequired = 0;
-            double partOff = 2;
-            BarStock bar = (BarStock)BarStockComboBox.SelectedValue;
-
-            if (!string.IsNullOrEmpty(Order.AllocatedMachine))
-            {
-                List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
-                Lathe runningOnLathe = lathes.First(l => l.Id == Order.AllocatedMachine);
-                partOff = runningOnLathe.PartOff;
-            }
-
-            foreach (LatheManufactureOrderItem item in Items)
-            {
-                totalLengthRequired += (item.MajorLength + item.PartOffLength + partOff) * item.TargetQuantity * 1.02;
-            }
-
-            Order.NumberOfBars = Math.Ceiling(totalLengthRequired / (bar.Length - 300)) + Order.SpareBars;
-
-        }
-
-        #endregion
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
@@ -308,7 +261,7 @@ namespace ProjectLighthouse.View.Orders
                 : Visibility.Hidden;
         }
 
-        public void AddNewNote(string note) // Factor in edits
+        public void AddNewNote(string note)
         {
             Note newNote = new()
             {
@@ -368,8 +321,27 @@ namespace ProjectLighthouse.View.Orders
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            CalculateTime();
-            CalculateBarRequirements();
+            (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime();
+
+            double? partOff = null;
+            if (!string.IsNullOrEmpty(Order.AllocatedMachine))
+            {
+                List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
+                Lathe? runningOnLathe = lathes.Find(l => l.Id == Order.AllocatedMachine);
+                if (runningOnLathe is not null)
+                {
+                    partOff = runningOnLathe.PartOff;
+                }
+            }
+
+            if (partOff is not null)
+            {
+                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars, (double)partOff);
+            }
+            else
+            {
+                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
+            }
 
             if (savedOrder.IsUpdated(Order))
             {
@@ -378,11 +350,11 @@ namespace ProjectLighthouse.View.Orders
 
             if (SaveExit)
             {
-                SaveOrder();
+                _ = SaveOrder();
             }
         }
 
-        void SaveOrder()
+        private bool SaveOrder()
         {
             Order.ModifiedBy = App.CurrentUser.GetFullName();
             Order.ModifiedAt = DateTime.Now;
@@ -394,7 +366,12 @@ namespace ProjectLighthouse.View.Orders
                 Order.CompletedAt = Order.ModifiedAt;
             }
 
-            _ = DatabaseHelper.Update(Order);
+            if (!DatabaseHelper.Update(Order))
+            {
+                MessageBox.Show("Failed to update the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            return true;
         }
 
         private void SpareBarsTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -429,8 +406,8 @@ namespace ProjectLighthouse.View.Orders
             if (userChoice == MessageBoxResult.Yes)
             {
                 DatabaseHelper.Delete(item);
-                CalculateBarRequirements();
-                CalculateTime();
+                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
+                (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime();
                 SaveExit = true;
                 SaveOrder();
                 LoadData(Order.Name);
@@ -447,16 +424,23 @@ namespace ProjectLighthouse.View.Orders
             }
             Hide();
             window.ShowDialog();
+
             if (window.ItemsWereAdded)
             {
                 SaveExit = true;
-                CalculateBarRequirements();
-                CalculateTime();
+                CalculateTimeAndBar();
                 SaveOrder();
                 LoadData(Order.Name);
             }
+
             Show();
         }
+
+        private void CalculateTimeAndBar()
+        {
+
+        }
+
 
         private ICommand _saveCommand;
         public static int? _toEdit = null;
@@ -479,10 +463,8 @@ namespace ProjectLighthouse.View.Orders
 
         private void SaveObject()
         {
-            if (_toEdit == null)
-            {
-                MessageBox.Show("no edit");// Save command execution logic
-            }
+            if (_toEdit is not int) return;
+
             EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch);
             Hide();
             editWindow.ShowDialog();
@@ -614,6 +596,11 @@ namespace ProjectLighthouse.View.Orders
             if (BarIssuesListBox.SelectedValue == null) return;
 
             LabelPrintingHelper.PrintIssue((BarIssue)BarIssuesListBox.SelectedValue, copies:2);
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

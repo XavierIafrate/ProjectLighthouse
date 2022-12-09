@@ -21,6 +21,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Style="{StaticResource GhostText}"
+            FontStyle="Normal"
             Text="None" />
     </Grid>
 </UserControl>

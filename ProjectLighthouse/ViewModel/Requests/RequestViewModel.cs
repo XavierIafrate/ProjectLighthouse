@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Windows;
 using System.Xaml;
 
@@ -456,6 +457,8 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void UpdateRequest()
         {
+            if (SelectedRequest is null) return;
+
             SelectedRequest.LastModified = DateTime.Now;
             SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
 
@@ -502,14 +505,20 @@ namespace ProjectLighthouse.ViewModel.Requests
                 MessageBox.Show("Required information is missing", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-            OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId, (int)SelectedRequestProduct.MaterialId)
+            try
             {
-                Owner = Application.Current.MainWindow
-            };
-
-            creationWindow.SetConfirmButtonsVisibility(Visibility.Collapsed);
-            creationWindow.ShowDialog();
+                OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId, (int)SelectedRequestProduct.MaterialId)
+                {
+                    Owner = Application.Current.MainWindow
+                };
+                creationWindow.SetConfirmButtonsVisibility(Visibility.Collapsed);
+                creationWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
         }
 
         public void ApproveRequest(bool merge = false)
@@ -519,26 +528,28 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            // TODO this
+            // TODO Implement merging from requests
             if (!merge)
             {
-
-                Dictionary<TurnedProduct, int> requirements = new()
+                try
                 {
-                    { SelectedRequestProduct, SelectedRequest.QuantityRequired }
-                };
+                    OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId!, (int)SelectedRequestProduct.MaterialId, (SelectedRequestProduct, SelectedRequest.QuantityRequired, SelectedRequest.DateRequired))
+                    {
+                        Owner = Application.Current.MainWindow
+                    };
+                    creationWindow.ShowDialog();
 
-                OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId, (int)SelectedRequestProduct.MaterialId, requirements)
+                    if (!creationWindow.SaveExit)
+                    {
+                        return;
+                    }
+                    SelectedRequest.ResultingLMO = creationWindow.NewOrder.Name;
+                }
+                catch (Exception ex)
                 {
-                    Owner = Application.Current.MainWindow
-                };
-                creationWindow.ShowDialog();
-
-                if (!creationWindow.SaveExit)
-                {
+                    MessageBox.Show($"Order creation failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                SelectedRequest.ResultingLMO = creationWindow.NewOrder.Name;
             }
             else
             {
@@ -548,7 +559,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             SelectedRequest.MarkAsAccepted();
 
-            //TODO refactor
+            //TODO Move to notifications manager
             User ToNotify = DatabaseHelper.Read<User>().Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
 
             Notification not = new(
@@ -563,7 +574,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 DatabaseHelper.Insert(not);
             }
 
-            if (DatabaseHelper.Update(SelectedRequest))
+            if (!DatabaseHelper.Update(SelectedRequest))
             {
                 MessageBox.Show("An error occurred while updating the request.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

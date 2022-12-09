@@ -48,5 +48,19 @@ namespace ProjectLighthouse.Model.Core
                 return false;
             }
         }
+
+        public bool RemoveFromStore()
+        {
+            try
+            {
+                File.Delete($"{App.ROOT_PATH}{AttachmentStore}");
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
+        }
     }
 }

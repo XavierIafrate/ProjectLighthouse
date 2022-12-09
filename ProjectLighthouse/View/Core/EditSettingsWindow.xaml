@@ -5,8 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:ProjectLighthouse.Model"
-    xmlns:view="clr-namespace:ProjectLighthouse.View"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:view="clr-namespace:ProjectLighthouse.View"
     Title="Lighthouse User Settings"
     Width="800"
     SizeToContent="Height"
@@ -56,32 +56,55 @@
                 <TextBlock Foreground="{StaticResource Purple}" Text="An administrator is required to modify these." />
                 <StackPanel Margin="20,10">
                     <ListView
-                        MaxHeight="300"
                         x:Name="PermissionsList"
                         MinHeight="20"
+                        MaxHeight="300"
                         HorizontalContentAlignment="Stretch"
                         d:ItemsSource="{d:SampleData ItemCount=10}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <uc:DisplayEditablePermission Permission="{Binding}" Margin="10,3"/>
+                                <uc:DisplayEditablePermission Margin="10,3" Permission="{Binding}" />
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
                 </StackPanel>
 
-                <TextBlock Style="{StaticResource section}" Text="Default View" />
-                <TextBlock Foreground="{StaticResource Purple}" Text="This is the view that will be loaded on login." />
-                <ComboBox
-                    HorizontalAlignment="Right"
-                    Width="250"
-                    x:Name="defaultViewComboBox"
-                    Margin="30,10"
-                    SelectionChanged="defaultViewComboBox_SelectionChanged">
-                    <ComboBoxItem Content="New Request" />
-                    <ComboBoxItem Content="View Requests" />
-                    <ComboBoxItem Content="Orders" />
-                    <ComboBoxItem Content="Schedule" />
-                </ComboBox>
+                <Grid>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource section}" Text="Default View" />
+                        <TextBlock Foreground="{StaticResource Purple}" Text="This is the view that will be loaded on login." />
+                    </StackPanel>
+                    <ComboBox
+                        x:Name="defaultViewComboBox"
+                        Width="250"
+                        Margin="30,10"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="defaultViewComboBox_SelectionChanged">
+                        <ComboBoxItem Content="New Request" />
+                        <ComboBoxItem Content="View Requests" />
+                        <ComboBoxItem Content="Orders" />
+                        <ComboBoxItem Content="Schedule" />
+                    </ComboBox>
+                </Grid>
+
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource section}" Text="Locale" />
+                    </StackPanel>
+                    <ComboBox
+                        x:Name="locale"
+                        Width="250"
+                        Margin="30,10"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="locale_SelectionChanged">
+                        <ComboBoxItem Content="British"/>
+                        <ComboBoxItem Content="Polish" />
+                        <ComboBoxItem Content="Welsh" />
+                        <ComboBoxItem Content="Persian" />
+                        <ComboBoxItem Content="Latvian" />
+                    </ComboBox>
+                </Grid>
+                
                 <StackPanel>
                     <TextBlock Style="{StaticResource section}" Text="Change Password" />
                     <Grid
@@ -103,29 +126,20 @@
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Path
                                     Grid.RowSpan="2"
-                                    Width="25"
+                                    Width="18"
                                     Margin="10,0,0,0"
                                     VerticalAlignment="Center"
                                     Data="M2.2,16.06L3.88,12L2.2,7.94L6.26,6.26L7.94,2.2L12,3.88L16.06,2.2L17.74,6.26L21.8,7.94L20.12,12L21.8,16.06L17.74,17.74L16.06,21.8L12,20.12L7.94,21.8L6.26,17.74L2.2,16.06M13,17V15H11V17H13M13,13V7H11V13H13Z"
                                     Fill="{StaticResource Red}"
                                     Stretch="UniformToFill" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Margin="15,5,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Red}"
-                                    Text="Security Alert"
-                                    TextWrapping="Wrap" />
+
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="1"
-                                    Margin="15,0,20,8"
+                                    Margin="10"
                                     VerticalAlignment="Center"
                                     FontSize="12"
                                     FontWeight="SemiBold"
@@ -209,8 +223,8 @@
                         x:Name="ChangePasswordButton"
                         HorizontalAlignment="Right"
                         Click="ChangePasswordButton_Click"
-                        Tag="Change Password"
-                        Style="{StaticResource Action_Button}" />
+                        Style="{StaticResource Action_Button}"
+                        Tag="Change Password" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

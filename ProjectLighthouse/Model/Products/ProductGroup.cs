@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.Model.Core;
 using SQLite;
+using System;
 
 namespace ProjectLighthouse.Model.Products
 {
@@ -18,6 +19,16 @@ namespace ProjectLighthouse.Model.Products
         public override string ToString()
         {
             return Name;
+        }
+
+        public double GetRequiredBarSize()
+        {
+            if (MinBarSize is null)
+            {
+                return MajorDiameter;
+            }
+
+            return Math.Max(MajorDiameter, (double)MinBarSize);
         }
     }
 }

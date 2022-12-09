@@ -97,7 +97,7 @@ namespace View.Administration
 
         private void AllowNumbersAndPeriodOnly(object sender, KeyEventArgs e)
         {
-            TextBox textBox = sender as TextBox;
+            if (sender is not TextBox textBox) return;
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersAndPeriod(textBox.Text, e);
         }
 
