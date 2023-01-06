@@ -29,7 +29,7 @@
                     Margin="20,5,5,5"
                     Style="{StaticResource DefaultTextBox}"
                     Tag="major diameter"
-                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Product.MajorDiameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Product.MajorDiameter, Mode=TwoWay, UpdateSourceTrigger=LostFocus, NotifyOnValidationError=True}" />
 
                 <TextBlock Style="{StaticResource InputLabel}" Text="Major Length" />
                 <TextBox
@@ -37,7 +37,7 @@
                     Margin="20,5,5,5"
                     Style="{StaticResource DefaultTextBox}"
                     Tag="major length"
-                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Product.MajorLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Product.MajorLength, Mode=TwoWay, UpdateSourceTrigger=LostFocus, NotifyOnValidationError=True}" />
 
                 <TextBlock Style="{StaticResource InputLabel}" Text="Material" />
                 <ComboBox

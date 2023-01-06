@@ -551,9 +551,9 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <StackPanel Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToVisible}}">
-                            <uc:DisplayRequestProgress TheRequest="{Binding SelectedRequest}" />
-                        </StackPanel>
+                        <!--<StackPanel Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToVisible}}">
+                            <uc:DisplayRequestProgress TheRequest="{Binding SelectedRequest, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>-->
                         <StackPanel Margin="0,10" Visibility="{Binding ApprovalControlsVis}">
                             <TextBlock Style="{StaticResource section}" Text="Approval" />
 

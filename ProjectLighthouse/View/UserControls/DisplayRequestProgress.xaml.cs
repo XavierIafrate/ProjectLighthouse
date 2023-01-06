@@ -72,11 +72,12 @@ namespace ProjectLighthouse.View.UserControls
             control.redAlert.Visibility = Visibility.Collapsed;
             control.amberAlert.Visibility = Visibility.Collapsed;
             control.greenAlert.Visibility = Visibility.Collapsed;
+
             //Awaiting scheduling too 
             DateTime estimatedDelivery = order.StartDate.AddSeconds(requestedItem.GetTimeToMakeRequired());
-            estimatedDelivery = estimatedDelivery.Date.AddDays(1);
+            estimatedDelivery = estimatedDelivery.AddDays(1).Date;
 
-
+            // TODO clever calcs
         }
 
         public DisplayRequestProgress()

@@ -52,7 +52,7 @@ namespace ProjectLighthouse.View
                 }
 
                 TurnedProduct deliveringProduct = turnedProducts.Find(x => lot.ProductName == x.ProductName);
-
+                // TODO automate some of this
                 allUndeliveredItems.Add(new DeliveryItem()
                 {
                     ItemManufactureOrderNumber = lot.Order,

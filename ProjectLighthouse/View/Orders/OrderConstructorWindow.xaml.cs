@@ -4,7 +4,6 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -125,12 +124,13 @@ namespace ProjectLighthouse.View.Orders
             GroupsListBox.Visibility = Visibility.Collapsed;
 
             LoadData();
+            MaterialId = materialId;
 
             ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup);
 
             if (targetGroup is null)
             {
-                throw new System.ArgumentNullException("Target group is null");
+                throw new ArgumentNullException("Target group is null");
             }
 
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
@@ -147,6 +147,8 @@ namespace ProjectLighthouse.View.Orders
             GroupsListBox.Visibility = Visibility.Collapsed;
 
             LoadData();
+            MaterialId = materialId;
+
 
             ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup);
 
@@ -188,17 +190,10 @@ namespace ProjectLighthouse.View.Orders
 
             for (int j = AvailableTurnedProducts.Count - 1; j >= 0; j--)
             {
-                MaterialId = (int)product.MaterialId;
-
-                if (AvailableTurnedProducts[j].MaterialId != product.MaterialId)
+                if (AvailableTurnedProducts[j].MaterialId != MaterialId)
                 {
                     AvailableTurnedProducts.RemoveAt(j);
                 }
-                //else if (NewOrderItems.Any(x => x.ProductId == AvailableTurnedProducts[j].Id))
-                //{
-                //    object test = AvailableItemsListBox.ItemsSource. disable stuff?
-                //}
-
             }
         }
 
@@ -331,6 +326,13 @@ namespace ProjectLighthouse.View.Orders
         {
             if (AvailableItemsListBox.SelectedValue is not TurnedProduct product) return;
 
+            product.ValidateForOrder();
+            if (product.HasErrors)
+            {
+                MessageBox.Show("Selected product has data errors and cannot be added to the order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
 
             if (product.MaterialId is null)
             {
@@ -427,11 +429,12 @@ namespace ProjectLighthouse.View.Orders
             NewOrder.BarsInStockAtCreation = orderBar.InStock;
             NewOrder.MaterialId = MaterialId;
             NewOrder.GroupId = SelectedGroup.Id;
+            NewOrder.BarID = orderBar.Id;
             NewOrder.NumberOfBars = NewOrderItems.CalculateNumberOfBars(orderBar, 0);
 
             List<TurnedProduct> comparableProducts = TurnedProducts
-                .Where(x => x.GroupId == SelectedGroup.Id 
-                    && x.MaterialId == MaterialId 
+                .Where(x => x.GroupId == SelectedGroup.Id
+                    && x.MaterialId == MaterialId
                     && x.CycleTime > 0)
                 .ToList();
 
@@ -451,7 +454,11 @@ namespace ProjectLighthouse.View.Orders
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == TechnicalDrawing.Type.Production).ToList();
             List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.GroupId, NewOrder.MaterialId);
 
-            _ = DatabaseHelper.Insert(NewOrder);
+            if (!DatabaseHelper.Insert(NewOrder))
+            {
+                MessageBox.Show("Failed to insert to database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
 
             foreach (TechnicalDrawing drawing in drawings)
             {

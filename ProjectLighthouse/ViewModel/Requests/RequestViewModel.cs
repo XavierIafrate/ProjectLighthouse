@@ -403,7 +403,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            ApprovalControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) && SelectedRequest.Status == "Pending approval" && SelectedRequestProduct.NoErrors 
+            ApprovalControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) && SelectedRequest.Status == "Pending approval"
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
 
@@ -525,6 +525,12 @@ namespace ProjectLighthouse.ViewModel.Requests
         {
             if (SelectedRequest is null || SelectedRequestProduct is null)
             {
+                return;
+            }
+
+            if (SelectedRequestProduct.HasErrors)
+            {
+                MessageBox.Show("The product record contains errors that must be addressed prior to approval.", "Data error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

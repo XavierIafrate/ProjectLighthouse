@@ -288,7 +288,7 @@
                     <!--#region Configuration-->
                     <Expander
                         Margin="10"
-                        d:IsExpanded="False"
+                        d:IsExpanded="True"
                         Header="Order Configuration">
                         <StackPanel>
                             <Grid Margin="10,0">
@@ -401,7 +401,7 @@
                                                     Foreground="{StaticResource Blue}"
                                                     Text="{Binding BarId}" />
                                             </TextBlock>
-                                            <TextBlock HorizontalAlignment="Center" Text="{Binding MaterialBatch}" />
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Consolas" Text="{Binding MaterialBatch}" />
                                             <TextBlock HorizontalAlignment="Right" Text="{Binding Quantity, StringFormat='{}{0:#,##0} bar(s) Issued'}" />
 
                                         </Grid>

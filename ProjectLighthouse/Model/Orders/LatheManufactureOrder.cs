@@ -315,17 +315,17 @@ namespace ProjectLighthouse.Model.Orders
             StartDate = date.Date == DateTime.MinValue.Date ? DateTime.MinValue : date.Date.AddHours(12);
             AllocatedMachine = string.IsNullOrEmpty(machine) ? null : machine;
             string dbMachineEntry = string.IsNullOrEmpty(AllocatedMachine) ? "NULL" : $"'{AllocatedMachine}'";
-            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
+            DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
         }
 
         public void MarkAsClosed()
         {
-            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {true} WHERE Id={Id}");
+            DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {true} WHERE Id={Id}");
         }
 
         public void MarkAsNotClosed()
         {
-            DatabaseHelper.ExecuteCommand<LatheManufactureOrder>($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {false} WHERE Id={Id}");
+            DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {false} WHERE Id={Id}");
         }
     }
 }

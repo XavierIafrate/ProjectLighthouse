@@ -930,6 +930,136 @@
     </Style>
 
     <Style
+        x:Key="Action_Pdf_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="30"
+                            MinWidth="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="16"
+                                Margin="7,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19M10.59,10.08C10.57,10.13 10.3,11.84 8.5,14.77C8.5,14.77 5,16.58 5.83,17.94C6.5,19 8.15,17.9 9.56,15.27C9.56,15.27 11.38,14.63 13.79,14.45C13.79,14.45 17.65,16.19 18.17,14.34C18.69,12.5 15.12,12.9 14.5,13.09C14.5,13.09 12.46,11.75 12,9.89C12,9.89 13.13,5.95 11.38,6C9.63,6.05 10.29,9.12 10.59,10.08M11.4,11.13C11.43,11.13 11.87,12.33 13.29,13.58C13.29,13.58 10.96,14.04 9.9,14.5C9.9,14.5 10.9,12.75 11.4,11.13M15.32,13.84C15.9,13.69 17.64,14 17.58,14.32C17.5,14.65 15.32,13.84 15.32,13.84M8.26,15.7C7.73,16.91 6.83,17.68 6.6,17.67C6.37,17.66 7.3,16.07 8.26,15.7M11.4,8.76C11.39,8.71 11.03,6.57 11.4,6.61C11.94,6.67 11.4,8.71 11.4,8.76Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,6,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Purple}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="Action_Orange_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="30"
+                            MinWidth="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="16"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M11 15H6L13 1V9H18L11 23V15Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,6,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource OrangeFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Orange}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnOrange}" />
+                <Setter Property="Background" Value="{StaticResource Orange}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnOrange}" />
+                <Setter Property="Background" Value="{StaticResource OrangeDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
         x:Key="Choose_File_Button"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
@@ -1718,7 +1848,10 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="ApproveButton" TargetType="Button" BasedOn="{StaticResource Default}">
+    <Style
+        x:Key="ApproveButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Background" Value="{StaticResource GreenFaded}" />
         <Setter Property="Foreground" Value="{StaticResource Green}" />
         <Setter Property="Width" Value="150" />
@@ -1747,8 +1880,8 @@
                                 Margin="0,0,0,2"
                                 VerticalAlignment="Center"
                                 FontSize="18"
-                                Foreground="{TemplateBinding Foreground}"
                                 FontWeight="SemiBold"
+                                Foreground="{TemplateBinding Foreground}"
                                 Text="Approve" />
 
                         </Grid>
@@ -1818,7 +1951,10 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="DeclineButton" TargetType="Button" BasedOn="{StaticResource Default}">
+    <Style
+        x:Key="DeclineButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Background" Value="{StaticResource RedFaded}" />
         <Setter Property="Foreground" Value="{StaticResource Red}" />
         <Setter Property="Width" Value="150" />
@@ -1847,10 +1983,64 @@
                                 Grid.Column="1"
                                 Margin="0,0,0,2"
                                 VerticalAlignment="Center"
-                                Foreground="{TemplateBinding Foreground}"
                                 FontSize="18"
                                 FontWeight="SemiBold"
+                                Foreground="{TemplateBinding Foreground}"
                                 Text="Decline" />
+
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource RedLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="RejectButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource RedFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Setter Property="Width" Value="150" />
+        <Setter Property="Margin" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+
+                    <Border
+                        Height="40"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="5">
+                        <Grid Margin="20,0" HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Path
+                                Width="16"
+                                Height="14"
+                                Margin="0,0,7,1"
+                                Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="0,0,0,2"
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Foreground="{TemplateBinding Foreground}"
+                                Text="Reject" />
 
                         </Grid>
                     </Border>

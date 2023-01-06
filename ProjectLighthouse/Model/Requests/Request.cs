@@ -17,6 +17,7 @@ namespace ProjectLighthouse.Model.Requests
         public DateTime DateRaised { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime LastModified { get; set; }
+        public DateTime? DecisionMade { get; set; }
         public bool IsDeclined { get; set; } = false;
         public bool IsAccepted { get; set; } = false;
         public string AcceptedBy { get; set; }
@@ -65,6 +66,7 @@ namespace ProjectLighthouse.Model.Requests
             IsAccepted = true;
             IsDeclined = false;
             LastModified = DateTime.Now;
+            DecisionMade = LastModified;
             ModifiedBy = App.CurrentUser.GetFullName();
             AcceptedBy = App.CurrentUser.FirstName;
             Status = $"Accepted by {AcceptedBy} - {ResultingLMO}";
@@ -75,6 +77,7 @@ namespace ProjectLighthouse.Model.Requests
             IsAccepted = false;
             IsDeclined = true;
             LastModified = DateTime.Now;
+            DecisionMade = LastModified;
             ModifiedBy = App.CurrentUser.GetFullName();
             Status = $"Declined - {DeclinedReason}";
         }

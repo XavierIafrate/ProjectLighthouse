@@ -28,7 +28,7 @@ namespace ViewModel.Helpers
 
             AddProgramPlannerContent(sl, orders);
 
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"programs_todo_{DateTime.Now:ddMMyy}_{DateTime.Now:HHmmss}";
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $@"\programs_todo_{DateTime.Now:ddMMyy}_{DateTime.Now:HHmmss}.xlsx";
             sl.SaveAs(path);
         }
 

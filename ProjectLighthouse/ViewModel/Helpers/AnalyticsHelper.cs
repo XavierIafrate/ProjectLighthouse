@@ -1,6 +1,8 @@
 ﻿using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Orders;
@@ -9,11 +11,14 @@ using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
+using Axis = LiveChartsCore.SkiaSharpView.Axis;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
-    public class AnalyticsHelper
+    public class AnalyticsHelper 
     {
         private static DataStore Data { get; set; }
         public static HeroStats Hero { get; set; }
@@ -23,6 +28,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             Initialise();
         }
+
+        
 
         public static void Initialise()
         {
@@ -246,15 +253,23 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        public class PartsMadeAllTimeGraph : Graph
+        public class PartsMadeAllTimeGraph : Graph, INotifyPropertyChanged
         {
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
 
             public Func<DateTime, string> X_Formatter { get; set; }
             public Func<int, string> Y_Formatter { get; set; }
+            
+            public Axis[] XAxes { get; }
+            public List<string> YearsAvailable { get; set; }    
 
             public PartsMadeAllTimeGraph()
             {
-                Title = "Parts Made - All Time";
                 X_Formatter = value => $"{value}";
                 Y_Formatter = value => $"{value:#,##0}";
                 GetChartData();
@@ -262,21 +277,23 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             private void GetChartData()
             {
-                Series = new();
-
-                int cutoffYear = DateTime.Today.Year - 1;
+                int cutoffYear = DateTime.Today.Year - 5;
                 List<IGrouping<DateTime, Lot>> chartLots = Data.Lots
                     .Where(x => x.IsDelivered && x.Date.Year >= cutoffYear)
                     .OrderBy(x => x.Date)
                     .GroupBy(x => x.Date.Date)
                     .ToList();
 
+                List<DateTimePoint> chartData = new();
 
-
-                ChartValues<DateTimePoint> chartData = new();
                 int total = Data.Lots
                     .Where(x => x.IsDelivered && x.Date.Year < cutoffYear)
                     .Sum(x => x.Quantity);
+
+                YearsAvailable = chartLots
+                    .Select(x => x.Key.Year.ToString("YYYY"))
+                    .Distinct()
+                    .ToList();
 
                 for (int i = 0; i < chartLots.Count; i++)
                 {
@@ -284,19 +301,22 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     chartData.Add(new(chartLots[i].Key, total));
                 }
 
-                Series.Add(new LineSeries()
+                Series = new ISeries[]
                 {
-                    Title = "Sum of Parts Made",
-                    LineSmoothness = 0,
-                    PointGeometrySize = 0,
-                    Values = chartData
-                });
+                    new LineSeries<DateTimePoint>
+                    {
+                        Values = chartData,
+                        Name = "Total Parts Made"
+                    }
+                };
+
+                OnPropertyChanged(nameof(Series));
             }
         }
 
         public class Graph
         {
-            public SeriesCollection Series { get; set; }
+            public ISeries[] Series { get; set; }
             public string Title { get; set; }
         }
 

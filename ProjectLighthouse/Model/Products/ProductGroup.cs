@@ -12,7 +12,7 @@ namespace ProjectLighthouse.Model.Products
         public string Name { get; set; }
 
 
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
         public double? MinBarSize { get; set; }
         public double MajorDiameter { get; set; }
 

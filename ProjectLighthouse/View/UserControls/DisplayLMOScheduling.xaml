@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-    d:Background="White"
+    d:Background="Transparent"
     d:DesignWidth="692.307"
     SizeChanged="UserControl_SizeChanged"
     mc:Ignorable="d">
@@ -17,7 +17,7 @@
         <converters:StartDateToEndDate x:Key="startToFinish" />
         <converters:OrderItemToRequirementVis x:Key="requirementVis" />
     </UserControl.Resources>
-    <Grid Margin="7">
+    <Grid Margin="7" x:Name="mainGrid">
         <Grid.ToolTip>
             <local:OrderStatusTooltip
                 Margin="0"
@@ -28,6 +28,7 @@
             <ColumnDefinition Width="12" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <Rectangle Grid.ColumnSpan="2" Fill="White" x:Name="copyBg" Visibility="Collapsed"/>
         <Border
             x:Name="bg"
             Background="{StaticResource Red}"
@@ -135,6 +136,7 @@
                     Click="EditButton_Click"
                     Content="edit"
                     Style="{StaticResource EditButton}" />
+                <Button Visibility="Collapsed" Style="{StaticResource Action_Button}" Tag="Copy" x:Name="CopyButton" Click="CopyButton_Click"/>
             </StackPanel>
 
             <Grid

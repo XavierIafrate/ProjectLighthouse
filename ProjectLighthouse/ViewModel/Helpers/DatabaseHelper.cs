@@ -12,12 +12,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static string DatabasePath { get; set; }
 
-        public static bool ExecuteCommand<T>(string query)
+        public static bool ExecuteCommand(string query)
         {
             using (SQLiteConnection conn = new(DatabasePath))
             {
-                var test = conn.Execute(query);
-
+                int result = conn.Execute(query);
+                Console.WriteLine(result);
             }
 
             return true;

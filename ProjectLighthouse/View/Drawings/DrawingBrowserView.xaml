@@ -231,7 +231,7 @@
                         <vc:boolToCollapsedOrVisible x:Key="collapseIfTrue" />
                         <vc:boolToVisibleOrCollapsed x:Key="showIfTrue" />
                     </Grid.Resources>
-                    <Border Background="{StaticResource Surface}" CornerRadius="0,0,5,5">
+                    <Border Background="{StaticResource Background}" CornerRadius="10">
                         <Border.Effect>
                             <DropShadowEffect
                                 BlurRadius="30"
@@ -241,65 +241,61 @@
                         </Border.Effect>
                     </Border>
                     <StackPanel>
-                        <Border
-                            Padding="20,5"
-                            Background="{StaticResource OnBackground}"
-                            CornerRadius="5,5,0,0">
-                            <Grid>
+
+                            <Grid Margin="20">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    FontFamily="Consolas"
+                            <TextBlock
                                     FontSize="25"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Background}"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource OnSurface}"
                                     Text="Release Candidate"
                                     Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource collapseIfTrue}}" />
                                 <TextBlock
-                                    FontFamily="Consolas"
                                     FontSize="25"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Background}"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource OnSurface}"
                                     Text="{Binding SelectedDrawing.Revision, StringFormat='{}Revision {0}'}"
                                     Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}" />
                                 <TextBlock
                                     Grid.Column="1"
-                                    FontFamily="Consolas"
                                     FontSize="25"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Background}"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource OnSurface}"
                                     Text="{Binding SelectedDrawing.AmendmentType}"
                                     Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}" />
                                 <Border
                                     Grid.Column="2"
                                     Margin="8,0"
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Background="{StaticResource Blue}"
+                                    Height="30"
+                                    CornerRadius="5"
+                                    Background="{StaticResource BlueFaded}"
                                     Visibility="{Binding SelectedDrawing.IsCurrent, Converter={StaticResource showIfTrue}}">
                                     <TextBlock
                                         Margin="8,2"
                                         VerticalAlignment="Center"
                                         FontWeight="SemiBold"
-                                        Foreground="White"
+                                        Foreground="{StaticResource Blue}"
                                         Text="CURRENT" />
                                 </Border>
                                 <Border
                                     Grid.Column="2"
                                     Margin="8,0"
+                                    CornerRadius="5"
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Background="{StaticResource Red}"
+                                    Height="30"
+                                    Background="{StaticResource RedFaded}"
                                     Visibility="{Binding SelectedDrawing.IsRejected, Converter={StaticResource showIfTrue}}">
                                     <TextBlock
                                         Margin="8,2"
                                         VerticalAlignment="Center"
                                         FontWeight="SemiBold"
-                                        Foreground="White"
+                                        Foreground="{StaticResource Red}"
                                         Text="REJECTED" />
                                 </Border>
                                 <Button
@@ -308,28 +304,28 @@
                                     Margin="0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding OpenDrawingCmd}"
-                                    Content="{Binding OpenFileButtonText, FallbackValue='FILE_OPEN'}"
+                                    Tag="{Binding OpenFileButtonText, FallbackValue='Open PDF'}"
                                     IsEnabled="{Binding OpenFileButtonEnabled}"
-                                    Style="{StaticResource BlueButton}" />
+                                    Style="{StaticResource Action_Pdf_Button}" />
                             </Grid>
 
-                        </Border>
-
                         <Border
-                            Background="{StaticResource Blue}"
-                            CornerRadius="0"
+                            Margin="20,10"
+                            Background="{StaticResource BlueFaded}"
+                            CornerRadius="5"
                             Visibility="{Binding SelectedDrawing.DrawingType, Converter={StaticResource researchToCollapsed}}">
                             <StackPanel Orientation="Horizontal">
                                 <Path
                                     Margin="12,5,0,7"
                                     VerticalAlignment="Center"
                                     Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
-                                    Fill="{StaticResource OnBlue}" />
+                                    Fill="{StaticResource Blue}" />
 
                                 <TextBlock
                                     Margin="10,5"
+                                    FontWeight="SemiBold"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource OnBlue}"
+                                    Foreground="{StaticResource Blue}"
                                     Text="This drawing is only for research and development purposes." />
                             </StackPanel>
                         </Border>
@@ -347,10 +343,7 @@
 
                             <Grid Grid.Row="0" Margin="10,5,10,0">
                                 <Border
-                                    Background="{StaticResource Blue}"
-                                    CornerRadius="3"
-                                    Opacity="0.15" />
-                                <Border
+                                    Background="{StaticResource BlueFaded}"
                                     BorderBrush="{StaticResource Blue}"
                                     BorderThickness="3,0,0,0"
                                     CornerRadius="3" />
@@ -409,10 +402,7 @@
                                 Margin="10,5,10,0"
                                 Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}">
                                 <Border
-                                    Background="{StaticResource Green}"
-                                    CornerRadius="3"
-                                    Opacity="0.15" />
-                                <Border
+                                    Background="{StaticResource GreenFaded}"
                                     BorderBrush="{StaticResource Green}"
                                     BorderThickness="3,0,0,0"
                                     CornerRadius="3" />
@@ -497,10 +487,7 @@
                                 Margin="10,5,10,0"
                                 Visibility="{Binding SelectedDrawing.IsWithdrawn, Converter={StaticResource showIfTrue}}">
                                 <Border
-                                    Background="{StaticResource OnBackground}"
-                                    CornerRadius="3"
-                                    Opacity="0.15" />
-                                <Border
+                                    Background="{StaticResource OnBackgroundFaded}"
                                     BorderBrush="{StaticResource OnBackground}"
                                     BorderThickness="3,0,0,0"
                                     CornerRadius="3" />
@@ -551,11 +538,9 @@
                                 Grid.Row="2"
                                 Margin="10,5,10,0"
                                 Visibility="{Binding SelectedDrawing.IsRejected, Converter={StaticResource showIfTrue}}">
+
                                 <Border
-                                    Background="{StaticResource Red}"
-                                    CornerRadius="3"
-                                    Opacity="0.15" />
-                                <Border
+                                    Background="{StaticResource RedFaded}"
                                     BorderBrush="{StaticResource Red}"
                                     BorderThickness="3,0,0,0"
                                     CornerRadius="3" />
@@ -615,10 +600,7 @@
                                 Margin="10,5,10,0"
                                 Visibility="{Binding PendingApprovalVis}">
                                 <Border
-                                    Background="{StaticResource Purple}"
-                                    CornerRadius="3"
-                                    Opacity="0.15" />
-                                <Border
+                                    Background="{StaticResource PurpleFaded}"
                                     BorderBrush="{StaticResource Purple}"
                                     BorderThickness="3,0,0,0"
                                     CornerRadius="3" />
@@ -667,7 +649,6 @@
                             <TextBlock Style="{StaticResource section}" Text="Approval" />
                             <TextBox
                                 x:Name="rejectionReason"
-                                Background="{StaticResource Background}"
                                 FontSize="15"
                                 Style="{StaticResource DefaultTextBox}"
                                 Tag="Enter reason for rejecting"
@@ -677,12 +658,10 @@
                                 <!--<TextBlock VerticalAlignment="Center" Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" />-->
                                 <Button
                                     Command="{Binding RejectDrawingCmd}"
-                                    Content="Reject Drawing"
-                                    Style="{StaticResource RedButton}" />
+                                    Style="{StaticResource RejectButton}" />
                                 <Button
                                     Command="{Binding ApproveDrawingCmd}"
-                                    Content="Approve Drawing"
-                                    Style="{StaticResource GreenButton}" />
+                                    Style="{StaticResource ApproveButton}" />
                             </StackPanel>
 
                         </StackPanel>
@@ -690,6 +669,8 @@
                         <StackPanel x:Name="Comments" Margin="20,0,20,0">
                             <TextBlock Style="{StaticResource section}" Text="Comments" />
                             <userControls:DisplayListOfNotes
+                                MinHeight="50"
+                                Margin="5"
                                 x:Name="notesDisplay"
                                 Notes="{Binding SelectedDrawingNotes, Mode=OneWay}"
                                 ShowingEditControls="False" />
@@ -703,21 +684,19 @@
                                 <TextBox
                                     x:Name="Message"
                                     Grid.ColumnSpan="3"
-                                    Margin="5,5,5,15"
-                                    Background="{StaticResource Background}"
-                                    FontSize="14"
+                                    Margin="0,5,5,15"
                                     Foreground="{StaticResource OnSurface}"
                                     PreviewKeyDown="Message_PreviewKeyDown"
                                     Style="{StaticResource DefaultTextBox}"
-                                    Tag="Compose message..."
+                                    Tag="compose message..."
                                     Text="{Binding NewNoteText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextWrapping="WrapWithOverflow" />
                                 <Button
                                     x:Name="SendButton"
                                     Grid.Column="3"
                                     Margin="10,0,0,17"
+                                    Background="Transparent"
                                     HorizontalAlignment="Left"
-                                    Background="{StaticResource Surface}"
                                     Command="{Binding AddCommentToDrawingCmd}"
                                     Style="{StaticResource SendButton}" />
                             </Grid>

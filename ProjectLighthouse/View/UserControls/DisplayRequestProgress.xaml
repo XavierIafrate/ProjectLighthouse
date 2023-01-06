@@ -90,24 +90,28 @@
                     Grid.Column="1"
                     Grid.ColumnSpan="3"
                     HorizontalAlignment="Left"
+                    FontWeight="SemiBold"
                     Text="Issued" />
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="3"
                     Grid.ColumnSpan="5"
                     HorizontalAlignment="Center"
+                    FontWeight="SemiBold"
                     Text="Scheduled" />
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="7"
                     Grid.ColumnSpan="5"
                     HorizontalAlignment="Center"
+                    FontWeight="SemiBold"
                     Text="In Production" />
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="11"
                     Grid.ColumnSpan="3"
                     HorizontalAlignment="Right"
+                    FontWeight="SemiBold"
                     Text="Delivered" />
             </Grid>
 
@@ -219,7 +223,7 @@
                         Grid.Column="2"
                         FontSize="13"
                         Foreground="{StaticResource Red}"
-                        Text="This item is still outstanding."
+                        Text="This item outstanding and the required date has passed."
                         TextWrapping="Wrap" />
                 </Grid>
             </Grid>

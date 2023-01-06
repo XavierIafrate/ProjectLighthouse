@@ -5,9 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="NewBarWindow"
-    Width="800"
-    Height="450"
+    Title="Add Bar Record"
+    Width="550"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Grid Margin="20">
         <StackPanel>
@@ -25,11 +26,11 @@
                 <TextBox
                     Grid.Column="1"
                     Width="250"
-                    MaxLength="16"
+                    
                     HorizontalAlignment="Right"
-                    PreviewKeyDown="ValidateProductNumber"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="Bar ID" />
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                    Tag="bar ID" />
             </Grid>
 
             <Grid>
@@ -48,7 +49,8 @@
                     HorizontalAlignment="Right"
                     PreviewKeyDown="ValidateInt"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="Bar Length" />
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.Length, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                    Tag="length" />
             </Grid>
 
             <Grid>
@@ -65,9 +67,10 @@
                     Width="150"
                     MaxLength="2"
                     HorizontalAlignment="Right"
-                    PreviewKeyDown="ValidateInt"
+                    PreviewKeyDown="ValidateDouble"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="Bar Size" />
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.Size, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                    Tag="size" />
             </Grid>
 
             <Grid>
@@ -78,17 +81,38 @@
                 <TextBlock
                     VerticalAlignment="Center"
                     Style="{StaticResource section}"
-                    Text="Size (mm)" />
+                    Text="Suggested Stock" />
                 <TextBox
                     Grid.Column="1"
                     Width="150"
                     MaxLength="2"
                     HorizontalAlignment="Right"
                     PreviewKeyDown="ValidateInt"
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.SuggestedStock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="Bar Size" />
+                    Tag="suggested stock" />
             </Grid>
 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource section}"
+                    Text="Material" />
+                <ComboBox
+                    Grid.Column="1"
+                    Width="250"
+                    Margin="5"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Materials}"
+                    SelectedValuePath="Id"
+                    SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.MaterialId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                    HorizontalAlignment="Right" />
+            </Grid>
+
+            <Button Style="{StaticResource Action_New_Button}" x:Name="AddBarButton" Click="AddBarButton_Click" Tag="Add Bar Record" HorizontalAlignment="Right" Margin="5,20,5,5" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.NoErrors, Mode=OneWay}"/>
         </StackPanel>
     </Grid>
 </Window>

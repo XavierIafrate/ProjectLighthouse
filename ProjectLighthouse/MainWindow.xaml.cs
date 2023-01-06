@@ -1,4 +1,6 @@
 ﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Analytics;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -94,6 +96,12 @@ namespace ProjectLighthouse
 
             //Monaco monacoEditor = new();
             //monacoEditor.Show();
+
+            //List<MachineOperatingBlock> blocks = DatabaseHelper.Read<MachineOperatingBlock>();
+            //CSVHelper.WriteListToCSV(blocks, "blocks");
+
+            //List<Lot> lots = DatabaseHelper.Read<Lot>();
+            //CSVHelper.WriteListToCSV(lots, "lots");
 
             AboutWindow window = new() { Owner = this };
             window.ShowDialog();

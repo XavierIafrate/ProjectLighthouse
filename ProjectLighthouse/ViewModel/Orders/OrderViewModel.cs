@@ -1,4 +1,11 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using LiveCharts.Defaults;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Drawing;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
@@ -10,6 +17,7 @@ using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,6 +28,7 @@ using System.Windows;
 using System.Windows.Media;
 using ViewModel.Commands.Orders;
 using ViewModel.Helpers;
+using DateTimePoint = LiveChartsCore.Defaults.DateTimePoint;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -46,6 +55,35 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<Note> FilteredNotes { get; set; }
         public List<TechnicalDrawing> FilteredDrawings { get; set; }
         public BarStock SelectedOrderBar { get; set; }
+        #endregion
+
+        #region Charting
+        public Axis[] XAxes { get; set; } =
+    {
+        new Axis
+        {
+            Labeler = value => new DateTime((long) value).ToString("dd/MM"),
+            LabelsRotation = 60,
+
+            // when using a date time type, let the library know your unit 
+            UnitWidth = TimeSpan.FromDays(1).Ticks, 
+
+            // if the difference between our points is in hours then we would:
+            // UnitWidth = TimeSpan.FromHours(1).Ticks,
+
+            // since all the months and years have a different number of days
+            // we can use the average, it would not cause any visible error in the user interface
+            // Months: TimeSpan.FromDays(30.4375).Ticks
+            // Years: TimeSpan.FromDays(365.25).Ticks
+
+            // The MinStep property forces the separator to be greater than 1 day.
+            MinStep = TimeSpan.FromDays(1).Ticks,
+            ForceStepToMin=true
+
+        }
+    };
+
+        public List<ISeries> Series { get; set; }
         #endregion
 
         #region User Demands
@@ -215,6 +253,90 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             InitialiseVariables();
             Refresh();
+        }
+
+        private void LoadProductionChart(List<Lot> stockLots, DateTime startingDate)
+        {
+            if(stockLots.Count == 0) 
+            {
+                Series = null;
+                OnPropertyChanged(nameof(Series));
+                return;
+            }
+
+            var producedValues = new List<DateTimePoint>();
+            var scrappedValues = new List<DateTimePoint>();
+
+            int totalProduced = 0;
+            int totalScrapped = 0;
+
+            TimeSpan span = stockLots.Max(x => x.DateProduced) - startingDate;
+
+            int daysOfSpan = (int)Math.Ceiling(span.TotalDays);
+
+            if (daysOfSpan > 90)
+            {
+                Series = null;
+                OnPropertyChanged(nameof(Series));
+                return;
+            }
+
+            string[] labels = new string[daysOfSpan];
+
+            for(int i = 0; i < daysOfSpan; i++)
+            {
+                DateTime day = startingDate.AddDays(i).Date;
+                labels[i] = day.ToString("dd/MM");
+
+                totalProduced += stockLots.Where(x => x.IsAccepted && x.DateProduced.Date == day).Sum(x => x.Quantity);
+                totalScrapped += stockLots.Where(x => x.IsReject && x.DateProduced.Date == day).Sum(x => x.Quantity);
+
+
+                producedValues.Add(new(day, totalProduced));
+                scrappedValues.Add(new(day, totalScrapped));
+            }
+
+            SolidColorBrush red = (Brush)Application.Current.Resources["Red"] as SolidColorBrush;
+            SolidColorBrush blue = (Brush)Application.Current.Resources["Blue"] as SolidColorBrush;
+
+            var produced = new ColumnSeries<DateTimePoint>
+            {
+                Values = producedValues,
+                Stroke = null,
+                Padding = 2,
+                Name = "Total Produced",
+                Fill = new SolidColorPaint(new SKColor(blue.Color.R, blue.Color.G, blue.Color.B))
+            };
+
+            var scrapped = new ColumnSeries<DateTimePoint>
+            {
+                Values = scrappedValues,
+                Stroke = null,
+                Padding = 2,
+                Name = "Total Scrapped",
+                Fill = new SolidColorPaint(new SKColor(red.Color.R, red.Color.G, red.Color.B))
+            };
+
+
+            Series = new List<ISeries> { scrapped, produced };
+            OnPropertyChanged(nameof(Series));
+
+            //XAxes = new Axis[]
+            //{
+            //    new Axis()
+            //    {
+            //        LabelsRotation = 0,
+            //        Labeler = value => new DateTime((long)value).ToString("dd/MM"),
+            //        // set the unit width of the axis to "days"
+            //        // since our X axis is of type date time and 
+            //        // the interval between our points is in days
+            //        UnitWidth = TimeSpan.FromDays(1).Ticks,
+            //        TextSize = 14,
+            //        Padding = new Padding(5, 15, 5, 5),
+            //        Labels = labels
+            //    }
+            //};
+            //OnPropertyChanged(nameof(XAxes));
         }
 
         private void InitialiseVariables()
@@ -439,6 +561,13 @@ namespace ProjectLighthouse.ViewModel.Orders
                     continue;
                 }
 
+                if (order.BarID.Contains(SearchTerm))
+                {
+                    Results.Add(order);
+                    FoundOrders.Add(order.Name);
+                    continue;
+                }
+
                 if (order.POReference != null)
                 {
                     if (order.POReference.Contains(SearchTerm) && order.POReference != "N/A")
@@ -490,6 +619,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             CardVis = Visibility.Visible;
             LoadOrderObjects();
             SetUiElements();
+            List<Lot> orderLots = Lots.Where(x => x.Order == SelectedOrder.Name).ToList();
+            Task.Run(() => LoadProductionChart(orderLots, SelectedOrder.StartDate.Date));
         }
 
         private void SetUiElements()
@@ -675,7 +806,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             if (!window.SaveExit)
             {
                 return;
-            }    
+            }
 
             Refresh();
         }

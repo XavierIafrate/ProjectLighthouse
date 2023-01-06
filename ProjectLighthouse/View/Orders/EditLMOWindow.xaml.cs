@@ -43,6 +43,7 @@ namespace ProjectLighthouse.View.Orders
         public bool SaveExit { get; set; }
         public List<Note> Notes { get; set; }
         public List<TechnicalDrawing> Drawings { get; set; }
+        private List<Lathe> Lathes;
 
         List<OrderDrawing> DrawingReferences { get; set; }
 
@@ -69,6 +70,7 @@ namespace ProjectLighthouse.View.Orders
         {
 
             Order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == id);
+            Lathes = DatabaseHelper.Read<Lathe>();
 
             if (Order is null) throw new Exception($"Cannot find order {id}");
 
@@ -321,34 +323,19 @@ namespace ProjectLighthouse.View.Orders
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime();
-
-            double? partOff = null;
-            if (!string.IsNullOrEmpty(Order.AllocatedMachine))
+            if (!CanEdit)
             {
-                List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
-                Lathe? runningOnLathe = lathes.Find(l => l.Id == Order.AllocatedMachine);
-                if (runningOnLathe is not null)
-                {
-                    partOff = runningOnLathe.PartOff;
-                }
+                return;
             }
-
-            if (partOff is not null)
-            {
-                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars, (double)partOff);
-            }
-            else
-            {
-                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
-            }
+            
+            CalculateTimeAndBar();
 
             if (savedOrder.IsUpdated(Order))
             {
                 SaveExit = true;
             }
 
-            if (SaveExit)
+            if (SaveExit && CanEdit)
             {
                 _ = SaveOrder();
             }
@@ -438,7 +425,26 @@ namespace ProjectLighthouse.View.Orders
 
         private void CalculateTimeAndBar()
         {
+            (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime();
 
+            double? partOff = null;
+            if (!string.IsNullOrEmpty(Order.AllocatedMachine))
+            {
+                Lathe? runningOnLathe = Lathes.Find(l => l.Id == Order.AllocatedMachine);
+                if (runningOnLathe is not null)
+                {
+                    partOff = runningOnLathe.PartOff;
+                }
+            }
+
+            if (partOff is not null)
+            {
+                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars, (double)partOff);
+            }
+            else
+            {
+                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
+            }
         }
 
 

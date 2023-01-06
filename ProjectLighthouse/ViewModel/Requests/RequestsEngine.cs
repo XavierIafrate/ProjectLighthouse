@@ -166,16 +166,19 @@ namespace ProjectLighthouse.ViewModel.Requests
             return (int)Math.Floor(numPossible);
         }
 
+        // TODO: Refactor
         public static List<TurnedProduct> PopulateInsightFields(List<TurnedProduct> products, List<LatheManufactureOrder> activeOrders, List<Request> recentlyDeclinedRequests)
         {
             for (int i = 0; i < products.Count; i++)
             {
+
+
                 for (int j = 0; j < activeOrders.Count; j++)
                 {
                     if (activeOrders[j].OrderItems.Any(x => x.ProductName == products[i].ProductName))
                     {
                         products[i].AppendableOrder = activeOrders[j];
-                        products[i].LighthouseGuaranteedQuantity = activeOrders[j].OrderItems.Find(x => x.ProductName == products[i].ProductName).RequiredQuantity;
+                        products[i].LighthouseGuaranteedQuantity += activeOrders[j].OrderItems.Find(x => x.ProductName == products[i].ProductName)!.RequiredQuantity;
                     }
                     else if (activeOrders[j].GroupId == products[i].GroupId)
                     {

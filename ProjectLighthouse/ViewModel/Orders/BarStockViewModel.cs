@@ -1,15 +1,20 @@
-﻿using ProjectLighthouse.Model.Material;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Windows;
+using ViewModel.Commands.Administration;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -56,6 +61,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<LatheManufactureOrder> Orders { get; set; }
         public List<BarStockRequirementOverview> BarStockOverview { get; set; }
         public PrintBarRequisitionCommand PrintCommand { get; set; }
+        public AddBarCommand AddBarCmd { get; set; }
 
         private string searchString;
         public string SearchString
@@ -101,7 +107,6 @@ namespace ProjectLighthouse.ViewModel.Orders
         public double CostOfNewBar { get; set; }
         public double NumberOfBars { get; set; }
 
-
         public IssueBarCommand IssueBarCmd { get; set; }
         #endregion
 
@@ -114,6 +119,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             BarStockOverview = new();
             FilteredBarOverviews = new();
             PrintCommand = new(this);
+            AddBarCmd= new(this);
             CostOfNewBar = new();
             NumberOfBars = new();
             BarIssues = new();
@@ -134,10 +140,17 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
+            if ((SelectedOrder.StartDate.Date == DateTime.MinValue.Date || SelectedOrder.StartDate > DateTime.Now.AddMonths(1)) && App.CurrentUser.Role != UserRole.Administrator)
+            {
+                MessageBox.Show("Order will not be set in the next month", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             CreateBarIssueWindow window = new()
             {
                 Bar = SelectedBarStock.BarStock,
-                Order = SelectedOrder
+                Order = SelectedOrder,
+                Owner =App.MainViewModel.MainWindow,
             };
 
             window.SetupInterface();
@@ -232,6 +245,16 @@ namespace ProjectLighthouse.ViewModel.Orders
         public void PrintRequisition()
         {
             PDFHelper.PrintBarRequisition(BarStockOverview);
+        }
+
+        public void AddNewBar()
+        {
+            NewBarWindow window = new()
+            {
+                Owner = App.MainViewModel.MainWindow,
+            };
+
+            window.ShowDialog();
         }
     }
 }

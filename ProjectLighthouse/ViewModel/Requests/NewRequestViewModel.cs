@@ -2,6 +2,7 @@
 using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
@@ -102,6 +103,18 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
         }
 
+        private MaterialInfo? selectedProductMaterial;
+
+        public MaterialInfo? SelectedProductMaterial
+        {
+            get { return selectedProductMaterial; }
+            set 
+            { 
+                selectedProductMaterial = value;
+                OnPropertyChanged();    
+            }
+        }
+
 
         public List<LeadTime> Lathes { get; set; }
 
@@ -109,6 +122,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public List<Product> Products { get; set; }
         public List<ProductGroup> ProductGroups { get; set; }
+        public List<MaterialInfo> Materials { get; set; }
 
         public List<LatheManufactureOrderItem> RecommendedManifest { get; set; }
 
@@ -144,6 +158,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             Products = DatabaseHelper.Read<Product>();
             ProductGroups = DatabaseHelper.Read<ProductGroup>();
+            Materials = DatabaseHelper.Read<MaterialInfo>();
 
             ToNotify = DatabaseHelper.Read<User>().Where(x => x.HasPermission(PermissionType.ApproveRequest) && x.ReceivesNotifications).ToList();
 
@@ -221,6 +236,15 @@ namespace ProjectLighthouse.ViewModel.Requests
                 SelectedMainProduct = null;
             }
 
+            if (SelectedProduct.MaterialId is not null)
+            {
+                SelectedProductMaterial = Materials.Find(x => x.Id == SelectedProduct.MaterialId);
+            }
+            else
+            {
+                SelectedProductMaterial = null;
+            }
+
             NewRequest = new()
             {
                 Product = SelectedProduct.ProductName,
@@ -290,9 +314,15 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void SubmitRequest()
         {
+            if (SelectedProduct is null)
+            {
+                MessageBox.Show("Selected product is null", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             newRequest.RaisedBy = App.CurrentUser.GetFullName();
             newRequest.DateRaised = DateTime.Now;
-            newRequest.Product = selectedProduct.ProductName;
+            newRequest.Product = SelectedProduct.ProductName;
 
             ProductGroup? group = ProductGroups.Find(x => x.Id == SelectedProduct.GroupId);
             Product product = group == null 

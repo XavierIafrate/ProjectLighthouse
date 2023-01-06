@@ -196,17 +196,16 @@
                                     VerticalAlignment="Top"
                                     Orientation="Horizontal">
                                     <Button
-                                        Margin="5,0"
                                         HorizontalAlignment="Right"
                                         Command="{Binding VerifyCommand}"
                                         IsEnabled="{Binding NoteIsNotVerified}"
-                                        Style="{StaticResource Action_Button}"
+                                        Style="{StaticResource Action_Orange_Button}"
                                         Tag="Verify" />
                                     <Button
                                         HorizontalAlignment="Right"
                                         Command="{Binding GenerateDeliveryNotePDFCommand}"
                                         IsEnabled="{Binding PdfEnabled}"
-                                        Style="{StaticResource HeroPdfButton}"
+                                        Style="{StaticResource Action_Pdf_Button}"
                                         Tag="View PDF" />
 
 

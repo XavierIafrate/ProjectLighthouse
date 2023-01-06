@@ -7,6 +7,7 @@
     xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     d:Background="{StaticResource Background}"
     d:DesignHeight="1288"
     d:DesignWidth="1701"
@@ -136,6 +137,7 @@
                 Command="{Binding NewOrderCommand}"/>
 
             <Button
+                Visibility="Collapsed"
                 Grid.Column="1"
                 Margin="0,0,5,0"
                 HorizontalAlignment="Left"
@@ -760,6 +762,13 @@
 
                             </StackPanel>
                             <!--#endregion-->
+                            <StackPanel Visibility="{Binding Series, Converter={StaticResource NotNullToVisibility}}">
+                                <TextBlock
+                                    Margin="0,15,0,5"
+                                    Style="{StaticResource section}"
+                                    Text="Production Log" />
+                                <lvc2:CartesianChart Series="{Binding Series}" XAxes="{Binding XAxes}" Height="300"/>
+                            </StackPanel>
 
                             <!--#region Drawings-->
                             <StackPanel>

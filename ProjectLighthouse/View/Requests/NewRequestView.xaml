@@ -283,7 +283,8 @@
                             HorizontalAlignment="Right"
                             d:Text="MATERIAL"
                             FontWeight="SemiBold"
-                            Text="MATERIAL_ID" />
+                            TextTrimming="CharacterEllipsis"
+                            Text="{Binding SelectedProductMaterial.MaterialCode, TargetNullValue='None'}" />
 
                         <TextBlock
                             Grid.Row="5"
