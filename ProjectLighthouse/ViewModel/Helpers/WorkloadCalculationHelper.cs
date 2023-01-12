@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;
@@ -60,5 +61,50 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return runtime;
         }
 
+        public static List<ScheduleItem> GetItemsForDayForMachine(List<ScheduleItem> items, DateTime day, string machineId)
+        {
+            List<ScheduleItem> result = new();
+            day = day.Date;
+
+            List<ScheduleItem> possibleItems = items
+                .Where(x => x.StartDate.Date <= day && x.AllocatedMachine == machineId)
+                .OrderByDescending(x => x.StartDate)
+                .ToList();
+
+            if (possibleItems.Count == 0)
+            {
+                return new();
+            }
+
+            for (int i = 0; i < possibleItems.Count; i++)
+            {
+                ScheduleItem item = possibleItems[i];
+
+
+                DateTime plannedEndDate;
+
+                if (item is LatheManufactureOrder order)
+                {
+                    plannedEndDate = order.AnticipatedEndDate();
+                }
+                else if (item is MachineService maint)
+                {
+                    plannedEndDate = maint.EndsAt();
+                }
+                else
+                {
+                    throw new Exception("Unexpected type");
+                }
+
+                if (plannedEndDate.Date >= day) 
+                { 
+                    result.Add(item);
+                }
+            }
+
+            result = result.OrderBy(x => x.StartDate).ToList();
+
+            return result;
+        }
     }
 }

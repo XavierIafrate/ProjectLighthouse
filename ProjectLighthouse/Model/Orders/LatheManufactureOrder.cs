@@ -8,8 +8,10 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Media.Media3D;
+using ViewModel.Helpers;
 
 namespace ProjectLighthouse.Model.Orders
 {
@@ -166,6 +168,8 @@ namespace ProjectLighthouse.Model.Orders
         public Lathe AssignedLathe { get; set; } = new();
         [Ignore]
         public List<BarIssue> BarIssues { get; set; } = new();
+        [Ignore]
+        public List<Lot> Lots { get; set; } = new();
 
         #region Helpers
         public DateTime Deadline;
@@ -307,6 +311,30 @@ namespace ProjectLighthouse.Model.Orders
             }
 
             return dateTime;
+        }
+
+        public DateTime AnticipatedEndDate()
+        {
+            if (OrderItems.Count == 0)
+            {
+                throw new Exception("Items are unknown, cannot calculate time");
+            }
+
+            int seconds = OrderItems.Sum(x => x.TargetQuantity) * TargetCycleTime;
+
+            return StartDate.AddSeconds(seconds);
+        }
+
+        public double CalculateWeightedCycleTime()
+        {
+            if (OrderItems.Count == 0)
+            {
+                throw new Exception("Items are unknown, cannot calculate time");
+            }
+
+            (int secondsForOrder, _, _) = OrderItems.CalculateOrderRuntime();
+
+            return secondsForOrder / OrderItems.Sum(x => x.TargetQuantity);
         }
         #endregion
 

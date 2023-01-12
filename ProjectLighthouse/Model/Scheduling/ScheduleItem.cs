@@ -32,7 +32,6 @@ namespace ProjectLighthouse.Model.Scheduling
             return StartDate.AddSeconds(TimeToComplete);
         }
 
-
         public class UpdateWatch : Attribute
         {
 

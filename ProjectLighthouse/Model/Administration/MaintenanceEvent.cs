@@ -1,10 +1,11 @@
 ﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Scheduling;
 using SQLite;
 using System;
 
 namespace ProjectLighthouse.Model.Administration
 {
-    public class MaintenanceEvent : IAutoIncrementPrimaryKey
+    public class MaintenanceEvent : ScheduleItem, IAutoIncrementPrimaryKey
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

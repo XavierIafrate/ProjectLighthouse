@@ -1,8 +1,10 @@
-﻿using ProjectLighthouse.Model.Core;
+﻿using ProjectLighthouse.Model.Analytics;
+using ProjectLighthouse.Model.Core;
 using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -21,6 +23,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
 
             return true;
+        }
+
+        public static List<MachineStatistics> QueryMachineHistory(DateTime date)
+        {
+            using SQLiteConnection conn = new(DatabasePath);
+            return conn.Query<MachineStatistics>(
+                query:$"SELECT * FROM {nameof(MachineStatistics)} WHERE {nameof(MachineStatistics.DataTime)} > ? ORDER BY {nameof(MachineStatistics.DataTime)}", 
+                args:date.Ticks)
+                .ToList();
         }
 
         public static bool Insert<T>(T item)

@@ -56,9 +56,24 @@
             <StackPanel>
                 <ComboBox ItemsSource="{Binding Path=YearsAvailable}" SelectedValue="{Binding SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Right"/>
                 <lvc2:CartesianChart Height="500" Series="{Binding Path=Series}" XAxes="{Binding Path=XAxes}"/>
+                
+                <TextBlock Text="{Binding Path=TitleText}" Style="{StaticResource section}"/>
+                <lvc2:PieChart
+                    Height="300"
+                    Series="{Binding GaugeSeries}"
+                    InitialRotation="45"
+                    MaxAngle="270"
+                    Total="100">
+                </lvc2:PieChart>
+                
+                <lvc2:CartesianChart Height="500" Series="{Binding Path=KpiSeries}" YAxes="{Binding Path=YAxes}" XAxes="{Binding Path=KpiXAxes}" />
+
+                <lvc2:CartesianChart Series="{Binding WeeklyKpis}" Height="500" />
             </StackPanel>
             <!--#endregion-->
 
+            
+            
             <Border
                 Height="80"
                 Margin="0,10"
@@ -82,74 +97,7 @@
                     </StackPanel>
                 </Grid>
             </Border>
-
-            <!--<Border
-                Height="80"
-                Margin="0,10"
-                Background="{StaticResource Surface}"
-                CornerRadius="20">
-                <Grid Margin="30,0" VerticalAlignment="Center">
-                    <TextBlock
-                        FontSize="25"
-                        Foreground="{StaticResource OnSurface}"
-                        Text="Packing KPI Data" />
-                    <Button
-                        HorizontalAlignment="Right"
-                        Command="{Binding Path=DownloadPackingDataCommand}"
-                        Content="Download" />
-                </Grid>
-            </Border>-->
-
-            <!--<Grid>
-                <Rectangle Fill="Black" />
-                <StackPanel Margin="30,15">
-                    <TextBlock
-                        FontFamily="Consolas"
-                        FontSize="25"
-                        Foreground="White"
-                        Text="Sentry" />
-                    <TextBlock
-                        FontFamily="Consolas"
-                        FontSize="16"
-                        Foreground="White"
-                        Text="citizen monitoring system" />
-                </StackPanel>
-                <StackPanel
-                    Margin="20,5"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
-            -->
-            <!--
-                Command="{Binding GenerateReportCommand}"
-                CommandParameter="daily"
-                Command="{Binding GenerateReportCommand}"
-                CommandParameter="weekly"
-            -->
-            <!--
-                    <Button
-                        Margin="0,0,5,0"
-                        Content="DAILY REPORT [coming soon]"
-                        IsEnabled="False"
-                        Style="{StaticResource SentryDownloadButton}" />
-                    <Button
-                        Grid.Column="1"
-                        Content="WEEKLY REPORT"
-                        IsEnabled="False"
-                        Style="{StaticResource SentryDownloadButton}" />
-                </StackPanel>
-            </Grid>-->
-
-            <Grid Height="30" />
-            <!--<TextBlock Style="{StaticResource subtitle}" Text="Machine Performance" />
-            <StackPanel DataContext="{Binding Analytics.Performance}">
-                <ItemsControl HorizontalAlignment="Stretch" ItemsSource="{Binding Performance}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <analyticscomponents:DisplayDaysPerformance Performance="{Binding}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>-->
+            <Grid Height="50" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

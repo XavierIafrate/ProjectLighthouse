@@ -1,9 +1,5 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Spreadsheet;
-using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Material;
+﻿using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
-using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -66,7 +62,7 @@ namespace ViewModel.Helpers
                 numberOfBars += item.TargetQuantity / partsPerBar;
             }
 
-            return Math.Ceiling(numberOfBars * 1.05) + spareBars;
+            return Math.Ceiling(numberOfBars * 1.02) + spareBars;
         }
 
         public static double CalculateNumberOfBars(this ObservableCollection<LatheManufactureOrderItem> items, BarStock bar, int spareBars, double partOff = 2)
