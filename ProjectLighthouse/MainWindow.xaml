@@ -87,8 +87,7 @@
                         x:Name="DebugTile"
                         Margin="10"
                         Background="{StaticResource RedFaded}"
-                        Visibility="Collapsed"
-                        d:Visibility="Visible">
+                        Visibility="Collapsed">
                         <TextBlock
                             Margin="0,5"
                             HorizontalAlignment="Center"

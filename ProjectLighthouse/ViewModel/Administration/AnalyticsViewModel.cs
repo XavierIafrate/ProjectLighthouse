@@ -14,6 +14,8 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Xaml;
 using static Model.Analytics.KpiReport;
 
@@ -83,6 +85,8 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         };
 
+        public Axis[] KpiOverTimeXAxes { get; set; }
+
         public int TotalPartsMade { get; set; }
         public int TotalPartsMadeThisYear { get; set; }
 
@@ -95,9 +99,12 @@ namespace ProjectLighthouse.ViewModel.Administration
         public AnalyticsViewModel()
         {
             Analytics = new();
-            GetAnalytics();
 
             RuntimeReportCommand = new(this);
+
+            //Task.Run(() => GetAnalytics());
+            GetAnalytics();
+            
         }
 
         private void GetAnalytics()
@@ -108,8 +115,13 @@ namespace ProjectLighthouse.ViewModel.Administration
             TotalPartsMadeThisYear = stockLots.Where(x => x.IsDelivered && x.Date.Year == DateTime.Now.Year)
                 .Sum(x => x.Quantity);
 
-            GetChartData(stockLots);
+            OnPropertyChanged(nameof(TotalPartsMade));
+            OnPropertyChanged(nameof(TotalPartsMadeThisYear));
 
+            GetChartData(stockLots);
+            //KpiReport report = new(start: new(2023, 1, 10), daysSpan: 7);
+
+            //GetKpis();
             //GetMachineHistoryGraph();
         }
 
@@ -238,33 +250,34 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
-        public void SendRuntimeReport(bool test)
+        public void GetKpis()
         {
             int dayOfWeekToday = (int)DateTime.Now.DayOfWeek; // Sunday = 0
-            DateTime mondayThisWeek = DateTime.Today.AddDays(1 - dayOfWeekToday);
+            //DateTime mondayThisWeek = DateTime.Today.AddDays(1 - dayOfWeekToday -7); // TODO Change back
+            DateTime reportStartDate = new(2023, 1, 4);
+            reportStartDate = reportStartDate.Date.AddHours(6);
 
+            int totalReportDaysSpan = 7;
 
-            //DateTime toDate = new(2023, 1, 10);
-            //int daysSpan = 7;
+            OperatingData baseData = new(reportStartDate, totalReportDaysSpan);
+            baseData.GetData();
 
-            //DateTime reportEndDate = toDate.Date.AddHours(6);
-            //DateTime reportStartDate = reportEndDate.AddDays(-daysSpan);
 
             Dictionary<DateTime, OperatingEfficiencyKpi> weeklyKpis = new();
 
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < totalReportDaysSpan; i++)
             {
-                DateTime startDate = mondayThisWeek.AddDays(-7 * (1 + i));
-                OperatingEfficiencyKpi weeksKpi = GetKpi(daysSpan:7, startDate);
-                weeksKpi.Normalise(100);
+                DateTime startDate = reportStartDate.AddDays(i);
+
+                OperatingEfficiencyKpi weeksKpi = baseData.GetKpi(startDate, span: 1);
+                weeksKpi.Normalise(24*4);
                 weeklyKpis.Add(startDate, weeksKpi);
             }
 
-            //kpi.Normalise(100);
+            DateTime targetKey = weeklyKpis.Keys.ElementAt(0);
+            OperatingEfficiencyKpi kpi = weeklyKpis[targetKey];
 
-            OperatingEfficiencyKpi kpi = weeklyKpis[weeklyKpis.Keys.ElementAt(0)];
-
-
+            //OperatingEfficiencyKpi kpi = baseData.GetKpi(reportStartDate, totalReportDaysSpan);
 
             Tuple<double, double>[] seriesPoints = new Tuple<double, double>[8];
 
@@ -368,27 +381,31 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             KpiXAxes = new Axis[]
             {
-                new Axis { MinLimit = 0, MaxLimit = kpi.AvailableTime.TotalHours }
+                new Axis { MinLimit = 0, MaxLimit = seriesPoints.Max(x => x.Item1) }
             };
 
             OnPropertyChanged(nameof(KpiXAxes));
 
+            
 
-            TitleText = $"Efficiency for date range {weeklyKpis.Keys.ElementAt(11):ddd dd/MM/yy HHmm} to {weeklyKpis.Keys.ElementAt(11).AddDays(7):ddd dd/MM/yy HHmm}";
+            TitleText = $"Efficiency for date range {targetKey:ddd dd/MM/yy HHmm} to {targetKey.AddDays(1):ddd dd/MM/yy HHmm}";
 
             OnPropertyChanged(nameof(TitleText));
 
 
-            double[] oees = new double[12];
-            double[] ooes = new double[12];
-            int count = weeklyKpis.Count;
+            double[] oees = new double[totalReportDaysSpan];
+            double[] ooes = new double[totalReportDaysSpan];
+            string[] xAxisLabels = new string[totalReportDaysSpan]; 
 
-            for (int x = 0; x < count; x++)
+            for (int x = 0; x < totalReportDaysSpan; x++)
             {
-                OperatingEfficiencyKpi kvp = weeklyKpis.ElementAt(count - x - 1).Value;
-                oees[x] = kvp.GetEquipmentEfficiency();
-                ooes[x] = kvp.GetOperationsEfficiency();
+                OperatingEfficiencyKpi kvp = weeklyKpis.ElementAt(x).Value;
+                oees[x] = kvp.GetEquipmentEfficiency() * 100;
+                ooes[x] = kvp.GetOperationsEfficiency() * 100;
+                xAxisLabels[x] = kvp.StartDate.ToString("dd/MM");
             }
+
+
 
             WeeklyKpis = new ISeries[]
             {
@@ -406,7 +423,16 @@ namespace ProjectLighthouse.ViewModel.Administration
                 }
             };
 
+            KpiOverTimeXAxes = new Axis[]
+            {
+                new Axis { MinLimit = 0, Labels =  xAxisLabels, MinStep=1, ForceStepToMin=true}
+            };
+
+            OnPropertyChanged(nameof(KpiOverTimeXAxes));
+
             OnPropertyChanged(nameof(WeeklyKpis));
+
+
 
 
             GaugeSeries = new GaugeBuilder()
@@ -422,39 +448,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             .BuildSeries();
 
             OnPropertyChanged(nameof(GaugeSeries));
-
-            //KpiReport report = new(toDate, 7);
-        }
-
-        private static OperatingEfficiencyKpi GetKpi(int daysSpan, DateTime reportStartDate)
-        {
-            OperatingData baseData = new(reportStartDate, daysSpan);
-            baseData.GetData();
-
-            OperatingEfficiencyKpi kpi = null;
-
-            for (int i = 0; i < baseData.Days.Count; i++)
-            {
-                DateTime date = baseData.Days.Keys.ElementAt(i);
-                OperatingData.DayOperatingData day = baseData.Days[date];
-                for (int j = 0; j < day.MachineSchedules.Count; j++)
-                {
-                    List<ScheduleItem> items = day.MachineSchedules.ElementAt(j).Value;
-
-                    OperatingEfficiencyKpi temporalKpi = new(date, new(24, 0, 0), items);
-
-                    if (kpi is null)
-                    {
-                        kpi = temporalKpi;
-                    }
-                    else
-                    {
-                        kpi.Add(temporalKpi);
-                    }
-                }
-            }
-
-            return kpi;
         }
     }
 }

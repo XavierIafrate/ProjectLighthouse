@@ -149,7 +149,10 @@ namespace ProjectLighthouse.ViewModel.Core
                 }
             }
 
-            if (numNewNots > 3 && multiToast)
+            SetInterfaceVariables();
+
+            int visibleNotSeenNots = App.MainViewModel.Notifications.Where(x => !x.Seen).Count();
+            if (visibleNotSeenNots > 3 && multiToast)
             {
                 string header = $"{numNewNots:0} new notification" + (numNewNots == 1 ? "" : "s");
                 new ToastContentBuilder()
@@ -159,8 +162,6 @@ namespace ProjectLighthouse.ViewModel.Core
                        .AddArgument("action", "showNotifications")
                        .Show();
             }
-
-            SetInterfaceVariables();
         }
 
         private void RaiseToast(Notification notification)

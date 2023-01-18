@@ -1,8 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using LiveCharts.Defaults;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.Drawing;
+﻿using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using ProjectLighthouse.Model.Administration;
@@ -257,7 +253,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void LoadProductionChart(List<Lot> stockLots, DateTime startingDate)
         {
-            if(stockLots.Count == 0) 
+            if (stockLots.Count == 0)
             {
                 Series = null;
                 OnPropertyChanged(nameof(Series));
@@ -283,7 +279,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             string[] labels = new string[daysOfSpan];
 
-            for(int i = 0; i < daysOfSpan; i++)
+            for (int i = 0; i < daysOfSpan; i++)
             {
                 DateTime day = startingDate.AddDays(i).Date;
                 labels[i] = day.ToString("dd/MM");
@@ -501,6 +497,12 @@ namespace ProjectLighthouse.ViewModel.Orders
                         || !n.IsClosed)
                         .Where(o => o.State != OrderState.Running)
                         .ToList());
+                    break;
+
+                case "Assigned To Me":
+                    orders = Orders
+                        .Where(x => !x.IsClosed && x.AssignedTo == App.CurrentUser.UserName)
+                        .ToList();
                     break;
 
                 case "Not Ready":

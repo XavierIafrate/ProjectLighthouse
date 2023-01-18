@@ -10,6 +10,9 @@ namespace Model.Analytics
 {
     public class OperatingEfficiencyKpi
     {
+        public DateTime StartDate;
+        public TimeSpan DaysSpan;
+
         public TimeSpan AvailableTime;
         public TimeSpan UnscheduledTime;
         public TimeSpan DevelopmentTime;
@@ -26,6 +29,9 @@ namespace Model.Analytics
 
         public OperatingEfficiencyKpi(DateTime startDate, TimeSpan timeSpan, List<ScheduleItem> itemsWithinSpan)
         {
+            StartDate = startDate;
+            DaysSpan = timeSpan;    
+
             CalculateScheduledTime(startDate, timeSpan, itemsWithinSpan);
             //CalculateEquipmentTime()
         }
@@ -33,68 +39,68 @@ namespace Model.Analytics
         private void CalculateScheduledTime(DateTime startDate, TimeSpan timeSpan, List<ScheduleItem> itemsWithinSpan)
         {
             AvailableTime = timeSpan;
+            UnscheduledTime = timeSpan;
+
             itemsWithinSpan = itemsWithinSpan.OrderByDescending(x => x.StartDate).ToList();
 
             DateTime currentDate = startDate + timeSpan; // Start at the end and work backwards
 
-
             for (int i = 0; i < itemsWithinSpan.Count; i++)
             {
                 ScheduleItem item = itemsWithinSpan[i];
+
                 // Change currentDate if MachineService?
                 (DateTime itemStartsAt, DateTime itemEndsAt, TimeSpan remainderAfter) = GetStartAndEnd(item, startDate, currentDate);
-                UnscheduledTime += remainderAfter;
-
+                
                 TimeSpan timeForItem = itemEndsAt - itemStartsAt;
+                UnscheduledTime -= timeForItem;
+
                 AccountedFor += timeForItem;
 
                 if (item is LatheManufactureOrder order)
                 {
-                    CalculateTimeForOrder(order, startDate, currentDate, timeForItem, remainderAfter, timeSpan);
+                    CalculateTimeForOrder(order, startDate, timeSpan, timeForItem, remainderAfter);
                 }
                 else if (item is MachineService service)
                 {
                     PlannedMaintenanceTime += timeForItem; // TODO override order running and take off time
                 }
+
+                currentDate = itemStartsAt;
             }
         }
 
-        private void CalculateTimeForOrder(LatheManufactureOrder order, DateTime startDate, DateTime currentDate, TimeSpan timeForItem, TimeSpan remainderAfter, TimeSpan timeSpan)
+        private void CalculateTimeForOrder(LatheManufactureOrder order, DateTime startDate, TimeSpan timeSpan, TimeSpan timeForItem, TimeSpan remainderAfter)
         {
             TimeSpan settingTime = TimeSpan.FromHours(6);
 
             if (order.StartDate.Date == startDate.Date)
             {
                 BudgetedSettingTime += settingTime;
-                AccountedFor += settingTime; 
-
-                currentDate = order.StartDate - settingTime;
-            }
-            else
-            {
-                currentDate = order.StartDate;
+                //AccountedFor += settingTime; // Check
+                UnscheduledTime -= settingTime;
             }
 
             if (order.IsResearch)
             {
                 DevelopmentTime += timeForItem + remainderAfter + settingTime;
-                BudgetedSettingTime -= settingTime;
+                
+                if (order.StartDate.Date == startDate.Date)
+                {
+                    BudgetedSettingTime -= settingTime;
+                }
+
                 UnscheduledTime -= remainderAfter; // Allow downtime to next order
                 return;
             }
 
             double weightedCycleTime = order.CalculateWeightedCycleTime();
 
-            if (order.TargetCycleTime <= 0 || order.TargetCycleTimeEstimated)
-            {
-                PerformanceDeltaTime = TimeSpan.FromSeconds(0);
-            }
-            else
-            {
-                PerformanceDeltaTime = ((order.TargetCycleTime - weightedCycleTime) / order.TargetCycleTime) * timeForItem;
-            }
-
-            List<Lot> producedInTimeSpan = order.Lots.Where(x => x.DateProduced > startDate && x.DateProduced < startDate + timeSpan).ToList();
+            List<Lot> producedInTimeSpan = order.Lots
+                .Where(x => 
+                    x.DateProduced > startDate && 
+                    x.DateProduced < startDate + timeSpan)
+                .ToList();
 
             int rejects = producedInTimeSpan.Where(x => x.IsReject).Sum(x => x.Quantity);
             int total = producedInTimeSpan.Sum(x => x.Quantity);
@@ -105,6 +111,15 @@ namespace Model.Analytics
             NonRunningTime = TimeSpan.FromSeconds((theoreticalTotal - total) * weightedCycleTime);
 
             QualityLossTime = TimeSpan.FromSeconds(rejects * weightedCycleTime);
+
+            if (order.TargetCycleTime <= 0 || order.TargetCycleTimeEstimated)
+            {
+                PerformanceDeltaTime = TimeSpan.FromSeconds(0);
+            }
+            else
+            {
+                PerformanceDeltaTime = ((weightedCycleTime - order.TargetCycleTime) / order.TargetCycleTime) * (timeForItem - NonRunningTime);
+            }
         }
 
         private (DateTime, DateTime, TimeSpan) GetStartAndEnd(ScheduleItem item, DateTime min, DateTime max)
@@ -116,7 +131,7 @@ namespace Model.Analytics
             if (item is LatheManufactureOrder order)
             {
                 start = order.StartDate;
-                stop = order.AnticipatedEndDate();
+                stop = order.EndsAt();
             }
             else if (item is MachineService service)
             {

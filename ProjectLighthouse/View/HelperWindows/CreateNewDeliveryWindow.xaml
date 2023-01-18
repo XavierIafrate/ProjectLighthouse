@@ -86,25 +86,11 @@
             <Button
                 x:Name="addButton"
                 Click="addButton_Click"
-                Style="{StaticResource GreenButton}">
-                <Button.Content>
-                    <Path
-                        Margin="0,0,5,0"
-                        Data="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"
-                        Fill="{StaticResource OnPurple}" />
-                </Button.Content>
-            </Button>
+                Style="{StaticResource ListBox_Add_Button}"/>
             <Button
                 x:Name="remButton"
                 Click="remButton_Click"
-                Style="{StaticResource RedButton}">
-                <Button.Content>
-                    <Path
-                        Margin="0,0,5,0"
-                        Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"
-                        Fill="{StaticResource OnPurple}" />
-                </Button.Content>
-            </Button>
+                Style="{StaticResource ListBox_Remove_Button}"/>
         </StackPanel>
 
         <TextBlock
@@ -150,13 +136,13 @@
             <Button
                 x:Name="CancelButton"
                 Click="CancelButton_Click"
-                Content="Cancel"
-                Style="{StaticResource RedButton}" />
+                Tag="Cancel"
+                Style="{StaticResource Action_Cancel_Button}" />
             <Button
                 x:Name="CreateButton"
                 Click="CreateButton_Click"
-                Content="Create Delivery"
-                Style="{StaticResource GreenButton}" />
+                Tag="Create Delivery"
+                Style="{StaticResource Action_New_Button}" />
         </StackPanel>
 
 

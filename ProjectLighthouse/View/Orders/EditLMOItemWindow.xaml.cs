@@ -225,7 +225,7 @@ namespace ProjectLighthouse.View.Orders
                 FromMachine = ProducedOnMachine,
                 Remarks = RemarksTextBox.Text.Trim(),
                 AllowDelivery = AllowDelivery,
-                DateProduced = DateTime.Now.Hour >= 9
+                DateProduced = DateTime.Now.Hour >= 10
                     ? DateTime.Now.Date.AddHours(12)
                     : DateTime.Now.Date.AddHours(-12)
             };

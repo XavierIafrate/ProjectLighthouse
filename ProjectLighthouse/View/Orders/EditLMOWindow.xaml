@@ -331,6 +331,21 @@
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     FontSize="16"
+                                    Text="Assigned To" />
+                                <ComboBox
+                                    x:Name="AssignedComboBox"
+                                    Width="200"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                                    ItemsSource="{Binding ProductionStaff}"
+                                    SelectedValuePath="UserName"
+                                    SelectedValue="{Binding Order.AssignedTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                </ComboBox>
+                            </Grid>
+                            <Grid Margin="10,0">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
                                     Text="Number of Spare Bars" />
                                 <TextBox
                                     x:Name="SpareBarsTextBox"

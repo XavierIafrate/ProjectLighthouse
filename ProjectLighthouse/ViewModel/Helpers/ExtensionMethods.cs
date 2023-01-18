@@ -24,6 +24,7 @@ namespace ViewModel.Helpers
                 if (orderedItems[i].CycleTime > 0)
                 {
                     orderTime += orderedItems[i].CycleTime * orderedItems[i].TargetQuantity;
+                    cycleTime = orderedItems[i].CycleTime;
                 }
                 else if (cycleTime > 0)
                 {
@@ -39,8 +40,6 @@ namespace ViewModel.Helpers
                     orderTime += orderedItems[i].GetCycleTime() * orderedItems[i].TargetQuantity;
                     estimated = true;
                 }
-
-                cycleTime = orderedItems[i].CycleTime;
             }
 
             return new(orderTime, cycleTime, estimated);

@@ -22,19 +22,11 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
-            if (parameter.ToString() == "all")
-            {
-                viewModel.SendRuntimeReport(test: false);
+            //if (parameter.ToString() == "all")
+            //{
+            //    viewModel.CAlci(test: false);
 
-            }
-            else if (parameter.ToString() == "test")
-            {
-                viewModel.SendRuntimeReport(test: true);
-            }
-            else
-            {
-                MessageBox.Show("parameter failed");
-            }
+            //}
         }
     }
 }

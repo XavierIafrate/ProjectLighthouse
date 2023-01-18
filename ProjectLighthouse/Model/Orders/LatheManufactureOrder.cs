@@ -8,8 +8,10 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Media.Media3D;
 using ViewModel.Helpers;
 
@@ -69,6 +71,9 @@ namespace ProjectLighthouse.Model.Orders
                 return result;
             }
         }
+
+        [UpdateWatch]
+        public string? AssignedTo { get; set; }
 
 
         #region Identification Phase
@@ -216,6 +221,7 @@ namespace ProjectLighthouse.Model.Orders
                 TargetCycleTimeEstimated = TargetCycleTimeEstimated,
                 GroupId = GroupId,
                 MaterialId = MaterialId,
+                AssignedTo = AssignedTo,
             };
         }
 
@@ -232,6 +238,9 @@ namespace ProjectLighthouse.Model.Orders
             }
 
             PropertyInfo[] properties = typeof(LatheManufactureOrder).GetProperties();
+            bool mod = false;
+            StringBuilder sb = new();
+
             foreach (PropertyInfo property in properties)
             {
                 bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
@@ -242,17 +251,27 @@ namespace ProjectLighthouse.Model.Orders
 
                 if (!Equals(property.GetValue(this), property.GetValue(OtherOrder)))
                 {
-#if DEBUG
-                    Debug.WriteLine($"'{property.Name}' has been modified:");
-                    Debug.WriteLine($"   After: '{property.GetValue(this)}'");
-                    Debug.WriteLine($"  Before: '{property.GetValue(OtherOrder)}'");
-#endif
-                    return true;
+                    if (!mod)
+                    {
+                        sb.AppendLine($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
+                    }
+                    sb.AppendLine($"\t{property.Name} modified");
+                    sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
+                    sb.AppendLine($"\t\tto  : '{property.GetValue(OtherOrder) ?? "null"}'");
+                    
+                    mod = true;
                 }
 
             }
 
-            return false;
+            if (mod)
+            {
+                string path = App.ROOT_PATH+ @"lib\logs\" + Name + ".log";
+
+                File.AppendAllText(path, sb.ToString());
+            }
+
+            return mod;
         }
 
         public void Update(LatheManufactureOrder otherOrder)
@@ -287,6 +306,8 @@ namespace ProjectLighthouse.Model.Orders
             ModifiedAt = otherOrder.ModifiedAt;
             ModifiedBy = otherOrder.ModifiedBy;
             POReference = otherOrder.POReference;
+
+            AssignedTo = otherOrder.AssignedTo;
         }
 
         public bool RequiresBar()

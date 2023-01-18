@@ -104,7 +104,7 @@
                     <Run d:Text="3,000mm long" Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}{0:#,##0}mm long,'}" />
                     <Run d:Text="size 7mm" Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}size {0}mm'}" />
                 </TextBlock>
-                <!--<TextBlock Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Unit Cost {0}', Converter='{StaticResource priceConverter}'}" />-->
+                <TextBlock Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Standard Cost {0}', Converter={StaticResource priceConverter}}" />
 
                 <Grid Margin="0,20" HorizontalAlignment="Center">
                     <Grid.Resources>

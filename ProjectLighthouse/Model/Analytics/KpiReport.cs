@@ -7,6 +7,7 @@ using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -14,15 +15,14 @@ namespace Model.Analytics
 {
     public class KpiReport
     {
-        public KpiReport(DateTime toDate, int daysSpan)
+        public KpiReport(DateTime start, int daysSpan)
         {
             if (daysSpan <= 0)
             {
                 throw new Exception("daysSpan must be greater than zero.");
             }
 
-            DateTime reportEndDate = toDate.Date.AddHours(6);
-            DateTime reportStartDate = reportEndDate.AddDays(-daysSpan);
+            DateTime reportStartDate = start.Date.AddHours(6);
 
             Document pdfReport = GetReport(reportStartDate, daysSpan);
 
@@ -60,7 +60,7 @@ namespace Model.Analytics
 
             public OperatingData(DateTime fromDate, int daysSpan)
             {
-                FromDate = fromDate;
+                FromDate = fromDate.Date.AddHours(6);
                 DaysSpan = daysSpan;
             }
 
@@ -89,8 +89,44 @@ namespace Model.Analytics
                 {
                     DateTime date = FromDate.AddDays(i);
 
-                    Days.Add(date, new(date, Lathes, ScheduleItems));
+                    Days.Add(date, new DayOperatingData(date, Lathes, ScheduleItems));
                 }
+            }
+
+            public OperatingEfficiencyKpi GetKpi(DateTime date, int span)
+            {
+                OperatingEfficiencyKpi kpi = null;
+
+                for (int i = 0; i < Days.Count; i++)
+                {
+                    DateTime keyDate = Days.ElementAt(i).Key;
+                    if (keyDate < date || keyDate > date.AddDays(span))
+                    {
+                        continue;
+                    }
+
+                    OperatingData.DayOperatingData day = Days.ElementAt(i).Value;
+                    for (int j = 0; j < day.MachineSchedules.Count; j++)
+                    {
+                        List<ScheduleItem> items = day.MachineSchedules.ElementAt(j).Value;
+
+                        OperatingEfficiencyKpi temporalKpi = new(date, new(24, 0, 0), items);
+
+                        Debug.WriteLine($"i:{i} j:{j} nonRunning:{temporalKpi.NonRunningTime} {keyDate:dd/MM/yyyy HHmm}");
+
+
+                        if (kpi is null)
+                        {
+                            kpi = temporalKpi;
+                        }
+                        else
+                        {
+                            kpi.Add(temporalKpi);
+                        }
+                    }
+                }
+
+                return kpi;
             }
 
             public class DayOperatingData
@@ -117,7 +153,7 @@ namespace Model.Analytics
                 {
                     Section newSection = new();
                     newSection = SetupSection(newSection);
-                    newSection.AddParagraph($"{Date:dd/MM/yy HHmm} to {Date.AddDays(1):dd/MM/yyyy HHmm}");
+                    newSection.AddParagraph($"{Date:ddd dd/MM/yy HHmm} to {Date.AddDays(1):ddd dd/MM/yyyy HHmm}");
 
                     for (int i = 0; i < Lathes.Count; i++)
                     {
@@ -147,42 +183,44 @@ namespace Model.Analytics
                         }
                         else if (scheduleEvent is LatheManufactureOrder order)
                         {
-                            newSection.AddParagraph($"\t\tOrder: {order.Name} @ {order.StartDate:dd/MM HH:mm} to {order.AnticipatedEndDate():dd/MM HH:mm}");
+                            newSection.AddParagraph($"\t\t{(order.IsResearch ? "R&D" : "Order")}: {order.Name} @ {order.StartDate:dd/MM HH:mm} to {order.AnticipatedEndDate():dd/MM HH:mm}");
                         }
+                    }
+
+                    if (items.Count == 0)
+                    {
+                        newSection.AddParagraph($"\t\tNo items today");
                     }
 
                     OperatingEfficiencyKpi kpi = new(Date, new(24, 0, 0), items);
                     Kpis.Add(lathe, kpi);
 
 
-                    newSection.AddParagraph($"\n\t{kpi.AvailableTime.TotalHours:0.00} Available");
-                    newSection.AddParagraph($"\t{kpi.UnscheduledTime.TotalHours:0.00} Unscheduled");
-                    newSection.AddParagraph($"\t{kpi.PlannedRunTime.TotalHours:0.00} Planned Production\n");
+                    newSection.AddParagraph($"\n\t\t{kpi.AvailableTime.TotalHours:0.00} Available");
+                    newSection.AddParagraph($"\t\t{kpi.UnscheduledTime.TotalHours:0.00} Unscheduled");
+                    newSection.AddParagraph($"\t\t{kpi.PlannedRunTime.TotalHours:0.00} Planned Production\n");
+                    newSection.AddParagraph($"\t\t{kpi.AccountedFor.TotalHours:0.00} Accounted For");
 
-                    newSection.AddParagraph($"OOE");
+                    //newSection.AddParagraph($"OOE");
 
-                    newSection.AddParagraph($"\t{kpi.DevelopmentTime.TotalHours:0.00} Research & Development");
-                    newSection.AddParagraph($"\t{kpi.PlannedMaintenanceTime.TotalHours:0.00} Planned Maintenance");
-                    newSection.AddParagraph($"\t{kpi.BudgetedSettingTime.TotalHours:0.00} Budgeted Setting");
+                    //newSection.AddParagraph($"\t{kpi.DevelopmentTime.TotalHours:0.00} Research & Development");
+                    //newSection.AddParagraph($"\t{kpi.PlannedMaintenanceTime.TotalHours:0.00} Planned Maintenance");
+                    //newSection.AddParagraph($"\t{kpi.BudgetedSettingTime.TotalHours:0.00} Budgeted Setting");
 
 
-                    newSection.AddParagraph($"OEE");
+                    //newSection.AddParagraph($"OEE");
 
-                    newSection.AddParagraph($"\t{kpi.BreakdownTime.TotalHours:0.00} Breakdown");
-                    newSection.AddParagraph($"\t{kpi.NonRunningTime.TotalHours:0.00} Not Running");
-                    newSection.AddParagraph($"\t{kpi.PerformanceDeltaTime.TotalHours:0.00} Cycle Time difference [-ve = time saved]");
-                    newSection.AddParagraph($"\t{kpi.QualityLossTime.TotalHours:0.00} Quality Loss");
+                    //newSection.AddParagraph($"\t{kpi.BreakdownTime.TotalHours:0.00} Breakdown");
+                    newSection.AddParagraph($"\t\t{kpi.NonRunningTime.TotalHours:0.00} Not Running");
+                    newSection.AddParagraph($"\t\t{kpi.PerformanceDeltaTime.TotalHours:0.00} Cycle Time difference [-ve = time saved]");
+                    //newSection.AddParagraph($"\t{kpi.QualityLossTime.TotalHours:0.00} Quality Loss");
 
-                    newSection.AddParagraph($"\n\t{kpi.AccountedFor.TotalHours:0.00} Accounted For");
 
-                    newSection.AddParagraph($"\n\t{kpi.GetOperationsEfficiency() * 100:0.00}% Operations Efficiency");
+                    //newSection.AddParagraph($"\n\t{kpi.GetOperationsEfficiency() * 100:0.00}% Operations Efficiency");
                     newSection.AddParagraph($"\n\t{kpi.GetSchedulingEfficiency() * 100:0.00}% Scheduling Efficiency");
-                    newSection.AddParagraph($"\t{kpi.GetEquipmentEfficiency() * 100:0.00}% Equipment Efficiency");
+                    //newSection.AddParagraph($"\t{kpi.GetEquipmentEfficiency() * 100:0.00}% Equipment Efficiency");
 
-                    if (items.Count == 0)
-                    {
-                        newSection.AddParagraph($"\tNo items today");
-                    }
+
                 }
             }
         }

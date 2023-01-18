@@ -64,10 +64,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static List<ScheduleItem> GetItemsForDayForMachine(List<ScheduleItem> items, DateTime day, string machineId)
         {
             List<ScheduleItem> result = new();
-            day = day.Date;
 
             List<ScheduleItem> possibleItems = items
-                .Where(x => x.StartDate.Date <= day && x.AllocatedMachine == machineId)
+                .Where(x => x.StartDate <= day.AddDays(1) && x.AllocatedMachine == machineId)
                 .OrderByDescending(x => x.StartDate)
                 .ToList();
 
@@ -85,7 +84,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 if (item is LatheManufactureOrder order)
                 {
-                    plannedEndDate = order.AnticipatedEndDate();
+                    plannedEndDate = order.EndsAt(); // Must be adjusted time knowing the cycle time
                 }
                 else if (item is MachineService maint)
                 {
@@ -96,9 +95,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     throw new Exception("Unexpected type");
                 }
 
-                if (plannedEndDate.Date >= day) 
+                if (plannedEndDate >= day) 
                 { 
                     result.Add(item);
+                }
+                else
+                {
+                    break; 
                 }
             }
 

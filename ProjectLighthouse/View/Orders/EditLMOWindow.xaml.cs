@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
@@ -51,6 +52,8 @@ namespace ProjectLighthouse.View.Orders
 
         public List<BarStock> BarStock { get; set; }
 
+        public List<User> ProductionStaff { get; set; }
+
         public List<BarIssue> BarIssues { get; set; }
 
         #endregion
@@ -68,13 +71,18 @@ namespace ProjectLighthouse.View.Orders
 
         private void LoadData(string id)
         {
+            ProductionStaff = DatabaseHelper.Read<User>()
+                .Where(u => u.Role == UserRole.Production)
+                .OrderBy(x => x.UserName)
+                .Prepend(new() { UserName = null, FirstName = "Unassigned" })
+                .ToList();
 
             Order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == id);
             Lathes = DatabaseHelper.Read<Lathe>();
 
             if (Order is null) throw new Exception($"Cannot find order {id}");
 
-            if (BarStock == null)
+            if (BarStock is null)
             {
                 // TODO handle bad inputs
                 BarStock = DatabaseHelper.Read<BarStock>();
@@ -147,6 +155,7 @@ namespace ProjectLighthouse.View.Orders
             BarStockComboBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && !Order.BarIsVerified && canEdit;
             SpareBarsTextBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             researchCheckBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
+            AssignedComboBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             composeMessageControls.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
 
             AddItemButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && Order.State < OrderState.Complete && canEdit;

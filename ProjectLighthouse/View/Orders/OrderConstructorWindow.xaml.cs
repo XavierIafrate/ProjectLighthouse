@@ -444,6 +444,8 @@ namespace ProjectLighthouse.View.Orders
             {
                 defaultCycleTime = comparableProducts.Min(x => x.CycleTime);
             }
+            
+            defaultCycleTime ??= NewOrderItems.First().GetCycleTime(); // provides estimation based on diameter
 
             (int totalTime, int targetCycleTime, bool estimated) = NewOrderItems.CalculateOrderRuntime(defaultCycleTime);
 

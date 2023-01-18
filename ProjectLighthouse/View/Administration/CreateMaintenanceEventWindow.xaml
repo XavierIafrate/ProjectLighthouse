@@ -102,7 +102,7 @@
             HorizontalAlignment="Right"
             Content="Event Active" />
 
-        <Border Background="{StaticResource Surface}" Padding="10" Grid.ColumnSpan="3" x:Name="AddServiceRecordControls" Grid.Row="7" CornerRadius="5">
+        <Border Background="{StaticResource Surface}" Padding="10" Grid.ColumnSpan="3" x:Name="AddServiceRecordControls" Grid.Row="7" CornerRadius="5" Margin="5">
             <StackPanel>
                 <TextBlock Text="Add New Service Record" Style="{StaticResource section}"/>
                 <TextBlock Text="Last completed 01/01/1970." x:Name="LastCompleteText" Style="{StaticResource statement}" Foreground="{StaticResource OnSurface}"/>
@@ -113,7 +113,7 @@
                 </Grid>
                 <Grid>
                     <CheckBox IsChecked="True" Content="Update Event Start Date" x:Name="UpdateStartDateCheckBox"/>
-                    <Button Content="Upload Service Record" Style="{StaticResource GreenButton}" HorizontalAlignment="Right" x:Name="UploadServiceRecordButton" Click="UploadServiceRecordButton_Click"/>
+                    <Button Tag="Register Service" Style="{StaticResource Action_New_Button}" HorizontalAlignment="Right" x:Name="UploadServiceRecordButton" Click="UploadServiceRecordButton_Click"/>
                 </Grid>
             </StackPanel>
         </Border>
@@ -123,14 +123,15 @@
             Grid.Row="8"
             Content="AutoFormat description"
             IsChecked="True"
-            Visibility="Hidden" />
+            Visibility="Hidden"
+            d:Visibility="Visible"/>
         <Button
             x:Name="AddButton"
+            Style="{StaticResource Action_New_Button}"
             Grid.Row="8"
             Grid.Column="2"
-            Margin="20,20,0,10"
             HorizontalAlignment="Right"
             Click="AddButton_Click"
-            Content="Add To Register" />
+            Tag="Add To Register" />
     </Grid>
 </Window>
