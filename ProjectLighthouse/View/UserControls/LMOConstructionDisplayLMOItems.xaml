@@ -37,7 +37,7 @@
                 x:Name="QuantityTextBox"
                 PreviewKeyDown="TextBox_PreviewKeyDown"
                 Style="{StaticResource DefaultTextBox}"
-                Text="{Binding Path=TargetQuantity}"
+                Text="{Binding TargetQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 LostFocus="QuantityTextBox_LostFocus"
                 TextChanged="TextBox_TextChanged"/>
             <TextBlock

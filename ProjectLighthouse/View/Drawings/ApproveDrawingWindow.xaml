@@ -10,165 +10,131 @@
     Height="800"
     MinWidth="1200"
     MinHeight="700"
-    AllowsTransparency="True"
-    WindowStyle="None"
-    Background="#191c1f"
+    Background="{StaticResource Background}"
     mc:Ignorable="d">
     <Grid>
-        <Grid.Resources>
-            <Style x:Key="ApproveButton" TargetType="{x:Type Button}">
-                <Setter Property="Background" Value="{StaticResource Green}" />
-                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
-                <Setter Property="Margin" Value="0,5" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border
-                                Height="50"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                CornerRadius="3">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="20"
-                                    FontWeight="SemiBold"
-                                    Text="APPROVE" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource GreenDark}"/>
-                    </Trigger>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Background" Value="{StaticResource DisabledElement}"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="RejectButton" TargetType="{x:Type Button}">
-                <Setter Property="Background" Value="{StaticResource Red}" />
-                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
-                <Setter Property="Margin" Value="0,10" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border
-                                Height="50"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                CornerRadius="3">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="20"
-                                    FontWeight="SemiBold"
-                                    Text="REJECT" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource RedDark}"/>
-                    </Trigger>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Background" Value="{StaticResource DisabledElement}"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
 
 
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="*" MinWidth="350"/>
+            <ColumnDefinition Width="*" MinWidth="400" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.ColumnSpan="2" MouseDown="Border_MouseDown" MouseLeftButtonDown="Border_MouseLeftButtonDown" >
-            <Grid>
-                <TextBlock Text="Drawing Approval" VerticalAlignment="Center" Margin="20,0"  Foreground="#95acc1" FontWeight="SemiBold"/>
-                <Button x:Name="CloseButton" Style="{StaticResource CloseWindowButton}" Click="CloseButton_Click"  HorizontalAlignment="Right" VerticalAlignment="Top">
-                    
-                   
-                </Button>
-            </Grid>
-        </Border>
-        
-        <Grid Grid.Row="1">
+
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Text="Viewing Rev 1A" x:Name="tipText" Margin="50,20" Foreground="#95acc1" FontSize="40"/>
+            <TextBlock
+                x:Name="tipText"
+                Margin="50,20"
+                FontSize="40"
+                Foreground="{StaticResource OnBackground}"
+                Style="{StaticResource title}"
+                Text="Viewing Rev 1A" />
             <wv2:WebView2
-                Margin="5"
-                Grid.Row="1"
                 x:Name="webView"
-                DefaultBackgroundColor="#191c1f"
+                Grid.Row="1"
+                Margin="5"
+                DefaultBackgroundColor="#ECEFF1"
                 ToolBarTray.IsLocked="True" />
         </Grid>
         <Border
             Grid.Row="1"
             Grid.Column="1"
             Margin="5"
-            Padding="30,20"
-            Background="#222d38"
+            Padding="20"
+            Background="{StaticResource Surface}"
             CornerRadius="10"
-            TextElement.Foreground="#95acc1">
+            TextElement.Foreground="{StaticResource OnSurface}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <StackPanel>
-                    <TextBlock FontSize="40" Text="Approval"  FontWeight="SemiBold" Margin="0,0,0,20"/>
-                    
-                    <TextBlock FontSize="18" Text="Proposal Details"  FontWeight="SemiBold"/>
-                    <StackPanel Margin="10,5">
-                        <TextBlock FontSize="18" Text="Drawing Name: P0123.456-789-A0"  />
-                        <TextBlock FontSize="18" Text="Proposed by Randy Marsh" />
-                        <TextBlock FontSize="18" Text="01/01/1970 00:00" />
-                    </StackPanel>
-                    
-                    <TextBlock FontSize="18" Text="Manufacturing Approval" />
-                    <StackPanel Margin="10,5">
-                        <TextBlock FontSize="18" Text="Eric Cartman"  />
-                        <TextBlock FontSize="18" Text="01/01/1970 00:00" />
-                    </StackPanel>
-                    
-                    <TextBlock FontSize="18" Text="Engineering Approval" />
-                    <StackPanel Margin="10,5">
-                        <TextBlock FontSize="18" Text="Kyle Brovloski"  />
-                        <TextBlock FontSize="18" Text="01/01/1970 00:00" />
+                    <TextBlock Style="{StaticResource subtitle}" Text="Approval" />
+                    <Grid Height="20" />
+
+                    <TextBlock
+                        FontSize="18"
+                        Style="{StaticResource section}"
+                        Text="Proposal Details" />
+
+                    <StackPanel Margin="10,0">
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Drawing Name" />
+                        <TextBlock
+                            FontFamily="Consolas"
+                            FontSize="16"
+                            Text="P0123.456-789-A0" />
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Proposed by" />
+                        <TextBlock FontSize="16" Text="Randy Marsh" />
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Proposal date" />
+                        <TextBlock FontSize="16" Text="01/01/1970 00:00" />
                     </StackPanel>
 
-                    <TextBlock FontSize="18" Text="Browse Other Revisions" />
-                    <ListBox x:Name="Revisions" Margin="10" SelectionChanged="Revisions_SelectionChanged">
-                        <ListBox.ItemTemplate>
+                    <TextBlock Style="{StaticResource InputLabel}" Text="Manufacturing Approval" />
+                    <StackPanel Margin="10,5">
+                        <TextBlock d:Text="Kyle Brovloski" Text="{Binding ManufacturingApprovalBy, TargetNullValue='No manufacturing approval'}" />
+                        <TextBlock
+                            d:Text="01/01/1970T00:00:00Z"
+                            FontSize="12"
+                            Foreground="{StaticResource OnBackgroundFaded}"
+                            Text="{Binding ManufacturingApprovalDate, TargetNullValue='n/a', StringFormat='{}{0:s}'}" />
+                    </StackPanel>
+
+                    <TextBlock Style="{StaticResource InputLabel}" Text="Engineering Approval" />
+                    <StackPanel Margin="10,5">
+                        <TextBlock d:Text="Eric Cartman" Text="{Binding EngineeringApprovalBy, TargetNullValue='No engineering approval'}" />
+                        <TextBlock
+                            d:Text="01/01/1970T00:00:00Z"
+                            FontSize="12"
+                            Foreground="{StaticResource OnBackgroundFaded}"
+                            Text="{Binding EngineeringApprovalDate, TargetNullValue='n/a', StringFormat='{}{0:s}'}" />
+                    </StackPanel>
+
+                    <TextBlock Style="{StaticResource InputLabel}" Text="Rejection" />
+                    <StackPanel Margin="10,5">
+                        <TextBlock d:Text="Stan Marsh" Text="{Binding RejectedBy, TargetNullValue='Has not been rejected'}" />
+                        <TextBlock
+                            d:Text="01/01/1970T00:00:00Z"
+                            FontSize="12"
+                            Foreground="{StaticResource OnBackgroundFaded}"
+                            Text="{Binding RejectedDate, TargetNullValue='n/a', StringFormat='{}{0:s}'}" />
+                    </StackPanel>
+
+                    <TextBlock Style="{StaticResource section}" Text="Browse other revisions" />
+                    <ListView
+                        x:Name="Revisions"
+                        MinHeight="50"
+                        Margin="10"
+                        SelectionChanged="Revisions_SelectionChanged">
+                        <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding DrawingName}"/>
-                                <TextBlock Text="{Binding Revision}" Margin="5,0,0,0"/>
-                                <TextBlock Text="{Binding AmendmentType}"/>
-                                    
+                                    <TextBlock Text="{Binding DrawingName}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Revision}" />
+                                    <TextBlock Text="{Binding AmendmentType}" />
+
                                 </StackPanel>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
 
-                <StackPanel Grid.Row="1" x:Name="ApprovalControls">
-                    <TextBlock />
-                    <Button Style="{StaticResource ApproveButton}" x:Name="ApproveButton" Click="ApproveButton_Click" />
-                    <Button Style="{StaticResource RejectButton}" x:Name="RejectButton" Click="RejectButton_Click"/>
+                <StackPanel
+                    x:Name="ApprovalControls"
+                    Grid.Row="1"
+                    Orientation="Horizontal">
+                    <Button
+                        x:Name="ApproveButton"
+                        Click="ApproveButton_Click"
+                        Style="{StaticResource ApproveButton}" />
+                    <Button
+                        x:Name="RejectButton"
+                        Click="RejectButton_Click"
+                        Style="{StaticResource RejectButton}" />
 
                 </StackPanel>
 

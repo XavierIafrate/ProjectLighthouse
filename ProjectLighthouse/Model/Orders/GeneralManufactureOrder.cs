@@ -4,6 +4,7 @@ using ProjectLighthouse.Model.Scheduling;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace ProjectLighthouse.Model.Orders

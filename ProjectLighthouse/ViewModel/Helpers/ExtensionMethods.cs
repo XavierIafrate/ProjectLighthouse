@@ -9,9 +9,9 @@ namespace ViewModel.Helpers
 {
     public static class ExtensionMethods
     {
-        public static (int, int, bool) CalculateOrderRuntime(this List<LatheManufactureOrderItem> items, int? defaultCycleTime = null)
+        public static (int, int, bool) CalculateOrderRuntime(this List<LatheManufactureOrderItem> items)
         {
-            // TODO: Setting time
+            // TODO: Check default
 
             List<LatheManufactureOrderItem> orderedItems = items.OrderByDescending(x => x.CycleTime).ToList();
             bool estimated = false;
@@ -30,14 +30,10 @@ namespace ViewModel.Helpers
                 {
                     orderTime += cycleTime * orderedItems[i].TargetQuantity;
                 }
-                else if (defaultCycleTime is not null)
-                {
-                    orderTime += (int)defaultCycleTime * orderedItems[i].TargetQuantity;
-                    estimated = true;
-                }
                 else
                 {
-                    orderTime += orderedItems[i].GetCycleTime() * orderedItems[i].TargetQuantity;
+                    cycleTime = orderedItems[i].GetCycleTime();
+                    orderTime += cycleTime * orderedItems[i].TargetQuantity;
                     estimated = true;
                 }
             }
@@ -47,7 +43,7 @@ namespace ViewModel.Helpers
 
         public static (int, int, bool) CalculateOrderRuntime(this ObservableCollection<LatheManufactureOrderItem> items, int? defaultCycleTime = null)
         {
-            return items.ToList().CalculateOrderRuntime(defaultCycleTime);
+            return items.ToList().CalculateOrderRuntime();
         }
 
         public static double CalculateNumberOfBars(this List<LatheManufactureOrderItem> items, BarStock bar, int spareBars, double partOff = 2)

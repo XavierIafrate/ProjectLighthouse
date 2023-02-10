@@ -152,7 +152,7 @@
                             <Border
                                 Margin="0,0,7,0"
                                 VerticalAlignment="Center"
-                                Background="{StaticResource Blue}"
+                                Background="{StaticResource BlueFaded}"
                                 CornerRadius="5">
                                 <TextBlock
                                     Margin="10,3"
@@ -161,39 +161,36 @@
                                     FontFamily="Consolas"
                                     FontSize="25"
                                     FontWeight="Bold"
-                                    Foreground="{StaticResource OnBlue}"
+                                    Foreground="{StaticResource Blue}"
                                     Text="{Binding SelectedLathe.Id}" />
                             </Border>
                             <TextBlock
                                 Grid.Column="1"
                                 d:Text="MACHINE_FULL_NAME"
                                 FontSize="30"
+                                VerticalAlignment="Center"
                                 Style="{StaticResource title}"
                                 Text="{Binding SelectedLathe.FullName}" />
                             <Button
                                 Grid.Column="2"
                                 Command="{Binding EditLatheCmd}"
-                                Style="{StaticResource HeroEditButton}"
-                                Visibility="Collapsed" />
+                                Style="{StaticResource HeroEditButton}" />
                         </Grid>
 
                         <Grid Margin="10,20,10,0" Visibility="{Binding SelectedLathe.OutOfService, Converter={StaticResource ShowIfTrue}}">
                             <Border
-                                Background="{StaticResource Orange}"
-                                CornerRadius="3"
-                                Opacity="0.15" />
-                            <Border
-                                BorderBrush="{StaticResource Orange}"
+                                BorderBrush="{StaticResource Red}"
+                                Background="{StaticResource RedFaded}"
                                 BorderThickness="3,0,0,0"
                                 CornerRadius="3">
                                 <StackPanel Margin="10,5">
                                     <TextBlock
                                         FontWeight="SemiBold"
-                                        Foreground="{StaticResource Orange}"
+                                        FontSize="18"
+                                        Foreground="{StaticResource Red}"
                                         Text="Out of Service" />
                                     <TextBlock
-                                        FontStyle="Italic"
-                                        Foreground="{StaticResource Orange}"
+                                        Foreground="{StaticResource Red}"
                                         Text="This machine is no longer in service, it will not be available for scheduling." />
 
                                 </StackPanel>

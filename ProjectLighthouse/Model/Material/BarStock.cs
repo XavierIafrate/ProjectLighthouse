@@ -50,8 +50,8 @@ namespace ProjectLighthouse.Model.Material
         public double InStock { get; set; }
         public double OnOrder { get; set; }
         public int Cost { get; set; }
-        private int suggestedStock;
 
+        private int suggestedStock;
         public int SuggestedStock
         {
             get { return suggestedStock; }
@@ -136,9 +136,9 @@ namespace ProjectLighthouse.Model.Material
                     AddError(propertyName, "Bar Size cannot be less than 3mm");
                 }
 
-                if (Size > 100)
+                if (Size > 1000)
                 {
-                    AddError(propertyName, "Bar Size cannot be greater than 100mm");
+                    AddError(propertyName, "Bar Size cannot be greater than 1000mm");
                 }
 
                 return;

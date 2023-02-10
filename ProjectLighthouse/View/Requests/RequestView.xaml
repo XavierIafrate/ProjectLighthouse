@@ -192,14 +192,12 @@
                 Text="{Binding SearchString, StringFormat='{}A {0} for ants?!', TargetNullValue=''}" />
         </StackPanel>
         <ScrollViewer
-            Visibility="{Binding SelectedRequest, Converter={StaticResource NotNullToVisibility}}"
             x:Name="scroller"
             Grid.RowSpan="2"
             Grid.Column="2"
-            ScrollChanged="ScrollViewer_ScrollChanged">
-            <Grid
-                MaxWidth="700"
-                Margin="0,20,0,50">
+            ScrollChanged="ScrollViewer_ScrollChanged"
+            Visibility="{Binding SelectedRequest, Converter={StaticResource NotNullToVisibility}}">
+            <Grid MaxWidth="700" Margin="0,20,0,50">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
@@ -435,7 +433,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         RenderOptions.BitmapScalingMode="Fant"
-                                        Source="{Binding SelectedRequestMainProduct.LocalRenderPath}"/>
+                                        Source="{Binding SelectedRequestMainProduct.LocalRenderPath}" />
                                 </Grid>
 
                             </Border>
@@ -515,8 +513,10 @@
                                     Text="14 days" />
                                 <Button
                                     Grid.Column="4"
+                                    Margin="0,0,5,0"
                                     Command="{Binding ViewMakeOrBuyCommand}"
-                                    Content="Order Builder"
+                                    Style="{StaticResource Action_Button}"
+                                    Tag="Order Builder"
                                     Visibility="{Binding DataRequired, Converter={StaticResource boolToCollapsed}}" />
 
                             </Grid>
@@ -605,9 +605,9 @@
                         </StackPanel>
                         <Border
                             Margin="0,10"
-                            BorderBrush="{StaticResource Orange}"
-                            BorderThickness="3"
                             Background="{StaticResource Background}"
+                            BorderBrush="{StaticResource Yellow}"
+                            BorderThickness="3"
                             CornerRadius="5"
                             Visibility="{Binding DataRequired, Converter={StaticResource boolToVisible}}">
                             <StackPanel Margin="20">
@@ -642,8 +642,9 @@
                                     Text="Spec Details" />
                                 <TextBlock
                                     Margin="20,0"
-                                    d:Text="N/A"
-                                    Text="{Binding SelectedRequestProduct.SpecificationDetails, TargetNullValue='N/A'}" />
+                                    d:Text="None given"
+                                    Text="{Binding SelectedRequestProduct.SpecificationDetails, TargetNullValue='None given'}"
+                                    TextWrapping="Wrap" />
 
                                 <TextBlock
                                     Margin="10"
@@ -651,10 +652,7 @@
                                     FontWeight="SemiBold"
                                     Style="{StaticResource section}"
                                     Text="Spec Document" />
-                                <uc:DisplayPdf
-                                    Margin="20,0"
-                                    Background="{StaticResource Background}"
-                                    FilePath="{Binding SelectedRequestProduct.SpecificationDocument, TargetNullValue=''}" />
+                                <uc:DisplayPdf Margin="20,0" FilePath="{Binding SelectedRequestProduct.SpecificationDocument, TargetNullValue=''}" />
 
                                 <Grid Margin="0,20,0,0" HorizontalAlignment="Center">
                                     <Grid.ColumnDefinitions>
@@ -665,8 +663,8 @@
                                     </Grid.ColumnDefinitions>
                                     <Button
                                         Margin="10,0"
-                                        Style="{StaticResource Action_Edit_Button}"
                                         Command="{Binding ModifyProductCommand}"
+                                        Style="{StaticResource Action_Edit_Button}"
                                         Tag="Edit Product Data" />
                                 </Grid>
 
@@ -689,7 +687,7 @@
                                 Margin="0"
                                 IsEnabled="{Binding CanEditRequirements}"
                                 Style="{StaticResource DefaultTextBox}"
-                                Tag="Quantity Required"
+                                Tag="quantity required"
                                 Text="{Binding SelectedRequest.QuantityRequired, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
 
@@ -705,8 +703,8 @@
                             HorizontalAlignment="Right"
                             Command="{Binding UpdateRequestCmd}"
                             CommandParameter="{Binding SelectedRequest}"
-                            Content="Update"
-                            Style="{StaticResource BlueButton}" />
+                            Style="{StaticResource Action_Button}"
+                            Tag="Update" />
                     </StackPanel>
                     <TextBlock Style="{StaticResource section}" Text="Comments" />
 
@@ -714,9 +712,7 @@
                         MinHeight="80"
                         Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}"
                         ShowingEditControls="False" />
-                    <Grid
-                        x:Name="composeMessageControls"
-                        Grid.Row="2">
+                    <Grid x:Name="composeMessageControls" Grid.Row="2">
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />

@@ -145,7 +145,7 @@
                 <TextBlock
                     d:Text="Last Issue, Monday, 01 January 1970"
                     Style="{StaticResource subtitle}"
-                    Text="{Binding SelectedGroup.LastIssue, StringFormat='{}Last Issue: {0:dddd, dd MMMM yyyy}'}" />
+                    Text="{Binding SelectedGroup.LastIssue, StringFormat='{}Last Issue: {0:dddd, dd MMMM yyyy}', TargetNullValue='No formal issues'}" />
             </StackPanel>
             <Grid HorizontalAlignment="Right" Visibility="{Binding SelectedGroup.IsArchetypeGroup, Converter={StaticResource showIfTrue}}">
                 <Border

@@ -5,7 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignWidth="236.143"
+    d:DesignWidth="300"
+    d:Background="White"
     mc:Ignorable="d">
     <Grid>
         <!--<Border
@@ -52,7 +53,7 @@
                     HorizontalAlignment="Right"
                     Click="Button_Click"
                     Content="view"
-                    Style="{StaticResource ModernGreenButtonTemplate}" />
+                    Style="{StaticResource IconViewButton}" />
 
 
             </Grid>

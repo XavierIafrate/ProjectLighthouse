@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -154,28 +155,22 @@ namespace ProjectLighthouse.View.UserControls
             double width = this.mainGrid.ActualWidth;
             double height = this.mainGrid.ActualHeight;
 
-            copyBg.Visibility = Visibility.Visible;
             CopyButton.Visibility = Visibility.Hidden;
-
-            Rectangle fillBackground = new()
-            {
-                Width = width,
-                Height = height,
-                Fill = Brushes.Coral
-            };
-
+            
             RenderTargetBitmap bmpCopied = new((int)Math.Round(width), (int)Math.Round(height), 96, 96, PixelFormats.Default);
-            bmpCopied.Render(fillBackground);
-
             DrawingVisual dv = new();
+
             using (DrawingContext dc = dv.RenderOpen())
             {
+                Rect rect = new(new Point(), new Size(width, height));
                 VisualBrush vb = new(this.mainGrid);
-                dc.DrawRectangle(vb, null, new Rect(new Point(), new Size(width, height)));
+                dc.DrawRectangle(Brushes.White, null, rect);
+                dc.DrawRectangle(vb, null, rect);
             }
+
             bmpCopied.Render(dv);
             Clipboard.SetImage(bmpCopied);
-            copyBg.Visibility = Visibility.Collapsed;
+
             CopyButton.Visibility = Visibility.Visible;
         }
     }

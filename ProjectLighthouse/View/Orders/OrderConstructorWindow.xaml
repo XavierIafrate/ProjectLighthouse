@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vc="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="New Manufacture Order"
     Width="1200"
@@ -24,6 +25,7 @@
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <!--#region Header-->
         <Grid>
             <TextBlock
@@ -103,6 +105,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock
@@ -114,9 +117,15 @@
                 x:Name="GroupsListBox"
                 Grid.Row="1"
                 Grid.Column="0"
-                Width="200"
+                Width="150"
                 ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AvailableProductGroups}"
-                SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedGroup}" />
+                SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedGroup}" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=.}" Margin="5,2" FontWeight="SemiBold"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <TextBlock
                 Grid.Column="1"
@@ -157,7 +166,7 @@
                 x:Name="NewOrderItemsListView"
                 Grid.Row="1"
                 Grid.Column="3"
-                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewOrderItems}">
+                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewOrderItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <userControls:LMOConstructionDisplayLMOItems Item="{Binding}" />
@@ -165,10 +174,11 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <!--<Border
+            <Border
                 Grid.Row="1"
-                Grid.Column="3"
-                Margin="20,0,0,0"
+                Grid.Column="4"
+                Margin="5"
+                MinWidth="220"
                 VerticalAlignment="Top"
                 Background="{StaticResource BlueFaded}"
                 CornerRadius="5"
@@ -178,16 +188,17 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Style="{StaticResource subtitle}" Text="Insights" />
+                    <TextBlock Style="{StaticResource subtitle}" Text="Insights" FontSize="25" />
                     <TextBlock
                         x:Name="NoInsights"
+                        Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Insights, Mode=OneWay, Converter={StaticResource NullToVisibility}}"
                         Grid.Row="1"
                         Margin="0,5,0,0"
                         FontStyle="Italic"
-                        Foreground="{StaticResource OnBlue}"
+                        Foreground="{StaticResource Blue}"
                         Opacity="0.6"
                         Text="Add items to see Insights" />
-                    <ScrollViewer Grid.Row="1">
+                    <ScrollViewer Grid.Row="1" Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Insights, Mode=OneWay, Converter={StaticResource NotNullToVisibility}}" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=.}">
                         <StackPanel x:Name="InsightsStackPanel" TextElement.Foreground="{StaticResource Blue}">
                             <StackPanel.Resources>
                                 <converters:boolToVisibleOrCollapsed x:Key="visConverter" />
@@ -196,16 +207,19 @@
 
                                 <Style x:Key="ClusterHeading" TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="16" />
-                                    <Setter Property="HorizontalAlignment" Value="Center" />
+                                    <Setter Property="HorizontalAlignment" Value="Left" />
                                     <Setter Property="Margin" Value="0,15,0,0" />
                                     <Setter Property="FontWeight" Value="SemiBold" />
                                 </Style>
                                 <Style x:Key="Insight" TargetType="TextBlock">
-                                    <Setter Property="FontSize" Value="18" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                    <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
+                                    <Setter Property="FontSize" Value="16" />
                                     <Setter Property="Margin" Value="0,5,0,0" />
                                 </Style>
                                 <Style x:Key="InsightTag" TargetType="TextBlock">
-                                    <Setter Property="FontSize" Value="12" />
+                                    <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
+                                    <Setter Property="FontSize" Value="11" />
                                     <Setter Property="Opacity" Value="0.6" />
                                 </Style>
                             </StackPanel.Resources>
@@ -254,7 +268,7 @@
                     </ScrollViewer>
 
                 </Grid>
-            </Border>-->
+            </Border>
         </Grid>
         <!--#endregion-->
 

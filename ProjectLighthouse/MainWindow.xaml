@@ -11,8 +11,10 @@
     Width="1500"
     Height="850"
     MinWidth="1200"
-    MinHeight="700"
     MaxWidth="2000"
+    MinHeight="700"
+    MaxHeight="2000"
+    d:Height="1000"
     Background="{StaticResource Background}"
     Loaded="Window_Loaded"
     ResizeMode="CanResize"
@@ -199,6 +201,12 @@
                             CommandParameter="Lathe Config"
                             Content="Lathe Config"
                             Style="{StaticResource Lathe_MenuItem}" />
+                        <ToggleButton
+                            x:Name="manage_products_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Product Data"
+                            Content="Product Data"
+                            Style="{StaticResource ProductData_MenuItem}" />
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>

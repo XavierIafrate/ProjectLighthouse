@@ -3,7 +3,7 @@ using System;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
-    public abstract class ScheduleItem : ISchedulableObject
+    public abstract class ScheduleItem : BaseObject, ISchedulableObject
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -30,11 +30,6 @@ namespace ProjectLighthouse.Model.Scheduling
         public DateTime EndsAt()
         {
             return StartDate.AddSeconds(TimeToComplete);
-        }
-
-        public class UpdateWatch : Attribute
-        {
-
         }
     }
 }

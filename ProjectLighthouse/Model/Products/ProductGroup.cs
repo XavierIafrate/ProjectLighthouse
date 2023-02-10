@@ -1,6 +1,9 @@
 ﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Material;
+using System.Linq;
 using SQLite;
 using System;
+using System.Collections.Generic;
 
 namespace ProjectLighthouse.Model.Products
 {
@@ -29,6 +32,20 @@ namespace ProjectLighthouse.Model.Products
             }
 
             return Math.Max(MajorDiameter, (double)MinBarSize);
+        }
+
+        public BarStock? GetRequiredBarStock(List<BarStock> bars, int materialId)
+        {
+            bars = bars.Where(x => x.MaterialId == materialId && x.Size >= GetRequiredBarSize())
+                        .OrderBy(x => x.Size)
+                        .ToList();
+
+            if (bars.Count == 0)
+            {
+                return null;
+            }
+
+            return bars.First();
         }
     }
 }

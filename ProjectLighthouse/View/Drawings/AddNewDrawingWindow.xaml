@@ -141,16 +141,19 @@
                 Tag="revision details"
                 Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewDrawing.IssueDetails, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <!--<CheckBox
-                Margin="10,5"
-                Content="Drawing is for R&amp;D"
-                IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewDrawing., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
-            <Button
-                x:Name="AddButton"
-                HorizontalAlignment="Right"
-                Click="AddButton_Click"
-                Style="{StaticResource Action_New_Button}"
-                Tag="Add Drawing" />
+            <Grid>
+                <CheckBox
+                    Margin="10,5"
+                    Content="Drawing is for R&amp;D"
+                    IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewDrawing., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    x:Name="AddButton"
+                    HorizontalAlignment="Right"
+                    Click="AddButton_Click"
+                    Style="{StaticResource Action_New_Button}"
+                    Tag="Add Drawing" />
+                
+            </Grid>
         </StackPanel>
 
 

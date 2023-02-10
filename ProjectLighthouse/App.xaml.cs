@@ -16,6 +16,8 @@ using System.Windows;
 using System.Windows.Navigation;
 using View.HelperWindows;
 using Windows.Foundation.Collections;
+using System.Linq;
+using ProjectLighthouse.View.Core;
 
 namespace ProjectLighthouse
 {
@@ -40,8 +42,16 @@ namespace ProjectLighthouse
 
             if (!EnvironmentContext.Setup())
             {
-                // TODO make a modal version
-                MessageBoxResult _ = MessageBox.Show("Something wen't wrong while setting up the environment, Lighthouse cannot start.", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                SetupFailedWindow window = new("Something wen't wrong while setting up the environment.", App.ROOT_PATH);
+                window.ShowDialog();
+                Application.Current.Shutdown();
+                return;
+            }
+
+            if (!VersionIsPermitted())
+            {
+                SetupFailedWindow window = new("You are trying to load an outdated version of Lighthouse.", $"Loading v{GetAppVersion()}");
+                window.ShowDialog();
                 Application.Current.Shutdown();
                 return;
             }
@@ -76,6 +86,25 @@ namespace ProjectLighthouse
 
             //Monaco monacoEditor = new();
             //monacoEditor.Show();
+        }
+
+        private static bool VersionIsPermitted()
+        {
+            string[] allowed_versions = File.ReadAllLines($"{App.ROOT_PATH}valid_versions.txt");
+            if(!allowed_versions.Any(x => x == GetAppVersion()))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static string GetAppVersion()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            return versionInfo.FileVersion;
         }
 
         public static string GetLocalIPAddress()

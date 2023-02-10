@@ -6,6 +6,7 @@ using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Helpers;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -265,13 +266,6 @@ namespace ProjectLighthouse.View.Orders
             }
         }
 
-        private void Message_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ComposeGhost.Visibility = string.IsNullOrEmpty(Message.Text)
-                ? Visibility.Visible
-                : Visibility.Hidden;
-        }
-
         public void AddNewNote(string note)
         {
             Note newNote = new()
@@ -289,16 +283,11 @@ namespace ProjectLighthouse.View.Orders
             // people who have already commented
             List<string> toUpdate = Notes.Select(x => x.SentBy).Distinct().ToList();
 
-            List<string> otherUsers;
-            if (App.CurrentUser.Role >= UserRole.Scheduling)
-            {
-                otherUsers = App.NotificationsManager.users.Where(x => x.Role == UserRole.Production && x.ReceivesNotifications).Select(x => x.UserName).ToList();
-            }
-            else
-            {
-                otherUsers = App.NotificationsManager.users.Where(x => x.Role >= UserRole.Scheduling && x.ReceivesNotifications).Select(x => x.UserName).ToList();
-            }
-
+            List<string> otherUsers =  App.NotificationsManager.users
+                .Where(x => x.Role >= UserRole.Production && x.ReceivesNotifications)
+                .Select(x => x.UserName)
+                .ToList();
+            
             toUpdate.AddRange(otherUsers);
             toUpdate = toUpdate.Distinct().Where(x => x != App.CurrentUser.UserName).ToList();
 
@@ -352,6 +341,11 @@ namespace ProjectLighthouse.View.Orders
 
         private bool SaveOrder()
         {
+            if(savedOrder.AssignedTo != Order.AssignedTo)
+            {
+                NotifyAssignmentChanged(savedOrder.AssignedTo, Order.AssignedTo);
+            }
+
             Order.ModifiedBy = App.CurrentUser.GetFullName();
             Order.ModifiedAt = DateTime.Now;
 
@@ -368,6 +362,19 @@ namespace ProjectLighthouse.View.Orders
                 return false;
             }
             return true;
+        }
+
+        private void NotifyAssignmentChanged(string? from, string? to)
+        {
+            if (from is not null)
+            {
+                App.NotificationsManager.NotifyOrderAssignment(Order, from, unassigned: true);
+            }
+
+            if (to is not null)
+            {
+                App.NotificationsManager.NotifyOrderAssignment(Order, to, unassigned:false);
+            }
         }
 
         private void SpareBarsTextBox_PreviewKeyDown(object sender, KeyEventArgs e)

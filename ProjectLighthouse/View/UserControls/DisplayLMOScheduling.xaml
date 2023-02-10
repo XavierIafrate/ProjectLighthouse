@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-    d:Background="Transparent"
+    d:Background="White"
     d:DesignWidth="692.307"
     SizeChanged="UserControl_SizeChanged"
     mc:Ignorable="d">
@@ -17,9 +17,10 @@
         <converters:StartDateToEndDate x:Key="startToFinish" />
         <converters:OrderItemToRequirementVis x:Key="requirementVis" />
     </UserControl.Resources>
-    <Grid Margin="7" x:Name="mainGrid">
+    <Grid x:Name="mainGrid" Margin="7" Background="Transparent">
         <Grid.ToolTip>
             <local:OrderStatusTooltip
+                Style="{x:Null}"
                 Margin="0"
                 Order="{Binding}"
                 ToolTipService.ShowDuration="60" />
@@ -28,7 +29,6 @@
             <ColumnDefinition Width="12" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Rectangle Grid.ColumnSpan="2" Fill="White" x:Name="copyBg" Visibility="Collapsed"/>
         <Border
             x:Name="bg"
             Background="{StaticResource Red}"
@@ -47,8 +47,14 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Grid x:Name="WarningBanner" Grid.ColumnSpan="3" Margin="0,0,5,0">
-                <Border Background="{StaticResource Red}" Opacity="0.15" CornerRadius="0,3,3,0"/>
+            <Grid
+                x:Name="WarningBanner"
+                Grid.ColumnSpan="3"
+                Margin="0,0,5,0">
+                <Border
+                    Background="{StaticResource Red}"
+                    CornerRadius="0,3,3,0"
+                    Opacity="0.15" />
 
                 <StackPanel
                     Margin="20,3"
@@ -63,14 +69,14 @@
                         Stretch="UniformToFill" />
                     <TextBlock
                         VerticalAlignment="Center"
-                        FontWeight="SemiBold"
                         FontSize="16"
+                        FontWeight="SemiBold"
                         Foreground="{StaticResource Red}"
                         Text="Warning" />
                     <TextBlock
-                       VerticalAlignment="Bottom"
                         x:Name="WarningText"
                         Margin="5,0,0,0"
+                        VerticalAlignment="Bottom"
                         FontStyle="Italic"
                         Foreground="{StaticResource Red}"
                         Text="At risk of missing delivery target." />
@@ -97,10 +103,11 @@
                     <TextBlock
                         Padding="10,0,10,2"
                         VerticalAlignment="Center"
-                        FontWeight="SemiBold"
+                        d:Text="STATUS"
                         FontSize="14"
+                        FontWeight="SemiBold"
                         Foreground="{StaticResource OnPurple}"
-                        Text="{Binding State}" d:Text="STATUS" />
+                        Text="{Binding State}" />
                 </Grid>
                 <Grid
                     x:Name="LargeDiameterIndicator"
@@ -108,9 +115,12 @@
                     HorizontalAlignment="Left">
                     <Border
                         Background="{StaticResource Orange}"
-                        Opacity="0.15"
-                        CornerRadius="3" />
-                    <Border BorderBrush="{StaticResource Orange}" CornerRadius="2" BorderThickness="3,0,0,0">
+                        CornerRadius="3"
+                        Opacity="0.15" />
+                    <Border
+                        BorderBrush="{StaticResource Orange}"
+                        BorderThickness="3,0,0,0"
+                        CornerRadius="2">
                         <StackPanel Margin="5,2" Orientation="Horizontal">
                             <Path
                                 Width="15"
@@ -125,18 +135,25 @@
                                 FontSize="12"
                                 Foreground="{StaticResource Orange}"
                                 Text="Large Diameter" />
-                        </StackPanel>                        
+                        </StackPanel>
                     </Border>
 
                 </Grid>
-                <Button
-                    x:Name="editButton"
-                    Margin="0,5,0,0"
-                    HorizontalAlignment="Left"
-                    Click="EditButton_Click"
-                    Content="edit"
-                    Style="{StaticResource EditButton}" />
-                <Button Visibility="Collapsed" Style="{StaticResource Action_Button}" Tag="Copy" x:Name="CopyButton" Click="CopyButton_Click"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        x:Name="editButton"
+                        Margin="0,5,0,0"
+                        HorizontalAlignment="Left"
+                        Click="EditButton_Click"
+                        Content="edit"
+                        Style="{StaticResource EditButton}" />
+                        <Button
+                        x:Name="CopyButton"
+                        Click="CopyButton_Click"
+                        Style="{StaticResource ClipboardButton}"
+                        Tag="Copy"
+                        Visibility="Visible" />
+                </StackPanel>
             </StackPanel>
 
             <Grid
@@ -158,7 +175,10 @@
                     HorizontalAlignment="Right"
                     FontWeight="SemiBold"
                     Text="Start" />
-                <TextBlock Grid.Column="1" Text="{Binding StartDate, StringFormat='{}{0:ddd, dd MMM HHmm}h'}" d:Text="Mon, 01 Jan 0000h" />
+                <TextBlock
+                    Grid.Column="1"
+                    d:Text="Mon, 01 Jan 0000h"
+                    Text="{Binding StartDate, StringFormat='{}{0:ddd, dd MMM HHmm}h'}" />
 
                 <TextBlock
                     Grid.Row="1"
@@ -169,7 +189,8 @@
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"
-                    Text="{Binding Path=., Converter='{StaticResource startToFinish}', StringFormat='{}{0:ddd, dd MMM HHmm}h'}" d:Text="Mon, 01 Jan 0000h" />
+                    d:Text="Mon, 01 Jan 0000h"
+                    Text="{Binding Path=., Converter='{StaticResource startToFinish}', StringFormat='{}{0:ddd, dd MMM HHmm}h'}" />
 
                 <TextBlock
                     Grid.Row="2"
@@ -180,7 +201,8 @@
                 <TextBlock
                     Grid.Row="2"
                     Grid.Column="1"
-                    Text="{Binding TimeToComplete, Converter={StaticResource inttoday}, StringFormat='{}{0} days'}" d:Text="0 days" />
+                    d:Text="0 days"
+                    Text="{Binding TimeToComplete, Converter={StaticResource inttoday}, StringFormat='{}{0} days'}" />
 
                 <TextBlock
                     Grid.Row="3"
@@ -191,8 +213,8 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="1"
-                    Text="{Binding BarID}"
-                    d:Text="PRB000-0000-000"/>
+                    d:Text="PRB000-0000-000"
+                    Text="{Binding BarID}" />
             </Grid>
 
             <StackPanel

@@ -208,6 +208,13 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new AnalyticsViewModel();
                 viewModel.NavText = "Analytics";
             }
+            else if (targetView == "Product Data")
+            {
+                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new ProductManagerViewModel();
+                viewModel.NavText = "Product Data";
+            }
             else
             {
                 App.ActiveViewModel = "";

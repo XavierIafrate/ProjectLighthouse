@@ -195,7 +195,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void SetAgenda()
         {
-            int numDays = 30;
+            int numDays = App.CurrentUser.Role >= UserRole.Scheduling ? 28 : 14;
             Agenda = new();
             List<ScheduleItem> ordersOnAgenda = new();
             ordersOnAgenda.AddRange(ActiveOrders

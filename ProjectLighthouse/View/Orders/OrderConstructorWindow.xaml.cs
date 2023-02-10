@@ -1,8 +1,10 @@
-﻿using ProjectLighthouse.Model.Drawings;
+﻿using Microsoft.Web.WebView2.Core;
+using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.Requests;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +13,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using ViewModel.Helpers;
+using Windows.ApplicationModel.Appointments.DataProvider;
 
 namespace ProjectLighthouse.View.Orders
 {
@@ -91,12 +94,20 @@ namespace ProjectLighthouse.View.Orders
             set
             {
                 newOrderItems = value;
+                CalculateInsights();
                 OnPropertyChanged();
             }
         }
 
         private int MaterialId;
 
+        private NewOrderInsights insights;
+
+        public NewOrderInsights Insights
+        {
+            get { return insights; }
+            set { insights = value; OnPropertyChanged(); }
+        }
 
         #endregion
 
@@ -136,6 +147,7 @@ namespace ProjectLighthouse.View.Orders
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
 
+            CalculateInsights();
         }
 
         public OrderConstructorWindow(int requiredGroup, int materialId, (TurnedProduct, int, DateTime) required)
@@ -164,6 +176,13 @@ namespace ProjectLighthouse.View.Orders
 
             TurnedProduct product = required.Item1;
 
+            product = AvailableTurnedProducts.ToList().Find(x => x.ProductName == product.ProductName);
+
+            if(product is null)
+            {
+                throw new($"Product not found");
+            }
+
             if (product.MaterialId is null)
             {
                 throw new($"Material Id for {product.ProductName} is not set.");
@@ -177,31 +196,34 @@ namespace ProjectLighthouse.View.Orders
                 throw new Exception($"{product.ProductName} not in group ID '{requiredGroup}'.");
             }
 
-            NewOrderItems.Add(new(product, quantity, date));
+            AddProductToOrder(product, quantity, date);
 
-            TurnedProduct toRemove = AvailableTurnedProducts.ToList().Find(x => x.Id == product.Id);
 
-            if (toRemove == null)
-            {
-                return;
-            }
 
-            AvailableTurnedProducts.Remove(toRemove);
+            //if (toRemove == null)
+            //{
+            //    return;
+            //}
 
-            for (int j = AvailableTurnedProducts.Count - 1; j >= 0; j--)
-            {
-                if (AvailableTurnedProducts[j].MaterialId != MaterialId)
-                {
-                    AvailableTurnedProducts.RemoveAt(j);
-                }
-            }
+            //TurnedProduct toRemove = AvailableTurnedProducts.ToList().Find(x => x.Id == product.Id);
+            //AvailableTurnedProducts.Remove(toRemove);
+
+            //for (int j = AvailableTurnedProducts.Count - 1; j >= 0; j--)
+            //{
+            //    if (AvailableTurnedProducts[j].MaterialId != MaterialId)
+            //    {
+            //        AvailableTurnedProducts.RemoveAt(j);
+            //    }
+            //}
+
+            CalculateInsights();
         }
 
         private void LoadData()
         {
-            Products = DatabaseHelper.Read<Product>();
-            ProductGroups = DatabaseHelper.Read<ProductGroup>();
-            TurnedProducts = DatabaseHelper.Read<TurnedProduct>();
+            Products = DatabaseHelper.Read<Product>().OrderBy(x => x.Name).ToList();
+            ProductGroups = DatabaseHelper.Read<ProductGroup>().OrderBy(x => x.Name).ToList();
+            TurnedProducts = DatabaseHelper.Read<TurnedProduct>().OrderBy(x => x.ProductName).ThenBy(x => x.IsSpecialPart).ToList();
             BarStock = DatabaseHelper.Read<BarStock>();
 
             NewOrder = new();
@@ -246,82 +268,6 @@ namespace ProjectLighthouse.View.Orders
             Footer.Visibility = vis;
         }
 
-        private void CalculateInsights()
-        {
-            //if (NewOrderItems.Count == 0)
-            //{
-            //    InsightsStackPanel.Visibility = Visibility.Collapsed;
-            //    NoInsights.Visibility = Visibility.Visible;
-            //    return;
-            //}
-            //else
-            //{
-            //    InsightsStackPanel.Visibility = Visibility.Visible;
-            //    NoInsights.Visibility = Visibility.Collapsed;
-            //}
-
-            //Insights.BarId = NewOrder.BarID;
-            //BarStock bar = Bars.Find(x => x.Id == NewOrder.BarID);
-            //Insights.BarPrice = bar.Cost;
-
-            //double numBars = 0;
-            //int time = 3600 * 4;
-            //int value = 0;
-            //Insights.TimeIsEstimate = false;
-
-            //List<LatheManufactureOrderItem> itemsWithCycleTime = NewOrderItems.Where(x => x.CycleTime != 0).ToList();
-
-            //for (int i = 0; i < NewOrderItems.Count; i++)
-            //{
-            //    double partBudget = NewOrderItems[i].MajorLength + 2;
-            //    double availablePerBar = bar.Length - 300;
-            //    double partsPerBar = Math.Floor(availablePerBar / partBudget);
-            //    numBars += NewOrderItems[i].TargetQuantity / partsPerBar;
-
-            //    value += (int)(NewOrderItems[i].SellPrice * NewOrderItems[i].TargetQuantity * 0.7);
-
-            //    if (NewOrderItems[i].CycleTime > 0)
-            //    {
-            //        time += NewOrderItems[i].CycleTime * NewOrderItems[i].TargetQuantity;
-            //    }
-            //    else
-            //    {
-            //        time += NewOrderItems[i].GetCycleTime() * NewOrderItems[i].TargetQuantity;
-            //        Insights.TimeIsEstimate = true;
-            //    }
-            //}
-
-            //Insights.TimeToComplete = time;
-            //Insights.NumberOfBarsRequired = numBars;
-            //Insights.TotalBarCost = numBars * bar.Cost;
-
-            //time = Math.Max(time, 3600 * 24);
-
-            //TimeSpan timeToComplete = TimeSpan.FromSeconds(time);
-            //Insights.CostOfMachineTime = timeToComplete.TotalMinutes * 0.45;
-
-            //Insights.CostOfOrder = Insights.CostOfMachineTime + (Insights.TotalBarCost / 100);
-            //Insights.ValueProduced = value / 100;
-            //Insights.NetProfit = Insights.ValueProduced - Insights.CostOfOrder;
-
-            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Insights)));
-        }
-
-
-        public class NewOrderInsights
-        {
-            public bool TimeIsEstimate { get; set; }
-            public int TimeToComplete { get; set; }
-            public string BarId { get; set; }
-            public double BarPrice { get; set; }
-            public double NumberOfBarsRequired { get; set; }
-            public double TotalBarCost { get; set; }
-            public double CostOfOrder { get; set; }
-            public double CostOfMachineTime { get; set; }
-            public double NetProfit { get; set; }
-            public double ValueProduced { get; set; }
-        }
-
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             if (AvailableItemsListBox.SelectedValue is not TurnedProduct product) return;
@@ -333,7 +279,6 @@ namespace ProjectLighthouse.View.Orders
                 return;
             }
 
-
             if (product.MaterialId is null)
             {
                 MessageBox.Show("Material ID for selected product is not set.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -342,9 +287,40 @@ namespace ProjectLighthouse.View.Orders
 
             MaterialId = (int)product.MaterialId;
 
-            NewOrderItems.Add(new(product));
-            AvailableTurnedProducts.Remove(product);
+            AddProductToOrder(product);
 
+            CalculateInsights();
+        }
+
+        private void OnNewItemChanged(object sender, PropertyChangedEventArgs e)
+        {
+            CalculateInsights();
+        }
+
+        private void AddProductToOrder(TurnedProduct product, int requiredQuantity = 0, DateTime? requiredDate = null)
+        {
+            LatheManufactureOrderItem newItem;
+
+            if (requiredDate is not null)
+            {
+                newItem = new(product, requiredQuantity, (DateTime)requiredDate);
+            }
+            else if (requiredQuantity > 0)
+            {
+                newItem = new(product, requiredQuantity);
+            }
+            else
+            {
+                newItem = new(product);
+            }
+
+            newItem.TargetQuantity = Math.Max(newItem.TargetQuantity, RequestsEngine.GetMiniumumOrderQuantity(newItem));
+
+            newItem.PropertyChanged += OnNewItemChanged;
+            
+            NewOrderItems.Add(newItem);
+
+            AvailableTurnedProducts.Remove(product);
 
             for (int i = AvailableTurnedProducts.Count - 1; i >= 0; i--)
             {
@@ -355,11 +331,8 @@ namespace ProjectLighthouse.View.Orders
             }
         }
 
-
-        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveItemFromOrder(LatheManufactureOrderItem item)
         {
-            if (NewOrderItemsListView.SelectedValue is not LatheManufactureOrderItem item) return;
-
             if (item.RequiredQuantity > 0)
             {
                 return;
@@ -372,6 +345,14 @@ namespace ProjectLighthouse.View.Orders
             {
                 FilterTurnedProducts();
             }
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (NewOrderItemsListView.SelectedValue is not LatheManufactureOrderItem item) return;
+
+            RemoveItemFromOrder(item);
+            CalculateInsights();
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -413,18 +394,13 @@ namespace ProjectLighthouse.View.Orders
 
             ProductGroup group = SelectedGroup;
             NewOrder.MajorDiameter = group.MajorDiameter;
+            
+            BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId);
 
-            List<BarStock> potentialBar = BarStock
-                .Where(x => x.MaterialId == MaterialId && x.Size >= SelectedGroup.GetRequiredBarSize())
-                .OrderBy(x => x.Size)
-                .ToList();
-
-            if (potentialBar.Count == 0)
+            if (orderBar is null)
             {
                 throw new Exception("No bar records available that meet the size or material requirements for the product.");
             }
-
-            BarStock orderBar = potentialBar.First();
 
             NewOrder.BarsInStockAtCreation = orderBar.InStock;
             NewOrder.MaterialId = MaterialId;
@@ -432,22 +408,7 @@ namespace ProjectLighthouse.View.Orders
             NewOrder.BarID = orderBar.Id;
             NewOrder.NumberOfBars = NewOrderItems.CalculateNumberOfBars(orderBar, 0);
 
-            List<TurnedProduct> comparableProducts = TurnedProducts
-                .Where(x => x.GroupId == SelectedGroup.Id
-                    && x.MaterialId == MaterialId
-                    && x.CycleTime > 0)
-                .ToList();
-
-
-            int? defaultCycleTime = null;
-            if (comparableProducts.Count > 0)
-            {
-                defaultCycleTime = comparableProducts.Min(x => x.CycleTime);
-            }
-            
-            defaultCycleTime ??= NewOrderItems.First().GetCycleTime(); // provides estimation based on diameter
-
-            (int totalTime, int targetCycleTime, bool estimated) = NewOrderItems.CalculateOrderRuntime(defaultCycleTime);
+            (int totalTime, int targetCycleTime, bool estimated) = NewOrderItems.CalculateOrderRuntime();
 
             NewOrder.TimeToComplete = totalTime;
             NewOrder.TargetCycleTime = targetCycleTime;
@@ -496,5 +457,66 @@ namespace ProjectLighthouse.View.Orders
 
             return blank[..(6 - orderNumLen)] + strOrderNum;
         }
+
+        #region Insights
+        private void CalculateInsights()
+        {
+            if (NewOrderItems.Count == 0)
+            {
+                Insights = null;
+                return;
+            }
+            else
+            {
+                Insights = new();
+            }
+
+            NewOrderInsights insights = new();
+
+            BarStock? bar = SelectedGroup.GetRequiredBarStock(BarStock, MaterialId);
+
+            if (bar is null)
+            {
+                throw new Exception("No bar found for group");
+            }
+
+            insights.BarId = bar.Id;
+            insights.BarPrice = bar.Cost;
+            insights.NumberOfBarsRequired = NewOrderItems.CalculateNumberOfBars(bar, 0);
+            insights.TotalBarCost = bar.Cost * insights.NumberOfBarsRequired;
+
+            (int totalTime, _, bool estimated) = NewOrderItems.CalculateOrderRuntime();
+
+            insights.TimeIsEstimate = estimated;
+            insights.TimeToComplete = Math.Max(totalTime, 86400);
+
+            TimeSpan orderTime = TimeSpan.FromSeconds(insights.TimeToComplete);
+
+            insights.CostOfMachineTime = orderTime.TotalMinutes * 0.45;
+
+            insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
+
+            insights.CostOfOrder = insights.CostOfMachineTime + (insights.TotalBarCost / 100);
+            insights.NetProfit = insights.ValueProduced - insights.CostOfOrder;
+
+            Insights = insights;
+        }
+
+
+        public class NewOrderInsights
+        {
+            public bool TimeIsEstimate { get; set; }
+            public int TimeToComplete { get; set; }
+            public string BarId { get; set; }
+            public double BarPrice { get; set; }
+            public double NumberOfBarsRequired { get; set; }
+            public double TotalBarCost { get; set; }
+            public double CostOfOrder { get; set; }
+            public double CostOfMachineTime { get; set; }
+            public double NetProfit { get; set; }
+            public double ValueProduced { get; set; }
+        }
+
     }
+    #endregion
 }

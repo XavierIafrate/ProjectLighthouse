@@ -283,18 +283,45 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
-        public int GetRecommendedQuantity(bool forManufacture = false)
+        public int GetRecommendedQuantity()
         {
             // TODO refactor to constants
-            const int targetMonthsStock = 12;
-            double scaleFactor = Convert.ToDouble(targetMonthsStock) / 18;
-            double toMake = Math.Max(QuantitySold * scaleFactor - QuantityInStock, 0);
+            double targetMonthsStock = 12;
+            double scaleFactor = targetMonthsStock / 18;
+            int toMake = (int)Math.Max(QuantitySold * scaleFactor - QuantityInStock + QuantityOnSO - QuantityOnPO, 0);
 
-            int qty = Convert.ToInt32(Math.Round(toMake / 100, 0) * 100);
+            return RoundQuantity(toMake);
+        }
 
-            return forManufacture
-                ? Math.Max(qty, RequestsEngine.GetMiniumumOrderQuantity(this))
-                : qty;
+        public int RoundQuantity(int quantity)
+        {
+            if (quantity == 0)
+            {
+                return quantity;
+            }
+
+            int multiple = quantity switch
+            {
+                < 50 => 10,
+                < 100 => 25,
+                < 500 => 100,
+                < 1000 => 200,
+                < 2000 => 500,
+                < 10000 => 1000,
+                < 20000 => 2000,
+                < 30000 => 3000,
+                _ => 100,
+            };
+
+            return RoundUpToMultiple(quantity, multiple);
+        }
+
+
+        public int RoundUpToMultiple(int quantity, int multiple)
+        {
+            int rem = quantity % multiple;
+            quantity += (multiple - rem);
+            return quantity;
         }
 
         public TimeSpan GetTimeToMake(int quantity)
@@ -309,12 +336,18 @@ namespace ProjectLighthouse.Model.Products
 
             return otherProduct.GroupId == GroupId && otherProduct.MaterialId == MaterialId;
         }
+
         public int FreeStock()
         {
             return QuantityInStock + LighthouseGuaranteedQuantity - QuantityOnSO;
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return ProductName ?? "NULL";
+        }
 
         #region Scheduling Members
         [Ignore]

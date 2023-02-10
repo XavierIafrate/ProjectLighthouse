@@ -2,10 +2,10 @@
     x:Class="ProjectLighthouse.View.UserControls.DisplayDeliveryNote"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     MinWidth="200"
     d:Background="White"
     d:DesignWidth="200"
@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.Resources>
-            <converters:dateToLastModified x:Key="dateFormatter"/>
+            <converters:dateToLastModified x:Key="dateFormatter" />
         </Grid.Resources>
 
         <StackPanel VerticalAlignment="Center">
@@ -28,8 +28,8 @@
                 Text="{Binding Name, FallbackValue='M00001'}" />
             <TextBlock
                 x:Name="PORTextBlock"
-                FontSize="12"
                 Margin="0,0,0,2"
+                FontSize="12"
                 Foreground="{StaticResource Blue}"
                 Text="{Binding DeliveryDate, Converter={StaticResource dateFormatter}}" />
         </StackPanel>

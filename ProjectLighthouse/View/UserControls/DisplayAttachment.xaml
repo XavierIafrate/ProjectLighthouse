@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" d:Background="White" d:DesignWidth="220.765">
+             mc:Ignorable="d" d:Background="White" d:DesignWidth="300">
     <Grid Margin="15,8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -19,7 +19,7 @@
             </StackPanel>
             
         </StackPanel>
-        <Button x:Name="OpenButton" Click="OpenButton_Click" Content="Open" HorizontalAlignment="Right" Margin="0"/>
+        <Button x:Name="OpenButton" Click="OpenButton_Click" Style="{StaticResource Action_Open_Button}" HorizontalAlignment="Right" Margin="3" VerticalAlignment="Center" Tag="Open"/>
         <!--<Image x:Name="imgPreview"/>-->
     </Grid>
 </UserControl>

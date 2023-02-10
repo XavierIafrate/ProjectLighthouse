@@ -183,7 +183,7 @@
                         d:Text="PRODUCT_NAME"
                         FontWeight="SemiBold"
                         Style="{StaticResource section}"
-                        Text="{Binding SelectedProduct.ProductName}" />
+                        Text="{Binding SelectedProduct.ProductName, TargetNullValue='No product selected'}" />
 
                     <Border
                         Grid.Row="1"
@@ -310,7 +310,7 @@
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.LighthouseGuaranteedQuantity, StringFormat='{}{0:#,##0} pcs'}" />
 
-                        <TextBlock
+                        <!--<TextBlock
                             Grid.Row="7"
                             Grid.Column="0"
                             Text="Total Manufactured" />
@@ -320,7 +320,7 @@
                             HorizontalAlignment="Right"
                             d:Text="QTY_MANUFACTURED"
                             FontWeight="SemiBold"
-                            Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />
+                            Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />-->
 
                         <TextBlock
                             Grid.Row="8"

@@ -59,7 +59,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         new Axis
         {
             Labeler = value => new DateTime((long) value).ToString("dd/MM"),
-            LabelsRotation = 60,
+            LabelsRotation = 0,
 
             // when using a date time type, let the library know your unit 
             UnitWidth = TimeSpan.FromDays(1).Ticks, 
@@ -290,6 +290,13 @@ namespace ProjectLighthouse.ViewModel.Orders
 
                 producedValues.Add(new(day, totalProduced));
                 scrappedValues.Add(new(day, totalScrapped));
+            }
+
+            if (totalProduced + totalScrapped == 0)
+            {
+                Series = null;
+                OnPropertyChanged(nameof(Series));
+                return;
             }
 
             SolidColorBrush red = (Brush)Application.Current.Resources["Red"] as SolidColorBrush;
@@ -750,7 +757,6 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             List<LatheManufactureOrder> ordersNeedingProgramming = Orders
                 .Where(x =>
-                    !x.HasProgram &&
                      x.StartDate != DateTime.MinValue &&
                      x.State < OrderState.Complete)
                 .OrderBy(x => x.StartDate)
@@ -760,11 +766,12 @@ namespace ProjectLighthouse.ViewModel.Orders
             ordersNeedingProgramming
                 .AddRange(
                     Orders.Where(x =>
-                        !x.HasProgram &&
                          x.StartDate == DateTime.MinValue &&
                          x.State < OrderState.Complete));
 
             ExcelHelper.CreateProgrammingPlanner(ordersNeedingProgramming);
+
+            CSVHelper.WriteListToCSV(Orders, "orders");
         }
 
         public void EditLMO()

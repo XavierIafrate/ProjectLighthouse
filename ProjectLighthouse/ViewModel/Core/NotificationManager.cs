@@ -3,6 +3,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Drawings;
@@ -366,6 +367,21 @@ namespace ProjectLighthouse.ViewModel.Core
 
                 _ = DatabaseHelper.Insert(newNotification);
             }
+        }
+
+        public void NotifyOrderAssignment(LatheManufactureOrder order, string targetUsername, bool unassigned)
+        {
+            string title = unassigned ? $"Unassigned: {order.Name}" : $"Assigned: {order.Name}";
+            string body = unassigned ? $"{App.CurrentUser.FirstName} has reassigned this order." : $"{App.CurrentUser.FirstName} has assigned this order to you.";
+
+            Notification newNotification = new(
+                to: targetUsername,
+                from: App.CurrentUser.UserName,
+                header: title,
+                body: body,
+                toastAction: $"viewManufactureOrder:{order.Name}");
+
+            _ = DatabaseHelper.Insert(newNotification);
         }
     }
 }

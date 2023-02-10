@@ -22,7 +22,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Drawings
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.Role == UserRole.Administrator;
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.ApproveDrawings);
         }
 
         public void Execute(object parameter)

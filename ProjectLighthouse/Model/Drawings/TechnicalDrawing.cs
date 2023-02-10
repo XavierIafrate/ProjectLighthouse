@@ -44,12 +44,12 @@ namespace ProjectLighthouse.Model.Drawings
         public DateTime ApprovedDate { get; set; }
 
         public bool ManufacturingApproved { get; set; }
-        public string ManufacturingApprovalBy { get; set; }
-        public DateTime ManufacturingApprovalDate { get; set; }
+        public string? ManufacturingApprovalBy { get; set; }
+        public DateTime? ManufacturingApprovalDate { get; set; }
 
         public bool EngineeringApproved { get; set; }
-        public string EngineeringApprovalBy { get; set; }
-        public DateTime EngineeringApprovalDate { get; set; }
+        public string? EngineeringApprovalBy { get; set; }
+        public DateTime? EngineeringApprovalDate { get; set; }
 
         public int? TurnedProductId { get; set; }
         public int? GroupId { get; set; }

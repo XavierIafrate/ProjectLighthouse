@@ -14,7 +14,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             List<LatheManufactureOrderItem> recommendedItems = new();
             if (RequiredProductDueDate != null)
             {
-                recommendedItems.Add(new(requiredProduct, qtyOfRequired) { DateRequired = (DateTime)RequiredProductDueDate });
+                recommendedItems.Add(new(requiredProduct, qtyOfRequired, (DateTime)RequiredProductDueDate));
             }
             else
             {

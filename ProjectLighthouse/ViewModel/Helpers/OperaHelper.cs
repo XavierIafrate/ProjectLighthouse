@@ -1,4 +1,6 @@
 ﻿using DbfDataReader;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using Microsoft.Web.WebView2.Core;
 using ProjectLighthouse.Model.Deliveries;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -130,143 +132,208 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return results;
         }
 
-        // int uploads = await UploadPicturesAsync(GenerateTestImages(),
-        // new Progress<int>(percent => progressBar1.Value = percent));
+        private static List<BomComponent> GetComponentStructure()
+        {
+            List<BomComponent> boms = new();
 
-        public static void UpdateRecords(List<TurnedProduct> products, List<BarStock> barstock, string[] nameLookup)
+            string path = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cstruc.dbf";
+            using DbfTable dbfTable = new(path, Encoding.UTF8);
+
+            DbfRecord dbfRecord = new(dbfTable);
+
+            while (dbfTable.Read(dbfRecord))
+            {
+                if (dbfRecord.IsDeleted)
+                {
+                    continue;
+                }
+                object qty = dbfRecord.Values[2]?.GetValue();
+                int quantity = 0;
+
+                if (qty is not null)
+                {
+                    quantity = Convert.ToInt32(qty.ToString());
+                }
+
+                quantity /= 100;
+
+                boms.Add(new() { AssemblyName = dbfRecord.Values[0].ToString(), ComponentName = dbfRecord.Values[1].ToString(), Quantity = quantity });
+            }
+
+            return boms;
+        }
+
+        private static void UpdateProduct(TurnedProduct product, OperaFields record)
+        {
+            if (!RecordNeedsUpdating(product, record))
+            {
+                return;
+            }
+
+            product.QuantityInStock = record.QtyInStock;
+            product.QuantityOnPO = record.QtyPurchaseOrder;
+            product.QuantityOnSO = record.QtySalesOrder;
+            product.SellPrice = record.SellPrice;
+
+            DatabaseHelper.Update<TurnedProduct>(product);
+        }
+
+        private static void UpdateBarStock(BarStock bar, OperaFields record)
+        {
+            bar.InStock = Convert.ToDouble(record.QtyInStock);
+            bar.OnOrder = Convert.ToDouble(record.QtyPurchaseOrder);
+            bar.Cost = record.CostPrice;
+
+            DatabaseHelper.Update<BarStock>(bar);
+        }
+
+        public static void UpdateRecords(List<TurnedProduct> products, List<BarStock> barstock, string[] lighthouseProducts)
         {
             int total_records;
             int i;
 
-            List<OperaFields> results = new();
-            List<OperaFields> bar_records = new();
+            List<OperaFields> liveData;
 
-            using (DbfTable dbfTable = new(dbFile, Encoding.UTF8))
-            {
-                DbfHeader header = dbfTable.Header;
-                Console.WriteLine($"{header.RecordCount:#,##0} records in Automotion CNAME table.");
+            List<BomComponent> boms = GetComponentStructure();
 
-                int iStockRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_REF"));
-                int iSearchRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_CAT"));
-                int iSalesOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_SALEORD"));
-                int iStockQuantity = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_INSTOCK"));
-                int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_ONORDER"));
-                int iSell = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_SELL"));
-                int iCost = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_COST"));
-
-                DbfRecord dbfRecord = new(dbfTable);
-
-                total_records = (int)header.RecordCount;
-                i = 0;
-
-                while (dbfTable.Read(dbfRecord))
-                {
-                    double percent_progress = (double)i / (double)total_records;
-                    percent_progress *= 100;
-
-                    Console.Write($"\rReading Opera... [  {percent_progress:#.00}%  ]");
-
-                    i++;
-
-                    if (dbfRecord.IsDeleted)
-                        continue;
-
-                    string name = dbfRecord.Values[iStockRef].ToString();
-                    string searchref = dbfRecord.Values[iSearchRef].ToString();
-
-                    if (!nameLookup.Contains(name) && !name.StartsWith("PRB"))
-                    {
-                        if (nameLookup.Contains(searchref))
-                        {
-                            name = searchref;
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-
-                    _ = int.TryParse(dbfRecord.Values[iSalesOrder].ToString(), out int SalesOrder);
-                    _ = int.TryParse(dbfRecord.Values[iStockQuantity].ToString(), out int Stock);
-                    _ = int.TryParse(dbfRecord.Values[iPurchaseOrder].ToString(), out int OnOrder);
-                    _ = int.TryParse(dbfRecord.Values[iSell].ToString(), out int Sell);
-                    _ = int.TryParse(dbfRecord.Values[iCost].ToString(), out int Cost);
-
-                    SalesOrder /= 100;
-                    Stock /= 100;
-                    OnOrder /= 100;
-
-                    OperaFields record = new()
-                    {
-                        StockReference = name,
-                        QtyInStock = Stock,
-                        QtyPurchaseOrder = OnOrder,
-                        QtySalesOrder = SalesOrder,
-                        SellPrice = Sell,
-                        CostPrice = Cost
-                    };
-
-                    if (record.StockReference.StartsWith("PRB"))
-                    {
-                        bar_records.Add(record);
-                    }
-                    else
-                    {
-                        results.Add(record);
-                    }
-                }
-            }
-
-            total_records = results.Count;
+            liveData = GetLiveData(lighthouseProducts, barstock.Select(x => x.Id).ToArray(), boms);
+            
+            total_records = liveData.Count;
             i = 0;
             Console.WriteLine();
 
-            foreach (OperaFields r in results)
+
+            foreach (OperaFields record in liveData)
             {
                 i++;
                 double percent_progress = (double)i / (double)total_records;
                 percent_progress *= 100;
                 Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
 
-                TurnedProduct productRecord = products.Find(x => x.ProductName == r.StockReference);
-                if (productRecord == null)
+                TurnedProduct productRecord = products.Find(x => x.ProductName == record.StockReference);
+                if (productRecord is not null)
                 {
+                    UpdateProduct(productRecord, record);
                     continue;
                 }
 
-                if (RecordNeedsUpdating(productRecord, r))
+                BarStock bar = barstock.Find(x => x.Id == record.StockReference);
+                if (bar is not null)
                 {
-                    productRecord.QuantityInStock = r.QtyInStock;
-                    productRecord.QuantityOnPO = r.QtyPurchaseOrder;
-                    productRecord.QuantityOnSO = r.QtySalesOrder;
-                    productRecord.SellPrice = r.SellPrice;
-
-                    DatabaseHelper.Update<TurnedProduct>(productRecord);
+                    UpdateBarStock(bar, record);
+                    continue;
                 }
             }
 
-            total_records = bar_records.Count;
-            i = 0;
-            Console.WriteLine();
+        }
 
-            foreach (OperaFields r in bar_records)
+        private static List<OperaFields> GetLiveData(string[] lighthouseProducts, string[] barstock, List<BomComponent> boms)
+        {
+            boms = boms.Where(x => lighthouseProducts.Contains(x.ComponentName)).ToList();
+
+            string[] itemsForUpdate = lighthouseProducts.Concat(barstock).ToArray();
+
+            List<OperaFields> results = new();
+            List<OperaFields> bar_records = new();
+
+            using DbfTable dbfTable = new(dbFile, Encoding.UTF8);
+
+            DbfHeader header = dbfTable.Header;
+            Console.WriteLine($"{header.RecordCount:#,##0} records in Automotion CNAME table.");
+
+            int iStockRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_REF"));
+            int iFactor = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_FACT"));
+            int iSearchRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_CAT"));
+            int iSalesOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_SALEORD"));
+            int iStockQuantity = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_INSTOCK"));
+            int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_ONORDER"));
+            int iSell = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_SELL"));
+            int iCost = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_COST"));
+
+            DbfRecord dbfRecord = new(dbfTable);
+
+            int total_records = (int)header.RecordCount;
+            int i = 0;
+
+            while (dbfTable.Read(dbfRecord))
             {
-                i++;
                 double percent_progress = (double)i / (double)total_records;
                 percent_progress *= 100;
 
-                Console.Write($"\rUpdating Bar Stock records... [  {percent_progress:#.00}%  ]");
+                Console.Write($"\rReading Opera... [  {percent_progress:#.00}%  ]");
 
-                BarStock bar_record = barstock.Find(x => x.Id == r.StockReference);
-                if (bar_record == null)
+                i++;
+
+                if (dbfRecord.IsDeleted)
                     continue;
 
-                bar_record.InStock = Convert.ToDouble(r.QtyInStock);
-                bar_record.OnOrder = Convert.ToDouble(r.QtyPurchaseOrder);
-                bar_record.Cost = r.CostPrice;
+                string name = dbfRecord.Values[iStockRef].ToString() ?? "";
+                string factor = dbfRecord.Values[iFactor].ToString();
+                string searchref = dbfRecord.Values[iSearchRef].ToString();
 
-                DatabaseHelper.Update<BarStock>(bar_record);
+                if (!itemsForUpdate.Contains(name))
+                {
+                    if (itemsForUpdate.Contains(searchref))
+                    {
+                        name = searchref;
+                    }
+                    else if (boms.Any(x => x.AssemblyName == name))
+                    {
+                        // proceed normally
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                _ = int.TryParse(dbfRecord.Values[iSalesOrder].ToString(), out int SalesOrder);
+                _ = int.TryParse(dbfRecord.Values[iStockQuantity].ToString(), out int Stock);
+                _ = int.TryParse(dbfRecord.Values[iPurchaseOrder].ToString(), out int OnOrder);
+                _ = int.TryParse(dbfRecord.Values[iSell].ToString(), out int Sell);
+                _ = int.TryParse(dbfRecord.Values[iCost].ToString(), out int Cost);
+
+                SalesOrder /= 100;
+                Stock /= 100;
+                OnOrder /= 100;
+
+                OperaFields record = new()
+                {
+                    StockReference = name,
+                    QtyInStock = Stock,
+                    QtyPurchaseOrder = OnOrder,
+                    QtySalesOrder = SalesOrder,
+                    SellPrice = factor == "4DEC" ? Sell / 100 : Sell,
+                    CostPrice = Cost
+                };
+
+                results.Add(record);
             }
+
+
+
+            // Consolidate Bom Records
+            List<OperaFields> assemblies = results.Where(x => !itemsForUpdate.Contains(x.StockReference)).ToList();
+
+            // remove assemblies
+            results = results.Where(x => itemsForUpdate.Contains(x.StockReference)).ToList();
+
+            for (int j = 0; j < assemblies.Count; j++)
+            {
+                OperaFields assembly = assemblies[j];
+                List<BomComponent> affectedComponents = boms.Where(x => x.AssemblyName == assembly.StockReference).ToList();
+
+                for (int k = 0; k < affectedComponents.Count; k++)
+                {
+                    OperaFields? lighthouseComponent = results.Find(x => x.StockReference == affectedComponents[k].ComponentName);
+                    if (lighthouseComponent is null) continue;
+
+                    Console.WriteLine($"\t{assembly.StockReference} >> '{lighthouseComponent.StockReference}' +{assembly.QtySalesOrder}");
+                    lighthouseComponent.QtySalesOrder += assembly.QtySalesOrder;
+                }
+            }
+
+            return results;
         }
 
         private static bool RecordNeedsUpdating(TurnedProduct product, OperaFields operaRecord)
@@ -286,6 +353,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             public int QtySalesOrder { get; set; }
             public int SellPrice { get; set; }
             public string StockReference { get; set; }
+        }
+
+        protected class BomComponent
+        {
+            public string AssemblyName { get; set; }
+            public string ComponentName { get; set; }
+            public int Quantity { get; set; }
         }
 
         protected class PurchaseHeader

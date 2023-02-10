@@ -19,6 +19,7 @@ namespace View.Administration
     {
         private List<Lathe> ExistingLathes;
         public Lathe Lathe { get; set; }
+        public Lathe? originalLathe;
         private bool editing;
 
         public bool SaveExit;
@@ -27,37 +28,28 @@ namespace View.Administration
             InitializeComponent();
 
             ExistingLathes = existingLathes;
-            outOfServiceCheckBox.Visibility = Visibility.Collapsed;
 
-            if (lathe != null)
+            if (lathe is not null)
             {
                 editing = true;
-                Lathe = lathe;
-                PrefillUi();
+                originalLathe = lathe;
+                Lathe = (Lathe)originalLathe.Clone();
             }
+            else
+            {
+                Lathe = new();
+            }
+            SetUiElements();
+
+            DataContext = this;
         }
 
-        private void PrefillUi()
+        private void SetUiElements()
         {
-            Title = "Edit Lathe";
-            TitleText.Text = $"Editing '{Lathe.Id}'";
-
-            idTextBox.Text = Lathe.Id;
-            idTextBox.IsEnabled = false;
-
-            fullNameTextBox.Text = Lathe.FullName;
-            makeTextBox.Text = Lathe.Make;
-            modelTextBox.Text = Lathe.Model;
-            serialNumberTextBox.Text = Lathe.SerialNumber;
-            partOffTextBox.Text = Lathe.PartOff.ToString("0.0");
-            maxDiameterTextBox.Text = Lathe.MaxDiameter.ToString("0.0");
-            maxLengthTextBox.Text = Lathe.MaxLength.ToString("0.0");
-            ipAddressTextBox.Text = Lathe.IPAddress;
-            controllerReferenceTextBox.Text = Lathe.ControllerReference;
-            remarksTextBox.Text = Lathe.Remarks;
-
-            outOfServiceCheckBox.Visibility = Visibility.Visible;
-            outOfServiceCheckBox.IsChecked = Lathe.OutOfService;
+            bool editing = originalLathe is not null;
+            Title = editing ? "Edit Lathe" : "Add Lathe";
+            TitleText.Text = editing ? $"Editing '{Lathe.Id}'" : "New Lathe";
+            SubmitButton.Content = editing ? "Update" : "Create";
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)

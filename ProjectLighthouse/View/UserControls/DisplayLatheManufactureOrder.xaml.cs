@@ -33,6 +33,18 @@ namespace ProjectLighthouse.View.UserControls
                    && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now;
 
             control.BadgeText.Visibility = control.LatheManufactureOrder.IsClosed || needsUpdate ? Visibility.Collapsed : Visibility.Visible;
+
+            control.PoTextBlock.Visibility = App.CurrentUser.Role is Model.Administration.UserRole.Purchasing
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            control.clippy.Visibility = control.PoTextBlock.Visibility == Visibility.Visible || control.LatheManufactureOrder.AssignedTo is null
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+            control.AssignmentTextBlock.Visibility = control.PoTextBlock.Visibility == Visibility.Visible || control.LatheManufactureOrder.AssignedTo is null
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+
         }
 
         public DisplayLatheManufactureOrder()

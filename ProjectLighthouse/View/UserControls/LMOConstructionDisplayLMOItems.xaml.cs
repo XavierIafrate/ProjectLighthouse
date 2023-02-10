@@ -45,15 +45,16 @@ namespace ProjectLighthouse.View.UserControls
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Item.TargetQuantity = string.IsNullOrWhiteSpace(QuantityTextBox.Text)
-                ? Math.Max(Item.RequiredQuantity, 0)
-                : Math.Max(int.Parse(QuantityTextBox.Text), Item.RequiredQuantity);
-            Item.NotifyEditMade();
+            //Item.TargetQuantity = string.IsNullOrWhiteSpace(QuantityTextBox.Text)
+            //    ? Math.Max(Item.RequiredQuantity, 0)
+            //    : Math.Max(int.Parse(QuantityTextBox.Text), Item.RequiredQuantity);
+
+            //Item.NotifyEditMade();
         }
 
         private void QuantityTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            QuantityTextBox.Text = Item.TargetQuantity.ToString("0");
+            //QuantityTextBox.Text = Item.TargetQuantity.ToString("0");
         }
     }
 }

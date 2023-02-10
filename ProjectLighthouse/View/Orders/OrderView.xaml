@@ -5,9 +5,9 @@
     xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
+    xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-    xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     d:Background="{StaticResource Background}"
     d:DesignHeight="1288"
     d:DesignWidth="1701"
@@ -15,10 +15,7 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <converters:boolToHasProgram x:Key="boolToHasProgram" />
-            <converters:boolToIsReady x:Key="boolToIsReady" />
             <converters:intToDays x:Key="intToDays" />
-            <converters:DateToSettingDate x:Key="settingTime" />
             <converters:intToStringCycleTime x:Key="intToStringCycleTime" />
             <converters:stringToAssignedLathe x:Key="stringToAssignedLathe" />
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisible" />
@@ -132,25 +129,25 @@
                 Grid.Column="0"
                 Margin="0,0,5,0"
                 HorizontalAlignment="Left"
-                Tag="New Order"
+                Command="{Binding NewOrderCommand}"
                 Style="{StaticResource Action_New_Button}"
-                Visibility="{Binding NewOrderButtonVis}"
-                Command="{Binding NewOrderCommand}"/>
+                Tag="New Order"
+                Visibility="{Binding NewOrderButtonVis}" />
 
             <Button
-                Visibility="Collapsed"
                 Grid.Column="1"
                 Margin="0,0,5,0"
                 HorizontalAlignment="Left"
                 Command="{Binding GetProgramPlannerCmd}"
                 Style="{StaticResource CSVButton}"
-                ToolTip="Programming Planner"/>
+                ToolTip="Programming Planner"
+                Visibility="Visible" />
 
             <TextBlock
                 Grid.Column="2"
+                Margin="0,0,5,0"
                 VerticalAlignment="Center"
                 d:Text="99 order(s)"
-                Margin="0,0,5,0"
                 Foreground="{StaticResource OnBackground}"
                 Opacity="0.6"
                 Text="{Binding FilteredOrders.Count, StringFormat='{}{0} order(s)'}" />
@@ -280,9 +277,7 @@
                                             </Grid>
                                         </Border>
                                     </StackPanel>
-                                    <StackPanel
-                                        Opacity="0.6"
-                                        Orientation="Horizontal">
+                                    <StackPanel Opacity="0.6" Orientation="Horizontal">
                                         <Path
                                             Width="15"
                                             Height="18"
@@ -291,11 +286,12 @@
                                             Stretch="Uniform" />
                                         <TextBlock
                                             Margin="5,0,0,0"
+                                            d:Text="This order is assigned to randy"
                                             FontSize="13"
                                             FontStyle="Italic"
                                             FontWeight="SemiBold"
                                             Foreground="{StaticResource Purple}"
-                                            Text="{Binding SelectedOrder.AssignedTo, Converter={StaticResource assignedFormatter}, TargetNullValue='This order is unassigned', StringFormat='{}This order is assigned to {0}'}"/>
+                                            Text="{Binding SelectedOrder.AssignedTo, Converter={StaticResource assignedFormatter}, TargetNullValue='This order is unassigned', StringFormat='{}This order is assigned to {0}'}" />
                                     </StackPanel>
                                     <StackPanel
                                         Margin="0,5,0,0"
@@ -310,17 +306,19 @@
                                             Stretch="Uniform" />
                                         <TextBlock
                                             Margin="5,0,0,0"
+                                            d:Text="Updated today"
                                             FontSize="13"
                                             FontStyle="Italic"
                                             FontWeight="SemiBold"
                                             Foreground="{StaticResource OnBackground}"
-                                            Text="{Binding SelectedOrder.ModifiedAt, Converter={StaticResource modifiedFormatter}, StringFormat='{}Updated {0}'}" d:Text="Updated today" />
+                                            Text="{Binding SelectedOrder.ModifiedAt, Converter={StaticResource modifiedFormatter}, StringFormat='{}Updated {0}'}" />
                                         <TextBlock
+                                            d:Text=" by randy"
                                             FontSize="13"
                                             FontStyle="Italic"
                                             FontWeight="SemiBold"
                                             Foreground="{StaticResource OnBackground}"
-                                            Text="{Binding SelectedOrder.ModifiedBy, StringFormat='{} by {0}'}" d:Text=" by randy" />
+                                            Text="{Binding SelectedOrder.ModifiedBy, StringFormat='{} by {0}'}" />
                                     </StackPanel>
                                 </StackPanel>
 
@@ -417,6 +415,7 @@
                                                 Text="LIVE DATA: " />
                                             <TextBlock
                                                 VerticalAlignment="Center"
+                                                d:Text="Citizen 0"
                                                 FontSize="20"
                                                 FontWeight="SemiBold"
                                                 Foreground="{Binding DisplayStats, Converter={StaticResource liveBadgeColour}}"
@@ -425,6 +424,7 @@
 
                                         <TextBlock
                                             Grid.RowSpan="2"
+                                            d:Text="recorded at 00:00:00"
                                             FontSize="12"
                                             FontStyle="Italic"
                                             Foreground="{Binding DisplayStats, Converter={StaticResource liveBadgeColour}}"
@@ -437,18 +437,20 @@
                                         VerticalAlignment="Center"
                                         Orientation="Horizontal">
                                         <TextBlock
+                                            d:Text="99,999 PCS"
                                             FontSize="20"
                                             FontWeight="Bold"
                                             Foreground="{Binding DisplayStats, Converter={StaticResource liveBadgeColour}}"
                                             Text="{Binding Path=DisplayStats.PartCountAll, StringFormat='{}{0:#,##0}'}" />
                                         <TextBlock
                                             VerticalAlignment="Bottom"
+                                            d:Text="/99,999 PCS"
                                             FontWeight="Bold"
                                             Foreground="{Binding DisplayStats, Converter={StaticResource liveBadgeColour}}"
                                             Opacity="0.6"
                                             Text="{Binding Path=DisplayStats.PartCountTarget, StringFormat='{}/{0:#,##0} PCS'}" />
                                     </StackPanel>
-
+                                    
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="3"
@@ -465,7 +467,7 @@
 
                             <TextBlock
                                 Style="{StaticResource section}"
-                                Text="Planning"
+                                Text="Pre-flight"
                                 Visibility="{Binding SelectedOrder.IsClosed, Converter={StaticResource boolToCollapsed}}" />
 
                             <Grid Margin="20,20,20,10" Visibility="{Binding SelectedOrder.IsClosed, Converter={StaticResource boolToCollapsed}}">
@@ -726,14 +728,14 @@
                                     <TextBlock
                                         Grid.Column="1"
                                         Grid.ColumnSpan="2"
-                                        FontSize="13"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
-                                        Opacity="0.6"
+                                        FontSize="13"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource OnBackground}"
-                                        TextWrapping="Wrap"
-                                        Text="{Binding SelectedOrderBar.MaterialData, TargetNullValue='NOT FOUND'}"/>
+                                        Opacity="0.6"
+                                        Text="{Binding SelectedOrderBar.MaterialData, TargetNullValue='NOT FOUND'}"
+                                        TextWrapping="Wrap" />
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="1"
@@ -787,7 +789,13 @@
                                     Margin="0,15,0,5"
                                     Style="{StaticResource section}"
                                     Text="Production Log" />
-                                <lvc2:CartesianChart Series="{Binding Series}" XAxes="{Binding XAxes}" Height="300"/>
+                                <Border Background="{StaticResource Surface}" CornerRadius="5">
+                                    <lvc2:CartesianChart
+                                        Height="300"
+                                        Margin="0"
+                                        Series="{Binding Series}"
+                                        XAxes="{Binding XAxes}" />
+                                </Border>
                             </StackPanel>
 
                             <!--#region Drawings-->
@@ -872,9 +880,9 @@
 
         <Border
             x:Name="grad"
+            Grid.RowSpan="2"
             Grid.Column="1"
             Height="20"
-            Grid.RowSpan="2"
             VerticalAlignment="Top"
             CornerRadius="20,0,0,0"
             IsHitTestVisible="False">

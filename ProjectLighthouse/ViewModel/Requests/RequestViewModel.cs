@@ -6,7 +6,6 @@ using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.View.Orders;
-using ProjectLighthouse.View.Requests;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Orders;
@@ -17,9 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.Cryptography.Xml;
 using System.Windows;
-using System.Xaml;
 
 namespace ProjectLighthouse.ViewModel.Requests
 {
@@ -118,8 +115,8 @@ namespace ProjectLighthouse.ViewModel.Requests
         public ProductGroup? SelectedRequestProductGroup
         {
             get { return selectedRequestProductGroup; }
-            set 
-            { 
+            set
+            {
                 selectedRequestProductGroup = value;
                 OnPropertyChanged();
             }
@@ -130,8 +127,8 @@ namespace ProjectLighthouse.ViewModel.Requests
         public Product? SelectedRequestMainProduct
         {
             get { return selectedRequestMainProduct; }
-            set 
-            { 
+            set
+            {
                 selectedRequestMainProduct = value;
                 OnPropertyChanged();
             }
@@ -376,7 +373,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 if (SelectedRequestProductGroup == null)
                 {
                     MessageBox.Show($"Group ID '{SelectedRequestProduct.GroupId}' not found, please notify an administrator.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    SelectedRequestMainProduct  = null;
+                    SelectedRequestMainProduct = null;
                     return;
                 }
 
@@ -404,7 +401,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 : Visibility.Collapsed;
 
             ApprovalControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest) && SelectedRequest.Status == "Pending approval"
-                ? Visibility.Visible 
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             EditControlsVis = App.CurrentUser.GetFullName() == SelectedRequest.RaisedBy && !SelectedRequest.IsAccepted && !SelectedRequest.IsDeclined
@@ -652,7 +649,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
 
             List<Request> requests = DatabaseHelper.Read<Request>();
-            for(int i = 0; i < requests.Count; i++)
+            for (int i = 0; i < requests.Count; i++)
             {
                 if (!string.IsNullOrEmpty(requests[i].ResultingLMO))
                 {
@@ -696,8 +693,8 @@ namespace ProjectLighthouse.ViewModel.Requests
                     case "All":
                         break;
                     case "Active":
-                        requests = requests.Where(x => 
-                        (!x.IsDeclined && !x.IsAccepted) || 
+                        requests = requests.Where(x =>
+                        (!x.IsDeclined && !x.IsAccepted) ||
                         (x.SubsequentOrder.State < OrderState.Complete && !string.IsNullOrEmpty(x.ResultingLMO)) ||
                         x.LastModified.AddDays(4) > DateTime.Now)
                             .ToList();

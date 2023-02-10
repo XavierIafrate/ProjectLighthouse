@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Orders
@@ -25,7 +24,8 @@ namespace ProjectLighthouse.View.Orders
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            ScrollViewer scrollViewer = sender as ScrollViewer;
+            if (sender is not ScrollViewer scrollViewer) return;
+
             grad.Visibility = scrollViewer.VerticalOffset == 0
                 ? Visibility.Hidden
                 : Visibility.Visible;
@@ -33,10 +33,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (OrderScroller != null)
-            {
-                OrderScroller.ScrollToVerticalOffset(0);
-            }
+            OrderScroller?.ScrollToVerticalOffset(0);
         }
     }
 }

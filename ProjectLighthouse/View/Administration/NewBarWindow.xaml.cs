@@ -12,7 +12,7 @@ namespace ProjectLighthouse.View.Administration
     {
         public BarStock NewBar { get; set; }
         public List<MaterialInfo> Materials { get; set; }
-
+        public bool BarAdded = false;
         public NewBarWindow()
         {
             InitializeComponent();
@@ -44,7 +44,14 @@ namespace ProjectLighthouse.View.Administration
                 return;
             }
 
-            MessageBox.Show("Adding Bar");
+            if (!DatabaseHelper.Insert(NewBar))
+            {
+                MessageBox.Show("Failed to insert record to database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            BarAdded = true;
+            Close();
         }
     }
 }

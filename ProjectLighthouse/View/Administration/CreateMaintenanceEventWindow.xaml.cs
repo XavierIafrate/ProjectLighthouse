@@ -104,8 +104,8 @@ namespace View.Administration
                 existingEvent.Description = descriptionTextBox.Text.Trim();
                 existingEvent.StartingDate = StartDate.SelectedDate.Value.Date;
                 existingEvent.IntervalMonths = interval;
-                existingEvent.Active = (bool)ActiveCheckBox.IsChecked;
-                existingEvent.RequireDocumentation = (bool)RequireDocs.IsChecked;
+                existingEvent.Active = ActiveCheckBox.IsChecked ?? false;
+                existingEvent.RequireDocumentation = RequireDocs.IsChecked ?? false;
 
                 SaveExit = DatabaseHelper.Update(existingEvent);
 
@@ -125,7 +125,7 @@ namespace View.Administration
         {
             descriptionTextBox.Text = descriptionTextBox.Text.Trim();
 
-            if ((bool)autoFormatCheckBox.IsChecked)
+            if (autoFormatCheckBox.IsChecked ?? false)
             {
                 if (descriptionTextBox.Text != CultureInfo.CurrentCulture.TextInfo.ToTitleCase(descriptionTextBox.Text))
                 {
@@ -166,7 +166,7 @@ namespace View.Administration
                 }
             }
 
-            if ((bool)UpdateStartDateCheckBox.IsChecked)
+            if (UpdateStartDateCheckBox.IsChecked ?? false)
             {
                 existingEvent.StartingDate = RecordIssueDate.SelectedDate.Value.Date;
                 StartDate.SelectedDate = RecordIssueDate.SelectedDate.Value.Date;

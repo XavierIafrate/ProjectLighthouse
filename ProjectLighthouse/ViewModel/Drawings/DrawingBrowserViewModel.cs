@@ -9,6 +9,7 @@ using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -173,7 +174,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         private void InitialiseVariables()
         {
-            EditControlsVis = App.CurrentUser.HasPermission(PermissionType.CreateSpecial) 
+            EditControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveDrawings) 
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
 
@@ -238,6 +239,11 @@ namespace ProjectLighthouse.ViewModel.Drawings
                     IsArchetypeGroup = d.First().IsArchetype
                 };
 
+                if(newGroup.LastIssue == DateTime.MinValue)
+                {
+                    newGroup.LastIssue = null;
+                }
+
                 DrawingGroups.Add(newGroup);
             }
         }
@@ -269,6 +275,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             else
             {
                 SelectedGroup = null;
+                SelectedDrawing = null;
             }
 
             if (SelectedGroup is not null)
@@ -301,6 +308,12 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 FilteredDrawings = selectedGroup.Drawings
                     .Where(x => !x.IsRejected && !x.IsWithdrawn)
                     .ToList();
+
+                if (FilteredDrawings.Count == 0)
+                {
+                    ShowRejected = true;
+                    return;
+                }
             }
             else
             {
@@ -436,6 +449,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void ApproveDrawing()
         {
+            //ApproveDrawingWindow approvalWindow = new(SelectedDrawing, SelectedGroup);
+            //approvalWindow.ShowDialog();
+
+
             int MaxRev = SelectedGroup.Drawings.Max(x => x.Revision);
             TechnicalDrawing.Amendment maxAmd = SelectedGroup.Drawings.Where(x => x.Revision == MaxRev).Max(x => x.AmendmentType);
 
@@ -513,6 +530,12 @@ namespace ProjectLighthouse.ViewModel.Drawings
         {
             if(SelectedDrawing is null)
             {
+                return;
+            }
+
+            if (SelectedDrawing.CreatedBy != App.CurrentUser.GetFullName() && App.CurrentUser.Role < UserRole.Administrator)
+            {
+                MessageBox.Show("You cannot withdraw a drawing you didn't upload.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
          

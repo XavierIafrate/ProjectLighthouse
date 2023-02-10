@@ -14,7 +14,7 @@
                         CornerRadius="5">
                         <ScrollViewer
                             x:Name="PART_ContentHost"
-                            Margin="10"
+                            Margin="10,10,5,10"
                             HorizontalContentAlignment="Left"
                             CanContentScroll="True"
                             Focusable="false"
@@ -46,11 +46,12 @@
                         CornerRadius="5">
                         <ScrollViewer
                             x:Name="PART_ContentHost"
-                            Margin="10"
+                            Margin="10,10,10,6"
                             HorizontalContentAlignment="Left"
                             CanContentScroll="True"
                             Focusable="false"
                             HorizontalScrollBarVisibility="Auto"
+                            Style="{StaticResource HorizontalScrollViewer}"
                             VerticalScrollBarVisibility="Hidden">
 
 

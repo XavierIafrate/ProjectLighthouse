@@ -350,7 +350,7 @@ namespace ProjectLighthouse.View.Drawings
 
             for (int i = 0; i < ToNotify.Count; i++)
             {
-                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Drawing proposal - {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.Id}"));
+                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Proposal: {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.Id}"));
             }
 
             SaveExit = true;

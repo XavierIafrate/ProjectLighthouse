@@ -1,10 +1,15 @@
-﻿using SQLite;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Orders;
+using SQLite;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace ProjectLighthouse.Model
 {
@@ -70,5 +75,10 @@ namespace ProjectLighthouse.Model
         }
 
         #endregion
+
+        public class UpdateWatch : Attribute
+        {
+
+        }
     }
 }

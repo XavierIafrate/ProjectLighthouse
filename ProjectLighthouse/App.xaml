@@ -30,6 +30,7 @@
                 <ResourceDictionary Source="./Themes/StylishToggleButtons.xaml" />
                 <ResourceDictionary Source="./Themes/StylishTextBox.xaml" />
                 <ResourceDictionary Source="./Themes/StylishPasswordBox.xaml" />
+                <ResourceDictionary Source="./Themes/StylishScrollViewer.xaml" />
                 <ResourceDictionary Source="./Themes/StylishListView.xaml" />
                 <ResourceDictionary Source="./Themes/StylishListViewItem.xaml" />
                 <ResourceDictionary Source="./Themes/StylishItemsControl.xaml" />
@@ -37,6 +38,7 @@
                 <ResourceDictionary Source="./Themes/StylishDatePicker.xaml" />
                 <ResourceDictionary Source="./Themes/StylishCheckbox.xaml" />
                 <ResourceDictionary Source="./Themes/StylishProgressBar.xaml" />
+                <ResourceDictionary Source="./Themes/StylishTabControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--#endregion-->
 
@@ -106,6 +108,10 @@
 
             <DataTemplate DataType="{x:Type qualityVm:QualityCheckViewModel}">
                 <qualityView:QualityCheckView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type adminVm:ProductManagerViewModel}">
+                <adminView:ProductManagerView />
             </DataTemplate>
             <!--#endregion-->
 

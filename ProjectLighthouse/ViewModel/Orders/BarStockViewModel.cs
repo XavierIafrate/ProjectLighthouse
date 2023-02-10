@@ -2,7 +2,6 @@
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.Administration;
-using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Commands.Printing;
@@ -11,7 +10,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Windows;
 using ViewModel.Commands.Administration;
@@ -119,7 +117,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             BarStockOverview = new();
             FilteredBarOverviews = new();
             PrintCommand = new(this);
-            AddBarCmd= new(this);
+            AddBarCmd = new(this);
             CostOfNewBar = new();
             NumberOfBars = new();
             BarIssues = new();
@@ -150,7 +148,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 Bar = SelectedBarStock.BarStock,
                 Order = SelectedOrder,
-                Owner =App.MainViewModel.MainWindow,
+                Owner = App.MainViewModel.MainWindow,
             };
 
             window.SetupInterface();
@@ -255,6 +253,13 @@ namespace ProjectLighthouse.ViewModel.Orders
             };
 
             window.ShowDialog();
+
+            if (window.BarAdded)
+            {
+                SearchString = "";
+                LoadData();
+                SearchString = window.NewBar.Id;
+            }
         }
     }
 }

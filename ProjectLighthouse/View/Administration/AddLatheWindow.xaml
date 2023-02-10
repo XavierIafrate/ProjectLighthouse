@@ -1,67 +1,235 @@
-﻿<Window x:Class="View.Administration.AddLatheWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:View.Administration"
-        mc:Ignorable="d"
-        ResizeMode="NoResize"
-        WindowStartupLocation="CenterOwner"
-        Title="Add New Lathe" SizeToContent="Height" Width="650">
+﻿<Window
+    x:Class="View.Administration.AddLatheWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Add New Lathe"
+    Width="650"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
     <StackPanel Margin="20">
-        <TextBlock Text="New Lathe" x:Name="TitleText" Style="{StaticResource title}"/>
-        <Grid>
-            <TextBlock Text="Lathe ID" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="ID" x:Name="idTextBox" LostFocus="idTextBox_LostFocus" MaxLength="3" HorizontalAlignment="Right" Width="100"/>
+        <TextBlock
+            x:Name="TitleText"
+            Style="{StaticResource title}"
+            Text="New Lathe" />
+
+        <TextBlock
+            Margin="20,20,0,0"
+            Style="{StaticResource section}"
+            Text="Organisation" />
+        <Grid Margin="40,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="0"
+                Style="{StaticResource InputLabel}"
+                Text="Lathe ID" />
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="0"
+                Width="100"
+                HorizontalAlignment="Left"
+                MaxLength="3"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="ID"
+                Text="{Binding Lathe.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="1"
+                Style="{StaticResource InputLabel}"
+                Text="Full Name" />
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="1"
+                Width="250"
+                HorizontalAlignment="Left"
+                MaxLength="16"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Full Name"
+                Text="{Binding Lathe.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                Style="{StaticResource InputLabel}"
+                Text="Make" />
+            <TextBox
+                Grid.Row="3"
+                Grid.Column="0"
+                Width="250"
+                HorizontalAlignment="Left"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Make"
+                Text="{Binding Lathe.Make, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="1"
+                Style="{StaticResource InputLabel}"
+                Text="Model" />
+            <TextBox
+                Grid.Row="3"
+                Grid.Column="1"
+                Width="250"
+                HorizontalAlignment="Left"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Model"
+                Text="{Binding Lathe.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            <TextBlock
+                Grid.Row="4"
+                Grid.Column="0"
+                Style="{StaticResource InputLabel}"
+                Text="Serial Number" />
+            <TextBox
+                Grid.Row="5"
+                Grid.Column="0"
+                Width="250"
+                HorizontalAlignment="Left"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Serial Number"
+                Text="{Binding Lathe.SerialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            <TextBlock
+                Grid.Row="4"
+                Grid.Column="1"
+                Style="{StaticResource InputLabel}"
+                Text="Machine Is Out of Service" />
+            <CheckBox
+                Grid.Row="5"
+                Grid.Column="1"
+                Margin="10"
+                HorizontalAlignment="Left"
+                Content="Out of Service"
+                IsChecked="{Binding Lathe.OutOfService, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
         </Grid>
 
-        <Grid>
-            <TextBlock Text="Full Name" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" MaxLength="16" Tag="Full Name" x:Name="fullNameTextBox" LostFocus="fullNameTextBox_LostFocus" HorizontalAlignment="Right" Width="250"/>
+        <TextBlock
+            Margin="20,20,0,0"
+            Style="{StaticResource section}"
+            Text="Resource Constants" />
+        <Grid Margin="40,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Grid.Column="0"
+                Style="{StaticResource InputLabel}"
+                Text="Part-off Budget (mm)" />
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="0"
+                Width="160"
+                HorizontalAlignment="Left"
+                PreviewKeyDown="AllowNumbersAndPeriodOnly"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="part off budget"
+                Text="{Binding Lathe.PartOff, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            <TextBlock
+                Grid.Column="1"
+                Style="{StaticResource InputLabel}"
+                Text="Max Diameter (mm)" />
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="1"
+                Width="160"
+                HorizontalAlignment="Left"
+                PreviewKeyDown="AllowNumbersAndPeriodOnly"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="max diameter"
+                Text="{Binding Lathe.MaxDiameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            <TextBlock
+                Grid.Column="2"
+                Style="{StaticResource InputLabel}"
+                Text="Max Part Length (mm)" />
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="2"
+                Width="160"
+                HorizontalAlignment="Left"
+                PreviewKeyDown="AllowNumbersAndPeriodOnly"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="max part length"
+                Text="{Binding Lathe.MaxLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
         </Grid>
 
-        <Grid>
-            <TextBlock Text="Make" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Make" x:Name="makeTextBox" LostFocus="makeTextBox_LostFocus" HorizontalAlignment="Right" Width="250"/>
+        <TextBlock
+            Margin="20,20,0,0"
+            Style="{StaticResource section}"
+            Text="Machine Comms" />
+        <Grid Margin="40,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource InputLabel}" Text="Controller IP Address" />
+            <TextBox
+                Grid.Row="1"
+                Width="250"
+                HorizontalAlignment="Left"
+                PreviewKeyDown="AllowNumbersAndPeriodOnly"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="IP Address"
+                Text="{Binding Lathe.IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            <TextBlock
+                Grid.Column="1"
+                Style="{StaticResource InputLabel}"
+                Text="Controller Reference" />
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="1"
+                Width="250"
+                HorizontalAlignment="Left"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="Controller Reference"
+                Text="{Binding Lathe.ControllerReference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
         </Grid>
 
-        <Grid>
-            <TextBlock Text="Model" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Model" x:Name="modelTextBox" LostFocus="modelTextBox_LostFocus" HorizontalAlignment="Right" Width="250"/>
-        </Grid>
+        <TextBlock
+            Margin="20,20,0,0"
+            Style="{StaticResource section}"
+            Text="Remarks" />
+        <TextBox
+            MinHeight="100"
+            AcceptsReturn="True"
+            MaxHeight="160"
+            Margin="20,10,20,10"
+            Style="{StaticResource DefaultTextBox}"
+            Text="{Binding Lathe.Remarks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-        <Grid>
-            <TextBlock Text="Serial Number" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Serial Number" x:Name="serialNumberTextBox" LostFocus="serialNumberTextBox_LostFocus" HorizontalAlignment="Right" Width="250"/>
-        </Grid>
-
-        <Grid>
-            <TextBlock Text="Part-off Budget (mm)" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Part Off Budget" x:Name="partOffTextBox" LostFocus="partOffTextBox_LostFocus" PreviewKeyDown="AllowNumbersAndPeriodOnly" HorizontalAlignment="Right" Width="200"/>
-        </Grid>
-
-        <Grid>
-            <TextBlock Text="Max Diameter (mm)" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Max Part Diameter" x:Name="maxDiameterTextBox" LostFocus="maxDiameterTextBox_LostFocus" PreviewKeyDown="AllowNumbersAndPeriodOnly" HorizontalAlignment="Right" Width="200"/>
-        </Grid>
-
-        <Grid>
-            <TextBlock Text="Max Part Length (mm)" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Max Part Length" x:Name="maxLengthTextBox" LostFocus="maxLengthTextBox_LostFocus" PreviewKeyDown="AllowNumbersAndPeriodOnly" HorizontalAlignment="Right" Width="200"/>
-        </Grid>
-
-        <Grid>
-            <TextBlock Text="Controller IP Address" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="IP Address" x:Name="ipAddressTextBox" LostFocus="ipAddressTextBox_LostFocus" PreviewKeyDown="AllowNumbersAndPeriodOnly" HorizontalAlignment="Right" Width="250"/>
-        </Grid>
-
-        <Grid>
-            <TextBlock Text="Controller Reference" Style="{StaticResource section}" VerticalAlignment="Center" Margin="30,0,0,0"/>
-            <TextBox Style="{StaticResource DefaultTextBox}" Tag="Controller Reference" x:Name="controllerReferenceTextBox" LostFocus="controllerReferenceTextBox_LostFocus" HorizontalAlignment="Right" Width="250"/>
-        </Grid>
-        <CheckBox x:Name="outOfServiceCheckBox" Content="Out of Service" HorizontalAlignment="Right" Margin="10"/>
-        <TextBox Style="{StaticResource DefaultTextBox}" Tag="Remarks" MinHeight="100" x:Name="remarksTextBox" LostFocus="remarksTextBox_LostFocus"/>
-
-        <Button HorizontalAlignment="Right" Content="Add Lathe" x:Name="SubmitButton" Click="SubmitButton_Click"/>
+        <Button
+            x:Name="SubmitButton"
+            HorizontalAlignment="Right"
+            Style="{StaticResource Action_Button}"
+            Tag="Submit" />
     </StackPanel>
 </Window>

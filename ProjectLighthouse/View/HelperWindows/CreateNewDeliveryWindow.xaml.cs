@@ -72,7 +72,10 @@ namespace ProjectLighthouse.View
         private void remButton_Click(object sender, RoutedEventArgs e)
         {
             if (deliveryList.SelectedValue is not DeliveryItem move_item)
+            {
                 return;
+            }
+
             itemsOnNewNote.Remove(move_item);
             filteredUndeliveredItems.Add(move_item);
             RefreshLists();

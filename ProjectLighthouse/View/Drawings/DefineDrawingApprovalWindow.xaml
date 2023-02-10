@@ -97,8 +97,8 @@
             </StackPanel>
         </Border>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,0,20,20">
-            <Button Content="Cancel" x:Name="CancelButton" Click="CancelButton_Click" Style="{StaticResource RedButton}"/>
-            <Button Content="Approve" Style="{StaticResource GreenButton}" x:Name="ApproveButton" Click="ApproveButton_Click" Margin="0"/>
+            <Button Tag="Cancel" x:Name="CancelButton" Click="CancelButton_Click" Style="{StaticResource Action_Cancel_Button}" VerticalAlignment="Center" Margin="5"/>
+            <Button Style="{StaticResource ApproveButton}" x:Name="ApproveButton" Click="ApproveButton_Click" Margin="0"/>
         </StackPanel>
     </Grid>
 </Window>

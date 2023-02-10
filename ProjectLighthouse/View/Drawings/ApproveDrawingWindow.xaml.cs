@@ -1,31 +1,45 @@
 ﻿using ProjectLighthouse.Model.Drawings;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace ProjectLighthouse.View.Drawings
 {
-    public partial class ApproveDrawingWindow : Window
+    public partial class ApproveDrawingWindow : Window, INotifyPropertyChanged
     {
         private TechnicalDrawing drawing;
         private TechnicalDrawingGroup group;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        
+
+        public TechnicalDrawing SelectedDrawing { get; set; }
+        public bool CanApproveSelected { get; set; }
+
+
         public ApproveDrawingWindow(TechnicalDrawing d, TechnicalDrawingGroup g)
         {
             InitializeComponent();
-
-            // prevent from covering taskbar - no idea what the 12 is about lol
-            MaxHeight = SystemParameters.WorkArea.Height + 6;
-            MaxWidth = SystemParameters.WorkArea.Width + 6;
-
 
             drawing = d; // clone?
             group = g;
             Revisions.ItemsSource = group.Drawings;
 
             Revisions.SelectedValue = drawing;
+
+
         }
 
         private void LoadDrawing(TechnicalDrawing d)
         {
+            SelectedDrawing = d;
+            CanApproveSelected = d.Id == drawing.Id;
+
+            OnPropertyChanged(nameof(SelectedDrawing));
+            OnPropertyChanged(nameof(CanApproveSelected));
+
             //approval enable
             if (d.IsApproved)
             {
@@ -42,7 +56,15 @@ namespace ProjectLighthouse.View.Drawings
                 tipText.Text = $"You are viewing Release Candidate #{d.Id}";
                 ApprovalControls.IsEnabled = true;
             }
-            d.CopyToAppData();
+            try
+            {
+                d.CopyToAppData();
+            }
+            catch(FileNotFoundException ex) 
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
             DisplayFile(d.GetLocalPath());
         }
 
@@ -82,12 +104,17 @@ namespace ProjectLighthouse.View.Drawings
             Close();
         }
 
-        private void Border_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //private void Border_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //{
+        //    if (e.ClickCount == 2)
+        //        WindowState = WindowState == WindowState.Normal
+        //            ? WindowState.Maximized
+        //            : WindowState.Normal;
+        //}
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            if (e.ClickCount == 2)
-                WindowState = WindowState == WindowState.Normal
-                    ? WindowState.Maximized
-                    : WindowState.Normal;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

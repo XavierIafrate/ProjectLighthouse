@@ -7,8 +7,6 @@ namespace ProjectLighthouse.Model.Administration
 {
     public class MaintenanceEvent : ScheduleItem, IAutoIncrementPrimaryKey
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
         [NotNull]
         public string Lathe { get; set; }
         public string Description { get; set; }

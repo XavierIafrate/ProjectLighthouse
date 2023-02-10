@@ -19,7 +19,7 @@ namespace ProjectLighthouse
             App.DevMode = false;
 #endif
 
-            if (!Directory.Exists(App.ROOT_PATH))
+            if (!Directory.Exists(App.ROOT_PATH) || !File.Exists(DatabaseHelper.DatabasePath))
             {
                 return false;
             }

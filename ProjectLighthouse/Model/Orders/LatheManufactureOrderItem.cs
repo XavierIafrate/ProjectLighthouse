@@ -4,7 +4,7 @@ using System;
 
 namespace ProjectLighthouse.Model.Orders
 {
-    public class LatheManufactureOrderItem
+    public class LatheManufactureOrderItem : BaseObject
     {
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
@@ -14,8 +14,15 @@ namespace ProjectLighthouse.Model.Orders
         public string ProductName { get; set; }
         public int ProductId { get; set; }
         public int RequiredQuantity { get; set; }
+
+        private int targetQuantity;
         [NotNull]
-        public int TargetQuantity { get; set; }
+        public int TargetQuantity
+        {
+            get { return targetQuantity; }
+            set { targetQuantity = value; OnPropertyChanged(); }
+        }
+
         public int QuantityMade { get; set; }
         public int QuantityReject { get; set; }
         public int QuantityDelivered { get; set; }
@@ -64,13 +71,13 @@ namespace ProjectLighthouse.Model.Orders
             CycleTime = fromProduct.CycleTime;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
+            PartOffLength= fromProduct.PartOffLength;
             DateAdded = DateTime.Now;
             AddedBy = App.CurrentUser.GetFullName();
             IsSpecialPart = fromProduct.IsSpecialPart;
 
             RequiredQuantity = 0;
-            TargetQuantity = fromProduct.GetRecommendedQuantity(forManufacture: true);
-            RecommendedQuantity = TargetQuantity;
+            TargetQuantity = fromProduct.GetRecommendedQuantity();
             SellPrice = fromProduct.SellPrice;
         }
 
@@ -81,32 +88,31 @@ namespace ProjectLighthouse.Model.Orders
             CycleTime = fromProduct.CycleTime;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
+            PartOffLength= fromProduct.PartOffLength;
             DateAdded = DateTime.Now;
             AddedBy = App.CurrentUser.GetFullName();
             IsSpecialPart = fromProduct.IsSpecialPart;
 
             RequiredQuantity = requiredQuantity;
-            TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity(forManufacture: true);
-            RecommendedQuantity = TargetQuantity - RequiredQuantity;
+            TargetQuantity = fromProduct.GetRecommendedQuantity();
             SellPrice = fromProduct.SellPrice;
-
         }
 
-        public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity, DateTime dateRequired, bool needsCleaning = false)
+        public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity, DateTime dateRequired)
         {
             ProductName = fromProduct.ProductName;
             ProductId = fromProduct.Id;
             CycleTime = fromProduct.CycleTime;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
+            PartOffLength= fromProduct.PartOffLength;
             DateAdded = DateTime.Now;
             AddedBy = App.CurrentUser.GetFullName();
             IsSpecialPart = fromProduct.IsSpecialPart;
 
             RequiredQuantity = requiredQuantity;
-            TargetQuantity = requiredQuantity + fromProduct.GetRecommendedQuantity(forManufacture: true);
+            TargetQuantity = fromProduct.GetRecommendedQuantity();
             DateRequired = dateRequired;
-            RecommendedQuantity = TargetQuantity - RequiredQuantity;
             SellPrice = fromProduct.SellPrice;
 
         }

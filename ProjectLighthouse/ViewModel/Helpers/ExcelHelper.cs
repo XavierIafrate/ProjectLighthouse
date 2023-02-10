@@ -1,7 +1,4 @@
-﻿using DocumentFormat.OpenXml.InkML;
-using DocumentFormat.OpenXml.Spreadsheet;
-using PdfSharp.Pdf;
-using ProjectLighthouse;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -9,8 +6,6 @@ using SpreadsheetLight;
 using SpreadsheetLight.Drawing;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
 
@@ -34,7 +29,7 @@ namespace ViewModel.Helpers
 
         public static SLDocument AddProgramPlannerHeader(SLDocument doc)
         {
-            string[] header = new string[] { "", "Order #", "R&D", "Product Group", "Part Description", "Machine", "Start Date", "Programmer", "Comments", "Program ID" };
+            string[] header = new string[] { "", "Order #", "R&D", "Product Group", "Part Description", "Machine", "Start Date", "Programmer", "Comments", "Program ID", "Status" };
 
             for (int i = 0; i < header.Length; i++)
             {
@@ -50,21 +45,24 @@ namespace ViewModel.Helpers
             doc.SetColumnWidth(5, 40);
             doc.SetColumnWidth(9, 40);
 
+            List<ProductGroup> groups = DatabaseHelper.Read<ProductGroup>();
+            List<Product> products = DatabaseHelper.Read<Product>();
+
             for (int i = 0; i < orders.Count; i++)
             {
-                AddOrderInfo(doc, i+2, orders[i]);
+                AddOrderInfo(doc, i + 2, orders[i], groups, products);
             }
 
             return doc;
         }
 
-        public static SLDocument AddOrderInfo(SLDocument doc, int row, LatheManufactureOrder order)
+        public static SLDocument AddOrderInfo(SLDocument doc, int row, LatheManufactureOrder order, List<ProductGroup> groups, List<Product> products)
         {
             SLStyle style = doc.CreateStyle();
             style.SetFont("Consolas", 10);
             style.SetVerticalAlignment(VerticalAlignmentValues.Center);
             style.Border.BottomBorder.BorderStyle = BorderStyleValues.Medium;
-            doc.SetCellStyle(row, 2, row, 10, style);
+            doc.SetCellStyle(row, 2, row, 11, style);
 
             style.Font.FontColor = System.Drawing.Color.FromName("DodgerBlue");
 
@@ -77,11 +75,16 @@ namespace ViewModel.Helpers
             {
                 doc.SetCellStyle(row, 3, style);
             }
-            Product? productInfo = GetProductFromOrder(order);
 
-            // TODO patch
-            //doc.SetCellValue(row, 4, order.ToolingGroup);
-            
+            Product? productInfo;
+            ProductGroup? productGroupInfo;
+            (productInfo, productGroupInfo) = GetProductFromOrder(order, groups, products);
+
+            if (productGroupInfo is not null)
+            {
+                doc.SetCellValue(row, 4, productGroupInfo.Name);
+            }
+
             if (productInfo != null)
             {
                 doc.SetCellValue(row, 5, productInfo.Description);
@@ -89,7 +92,7 @@ namespace ViewModel.Helpers
                 float newResolution;
                 using (var imageStream = File.OpenRead(productInfo.LocalRenderPath))
                 {
-                    const double targetHeight = 60; 
+                    const double targetHeight = 60;
                     var decoder = BitmapDecoder.Create(imageStream, BitmapCreateOptions.IgnoreColorProfile,
                         BitmapCacheOption.Default);
                     var height = decoder.Frames[0].PixelHeight;
@@ -100,7 +103,7 @@ namespace ViewModel.Helpers
 
 
                 SLPicture pic = new(productInfo.LocalRenderPath, newResolution, newResolution);
-                pic.SetPosition(row-1, 0);
+                pic.SetPosition(row - 1, 0);
                 doc.InsertPicture(pic);
             }
 
@@ -111,22 +114,21 @@ namespace ViewModel.Helpers
                 doc.SetCellValue(row, 7, order.StartDate.ToString("dd-MMM"));
             }
 
+            doc.SetCellValue(row, 8, order.AssignedTo ?? "");
+            doc.SetCellValue(row, 11, order.State.ToString());
 
             return doc;
         }
 
-        private static Product GetProductFromOrder(LatheManufactureOrder order)
+        private static (Product?, ProductGroup?) GetProductFromOrder(LatheManufactureOrder order, List<ProductGroup> groups, List<Product> products)
         {
-            // TODO redo
+            ProductGroup? group = groups.Find(x => x.Id == order.GroupId);
 
-            return null;
+            if (group is null) return new(null, null);
 
-            //if (string.IsNullOrEmpty(order.ToolingGroup))
-            //{
-            //    return null;
-            //}
+            Product? product = products.Find(x => x.Id == group.ProductId);
 
-            //return ProductGroups.Find(x => x.Name == order.ToolingGroup[..5]);
+            return (product, group);
         }
 
         public static SLDocument AddHeaderCell(SLDocument sl, int colNum, string cellContent)
