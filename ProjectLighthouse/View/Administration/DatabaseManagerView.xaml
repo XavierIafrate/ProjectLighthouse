@@ -1,0 +1,41 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Administration.DatabaseManagerView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="White"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid Margin="5">
+        <TabControl>
+            <TabItem Header="Requests" />
+            <TabItem Header="Orders" IsSelected="True">
+                <Grid>
+                    <StackPanel>
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="Orders"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Get CSV" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="WorkloadOrders"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Get Workload Data" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Order Items" />
+            <TabItem Header="Drawings" />
+            <TabItem Header="Bar Stock" />
+            <TabItem Header="Bar Issues" />
+        </TabControl>
+    </Grid>
+</UserControl>

@@ -1,0 +1,39 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Administration.AddProductGroupWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="New Archetype"
+    Width="500"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <StackPanel Margin="20">
+        <TextBlock Style="{StaticResource title}" Text="New Archetype" />
+        <TextBlock Style="{StaticResource subtitle}" Text="{Binding Product.Name, StringFormat='{}For Product: {0}'}" d:Text="For Product P0130" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Group Name" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="name"
+            Text="{Binding Group.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Major Diameter (mm)" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="major diameter"
+            Text="{Binding Group.MajorDiameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Minimum Bar Size (mm)" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="min bar size"
+            Text="{Binding Group.MinBarSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+        <Grid Height="10"/>
+        <Button Style="{StaticResource Action_New_Button}" Tag="Create" HorizontalAlignment="Right" x:Name="CreateButton" Click="CreateButton_Click"/>
+        <!--<Button Style="{StaticResource Action_Update_Button}" Tag="Update" HorizontalAlignment="Right"/>-->
+    </StackPanel>
+</Window>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -29,11 +30,11 @@ namespace ProjectLighthouse.ViewModel.Administration
         public Lathe SelectedLathe
         {
             get { return selectedLathe; }
-            set 
-            { 
-                selectedLathe = value; 
-                OnPropertyChanged(); 
-                LatheSelected = value != null; 
+            set
+            {
+                selectedLathe = value;
+                OnPropertyChanged();
+                LatheSelected = value != null;
             }
         }
 
@@ -212,7 +213,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             string currLathe = SelectedLathe.Id;
             GetData();
             FilterData();
-            SelectedLathe = FilteredLathes.Find(x => x.Id == currLathe);            
+            SelectedLathe = FilteredLathes.Find(x => x.Id == currLathe);
         }
 
         public void EditMaintenanceEvent()

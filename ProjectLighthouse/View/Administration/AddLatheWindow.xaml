@@ -1,9 +1,9 @@
 ﻿<Window
-    x:Class="View.Administration.AddLatheWindow"
+    x:Class="ProjectLighthouse.View.Administration.AddLatheWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:View.Administration"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Add New Lathe"
     Width="650"
@@ -47,6 +47,7 @@
                 MaxLength="3"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="ID"
+                x:Name="IdTextBox"
                 Text="{Binding Lathe.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
             <TextBlock
@@ -143,7 +144,6 @@
                 Grid.Column="0"
                 Width="160"
                 HorizontalAlignment="Left"
-                PreviewKeyDown="AllowNumbersAndPeriodOnly"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="part off budget"
                 Text="{Binding Lathe.PartOff, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
@@ -229,6 +229,7 @@
         <Button
             x:Name="SubmitButton"
             HorizontalAlignment="Right"
+            Click="SubmitButton_Click"
             Style="{StaticResource Action_Button}"
             Tag="Submit" />
     </StackPanel>

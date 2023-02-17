@@ -215,6 +215,13 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new ProductManagerViewModel();
                 viewModel.NavText = "Product Data";
             }
+            else if (targetView == "DB Management")
+            {
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new DatabaseManagerViewModel();
+                viewModel.NavText = "Database Manager";
+            }
             else
             {
                 App.ActiveViewModel = "";
