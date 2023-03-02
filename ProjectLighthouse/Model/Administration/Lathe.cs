@@ -1,8 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.Xaml.Behaviors;
-using ProjectLighthouse.Model.Core;
-using ProjectLighthouse.Model.Orders;
-using ProjectLighthouse.ViewModel.Helpers;
+﻿using ProjectLighthouse.Model.Core;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -16,7 +12,7 @@ namespace ProjectLighthouse.Model.Administration
     {
         [UpdateWatch]
         public string IPAddress { get; set; }
-        
+
         [UpdateWatch]
         public string ControllerReference { get; set; }
 
@@ -25,8 +21,8 @@ namespace ProjectLighthouse.Model.Administration
         public double MaxDiameter
         {
             get { return maxDiameter; }
-            set 
-            { 
+            set
+            {
                 maxDiameter = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -94,7 +90,7 @@ namespace ProjectLighthouse.Model.Administration
             {
                 ClearErrors(propertyName);
 
-                if (MaxDiameter<=0)
+                if (MaxDiameter <= 0)
                 {
                     AddError(propertyName, "Max Diameter must be greater than or equal to zero");
                     return;
@@ -145,12 +141,11 @@ namespace ProjectLighthouse.Model.Administration
             throw new Exception($"Validation for {propertyName} has not been configured.");
         }
 
-        public bool IsUpdated(Lathe otherLathe)
+        public List<string> GetChanges(Lathe otherLathe)
         {
-
             PropertyInfo[] properties = typeof(Lathe).GetProperties();
             bool mod = false;
-            StringBuilder sb = new();
+            List<string> changes = new();
 
             foreach (PropertyInfo property in properties)
             {
@@ -163,13 +158,7 @@ namespace ProjectLighthouse.Model.Administration
 
                 if (!Equals(property.GetValue(this), property.GetValue(otherLathe)))
                 {
-                    if (!mod)
-                    {
-                        sb.AppendLine($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
-                    }
-                    sb.AppendLine($"\t{property.Name} modified");
-                    sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
-                    sb.AppendLine($"\t\tto  : '{property.GetValue(otherLathe) ?? "null"}'");
+                    changes.Add($"{property.Name} changed from '{property.GetValue(this) ?? "null"}' to '{property.GetValue(otherLathe) ?? "null"}'");
 
                     mod = true;
                 }
@@ -183,7 +172,14 @@ namespace ProjectLighthouse.Model.Administration
                 //File.AppendAllText(path, sb.ToString());
             }
 
-            return mod;
+            return changes;
+        }
+
+        public bool IsUpdated(Lathe otherLathe)
+        {
+            List<string> changes = GetChanges(otherLathe);
+
+            return changes.Count > 0;
         }
 
 
