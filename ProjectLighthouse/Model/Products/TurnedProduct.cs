@@ -145,7 +145,8 @@ namespace ProjectLighthouse.Model.Products
 
                 if (!ValidationHelper.IsValidProductName(ProductName))
                 {
-                    AddError(nameof(ProductName), "Product Name contains a non-standard character");
+                    string illegalChars = ValidationHelper.GetInvalidProductNameChars(ProductName);
+                    AddError(propertyName, $"Id must be a valid product code (illegal character(s): {illegalChars})");
                     return;
                 }
 
@@ -249,9 +250,9 @@ namespace ProjectLighthouse.Model.Products
 
 
         public string AddedBy { get; set; }
-        public DateTime AddedDate { get; set; }
+        public DateTime? AddedDate { get; set; }
 
-        public DateTime LastManufactured { get; set; }
+        public DateTime? LastManufactured { get; set; }
 
         [Import("Target Stock")]
         public int QuantitySold { get; set; }
