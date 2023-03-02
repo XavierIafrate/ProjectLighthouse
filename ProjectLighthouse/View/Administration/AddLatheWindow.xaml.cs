@@ -1,5 +1,7 @@
 ﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,46 +27,92 @@ namespace ProjectLighthouse.View.Administration
                 originalLathe = lathe;
                 Lathe = (Lathe)originalLathe.Clone();
                 IdTextBox.IsEnabled = false;
+                Title = "Edit Lathe";
+                AddButton.Visibility = Visibility.Collapsed;
             }
             else
             {
+                UpdateButton.Visibility = Visibility.Collapsed;
+                Title = "Add Lathe";
                 Lathe = new();
             }
 
-
-            SetUiElements();
-
             DataContext = this;
-        }
-
-        private void SetUiElements()
-        {
-            bool editing = originalLathe is not null;
-
-            Title = editing ? "Edit Lathe" : "Add Lathe";
-            TitleText.Text = editing ? $"Editing '{Lathe.Id}'" : "New Lathe";
-            SubmitButton.Tag = editing ? "Update" : "Create";
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             Lathe.ValidateAll();
 
-            if(Lathe.HasErrors)
-            {
-                return;
-            }
-
             if (originalLathe is not null)
             {
-                List<string> changes = originalLathe.GetChanges(Lathe);
+                originalLathe.ValidateAll();
 
-                if (changes.Count == 0)
+                // Prevent new data errors
+                if (originalLathe.NoErrors && Lathe.HasErrors)
                 {
+                    return;
+                }
 
+                try
+                {
+                    UpdateLathe();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while inserting to the database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+            else
+            {
+                if (Lathe.HasErrors)
+                {
+                    return;
+                }
+
+                try
+                {
+                    CreateLathe();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while updating the database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
             }
 
+            SaveExit = true;
+            Close();
+
+        }
+
+
+        void UpdateLathe()
+        {
+            try
+            {
+                Lathe.CreatedBy= App.CurrentUser.UserName;
+                Lathe.CreatedAt = DateTime.Now;
+                DatabaseHelper.Update(Lathe, throwErrs: true);
+                originalLathe = Lathe;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        void CreateLathe()
+        {
+            try
+            {
+                DatabaseHelper.Insert(Lathe, throwErrs: true);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
 

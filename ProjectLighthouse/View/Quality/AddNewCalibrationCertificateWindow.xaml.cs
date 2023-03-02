@@ -116,7 +116,7 @@ namespace ProjectLighthouse.View.Quality
             string openDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             openFileDialog.InitialDirectory = openDir;
 
-            if ((bool)openFileDialog.ShowDialog())
+            if (openFileDialog.ShowDialog() ?? false)
             {
                 targetPdf = openFileDialog.FileName;
                 fileDisplay.Text = Path.GetFileName(openFileDialog.FileName);
@@ -171,6 +171,7 @@ namespace ProjectLighthouse.View.Quality
             try
             {
                 DatabaseHelper.Insert(NewCertificate);
+                Equipment.IsOutForCal = false;
                 DatabaseHelper.Update(Equipment);
                 SaveExit = true;
                 Close();

@@ -1,18 +1,18 @@
 ﻿using ProjectLighthouse.Model;
 using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace ProjectLighthouse.View.Quality
 {
     public partial class AddNewCalibratedEquipmentWindow : Window
     {
         public bool SaveExit;
-        public CalibratedEquipment NewEquipment;
+        public CalibratedEquipment Equipment { get; set; }
         private List<CalibratedEquipment> EquipmentList;
 
         public AddNewCalibratedEquipmentWindow(List<CalibratedEquipment> existingEquipment, int? id = null)
@@ -23,18 +23,26 @@ namespace ProjectLighthouse.View.Quality
 
             if (id != null)
             {
-                NewEquipment = (CalibratedEquipment)existingEquipment.Find(x => x.Id == id).Clone();
-                this.Title = "Edit Equipment Configuration";
-                this.titleText.Text = $"Editing: {NewEquipment.EquipmentId}";
+                CalibratedEquipment? target = existingEquipment.Find(x => x.Id == id);
+
+                if (target is null)
+                {
+                    MessageBox.Show($"Failed to find equipment with ID '{id:0}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Close();
+                    return;
+                }
+
+                Equipment = (CalibratedEquipment)target.Clone();
+                this.Title = $"Editing: {Equipment.EquipmentId}";
                 AddButton.Visibility = Visibility.Collapsed;
             }
             else
             {
                 SaveButton.Visibility = Visibility.Collapsed;
-                NewEquipment = new();
+                Equipment = new();
             }
 
-            DataContext = NewEquipment;
+            DataContext = this;
         }
 
         private void SetComboBoxes()
@@ -61,105 +69,30 @@ namespace ProjectLighthouse.View.Quality
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
 
-        private void CleanValues()
-        {
-            NewEquipment.Make = NewEquipment.Make.Trim();
-            NewEquipment.Model = NewEquipment.Model.Trim();
-            NewEquipment.SerialNumber = NewEquipment.SerialNumber.ToUpperInvariant().Trim();
-            NewEquipment.Type = NewEquipment.Type.Trim();
-            NewEquipment.Location = NewEquipment.Location.ToUpperInvariant().Trim();
-            if (!NewEquipment.RequiresCalibration)
-            {
-                UKAS_required.IsChecked = false;
-            }
-        }
-
-        private bool Validate()
-        {
-            BrushConverter converter = new();
-            Brush validBorder = (Brush)converter.ConvertFromString("#f0f0f0");
-            bool noErrors = true;
-            if (string.IsNullOrEmpty(NewEquipment.Make))
-            {
-                MakeTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
-                noErrors = false;
-            }
-            else
-            {
-                MakeTextBox.BorderBrush = validBorder;
-            }
-
-            if (string.IsNullOrEmpty(NewEquipment.Model))
-            {
-                ModelTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
-                noErrors = false;
-            }
-            else
-            {
-                ModelTextBox.BorderBrush = validBorder;
-            }
-
-            //if (string.IsNullOrEmpty(NewEquipment.SerialNumber))
-            //{
-            //    SerialNumberTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
-            //    noErrors = false;
-            //}
-            //else
-            //{
-            //    SerialNumberTextBox.BorderBrush = validBorder;
-            //}
-
-            if (string.IsNullOrEmpty(NewEquipment.Type))
-            {
-                TypeTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
-                noErrors = false;
-            }
-            else
-            {
-                TypeTextBox.BorderBrush = validBorder;
-            }
-
-            if (string.IsNullOrEmpty(NewEquipment.Location))
-            {
-                LocationTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
-                noErrors = false;
-            }
-            else
-            {
-                LocationTextBox.BorderBrush = validBorder;
-            }
-
-            if (NewEquipment.UKAS && NewEquipment.CalibrationIntervalMonths == 0)
-            {
-                IntervalTextBox.BorderBrush = (Brush)Application.Current.Resources["Red"];
-                noErrors = false;
-            }
-            else
-            {
-                IntervalTextBox.BorderBrush = validBorder;
-            }
-
-            return noErrors;
-        }
-
-
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            CleanValues();
+            sqlite_sequence? sequence = DatabaseHelper.Read<sqlite_sequence>().ToList().Find(x => x.name == nameof(CalibratedEquipment));
 
-            if (!Validate())
+            if (sequence is null)
             {
+                MessageBox.Show("Failed to retrieve next ID in equipment sequence", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            sqlite_sequence sequence = DatabaseHelper.Read<sqlite_sequence>().ToList().Find(x => x.name == nameof(CalibratedEquipment));
-            NewEquipment.EquipmentId = $"CE{sequence.seq + 1:0}";
-            NewEquipment.EnteredSystem = System.DateTime.Now;
-            NewEquipment.AddedBy = App.CurrentUser.UserName;
-            if (DatabaseHelper.Insert(NewEquipment))
+            Equipment.EquipmentId = $"CE{sequence.seq + 1:0}";
+            Equipment.EnteredSystem = System.DateTime.Now;
+            Equipment.AddedBy = App.CurrentUser.UserName;
+
+            try
             {
+                DatabaseHelper.Insert(Equipment, throwErrs: true);
                 SaveExit = true;
                 Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while inserting to the database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
         }
 
@@ -167,7 +100,7 @@ namespace ProjectLighthouse.View.Quality
         {
             if (int.TryParse(IntervalTextBox.Text, out int i))
             {
-                NewEquipment.CalibrationIntervalMonths = i;
+                Equipment.CalibrationIntervalMonths = i;
             }
         }
 
@@ -178,14 +111,7 @@ namespace ProjectLighthouse.View.Quality
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            CleanValues();
-
-            if (!Validate())
-            {
-                return;
-            }
-
-            if (DatabaseHelper.Update(NewEquipment))
+            if (DatabaseHelper.Update(Equipment))
             {
                 SaveExit = true;
                 Close();

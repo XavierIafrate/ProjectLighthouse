@@ -5,194 +5,149 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Register Equipment"
-    Width="675"
+    Width="620"
     ResizeMode="NoResize"
     SizeToContent="Height"
     mc:Ignorable="d">
-    <StackPanel Margin="30">
-        <TextBlock Style="{StaticResource title}" Text="Register Instrument" x:Name="titleText"/>
-        <StackPanel Margin="40,20">
-            <StackPanel HorizontalAlignment="Right">
-                <CheckBox
-                    Margin="0,0,0,15"
-                    Content="Requires Internal Checks"
-                    IsChecked="{Binding Path=RequiresInternalChecks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <CheckBox
-                    Margin="0,0,0,15"
-                    Content="Requires Calibration"
-                    IsChecked="{Binding Path=RequiresCalibration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    <StackPanel Margin="20,10">
+        <TextBlock
+            x:Name="titleText"
+            d:Text="Register Equipment"
+            Style="{StaticResource title}"
+            Text="{Binding Title}" />
+        <StackPanel Margin="20">
+            <StackPanel HorizontalAlignment="Stretch">
+
+                <CheckBox Content="Out for Calibration" IsChecked="{Binding Path=Equipment.IsOutForCal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <CheckBox Content="Requires Calibration" IsChecked="{Binding Path=Equipment.RequiresCalibration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <CheckBox
                     x:Name="UKAS_required"
-                    Margin="0,0,0,15"
-                    Content="Requires UKAS Calibration"
-                    IsChecked="{Binding Path=UKAS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Content="UKAS Accreditated Calibration"
+                    IsChecked="{Binding Path=Equipment.UKAS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
 
 
-            <Grid Margin="0,0,0,20">
+
+            <TextBlock
+                VerticalAlignment="Center"
+                Style="{StaticResource InputLabel}"
+                Text="Make" />
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <TextBlock
-                    Grid.RowSpan="2"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource section}"
-                    Text="Make" />
                 <ComboBox
                     x:Name="MakeComboBox"
-                    Grid.Column="2"
-                    MaxWidth="300"
+                    Margin="5"
                     SelectionChanged="MakeComboBox_SelectionChanged"
-                    Text="{Binding Path=Make}" />
+                    Text="{Binding Path=Equipment.Make}" />
                 <TextBox
                     x:Name="MakeTextBox"
-                    Grid.Row="1"
                     Grid.Column="2"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="Define other"
-                    Text="{Binding Path=Make}" />
+                    Tag="define other"
+                    Text="{Binding Path=Equipment.Make, ValidatesOnDataErrors=True}" />
             </Grid>
-            <Grid Margin="0,0,0,20">
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Model" />
+
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <TextBlock
-                    Grid.RowSpan="2"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource section}"
-                    Text="Model" />
                 <ComboBox
                     x:Name="ModelComboBox"
-                    Grid.Column="2"
-                    MaxWidth="300"
-                    Text="{Binding Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Margin="5"
+                    Text="{Binding Equipment.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="ModelTextBox"
-                    Grid.Row="1"
                     Grid.Column="2"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="Define other"
-                    Text="{Binding Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Tag="define other"
+                    Text="{Binding Equipment.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
             </Grid>
-            <Grid Margin="0,0,0,20">
+
+
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Serial Number" />
+            <TextBox
+                x:Name="SerialNumberTextBox"
+                MinWidth="300"
+                HorizontalAlignment="Left"
+                MaxLength="64"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="serial number"
+                Text="{Binding Path=Equipment.SerialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Instrument Type" />
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Style="{StaticResource section}"
-                    Text="Serial Number" />
-                <TextBox
-                    x:Name="SerialNumberTextBox"
-                    Grid.Column="2"
-                    HorizontalAlignment="Stretch"
-                    Style="{StaticResource DefaultTextBox}"
-                    Tag="Serial Number"
-                    Text="{Binding Path=SerialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
-            <Grid Margin="0,0,0,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <TextBlock
-                    Grid.RowSpan="2"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource section}"
-                    Text="Instrument Type" />
                 <ComboBox
                     x:Name="InstrumentTypeComboBox"
-                    Grid.Column="2"
-                    HorizontalAlignment="Stretch"
-                    Text="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Margin="5"
+                    Text="{Binding Equipment.Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox
                     x:Name="TypeTextBox"
-                    Grid.Row="1"
                     Grid.Column="2"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="Define other"
-                    Text="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Tag="define other"
+                    Text="{Binding Equipment.Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
-            <Grid Margin="0,0,0,20">
+
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Location" />
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <TextBlock
-                    Grid.RowSpan="2"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource section}"
-                    Text="Location" />
                 <ComboBox
                     x:Name="LocationComboBox"
-                    Grid.Column="2"
-                    HorizontalAlignment="Stretch"
-                    Text="{Binding Location}" />
+                    Margin="5"
+                    Text="{Binding Equipment.Location}" />
                 <TextBox
                     x:Name="LocationTextBox"
-                    Grid.Row="1"
                     Grid.Column="2"
                     Style="{StaticResource DefaultTextBox}"
-                    Tag="Define other"
-                    Text="{Binding Location}" />
+                    Tag="define other"
+                    Text="{Binding Equipment.Location}" />
             </Grid>
-            <Grid Margin="0,0,0,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Style="{StaticResource section}"
-                    Text="Calibration Interval" />
-                <TextBox
-                    x:Name="IntervalTextBox"
-                    Grid.Column="1"
-                    Width="100"
-                    HorizontalAlignment="Right"
-                    MaxLength="2"
-                    PreviewKeyDown="NumbersOnly"
-                    Style="{StaticResource DefaultTextBox}"
-                    Tag="months"
-                    Text="{Binding CalibrationIntervalMonths, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Calibration Interval" />
+            <TextBox
+                x:Name="IntervalTextBox"
+                Grid.Column="1"
+                Width="100"
+                HorizontalAlignment="Left"
+                MaxLength="2"
+                PreviewKeyDown="NumbersOnly"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="months"
+                Text="{Binding Equipment.CalibrationIntervalMonths, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
 
             <Button
                 x:Name="AddButton"
                 HorizontalAlignment="Right"
                 Click="AddButton_Click"
-                Content="Add to Registry"
-                Style="{StaticResource GreenButton}" />
+                Style="{StaticResource Action_New_Button}"
+                Tag="Add to Registry" />
             <Button
                 x:Name="SaveButton"
                 HorizontalAlignment="Right"
                 Click="SaveButton_Click"
-                Content="Save Changes"
-                Style="{StaticResource BlueButton}" />
+                Style="{StaticResource Action_Update_Button}"
+                Tag="Save Changes" />
         </StackPanel>
 
     </StackPanel>

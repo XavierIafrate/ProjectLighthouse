@@ -13,9 +13,9 @@
     mc:Ignorable="d">
     <StackPanel Margin="20">
         <TextBlock
-            x:Name="TitleText"
             Style="{StaticResource title}"
-            Text="New Lathe" />
+            Text="{Binding Title}"
+            d:Text="Add/Edit Lathe"/>
 
         <TextBlock
             Margin="20,20,0,0"
@@ -46,7 +46,7 @@
                 HorizontalAlignment="Left"
                 MaxLength="3"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="ID"
+                Tag="id"
                 x:Name="IdTextBox"
                 Text="{Binding Lathe.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
@@ -62,7 +62,7 @@
                 HorizontalAlignment="Left"
                 MaxLength="16"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Full Name"
+                Tag="full name"
                 Text="{Binding Lathe.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
             <TextBlock
@@ -76,7 +76,7 @@
                 Width="250"
                 HorizontalAlignment="Left"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Make"
+                Tag="make"
                 Text="{Binding Lathe.Make, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
             <TextBlock
@@ -90,7 +90,7 @@
                 Width="250"
                 HorizontalAlignment="Left"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Model"
+                Tag="model"
                 Text="{Binding Lathe.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
             <TextBlock
@@ -104,7 +104,7 @@
                 Width="250"
                 HorizontalAlignment="Left"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Serial Number"
+                Tag="serial number"
                 Text="{Binding Lathe.SerialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
             <TextBlock
@@ -180,7 +180,7 @@
         <TextBlock
             Margin="20,20,0,0"
             Style="{StaticResource section}"
-            Text="Machine Comms" />
+            Text="Machine Communications" />
         <Grid Margin="40,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -197,7 +197,7 @@
                 HorizontalAlignment="Left"
                 PreviewKeyDown="AllowNumbersAndPeriodOnly"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="IP Address"
+                Tag="IP address"
                 Text="{Binding Lathe.IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
             <TextBlock
@@ -210,7 +210,7 @@
                 Width="250"
                 HorizontalAlignment="Left"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Controller Reference"
+                Tag="controller reference"
                 Text="{Binding Lathe.ControllerReference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
         </Grid>
 
@@ -227,10 +227,16 @@
             Text="{Binding Lathe.Remarks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
         <Button
-            x:Name="SubmitButton"
+            x:Name="AddButton"
             HorizontalAlignment="Right"
             Click="SubmitButton_Click"
-            Style="{StaticResource Action_Button}"
-            Tag="Submit" />
+            Style="{StaticResource Action_New_Button}"
+            Tag="Add Lathe" />
+        <Button
+            x:Name="UpdateButton"
+            HorizontalAlignment="Right"
+            Click="SubmitButton_Click"
+            Style="{StaticResource Action_Update_Button}"
+            Tag="Update" />
     </StackPanel>
 </Window>

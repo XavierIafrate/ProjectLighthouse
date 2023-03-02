@@ -12,50 +12,36 @@
     mc:Ignorable="d">
     <StackPanel Margin="30">
         <TextBlock Text="Record Calibration Certificate" Style="{StaticResource title}"/>
-        <TextBlock Text="{Binding Instrument, StringFormat='{}FOR EQUIPMENT {0}'}" Style="{StaticResource subtitle}" Foreground="{StaticResource Purple}"/>
-        <StackPanel Margin="40,20">
+        <TextBlock Text="{Binding Instrument, StringFormat='{}FOR EQUIPMENT {0}'}" Style="{StaticResource subtitle}" Foreground="{StaticResource Purple}" d:Text="FOR EQUIPMENT XXXXX"/>
+        <StackPanel Margin="20">
             <CheckBox Content="UKAS Accredited" IsChecked="{Binding UKAS}"/>
             <CheckBox Content="Passed" IsChecked="{Binding IsPass}"/>
-            <Grid Margin="0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Certificate Number" VerticalAlignment="Center" Style="{StaticResource section}"/>
-                <TextBox Text="{Binding CertificateNumber}" Style="{StaticResource DefaultTextBox}" Tag="Certificate No." Grid.Column="1" x:Name="CertNumTextBox"/>
-            </Grid>
-            <Grid Margin="0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Calibration House" VerticalAlignment="Center" Style="{StaticResource section}" Grid.RowSpan="2" />
-                <ComboBox x:Name="CalHouseComboBox" Text="{Binding CalibrationHouse}" Grid.Column="1"/>
-                <TextBox Text="{Binding CalibrationHouse}" Style="{StaticResource DefaultTextBox}" Tag="Define other" Grid.Column="1" Grid.Row="1" x:Name="CalHouseTextBox"/>
-            </Grid>
-            <Grid Margin="0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Issue Date" VerticalAlignment="Center" Style="{StaticResource section}"/>
-                <DatePicker SelectedDate="{Binding DateIssued}" Grid.Column="1" x:Name="datePicker"/>
 
+                <TextBlock Text="Certificate Number" VerticalAlignment="Center" Style="{StaticResource InputLabel}"/>
+                <TextBox Text="{Binding CertificateNumber}" Style="{StaticResource DefaultTextBox}" Tag="certificate number" x:Name="CertNumTextBox"/>
+                <TextBlock Text="Calibration House" VerticalAlignment="Center" Style="{StaticResource InputLabel}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="CalHouseComboBox" Text="{Binding CalibrationHouse}" Grid.Column="0" Margin="5"/>
+                <TextBox Text="{Binding CalibrationHouse}" Style="{StaticResource DefaultTextBox}" Tag="define other" Grid.Column="1" Grid.Row="1" x:Name="CalHouseTextBox"/>
             </Grid>
+
+                <TextBlock Text="Issue Date" VerticalAlignment="Center" Style="{StaticResource InputLabel}"/>
+                <DatePicker SelectedDate="{Binding DateIssued}" HorizontalAlignment="Left" Width="250" Margin="5" x:Name="datePicker"/>
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="[choose a file]" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontStyle="Italic" x:Name="fileDisplay"/>
-                <Button Content="Choose PDF" Grid.Column="1" x:Name="ChoosePDFButton" Click="ChoosePDFButton_Click"/>
+                <TextBlock Text="Choose a File" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" x:Name="fileDisplay"/>
+                <Button Tag="Choose PDF" Style="{StaticResource Action_Button}" Grid.Column="1" x:Name="ChoosePDFButton" Click="ChoosePDFButton_Click"/>
             </Grid>
             
         </StackPanel>
-        <Button Content="Add Certificate" Style="{StaticResource GreenButton}" HorizontalAlignment="Right" Click="AddButton_Click"/>
+        <Button Tag="Add Certificate" Style="{StaticResource Action_New_Button}" HorizontalAlignment="Right" Click="AddButton_Click"/>
     </StackPanel>
 </Window>
