@@ -34,7 +34,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 .ToList();
         }
 
-        public static bool Insert<T>(T item)
+        public static bool Insert<T>(T item, bool throwErrs = false)
         {
             bool result = false;
 
@@ -51,6 +51,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
                 catch (Exception ex)
                 {
+                    if (throwErrs)
+                    {
+                        throw;
+                    }
                     Debug.WriteLine(ex.Message);
                     result = false;
                 }
@@ -76,7 +80,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return item.Id;
         }
 
-        public static bool Update<T>(T item)
+        public static bool Update<T>(T item, bool throwErrs = false)
         {
             bool result = false;
 
@@ -85,14 +89,18 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 try
                 {
                     conn.CreateTable<T>();
-                int rows = conn.Update(item);
-                if (rows > 0)
-                {
-                    result = true;
-                }
+                    int rows = conn.Update(item);
+                    if (rows > 0)
+                    {
+                        result = true;
+                    }
                 }
                 catch (SQLiteException ex)
                 {
+                    if (throwErrs)
+                    {
+                        throw;
+                    }
                     MessageBox.Show($"Lighthouse encountered an error trying to update the database.\nError message: {ex.Message}", "Update Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -115,21 +123,23 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return result;
         }
 
-        public static List<T> Read<T>() where T : new()
+        public static List<T> Read<T>(bool throwErrs = false) where T : new()
         {
             List<T> items;
             try
             {
                 using (SQLiteConnection conn = new(DatabasePath))
-            {
-                conn.CreateTable<T>();
-                items = conn.Table<T>().ToList();
-            }
+                {
+                    conn.CreateTable<T>();
+                    items = conn.Table<T>().ToList();
+                }
 
             return items;
             }
             catch
             {
+                if(throwErrs) { throw; }
+
                 return null;
             }
         }
