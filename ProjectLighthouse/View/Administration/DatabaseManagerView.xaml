@@ -29,6 +29,27 @@
                             CommandParameter="WorkloadOrders"
                             Style="{StaticResource Action_Button}"
                             Tag="Get Workload Data" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="ItemCosting"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Get Item Costing" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="ProductImport"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Get Item Import Sheet" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="Wizard"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Import Wizard" />
                     </StackPanel>
                 </Grid>
             </TabItem>

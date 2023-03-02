@@ -23,7 +23,7 @@
 
         <StackPanel
             Width="500"
-            Margin="20"
+            Margin="30,20"
             VerticalAlignment="Center">
             <Grid>
                 <TextBlock Style="{StaticResource title}" Text="Update Item" />
@@ -34,7 +34,6 @@
                     Click="SaveButton_Click"
                     Style="{StaticResource HeroSaveButton}"/>
             </Grid>
-            <Separator />
             <StackPanel Orientation="Horizontal">
                 <TextBlock
                     d:Text="P0123.456-789-A2"
@@ -44,12 +43,12 @@
                 <TextBlock
                     d:Text="M00000"
                     FontSize="20"
-                    Foreground="{StaticResource Blue}"
+                    Foreground="{StaticResource Purple}"
                     Text="{Binding Item.AssignedMO}" />
             </StackPanel>
 
 
-            <Grid HorizontalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -105,8 +104,10 @@
             </Grid>
 
             <TextBlock
-                Margin="0,10,0,5"
                 Style="{StaticResource section}"
+                Text="Metadata" />
+            <TextBlock
+                Style="{StaticResource InputLabel}"
                 Text="Cycle Time" />
             <StackPanel Orientation="Horizontal">
                 <TextBox
@@ -151,15 +152,25 @@
             </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBlock
-                    Margin="0,10,0,5"
-                    Style="{StaticResource section}"
-                    Text="Stock Lots" />
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Major Length" Style="{StaticResource InputLabel}"/>
+                <TextBox Style="{StaticResource DefaultTextBox}" Tag="major length" Grid.Row="1" Width="170" HorizontalAlignment="Left" Text="{Binding Item.MajorLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text="Extra Requirement" Style="{StaticResource InputLabel}" Grid.Column="1"/>
+                <TextBox Style="{StaticResource DefaultTextBox}" Tag="extra requirement" Grid.Row="1" Grid.Column="1" Width="170" HorizontalAlignment="Left"  Text="{Binding Item.PartOffLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
+
+            <TextBlock
+                Margin="0,10,0,5"
+                Style="{StaticResource section}"
+                Text="Stock Lots" />
+
             <ListView
                 x:Name="LotsListBox"
                 MinHeight="100"
@@ -200,7 +211,7 @@
                         x:Name="QuantityNewLotTextBox"
                         PreviewKeyDown="Allow_Nums_Only"
                         Style="{StaticResource DefaultTextBox}"
-                        Tag="Quantity" />
+                        Tag="quantity" />
                 </Grid>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -223,7 +234,7 @@
                          Grid.Row="1" Grid.ColumnSpan="2"
                         x:Name="BatchTextBox"
                         MaxLength="256"
-                        Tag="Batch"
+                        Tag="batch"
                         Style="{StaticResource DefaultTextBox}"
                         TextWrapping="Wrap" />
 
@@ -232,11 +243,9 @@
                         Grid.Row="2" Grid.ColumnSpan="2"
                             x:Name="RemarksTextBox"
                             MaxLength="512"
-                            Tag="Remarks"
+                            Tag="remarks"
                             Style="{StaticResource DefaultTextBox}"
                             TextWrapping="Wrap" />
-
-
 
                 <Button
                     x:Name="AddLotButton"
@@ -251,32 +260,31 @@
         <StackPanel
             x:Name="SchedulingGrid"
             Grid.Column="1"
-            Margin="20"
+            Margin="20,10"
             VerticalAlignment="Top">
             <TextBlock
-                Margin="0,10"
-                FontSize="30"
+                Style="{StaticResource SectionLabel}"
                 Text="Scheduling" />
-            <Separator />
-            <TextBlock Margin="0,10,0,5" Text="Quantity Required" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Required Quantity" />
             <TextBox
                 x:Name="QuantityRequiredTextbox"
                 Width="150"
                 PreviewKeyDown="Allow_Nums_Only"
-                Style="{StaticResource UsernameTextBox}"
+                Style="{StaticResource DefaultTextBox}"
                 Text="{Binding Item.RequiredQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Margin="0,10,0,5" Text="Quantity Target" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Target Quantity" />
             <TextBox
                 x:Name="QuantityTargetTextbox"
                 Width="150"
                 PreviewKeyDown="Allow_Nums_Only"
-                Style="{StaticResource UsernameTextBox}"
+                Style="{StaticResource DefaultTextBox}"
                 Text="{Binding Item.TargetQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Margin="0,10,0,5" Text="Date Required" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Date Required" />
 
             <DatePicker
                 x:Name="DateRequiredPicker"
                 Width="150"
+                Margin="5"
                 HorizontalAlignment="Stretch"
                 Text="{Binding Item.DateRequired, ConverterCulture=en-GB, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 

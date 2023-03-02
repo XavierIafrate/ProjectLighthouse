@@ -57,7 +57,8 @@ namespace ProjectLighthouse.View
                 {
                     ItemManufactureOrderNumber = lot.Order,
                     PurchaseOrderReference = _POref,
-                    Product = string.IsNullOrEmpty(deliveringProduct.ExportProductName) ? lot.ProductName : deliveringProduct.ExportProductName,
+                    Product = lot.ProductName,
+                    ExportProductName = string.IsNullOrEmpty(deliveringProduct.ExportProductName) ? lot.ProductName : deliveringProduct.ExportProductName,
                     QuantityThisDelivery = lot.Quantity,
                     LotID = lot.ID,
                     FromMachine = lot.FromMachine
@@ -125,8 +126,8 @@ namespace ProjectLighthouse.View
             {
                 item.AllocatedDeliveryNote = newDeliveryNote.Name;
 
-                LatheManufactureOrderItem x = orderItems.SingleOrDefault(i => i.ProductName == item.Product
-                                                                            && i.AssignedMO == item.ItemManufactureOrderNumber);
+                LatheManufactureOrderItem x = orderItems.Find(i => i.ProductName == item.Product
+                                                                        && i.AssignedMO == item.ItemManufactureOrderNumber);
                 x.QuantityDelivered += item.QuantityThisDelivery;
                 DatabaseHelper.Update<LatheManufactureOrderItem>(x);
 

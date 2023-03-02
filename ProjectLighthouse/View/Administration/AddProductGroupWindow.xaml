@@ -8,10 +8,11 @@
     Title="New Archetype"
     Width="500"
     SizeToContent="Height"
+    ResizeMode="NoResize"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <StackPanel Margin="20">
-        <TextBlock Style="{StaticResource title}" Text="New Archetype" />
+        <TextBlock Style="{StaticResource title}" Text="{Binding Title}" d:Text="New/Edit Archetype" />
         <TextBlock Style="{StaticResource subtitle}" Text="{Binding Product.Name, StringFormat='{}For Product: {0}'}" d:Text="For Product P0130" />
 
         <TextBlock Style="{StaticResource InputLabel}" Text="Group Name" />
@@ -24,16 +25,16 @@
         <TextBox
             Style="{StaticResource DefaultTextBox}"
             Tag="major diameter"
-            Text="{Binding Group.MajorDiameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            Text="{Binding Group.MajorDiameter, Mode=TwoWay, ValidatesOnDataErrors=True}" />
 
         <TextBlock Style="{StaticResource InputLabel}" Text="Minimum Bar Size (mm)" />
         <TextBox
             Style="{StaticResource DefaultTextBox}"
             Tag="min bar size"
-            Text="{Binding Group.MinBarSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            Text="{Binding Group.MinBarSize, Mode=TwoWay, ValidatesOnDataErrors=True}" />
 
         <Grid Height="10"/>
         <Button Style="{StaticResource Action_New_Button}" Tag="Create" HorizontalAlignment="Right" x:Name="CreateButton" Click="CreateButton_Click"/>
-        <!--<Button Style="{StaticResource Action_Update_Button}" Tag="Update" HorizontalAlignment="Right"/>-->
+        <Button Style="{StaticResource Action_Update_Button}" Tag="Update" HorizontalAlignment="Right" x:Name="UpdateButton" Click="CreateButton_Click"/>
     </StackPanel>
 </Window>

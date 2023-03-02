@@ -27,9 +27,8 @@
                 </Grid.ColumnDefinitions>
                 <TextBox
                     x:Name="searchBox"
-                    IsEnabled="False"
-                    Style="{StaticResource SearchBox}"
-                    Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    TextChanged="searchBox_TextChanged"
+                    Style="{StaticResource SearchBox}" />
                 <Button
                     x:Name="ClearButton"
                     Grid.Column="1"
@@ -46,17 +45,25 @@
                 SelectedValue="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock
-                            Margin="7,5"
-                            FontSize="16"
-                            FontWeight="SemiBold"
-                            Text="{Binding Name}" />
+                        <StackPanel Margin="8,3">
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{Binding Name}" />
+                            <TextBlock
+                                FontStyle="Italic"
+                                Foreground="{StaticResource Blue}"
+                                Text="{Binding Description}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
             <Grid Grid.Row="2">
                 <Button
                     HorizontalAlignment="Left"
+                    Command="{Binding AddProductCmd}"
+                    CommandParameter="{x:Null}"
                     Style="{StaticResource Action_New_Button}"
                     Tag="New Product" />
             </Grid>
@@ -83,11 +90,21 @@
                             d:Text="PRODUCT_NAME"
                             Style="{StaticResource subtitle}"
                             Text="{Binding SelectedProduct.Description}" />
-                        <Button
-                            Margin="0,10,0,0"
-                            HorizontalAlignment="Left"
-                            Style="{StaticResource Action_Button}"
-                            Tag="View Web Page" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                Margin="0,10,10,0"
+                                Command="{Binding AddProductCmd}"
+                                CommandParameter="{Binding SelectedProduct}"
+                                Style="{StaticResource Action_Update_Button}"
+                                Tag="Edit Product" />
+                            <Button
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Left"
+                                Command="{Binding ViewWebPageCmd}"
+                                Style="{StaticResource Action_Button}"
+                                Tag="View Web Page"
+                                Visibility="{Binding SelectedProduct.WebUrl, Converter={StaticResource NotNullToVisibility}}" />
+                        </StackPanel>
                     </StackPanel>
 
                     <Border
@@ -112,45 +129,143 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 RenderOptions.BitmapScalingMode="Fant"
-                                Source="{Binding SelectedProduct.LocalRenderPath}" />
+                                Source="{Binding SelectedProduct.LocalRenderPath, TargetNullValue={x:Null}}" />
                         </Grid>
 
                     </Border>
                 </Grid>
-                <Grid>
-                    <TextBlock
-                        d:Text="Archetypes [0]"
-                        Style="{StaticResource section}"
-                        Text="{Binding FilteredProductGroups.Count, StringFormat='{}Archetypes [{0}]'}" />
-                    <Button
-                        HorizontalAlignment="Right"
-                        Command="{Binding AddProductGroupCmd}"
-                        Style="{StaticResource Action_New_Button}"
-                        Tag="New" />
-                </Grid>
-                <ListView
-                    d:ItemsSource="{d:SampleData ItemCount=5}"
-                    ItemsSource="{Binding FilteredProductGroups}"
-                    SelectedValue="{Binding SelectedProductGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="7,5"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding Id}" />
-                                <TextBlock
-                                    Margin="7,5"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding Name}" />
-                                
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
 
-                <TextBlock Style="{StaticResource section}" Text="{Binding FilteredTurnedProducts.Count, StringFormat='{}Products in Archetype [{0}]'}" />
-                <ItemsControl d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding FilteredTurnedProducts}" />
+                <Grid Height="50" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Grid.Column="0">
+                        <TextBlock
+                            d:Text="Archetypes [0]"
+                            Style="{StaticResource section}"
+                            Text="{Binding FilteredProductGroups.Count, StringFormat='{}Archetypes [{0}]'}" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Command="{Binding AddProductGroupCmd}"
+                            CommandParameter="{x:Null}"
+                            Style="{StaticResource Action_New_Button}"
+                            Tag="New" />
+                    </Grid>
+                    <ListView
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        VerticalAlignment="Top"
+                        d:ItemsSource="{d:SampleData ItemCount=5}"
+                        ItemsSource="{Binding FilteredProductGroups}"
+                        SelectedValue="{Binding SelectedProductGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="13,3">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Id}" />
+                                        <Grid Width="5" />
+                                        <TextBlock
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource Blue}"
+                                            Text="{Binding Name}" />
+
+                                    </StackPanel>
+                                    <Button
+                                        Margin="0"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.AddProductGroupCmd}"
+                                        CommandParameter="{Binding Path=.}"
+                                        Style="{StaticResource Action_Edit_Button_Small}"
+                                        Tag="Edit" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid Grid.Column="1">
+                        <TextBlock
+                            d:Text="Products in Archetype [15]"
+                            Style="{StaticResource section}"
+                            Text="{Binding FilteredTurnedProducts.Count, StringFormat='{}Products in Archetype [{0}]'}" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Command="{Binding AddTurnedProductCmd}"
+                            Style="{StaticResource Action_New_Button}"
+                            Tag="New" />
+                    </Grid>
+                    <ListView
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalAlignment="Top"
+                        d:ItemsSource="{d:SampleData ItemCount=15}"
+                        ItemsSource="{Binding FilteredTurnedProducts}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="2">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock
+                                                Margin="5,2"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding ProductName}" />
+                                            <Path
+                                                Width="10"
+                                                Height="10"
+                                                Data="M16.23,18L12,15.45L7.77,18L8.89,13.19L5.16,9.96L10.08,9.54L12,5L13.92,9.53L18.84,9.95L15.11,13.18L16.23,18M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                                                Fill="{StaticResource Blue}"
+                                                Stretch="Uniform"
+                                                Visibility="{Binding IsSpecialPart, Converter={StaticResource boolToVisibleOrCollapsed}}" />
+                                        </StackPanel>
+                                        <StackPanel Margin="5,0" Orientation="Horizontal">
+                                            <Button
+                                                Margin="0"
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.EditTurnedProductCmd}"
+                                                CommandParameter="{Binding Id}"
+                                                Style="{StaticResource Action_Edit_Button_Small}"
+                                                Tag="Edit" />
+                                            <Border
+                                                Margin="5,0"
+                                                Background="{StaticResource RedFaded}"
+                                                CornerRadius="3"
+                                                Visibility="{Binding HasErrors, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                                                <TextBlock
+                                                    Margin="8,0,8,1"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="12"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Red}"
+                                                    Text="Error" />
+                                            </Border>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Border
+                                        Margin="5,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource RedFaded}"
+                                        CornerRadius="5"
+                                        Visibility="{Binding Retired, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                                        <TextBlock
+                                            Margin="5,2"
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource Red}"
+                                            Text="Retired" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+
+
+
 
                 <Grid Height="200" />
             </StackPanel>

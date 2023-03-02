@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model.Orders;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -46,7 +47,7 @@ namespace ProjectLighthouse.View.UserControls
             lWidth *= 100;
 
             control.lCol.Width = new(lWidth, GridUnitType.Star);
-            control.rCol.Width = new(100 - lWidth, GridUnitType.Star);
+            control.rCol.Width = new(Math.Max(100 - lWidth, 0), GridUnitType.Star);
 
         }
 

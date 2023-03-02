@@ -148,12 +148,22 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             AddLatheWindow window = new(Lathes) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
+
+            GetData();
+            FilterData();
+
+            SelectedLathe = FilteredLathes.Find(x => x.Id == window.Lathe.Id);
         }
 
         public void EditLathe()
         {
             AddLatheWindow window = new(Lathes, SelectedLathe) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
+
+            GetData();
+            FilterData();
+
+            SelectedLathe = FilteredLathes.Find(x => x.Id == window.Lathe.Id);
         }
 
         public void AddAttachment()

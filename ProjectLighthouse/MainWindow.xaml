@@ -11,9 +11,9 @@
     Width="1500"
     Height="850"
     MinWidth="1200"
-    MaxWidth="2000"
     MinHeight="700"
-    MaxHeight="2000"
+    MaxWidth="2200"
+    MaxHeight="2200"
     d:Height="1000"
     Background="{StaticResource Background}"
     Loaded="Window_Loaded"
@@ -144,20 +144,20 @@
                             Style="{StaticResource Drawings_MenuItem}" />
 
                         <ToggleButton
-                            Visibility="Collapsed"
                             x:Name="programs_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Programs"
                             Content="Programs"
-                            Style="{StaticResource Programs_MenuItem}" />
+                            Style="{StaticResource Programs_MenuItem}"
+                            Visibility="Collapsed" />
 
                         <ToggleButton
-                            Visibility="Visible"
                             x:Name="research_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Research"
                             Content="R&amp;D"
-                            Style="{StaticResource Research_MenuItem}" />
+                            Style="{StaticResource Research_MenuItem}"
+                            Visibility="Visible" />
 
                     </StackPanel>
 
@@ -207,6 +207,12 @@
                             CommandParameter="Product Data"
                             Content="Product Data"
                             Style="{StaticResource ProductData_MenuItem}" />
+                        <ToggleButton
+                            x:Name="manage_database_button"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="DB Management"
+                            Content="DB Management"
+                            Style="{StaticResource Database_MenuItem}" />
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>

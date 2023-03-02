@@ -274,6 +274,9 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource DisabledElement}" />
+            </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource BlueDark}" />
             </Trigger>
@@ -442,8 +445,11 @@
     </Style>
 
 
-    <Style x:Key="IconViewButton" TargetType="Button" BasedOn="{StaticResource Default}">
-        
+    <Style
+        x:Key="IconViewButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Tag" Value="view" />
         <Setter Property="Template">
@@ -466,8 +472,8 @@
                             <TextBlock
                                 x:Name="textBlock"
                                 Padding="0,0,5,2"
-                                FontSize="12"
                                 VerticalAlignment="Center"
+                                FontSize="12"
                                 Text="{TemplateBinding Tag}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -1021,6 +1027,72 @@
                                 x:Name="textBlock"
                                 Padding="0,0,7,1"
                                 VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource BlueFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Blue}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+                <Setter Property="Background" Value="{StaticResource Blue}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+                <Setter Property="Background" Value="{StaticResource BlueDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="Action_Edit_Button_Small"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="20"
+                            MinWidth="30"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="8"
+                                Height="12"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontSize="12"
                                 FontWeight="SemiBold"
                                 Text="{TemplateBinding Tag}">
                                 <TextBlock.Style>
@@ -1838,7 +1910,7 @@
         x:Key="ClipboardButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
-        
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -2040,6 +2112,38 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style
+        x:Key="SmallDeleteButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+        <Setter Property="Background" Value="{StaticResource Red}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" Height="20" Width="20" CornerRadius="10">
+                        <Path
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Width="13"
+                            Height="13"
+                            Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M17,7H14.5L13.5,6H10.5L9.5,7H7V9H17V7M9,18H15A1,1 0 0,0 16,17V10H8V17A1,1 0 0,0 9,18Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource RedFaded}" />
+                <Setter Property="Foreground" Value="{StaticResource Red}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 
     <Style
         x:Key="ApproveButton"

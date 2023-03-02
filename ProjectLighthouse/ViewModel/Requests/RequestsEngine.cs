@@ -46,7 +46,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             return filteredItems;
         }
 
-        public static List<LatheManufactureOrderItem> CapQuantitiesForTimeSpan(List<LatheManufactureOrderItem> items, TimeSpan maxRuntime, bool regenerateTargets = false, bool enforceMOQs = false)
+        public static List<LatheManufactureOrderItem> CapQuantitiesForTimeSpan(List<LatheManufactureOrderItem> items, TimeSpan maxRuntime, bool enforceMOQs = false)
         {
             if (items == null)
             {
@@ -59,11 +59,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             foreach (LatheManufactureOrderItem item in items)
             {
                 int possibleQuantity = GetQuantityPossible(permittedSeconds, item.CycleTime);
-
-                if (regenerateTargets)
-                {
-                    item.TargetQuantity = item.RequiredQuantity + item.RecommendedQuantity;
-                }
 
                 int minimumQuantity = GetMiniumumOrderQuantity(item);
                 bool minimumQuantityEnforced = false;

@@ -255,7 +255,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             
             for (int i = 0; i < allPermissions.Length; i++)
             {
-                PermissionType p = (PermissionType)allPermissions.GetValue(i);
+                if (allPermissions.GetValue(i) is not PermissionType p) continue;
                 newPermissions.Add(new(p, SelectedUser.HasPermission(p), SelectedUser.PermissionInherited(p)));
             }
 

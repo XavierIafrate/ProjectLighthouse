@@ -24,5 +24,10 @@ namespace ProjectLighthouse.View.Administration
                 ? Visibility.Hidden
                 : Visibility.Visible;
         }
+
+        private void searchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ClearButton.IsEnabled = !string.IsNullOrEmpty(searchBox.Text);
+        }
     }
 }

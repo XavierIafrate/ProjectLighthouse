@@ -1,8 +1,12 @@
-﻿using ProjectLighthouse.Model.Scheduling;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using Windows.AI.MachineLearning;
 
 namespace ProjectLighthouse.View.Scheduling
 {
@@ -12,67 +16,58 @@ namespace ProjectLighthouse.View.Scheduling
         public DateTime SelectedDate;
         public string AllocatedMachine;
         public bool SaveExit = false;
-        private List<DateTime> significantDates { get; set; }
 
-        public SetDateWindow(ScheduleItem item, HashSet<DateTime> setDates = null)
+        List<Lathe> AvailableMachines = new();
+
+        public SetDateWindow(ScheduleItem item)
         {
             InitializeComponent();
 
-            //significantDates = new List<DateTime>
-            //{
-            //    DateTime.Today.Date,
-            //    DateTime.Today.Date.AddDays(1)
-            //};
+            AvailableMachines = DatabaseHelper.Read<Lathe>().Where(l => !l.OutOfService).Append(new() { FullName = "Unallocated" }).ToList();
+
+            machine.ItemsSource = AvailableMachines;
+
+            if (string.IsNullOrEmpty(item.AllocatedMachine))
+            {
+                machine.SelectedValue = AvailableMachines.Last();
+            }
+            else
+            {
+                machine.SelectedValue = AvailableMachines.Find(x => x.Id == item.AllocatedMachine);
+            }
 
             Item = item;
-            TitleText.Text = $"Editing: {Item.Name}";
+            OrderText.Text = $"Item: '{Item.Name}'";
 
             calendar.SelectedDate = Item.StartDate == DateTime.MinValue
                 ? DateTime.Today.AddDays(1)
                 : Item.StartDate;
 
             AllocatedMachine = Item.AllocatedMachine;
-            machine.Text = AllocatedMachine;
         }
 
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             SelectedDate = calendar.SelectedDate ?? DateTime.Today;
             SelectedDate.AddHours(12);
-            AllocatedMachine = machine.Text;
+
+            if (machine.SelectedValue is Lathe l)
+            {
+                AllocatedMachine = l.Id;
+            }
+            else
+            {
+                AllocatedMachine = "";
+            }
+
             if (string.IsNullOrEmpty(AllocatedMachine))
             {
                 SelectedDate = DateTime.MinValue;
                 AllocatedMachine = null;
             }
+
             SaveExit = true;
             Close();
         }
-
-        private void CalendarButton_Loaded(object sender, EventArgs e)
-        {
-            CalendarDayButton button = (CalendarDayButton)sender;
-            DateTime date = (DateTime)button.DataContext;
-            HighlightDay(button, date);
-            button.DataContextChanged += new DependencyPropertyChangedEventHandler(calendarButton_DataContextChanged);
-        }
-
-        private void HighlightDay(CalendarDayButton button, DateTime date)
-        {
-            //button.Background = significantDates.Contains(date)
-            //    ? Brushes.DodgerBlue
-            //    : Brushes.White;
-            //button.Foreground = significantDates.Contains(date)
-            //    ? Brushes.White
-            //    : Brushes.DarkGray;
-        }
-
-        private void calendarButton_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            CalendarDayButton button = (CalendarDayButton)sender;
-            DateTime date = (DateTime)button.DataContext;
-            HighlightDay(button, date);
-        }
-
     }
 }

@@ -20,8 +20,8 @@
             x:Name="noneText"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Style="{StaticResource GhostText}"
             FontStyle="Normal"
+            Style="{StaticResource GhostText}"
             Text="None" />
     </Grid>
 </UserControl>

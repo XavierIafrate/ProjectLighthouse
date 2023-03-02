@@ -68,7 +68,7 @@ namespace ProjectLighthouse.View.UserControls
             string openDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             openFileDialog.InitialDirectory = openDir;
 
-            if ((bool)openFileDialog.ShowDialog())
+            if (openFileDialog.ShowDialog() ?? false)
             {
                 FilePath = openFileDialog.FileName;
                 fileNameText.Text = System.IO.Path.GetFileName(openFileDialog.FileName);

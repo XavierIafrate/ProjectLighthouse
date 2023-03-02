@@ -2,14 +2,13 @@
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.ViewModel.Helpers;
-using ProjectLighthouse.ViewModel.Requests;
 using SQLite;
 using System;
 using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Products
 {
-    public class TurnedProduct : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation
+    public class TurnedProduct : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation, ICloneable
     {
         // TODO refactor to network constants or calculated
         public const double MaxDiameter = 38;
@@ -21,12 +20,13 @@ namespace ProjectLighthouse.Model.Products
         #region Full Members
         private string productName;
         [Indexed]
+        [Import("Item Name")]
         public string ProductName
         {
             get { return productName; }
-            set 
-            { 
-                productName = value; 
+            set
+            {
+                productName = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -34,11 +34,12 @@ namespace ProjectLighthouse.Model.Products
 
         private string exportProductName;
 
+        [Import("Delivery Name")]
         public string ExportProductName
         {
             get { return exportProductName; }
-            set 
-            { 
+            set
+            {
                 exportProductName = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -49,8 +50,8 @@ namespace ProjectLighthouse.Model.Products
         public int CycleTime
         {
             get { return cycleTime; }
-            set 
-            { 
+            set
+            {
                 cycleTime = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -58,36 +59,43 @@ namespace ProjectLighthouse.Model.Products
         }
 
         private double majorLength;
+        [Import("Major Length")]
         public double MajorLength
         {
             get { return majorLength; }
-            set 
-            { 
-                majorLength = value; 
-                ValidateProperty(); 
-                OnPropertyChanged(); 
+            set
+            {
+                if (majorLength == value) return;
+
+                majorLength = value;
+                ValidateProperty();
+                OnPropertyChanged();
             }
         }
 
         // TODO review
         private double majorDiameter;
+        [Import("Major Diameter")]
         public double MajorDiameter
         {
             get { return majorDiameter; }
-            set 
-            { 
-                majorDiameter = value; 
-                ValidateProperty(); 
-                OnPropertyChanged(); 
+            set
+            {
+                if (majorDiameter == value) return;
+                majorDiameter = value;
+                ValidateProperty();
+                OnPropertyChanged();
             }
         }
 
         private double partOffLength;
+        [Import("Extra Material")]
         public double PartOffLength
         {
             get { return partOffLength; }
-            set 
-            { 
+            set
+            {
+                if (partOffLength == value) return;
                 partOffLength = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -233,7 +241,9 @@ namespace ProjectLighthouse.Model.Products
 
 
         #region Regular Properties
+        [Import("Product Group")]
         public int? GroupId { get; set; }
+        [Import("Material")]
         public int? MaterialId { get; set; }
         public bool IsSpecialPart { get; set; }
 
@@ -241,8 +251,9 @@ namespace ProjectLighthouse.Model.Products
         public string AddedBy { get; set; }
         public DateTime AddedDate { get; set; }
 
-
         public DateTime LastManufactured { get; set; }
+
+        [Import("Target Stock")]
         public int QuantitySold { get; set; }
         public int NumberOfOrders { get; set; }
         public int SellPrice { get; set; }
@@ -285,10 +296,7 @@ namespace ProjectLighthouse.Model.Products
 
         public int GetRecommendedQuantity()
         {
-            // TODO refactor to constants
-            double targetMonthsStock = 12;
-            double scaleFactor = targetMonthsStock / 18;
-            int toMake = (int)Math.Max(QuantitySold * scaleFactor - QuantityInStock + QuantityOnSO - QuantityOnPO, 0);
+            int toMake = (int)Math.Max(QuantitySold - QuantityInStock + QuantityOnSO - QuantityOnPO, 0);
 
             return RoundQuantity(toMake);
         }
@@ -331,8 +339,8 @@ namespace ProjectLighthouse.Model.Products
 
         public bool IsScheduleCompatible(TurnedProduct otherProduct)
         {
-            if(GroupId is null) return false;
-            if(MaterialId is null) return false;
+            if (GroupId is null) return false;
+            if (MaterialId is null) return false;
 
             return otherProduct.GroupId == GroupId && otherProduct.MaterialId == MaterialId;
         }
@@ -347,6 +355,11 @@ namespace ProjectLighthouse.Model.Products
         public override string ToString()
         {
             return ProductName ?? "NULL";
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
 
         #region Scheduling Members

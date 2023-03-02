@@ -27,8 +27,8 @@
                 FontSize="16"
                 FontWeight="SemiBold"
                 Text="Product_Name" />
-                <Border x:Name="newBadge" Margin="5,2,0,0" Background="{StaticResource Teal}" Padding="5,2" CornerRadius="2" VerticalAlignment="Center">
-                    <TextBlock Text="New!" Foreground="{StaticResource OnTeal}" FontSize="10" FontStyle="Italic"/>
+                <Border x:Name="newBadge" Margin="5,2,0,0" Background="{StaticResource TealFaded}" Padding="5,2" CornerRadius="2" VerticalAlignment="Center">
+                    <TextBlock Text="NEW" Foreground="{StaticResource Teal}" FontSize="10" FontWeight="SemiBold"/>
                 </Border>
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal">

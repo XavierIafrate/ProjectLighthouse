@@ -193,7 +193,7 @@
         </StackPanel>
         <ScrollViewer
             x:Name="scroller"
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged"
             Visibility="{Binding SelectedRequest, Converter={StaticResource NotNullToVisibility}}">

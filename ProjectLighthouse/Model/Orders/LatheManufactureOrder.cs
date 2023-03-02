@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using CsvHelper.Configuration.Attributes;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
@@ -92,7 +93,7 @@ namespace ProjectLighthouse.Model.Orders
         #endregion
 
         #region Preparation Phase
-        [Ignore]
+        [SQLite.Ignore]
         public bool AllToolingReady
         {
             get
@@ -108,7 +109,7 @@ namespace ProjectLighthouse.Model.Orders
         public bool GaugingReady { get; set; }
 
 
-        [Ignore]
+        [SQLite.Ignore]
         public bool BarIsAllocated
         {
             get { return NumberOfBarsIssued >= NumberOfBars; }
@@ -159,21 +160,36 @@ namespace ProjectLighthouse.Model.Orders
         public int TargetCycleTime { get; set; }
         public bool TargetCycleTimeEstimated { get; set; }
 
-        [Ignore]
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public BarStock Bar { get; set; }
-        [Ignore]
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public List<LatheManufactureOrderItem> OrderItems { get; set; } = new();
-        [Ignore]
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public List<Note> Notes { get; set; } = new();
-        [Ignore]
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public List<TechnicalDrawing> Drawings { get; set; } = new();
-        [Ignore]
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public List<OrderDrawing> DrawingsReferences { get; set; } = new();
-        [Ignore]
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public Lathe AssignedLathe { get; set; } = new();
-        [Ignore]
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public List<BarIssue> BarIssues { get; set; } = new();
-        [Ignore]
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public List<Lot> Lots { get; set; } = new();
 
         #region Helpers

@@ -90,7 +90,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock FontWeight="SemiBold" Text="LiveCharts.Wpf" />
+                    <TextBlock FontWeight="SemiBold" Text="LiveChartsCore v2" />
                     <TextBlock
                         Grid.Column="1"
                         Margin="5,0"

@@ -794,7 +794,8 @@
                                         Height="300"
                                         Margin="0"
                                         Series="{Binding Series}"
-                                        XAxes="{Binding XAxes}" />
+                                        XAxes="{Binding XAxes}"
+                                        YAxes="{Binding YAxes}"/>
                                 </Border>
                             </StackPanel>
 

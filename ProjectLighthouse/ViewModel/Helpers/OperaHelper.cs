@@ -1,6 +1,5 @@
 ﻿using DbfDataReader;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using Microsoft.Web.WebView2.Core;
+using DocumentFormat.OpenXml.Wordprocessing;
 using ProjectLighthouse.Model.Deliveries;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -17,6 +17,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static readonly string dbFile = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cname.dbf";
         public static readonly string purchaseLinesTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_doline.dbf";
         public static readonly string purchaseHeaderTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_dohead.dbf";
+        public static readonly string invoiceTransactionsTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_itran.dbf";
 
         public static List<string> VerifyDeliveryNote(List<DeliveryItem> items)
         {
@@ -30,11 +31,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             foreach (string order in relevantPurchases)
             {
                 List<DeliveryItem> itemsOnPO = items.Where(x => x.PurchaseOrderReference == order).ToList();
-                string[] uniqueItems = itemsOnPO.Select(x => x.Product).Distinct().ToArray();
+                string[] uniqueItems = itemsOnPO.Select(x => x.ExportProductName).Distinct().ToArray();
 
                 foreach (string item in uniqueItems)
                 {
-                    List<DeliveryItem> targets = itemsOnPO.Where(x => x.Product == item).ToList();
+                    List<DeliveryItem> targets = itemsOnPO.Where(x => x.ExportProductName == item).ToList();
                     int qtyThisDel = targets.Sum(x => x.QuantityThisDelivery);
                     errs.AddRange(VerifyData(item, qtyThisDel, order, lines));
                 }
@@ -197,20 +198,46 @@ namespace ProjectLighthouse.ViewModel.Helpers
             List<BomComponent> boms = GetComponentStructure();
 
             liveData = GetLiveData(lighthouseProducts, barstock.Select(x => x.Id).ToArray(), boms);
-            
+
+            string[] uniqueStockReferences = liveData.Select(x => x.StockReference).Distinct().ToArray();
+
+            List<OperaFields> cleanedLiveData = new();
+            foreach (string stockReference in uniqueStockReferences)
+            {
+                List <OperaFields> targets = liveData.Where(x => x.StockReference == stockReference).ToList();
+
+                if (targets.Count > 1)
+                {
+                    Console.Write("");
+                }
+                OperaFields record = new()
+                {
+
+                    StockReference = stockReference,
+                    QtyInStock = targets.Sum(x => x.QtyInStock),
+                    QtyPurchaseOrder = targets.Sum(x => x.QtyPurchaseOrder),
+                    QtySalesOrder = targets.Sum(x => x.QtySalesOrder),
+                    SellPrice = targets.Max(x => x.SellPrice),
+                    CostPrice = targets.Max(x => x.CostPrice)
+                };
+
+                cleanedLiveData.Add(record);
+            }
+
             total_records = liveData.Count;
             i = 0;
             Console.WriteLine();
 
 
-            foreach (OperaFields record in liveData)
+            foreach (OperaFields record in cleanedLiveData)
             {
                 i++;
                 double percent_progress = (double)i / (double)total_records;
                 percent_progress *= 100;
                 Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
 
-                TurnedProduct productRecord = products.Find(x => x.ProductName == record.StockReference);
+                TurnedProduct productRecord = products.Find(x => x.ProductName == record.StockReference || x.ExportProductName == record.StockReference);
+                
                 if (productRecord is not null)
                 {
                     UpdateProduct(productRecord, record);
@@ -270,12 +297,15 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 string name = dbfRecord.Values[iStockRef].ToString() ?? "";
                 string factor = dbfRecord.Values[iFactor].ToString();
                 string searchref = dbfRecord.Values[iSearchRef].ToString();
+                bool searchRefUsed = false;
 
                 if (!itemsForUpdate.Contains(name))
                 {
                     if (itemsForUpdate.Contains(searchref))
                     {
                         name = searchref;
+                        searchRefUsed = true;
+
                     }
                     else if (boms.Any(x => x.AssemblyName == name))
                     {
@@ -304,7 +334,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     QtyPurchaseOrder = OnOrder,
                     QtySalesOrder = SalesOrder,
                     SellPrice = factor == "4DEC" ? Sell / 100 : Sell,
-                    CostPrice = Cost
+                    CostPrice = Cost,
+                    searchRef = searchRefUsed
                 };
 
                 results.Add(record);
@@ -353,6 +384,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             public int QtySalesOrder { get; set; }
             public int SellPrice { get; set; }
             public string StockReference { get; set; }
+            public bool searchRef;
         }
 
         protected class BomComponent
@@ -377,6 +409,119 @@ namespace ProjectLighthouse.ViewModel.Helpers
             public string Product { get; set; }
             public int RequiredQuantity { get; set; }
             public int ReceivedQuantity { get; set; }
+        }
+
+        public class InvoiceLine
+        {
+            [OperaColumn("it_numinv")]
+            public string InvoiceNumber { get; set; }
+
+            [OperaColumn("it_dteinv")]
+            public DateTime InvoiceDate { get; set; }
+
+            [OperaColumn("it_stock")]
+            public string AccountNumber { get; set; }
+
+            [OperaColumn("it_stock")]
+            public string ProductName { get; set; }
+
+            [OperaColumn("it_quan")]
+            public int LineQuantity { get; set; }
+
+            [OperaColumn("it_status")]
+            public string Status { get; set; }
+        }
+
+        public class OperaColumn : Attribute
+        {
+            public string ColumnName { get; set; }
+            public OperaColumn(string name)
+            {
+                ColumnName = name.ToLowerInvariant();
+            }
+        }
+
+        public static List<InvoiceLine> GetInvoiceLines(string path)
+        {
+            IEnumerable<PropertyInfo> props = typeof(InvoiceLine).GetProperties().Where(
+                x => Attribute.IsDefined(x, typeof(OperaColumn)));
+
+            using DbfTable dbfTable = new(path, Encoding.UTF8);
+            Dictionary<PropertyInfo, int> map = GetInvoiceColumnMap(dbfTable, props);
+
+            DbfHeader tableHeader = dbfTable.Header;
+            List<InvoiceLine> invoiceLines = new();
+            DbfRecord dbfRecord = new(dbfTable);
+
+            while (dbfTable.Read(dbfRecord))
+            {
+
+                if (dbfRecord.IsDeleted)
+                {
+                    continue;
+                }
+
+                InvoiceLine newInvoiceLine = GetInvoiceLine(dbfRecord, map);
+
+                if (newInvoiceLine.Status == "X" && !string.IsNullOrEmpty(newInvoiceLine.InvoiceNumber))
+                {
+                    invoiceLines.Add(newInvoiceLine);
+                }
+            }
+
+            return invoiceLines;
+
+        }
+        private static InvoiceLine GetInvoiceLine(DbfRecord record, Dictionary<PropertyInfo, int> map)
+        {
+            InvoiceLine x = new();
+
+            for (int i = 0; i < map.Count; i++)
+            {
+                PropertyInfo prop = map.Keys.ElementAt(i);
+                Type propType = prop.PropertyType;
+                int j = map[prop];
+                object cell = record.Values.ElementAt(j).GetValue();
+                dynamic value;
+
+                try
+                {
+                    value = Convert.ChangeType(cell, propType);
+                }
+                catch (InvalidCastException)
+                {
+                    value = GetDefault(propType);
+                }
+
+                x.GetType().GetProperty(prop.Name).SetValue(x, value);
+            }
+
+            return x;
+        }
+
+        private static Dictionary<PropertyInfo, int> GetInvoiceColumnMap(DbfTable dbfTable, IEnumerable<PropertyInfo> props)
+        {
+            Dictionary<PropertyInfo, int> m = new();
+
+            for (int j = 0; j < props.Count(); j++)
+            {
+                PropertyInfo x = props.ElementAt(j);
+                OperaColumn attr = x.GetCustomAttribute<OperaColumn>();
+                int colIndex = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName.ToLowerInvariant() == attr.ColumnName));
+
+                m.Add(x, colIndex);
+            }
+
+            return m;
+        }
+
+        private static object GetDefault(Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
         }
     }
 }

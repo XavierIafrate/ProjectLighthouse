@@ -1,15 +1,10 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Orders;
-using SQLite;
+﻿using SQLite;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace ProjectLighthouse.Model
 {
@@ -31,9 +26,6 @@ namespace ProjectLighthouse.Model
 
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
-
-
 
         public IEnumerable GetErrors(string propertyName)
         {
@@ -79,6 +71,15 @@ namespace ProjectLighthouse.Model
         public class UpdateWatch : Attribute
         {
 
+        }
+
+        public class Import : Attribute
+        {
+            public string Name { get; set; }
+            public Import(string name)
+            {
+                Name = name;
+            }
         }
     }
 }

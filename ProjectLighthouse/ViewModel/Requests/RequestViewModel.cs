@@ -4,7 +4,7 @@ using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
-using ProjectLighthouse.View.HelperWindows;
+using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands;
 using ProjectLighthouse.ViewModel.Commands.Administration;
@@ -324,11 +324,16 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ? Visibility.Visible
                 : Visibility.Collapsed;
             TargetRuntime = 5;
+
+
+            //List<OperaHelper.InvoiceLine> lines = OperaHelper.GetInvoiceLines(OperaHelper.invoiceTransactionsTable);
         }
 
         public void EditProduct()
         {
-            EditProductWindow window = new(SelectedRequestProduct)
+            List<ProductGroup> groups = DatabaseHelper.Read<ProductGroup>();
+
+            AddTurnedProductWindow window = new(groups, SelectedRequestProduct)
             {
                 Owner = App.MainViewModel.MainWindow
             };
@@ -336,12 +341,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             window.ShowDialog();
             if (!window.SaveExit)
             {
-                return;
-            }
-
-            if (!DatabaseHelper.Update(SelectedRequestProduct))
-            {
-                MessageBox.Show("Failed to update product", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -536,7 +535,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 try
                 {
-                    OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId!, (int)SelectedRequestProduct.MaterialId, (SelectedRequestProduct, SelectedRequest.QuantityRequired, SelectedRequest.DateRequired))
+                    OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId!, (int)SelectedRequestProduct.MaterialId!, RecommendedManifest)
                     {
                         Owner = Application.Current.MainWindow
                     };
@@ -732,6 +731,8 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void SendMessage()
         {
+            if (SelectedRequest is null) return;
+
             Note newNote = new()
             {
                 Message = NewMessage,
@@ -741,7 +742,15 @@ namespace ProjectLighthouse.ViewModel.Requests
                 SentBy = App.CurrentUser.UserName,
             };
 
-            _ = DatabaseHelper.Insert(newNote);
+            try
+            {
+                DatabaseHelper.Insert(newNote, throwErrs: true);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"An error occurred while inserting to the database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             List<string> otherUsers = FilteredNotes.Select(x => x.SentBy).ToList();
             otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveRequest)).Select(x => x.UserName));
@@ -751,7 +760,10 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             for (int i = 0; i < otherUsers.Count; i++)
             {
-                Notification newNotification = new(otherUsers[i], App.CurrentUser.UserName, $"Comment: Request #{SelectedRequest.Id:0}", $"{App.CurrentUser.FirstName} left a comment: {NewMessage}");
+                Notification newNotification = new(otherUsers[i], 
+                    App.CurrentUser.UserName, 
+                    $"Comment: Request #{SelectedRequest.Id:0}", 
+                    $"{App.CurrentUser.FirstName} left a comment: {NewMessage}", toastAction:$"viewRequest:{SelectedRequest.Id:0}");
                 _ = DatabaseHelper.Insert(newNotification);
             }
 

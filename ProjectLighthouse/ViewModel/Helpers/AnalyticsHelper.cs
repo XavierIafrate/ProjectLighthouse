@@ -1,7 +1,5 @@
-﻿using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
-using LiveChartsCore;
+﻿using LiveChartsCore;
+using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Analytics;
@@ -291,7 +289,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     .Sum(x => x.Quantity);
 
                 YearsAvailable = chartLots
-                    .Select(x => x.Key.Year.ToString("YYYY"))
+                    .Select(x => x.Key.Year.ToString("yyyy"))
                     .Distinct()
                     .ToList();
 

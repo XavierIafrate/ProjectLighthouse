@@ -16,6 +16,8 @@
         <TextBlock Style="{StaticResource title}" Text="Add New Drawing" />
         <StackPanel Margin="20">
             <CheckBox Content="Archetype Drawing" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ArchetypeMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox Content="Customer Issued" x:Name="CustomerIssueCheckBox" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=CustomerIssueMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            
             <StackPanel
                 x:Name="ChooseArchetypeControls"
                 Margin="0,0,0,20"
@@ -91,9 +93,9 @@
                         SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedMaterial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <Button
                         x:Name="ClearMaterialButton"
-                        Click="ClearMaterialButton_Click"
                         Grid.Column="3"
                         Width="25"
+                        Click="ClearMaterialButton_Click"
                         Style="{StaticResource ClearButton}" />
                 </Grid>
 
@@ -133,7 +135,10 @@
             </StackPanel>
 
             <TextBlock Style="{StaticResource InputLabel}" Text="Choose File" />
-            <userControls:FilePicker x:Name="FilePicker" AllowedFileTypes="PDF Files (*.pdf)|*.pdf" FilePath="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=TargetFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <userControls:FilePicker
+                x:Name="FilePicker"
+                AllowedFileTypes="PDF Files (*.pdf)|*.pdf"
+                FilePath="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=TargetFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <TextBlock Style="{StaticResource InputLabel}" Text="Revision Details" />
             <TextBox
@@ -143,16 +148,16 @@
 
             <Grid>
                 <CheckBox
+                    x:Name="ResearchCheckbox"
                     Margin="10,5"
-                    Content="Drawing is for R&amp;D"
-                    IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewDrawing., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Content="Drawing is for R&amp;D" />
                 <Button
                     x:Name="AddButton"
                     HorizontalAlignment="Right"
                     Click="AddButton_Click"
                     Style="{StaticResource Action_New_Button}"
                     Tag="Add Drawing" />
-                
+
             </Grid>
         </StackPanel>
 

@@ -24,7 +24,7 @@ namespace ProjectLighthouse.View.Orders
         public bool SaveExit;
         private bool LotAdded;
 
-        public EditLMOItemWindow(int ItemId, bool canEdit, bool allowDelivery = true)
+        public EditLMOItemWindow(int ItemId, bool canEdit, bool allowDelivery = true, string producedOnMachine = "")
         {
             InitializeComponent();
             SaveExit = false;
@@ -109,16 +109,17 @@ namespace ProjectLighthouse.View.Orders
             {
                 MessageBox.Show("Failed to update product record.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            product.CycleTime = cycleTime;
-            if (LotAdded)
+            else
             {
-                product.LastManufactured = DateTime.Now;
+                product.CycleTime = cycleTime;
+                if(LotAdded) product.LastManufactured = DateTime.Now;
+                if (!DatabaseHelper.Update(product))
+                {
+                    MessageBox.Show("An error occurred while updating the product record", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
             }
 
-            if (!DatabaseHelper.Update(product))
-            {
-                MessageBox.Show("An error occurred while updating the product record", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
             SaveExit = true;
             Close();
         }

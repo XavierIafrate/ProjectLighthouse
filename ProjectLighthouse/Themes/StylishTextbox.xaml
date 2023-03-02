@@ -9,6 +9,10 @@
                 <Setter Property="Background" Value="{StaticResource RedFaded}" />
                 <Setter Property="Foreground" Value="{StaticResource Red}" />
             </Trigger>
+
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="TextElement.Foreground" Value="{StaticResource DisabledElement}" />
+            </Trigger>
         </Style.Triggers>
 
     </Style>

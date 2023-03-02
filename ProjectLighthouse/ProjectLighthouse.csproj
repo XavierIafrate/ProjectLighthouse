@@ -74,7 +74,6 @@
     <None Remove="Resources\MiB_Logo_Stacked_Colour.jpg" />
     <None Remove="Resources\mwl-dark.png" />
     <None Remove="Resources\mwl-light.png" />
-    <None Remove="Resources\portland.jpg" />
     <None Remove="Resources\RGB_wixroyd_ant_logo_red.png" />
     <None Remove="Resources\snowdonia.jpg" />
     <None Remove="Resources\SplashScreen.png" />
@@ -102,9 +101,6 @@
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="DbfDataReader" Version="0.8.0" />
-    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7">
-      <NoWarn>NU1701</NoWarn>
-    </PackageReference>
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.700" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1343.22" />
@@ -175,17 +171,11 @@
     <Resource Include="Resources\Lighthouse_Splash_Screen.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Logo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Resources\MiB_Logo_Stacked_Colour.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\mwl-dark.png" />
     <Resource Include="Resources\mwl-light.png" />
-    <Resource Include="Resources\portland.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Resources\RGB_wixroyd_ant_logo_red.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

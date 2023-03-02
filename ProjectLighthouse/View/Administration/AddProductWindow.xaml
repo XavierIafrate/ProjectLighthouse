@@ -1,40 +1,95 @@
-﻿<Window x:Class="View.Administration.AddProductWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:View.Administration"
-        mc:Ignorable="d"
-        WindowStartupLocation="CenterOwner"
-        Title="Add Product" Width="500">
-    <Grid>
-        <StackPanel Margin="20,10">
-            <TextBlock Text="New Product" Style="{StaticResource title}"/>
+﻿<Window
+    x:Class="ProjectLighthouse.View.Administration.AddProductWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    Title="New Product"
+    Width="500"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <StackPanel Margin="20">
+        <TextBlock
+            d:Text="Add/Edit Product"
+            Style="{StaticResource title}"
+            Text="{Binding Title}" />
 
-            <TextBlock Text="Product Name" Style="{StaticResource InputLabel}"/>
-            <TextBox Text="{Binding Product.ProductName}" Style="{StaticResource DefaultTextBox}" Tag="name"/>
+        <TextBlock Style="{StaticResource InputLabel}" Text="Product Name" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="name"
+            Text="{Binding Product.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-            <TextBlock Text="Export Product Name" Style="{StaticResource InputLabel}"/>
-            <TextBox Text="{Binding Product.ExportProductName}" Style="{StaticResource DefaultTextBox}" Tag="export name"/>
+        <TextBlock Style="{StaticResource InputLabel}" Text="Product Description" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="description"
+            Text="{Binding Product.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-            <TextBlock Text="Major Length (mm)" Style="{StaticResource InputLabel}"/>
-            <TextBox Text="{Binding Product.MajorLength}" Style="{StaticResource DefaultTextBox}" Tag="major length"/>
+        <TextBlock Style="{StaticResource InputLabel}" Text="Web URL" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="url"
+            Text="{Binding Product.WebUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-            <TextBlock Text="Major Diameter (mm)" Style="{StaticResource InputLabel}"/>
-            <TextBox Text="{Binding Product.MajorDiameter}" Style="{StaticResource DefaultTextBox}" Tag="major diameter"/>
+        <TextBlock Style="{StaticResource InputLabel}" Text="Web Image URL (for live displays)" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="image url"
+            Text="{Binding Product.WebImageUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
+        <TextBlock Style="{StaticResource InputLabel}" Text="Image" />
+        <StackPanel HorizontalAlignment="Center">
 
-            <TextBlock Text="Extra Material Budget (mm)" Style="{StaticResource InputLabel}"/>
-            <TextBox Text="{Binding Product.PartOffBudget}" Style="{StaticResource DefaultTextBox}" Tag="extra material length"/>
+            <Border
+                Width="130"
+                Height="130"
+                Margin="5"
+                Background="{StaticResource Surface}"
+                CornerRadius="5">
+                <Grid>
+                    <Path
+                        Height="50"
+                        Margin="0,0,2,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
+                        Fill="{StaticResource OnSurface}"
+                        Opacity="0.3"
+                        Stretch="Uniform" />
+                    <Image
+                        Margin="10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        RenderOptions.BitmapScalingMode="Fant"
+                        Source="{Binding Product.LocalRenderPath, TargetNullValue={x:Null}}" />
 
-            <CheckBox Content="Retired"/>
-            <CheckBox Content="Special"/>
-
-            <TextBlock Text="Material" Style="{StaticResource InputLabel}"/>
-            <ComboBox />
-
-            <Grid Height="20"/>
-            <Button Style="{StaticResource Action_New_Button}" Tag="Add" HorizontalAlignment="Right"/>
+                </Grid>
+            </Border>
+            <Button
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                x:Name="ChangeImageButton"
+                Click="ChangeImageButton_Click" 
+                Style="{StaticResource Action_Button}"
+                Tag="Change Image" />
         </StackPanel>
-    </Grid>
+
+        <Grid Height="10" />
+        <Button
+            x:Name="CreateButton"
+            HorizontalAlignment="Right"
+            Click="CreateButton_Click"
+            Style="{StaticResource Action_New_Button}"
+            Tag="Create" />
+        <Button
+            x:Name="UpdateButton"
+            HorizontalAlignment="Right"
+            Click="CreateButton_Click"
+            Style="{StaticResource Action_Update_Button}"
+            Tag="Update" />
+    </StackPanel>
 </Window>

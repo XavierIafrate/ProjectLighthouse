@@ -55,7 +55,7 @@
                         Background="{StaticResource Surface}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="10">
+                        CornerRadius="5">
 
                         <Grid
                             x:Name="PART_Root"

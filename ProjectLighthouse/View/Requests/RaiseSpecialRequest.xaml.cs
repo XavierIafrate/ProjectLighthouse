@@ -55,6 +55,9 @@ namespace ProjectLighthouse.View.Requests
                 NewProduct.SpecificationDetails = specDetails.Text.Trim();
             }
 
+            NewProduct.AddedBy = App.CurrentUser.UserName;
+            NewProduct.AddedDate = DateTime.Now;
+
             if (DatabaseHelper.Insert<TurnedProduct>(NewProduct))
             {
                 MessageBox.Show($"Successfully added {NewProduct.ProductName} to database, you can now raise a request.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

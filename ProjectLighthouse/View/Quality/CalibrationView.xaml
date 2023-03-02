@@ -64,15 +64,15 @@
                     Grid.Column="0"
                     Margin="5,0"
                     Command="{Binding AddNewEquipmentCmd}"
-                    Tag="New"
                     Style="{StaticResource Action_New_Button}"
+                    Tag="New"
                     Visibility="{Binding CanModify, Converter={StaticResource visibleConverter}}" />
                 <Button
                     Grid.Column="1"
                     Margin="5,0"
                     Command="{Binding GenerateReportCmd}"
-                    ToolTip="Get CSV of items requiring calibration."
                     Style="{StaticResource CSVButton}"
+                    ToolTip="Get CSV of items requiring calibration."
                     Visibility="{Binding CanModify, Converter={StaticResource visibleConverter}}" />
                 <TextBlock
                     Grid.Column="2"
@@ -139,143 +139,161 @@
                                         Style="{StaticResource subtitle}"
                                         Text="{Binding SelectedEquipment.Model, StringFormat='{} {0}'}" />
                                 </StackPanel>
-                                <Grid Margin="0,5" Visibility="{Binding RegularCalVis}">
+                                <Border
+                                    Margin="0,5"
+                                    Background="{StaticResource OrangeFaded}"
+                                    BorderBrush="{StaticResource Orange}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3"
+                                    Visibility="{Binding SelectedEquipment.IsOutForCal, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                                    <Grid Margin="15,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path
+                                            Width="20"
+                                            Data="M20 20C18.61 20 17.22 19.53 16 18.67C13.56 20.38 10.44 20.38 8 18.67C6.78 19.53 5.39 20 4 20H2V22H4C5.37 22 6.74 21.65 8 21C10.5 22.3 13.5 22.3 16 21C17.26 21.65 18.62 22 20 22H22V20H20M20.78 19H20C18.82 19 17.64 18.6 16.58 17.85L16 17.45L15.42 17.85C14.39 18.57 13.21 18.95 12 18.95C10.77 18.95 9.59 18.57 8.56 17.85L8 17.45L7.43 17.85C6.36 18.6 5.18 19 4 19H3.22C3.75 17.54 5.58 15 12 15C14 15 15 15.24 15 15.24C15.68 13.87 16.83 10.77 16 6.82L17.06 7.53C17.39 8.96 18 11.75 16.8 15.65C19.43 16.5 20.42 18 20.78 19M22 7.59C21.21 6.5 20 5.71 18.58 5.53C18.7 5.67 18.81 5.83 18.92 6C20.12 7.91 19.87 10.32 18.47 11.95C19.06 10.5 19 8.79 18.08 7.36C18 7.28 17.96 7.2 17.9 7.11C17.5 6.53 16.96 6.06 16.38 5.72C14.35 6.37 12.88 8.27 12.88 10.5C12.88 11.03 12.96 11.53 13.1 12C12.5 11.17 12.16 10.17 12.16 9.07C12.16 7.41 12.96 5.95 14.2 5.03C13.16 4.95 12.09 5.18 11.14 5.78C10.7 6.05 10.32 6.38 10 6.76C10.39 5.82 11.05 5 12 4.4C13.04 3.74 14.25 3.5 15.39 3.69C15.1 3.29 14.75 2.92 14.33 2.6C13.92 2.29 13.47 2.05 13 1.88C14 1.91 15.04 2.24 15.91 2.89C16.35 3.22 16.7 3.62 17 4.05C17.06 4.05 17.12 4.04 17.19 4.04C19.45 4.04 21.37 5.53 22 7.59Z"
+                                            Fill="{StaticResource Orange}"
+                                            Stretch="Uniform" />
+                                        <StackPanel Grid.Column="1" Margin="8,0">
+                                            <TextBlock
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Orange}"
+                                                Text="Out for calibration" />
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{StaticResource Orange}"
+                                                Text="This item is not on site while it is being calibrated."
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                <Border
+                                    Margin="0,5"
+                                    Background="{StaticResource GreenFaded}"
+                                    BorderBrush="{StaticResource Green}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3"
+                                    Visibility="{Binding RegularCalVis}">
+                                    <Grid Margin="15,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path
+                                            Width="20"
+                                            Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
+                                            Fill="{StaticResource Green}"
+                                            Stretch="Uniform" />
+                                        <StackPanel Grid.Column="1" Margin="8,0">
+                                            <TextBlock
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Green}"
+                                                Text="In regular calibration" />
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{StaticResource Green}"
+                                                Text="This item has been calibrated within the defined interval and is ready for use unless it becomes damaged."
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                <Border
+                                    Margin="0,5"
+                                    Background="{StaticResource RedFaded}"
+                                    BorderBrush="{StaticResource Red}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3"
+                                    Visibility="{Binding CalLapsedVis}">
+                                    <Grid Margin="15,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path
+                                            Width="20"
+                                            Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
+                                            Fill="{StaticResource Red}"
+                                            Stretch="Uniform" />
+                                        <StackPanel Grid.Column="1" Margin="8,0">
+                                            <TextBlock
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Red}"
+                                                Text="Calibration lapsed" />
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{StaticResource Red}"
+                                                Text="This item requires re-calibration and should not be used."
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
 
-                                    <Border
-                                        Background="{StaticResource Green}"
-                                        CornerRadius="3"
-                                        Opacity="0.15" />
-                                    <Border
-                                        BorderBrush="{StaticResource Green}"
-                                        BorderThickness="3,0,0,0"
-                                        CornerRadius="3">
-                                        <Grid Margin="15,5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Path
-                                                Width="20"
-                                                Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
-                                                Fill="{StaticResource Green}"
-                                                Stretch="Uniform" />
-                                            <StackPanel Grid.Column="1" Margin="8,0">
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{StaticResource Green}"
-                                                    Text="In regular calibration" />
-                                                <TextBlock
-                                                    FontSize="12"
-                                                    Foreground="{StaticResource Green}"
-                                                    Text="This item has been calibrated within the defined interval and is ready for use unless it becomes damaged."
-                                                    TextWrapping="Wrap" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
-                                <Grid Margin="0,5" Visibility="{Binding CalLapsedVis}">
-                                    <Border
-                                        Background="{StaticResource Red}"
-                                        CornerRadius="3"
-                                        Opacity="0.15" />
-                                    <Border
-                                        BorderBrush="{StaticResource Red}"
-                                        BorderThickness="3,0,0,0"
-                                        CornerRadius="3">
-                                        <Grid Margin="15,5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Path
-                                                Width="20"
-                                                Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
-                                                Fill="{StaticResource Red}"
-                                                Stretch="Uniform" />
-                                            <StackPanel Grid.Column="1" Margin="8,0">
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{StaticResource Red}"
-                                                    Text="Calibration lapsed" />
-                                                <TextBlock
-                                                    FontSize="12"
-                                                    Foreground="{StaticResource Red}"
-                                                    Text="This item requires re-calibration and should not be used."
-                                                    TextWrapping="Wrap" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
-                                <Grid Margin="0,5" Visibility="{Binding OutOfServiceVis}">
-                                    <Border
-                                        Background="{StaticResource Red}"
-                                        CornerRadius="3"
-                                        Opacity="0.15" />
-                                    <Border
-                                        BorderBrush="{StaticResource Red}"
-                                        BorderThickness="3,0,0,0"
-                                        CornerRadius="3">
-                                        <Grid Margin="15,5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Path
-                                                Width="20"
-                                                Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
-                                                Fill="{StaticResource Red}"
-                                                Stretch="Uniform" />
-                                            <StackPanel Grid.Column="1" Margin="8,0">
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{StaticResource Red}"
-                                                    Text="Out of service" />
-                                                <TextBlock
-                                                    FontSize="12"
-                                                    Foreground="{StaticResource Red}"
-                                                    Text="This item has failed calibration and must no longer be used."
-                                                    TextWrapping="Wrap" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
-                                <Grid Margin="0,5" Visibility="{Binding IndicationOnlyVis}">
-                                    <Border
-                                        Background="{StaticResource Purple}"
-                                        CornerRadius="3"
-                                        Opacity="0.15" />
-                                    <Border
+                                <Border
+                                    Margin="0,5"
+                                    Background="{StaticResource RedFaded}"
+                                    BorderBrush="{StaticResource Red}"
+                                    BorderThickness="3,0,0,0"
+                                    CornerRadius="3"
+                                    Visibility="{Binding OutOfServiceVis}">
+                                    <Grid Margin="15,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path
+                                            Width="20"
+                                            Data="M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41"
+                                            Fill="{StaticResource Red}"
+                                            Stretch="Uniform" />
+                                        <StackPanel Grid.Column="1" Margin="8,0">
+                                            <TextBlock
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Red}"
+                                                Text="Out of service" />
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{StaticResource Red}"
+                                                Text="This item has failed calibration and must no longer be used."
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                <Border
+                                        Background="{StaticResource PurpleFaded}"
+                                        Margin="0,5" Visibility="{Binding IndicationOnlyVis}"
                                         BorderBrush="{StaticResource Purple}"
                                         BorderThickness="3,0,0,0"
                                         CornerRadius="3">
-                                        <Grid Margin="15,5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Path
+                                    <Grid Margin="15,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path
                                                 Width="20"
                                                 Data="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5M11,7H13V13H11M11,15H13V17H11"
                                                 Fill="{StaticResource Purple}"
                                                 Stretch="Uniform" />
-                                            <StackPanel Grid.Column="1" Margin="8,0">
-                                                <TextBlock
+                                        <StackPanel Grid.Column="1" Margin="8,0">
+                                            <TextBlock
                                                     FontSize="16"
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource Purple}"
                                                     Text="For indication only" />
-                                                <TextBlock
+                                            <TextBlock
                                                     FontSize="12"
                                                     Foreground="{StaticResource Purple}"
                                                     Text="This item has not had it's accuracy verified in a way that is traceable to a national standard, and should be used for non-critical measurements only."
                                                     TextWrapping="Wrap" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
                             </StackPanel>
 
                             <Image
@@ -289,9 +307,18 @@
                                 Visibility="{Binding SelectedEquipment.UKAS, Converter={StaticResource visibleConverter}}" />
                         </Grid>
                         <Grid>
-                            <TextBlock Style="{StaticResource section}" VerticalAlignment="Center"  
-                                Margin="5,20,0,5" Text="Instrument Details" />
-                            <Button Tag="Edit" Style="{StaticResource Action_Edit_Button}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding EditEquipmentCmd}" CommandParameter="{Binding SelectedEquipment.Id}" />
+                            <TextBlock
+                                Margin="5,20,0,5"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource section}"
+                                Text="Instrument Details" />
+                            <Button
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Command="{Binding EditEquipmentCmd}"
+                                CommandParameter="{Binding SelectedEquipment.Id}"
+                                Style="{StaticResource Action_Edit_Button}"
+                                Tag="Edit" />
                         </Grid>
                         <Grid Margin="20,5">
                             <Grid.ColumnDefinitions>
@@ -316,8 +343,8 @@
                             <Border
                                 Grid.Row="0"
                                 Grid.Column="1"
-                                CornerRadius="5,5,0,0"
-                                Background="{StaticResource Surface}">
+                                Background="{StaticResource Surface}"
+                                CornerRadius="5,5,0,0">
                                 <TextBlock
                                     Margin="10,3"
                                     d:Text="SERIAL_NUMBER"
@@ -414,8 +441,8 @@
                             <Border
                                 Grid.Row="5"
                                 Grid.Column="1"
-                                CornerRadius="0,0,5,5"
                                 Background="{StaticResource Surface}"
+                                CornerRadius="0,0,5,5"
                                 Visibility="{Binding SelectedEquipment.RequiresCalibration, Converter={StaticResource visibleConverter}}">
                                 <TextBlock
                                     Margin="10,3"
@@ -438,8 +465,8 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
                                 Command="{Binding AddCertificateCmd}"
-                                Tag="Add Certificate"
-                                Style="{StaticResource Action_New_Button}" />
+                                Style="{StaticResource Action_New_Button}"
+                                Tag="Add Certificate" />
                         </Grid>
                         <ItemsControl
                             Margin="5,0,5,5"

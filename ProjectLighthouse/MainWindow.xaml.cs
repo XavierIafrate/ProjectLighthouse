@@ -83,7 +83,13 @@ namespace ProjectLighthouse
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             manage_users_button.IsEnabled = App.CurrentUser.Role is UserRole.Administrator;
+
+            //manage_database_button.Visibility = Visibility.Collapsed;
+            //manage_products_button.Visibility = Visibility.Collapsed;
+
             manage_products_button.IsEnabled = App.CurrentUser.Role is UserRole.Administrator;
+            manage_database_button.IsEnabled = App.CurrentUser.Role is UserRole.Administrator;
+
             manage_lathes_button.IsEnabled = App.CurrentUser.HasPermission(Model.Core.PermissionType.ConfigureMaintenance);
 
             LoggedInUserName.Text = App.CurrentUser.GetFullName();

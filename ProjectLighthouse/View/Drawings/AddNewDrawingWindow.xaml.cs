@@ -36,24 +36,47 @@ namespace ProjectLighthouse.View.Drawings
         public List<TechnicalDrawing> Drawings { get; set; }
         public List<MaterialInfo> Materials { get; set; }
 
-        private bool archetypeMode;
 
+        private bool archetypeMode;
         public bool ArchetypeMode
         {
             get { return archetypeMode; }
             set 
             {
                 archetypeMode = value;
+
+                if(archetypeMode)
+                {
+                    CustomerIssueMode= false;
+                }
+
                 SetArchetypeMode();
                 NewDrawing.IsArchetype = value;
                 OnPropertyChanged();
             }
         }
 
+        private bool customerIssueMode;
+
+        public bool CustomerIssueMode
+        {
+            get { return customerIssueMode; }
+            set 
+            { 
+                customerIssueMode = value;
+                if (customerIssueMode)
+                {
+                    ArchetypeMode = false;  
+                }
+                OnPropertyChanged();
+
+            }
+        }
+
+
 
 
         private List<ProductGroup> filteredGroups;
-
         public List<ProductGroup> FilteredGroups
         {
             get { return filteredGroups; }
@@ -65,7 +88,6 @@ namespace ProjectLighthouse.View.Drawings
         }
 
         private Product? selectedProduct;
-
         public Product? SelectedProduct
         {
             get { return selectedProduct; }
@@ -78,7 +100,6 @@ namespace ProjectLighthouse.View.Drawings
         }
 
         private ProductGroup? selectedGroup;
-
         public ProductGroup? SelectedGroup
         {
             get { return selectedGroup; }
@@ -94,7 +115,6 @@ namespace ProjectLighthouse.View.Drawings
         }
 
         private MaterialInfo? selectedMaterial;
-
         public MaterialInfo? SelectedMaterial
         {
             get { return selectedMaterial; }
@@ -110,7 +130,6 @@ namespace ProjectLighthouse.View.Drawings
 
 
         private TurnedProduct? selectedTurnedProduct;
-
         public TurnedProduct? SelectedTurnedProduct
         {
             get { return selectedTurnedProduct; }
@@ -126,7 +145,6 @@ namespace ProjectLighthouse.View.Drawings
 
 
         private List<MaterialInfo> filteredMaterials;
-
         public List<MaterialInfo> FilteredMaterials
         {
             get { return filteredMaterials; }
@@ -151,7 +169,6 @@ namespace ProjectLighthouse.View.Drawings
 
 
         private string targetFilePath;
-
         public string TargetFilePath
         {
             get { return targetFilePath; }
@@ -163,7 +180,6 @@ namespace ProjectLighthouse.View.Drawings
         }
 
         private string searchText = "";
-
         public string SearchText
         {
             get { return searchText; }
@@ -182,6 +198,10 @@ namespace ProjectLighthouse.View.Drawings
             InitializeComponent();
             Drawings = drawings;
             LoadData();
+            CustomerIssueCheckBox.Visibility = App.CurrentUser.Role == UserRole.Administrator
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
         }
 
         private void LoadData()
@@ -321,6 +341,7 @@ namespace ProjectLighthouse.View.Drawings
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
+            NewDrawing.DrawingType = (ResearchCheckbox.IsChecked ?? false) ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production;
             if (!DataOk())
             {
                 return;
@@ -338,6 +359,11 @@ namespace ProjectLighthouse.View.Drawings
             NewDrawing.Created = DateTime.Now;
             NewDrawing.CreatedBy = App.CurrentUser.GetFullName();
 
+            if (CustomerIssueMode)
+            {
+                NewDrawing.WatermarkOnly = true;
+            }
+
             NewDrawing.PrepareMarkedPdf();
             if (!DatabaseHelper.Insert(NewDrawing))
             {
@@ -345,12 +371,16 @@ namespace ProjectLighthouse.View.Drawings
                 return;
             }
 
-            // TODO move to notifications manager
-            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.UserName != App.CurrentUser.UserName).ToList();
 
-            for (int i = 0; i < ToNotify.Count; i++)
+            if (!CustomerIssueMode)
             {
-                DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Proposal: {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.Id}"));
+                // TODO move to notifications manager
+                List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.UserName != App.CurrentUser.UserName).ToList();
+
+                for (int i = 0; i < ToNotify.Count; i++)
+                {
+                    DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Proposal: {NewDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has submitted a proposal for {NewDrawing.DrawingName}, please approve or reject.", toastAction: $"viewDrawing:{NewDrawing.Id}"));
+                }
             }
 
             SaveExit = true;

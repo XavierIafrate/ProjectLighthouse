@@ -7,12 +7,6 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
     public class EditSettingsCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private MainViewModel viewModel;
-
-        public EditSettingsCommand(MainViewModel vm)
-        {
-            viewModel = vm;
-        }
 
         public bool CanExecute(object parameter)
         {
@@ -21,7 +15,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
-            viewModel.EditSettings();
+            MainViewModel.EditSettings();
         }
     }
 }

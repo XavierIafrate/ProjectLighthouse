@@ -8,14 +8,31 @@ namespace ProjectLighthouse.View.Administration
     public partial class AddProductGroupWindow : Window
     {
         public ProductGroup Group { get; set; }
+        public ProductGroup? originalGroup;
         public Product Product { get; set; }
 
         public bool SaveExit = false;
-        public AddProductGroupWindow(Product product)
+        public AddProductGroupWindow(Product product, ProductGroup? group = null)
         {
             InitializeComponent();
             Product = product;  
-            Group = new() { ProductId = product.Id };
+
+            if(group != null)
+            {
+                originalGroup = group;
+                Group = (ProductGroup)group.Clone();
+
+                this.Title = "Edit Archetype";
+                CreateButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Group = new() { ProductId = product.Id };
+
+                this.Title = "New Archetype";
+                UpdateButton.Visibility = Visibility.Collapsed;
+            }
+
             DataContext = this;
         }
 
@@ -23,27 +40,69 @@ namespace ProjectLighthouse.View.Administration
         {
             Group.ValidateAll();
 
-            if(Group.HasErrors)
+            if (originalGroup is not null)
             {
-                return;
+                originalGroup.ValidateAll();
+                // Prevent new data errors
+                if (originalGroup.NoErrors && Group.HasErrors)
+                {
+                    return;
+                }
+
+                try
+                {
+                    UpdateExistingGroup();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while inserting to the database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+            else
+            {
+                if (Group.HasErrors)
+                {
+                    return;
+                }
+
+                try
+                {
+                    CreateGroup();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while updating the database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
 
-            bool inserted;
+            SaveExit = true;
+            Close();
+        }
+
+        void UpdateExistingGroup()
+        {
             try
             {
-                inserted = DatabaseHelper.Insert(Group, true);
+                DatabaseHelper.Update(Group, throwErrs: true);
+                originalGroup = Group;
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Error inserting to database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                throw;
             }
+        }
 
-            if (inserted)
+        void CreateGroup()        
+        {
+            try
             {
-                SaveExit = true;
-                Close();
-                return;
+                DatabaseHelper.Insert(Group, throwErrs: true);
+            }
+            catch
+            {
+                throw;
             }
         }
     }

@@ -9,6 +9,7 @@ using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Helpers;
 using ProjectLighthouse.ViewModel.Quality;
+using ProjectLighthouse.ViewModel.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,6 +139,8 @@ namespace ProjectLighthouse.ViewModel.Core
 
             int numNewNots = nots.Where(n => !n.Seen).Count();
 
+            MyNotifications = MyNotifications.Where(x => nots.Any(y => y.Id == x.Id)).ToList();
+
             for (int i = 0; i < nots.Count; i++)
             {
                 if (!MyNotifications.Select(x => x.Id).ToArray().Contains(nots[i].Id))
@@ -258,6 +261,21 @@ namespace ProjectLighthouse.ViewModel.Core
             if (action.StartsWith("viewRequest:"))
             {
                 App.MainViewModel.UpdateViewCommand.Execute("View Requests");
+                if (App.MainViewModel.SelectedViewModel is RequestViewModel requestViewModel)
+                {
+                    string targetRequest = action.Replace("viewRequest:", "");
+
+                    requestViewModel.SelectedFilter = "Last 14 Days";
+                    
+                    for(int i = 0; i < requestViewModel.FilteredRequests.Count; i++)
+                    {
+                        if (requestViewModel.FilteredRequests[i].Id.ToString("0") == targetRequest)
+                        {
+                            requestViewModel.SelectedRequest = requestViewModel.FilteredRequests[i];
+                            return;
+                        }
+                    }
+                }
             }
             else if (action.StartsWith("viewManufactureOrder:"))
             {
@@ -290,7 +308,7 @@ namespace ProjectLighthouse.ViewModel.Core
                 }
 
             }
-            if (action.StartsWith("viewQC:"))
+            else if (action.StartsWith("viewQC:"))
             {
                 App.MainViewModel.UpdateViewCommand.Execute("Quality Check");
                 if (App.MainViewModel.SelectedViewModel is QualityCheckViewModel qcViewModel)
@@ -316,6 +334,12 @@ namespace ProjectLighthouse.ViewModel.Core
                 MarkActionExecuted(notification.ToastAction);
             }
 
+            CheckForNotifications(false);
+        }
+
+        public void DeleteNotification(Notification notification)
+        {
+            DatabaseHelper.Delete(notification);
             CheckForNotifications(false);
         }
 

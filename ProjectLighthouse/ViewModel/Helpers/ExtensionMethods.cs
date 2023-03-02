@@ -9,13 +9,13 @@ namespace ViewModel.Helpers
 {
     public static class ExtensionMethods
     {
-        public static (int, int, bool) CalculateOrderRuntime(this List<LatheManufactureOrderItem> items)
+        public static (int, int, bool) CalculateOrderRuntime(this List<LatheManufactureOrderItem> items, int defaultCycleTime = 0)
         {
             // TODO: Check default
 
             List<LatheManufactureOrderItem> orderedItems = items.OrderByDescending(x => x.CycleTime).ToList();
             bool estimated = false;
-            int cycleTime = 0;
+            int cycleTime = defaultCycleTime;
 
             int orderTime = 0;
 

@@ -134,7 +134,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
         #endregion Vars
 
-        public void EditSettings()
+        public static void EditSettings()
         {
             EditSettingsWindow window = new();
             window.ShowDialog();
@@ -143,7 +143,7 @@ namespace ProjectLighthouse.ViewModel.Core
         public MainViewModel()
         {
             NoNewNotifications = true;
-            EditCommand = new(this);
+            EditCommand = new();
             UpdateViewCommand = new(this);
             ToggleShowNotsCommand = new(this);
             ReadAllCommand = new();

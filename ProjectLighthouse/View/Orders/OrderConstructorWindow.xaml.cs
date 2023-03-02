@@ -197,24 +197,44 @@ namespace ProjectLighthouse.View.Orders
             }
 
             AddProductToOrder(product, quantity, date);
+            CalculateInsights();
+        }
+
+        public OrderConstructorWindow(int requiredGroup, int materialId, List<LatheManufactureOrderItem> recommendation)
+        {
+            InitializeComponent();
+
+            ProductsControlGroup.Visibility = Visibility.Collapsed;
+            GroupsLabel.Visibility = Visibility.Collapsed;
+            GroupsListBox.Visibility = Visibility.Collapsed;
+
+            LoadData();
+            MaterialId = materialId;
 
 
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup);
 
-            //if (toRemove == null)
-            //{
-            //    return;
-            //}
+            if (targetGroup is null)
+            {
+                throw new Exception("Target group is null");
+            }
 
-            //TurnedProduct toRemove = AvailableTurnedProducts.ToList().Find(x => x.Id == product.Id);
-            //AvailableTurnedProducts.Remove(toRemove);
 
-            //for (int j = AvailableTurnedProducts.Count - 1; j >= 0; j--)
-            //{
-            //    if (AvailableTurnedProducts[j].MaterialId != MaterialId)
-            //    {
-            //        AvailableTurnedProducts.RemoveAt(j);
-            //    }
-            //}
+            SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
+            SelectedGroup = targetGroup;
+
+
+            for(int i = 0; i < recommendation.Count; i++)
+            {
+                TurnedProduct? turnedProduct = AvailableTurnedProducts.ToList().Find(x => x.ProductName == recommendation[i].ProductName);
+                
+                if (turnedProduct is null)
+                {
+                    continue;
+                }
+
+                AddProductToOrder(turnedProduct, recommendation[i].RequiredQuantity, recommendation[i].DateRequired, recommendation[i].TargetQuantity);
+            }
 
             CalculateInsights();
         }
@@ -297,7 +317,7 @@ namespace ProjectLighthouse.View.Orders
             CalculateInsights();
         }
 
-        private void AddProductToOrder(TurnedProduct product, int requiredQuantity = 0, DateTime? requiredDate = null)
+        private void AddProductToOrder(TurnedProduct product, int requiredQuantity = 0, DateTime? requiredDate = null, int? targetQuantity = null)
         {
             LatheManufactureOrderItem newItem;
 
@@ -315,6 +335,11 @@ namespace ProjectLighthouse.View.Orders
             }
 
             newItem.TargetQuantity = Math.Max(newItem.TargetQuantity, RequestsEngine.GetMiniumumOrderQuantity(newItem));
+
+            if (targetQuantity is not null)
+            {
+                newItem.TargetQuantity = (int)targetQuantity;
+            }
 
             newItem.PropertyChanged += OnNewItemChanged;
             
@@ -383,6 +408,22 @@ namespace ProjectLighthouse.View.Orders
 
         private bool CreateManufactureOrder()
         {
+            int failedValidation = 0;
+            for (int i = 0; i < NewOrderItems.Count; i++)
+            {
+                NewOrderItems[i].ValidateAll();
+                if (NewOrderItems[i].HasErrors)
+                {
+                    failedValidation++;
+                }
+            }
+
+
+            if(failedValidation > 0)
+            {
+                throw new Exception($"{failedValidation:0} items have failed validation, cannot proceed.");
+            }
+
             NewOrder.Name = GetNewOrderId();
             NewOrder.CreatedAt = DateTime.Now;
             NewOrder.CreatedBy = App.CurrentUser.GetFullName();

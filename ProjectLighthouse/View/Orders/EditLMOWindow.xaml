@@ -521,11 +521,12 @@
                             <StackPanel>
                                 <Grid>
                                     <TextBlock
-                                    x:Name="TotalBarsText"
+                                        x:Name="TotalBarsText"
                                         Margin="10,0"
+                                        VerticalAlignment="Center"
                                         FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Text="0/50 Prepared" VerticalAlignment="Center" />
+                                        FontWeight="SemiBold"
+                                        Text="0/50 Prepared" />
                                     <Button
                                         x:Name="PrintIssueLabelButton"
                                         HorizontalAlignment="Right"
@@ -543,20 +544,31 @@
                                     SelectionChanged="ListBox_SelectionChanged">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid Margin="10,0">
-                                                <TextBlock Margin="7,3">
-                                                    <Run Text="{Binding Date, StringFormat='{}{0:dd/MM/yy HH:mm}'}" />
-                                                    <Run
+                                            <Grid Margin="13,5">
+                                                <StackPanel HorizontalAlignment="Left">
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        FontWeight="SemiBold"
+                                                        Text="{Binding Date, StringFormat='{}{0:s}'}" />
+                                                    <TextBlock
+                                                        FontSize="16"
                                                         FontWeight="SemiBold"
                                                         Foreground="{StaticResource Blue}"
                                                         Text="{Binding BarId}" />
-                                                </TextBlock>
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Text="Batch Ref"/>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="Consolas"
+                                                        Text="{Binding MaterialBatch}" />
+                                                </StackPanel>
+                                                <TextBlock 
+                                                    FontSize="16" FontWeight="Bold"
                                                     VerticalAlignment="Center"
-                                                    FontFamily="Consolas"
-                                                    Text="{Binding MaterialBatch}" />
-                                                <TextBlock HorizontalAlignment="Right" Text="{Binding Quantity, StringFormat='{}{0:#,##0} bar(s) Issued'}" />
+                                                    HorizontalAlignment="Right" 
+                                                    Text="{Binding Quantity, StringFormat='{}{0:+#;-#;0}'}" />
 
                                             </Grid>
                                         </DataTemplate>
@@ -640,13 +652,13 @@
                             <TextBox
                                 x:Name="Message"
                                 KeyDown="Message_KeyDown"
-                                Style="{StaticResource MessageComposer}"/>
+                                Style="{StaticResource MessageComposer}" />
                             <Button
                                 x:Name="SendButton"
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
-                                Click="SendButton_Click"
                                 Background="Transparent"
+                                Click="SendButton_Click"
                                 Style="{StaticResource SendButton}" />
                         </Grid>
                     </Grid>

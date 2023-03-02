@@ -113,6 +113,10 @@
             <DataTemplate DataType="{x:Type adminVm:ProductManagerViewModel}">
                 <adminView:ProductManagerView />
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type adminVm:DatabaseManagerViewModel}">
+                <adminView:DatabaseManagerView />
+            </DataTemplate>
             <!--#endregion-->
 
 

@@ -1,0 +1,112 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Administration.AddTurnedProductWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Add Turned Product"
+    Width="700"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock
+            x:Name="TitleText"
+            Grid.ColumnSpan="2"
+            Margin="10"
+            Style="{StaticResource title}"
+            Text="New Turned Product" />
+        <StackPanel Grid.Row="1" Margin="10">
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Product Name" />
+            <TextBox
+                x:Name="ProductNameTextBox"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="name"
+                Text="{Binding Product.ProductName}" />
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Export Product Name" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="export name"
+                Text="{Binding Product.ExportProductName}" />
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Major Length (mm)" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="major length"
+                Text="{Binding Product.MajorLength}" />
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Major Diameter (mm)" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="major diameter"
+                Text="{Binding Product.MajorDiameter}" />
+
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Extra Material Budget (mm)" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="extra material length"
+                Text="{Binding Product.PartOffLength}" />
+
+            <CheckBox Content="Retired" IsChecked="{Binding Product.Retired}" />
+            <CheckBox Content="Bespoke" IsChecked="{Binding Product.IsSpecialPart}" />
+        </StackPanel>
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="10">
+            <TextBlock Style="{StaticResource InputLabel}" Text="Material" />
+            <ComboBox
+                ItemsSource="{Binding Materials}"
+                SelectedValue="{Binding Product.MaterialId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedValuePath="Id" />
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Product Group" />
+            <TextBox Style="{StaticResource DefaultTextBox}" Tag="search groups" TextChanged="TextBox_TextChanged"/>
+            <ListView
+                Height="250"
+                ItemsSource="{Binding FilteredProductGroups}"
+                SelectedValue="{Binding Product.GroupId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedValuePath="Id" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="5,2">
+                            <TextBlock Text="{Binding Id}"/>
+                            <TextBlock Text="{Binding Name}" Margin="5,0" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <TextBlock Text="{Binding Product.GroupId, TargetNullValue='No group assigned', StringFormat='{}Group ID: {0}', Mode=OneWay}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+            <Button
+                x:Name="AddButton"
+                HorizontalAlignment="Right"
+                Click="ConfirmButton_Click"
+                Style="{StaticResource Action_New_Button}"
+                Tag="Add" />
+            <Button
+                x:Name="UpdateButton"
+                HorizontalAlignment="Right"
+                Click="ConfirmButton_Click"
+                Style="{StaticResource Action_Update_Button}"
+                Tag="Update" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -3,14 +3,14 @@ using ProjectLighthouse.ViewModel.Administration;
 using System;
 using System.Windows.Input;
 
-namespace ProjectLighthouse.ViewModel.Commands.Administration
+namespace ViewModel.Commands.Administration
 {
-    public class AddProductGroupCommand : ICommand
+    public class AddProductCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        public ProductManagerViewModel viewModel;
+        private ProductManagerViewModel viewModel;
 
-        public AddProductGroupCommand(ProductManagerViewModel viewModel)
+        public AddProductCommand(ProductManagerViewModel viewModel)
         {
             this.viewModel = viewModel;
         }
@@ -22,13 +22,13 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
-            if (parameter is ProductGroup group)
+            if (parameter is Product p)
             {
-                viewModel.AddProductGroup(group);
+                viewModel.CreateProduct(p);
                 return;
             }
 
-            viewModel.AddProductGroup(null);
+            viewModel.CreateProduct();
         }
     }
 }

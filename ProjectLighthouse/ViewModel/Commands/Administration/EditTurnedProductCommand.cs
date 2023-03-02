@@ -1,16 +1,18 @@
-﻿using ProjectLighthouse.Model.Products;
-using ProjectLighthouse.ViewModel.Administration;
+﻿using ProjectLighthouse.ViewModel.Administration;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.Administration
 {
-    public class AddProductGroupCommand : ICommand
+    public class EditTurnedProductCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        public ProductManagerViewModel viewModel;
 
-        public AddProductGroupCommand(ProductManagerViewModel viewModel)
+        private ProductManagerViewModel viewModel;
+
+        public EditTurnedProductCommand(ProductManagerViewModel viewModel)
         {
             this.viewModel = viewModel;
         }
@@ -22,13 +24,12 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
-            if (parameter is ProductGroup group)
+            if (parameter is not int id)
             {
-                viewModel.AddProductGroup(group);
                 return;
             }
 
-            viewModel.AddProductGroup(null);
+            viewModel.EditTurnedProduct(id);
         }
     }
 }

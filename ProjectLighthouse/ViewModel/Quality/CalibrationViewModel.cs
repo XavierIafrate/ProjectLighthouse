@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Quality;
-using ProjectLighthouse.View;
 using ProjectLighthouse.View.Quality;
 using ProjectLighthouse.ViewModel.Commands.Calibration;
 using ProjectLighthouse.ViewModel.Core;
@@ -189,7 +188,7 @@ namespace ProjectLighthouse.ViewModel.Quality
 
         private void LoadData()
         {
-            Equipment = DatabaseHelper.Read<CalibratedEquipment>();
+            Equipment = DatabaseHelper.Read<CalibratedEquipment>(throwErrs:true);
             Certificates = DatabaseHelper.Read<CalibrationCertificate>();
         }
 
@@ -286,7 +285,9 @@ namespace ProjectLighthouse.ViewModel.Quality
             window.ShowDialog();
             if (window.SaveExit)
             {
+                int id = window.Equipment.Id;
                 Refresh();
+                SelectedEquipment = Equipment.Find(x => x.Id == id);
             }
         }
 
@@ -297,7 +298,9 @@ namespace ProjectLighthouse.ViewModel.Quality
 
             if (window.SaveExit)
             {
+                int id = SelectedEquipment.Id;
                 Refresh();
+                SelectedEquipment = Equipment.Find(x => x.Id == id);
             }
         }
 
@@ -308,6 +311,7 @@ namespace ProjectLighthouse.ViewModel.Quality
             if (window.SaveExit)
             {
                 Refresh();
+                SelectedEquipment = Equipment.Find(x => x.Id == id);
             }
         }
 

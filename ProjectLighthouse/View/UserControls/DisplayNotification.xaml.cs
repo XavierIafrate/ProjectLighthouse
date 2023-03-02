@@ -40,5 +40,11 @@ namespace ProjectLighthouse.View.UserControls
             App.NotificationsManager.ExecuteToastAction(Notification.ToastAction);
             App.NotificationsManager.EnsureMarkedRead(Notification);
         }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.NotificationsManager.DeleteNotification(Notification);
+
+        }
     }
 }

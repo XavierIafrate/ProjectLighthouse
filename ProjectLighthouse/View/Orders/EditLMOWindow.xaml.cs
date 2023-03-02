@@ -441,7 +441,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void CalculateTimeAndBar()
         {
-            (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime();
+            (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime(Order.TargetCycleTime);
 
             double? partOff = null;
             if (!string.IsNullOrEmpty(Order.AllocatedMachine))
@@ -487,7 +487,7 @@ namespace ProjectLighthouse.View.Orders
         {
             if (_toEdit is not int) return;
 
-            EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch);
+            EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch, Order.AllocatedMachine ?? "");
             Hide();
             editWindow.ShowDialog();
 
