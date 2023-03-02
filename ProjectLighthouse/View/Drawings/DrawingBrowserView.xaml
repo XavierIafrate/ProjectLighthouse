@@ -242,72 +242,72 @@
                     </Border>
                     <StackPanel>
 
-                            <Grid Margin="20">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                        <Grid Margin="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
                             <TextBlock
-                                    FontSize="25"
-                                    FontWeight="Bold"
-                                    Foreground="{StaticResource OnSurface}"
-                                    Text="Release Candidate"
-                                    Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource collapseIfTrue}}" />
+                                FontSize="25"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource OnSurface}"
+                                Text="Release Candidate"
+                                Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource collapseIfTrue}}" />
+                            <TextBlock
+                                FontSize="25"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource OnSurface}"
+                                Text="{Binding SelectedDrawing.Revision, StringFormat='{}Revision {0}'}"
+                                Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="25"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource OnSurface}"
+                                Text="{Binding SelectedDrawing.AmendmentType}"
+                                Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}" />
+                            <Border
+                                Grid.Column="2"
+                                Height="30"
+                                Margin="8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource BlueFaded}"
+                                CornerRadius="5"
+                                Visibility="{Binding SelectedDrawing.IsCurrent, Converter={StaticResource showIfTrue}}">
                                 <TextBlock
-                                    FontSize="25"
-                                    FontWeight="Bold"
-                                    Foreground="{StaticResource OnSurface}"
-                                    Text="{Binding SelectedDrawing.Revision, StringFormat='{}Revision {0}'}"
-                                    Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}" />
+                                    Margin="8,2"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Blue}"
+                                    Text="CURRENT" />
+                            </Border>
+                            <Border
+                                Grid.Column="2"
+                                Height="30"
+                                Margin="8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource RedFaded}"
+                                CornerRadius="5"
+                                Visibility="{Binding SelectedDrawing.IsRejected, Converter={StaticResource showIfTrue}}">
                                 <TextBlock
-                                    Grid.Column="1"
-                                    FontSize="25"
-                                    FontWeight="Bold"
-                                    Foreground="{StaticResource OnSurface}"
-                                    Text="{Binding SelectedDrawing.AmendmentType}"
-                                    Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}" />
-                                <Border
-                                    Grid.Column="2"
-                                    Margin="8,0"
-                                    HorizontalAlignment="Left"
-                                    Height="30"
-                                    CornerRadius="5"
-                                    Background="{StaticResource BlueFaded}"
-                                    Visibility="{Binding SelectedDrawing.IsCurrent, Converter={StaticResource showIfTrue}}">
-                                    <TextBlock
-                                        Margin="8,2"
-                                        VerticalAlignment="Center"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource Blue}"
-                                        Text="CURRENT" />
-                                </Border>
-                                <Border
-                                    Grid.Column="2"
-                                    Margin="8,0"
-                                    CornerRadius="5"
-                                    HorizontalAlignment="Left"
-                                    Height="30"
-                                    Background="{StaticResource RedFaded}"
-                                    Visibility="{Binding SelectedDrawing.IsRejected, Converter={StaticResource showIfTrue}}">
-                                    <TextBlock
-                                        Margin="8,2"
-                                        VerticalAlignment="Center"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource Red}"
-                                        Text="REJECTED" />
-                                </Border>
-                                <Button
-                                    x:Name="openButton"
-                                    Grid.Column="3"
-                                    Margin="0"
-                                    HorizontalAlignment="Right"
-                                    Command="{Binding OpenDrawingCmd}"
-                                    Tag="{Binding OpenFileButtonText, FallbackValue='Open PDF'}"
-                                    IsEnabled="{Binding OpenFileButtonEnabled}"
-                                    Style="{StaticResource Action_Pdf_Button}" />
-                            </Grid>
+                                    Margin="8,2"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Red}"
+                                    Text="REJECTED" />
+                            </Border>
+                            <Button
+                                x:Name="openButton"
+                                Grid.Column="3"
+                                Margin="0"
+                                HorizontalAlignment="Right"
+                                Command="{Binding OpenDrawingCmd}"
+                                IsEnabled="{Binding OpenFileButtonEnabled}"
+                                Style="{StaticResource Action_Pdf_Button}"
+                                Tag="{Binding OpenFileButtonText, FallbackValue='Open PDF'}" />
+                        </Grid>
 
                         <Border
                             Margin="20,10"
@@ -323,8 +323,8 @@
 
                                 <TextBlock
                                     Margin="10,5"
-                                    FontWeight="SemiBold"
                                     VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
                                     Foreground="{StaticResource Blue}"
                                     Text="This drawing is only for research and development purposes." />
                             </StackPanel>
@@ -656,12 +656,8 @@
                                 TextChanged="TextBox_TextChanged" />
                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                 <!--<TextBlock VerticalAlignment="Center" Text="{Binding SelectedDrawing.SubmissionType, StringFormat='{}Submission Type: {0}', TargetNullValue='None'}" />-->
-                                <Button
-                                    Command="{Binding RejectDrawingCmd}"
-                                    Style="{StaticResource RejectButton}" />
-                                <Button
-                                    Command="{Binding ApproveDrawingCmd}"
-                                    Style="{StaticResource ApproveButton}" />
+                                <Button Command="{Binding RejectDrawingCmd}" Style="{StaticResource RejectButton}" />
+                                <Button Command="{Binding ApproveDrawingCmd}" Style="{StaticResource ApproveButton}" />
                             </StackPanel>
 
                         </StackPanel>
@@ -669,9 +665,9 @@
                         <StackPanel x:Name="Comments" Margin="20,0,20,0">
                             <TextBlock Style="{StaticResource section}" Text="Comments" />
                             <userControls:DisplayListOfNotes
+                                x:Name="notesDisplay"
                                 MinHeight="50"
                                 Margin="5"
-                                x:Name="notesDisplay"
                                 Notes="{Binding SelectedDrawingNotes, Mode=OneWay}"
                                 ShowingEditControls="False" />
                             <Grid Margin="10,5">
@@ -695,8 +691,8 @@
                                     x:Name="SendButton"
                                     Grid.Column="3"
                                     Margin="10,0,0,17"
-                                    Background="Transparent"
                                     HorizontalAlignment="Left"
+                                    Background="Transparent"
                                     Command="{Binding AddCommentToDrawingCmd}"
                                     Style="{StaticResource SendButton}" />
                             </Grid>
@@ -707,6 +703,11 @@
                     HorizontalAlignment="Center"
                     Command="{Binding WithdrawCmd}"
                     Style="{StaticResource WithdrawButton}" />
+                <Button
+                    Command="{Binding ConvertToDevelopmentCmd}"
+                    Style="{StaticResource Action_Button}"
+                    Tag="Convert to Development"
+                    Visibility="{Binding AdminVis}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

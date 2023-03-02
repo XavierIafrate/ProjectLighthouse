@@ -1,29 +1,26 @@
-﻿using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.ViewModel.Drawings;
+﻿using ProjectLighthouse.ViewModel.Drawings;
 using System;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.Drawings
 {
-    public class WithdrawDrawingCommand : ICommand
+    public class ConvertToDevelopmentCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-
         private DrawingBrowserViewModel viewModel;
-
-        public WithdrawDrawingCommand(DrawingBrowserViewModel vm)
+        public ConvertToDevelopmentCommand(DrawingBrowserViewModel viewModel)
         {
-            viewModel = vm;
+            this.viewModel = viewModel;
         }
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.Role == UserRole.Administrator;
+            return App.CurrentUser.Role == Model.Administration.UserRole.Administrator;
         }
 
         public void Execute(object parameter)
         {
-            viewModel.WithdrawDrawing();
+            viewModel.ConvertToDevelopment();
         }
     }
 }

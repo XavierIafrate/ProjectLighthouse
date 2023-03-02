@@ -1,19 +1,15 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
-using ProjectLighthouse.View;
 using ProjectLighthouse.View.Drawings;
-using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.ViewModel.Commands.Drawings;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Drawings
@@ -79,10 +75,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public string RejectionStatement
         {
             get { return rejectionStatement; }
-            set 
-            { 
-                rejectionStatement = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                rejectionStatement = value;
+                OnPropertyChanged();
             }
         }
 
@@ -113,11 +109,11 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public bool ShowRejected
         {
             get { return showRejected; }
-            set 
+            set
             {
                 showRejected = value;
                 LoadGroup();
-                OnPropertyChanged(); 
+                OnPropertyChanged();
             }
         }
 
@@ -128,8 +124,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
             set
             {
                 openFileButtonEnabled = value;
-                OpenFileButtonText = value 
-                    ? "Open File" 
+                OpenFileButtonText = value
+                    ? "Open File"
                     : "Not Found";
                 OnPropertyChanged();
             }
@@ -139,10 +135,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public string OpenFileButtonText
         {
             get { return openFileButtonText; }
-            set 
-            { 
-                openFileButtonText = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                openFileButtonText = value;
+                OnPropertyChanged();
             }
         }
         #endregion
@@ -151,6 +147,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public Visibility EditControlsVis { get; set; } = Visibility.Collapsed;
         public Visibility ApprovalControlsVis { get; set; } = Visibility.Collapsed;
         public Visibility PendingApprovalVis { get; set; } = Visibility.Collapsed;
+
+        public Visibility AdminVis { get; set; }
         #endregion
 
         #region Commands
@@ -160,6 +158,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public AddCommentToDrawingCommand AddCommentToDrawingCmd { get; set; }
         public ApproveDrawingCommand ApproveDrawingCmd { get; set; }
         public RejectDrawingCommand RejectDrawingCmd { get; set; }
+        public ConvertToDevelopmentCommand ConvertToDevelopmentCmd { get; set; }
         #endregion
 
         #endregion
@@ -174,8 +173,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         private void InitialiseVariables()
         {
-            EditControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveDrawings) 
-                ? Visibility.Visible 
+            EditControlsVis = App.CurrentUser.HasPermission(PermissionType.ApproveDrawings)
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             Drawings = new();
@@ -193,6 +192,9 @@ namespace ProjectLighthouse.ViewModel.Drawings
             AddCommentToDrawingCmd = new(this);
             ApproveDrawingCmd = new(this);
             RejectDrawingCmd = new(this);
+            ConvertToDevelopmentCmd= new(this);
+
+            AdminVis = App.CurrentUser.Role == UserRole.Administrator ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void LoadData()
@@ -239,7 +241,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                     IsArchetypeGroup = d.First().IsArchetype
                 };
 
-                if(newGroup.LastIssue == DateTime.MinValue)
+                if (newGroup.LastIssue == DateTime.MinValue)
                 {
                     newGroup.LastIssue = null;
                 }
@@ -330,10 +332,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void AddNewDrawing()
         {
-           AddNewDrawingWindow window = new(Drawings)
-           {
-               Owner = Application.Current.MainWindow
-           };
+            AddNewDrawingWindow window = new(Drawings)
+            {
+                Owner = Application.Current.MainWindow
+            };
 
             window.ShowDialog();
 
@@ -374,7 +376,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 && !selectedDrawing.IsRejected
                 && !selectedDrawing.IsWithdrawn
                 && App.CurrentUser.HasPermission(PermissionType.ApproveDrawings)
-                && selectedDrawing.CreatedBy != App.CurrentUser.GetFullName()
+                && (selectedDrawing.CreatedBy != App.CurrentUser.GetFullName() || selectedDrawing.WatermarkOnly)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
@@ -481,6 +483,30 @@ namespace ProjectLighthouse.ViewModel.Drawings
             }
         }
 
+        public void ConvertToDevelopment()
+        {
+            if (SelectedDrawing is null) return;
+            if (SelectedDrawing.IsRejected)
+            {
+                MessageBox.Show("Drawing is rejected, cannot convert");
+                return;
+            }
+
+
+
+
+
+            SelectedDrawing.DrawingType = TechnicalDrawing.Type.Research;
+            DatabaseHelper.Update(SelectedDrawing);
+            SelectedDrawing.PrepareMarkedPdf();
+
+            int target = SelectedDrawing.Id;
+            LoadData();
+            SelectedGroup = DrawingGroups.Find(x => x.Drawings.Any(y => y.Id == target));
+
+            MessageBox.Show("Success");
+        }
+
         public void PublishDrawing()
         {
             TechnicalDrawing beingReplaced = SelectedGroup.Drawings.Find(x => x.IsCurrent);
@@ -528,7 +554,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void WithdrawDrawing()
         {
-            if(SelectedDrawing is null)
+            if (SelectedDrawing is null)
             {
                 return;
             }
@@ -538,7 +564,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 MessageBox.Show("You cannot withdraw a drawing you didn't upload.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-         
+
             if (SelectedDrawing.IsRejected)
             {
                 MessageBox.Show("You cannot withdraw this drawing, it has been rejected.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
