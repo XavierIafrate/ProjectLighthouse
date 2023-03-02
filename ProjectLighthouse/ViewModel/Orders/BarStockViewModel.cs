@@ -9,6 +9,7 @@ using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows;
@@ -40,18 +41,12 @@ namespace ProjectLighthouse.ViewModel.Orders
             set
             {
                 selectedBarStock = value;
-                if (value == null)
+                if (value is not null)
                 {
-                    NoneFoundVis = Visibility.Visible;
-                    BarStockVis = Visibility.Hidden;
-                }
-                else
-                {
-                    NoneFoundVis = Visibility.Hidden;
-                    BarStockVis = Visibility.Visible;
                     DependentOrdersVis = value.Orders.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
                     OnPropertyChanged(nameof(DependentOrdersVis));
                 }
+                RecommendPurchaseOrder();
                 OnPropertyChanged();
             }
         }
@@ -72,6 +67,19 @@ namespace ProjectLighthouse.ViewModel.Orders
                 OnPropertyChanged();
             }
         }
+
+        private string? suggestedOrderText;
+
+        public string? SuggestedOrderText
+        {
+            get { return suggestedOrderText; }
+            set 
+            { 
+                suggestedOrderText = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private bool showRequisitionsOnly;
 
@@ -95,10 +103,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             set { selectedOrder = value; OnPropertyChanged(); }
         }
 
-
-
-        public Visibility BarStockVis { get; set; } = Visibility.Visible;
-        public Visibility NoneFoundVis { get; set; } = Visibility.Hidden;
         public Visibility DependentOrdersVis { get; set; } = Visibility.Hidden;
 
 
@@ -235,9 +239,35 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 SelectedBarStock = null;
             }
+        }
 
-            OnPropertyChanged(nameof(NoneFoundVis));
-            OnPropertyChanged(nameof(BarStockVis));
+        void RecommendPurchaseOrder()
+        {
+            if (SelectedBarStock is null)
+            {
+                SuggestedOrderText = null;
+                return;
+            }
+
+            if (SelectedBarStock.FreeBar > 0)
+            {
+                SuggestedOrderText = null;
+                return;
+            }
+
+            int numBarsToBuy = SelectedBarStock.BarStock.SuggestedStock + (int)Math.Abs(SelectedBarStock.FreeBar);
+            if (numBarsToBuy == 0)
+            {
+                SuggestedOrderText = null;
+            }
+            else if (numBarsToBuy == 1)
+            {
+                SuggestedOrderText = $"Purchase order for {numBarsToBuy:0} bar suggested";
+            }
+            else
+            {
+                SuggestedOrderText = $"Purchase order for {numBarsToBuy:0} bars suggested";
+            }
         }
 
         public void PrintRequisition()
