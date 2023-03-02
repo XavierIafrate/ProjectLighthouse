@@ -443,7 +443,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 gfx.DrawString($"{i}.", font, XBrushes.Black, RowNumCol, XStringFormats.Center);
                 gfx.DrawString(deliveryItem.PurchaseOrderReference, font, XBrushes.Black, PurchaseRefCol, XStringFormats.CenterLeft);
-                gfx.DrawString(deliveryItem.Product, font, XBrushes.Black, ProductCol, XStringFormats.CenterLeft);
+                gfx.DrawString(deliveryItem.ExportProductName, font, XBrushes.Black, ProductCol, XStringFormats.CenterLeft);
                 gfx.DrawString($"{deliveryItem.QuantityThisDelivery:#,##0} pcs", font, XBrushes.Black, ThisDelCol, XStringFormats.Center);
                 //gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityToFollow), font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
 
@@ -452,7 +452,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 gfx.DrawBarCode(barcode, XBrushes.Black, new XPoint(PurchaseRefCol.X, y + 20));
 
                 // Product # Barcode
-                barcode.Text = deliveryItem.Product.ToUpper();
+                barcode.Text = deliveryItem.ExportProductName.ToUpper();
                 gfx.DrawBarCode(barcode, XBrushes.Black, new XPoint(ThisDelCol.X, y + 20));
 
                 i += 1;

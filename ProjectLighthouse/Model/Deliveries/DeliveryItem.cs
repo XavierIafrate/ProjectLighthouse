@@ -11,6 +11,7 @@ namespace ProjectLighthouse.Model.Deliveries
         public string ItemManufactureOrderNumber { get; set; }
         public string PurchaseOrderReference { get; set; }
         public string Product { get; set; }
+        public string ExportProductName { get; set; }
         public int QuantityThisDelivery { get; set; }
         public int QuantityToFollow { get; set; }
         public int LotID { get; set; }
