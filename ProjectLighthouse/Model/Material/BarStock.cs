@@ -22,7 +22,6 @@ namespace ProjectLighthouse.Model.Material
         }
 
         private int length;
-
         public int Length
         {
             get { return length; }
@@ -35,12 +34,12 @@ namespace ProjectLighthouse.Model.Material
         }
 
         private double size;
-
         public double Size
         {
             get { return size; }
             set 
             { 
+                if(value == size) return;
                 size = value; 
                 ValidateProperty();
                 OnPropertyChanged();

@@ -1,23 +1,50 @@
 ﻿using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Material;
-using System.Linq;
+using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Products
 {
-    public class ProductGroup : IAutoIncrementPrimaryKey
+    public class ProductGroup : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation, ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        [NotNull]
-        public string Name { get; set; }
+
+        private string name;
+        [NotNull, Unique]
+        public string Name
+        {
+            get { return name; }
+            set 
+            { 
+                name = value;
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
 
 
         public int? ProductId { get; set; }
         public double? MinBarSize { get; set; }
-        public double MajorDiameter { get; set; }
+
+        private double majorDiameter;
+        public double MajorDiameter
+        {
+            get { return majorDiameter; }
+            set 
+            { 
+                if (majorDiameter == value) return;
+                
+                majorDiameter = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public override string ToString()
         {
@@ -46,6 +73,63 @@ namespace ProjectLighthouse.Model.Products
             }
 
             return bars.First();
+        }
+
+        public void ValidateAll()
+        {
+            if (Id == -1) // Unassigned
+            {
+                return;
+            }
+
+            ValidateProperty(nameof(Name));
+            ValidateProperty(nameof(MajorDiameter));
+        }
+
+        public void ValidateProperty([CallerMemberName] string propertyName = "")
+        {
+            if (Id == -1) // Unassigned
+            {
+                return;
+            }
+
+            if (propertyName == nameof(Name))
+            {
+                ClearErrors(propertyName);
+                if (string.IsNullOrEmpty(Name))
+                {
+                    AddError(nameof(Name), "Group Name cannot be empty");
+                    return;
+                }
+
+                if (!ValidationHelper.IsValidProductName(Name))
+                {
+                    AddError(nameof(Name), "Group Name contains a non-standard character");
+                    return;
+                }
+
+                return;
+            }
+            else if (propertyName == nameof(MajorDiameter)) 
+            {
+                ClearErrors(propertyName);
+                if (MajorDiameter <= 0)
+                {
+                    AddError(nameof(MajorDiameter), "Major Diameter must be greater than zero");
+                    return;
+                }
+
+                return;
+            }
+
+
+            throw new NotImplementedException();
+
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }
