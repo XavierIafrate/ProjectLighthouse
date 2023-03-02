@@ -1,6 +1,9 @@
-﻿using ProjectLighthouse.Model.Orders;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.Requests;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -60,12 +63,16 @@ namespace ProjectLighthouse.View.Orders
                 ).ToList();
 
             List<LatheManufactureOrderItem> items = new();
-            
-            
             for (int i = 0; i < PossibleProducts.Count; i++)
             {
-                items.Add(new(PossibleProducts[i]));
-            }
+                items.Add(new(PossibleProducts[i]) 
+                { 
+                    TargetQuantity = Math.Max(
+                        PossibleProducts[i].GetRecommendedQuantity(), 
+                        RequestsEngine.GetMiniumumOrderQuantity(PossibleProducts[i])
+                        )
+                });
+        }
 
             PossibleItems = new(items);
         }
