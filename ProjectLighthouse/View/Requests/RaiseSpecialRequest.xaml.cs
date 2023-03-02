@@ -13,27 +13,17 @@ namespace ProjectLighthouse.View.Requests
         {
             InitializeComponent();
             NewProduct = new() { IsSpecialPart = true };
+            DataContext = this;
         }
 
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(productName.Text))
-            {
-                MessageBox.Show("Product needs a name.", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
-                return;
-            }
-            else
-            {
-                NewProduct.ProductName = productName.Text.Trim().ToUpperInvariant();
-            }
-
             if (string.IsNullOrWhiteSpace(specDetails.Text) && string.IsNullOrEmpty(specDocument.FilePath))
             {
                 MessageBox.Show("You need to provide a specification by one of the given methods.", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
                 return;
             }
-
 
             if (!string.IsNullOrEmpty(specDocument.FilePath))
             {
@@ -58,21 +48,16 @@ namespace ProjectLighthouse.View.Requests
             NewProduct.AddedBy = App.CurrentUser.UserName;
             NewProduct.AddedDate = DateTime.Now;
 
-            if (DatabaseHelper.Insert<TurnedProduct>(NewProduct))
+            try
             {
-                MessageBox.Show($"Successfully added {NewProduct.ProductName} to database, you can now raise a request.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                DatabaseHelper.Insert<TurnedProduct>(NewProduct, throwErrs: true);
                 productAdded = true;
                 Close();
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show($"Something bad happened, please notify an administrator.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Lighthouse encountered an error while inserting to the database.{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        private void productName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            e.Handled = TextBoxHelper.ValidateKeyPressForProductName(e);
         }
     }
 }

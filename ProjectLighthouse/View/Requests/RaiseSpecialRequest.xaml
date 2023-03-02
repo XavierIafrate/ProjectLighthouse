@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
-    Title="Special Request"
+    Title="Add Bespoke Product"
     Width="500"
     WindowStartupLocation="CenterOwner"
     SizeToContent="Height"
@@ -37,10 +37,9 @@
         <TextBlock Text="Product Name" Style="{StaticResource InputLabel}"/>
         <TextBox
             MaxLength="16"
-            PreviewKeyDown="productName_PreviewKeyDown"
+            Text="{Binding NewProduct.ProductName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
             Style="{StaticResource DefaultTextBox}"
-            Tag="product name"
-            x:Name="productName" />
+            Tag="product name" />
         
         <TextBlock Text="Technical Specification" Style="{StaticResource InputLabel}"/>
         <TextBlock Text="PDF, jpg, or png accepted." Foreground="{StaticResource DisabledElement}"/>
@@ -48,7 +47,7 @@
 
         <TextBox
             Style="{StaticResource DefaultTextBox}"
-            Tag="Or give written details here..."
+            Tag="or give written details here"
             x:Name="specDetails" />
         <Button
             x:Name="SubmitButton"
