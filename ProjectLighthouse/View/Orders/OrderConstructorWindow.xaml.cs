@@ -1,8 +1,8 @@
-﻿using Microsoft.Web.WebView2.Core;
-using ProjectLighthouse.Model.Drawings;
+﻿using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.ViewModel.Helpers;
 using ProjectLighthouse.ViewModel.Requests;
 using System;
@@ -13,7 +13,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using ViewModel.Helpers;
-using Windows.ApplicationModel.Appointments.DataProvider;
 
 namespace ProjectLighthouse.View.Orders
 {
@@ -23,6 +22,8 @@ namespace ProjectLighthouse.View.Orders
         public List<ProductGroup> ProductGroups { get; set; }
         public List<TurnedProduct> TurnedProducts { get; set; }
         public List<BarStock> BarStock { get; set; }
+
+        public int? RequestId = null;
 
 
         #region Full Properties
@@ -178,7 +179,7 @@ namespace ProjectLighthouse.View.Orders
 
             product = AvailableTurnedProducts.ToList().Find(x => x.ProductName == product.ProductName);
 
-            if(product is null)
+            if (product is null)
             {
                 throw new($"Product not found");
             }
@@ -224,10 +225,10 @@ namespace ProjectLighthouse.View.Orders
             SelectedGroup = targetGroup;
 
 
-            for(int i = 0; i < recommendation.Count; i++)
+            for (int i = 0; i < recommendation.Count; i++)
             {
                 TurnedProduct? turnedProduct = AvailableTurnedProducts.ToList().Find(x => x.ProductName == recommendation[i].ProductName);
-                
+
                 if (turnedProduct is null)
                 {
                     continue;
@@ -342,7 +343,7 @@ namespace ProjectLighthouse.View.Orders
             }
 
             newItem.PropertyChanged += OnNewItemChanged;
-            
+
             NewOrderItems.Add(newItem);
 
             AvailableTurnedProducts.Remove(product);
@@ -389,6 +390,17 @@ namespace ProjectLighthouse.View.Orders
 
             try
             {
+                CheckRequestCanBeApproved();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
+                return;
+            }
+
+            try
+            {
                 CreateManufactureOrder();
             }
             catch (Exception ex)
@@ -399,6 +411,34 @@ namespace ProjectLighthouse.View.Orders
 
             SaveExit = true;
             Close();
+        }
+
+        private void CheckRequestCanBeApproved()
+        {
+            if (RequestId is null)
+            {
+                return;
+            }
+            Request? request;
+
+            try
+            {
+                request = DatabaseHelper.Read<Request>(throwErrs:true).Find(x => x.Id == RequestId);
+            }
+            catch
+            {
+                throw new Exception("Error finding request");
+            }
+
+            if (request is null)
+            {
+                throw new Exception("Error finding request");
+            }
+
+            if (request.IsAccepted || request.IsDeclined)
+            {
+                throw new Exception("Request already approved");
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -419,7 +459,7 @@ namespace ProjectLighthouse.View.Orders
             }
 
 
-            if(failedValidation > 0)
+            if (failedValidation > 0)
             {
                 throw new Exception($"{failedValidation:0} items have failed validation, cannot proceed.");
             }
@@ -435,7 +475,7 @@ namespace ProjectLighthouse.View.Orders
 
             ProductGroup group = SelectedGroup;
             NewOrder.MajorDiameter = group.MajorDiameter;
-            
+
             BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId);
 
             if (orderBar is null)
