@@ -6,7 +6,6 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using Model.Analytics;
 using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Orders;
-using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -14,9 +13,6 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Xaml;
 using static Model.Analytics.KpiReport;
 
 namespace ProjectLighthouse.ViewModel.Administration
@@ -57,7 +53,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         public ISeries[] TestSeries { get; set; }
         public ISeries[] KpiSeries { get; set; }
 
-        public ISeries[] WeeklyKpis { get; set; } 
+        public ISeries[] WeeklyKpis { get; set; }
 
         public string TitleText { get; set; }
         public Axis[] KpiXAxes { get; set; }
@@ -104,7 +100,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             //Task.Run(() => GetAnalytics());
             GetAnalytics();
-            
+
         }
 
         private void GetAnalytics()
@@ -270,7 +266,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 DateTime startDate = reportStartDate.AddDays(i);
 
                 OperatingEfficiencyKpi weeksKpi = baseData.GetKpi(startDate, span: 1);
-                weeksKpi.Normalise(24*4);
+                weeksKpi.Normalise(24 * 4);
                 weeklyKpis.Add(startDate, weeksKpi);
             }
 
@@ -386,7 +382,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             OnPropertyChanged(nameof(KpiXAxes));
 
-            
+
 
             TitleText = $"Efficiency for date range {targetKey:ddd dd/MM/yy HHmm} to {targetKey.AddDays(1):ddd dd/MM/yy HHmm}";
 
@@ -395,7 +391,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             double[] oees = new double[totalReportDaysSpan];
             double[] ooes = new double[totalReportDaysSpan];
-            string[] xAxisLabels = new string[totalReportDaysSpan]; 
+            string[] xAxisLabels = new string[totalReportDaysSpan];
 
             for (int x = 0; x < totalReportDaysSpan; x++)
             {
