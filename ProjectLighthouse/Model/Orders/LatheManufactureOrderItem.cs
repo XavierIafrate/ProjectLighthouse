@@ -45,8 +45,8 @@ namespace ProjectLighthouse.Model.Orders
         public int QuantityReject { get; set; }
         public int QuantityDelivered { get; set; }
         public int CycleTime { get; set; }
-        private double majorLength;
 
+        private double majorLength;
         public double MajorLength
         {
             get { return majorLength; }
@@ -60,7 +60,6 @@ namespace ProjectLighthouse.Model.Orders
         }
 
         private double partOffLength;
-
         public double PartOffLength
         {
             get { return partOffLength; }

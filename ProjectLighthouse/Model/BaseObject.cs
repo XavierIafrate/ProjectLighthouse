@@ -29,6 +29,9 @@ namespace ProjectLighthouse.Model
 
         public IEnumerable GetErrors(string propertyName)
         {
+            // TODO verify this isn't causing problems
+            if (propertyName is null) return null;
+
             if (!Errors.ContainsKey(propertyName))
             {
                 return null;
