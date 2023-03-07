@@ -7,6 +7,7 @@ using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands.Orders;
@@ -43,6 +44,9 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<Lot> Lots { get; set; }
         public List<BarStock> BarStock { get; set; }
         public List<MaterialInfo> MaterialInfo { get; set; }
+
+        public List<Product> Products { get; set; }
+        public List<ProductGroup> ProductGroups { get; set; }
         #endregion
 
         #region Observable
@@ -51,6 +55,8 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<Note> FilteredNotes { get; set; }
         public List<TechnicalDrawing> FilteredDrawings { get; set; }
         public BarStock SelectedOrderBar { get; set; }
+        public ProductGroup SelectedProductGroup { get; set; }
+        public Product SelectedProduct { get; set; }
         #endregion
 
         #region Charting
@@ -58,9 +64,9 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             new Axis
             {
-                Labeler = value => new DateTime((long) value).ToString("dd/MM"),
+                Labeler = value => new DateTime((long) Math.Max(0, value)).ToString("dd/MM"),
                 LabelsRotation = 0,
-                UnitWidth = TimeSpan.FromDays(1).Ticks, 
+                UnitWidth = TimeSpan.FromDays(1).Ticks,
                 MinStep = TimeSpan.FromDays(1).Ticks,
                 ForceStepToMin=true
 
@@ -76,6 +82,29 @@ namespace ProjectLighthouse.ViewModel.Orders
         };
 
         public List<ISeries> Series { get; set; }
+
+        public Axis[] CycleTimeYAxes { get; set; } =
+        {
+            new Axis
+            {
+                Labeler = value => $"{Math.Floor(value/60):0}m {value%60}s",
+                MinLimit = 0,
+                MinStep= 30,
+            }
+        };
+
+        public Axis[] CycleTimeXAxes { get; set; } =
+        {
+            new Axis
+            {
+                Labeler = value => new DateTime((long) Math.Max(0, value)).ToString("MMM yy"),
+                LabelsRotation = 0,
+
+            }
+        };
+        public List<ISeries> CycleTimeSeries { get; set; }
+        public string RunBeforeInfo { get; set; }
+
         #endregion
 
         #region User Demands
@@ -308,23 +337,138 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             Series = new List<ISeries> { scrapped, produced };
             OnPropertyChanged(nameof(Series));
+        }
 
-            //XAxes = new Axis[]
-            //{
-            //    new Axis()
-            //    {
-            //        LabelsRotation = 0,
-            //        Labeler = value => new DateTime((long)value).ToString("dd/MM"),
-            //        // set the unit width of the axis to "days"
-            //        // since our X axis is of type date time and 
-            //        // the interval between our points is in days
-            //        UnitWidth = TimeSpan.FromDays(1).Ticks,
-            //        TextSize = 14,
-            //        Padding = new Padding(5, 15, 5, 5),
-            //        Labels = labels
-            //    }
-            //};
-            //OnPropertyChanged(nameof(XAxes));
+
+        private void LoadBriefing()
+        {
+            if (SelectedOrder is null)
+            {
+                RunBeforeInfo = null;
+                OnPropertyChanged(nameof(RunBeforeInfo));
+                CycleTimeSeries = null;
+                OnPropertyChanged(nameof(CycleTimeSeries));
+                return;
+            }
+
+            int GroupId = SelectedOrder.GroupId;
+            int MaterialId = SelectedOrder.MaterialId;
+
+            SelectedProductGroup = ProductGroups.Find(x => x.Id == GroupId);
+
+            if (SelectedProductGroup is not null)
+            {
+                SelectedProduct = Products.Find(x => x.Id == SelectedProductGroup.ProductId);
+            }
+
+            OnPropertyChanged(nameof(SelectedProductGroup));
+            OnPropertyChanged(nameof(SelectedProduct));
+
+            List<LatheManufactureOrder> otherOrders = Orders
+                .Where(x =>
+                    x.GroupId == GroupId &&
+                    x.Name != SelectedOrder.Name &&
+                    x.State == OrderState.Complete &&
+                    x.StartDate < SelectedOrder.CreatedAt &&
+                   x.StartDate.Date > DateTime.MinValue)
+                .OrderBy(x => x.StartDate)
+                .ToList();
+
+            if (otherOrders.Count == 0)
+            {
+                RunBeforeInfo = "We have not manufactured this archetype before";
+                OnPropertyChanged(nameof(RunBeforeInfo));
+                CycleTimeSeries = null;
+                OnPropertyChanged(nameof(CycleTimeSeries));
+                return;
+            }
+
+            LatheManufactureOrder mostRecent = otherOrders.Last();
+            int runBeforeCount = otherOrders.Count;
+            int timeInThisMaterial = otherOrders.Count(x => x.MaterialId == MaterialId);
+            string timesInThisMaterial;
+
+            if (timeInThisMaterial == 0)
+            {
+                timesInThisMaterial = "never";
+            }
+            else if (timeInThisMaterial == 1)
+            {
+                timesInThisMaterial = "once";
+            }
+            else if (timeInThisMaterial == 2)
+            {
+                timesInThisMaterial = "twice";
+            }
+            else
+            {
+                timesInThisMaterial = $"{timeInThisMaterial:0} times";
+            }
+
+            if (runBeforeCount == 1)
+            {
+                RunBeforeInfo = $"We have run this archetype once before, {timesInThisMaterial} in this material.";
+            }
+            else if (runBeforeCount == 2)
+            {
+                RunBeforeInfo = $"We have run this archetype twice before, {timesInThisMaterial} in this material.";
+            }
+            else
+            {
+                RunBeforeInfo = $"We have run this archetype {otherOrders.Count:0} times before, {timesInThisMaterial} in this material.";
+            }
+
+            Dictionary<MaterialInfo, List<DateTimePoint>> series = new();
+
+            foreach (LatheManufactureOrder order in otherOrders)
+            {
+                MaterialInfo? material = MaterialInfo.Find(x => x.Id == order.MaterialId);
+
+                if (material is null) continue;
+
+                List<LatheManufactureOrderItem> itemsInvolved = OrderItems.Where(x => order.Name == x.AssignedMO && x.CycleTime > 0).ToList();
+                int[] uniqueTimes = itemsInvolved.Select(x => x.CycleTime).Distinct().ToArray();
+
+                if (!series.ContainsKey(material))
+                {
+                    series.Add(material, new());
+                }
+
+                foreach (int time in uniqueTimes)
+                {
+                    series[material].Add(new(order.StartDate, time));
+                }
+            }
+            CycleTimeSeries = null;
+            OnPropertyChanged(nameof(CycleTimeSeries));
+
+
+            if (otherOrders.Count > 2)
+            {
+                //SolidColorBrush purple = (Brush)Application.Current.Resources["Purple"] as SolidColorBrush;
+                CycleTimeSeries = new List<ISeries>();
+
+                foreach (KeyValuePair<MaterialInfo, List<DateTimePoint>> s in series)
+                {
+                    ScatterSeries<DateTimePoint> newSeries = new()
+                    {
+                        Values = s.Value,
+                        Name = s.Key.MaterialCode,
+                        Stroke = null,
+                        TooltipLabelFormatter = (chartPoint) =>
+                        $"[{s.Key.MaterialCode}] {new DateTime((long)chartPoint.SecondaryValue):dd/MM/yy}: {Math.Floor(chartPoint.PrimaryValue / 60):0}m {chartPoint.PrimaryValue % 60}s",
+
+                    };
+
+
+                    CycleTimeSeries.Add(newSeries);
+                }
+            }
+            OnPropertyChanged(nameof(CycleTimeSeries));
+
+            RunBeforeInfo += $"{Environment.NewLine}Group most recently run in {mostRecent.StartDate:MMMM yyyy}";
+            OnPropertyChanged(nameof(RunBeforeInfo));
+
         }
 
         private void InitialiseVariables()
@@ -341,6 +485,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             BarStock = new();
             MaterialInfo = new();
             SelectedOrderBar = new();
+            Products = new();
+            ProductGroups = new();
 
             FilteredDrawings = new();
             FilteredNotes = new();
@@ -464,6 +610,9 @@ namespace ProjectLighthouse.ViewModel.Orders
             Lathes = DatabaseHelper.Read<Lathe>().ToList();
 
             Lots = DatabaseHelper.Read<Lot>().ToList();
+
+            Products = DatabaseHelper.Read<Product>().ToList();
+            ProductGroups = DatabaseHelper.Read<ProductGroup>().ToList();
 
             BarStock = DatabaseHelper.Read<BarStock>().ToList();
             MaterialInfo = DatabaseHelper.Read<MaterialInfo>().ToList();
@@ -615,6 +764,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             SetUiElements();
             List<Lot> orderLots = Lots.Where(x => x.Order == SelectedOrder.Name).ToList();
             Task.Run(() => LoadProductionChart(orderLots, SelectedOrder.StartDate.Date));
+            Task.Run(() => LoadBriefing());
         }
 
         private void SetUiElements()
