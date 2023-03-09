@@ -2,6 +2,7 @@
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.Requests;
 using SQLite;
 using System;
 using System.Runtime.CompilerServices;
@@ -299,38 +300,7 @@ namespace ProjectLighthouse.Model.Products
         {
             int toMake = (int)Math.Max(QuantitySold - QuantityInStock + QuantityOnSO - QuantityOnPO, 0);
 
-            return RoundQuantity(toMake);
-        }
-
-        public int RoundQuantity(int quantity)
-        {
-            if (quantity == 0)
-            {
-                return quantity;
-            }
-
-            int multiple = quantity switch
-            {
-                < 50 => 10,
-                < 100 => 25,
-                < 500 => 100,
-                < 1000 => 200,
-                < 2000 => 500,
-                < 10000 => 1000,
-                < 20000 => 2000,
-                < 30000 => 3000,
-                _ => 100,
-            };
-
-            return RoundUpToMultiple(quantity, multiple);
-        }
-
-
-        public int RoundUpToMultiple(int quantity, int multiple)
-        {
-            int rem = quantity % multiple;
-            quantity += (multiple - rem);
-            return quantity;
+            return RequestsEngine.RoundQuantity(toMake, roundUp:true);
         }
 
         public TimeSpan GetTimeToMake(int quantity)
@@ -349,6 +319,16 @@ namespace ProjectLighthouse.Model.Products
         public int FreeStock()
         {
             return QuantityInStock + LighthouseGuaranteedQuantity - QuantityOnSO;
+        }
+
+        public bool Overstocked()
+        {
+            if (QuantitySold == 0)
+            {
+                return QuantityInStock > 200;
+            }
+
+            return (double)QuantityInStock / QuantitySold > 2.5;
         }
 
         #endregion
