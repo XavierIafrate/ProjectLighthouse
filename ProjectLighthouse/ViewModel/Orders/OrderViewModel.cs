@@ -25,6 +25,7 @@ using System.Windows;
 using System.Windows.Media;
 using ViewModel.Commands.Orders;
 using ViewModel.Helpers;
+using Windows.Foundation.Diagnostics;
 using DateTimePoint = LiveChartsCore.Defaults.DateTimePoint;
 
 namespace ProjectLighthouse.ViewModel.Orders
@@ -360,6 +361,18 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 SelectedProduct = Products.Find(x => x.Id == SelectedProductGroup.ProductId);
             }
+            else
+            {
+                SelectedProduct = null;
+                CycleTimeSeries= null;
+                RunBeforeInfo = "Archetype not found - analysis unavailable.";
+                
+                OnPropertyChanged(nameof(RunBeforeInfo));
+                OnPropertyChanged(nameof(SelectedProduct));
+                OnPropertyChanged(nameof(CycleTimeSeries));
+                OnPropertyChanged(nameof(SelectedProductGroup));
+                return;
+            }
 
             OnPropertyChanged(nameof(SelectedProductGroup));
             OnPropertyChanged(nameof(SelectedProduct));
@@ -441,7 +454,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
             CycleTimeSeries = null;
             OnPropertyChanged(nameof(CycleTimeSeries));
-
 
             if (otherOrders.Count > 2)
             {
