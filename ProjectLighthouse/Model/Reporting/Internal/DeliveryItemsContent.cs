@@ -103,7 +103,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
                 row.VerticalAlignment = VerticalAlignment.Center;
 
                 row.Cells[0].AddParagraph((i + 1).ToString("0"));
-                row.Cells[1].AddParagraph(items[i].ExportProductName);
+                row.Cells[1].AddParagraph(items[i].ExportProductName ?? items[i].Product);
                 row.Cells[2].AddParagraph($"{items[i].PurchaseOrderReference}");
                 row.Cells[3].AddParagraph($"{items[i].QuantityThisDelivery:#,##0}");
             }
