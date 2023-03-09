@@ -60,7 +60,6 @@
             <TextBlock Style="{StaticResource SectionLabel}" Text="Products" />
             <ListView
                 Grid.Row="1"
-                d:ItemsSource="{d:SampleData ItemCount=15}"
                 ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Products, Mode=OneWay}"
                 SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Style="{StaticResource HorizontalListView}">
@@ -72,12 +71,25 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Border Background="{StaticResource Background}" CornerRadius="5">
-                                <Image
-                                    MaxWidth="60"
-                                    MaxHeight="60"
-                                    Margin="10"
-                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                    Source="{Binding LocalRenderPath}" />
+                                <Grid>
+                                <Path
+                                Height="50"
+                                Margin="0,0,2,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
+                                Fill="{StaticResource OnSurface}"
+                                Opacity="0.3"
+                                Stretch="Uniform" />
+                            <Image
+                                Width="60"
+                                Height="60"
+                                Margin="10"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RenderOptions.BitmapScalingMode="Fant"
+                                Source="{Binding LocalRenderPath, TargetNullValue={x:Null}}" />
+                                </Grid>
                             </Border>
                             <TextBlock
                                 Grid.Row="1"
