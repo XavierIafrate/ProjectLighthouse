@@ -6,24 +6,17 @@ namespace ProjectLighthouse.View.UserControls
 {
     public partial class DisplayManifestItem : UserControl
     {
-
-
         public LatheManufactureOrderItem Item
         {
             get { return (LatheManufactureOrderItem)GetValue(ItemProperty); }
             set { SetValue(ItemProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for Item.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ItemProperty =
+public static readonly DependencyProperty ItemProperty =
             DependencyProperty.Register("Item", typeof(LatheManufactureOrderItem), typeof(DisplayManifestItem), new PropertyMetadata(null, SetValues));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not DisplayManifestItem control)
-            {
-                return;
-            }
+            if (d is not DisplayManifestItem control) return;
 
             control.DataContext = control.Item;
 
