@@ -12,10 +12,10 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.7.4</FileVersion>
-    <AssemblyVersion>1.7.4</AssemblyVersion>
+    <FileVersion>1.7.5</FileVersion>
+    <AssemblyVersion>1.7.5</AssemblyVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.7.4</Version>
+    <Version>1.7.5</Version>
     <Product>Lighthouse</Product>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
