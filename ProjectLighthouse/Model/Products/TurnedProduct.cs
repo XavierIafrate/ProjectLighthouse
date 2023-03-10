@@ -285,15 +285,8 @@ namespace ProjectLighthouse.Model.Products
             {
                 return CycleTime;
             }
-            else
-            {
-                return MajorDiameter switch
-                {
-                    < 15 => 120,
-                    < 24 => 180,
-                    _ => 240
-                };
-            }
+
+            return RequestsEngine.EstimateCycleTime(MajorDiameter);
         }
 
         public int GetRecommendedQuantity()

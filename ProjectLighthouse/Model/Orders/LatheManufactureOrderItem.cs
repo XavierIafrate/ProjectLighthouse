@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.ViewModel.Requests;
 using SQLite;
 using System;
 using System.Runtime.CompilerServices;
@@ -84,11 +85,19 @@ namespace ProjectLighthouse.Model.Orders
         public bool NeedsCleaning { get; set; }
 
         public bool ShowEdit;
-        public int RecommendedQuantity;
         public int SellPrice;
 
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public Action<LatheManufactureOrderItem> RequestToEdit { get; set; }
+
+
+        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
+        public int RecommendedQuantity { get; set; }
+
+        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
+        public int QuantityInStock { get; set; }
+        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
+        public int YearStock { get; set; }
 
         public void NotifyRequestToEdit()
         {
@@ -106,57 +115,47 @@ namespace ProjectLighthouse.Model.Orders
 
         }
 
-        public LatheManufactureOrderItem(TurnedProduct fromProduct)
+        private void SetupFromProduct(TurnedProduct fromProduct)
         {
             ProductName = fromProduct.ProductName;
             ProductId = fromProduct.Id;
             CycleTime = fromProduct.CycleTime;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
-            PartOffLength= fromProduct.PartOffLength;
+            PartOffLength = fromProduct.PartOffLength;
             DateAdded = DateTime.Now;
             AddedBy = App.CurrentUser.GetFullName();
             IsSpecialPart = fromProduct.IsSpecialPart;
 
             RequiredQuantity = 0;
-            TargetQuantity = fromProduct.GetRecommendedQuantity();
+            TargetQuantity = Math.Max(fromProduct.GetRecommendedQuantity(), 1);
             SellPrice = fromProduct.SellPrice;
+
+            QuantityInStock = fromProduct.QuantityInStock;
+            RecommendedQuantity = fromProduct.GetRecommendedQuantity();
+            YearStock = fromProduct.QuantitySold;
+        }
+
+        public LatheManufactureOrderItem(TurnedProduct fromProduct)
+        {
+            SetupFromProduct(fromProduct);
         }
 
         public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity)
         {
-            ProductName = fromProduct.ProductName;
-            ProductId = fromProduct.Id;
-            CycleTime = fromProduct.CycleTime;
-            MajorDiameter = fromProduct.MajorDiameter;
-            MajorLength = fromProduct.MajorLength;
-            PartOffLength= fromProduct.PartOffLength;
-            DateAdded = DateTime.Now;
-            AddedBy = App.CurrentUser.GetFullName();
-            IsSpecialPart = fromProduct.IsSpecialPart;
+            SetupFromProduct(fromProduct);
 
             RequiredQuantity = requiredQuantity;
-            TargetQuantity = fromProduct.GetRecommendedQuantity();
-            SellPrice = fromProduct.SellPrice;
+            TargetQuantity = RequestsEngine.RoundQuantity(RequiredQuantity + TargetQuantity, roundUp: true);
         }
 
         public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity, DateTime dateRequired)
         {
-            ProductName = fromProduct.ProductName;
-            ProductId = fromProduct.Id;
-            CycleTime = fromProduct.CycleTime;
-            MajorDiameter = fromProduct.MajorDiameter;
-            MajorLength = fromProduct.MajorLength;
-            PartOffLength= fromProduct.PartOffLength;
-            DateAdded = DateTime.Now;
-            AddedBy = App.CurrentUser.GetFullName();
-            IsSpecialPart = fromProduct.IsSpecialPart;
+            SetupFromProduct(fromProduct);
 
-            RequiredQuantity = requiredQuantity;
-            TargetQuantity = Math.Max(fromProduct.GetRecommendedQuantity(), requiredQuantity);
             DateRequired = dateRequired;
-            SellPrice = fromProduct.SellPrice;
-
+            RequiredQuantity = requiredQuantity;
+            TargetQuantity = RequestsEngine.RoundQuantity(RequiredQuantity + TargetQuantity, roundUp: true);
         }
 
         public override string ToString()
@@ -170,19 +169,8 @@ namespace ProjectLighthouse.Model.Orders
             {
                 return CycleTime;
             }
-            else
-            {
-                return MajorDiameter switch
-                {
-                    <= 5 => 90,
-                    <= 7 => 100,
-                    <= 10 => 120,
-                    <= 15 => 180,
-                    <= 20 => 240,
-                    <= 25 => 270,
-                    _ => 320
-                };
-            }
+
+            return RequestsEngine.EstimateCycleTime(MajorDiameter);
         }
 
         public int GetTimeToMakeRequired()
