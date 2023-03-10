@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2016.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using ProjectLighthouse.Model.Drawings;
+﻿using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.ViewModel.Commands.Administration;
@@ -72,16 +70,16 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             Products = DatabaseHelper.Read<Product>()
                 .OrderBy(x => x.Name)
-                .Prepend(new() { Id = -1, Name = "Unassigned", Description="Incomplete products/groups" })
+                .Prepend(new() { Id = -1, Name = "Unassigned", Description = "Incomplete products/groups" })
                 .ToList();
             OnPropertyChanged(nameof(Products));
 
             ProductGroups = DatabaseHelper.Read<ProductGroup>()
                 .OrderBy(x => x.Name)
-                .Prepend(new() { Id = -1, Name = "Unassigned", ProductId=-1 })
+                .Prepend(new() { Id = -1, Name = "Unassigned", ProductId = -1 })
                 .ToList();
             OnPropertyChanged(nameof(ProductGroups));
-            
+
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
                 .ToList();
 
@@ -119,7 +117,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
 
             FilteredTurnedProducts = TurnedProducts
-                .Where(x => (x.GroupId??-1) == SelectedProductGroup.Id)
+                .Where(x => (x.GroupId ?? -1) == SelectedProductGroup.Id)
                 .OrderBy(x => x.Retired)
                 .ThenBy(x => x.MaterialId)
                 .ThenBy(x => x.IsSpecialPart)
@@ -146,7 +144,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
 
 
-            AddProductGroupWindow window = new(SelectedProduct, g) { Owner = App.MainViewModel.MainWindow};
+            AddProductGroupWindow window = new(SelectedProduct, g) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
             if (!window.SaveExit)
@@ -184,7 +182,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 return;
             }
 
-            AddTurnedProductWindow window = new(ProductGroups, p) { Owner=App.MainViewModel.MainWindow };
+            AddTurnedProductWindow window = new(ProductGroups, p) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
             if (!window.SaveExit)
@@ -234,6 +232,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             LoadData();
 
             SelectedProduct = Products.Find(x => x.Id == id);
-        } 
+        }
     }
 }
