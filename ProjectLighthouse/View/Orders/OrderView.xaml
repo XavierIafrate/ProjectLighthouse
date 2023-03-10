@@ -18,8 +18,6 @@
             <converters:intToDays x:Key="intToDays" />
             <converters:intToStringCycleTime x:Key="intToStringCycleTime" />
             <converters:stringToAssignedLathe x:Key="stringToAssignedLathe" />
-            <converters:boolToVisibleOrCollapsed x:Key="boolToVisible" />
-            <converters:boolToCollapsedOrVisible x:Key="boolToCollapsed" />
             <converters:StatsToLiveColour x:Key="liveBadgeColour" />
             <converters:dateToLastModified x:Key="modifiedFormatter" />
             <converters:stringToAssignedTo x:Key="assignedFormatter" />
@@ -346,7 +344,7 @@
                             <Border
                                 Background="{StaticResource BlueFaded}"
                                 CornerRadius="3"
-                                Visibility="{Binding SelectedOrder.IsResearch, Converter={StaticResource boolToVisible}}">
+                                Visibility="{Binding SelectedOrder.IsResearch, Converter={StaticResource boolToVisibleOrCollapsed}}">
                                 <StackPanel Margin="10,5" Orientation="Horizontal">
                                     <Path
                                         Width="12"
@@ -373,7 +371,7 @@
 
                             <!--#region Metadata-->
 
-                            <Grid Margin="0,0,0,15" Visibility="{Binding Path=LiveInfoAvailable, Converter={StaticResource boolToVisible}}">
+                            <Grid Margin="0,0,0,15" Visibility="{Binding Path=LiveInfoAvailable, Converter={StaticResource boolToVisibleOrCollapsed}}">
                                 <Border
                                     d:Background="Black"
                                     Background="{Binding DisplayStats, Converter={StaticResource liveBadgeColour}}"
@@ -466,10 +464,10 @@
                                 Margin="0,15,0,5"
                                 Style="{StaticResource section}"
                                 Text="Pre-flight"
-                                Visibility="{Binding SelectedOrder.IsClosed, Converter={StaticResource boolToCollapsed}}" />
+                                Visibility="{Binding SelectedOrder.IsClosed, Converter={StaticResource boolToCollapsedOrVisible}}" />
 
 
-                            <Grid Margin="20,20,20,10" Visibility="{Binding SelectedOrder.IsClosed, Converter={StaticResource boolToCollapsed}}">
+                            <Grid Margin="20,20,20,10" Visibility="{Binding SelectedOrder.IsClosed, Converter={StaticResource boolToCollapsedOrVisible}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -776,14 +774,156 @@
                                         <Run d:Text="PRODUCT_DESCRIPTION" Text="{Binding SelectedProduct.Description, TargetNullValue='Unknown'}" />
                                     </TextBlock>
                                     <TextBlock
+                                        d:Text="ARCHETYPE_NAME"
                                         FontSize="16"
                                         FontWeight="SemiBold"
                                         Text="{Binding SelectedProductGroup.Name}" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        d:Text="BriefingText"
-                                        Text="{Binding RunBeforeInfo, TargetNullValue='Null'}"
-                                        TextWrapping="Wrap" />
+
+                                    <Border
+                                        Margin="0,5"
+                                        Background="{StaticResource RedFaded}"
+                                        CornerRadius="5"
+                                        Visibility="{Binding SelectedProductGroup, Converter={StaticResource NullToVisibility}}">
+                                        <StackPanel
+                                            Margin="5"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal">
+                                            <Path
+                                                Width="14"
+                                                Margin="3,0"
+                                                Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M13,17H11V15H13V17M13,13H11V7H13V13Z"
+                                                Fill="{StaticResource Red}"
+                                                Stretch="Uniform" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Red}"
+                                                Text="Archetype not found - no analysis available" />
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border
+                                        Margin="0,5"
+                                        Background="{StaticResource BlueFaded}"
+                                        CornerRadius="5"
+                                        Visibility="{Binding RunBeforeText, Converter={StaticResource NullToVisibility}}">
+                                        <StackPanel
+                                            Margin="5"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal">
+                                            <Path
+                                                Width="14"
+                                                Margin="3,0"
+                                                Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M13,17H11V15H13V17M13,13H11V7H13V13Z"
+                                                Fill="{StaticResource Blue}"
+                                                Stretch="Uniform" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Blue}"
+                                                Text="This archetype has not been set before" />
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border
+                                        Margin="0,5"
+                                        Background="{StaticResource GreenFaded}"
+                                        CornerRadius="5"
+                                        Visibility="{Binding RunBeforeText, Converter={StaticResource NotNullToVisibility}}">
+                                        <StackPanel
+                                            Margin="5"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal">
+                                            <Path
+                                                Width="14"
+                                                Margin="3,0"
+                                                Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"
+                                                Fill="{StaticResource Green}"
+                                                Stretch="Uniform" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                d:Text="This archetype has been set X times"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Green}"
+                                                Text="{Binding RunBeforeText}" />
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Grid Visibility="{Binding RunBeforeText, Converter={StaticResource NotNullToVisibility}}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <Border
+                                                Margin="0,0,2.5,5"
+                                                Background="{StaticResource GreenFaded}"
+                                                CornerRadius="5"
+                                                Visibility="{Binding RunInMaterialBefore, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                                                <StackPanel
+                                                    Margin="5"
+                                                    HorizontalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <Path
+                                                        Width="14"
+                                                        Margin="3,0"
+                                                        Data="M12,11A1,1 0 0,1 13,12A1,1 0 0,1 12,13A1,1 0 0,1 11,12A1,1 0 0,1 12,11M4.22,4.22C5.65,2.79 8.75,3.43 12,5.56C15.25,3.43 18.35,2.79 19.78,4.22C21.21,5.65 20.57,8.75 18.44,12C20.57,15.25 21.21,18.35 19.78,19.78C18.35,21.21 15.25,20.57 12,18.44C8.75,20.57 5.65,21.21 4.22,19.78C2.79,18.35 3.43,15.25 5.56,12C3.43,8.75 2.79,5.65 4.22,4.22M15.54,8.46C16.15,9.08 16.71,9.71 17.23,10.34C18.61,8.21 19.11,6.38 18.36,5.64C17.62,4.89 15.79,5.39 13.66,6.77C14.29,7.29 14.92,7.85 15.54,8.46M8.46,15.54C7.85,14.92 7.29,14.29 6.77,13.66C5.39,15.79 4.89,17.62 5.64,18.36C6.38,19.11 8.21,18.61 10.34,17.23C9.71,16.71 9.08,16.15 8.46,15.54M5.64,5.64C4.89,6.38 5.39,8.21 6.77,10.34C7.29,9.71 7.85,9.08 8.46,8.46C9.08,7.85 9.71,7.29 10.34,6.77C8.21,5.39 6.38,4.89 5.64,5.64M9.88,14.12C10.58,14.82 11.3,15.46 12,16.03C12.7,15.46 13.42,14.82 14.12,14.12C14.82,13.42 15.46,12.7 16.03,12C15.46,11.3 14.82,10.58 14.12,9.88C13.42,9.18 12.7,8.54 12,7.97C11.3,8.54 10.58,9.18 9.88,9.88C9.18,10.58 8.54,11.3 7.97,12C8.54,12.7 9.18,13.42 9.88,14.12M18.36,18.36C19.11,17.62 18.61,15.79 17.23,13.66C16.71,14.29 16.15,14.92 15.54,15.54C14.92,16.15 14.29,16.71 13.66,17.23C15.79,18.61 17.62,19.11 18.36,18.36Z"
+                                                        Fill="{StaticResource Green}"
+                                                        Stretch="Uniform" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{StaticResource Green}"
+                                                        Text="Made in this material before" />
+                                                </StackPanel>
+                                            </Border>
+                                            <Border
+                                                Margin="0,0,2.5,5"
+                                                Background="{StaticResource OrangeFaded}"
+                                                CornerRadius="5"
+                                                Visibility="{Binding RunInMaterialBefore, Converter={StaticResource boolToCollapsedOrVisible}}">
+                                                <StackPanel
+                                                    Margin="5"
+                                                    HorizontalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <Path
+                                                        Width="14"
+                                                        Margin="3,0"
+                                                        Data="M12,11A1,1 0 0,1 13,12A1,1 0 0,1 12,13A1,1 0 0,1 11,12A1,1 0 0,1 12,11M4.22,4.22C5.65,2.79 8.75,3.43 12,5.56C15.25,3.43 18.35,2.79 19.78,4.22C21.21,5.65 20.57,8.75 18.44,12C20.57,15.25 21.21,18.35 19.78,19.78C18.35,21.21 15.25,20.57 12,18.44C8.75,20.57 5.65,21.21 4.22,19.78C2.79,18.35 3.43,15.25 5.56,12C3.43,8.75 2.79,5.65 4.22,4.22M15.54,8.46C16.15,9.08 16.71,9.71 17.23,10.34C18.61,8.21 19.11,6.38 18.36,5.64C17.62,4.89 15.79,5.39 13.66,6.77C14.29,7.29 14.92,7.85 15.54,8.46M8.46,15.54C7.85,14.92 7.29,14.29 6.77,13.66C5.39,15.79 4.89,17.62 5.64,18.36C6.38,19.11 8.21,18.61 10.34,17.23C9.71,16.71 9.08,16.15 8.46,15.54M5.64,5.64C4.89,6.38 5.39,8.21 6.77,10.34C7.29,9.71 7.85,9.08 8.46,8.46C9.08,7.85 9.71,7.29 10.34,6.77C8.21,5.39 6.38,4.89 5.64,5.64M9.88,14.12C10.58,14.82 11.3,15.46 12,16.03C12.7,15.46 13.42,14.82 14.12,14.12C14.82,13.42 15.46,12.7 16.03,12C15.46,11.3 14.82,10.58 14.12,9.88C13.42,9.18 12.7,8.54 12,7.97C11.3,8.54 10.58,9.18 9.88,9.88C9.18,10.58 8.54,11.3 7.97,12C8.54,12.7 9.18,13.42 9.88,14.12M18.36,18.36C19.11,17.62 18.61,15.79 17.23,13.66C16.71,14.29 16.15,14.92 15.54,15.54C14.92,16.15 14.29,16.71 13.66,17.23C15.79,18.61 17.62,19.11 18.36,18.36Z"
+                                                        Fill="{StaticResource Orange}"
+                                                        Stretch="Uniform" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{StaticResource Orange}"
+                                                        Text="Not run in this material" />
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                        <Border
+                                            Grid.Column="1"
+                                            Margin="0,0,2.5,5"
+                                            Background="{StaticResource PurpleFaded}"
+                                            CornerRadius="5">
+                                            <StackPanel
+                                                Margin="5"
+                                                HorizontalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <Path
+                                                    Width="14"
+                                                    Margin="3,0"
+                                                    Data="M4 2V8H2V2H4M2 22V16H4V22H2M5 12C5 13.11 4.11 14 3 14C1.9 14 1 13.11 1 12C1 10.9 1.9 10 3 10C4.11 10 5 10.9 5 12M16 4C20.42 4 24 7.58 24 12C24 16.42 20.42 20 16 20C12.4 20 9.36 17.62 8.35 14.35L6 12L8.35 9.65C9.36 6.38 12.4 4 16 4M15 13L19.53 15.79L20.33 14.5L16.5 12.2V7H15V13Z"
+                                                    Fill="{StaticResource Purple}"
+                                                    Stretch="Uniform" />
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    d:Text="Last made in MONTH"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Purple}"
+                                                    Text="{Binding LastMadeText}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
                                 </StackPanel>
                             </Grid>
                             <Border
@@ -891,7 +1031,7 @@
                                 Margin="0,15,0,5"
                                 Style="{StaticResource section}"
                                 Text="Notes" />
-                            <Grid Visibility="{Binding NoNotes, Converter={StaticResource boolToCollapsed}}">
+                            <Grid Visibility="{Binding NoNotes, Converter={StaticResource boolToCollapsedOrVisible}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="157*" />
                                     <ColumnDefinition Width="503*" />
@@ -905,7 +1045,7 @@
                                 FontStyle="Italic"
                                 Foreground="{StaticResource DisabledElement}"
                                 Text="None found"
-                                Visibility="{Binding NoNotes, Converter={StaticResource boolToVisible}}" />
+                                Visibility="{Binding NoNotes, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                             <!--#endregion-->
                         </StackPanel>
                     </Grid>

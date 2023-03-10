@@ -25,7 +25,6 @@ using System.Windows;
 using System.Windows.Media;
 using ViewModel.Commands.Orders;
 using ViewModel.Helpers;
-using Windows.Foundation.Diagnostics;
 using DateTimePoint = LiveChartsCore.Defaults.DateTimePoint;
 
 namespace ProjectLighthouse.ViewModel.Orders
@@ -104,7 +103,42 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         };
         public List<ISeries> CycleTimeSeries { get; set; }
-        public string RunBeforeInfo { get; set; }
+
+        private string? runBeforeText;
+        public string? RunBeforeText
+        {
+            get { return runBeforeText; }
+            set
+            {
+                runBeforeText = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private bool runInMaterialBefore;
+        public bool RunInMaterialBefore
+        {
+            get { return runInMaterialBefore; }
+            set
+            {
+                runInMaterialBefore = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string lastMadeText;
+        public string LastMadeText
+        {
+            get { return lastMadeText; }
+            set
+            {
+                lastMadeText = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
         #endregion
 
@@ -345,8 +379,8 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             if (SelectedOrder is null)
             {
-                RunBeforeInfo = null;
-                OnPropertyChanged(nameof(RunBeforeInfo));
+                RunBeforeText = null;
+                OnPropertyChanged(nameof(RunBeforeText));
                 CycleTimeSeries = null;
                 OnPropertyChanged(nameof(CycleTimeSeries));
                 return;
@@ -364,10 +398,10 @@ namespace ProjectLighthouse.ViewModel.Orders
             else
             {
                 SelectedProduct = null;
-                CycleTimeSeries= null;
-                RunBeforeInfo = "Archetype not found - analysis unavailable.";
-                
-                OnPropertyChanged(nameof(RunBeforeInfo));
+                CycleTimeSeries = null;
+                RunBeforeText = null;
+
+                OnPropertyChanged(nameof(RunBeforeText));
                 OnPropertyChanged(nameof(SelectedProduct));
                 OnPropertyChanged(nameof(CycleTimeSeries));
                 OnPropertyChanged(nameof(SelectedProductGroup));
@@ -389,8 +423,8 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             if (otherOrders.Count == 0)
             {
-                RunBeforeInfo = "We have not manufactured this archetype before";
-                OnPropertyChanged(nameof(RunBeforeInfo));
+                RunBeforeText = null;
+                OnPropertyChanged(nameof(RunBeforeText));
                 CycleTimeSeries = null;
                 OnPropertyChanged(nameof(CycleTimeSeries));
                 return;
@@ -398,38 +432,34 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             LatheManufactureOrder mostRecent = otherOrders.Last();
             int runBeforeCount = otherOrders.Count;
-            int timeInThisMaterial = otherOrders.Count(x => x.MaterialId == MaterialId);
-            string timesInThisMaterial;
+            RunInMaterialBefore = otherOrders.Any(x => x.MaterialId == MaterialId);
 
-            if (timeInThisMaterial == 0)
+            DateTime lastMadeDate = mostRecent.StartDate;
+
+
+            if (lastMadeDate.AddMonths(11) > DateTime.Now)
             {
-                timesInThisMaterial = "never";
-            }
-            else if (timeInThisMaterial == 1)
-            {
-                timesInThisMaterial = "once";
-            }
-            else if (timeInThisMaterial == 2)
-            {
-                timesInThisMaterial = "twice";
+                LastMadeText = $"Last made in {lastMadeDate:MMMM}";
             }
             else
             {
-                timesInThisMaterial = $"{timeInThisMaterial:0} times";
+                LastMadeText = $"Last made in {lastMadeDate:MMM yy}";
             }
 
             if (runBeforeCount == 1)
             {
-                RunBeforeInfo = $"We have run this archetype once before, {timesInThisMaterial} in this material.";
+                RunBeforeText = $"This archetype has been set once before";
             }
             else if (runBeforeCount == 2)
             {
-                RunBeforeInfo = $"We have run this archetype twice before, {timesInThisMaterial} in this material.";
+                RunBeforeText = $"This archetype has been set twice before";
             }
             else
             {
-                RunBeforeInfo = $"We have run this archetype {otherOrders.Count:0} times before, {timesInThisMaterial} in this material.";
+                RunBeforeText = $"This archetype has been set {otherOrders.Count:0} times";
             }
+
+            OnPropertyChanged(nameof(RunBeforeText));
 
             Dictionary<MaterialInfo, List<DateTimePoint>> series = new();
 
@@ -477,10 +507,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
             }
             OnPropertyChanged(nameof(CycleTimeSeries));
-
-            RunBeforeInfo += $"{Environment.NewLine}Group most recently run in {mostRecent.StartDate:MMMM yyyy}";
-            OnPropertyChanged(nameof(RunBeforeInfo));
-
         }
 
         private void InitialiseVariables()
