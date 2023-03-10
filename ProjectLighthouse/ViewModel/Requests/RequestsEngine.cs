@@ -9,97 +9,88 @@ namespace ProjectLighthouse.ViewModel.Requests
 {
     public class RequestsEngine
     {
-        public static List<LatheManufactureOrderItem> GetRecommendedOrderItems(List<TurnedProduct> turnedProducts, TurnedProduct requiredProduct, int qtyOfRequired, TimeSpan maxRuntime, DateTime? RequiredProductDueDate = null, int numberOfItems = 4, bool enforceMOQ = true)
+        public static List<LatheManufactureOrderItem> GetRecommendedOrderItems(List<TurnedProduct> turnedProducts, Request request, TimeSpan? maxRuntime, int numberOfItems = 4)
         {
-            List<LatheManufactureOrderItem> recommendedItems = new();
-            if (RequiredProductDueDate != null)
+            maxRuntime ??= new(days: 3, hours: 0, minutes: 0, seconds: 0);
+            List<LatheManufactureOrderItem> recommendation = new();
+            TurnedProduct requirement = turnedProducts.Find(x => x.ProductName == request.Product);
+
+            if (requirement is null)
             {
-                recommendedItems.Add(new(requiredProduct, qtyOfRequired, (DateTime)RequiredProductDueDate));
-            }
-            else
-            {
-                recommendedItems.Add(new(requiredProduct, qtyOfRequired));
+                throw new Exception("Requests Engine: Requirement not found in product list");
             }
 
-            List<TurnedProduct> compatibleProducts = new();
+            recommendation.Add(new(requirement, request.QuantityRequired, request.DateRequired));
 
-            compatibleProducts.AddRange(turnedProducts
-                .Where(p => p.IsScheduleCompatible(requiredProduct)
-                    && !p.IsSpecialPart
-                    && Math.Abs(p.MajorLength - requiredProduct.MajorLength) <= 40
-                    && p.Id != requiredProduct.Id)
-                .OrderByDescending(p => p.GetRecommendedQuantity())
-                .ThenBy(p => p.QuantityInStock)
-                );
+            turnedProducts = turnedProducts
+                                .Where(x => !x.Retired
+                                         && !x.IsSpecialPart
+                                         && x.Id != requirement.Id
+                                         && x.MaterialId == requirement.MaterialId
+                                         && x.GroupId == requirement.GroupId)
+                                .OrderByDescending(x => x.GetRecommendedQuantity())
+                                .ThenBy(x => x.QuantityInStock)
+                                .ToList();
+
+            // try prevent overproduction
+            turnedProducts = turnedProducts.Where(x => !x.Overstocked()).ToList();
 
 
-            foreach (TurnedProduct product in compatibleProducts)
+            foreach (TurnedProduct product in turnedProducts)
             {
                 LatheManufactureOrderItem newItem = new(product);
-                recommendedItems.Add(newItem);
+                recommendation.Add(newItem);
             }
 
-            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendedItems, maxRuntime, enforceMOQs: enforceMOQ);
+            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendation, (TimeSpan)maxRuntime);
 
             filteredItems = filteredItems.Take(numberOfItems).ToList();
 
             return filteredItems;
         }
 
-        public static List<LatheManufactureOrderItem> CapQuantitiesForTimeSpan(List<LatheManufactureOrderItem> items, TimeSpan maxRuntime, bool enforceMOQs = false)
+        public static List<LatheManufactureOrderItem> CapQuantitiesForTimeSpan(List<LatheManufactureOrderItem> items, TimeSpan maxRuntime)
         {
-            if (items == null)
-            {
-                return null;
-            }
-
             List<LatheManufactureOrderItem> cleanedItems = new();
-            double permittedSeconds = maxRuntime.TotalSeconds;
+            int permittedSeconds = Convert.ToInt32(maxRuntime.TotalSeconds);
+            items = items.OrderByDescending(x => x.RequiredQuantity).ToList();
+            items.ForEach(x => x.TargetQuantity = Math.Max(x.TargetQuantity, GetMiniumumOrderQuantity(x)));
 
-            foreach (LatheManufactureOrderItem item in items)
+            int timeForRequired = items.Sum(x => x.GetTimeToMakeRequired());
+
+            // Requirement will max out runtime
+            if (timeForRequired > permittedSeconds)
             {
-                int possibleQuantity = GetQuantityPossible(permittedSeconds, item.CycleTime);
-
-                int minimumQuantity = GetMiniumumOrderQuantity(item);
-                bool minimumQuantityEnforced = false;
-
-                if (enforceMOQs && item.TargetQuantity < minimumQuantity)
-                {
-                    minimumQuantityEnforced = true;
-                    item.TargetQuantity = minimumQuantity;
-                }
-
-                if (possibleQuantity < item.RequiredQuantity) // requirement alone will max time
-                {
-                    item.TargetQuantity = item.RequiredQuantity;
-                    cleanedItems.Add(item);
-                    break;
-                }
-                else if (enforceMOQs && minimumQuantity > possibleQuantity)
-                {
-                    break;
-                }
-                else if (possibleQuantity < item.TargetQuantity) // Target needs to be capped
-                {
-                    if (!minimumQuantityEnforced)
-                    {
-                        item.TargetQuantity = RoundQuantity(possibleQuantity);
-                        cleanedItems.Add(item);
-                    }
-
-                    break;
-                }
-                else
-                {
-                    if (item.RequiredQuantity > 0)
-                    {
-                        item.TargetQuantity = RoundQuantity(item.TargetQuantity, true);
-                    }
-                    cleanedItems.Add(item);
-                }
-
-                permittedSeconds -= item.GetCycleTime() * item.TargetQuantity;
+                cleanedItems = items.Where(x => x.RequiredQuantity > 0).ToList();
+                cleanedItems.ForEach(x => x.TargetQuantity = x.RequiredQuantity);
+                return cleanedItems;
             }
+
+            int availableTime = permittedSeconds - timeForRequired;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                LatheManufactureOrderItem item = items[i];
+
+                int quantityNotRequired = item.TargetQuantity - item.RequiredQuantity;
+
+                int timeToMakeToTarget = quantityNotRequired * item.GetCycleTime();
+
+                if (availableTime < timeToMakeToTarget)
+                {
+                    item.TargetQuantity = Math.Max(
+                                                item.RequiredQuantity,
+                                                RoundQuantity(item.RequiredQuantity + (int)Math.Floor((double)availableTime / item.GetCycleTime()))
+                                                );
+                    cleanedItems.Add(item);
+                    break;
+                }
+
+                availableTime -= timeToMakeToTarget;
+                cleanedItems.Add(item);
+            }
+
+            cleanedItems = cleanedItems.Where(x => x.TargetQuantity > 0).ToList();
 
             return cleanedItems;
         }
@@ -130,17 +121,25 @@ namespace ProjectLighthouse.ViewModel.Requests
             };
         }
 
-        private static int RoundQuantity(int originalNumber, bool roundUp = false)
+        public static int RoundQuantity(int originalNumber, bool roundUp = false)
         {
             int divisor = originalNumber switch
             {
-                > 15000 => 1000,
-                > 5000 => 500,
-                > 1000 => 200,
-                > 100 => 50,
-                > 10 => 10,
-                _ => 1,
+                < 50 => 10,
+                < 100 => 25,
+                < 500 => 100,
+                < 1000 => 200,
+                < 2000 => 500,
+                < 10000 => 1000,
+                < 20000 => 2000,
+                < 30000 => 3000,
+                _ => 100,
             };
+
+            if (originalNumber % divisor == 0)
+            {
+                return originalNumber;
+            }
 
             if (roundUp)
             {
@@ -150,24 +149,26 @@ namespace ProjectLighthouse.ViewModel.Requests
             return originalNumber - originalNumber % divisor;
         }
 
-        private static int GetQuantityPossible(double secondsAllotted, int cycleTime)
+        public static int EstimateCycleTime(double majorDiameter)
         {
-            if (cycleTime == 0)
+            return majorDiameter switch
             {
-                cycleTime = 120;
-            }
-
-            double numPossible = secondsAllotted / Convert.ToDouble(cycleTime);
-            return (int)Math.Floor(numPossible);
+                <= 5 => 90,
+                <= 7 => 100,
+                <= 10 => 120,
+                <= 15 => 180,
+                <= 20 => 240,
+                <= 25 => 270,
+                _ => 320
+            };
         }
+
 
         // TODO: Refactor
         public static List<TurnedProduct> PopulateInsightFields(List<TurnedProduct> products, List<LatheManufactureOrder> activeOrders, List<Request> recentlyDeclinedRequests)
         {
             for (int i = 0; i < products.Count; i++)
             {
-
-
                 for (int j = 0; j < activeOrders.Count; j++)
                 {
                     if (activeOrders[j].OrderItems.Any(x => x.ProductName == products[i].ProductName))
