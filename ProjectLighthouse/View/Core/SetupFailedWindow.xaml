@@ -13,7 +13,7 @@
     WindowStyle="None"
     mc:Ignorable="d">
     <Grid>
-        <Image Source="/Resources/portland.jpg" Stretch="UniformToFill" />
+        <Image Source="/Resources/StartPoint.png" Stretch="UniformToFill" />
         <Grid
             Width="425"
             Margin="50,50,0,50"
