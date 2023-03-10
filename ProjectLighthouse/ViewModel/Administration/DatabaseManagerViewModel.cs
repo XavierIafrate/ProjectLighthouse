@@ -147,8 +147,12 @@ namespace ProjectLighthouse.ViewModel.Administration
         private void GenerateItemCostingSheet()
         {
             List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>()
-                .Where(x => x.MaterialId is not null && x.CycleTime > 0 && x.GroupId is not null)
+                .Where(x => x.MaterialId is not null && x.GroupId is not null && !x.IsSpecialPart)
                 .ToList();
+
+            products.ForEach(x => x.ValidateAll());
+
+            products = products.Where(x => !x.HasErrors).ToList();  
 
             List<BarStock> barStock = DatabaseHelper.Read<BarStock>();
             List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>();
