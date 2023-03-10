@@ -385,6 +385,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void AddCommentToDrawing()
         {
+            if (SelectedGroup is null) return;
+
             if (string.IsNullOrEmpty(newNoteText.Trim()))
             {
                 return;
@@ -418,11 +420,15 @@ namespace ProjectLighthouse.ViewModel.Drawings
             LoadData();
             NewNoteText = "";
             SelectedGroup = FilteredDrawingGroups.Find(x => x.Name == thisGroup);
+
+            if (SelectedGroup is null) return;
             SelectedDrawing = SelectedGroup.Drawings.Find(x => x.Id == thisDrawing);
         }
 
         public void RejectDrawing()
         {
+            if (SelectedDrawing is null) return;
+
             if (string.IsNullOrEmpty(RejectionStatement.Trim()))
             {
                 MessageBox.Show("You are required to enter a justification for rejecting a drawing", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
@@ -453,7 +459,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
         {
             //ApproveDrawingWindow approvalWindow = new(SelectedDrawing, SelectedGroup);
             //approvalWindow.ShowDialog();
-
+            if (SelectedGroup is null) return;
+            if (SelectedDrawing is null) return;
 
             int MaxRev = SelectedGroup.Drawings.Max(x => x.Revision);
             TechnicalDrawing.Amendment maxAmd = SelectedGroup.Drawings.Where(x => x.Revision == MaxRev).Max(x => x.AmendmentType);
@@ -492,10 +499,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 return;
             }
 
-
-
-
-
             SelectedDrawing.DrawingType = TechnicalDrawing.Type.Research;
             DatabaseHelper.Update(SelectedDrawing);
             SelectedDrawing.PrepareMarkedPdf();
@@ -509,6 +512,9 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void PublishDrawing()
         {
+            if (SelectedGroup is null) return;
+            if (SelectedDrawing is null) return;
+
             TechnicalDrawing beingReplaced = SelectedGroup.Drawings.Find(x => x.IsCurrent);
             if (beingReplaced != null)
             {
