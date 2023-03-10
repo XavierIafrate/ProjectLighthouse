@@ -206,15 +206,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 List <OperaFields> targets = liveData.Where(x => x.StockReference == stockReference).ToList();
 
-                if (targets.Count > 1)
-                {
-                    Console.Write("");
-                }
                 OperaFields record = new()
                 {
 
                     StockReference = stockReference,
-                    QtyInStock = targets.Sum(x => x.QtyInStock),
+                    QtyInStock = targets.Where(x => !x.searchRef).Sum(x => x.QtyInStock),
                     QtyPurchaseOrder = targets.Sum(x => x.QtyPurchaseOrder),
                     QtySalesOrder = targets.Sum(x => x.QtySalesOrder),
                     SellPrice = targets.Max(x => x.SellPrice),
