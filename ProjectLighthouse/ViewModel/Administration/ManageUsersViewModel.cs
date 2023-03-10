@@ -270,7 +270,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void CreateNewUser()
         {
-            NewUserWindow window = new();
+            NewUserWindow window = new() { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
             if(window.SaveExit)
