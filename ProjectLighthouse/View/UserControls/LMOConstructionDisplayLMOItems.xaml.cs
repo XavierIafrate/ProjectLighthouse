@@ -30,7 +30,11 @@ namespace ProjectLighthouse.View.UserControls
                 ? Visibility.Collapsed
                 : Visibility.Visible;
 
-            control.CycleTimeText.Text = control.Item.CycleTime == 0 ? "Cycle time unknown" : $"Cycle time: {control.Item.CycleTime:0}s";
+            control.CycleTimeText.Text = control.Item.CycleTime == 0 
+                ? "unknown" 
+                : $"{Math.Floor((double)control.Item.CycleTime / 60):0}m {(control.Item.CycleTime%60):0}s";
+
+            control.StockText.Text = $"{control.Item.QuantityInStock:#,##0} in stock";
         }
 
         public LMOConstructionDisplayLMOItems()
@@ -41,20 +45,6 @@ namespace ProjectLighthouse.View.UserControls
         private void TextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
-        }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //Item.TargetQuantity = string.IsNullOrWhiteSpace(QuantityTextBox.Text)
-            //    ? Math.Max(Item.RequiredQuantity, 0)
-            //    : Math.Max(int.Parse(QuantityTextBox.Text), Item.RequiredQuantity);
-
-            //Item.NotifyEditMade();
-        }
-
-        private void QuantityTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            //QuantityTextBox.Text = Item.TargetQuantity.ToString("0");
         }
     }
 }
