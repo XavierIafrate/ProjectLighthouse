@@ -9,6 +9,8 @@
     xmlns:drawingsVm="clr-namespace:ProjectLighthouse.ViewModel.Drawings"
     xmlns:ordersView="clr-namespace:ProjectLighthouse.View.Orders"
     xmlns:ordersVm="clr-namespace:ProjectLighthouse.ViewModel.Orders"
+    xmlns:programsView="clr-namespace:ProjectLighthouse.View.Programs"
+    xmlns:programsVm="clr-namespace:ProjectLighthouse.ViewModel.Programs"
     xmlns:qualityView="clr-namespace:ProjectLighthouse.View.Quality"
     xmlns:qualityVm="clr-namespace:ProjectLighthouse.ViewModel.Quality"
     xmlns:requestsView="clr-namespace:ProjectLighthouse.View.Requests"
@@ -80,6 +82,10 @@
 
             <DataTemplate DataType="{x:Type drawingsVm:DrawingBrowserViewModel}">
                 <drawingsView:DrawingBrowserView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type programsVm:ProgramManagerViewModel}">
+                <programsView:ProgamManager />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type researchVm:ResearchViewModel}">

@@ -2,13 +2,13 @@
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Orders;
+using ProjectLighthouse.ViewModel.Programs;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
 using ProjectLighthouse.ViewModel.Research;
 using System;
 using System.Windows;
 using System.Windows.Input;
-using ViewModel.Programs;
 
 namespace ProjectLighthouse.ViewModel.Commands
 {
