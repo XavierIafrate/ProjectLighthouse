@@ -27,6 +27,8 @@
             Tag="name"
             Text="{Binding Group.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
+        <TextBlock Style="{StaticResource InputLabel}" Text="Assigned Product" />
+        <ComboBox ItemsSource="{Binding Products}" SelectedValue="{Binding Group.ProductId}" SelectedValuePath="Id" DisplayMemberPath="Name" IsEditable="True" StaysOpenOnEdit="True"/>
         <TextBlock Style="{StaticResource InputLabel}" Text="Major Diameter (mm)" />
         <TextBox
             Style="{StaticResource DefaultTextBox}"
@@ -41,7 +43,6 @@
 
         <TextBlock Style="{StaticResource InputLabel}" Text="Program" />
         <ComboBox
-            Style="{x:Null}"
             Margin="5"
             IsEditable="True"
             ItemsSource="{Binding ProgramList}"

@@ -14,14 +14,15 @@ namespace ProjectLighthouse.View.Administration
         public ProductGroup Group { get; set; }
         public ProductGroup? originalGroup;
         public Product Product { get; set; }
+        public List<Product> Products { get; set; }
         public List<Model.Programs.NcProgram> ProgramList { get; set; }
 
         public bool SaveExit = false;
-        public AddProductGroupWindow(Product product)
+        public AddProductGroupWindow(Product product, List<Product> products)
         {
             InitializeComponent();
             Product = product;  
-
+            Products = products;
             Group = new() { ProductId = product.Id };
 
             this.Title = "New Archetype";
@@ -30,10 +31,11 @@ namespace ProjectLighthouse.View.Administration
             DataContext = this;
         }
 
-        public AddProductGroupWindow(Product product, ProductGroup group, List<Model.Programs.NcProgram> programs)
+        public AddProductGroupWindow(Product product, ProductGroup group, List<Model.Programs.NcProgram> programs, List<Product> products)
         {
             InitializeComponent();
             Product = product;
+            Products = products;
             ProgramList = programs;
 
             originalGroup = group;
