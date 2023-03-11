@@ -218,6 +218,11 @@ namespace ProjectLighthouse.Model.Products
                 {
                     AddError(nameof(GroupId), "The product must have a group associated with it");
                 }
+
+                if (GroupId == -1)
+                {
+                    AddError(nameof(GroupId), "The product must have a group associated with it");
+                }
                 return;
             }
             else if (propertyName == nameof(MaterialId))
