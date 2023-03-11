@@ -39,6 +39,7 @@ namespace ProjectLighthouse.Model.Products
                 if (majorDiameter == value) return;
                 
                 majorDiameter = value;
+                ValidateProperty();
                 OnPropertyChanged();
             }
         }
