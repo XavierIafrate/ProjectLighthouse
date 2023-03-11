@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:usercontrols="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
     d:DesignHeight="900"
@@ -11,8 +12,8 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" MinWidth="250" MaxWidth="350" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
@@ -45,17 +46,21 @@
                 SelectedValue="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="8,3">
+                        <Grid Margin="8,3" HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
                             <TextBlock
                                 FontSize="16"
                                 FontWeight="SemiBold"
                                 Text="{Binding Name}" />
                             <TextBlock
-                                FontStyle="Italic"
+                                Grid.Row="1"
                                 Foreground="{StaticResource Blue}"
                                 Text="{Binding Description}"
                                 TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -79,7 +84,7 @@
         <!--  Visibility="{Binding BarStockVis}"  -->
 
         <ScrollViewer Grid.Column="1" ScrollChanged="ScrollViewer_ScrollChanged">
-            <StackPanel MaxWidth="700">
+            <StackPanel Margin="20,0">
                 <Grid>
                     <StackPanel>
                         <TextBlock
@@ -129,7 +134,7 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 RenderOptions.BitmapScalingMode="Fant"
-                                Source="{Binding SelectedProduct.LocalRenderPath, TargetNullValue={x:Null}}" />
+                                Source="{Binding SelectedProduct.LocalRenderPath, TargetNullValue={x:Null}, FallbackValue={x:Null}}" />
                         </Grid>
 
                     </Border>
@@ -139,7 +144,7 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
+                        <ColumnDefinition MaxWidth="250" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -167,26 +172,11 @@
                         SelectedValue="{Binding SelectedProductGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="13,3">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock FontWeight="SemiBold" Text="{Binding Id}" />
-                                        <Grid Width="5" />
-                                        <TextBlock
-                                            FontWeight="SemiBold"
-                                            Foreground="{StaticResource Blue}"
-                                            Text="{Binding Name}" />
-
-                                    </StackPanel>
-                                    <Button
-                                        Margin="0"
-                                        HorizontalAlignment="Right"
-                                        Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.AddProductGroupCmd}"
-                                        CommandParameter="{Binding Path=.}"
-                                        Style="{StaticResource Action_Edit_Button_Small}"
-                                        Tag="Edit" />
-                                </Grid>
+                                <usercontrols:DisplayProductGroup ProductGroup="{Binding}"/>
+                                
                             </DataTemplate>
                         </ListView.ItemTemplate>
+                        
                     </ListView>
                     <Grid Grid.Column="1">
                         <TextBlock
