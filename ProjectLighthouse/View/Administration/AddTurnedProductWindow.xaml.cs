@@ -25,7 +25,7 @@ namespace ProjectLighthouse.View.Administration
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public AddTurnedProductWindow(List<ProductGroup> Groups, TurnedProduct? product = null)
+        public AddTurnedProductWindow(List<ProductGroup> Groups, TurnedProduct? product = null, int? groupId = null)
         {
             InitializeComponent();
             Materials = DatabaseHelper.Read<MaterialInfo>();
@@ -52,8 +52,12 @@ namespace ProjectLighthouse.View.Administration
             }
             else
             {
-                Product = new();
+                Product = new() { AddedBy=App.CurrentUser.UserName, AddedDate=DateTime.Now };
 
+                if (groupId is not null)
+                {
+                    Product.GroupId = groupId;  
+                }
                 AddButton.Visibility = Visibility.Visible;
                 UpdateButton.Visibility = Visibility.Collapsed;
             }
