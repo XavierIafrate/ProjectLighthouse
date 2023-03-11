@@ -10,6 +10,7 @@
     Title="Lighthouse User Settings"
     Width="800"
     SizeToContent="Height"
+    ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
@@ -98,10 +99,10 @@
                         HorizontalAlignment="Right"
                         SelectionChanged="locale_SelectionChanged">
                         <ComboBoxItem Content="British"/>
+                        <ComboBoxItem Content="Latvian" />
+                        <ComboBoxItem Content="Persian" />
                         <ComboBoxItem Content="Polish" />
                         <ComboBoxItem Content="Welsh" />
-                        <ComboBoxItem Content="Persian" />
-                        <ComboBoxItem Content="Latvian" />
                     </ComboBox>
                 </Grid>
                 
