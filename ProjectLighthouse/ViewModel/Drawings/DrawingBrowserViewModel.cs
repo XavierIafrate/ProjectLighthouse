@@ -607,8 +607,11 @@ namespace ProjectLighthouse.ViewModel.Drawings
             LoadData();
 
             SelectedGroup = FilteredDrawingGroups.Find(x => x.Name == thisGroup);
+
+            if (SelectedGroup is null) return;
             SelectedDrawing = SelectedGroup.Drawings.Find(x => x.Id == thisDrawing);
 
+            if (SelectedDrawing is null) return;
             MessageBox.Show($"{SelectedDrawing.DrawingName} R{SelectedDrawing.Revision}{SelectedDrawing.AmendmentType} has been withdrawn for manufacture.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }

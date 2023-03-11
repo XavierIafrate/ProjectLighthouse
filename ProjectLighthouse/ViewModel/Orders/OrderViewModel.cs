@@ -348,8 +348,9 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
-            SolidColorBrush red = (Brush)Application.Current.Resources["Red"] as SolidColorBrush;
-            SolidColorBrush blue = (Brush)Application.Current.Resources["Blue"] as SolidColorBrush;
+
+            if ((Brush)Application.Current.Resources["Blue"] is not SolidColorBrush blue 
+                || (Brush)Application.Current.Resources["Red"] is not SolidColorBrush red) return;
 
             var produced = new ColumnSeries<DateTimePoint>
             {
@@ -609,7 +610,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
-        private bool OrderCanBeClosed(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<Lot> lots)
+        static bool OrderCanBeClosed(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<Lot> lots)
         {
             if (order.ModifiedAt.AddDays(1) > DateTime.Now)
             {
@@ -987,17 +988,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
 
             Refresh();
-        }
-
-        private static string GetDaySuffix(int day)
-        {
-            return day switch
-            {
-                1 or 21 or 31 => "st",
-                2 or 22 => "nd",
-                3 or 23 => "rd",
-                _ => "th",
-            };
         }
     }
 }
