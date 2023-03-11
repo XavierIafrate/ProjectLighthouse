@@ -148,8 +148,7 @@
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Programs"
                             Content="Programs"
-                            Style="{StaticResource Programs_MenuItem}"
-                            Visibility="Collapsed" />
+                            Style="{StaticResource Programs_MenuItem}" />
 
                         <ToggleButton
                             x:Name="research_button"

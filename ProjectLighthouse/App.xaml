@@ -41,6 +41,7 @@
                 <ResourceDictionary Source="./Themes/StylishCheckbox.xaml" />
                 <ResourceDictionary Source="./Themes/StylishProgressBar.xaml" />
                 <ResourceDictionary Source="./Themes/StylishTabControl.xaml" />
+                <ResourceDictionary Source="./Themes/StylishWrapPanel.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--#endregion-->
 
