@@ -154,11 +154,11 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             if (g is null) 
             {
-                window = new(SelectedProduct) { Owner = App.MainViewModel.MainWindow };
+                window = new(SelectedProduct, Products) { Owner = App.MainViewModel.MainWindow };
             }
             else 
             {
-                window = new(SelectedProduct, g, Programs) { Owner = App.MainViewModel.MainWindow };
+                window = new(SelectedProduct, g, Programs, Products) { Owner = App.MainViewModel.MainWindow };
             }
 
 
