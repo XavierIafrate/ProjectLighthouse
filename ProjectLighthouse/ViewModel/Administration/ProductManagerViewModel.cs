@@ -1,5 +1,7 @@
-﻿using ProjectLighthouse.Model.Drawings;
+﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Core;
@@ -18,6 +20,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         public List<ProductGroup> ProductGroups { get; set; }
         public List<TechnicalDrawing> TechnicalDrawings { get; set; }
         public List<TurnedProduct> TurnedProducts { get; set; }
+        public List<NcProgram> Programs { get; set; }
 
 
         public List<ProductGroup> FilteredProductGroups { get; set; }
@@ -83,6 +86,8 @@ namespace ProjectLighthouse.ViewModel.Administration
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
                 .ToList();
 
+            Programs = DatabaseHelper.Read<NcProgram>();
+
             SelectedProduct = Products.First();
         }
 
@@ -144,7 +149,19 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
 
 
-            AddProductGroupWindow window = new(SelectedProduct, g) { Owner = App.MainViewModel.MainWindow };
+            AddProductGroupWindow window;
+
+
+            if (g is null) 
+            {
+                window = new(SelectedProduct) { Owner = App.MainViewModel.MainWindow };
+            }
+            else 
+            {
+                window = new(SelectedProduct, g, Programs) { Owner = App.MainViewModel.MainWindow };
+            }
+
+
             window.ShowDialog();
 
             if (!window.SaveExit)
@@ -159,7 +176,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void AddTurnedProduct()
         {
-            AddTurnedProductWindow window = new(ProductGroups) { Owner = App.MainViewModel.MainWindow };
+            AddTurnedProductWindow window = new(ProductGroups, groupId:SelectedProductGroup.Id) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
             if (!window.SaveExit)
@@ -168,8 +185,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
 
             TurnedProducts.Add(window.Product);
-            FilteredTurnedProducts.Add(window.Product);
-            OnPropertyChanged(nameof(FilteredTurnedProducts));
+            LoadProductGroup();
         }
 
         public void EditTurnedProduct(int id)
