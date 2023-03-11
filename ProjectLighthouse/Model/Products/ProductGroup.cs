@@ -26,9 +26,7 @@ namespace ProjectLighthouse.Model.Products
                 OnPropertyChanged();
             }
         }
-
-
-
+        
         public int? ProductId { get; set; }
         public double? MinBarSize { get; set; }
 
@@ -45,6 +43,7 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
+        public int? ProgramId { get; set; }
 
         public override string ToString()
         {
