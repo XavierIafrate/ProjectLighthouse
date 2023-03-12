@@ -78,7 +78,11 @@ namespace ProjectLighthouse.Model.Products
         [Ignore]
         public string LocalRenderPath
         {
-            get { return string.IsNullOrEmpty(ImageUrl) ? null : $@"{App.AppDataDirectory}lib\renders\{ImageUrl}"; }
+            get { 
+                return (string.IsNullOrEmpty(ImageUrl) || string.IsNullOrEmpty(App.AppDataDirectory)) 
+                    ? null 
+                    : $@"{App.AppDataDirectory}lib\renders\{ImageUrl}"; 
+            }
         }
 
 
