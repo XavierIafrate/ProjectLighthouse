@@ -29,7 +29,6 @@ namespace ProjectLighthouse.Model.Programs
         public string? Description { get; set; }
 
         private string tags = "";
-
         public string Tags
         {
             get { return tags; }
@@ -41,12 +40,20 @@ namespace ProjectLighthouse.Model.Programs
             }
         }
 
+        public string SearchableTags
+        {
+            get
+            {
+                return Tags.Replace(" ", "").ToLowerInvariant();
+            }
+        }
 
         public List<string> TagsList
         {
             get
             {
-                return Tags.Split(";").ToList();
+                if (Tags == "") return new();
+                return Tags.Split(";").OrderBy(x => x).ToList();
             }
         }
 
@@ -79,16 +86,32 @@ namespace ProjectLighthouse.Model.Programs
             {
                 ClearErrors(propertyName);
 
-                List<string> tags = TagsList;
+                List<string> tags = TagsList.Distinct().ToList();
                 tags.ForEach(x => x = x.ToLower());
-                if (tags.Distinct().Count() != tags.Count)
+
+                if (tags.Count != TagsList.Count)
                 {
                     AddError(propertyName, "Tags contains duplicates");
                 }
 
-                if (tags.Distinct().Count() > 10)
+                if (tags.Count > 10)
                 {
                     AddError(propertyName, "Maximum 10 tags");
+                }
+
+                if (tags.Any(x => x.Length > 16))
+                {
+                    AddError(propertyName, "Maximum tag length is 16 characters");
+                }
+
+                if (tags.Any(x => x.Trim() != x))
+                {
+                    AddError(propertyName, "One or more tags has leading or trailing whitespace");
+                }
+
+                if (tags.Any(x => string.IsNullOrWhiteSpace(x)))
+                {
+                    AddError(propertyName, "One or more tags is empty");
                 }
 
                 return;
