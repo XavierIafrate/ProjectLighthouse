@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel.Core;
+using ProjectLighthouse.ViewModel.Programs;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
 using ProjectLighthouse.ViewModel.Research;
@@ -24,6 +25,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
+            // TODO: Interface
             if (viewModel is RequestViewModel rvm)
             {
                 rvm.SendMessage();
@@ -35,6 +37,10 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
             else if (viewModel is ResearchViewModel devvm)
             {
                 devvm.SendMessage();
+            }
+            else if (viewModel is ProgramManagerViewModel progvm)
+            {
+                progvm.SendMessage();
             }
         }
     }

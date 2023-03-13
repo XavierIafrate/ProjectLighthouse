@@ -13,7 +13,7 @@ namespace ProjectLighthouse.View.Requests
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            ScrollViewer scrollViewer = sender as ScrollViewer;
+            if (sender is not ScrollViewer scrollViewer) return;
             grad.Visibility = scrollViewer.VerticalOffset == 0
                 ? Visibility.Hidden
                 : Visibility.Visible;

@@ -13,7 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Path = System.IO.Path;
 
-namespace View.HelperWindows
+namespace ProjectLighthouse.View.Programs
 {
     public partial class Monaco : Window
     {

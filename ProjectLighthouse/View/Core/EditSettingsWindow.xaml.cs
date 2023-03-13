@@ -37,10 +37,9 @@ namespace ProjectLighthouse.View
 
             foreach (ComboBoxItem item in locale.Items)
             {
-
                 if ((string)item.Content == user.Locale)
                 {
-                    defaultViewComboBox.SelectedItem = item;
+                    locale.SelectedItem = item;
                     break;
                 }
             }
@@ -75,10 +74,7 @@ namespace ProjectLighthouse.View
             }
 
             user.Password = newPwd.Password;
-            if (user.Locale == "British")
-            {
-                user.Locale = "";
-            }
+
 
             if (DatabaseHelper.Update<User>(user))
             {
@@ -97,12 +93,9 @@ namespace ProjectLighthouse.View
         {
             ComboBoxItem item = (ComboBoxItem)defaultViewComboBox.SelectedValue;
             user.DefaultView = item.Content.ToString();
-            if (user.Locale == "British")
-            {
-                user.Locale = "";
-            }
 
             DatabaseHelper.Update<User>(user);
+
         }
 
         private void confirmPwd_PasswordChanged(object sender, RoutedEventArgs e)
@@ -136,13 +129,8 @@ namespace ProjectLighthouse.View
         {
             ComboBoxItem item = (ComboBoxItem)locale.SelectedValue;
             user.Locale = item.Content.ToString();
-
-            if (user.Locale == "British")
-            {
-                user.Locale = "";
-            }
-
             DatabaseHelper.Update<User>(user);
+            App.CurrentUser = user;
         }
     }
 }

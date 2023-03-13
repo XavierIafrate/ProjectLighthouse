@@ -7,13 +7,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="New Archetype"
     Width="500"
-    SizeToContent="Height"
     ResizeMode="NoResize"
+    SizeToContent="Height"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <StackPanel Margin="20">
-        <TextBlock Style="{StaticResource title}" Text="{Binding Title}" d:Text="New/Edit Archetype" />
-        <TextBlock Style="{StaticResource subtitle}" Text="{Binding Product.Name, StringFormat='{}For Product: {0}'}" d:Text="For Product P0130" />
+        <TextBlock
+            d:Text="New/Edit Archetype"
+            Style="{StaticResource title}"
+            Text="{Binding Title}" />
+        <TextBlock
+            d:Text="For Product P0130"
+            Style="{StaticResource subtitle}"
+            Text="{Binding Product.Name, StringFormat='{}For Product: {0}'}" />
 
         <TextBlock Style="{StaticResource InputLabel}" Text="Group Name" />
         <TextBox
@@ -21,6 +27,8 @@
             Tag="name"
             Text="{Binding Group.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
+        <TextBlock Style="{StaticResource InputLabel}" Text="Assigned Product" />
+        <ComboBox ItemsSource="{Binding Products}" SelectedValue="{Binding Group.ProductId}" SelectedValuePath="Id" DisplayMemberPath="Name" IsEditable="True" StaysOpenOnEdit="True"/>
         <TextBlock Style="{StaticResource InputLabel}" Text="Major Diameter (mm)" />
         <TextBox
             Style="{StaticResource DefaultTextBox}"
@@ -33,8 +41,28 @@
             Tag="min bar size"
             Text="{Binding Group.MinBarSize, Mode=TwoWay, ValidatesOnDataErrors=True}" />
 
-        <Grid Height="10"/>
-        <Button Style="{StaticResource Action_New_Button}" Tag="Create" HorizontalAlignment="Right" x:Name="CreateButton" Click="CreateButton_Click"/>
-        <Button Style="{StaticResource Action_Update_Button}" Tag="Update" HorizontalAlignment="Right" x:Name="UpdateButton" Click="CreateButton_Click"/>
+        <TextBlock Style="{StaticResource InputLabel}" Text="Program" />
+        <ComboBox
+            Margin="5"
+            IsEditable="True"
+            ItemsSource="{Binding ProgramList}"
+            SelectedValue="{Binding Group.ProgramId}"
+            SelectedValuePath="Id"
+            StaysOpenOnEdit="True"
+            DisplayMemberPath="Name"/>
+
+        <Grid Height="10" />
+        <Button
+            x:Name="CreateButton"
+            HorizontalAlignment="Right"
+            Click="CreateButton_Click"
+            Style="{StaticResource Action_New_Button}"
+            Tag="Create" />
+        <Button
+            x:Name="UpdateButton"
+            HorizontalAlignment="Right"
+            Click="CreateButton_Click"
+            Style="{StaticResource Action_Update_Button}"
+            Tag="Update" />
     </StackPanel>
 </Window>

@@ -40,7 +40,7 @@
                 x:Name="ProductNameTextBox"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="name"
-                Text="{Binding Product.ProductName}" />
+                Text="{Binding Product.ProductName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <TextBlock Style="{StaticResource InputLabel}" Text="Export Product Name" />
             <TextBox
@@ -81,16 +81,17 @@
                 SelectedValuePath="Id" />
 
             <TextBlock Style="{StaticResource InputLabel}" Text="Product Group" />
-            <TextBox
+            <!--<TextBox
                 Style="{StaticResource DefaultTextBox}"
                 Tag="search groups"
-                TextChanged="TextBox_TextChanged" />
-            <ListView
-                Height="250"
-                ItemsSource="{Binding FilteredProductGroups}"
+                TextChanged="TextBox_TextChanged" />-->
+            <ComboBox
+                IsEditable="True"
+                StaysOpenOnEdit="True"
+                ItemsSource="{Binding ProductGroups}"
                 SelectedValue="{Binding Product.GroupId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 SelectedValuePath="Id">
-                <ListView.ItemTemplate>
+                <!--<ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="5,2" Orientation="Horizontal">
                             <TextBlock Text="{Binding Id}" />
@@ -100,9 +101,9 @@
                                 Text="{Binding Name}" />
                         </StackPanel>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <TextBlock Text="{Binding Product.GroupId, TargetNullValue='No group assigned', StringFormat='{}Group ID: {0}', Mode=OneWay}" />
+                </ListView.ItemTemplate>-->
+            </ComboBox>
+            <!--<TextBlock Text="{Binding Product.GroupId, TargetNullValue='No group assigned', StringFormat='{}Group ID: {0}', Mode=OneWay}" />-->
         </StackPanel>
 
         <Grid Grid.Row="2" Grid.ColumnSpan="2">

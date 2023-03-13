@@ -26,9 +26,7 @@ namespace ProjectLighthouse.Model.Products
                 OnPropertyChanged();
             }
         }
-
-
-
+        
         public int? ProductId { get; set; }
         public double? MinBarSize { get; set; }
 
@@ -41,6 +39,7 @@ namespace ProjectLighthouse.Model.Products
                 if (majorDiameter == value) return;
                 
                 majorDiameter = value;
+                ValidateProperty();
                 OnPropertyChanged();
             }
         }

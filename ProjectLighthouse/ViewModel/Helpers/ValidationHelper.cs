@@ -10,9 +10,17 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static Regex Alphanumeric = new(@"^[a-zA-Z0-9]*$", RegexOptions.Compiled);
         private static Regex UpperCaseAndNumbers = new(@"^[A-Z0-9]*$", RegexOptions.Compiled);
+        private static Regex Numbers = new(@"^[0-9]*$", RegexOptions.Compiled);
 
         private static Regex ProductName = new(@"^[A-Z0-9.-]*$", RegexOptions.Compiled);
         private static Regex ProductNameChars = new(@"[A-Z0-9.-]", RegexOptions.Compiled);
+
+        public static bool StringIsNumbers(string str)
+        {
+            Regex rx = Numbers;
+
+            return rx.IsMatch(str);
+        }
 
         public static bool StringIsUpperCaseAndNumbers(string str)
         {

@@ -1,6 +1,10 @@
-﻿using ProjectLighthouse.Model.Products;
+﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Programs;
+using ProjectLighthouse.View.Programs;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace ProjectLighthouse.View.Administration
@@ -10,29 +14,36 @@ namespace ProjectLighthouse.View.Administration
         public ProductGroup Group { get; set; }
         public ProductGroup? originalGroup;
         public Product Product { get; set; }
+        public List<Product> Products { get; set; }
+        public List<Model.Programs.NcProgram> ProgramList { get; set; }
 
         public bool SaveExit = false;
-        public AddProductGroupWindow(Product product, ProductGroup? group = null)
+        public AddProductGroupWindow(Product product, List<Product> products)
         {
             InitializeComponent();
             Product = product;  
+            Products = products;
+            Group = new() { ProductId = product.Id };
 
-            if(group != null)
-            {
-                originalGroup = group;
-                Group = (ProductGroup)group.Clone();
+            this.Title = "New Archetype";
+            UpdateButton.Visibility = Visibility.Collapsed;
 
-                this.Title = "Edit Archetype";
-                CreateButton.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                Group = new() { ProductId = product.Id };
+            DataContext = this;
+        }
 
-                this.Title = "New Archetype";
-                UpdateButton.Visibility = Visibility.Collapsed;
-            }
+        public AddProductGroupWindow(Product product, ProductGroup group, List<Model.Programs.NcProgram> programs, List<Product> products)
+        {
+            InitializeComponent();
+            Product = product;
+            Products = products;
+            ProgramList = programs;
 
+            originalGroup = group;
+            Group = (ProductGroup)group.Clone();
+
+            this.Title = "Edit Archetype";
+            CreateButton.Visibility = Visibility.Collapsed;
+            
             DataContext = this;
         }
 
