@@ -1,10 +1,8 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using Microsoft.Web.WebView2.Wpf;
+﻿using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,7 +53,7 @@ namespace ProjectLighthouse.View.Programs
 
             dollarOne.CoreWebView2InitializationCompleted += DollarOne_CoreWebView2InitializationCompleted;
             dollarTwo.CoreWebView2InitializationCompleted += DollarTwo_CoreWebView2InitializationCompleted;
-        } 
+        }
 
         private void DollarOne_Loaded(object sender, RoutedEventArgs e)
         {
@@ -83,14 +81,14 @@ namespace ProjectLighthouse.View.Programs
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            //NcProgram prog = GetProgramFromFile(@"C:\Users\xavie\Downloads\127.PRG");
-            NcProgram prog = GetProgramFromFile(@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\12.PRG");
+            MonacoProgram prog = GetProgramFromFile(@"C:\Users\xavie\Downloads\127.PRG");
+            //NcProgram prog = GetProgramFromFile(@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\12.PRG");
 
             await ExecuteScriptFunctionAsync(dollarOne, "setContent", prog.dollarOneCode);
             await ExecuteScriptFunctionAsync(dollarTwo, "setContent", prog.dollarTwoCode);
         }
 
-        private static NcProgram GetProgramFromFile(string path)
+        private static MonacoProgram GetProgramFromFile(string path)
         {
             string programData = File.ReadAllText(path);
             if (!programData.Contains("$0") || !programData.Contains("$1") || !programData.Contains("$2"))
@@ -98,7 +96,7 @@ namespace ProjectLighthouse.View.Programs
                 throw new InvalidDataException("spindle missing");
             }
 
-            NcProgram prog = new()
+            MonacoProgram prog = new()
             {
                 header = programData[..programData.IndexOf("$1")].Trim(),
                 dollarOneCode = programData.Substring(programData.IndexOf("$1") + 2, programData.IndexOf("$2") - programData.IndexOf("$1") - 2).Trim(),
@@ -146,7 +144,7 @@ namespace ProjectLighthouse.View.Programs
         }
 
     }
-    internal class NcProgram
+    internal class MonacoProgram
     {
         public string header { get; set; }
         public string dollarOneCode { get; set; }
