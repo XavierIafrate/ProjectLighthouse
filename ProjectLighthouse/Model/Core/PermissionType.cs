@@ -6,7 +6,7 @@
     * 
     * 1xx = Request Permission
     * 2xx = Orders & Delivery Permission
-    * 3xx = Drawings Permission
+    * 3xx = Drawings & Programs Permission
     * 4xx = Quality Permissions
     * 5xx = Maintenance Permissions
     * 6xx = Development Permissions
@@ -24,6 +24,7 @@
         CreateDelivery = 204,
         EditDelivery = 205,
         ApproveDrawings = 301,
+        ConfigurePrograms=302,
         ModifyCalibration = 401,
         UpdateCalibration = 402,
         ConfigureMaintenance = 501,

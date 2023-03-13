@@ -22,6 +22,7 @@ namespace ProjectLighthouse.Model.Core
              { PermissionType.EditDelivery, "Edit Deliveries" },
              { PermissionType.CreateSpecial, "Add Special Parts" },
              { PermissionType.ApproveDrawings, "Approve Drawings" },
+             { PermissionType.ConfigurePrograms, "Configure Programs" },
              { PermissionType.ModifyCalibration, "Modify Calibration" },
              { PermissionType.UpdateCalibration, "Update Calibration" },
              { PermissionType.IssueBar, "Issue Bar Stock" },
