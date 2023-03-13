@@ -801,6 +801,73 @@
     </Style>
 
     <Style
+        x:Key="Action_Delete_Button_Small"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="20"
+                            MinWidth="30"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="8"
+                                Height="12"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M20 14H4V10H20V14Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource RedFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource Red}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style
         x:Key="Action_Cancel_Button"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
