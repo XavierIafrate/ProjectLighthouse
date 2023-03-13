@@ -33,15 +33,15 @@ namespace ProjectLighthouse.View.Programs
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            this.dollarOne.Source =
-                    new Uri(System.IO.Path.Combine(
-                        System.AppDomain.CurrentDomain.BaseDirectory,
-                        @"Monaco\index.html"));
+            //this.dollarOne.Source =
+            //        new Uri(System.IO.Path.Combine(
+            //            System.AppDomain.CurrentDomain.BaseDirectory,
+            //            @"Monaco\index.html"));
 
-            this.dollarTwo.Source =
-                    new Uri(System.IO.Path.Combine(
-                        System.AppDomain.CurrentDomain.BaseDirectory,
-                        @"Monaco\index.html"));
+            //this.dollarTwo.Source =
+            //        new Uri(System.IO.Path.Combine(
+            //            System.AppDomain.CurrentDomain.BaseDirectory,
+            //            @"Monaco\index.html"));
         }
     }
 }

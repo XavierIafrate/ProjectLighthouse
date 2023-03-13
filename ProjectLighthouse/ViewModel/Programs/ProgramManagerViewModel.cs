@@ -1,7 +1,9 @@
 ﻿using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Programs;
+using ProjectLighthouse.View.Programs;
 using ProjectLighthouse.ViewModel.Commands.Administration;
+using ProjectLighthouse.ViewModel.Commands.Programs;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -27,18 +29,19 @@ namespace ProjectLighthouse.ViewModel.Programs
         }
 
         public List<ProductGroup> Archetypes { get; set; }
+        public List<Product> Products { get; set; }
 
         private List<ProductGroup>? usedFor;
         public List<ProductGroup>? UsedFor
         {
             get { return usedFor; }
-            set 
-            { 
+            set
+            {
                 if (value is List<ProductGroup> list)
                 {
                     if (list.Count == 0) value = null;
                 }
-                usedFor = value; 
+                usedFor = value;
                 OnPropertyChanged();
             }
         }
@@ -50,8 +53,8 @@ namespace ProjectLighthouse.ViewModel.Programs
         public List<Note> FilteredNotes
         {
             get { return filteredNotes; }
-            set 
-            { 
+            set
+            {
                 filteredNotes = value;
                 OnPropertyChanged();
             }
@@ -85,14 +88,15 @@ namespace ProjectLighthouse.ViewModel.Programs
         public string NewMessage
         {
             get { return newMessage; }
-            set 
-            { 
-                newMessage = value; 
+            set
+            {
+                newMessage = value;
                 OnPropertyChanged();
             }
         }
 
         public SendMessageCommand SendMessageCmd { get; set; }
+        public EditProgramCommand EditProgramCmd { get; set; }
 
         public ProgramManagerViewModel()
         {
@@ -103,6 +107,7 @@ namespace ProjectLighthouse.ViewModel.Programs
         void LoadData()
         {
             SendMessageCmd = new(this);
+            EditProgramCmd = new(this);
 
             Programs = DatabaseHelper.Read<NcProgram>()
                 .OrderBy(x => x.Name)
@@ -116,6 +121,29 @@ namespace ProjectLighthouse.ViewModel.Programs
             Archetypes = DatabaseHelper.Read<ProductGroup>()
                 .OrderBy(x => x.Name)
                 .ToList();
+            Products = DatabaseHelper.Read<Product>()
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+        public void EditProgram()
+        {
+            if (SelectedProgram is null) return;
+
+            AddProgramWindow window = new(Products, Archetypes, new(), new(), SelectedProgram) { Owner = App.MainViewModel.MainWindow };
+            window.ShowDialog();
+
+            if (!window.SaveExit)
+            {
+                return;
+            }
+
+            int selectedProgramId = SelectedProgram.Id;
+
+            LoadData();
+            Search();
+
+            SelectedProgram = Programs.Find(x => x.Id == selectedProgramId);
         }
 
         void Search()
@@ -135,15 +163,21 @@ namespace ProjectLighthouse.ViewModel.Programs
             }
 
             string tagSearch = SearchString.Replace(" ", "").ToLowerInvariant();
+
             FilteredPrograms = Programs
-                .Where(x => 
-                x.Name.ToLowerInvariant().Contains(SearchString.ToLowerInvariant()) || 
+                .Where(x =>
+                x.Name.ToLowerInvariant().Contains(SearchString.ToLowerInvariant()) ||
                 x.SearchableTags.Contains(tagSearch))
                 .ToList();
 
+            List<int> groups = Archetypes.Where(x => x.Name.ToLowerInvariant().Contains(tagSearch)).Select(x => x.Id).ToList();
+            FilteredPrograms.AddRange(Programs.Where(x => groups.Any(y => x.GroupStringIds.Contains(y.ToString("0")))));
+
+            FilteredPrograms = FilteredPrograms.Distinct().ToList();
+
             if (FilteredPrograms.Count > 0)
             {
-                SelectedProgram = Programs[0];
+                SelectedProgram = FilteredPrograms[0];
             }
             else
             {
@@ -192,9 +226,39 @@ namespace ProjectLighthouse.ViewModel.Programs
                 .Where(x => x.DocumentReference == $"p{SelectedProgram.Id}")
                 .ToList();
 
-            UsedFor = Archetypes
-                .Where(x => x.ProgramId == SelectedProgram.Id)
-                .ToList();
+            if (SelectedProgram.Groups is null) return;
+
+            List<string> groupStringIds = SelectedProgram.Groups.Split(";").ToList();
+            List<int> groupIds = new();
+
+            for (int i = 0; i < groupStringIds.Count; i++)
+            {
+                if (!int.TryParse(groupStringIds[i], out int group))
+                {
+                    MessageBox.Show($"Failed to convert {groupStringIds[i]} to integer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    continue;
+                }
+
+                groupIds.Add(group);
+            }
+
+            List<ProductGroup> targetedGroups = new();
+
+            for (int i = 0; i < groupIds.Count; i++)
+            {
+                int id = groupIds[i];
+                ProductGroup? g = Archetypes.Find(x => x.Id == id);
+
+                if (g is null)
+                {
+                    MessageBox.Show($"Failed to find group with ID {id}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    continue;
+                }
+
+                targetedGroups.Add(g);
+            }
+
+            UsedFor = targetedGroups.OrderBy(x => x.Name).ToList();
         }
     }
 }

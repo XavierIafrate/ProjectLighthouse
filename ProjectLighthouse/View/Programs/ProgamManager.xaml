@@ -185,7 +185,7 @@
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged"
             Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}">
-            <Grid MaxWidth="700" Margin="25,20,25,50">
+            <Grid MaxWidth="700" Margin="25,25,25,50">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
@@ -203,14 +203,19 @@
 
                 <StackPanel Margin="25,15">
                     <!--  Card Header  -->
-                    <TextBlock
-                        d:Text="PROGRAM_NAME"
-                        Style="{StaticResource title}"
-                        Text="{Binding SelectedProgram.Name, StringFormat='{}Program {0}'}" />
-                    <TextBlock
-                        d:Text="PROGRAM_DESCRIPTION"
-                        Style="{StaticResource subtitle}"
-                        Text="{Binding SelectedProgram.Description}" />
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock
+                                d:Text="PROGRAM_NAME"
+                                Style="{StaticResource title}"
+                                Text="{Binding SelectedProgram.Name, StringFormat='{}Program {0}'}" />
+                            <TextBlock
+                                d:Text="PROGRAM_DESCRIPTION"
+                                Style="{StaticResource subtitle}"
+                                Text="{Binding SelectedProgram.Description}" />
+                        </StackPanel>
+                        <Button Style="{StaticResource HeroEditButton}" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding EditProgramCmd}"/>
+                    </Grid>
 
                     <ItemsControl
                         Margin="5"
@@ -239,53 +244,57 @@
                     </ItemsControl>
 
 
-                    <!--  Controls area  -->
+                    <ItemsControl
+                        Margin="5"
+                        Background="{StaticResource Background}"
+                        ItemsSource="{Binding SelectedProgram.MaterialsList}"
+                        Style="{x:Null}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="5,3"
+                                    Background="{StaticResource RedFaded}"
+                                    CornerRadius="5">
+                                    <TextBlock
+                                        Margin="5,3"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Red}"
+                                        Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
 
-                    <StackPanel Margin="10">
-
-                        <Grid MinHeight="600">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                                Margin="30,10"
-                                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
-                                FontWeight="SemiBold"
-                                Foreground="{StaticResource Blue}"
-                                Text="$1 MAIN SPINDLE" />
-
-                            <TextBlock
-                                Grid.Column="1"
-                                Margin="30,10"
-                                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
-                                FontWeight="SemiBold"
-                                Foreground="{StaticResource Blue}"
-                                Text="$2 SUB SPINDLE" />
-
-                            <wv2:WebView2
-                                x:Name="dollarOne"
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Width="Auto"
-                                Height="Auto"
-                                d:Visibility="Visible" />
-
-                            <wv2:WebView2
-                                x:Name="dollarTwo"
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Width="Auto"
-                                Height="Auto"
-                                d:Visibility="Visible" />
-                        </Grid>
-
-                    </StackPanel>
+                    <ItemsControl
+                        Margin="5"
+                        Background="{StaticResource Background}"
+                        ItemsSource="{Binding SelectedProgram.MachinesList}"
+                        Style="{x:Null}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="5,3"
+                                    Background="{StaticResource PurpleFaded}"
+                                    CornerRadius="5">
+                                    <TextBlock
+                                        Margin="5,3"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Purple}"
+                                        Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
 
                     <TextBlock Style="{StaticResource section}" Text="Program Usage" />
                     <Border Background="{StaticResource Surface}" CornerRadius="5" Margin="5,10" Visibility="{Binding UsedFor, Converter={StaticResource NullToVisibility}}">
@@ -304,6 +313,53 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+
+                    <!--<StackPanel Margin="10">
+
+                        <Grid MinHeight="600">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="43*" />
+                                <ColumnDefinition Width="62*"/>
+                                <ColumnDefinition Width="105*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Margin="30,10,30,10"
+                                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Blue}"
+                                Text="$1 MAIN SPINDLE" Grid.ColumnSpan="2" />
+
+                            <TextBlock
+                                Grid.Column="2"
+                                Margin="30,10,30,10"
+                                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Blue}"
+                                Text="$2 SUB SPINDLE" />
+
+                            <wv2:WebView2
+                                x:Name="dollarOne"
+                                Grid.Column="0"
+                                Width="Auto"
+                                Height="Auto"
+                                d:Visibility="Visible" Grid.ColumnSpan="2" Margin="0,37,0,0" Grid.RowSpan="2" />
+
+                            <wv2:WebView2
+                                x:Name="dollarTwo"
+                                Grid.Column="2"
+                                Width="Auto"
+                                Height="Auto"
+                                d:Visibility="Visible" Margin="0,37,0,0" Grid.RowSpan="2" />
+                        </Grid>
+
+                    </StackPanel>-->
+
+
                     <TextBlock Style="{StaticResource section}" Text="Comments" />
 
                     <uc:DisplayListOfNotes
