@@ -459,7 +459,17 @@
             Margin="5"
             Background="{StaticResource Surface}"
             CornerRadius="10">
-            <StackPanel VerticalAlignment="Center">
+            <Grid>
+                <ListView ItemsSource="{Binding RecommendedManifest}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <uc:DisplayManifestItem Margin="10,2" Item="{Binding}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Rectangle Fill="#01ffffff" />
+            </Grid>
+            <!--<StackPanel VerticalAlignment="Center">
                 <Image
                     Width="200"
                     Margin="0,0,0,10"
@@ -476,7 +486,7 @@
                     Opacity="0.6"
                     Style="{StaticResource subsubtitle}"
                     Text="Coming soon" />
-            </StackPanel>
+            </StackPanel>-->
         </Border>
         <!--<StackPanel Grid.Row="1" Grid.Column="2">
             <TextBlock
