@@ -45,6 +45,23 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
+        private GroupStatus status;
+        public GroupStatus Status
+        {
+            get { return status; }
+            set { status = value; OnPropertyChanged(); }
+        }
+
+        public bool Dormant { get => Status == GroupStatus.Dormant; }
+        public bool InDevelopment { get => Status == GroupStatus.InDevelopment; }
+        public bool Active { get => Status == GroupStatus.Active; }
+
+        public enum GroupStatus
+        {
+            Dormant = 0,
+            InDevelopment = 100,
+            Active = 200,
+        }
 
         public override string ToString()
         {
