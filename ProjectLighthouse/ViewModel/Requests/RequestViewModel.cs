@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Requests
@@ -29,6 +31,19 @@ namespace ProjectLighthouse.ViewModel.Requests
         public List<LatheManufactureOrder> Orders { get; set; }
         public List<LatheManufactureOrderItem> OrderItems { get; set; }
         public List<LatheManufactureOrderItem> RecommendedManifest { get; set; }
+
+        private string frequencyAnalysis;
+
+        public string FrequencyAnalysis
+        {
+            get { return frequencyAnalysis; }
+            set 
+            { 
+                frequencyAnalysis = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public List<Note> FilteredNotes { get; set; }
         public List<Note> Notes { get; set; }
@@ -46,7 +61,6 @@ namespace ProjectLighthouse.ViewModel.Requests
         }
 
         private string searchString;
-
         public string SearchString
         {
             get { return searchString; }
@@ -59,7 +73,6 @@ namespace ProjectLighthouse.ViewModel.Requests
         }
 
         private double targetRuntime;
-
         public double TargetRuntime
         {
             get { return targetRuntime; }
@@ -111,7 +124,6 @@ namespace ProjectLighthouse.ViewModel.Requests
         }
 
         private ProductGroup? selectedRequestProductGroup;
-
         public ProductGroup? SelectedRequestProductGroup
         {
             get { return selectedRequestProductGroup; }
@@ -123,7 +135,6 @@ namespace ProjectLighthouse.ViewModel.Requests
         }
 
         private Product? selectedRequestMainProduct;
-
         public Product? SelectedRequestMainProduct
         {
             get { return selectedRequestMainProduct; }
@@ -137,6 +148,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public List<ProductGroup> ProductGroups { get; set; }
         public List<Product> MainProducts { get; set; }
+        public List<MaterialInfo> Materials { get; set; }
 
         public bool UpdateButtonEnabled { get; set; }
 
@@ -214,17 +226,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
         }
 
-        private Visibility cleaningVis;
-
-        public Visibility CleaningVis
-        {
-            get { return cleaningVis; }
-            set
-            {
-                cleaningVis = value;
-                OnPropertyChanged();
-            }
-        }
 
         private Visibility decisionVis;
         public Visibility DecisionVis
@@ -324,9 +325,6 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ? Visibility.Visible
                 : Visibility.Collapsed;
             TargetRuntime = 5;
-
-
-            //List<OperaHelper.InvoiceLine> lines = OperaHelper.GetInvoiceLines(OperaHelper.invoiceTransactionsTable);
         }
 
         public void EditProduct()
@@ -387,10 +385,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             SelectedRequestProduct.ValidateAll();
             DataRequired = SelectedRequestProduct.HasErrors;
 
-            CleaningVis = SelectedRequest.CleanCustomerRequirement
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
             ModifiedVis = string.IsNullOrEmpty(SelectedRequest.ModifiedBy)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
@@ -422,7 +416,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             PurchaseRef = !string.IsNullOrEmpty(SelectedRequest.POReference) ? SelectedRequest.POReference : "POR";
 
-            if (SelectedRequest.Product != null)
+            if (SelectedRequest.Product is not null)
             {
                 FilteredNotes = null;
                 OnPropertyChanged(nameof(FilteredNotes));
@@ -430,19 +424,134 @@ namespace ProjectLighthouse.ViewModel.Requests
                 OnPropertyChanged(nameof(FilteredNotes));
                 LoadRecommendedOrder();
             }
+
+            if (SelectedRequestMainProduct is not null)
+            {
+                Task.Run(() => GenerateAnalysis());
+            }
         }
+
+
+        void GenerateAnalysis() 
+        {
+            if (SelectedRequest is null) return;
+            if (SelectedRequestProduct is null) return;
+
+            ProductGroup? group = ProductGroups.Find(x => x.Id == SelectedRequestProduct.GroupId);
+
+            if (group is null)
+            {
+                FrequencyAnalysis = null;
+                return;
+            }
+
+            List<LatheManufactureOrder> ordersInGroup = Orders
+                .Where(x => 
+                    x.State == OrderState.Complete && 
+                    x.StartDate.Date > DateTime.MinValue && 
+                    x.CreatedAt < SelectedRequest.DateRaised && 
+                    x.GroupId == group.Id
+                ).ToList();
+
+            int countBefore = ordersInGroup.Count;
+            int countBeforeLastYear = ordersInGroup.Where(x => x.StartDate.AddYears(1) > SelectedRequest.DateRaised).Count();
+
+            List<LatheManufactureOrder> exactOrdersInYear = ordersInGroup.Where(x => x.StartDate.AddYears(1) > SelectedRequest.DateRaised && x.MaterialId == SelectedRequestProduct.MaterialId).ToList();
+            int countBeforeLastYearInMaterial = exactOrdersInYear.Count;
+            DateTime? lastRun = exactOrdersInYear.Count > 0 ? exactOrdersInYear.Max(x => x.StartDate) : null;
+
+            FrequencyAnalysis = $"Run {countBefore:0} time(s) before." +
+                $"{Environment.NewLine}{countBeforeLastYear:0} time(s) in the last year." +
+                $"{Environment.NewLine}{countBeforeLastYearInMaterial:0} times in the last year in this material." +
+                $"{Environment.NewLine}Last run in this material in {(lastRun is not null ? ((DateTime)lastRun).ToString("MMMM yyyy") : "n/a")}";
+
+            if (exactOrdersInYear.Count == 0) return;
+
+
+            List<LatheManufactureOrderItem> itemsMadeInYear = OrderItems
+                .Where(x => exactOrdersInYear.Any(i => i.Name == x.AssignedMO) && x.QuantityDelivered > 0)
+                .ToList();
+
+            Dictionary<TurnedProduct, (int, int)> made = new();
+
+            foreach (LatheManufactureOrderItem item in itemsMadeInYear)
+            {
+                TurnedProduct? p = Products.Find(x => x.ProductName == item.ProductName);
+
+                if (p is null) continue;
+
+                if (!made.ContainsKey(p))
+                {
+                    made.Add(p, (0, 0));
+                }
+
+                (int, int) val = made[p];
+                made[p] = (val.Item1 + item.QuantityDelivered, val.Item2 + 1);
+            }
+
+            foreach (KeyValuePair<TurnedProduct, (int, int)> value in made)
+            {
+                TurnedProduct product = value.Key;
+                int quantityShipped = value.Value.Item1;
+                int frequencyShipped = value.Value.Item2;
+
+                if(product.QuantitySold > quantityShipped)
+                {
+                    continue;
+                }
+                int delta = quantityShipped - product.QuantityInStock;
+
+                //if (frequencyShipped == 1) continue;
+
+                FrequencyAnalysis += $"{Environment.NewLine}{product.ProductName}: Target is {product.QuantitySold}; curr stock is {product.QuantityInStock}; shipped {quantityShipped}; {frequencyShipped} times; delta {delta:+#;-#;0}";
+                if (product.QuantitySold == 0 && delta > 100)
+                {
+                    FrequencyAnalysis += $"{Environment.NewLine}\t{product.ProductName}: No target set; {delta:#,##0} sold.";
+                    continue;
+                }
+                else if (product.QuantitySold == 0)
+                {
+                    FrequencyAnalysis += $"{Environment.NewLine}\tTarget is in excess of demand (zero sold)";
+                    continue;
+                }
+
+                double ratio = (double)delta / (double)product.QuantitySold - 1;
+                //if (delta < 0)
+                //{
+                //    continue;
+                //}
+
+
+                if (ratio < -0.06)
+                {
+                    FrequencyAnalysis += $"{Environment.NewLine}\tTarget is in excess of demand: {ratio:P2}";
+                }
+                else if (ratio > 0.06)
+                {
+                    FrequencyAnalysis += $"{Environment.NewLine}\tDemand is {ratio:P2} higher than target";
+                }
+                else
+                {
+                    FrequencyAnalysis += $"{Environment.NewLine}\tTarget is appropriate: {ratio:P2}";
+                }
+                
+            }
+        }
+
 
         private void LoadRecommendedOrder()
         {
             RecommendedManifest.Clear();
-            TurnedProduct requiredProduct = Products.First(p => p.ProductName == SelectedRequest.Product);
 
-            RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(Products,
-                requiredProduct,
-                SelectedRequest.QuantityRequired,
-                TimeSpan.FromDays(Math.Round(TargetRuntime)),
-                SelectedRequest.DateRequired);
+            if (SelectedRequest is null)
+            {
+                OnPropertyChanged(nameof(RecommendedManifest));
+                return;
+            }
 
+            TimeSpan targetTimeSpan = TimeSpan.FromDays(Math.Round(TargetRuntime));
+            // TODO add try catch
+            RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(Products, SelectedRequest, targetTimeSpan);
             OnPropertyChanged(nameof(RecommendedManifest));
         }
 
@@ -471,6 +580,8 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void UpdateRequirements(string notes, int QuantityRequired)
         {
+            if(SelectedRequest is null) return;
+
             SelectedRequest.LastModified = DateTime.Now;
             SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
 
@@ -604,6 +715,8 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void DeclineRequest()
         {
+            if (SelectedRequest is null) return;
+
             if (!App.CurrentUser.HasPermission(PermissionType.ApproveRequest))
             {
                 MessageBox.Show("You do not have permission to decline requests.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -637,6 +750,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             Products = DatabaseHelper.Read<TurnedProduct>();
             ProductGroups = DatabaseHelper.Read<ProductGroup>();
             MainProducts = DatabaseHelper.Read<Product>();
+            Materials = DatabaseHelper.Read<MaterialInfo>();
 
             TargetRuntime = 5;
 

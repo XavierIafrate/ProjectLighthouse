@@ -8,8 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    d:Background="{StaticResource Background}"
     d:DesignWidth="1445"
-    Background="{StaticResource Background}"
     mc:Ignorable="d">
 
     <Grid>
@@ -405,17 +405,17 @@
                     <!--  Controls area  -->
 
                     <StackPanel Margin="10">
+
+
                         <TextBlock Style="{StaticResource section}" Text="Request Details" />
-
-
-                        <Grid Margin="10" HorizontalAlignment="Center">
+                        <Grid Margin="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Border
-                                Width="120"
-                                Height="120"
+                                Width="140"
+                                Height="140"
                                 Background="{StaticResource Surface}"
                                 CornerRadius="5">
                                 <Grid>
@@ -437,66 +437,144 @@
                                 </Grid>
 
                             </Border>
-                            <StackPanel
+                            <Grid
                                 Grid.Column="1"
-                                Width="240"
                                 Margin="15,0"
                                 VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
                                 <TextBlock
+                                    Grid.ColumnSpan="2"
                                     d:Text="PRODUCT_NAME"
-                                    FontFamily="Consolas"
                                     FontSize="22"
                                     FontWeight="SemiBold"
-                                    Foreground="{StaticResource Purple}"
                                     Text="{Binding SelectedRequestProduct.ProductName}" />
 
+                                <Path
+                                    Grid.Row="1"
+                                    Height="20"
+                                    Margin="10,5"
+                                    Data="M8.46,15.06L7.05,16.47L5.68,15.1C4.82,16.21 4.24,17.54 4.06,19H6V21H2V20C2,15.16 5.44,11.13 10,10.2V8.2L2,5V3H22V5L14,8.2V10.2C18.56,11.13 22,15.16 22,20V21H18V19H19.94C19.76,17.54 19.18,16.21 18.32,15.1L16.95,16.47L15.54,15.06L16.91,13.68C15.8,12.82 14.46,12.24 13,12.06V14H11V12.06C9.54,12.24 8.2,12.82 7.09,13.68L8.46,15.06M12,18A2,2 0 0,1 14,20A2,2 0 0,1 12,22C11.68,22 11.38,21.93 11.12,21.79L7.27,20L11.12,18.21C11.38,18.07 11.68,18 12,18Z"
+                                    Fill="{StaticResource Purple}"
+                                    Stretch="Uniform" />
                                 <TextBlock
-                                    d:Text="QTY_REQUESTED_FOR_DATE"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    d:Text="QTY_REQUESTED"
                                     FontSize="16"
                                     FontWeight="SemiBold">
                                     <Run Text="{Binding SelectedRequest.QuantityRequired, StringFormat='{}{0:#,##0}pcs'}" />
-                                    <Run Text="{Binding SelectedRequest.DateRequired, StringFormat='{}for {0:dd MMMM yyyy}'}" />
                                 </TextBlock>
+
+
+                                <Path
+                                    Grid.Row="2"
+                                    Margin="10,5"
+                                    Data="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z"
+                                    Fill="{StaticResource Purple}"
+                                    Stretch="Uniform" />
+
                                 <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    d:Text="DATE_REQUESTED"
+                                    FontSize="16"
+                                    FontWeight="SemiBold">
+                                    <Run Text="{Binding SelectedRequest.DateRequired, StringFormat='{}{0:dd MMMM yyyy}'}" />
+                                </TextBlock>
+
+                                <Path
+                                    Grid.Row="3"
+                                    Margin="10,5"
+                                    Data="M6 19H8V21H6V19M12 3L2 8V21H4V13H20V21H22V8L12 3M8 11H4V9H8V11M14 11H10V9H14V11M20 11H16V9H20V11M6 15H8V17H6V15M10 15H12V17H10V15M10 19H12V21H10V19M14 19H16V21H14V19Z"
+                                    Fill="{StaticResource Purple}"
+                                    Stretch="Uniform" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    FontSize="16"
                                     d:Text="QTY_IN_STOCK"
-                                    FontStyle="Italic"
                                     FontWeight="SemiBold"
-                                    Opacity="0.6"
                                     Text="{Binding SelectedRequestProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}" />
+
+                                <Path
+                                    Grid.Row="4"
+                                    Margin="10,5"
+                                    Data="M15,4A8,8 0 0,1 23,12A8,8 0 0,1 15,20A8,8 0 0,1 7,12A8,8 0 0,1 15,4M15,6A6,6 0 0,0 9,12A6,6 0 0,0 15,18A6,6 0 0,0 21,12A6,6 0 0,0 15,6M14,8H15.5V11.78L17.83,14.11L16.77,15.17L14,12.4V8M2,18A1,1 0 0,1 1,17A1,1 0 0,1 2,16H5.83C6.14,16.71 6.54,17.38 7,18H2M3,13A1,1 0 0,1 2,12A1,1 0 0,1 3,11H5.05L5,12L5.05,13H3M4,8A1,1 0 0,1 3,7A1,1 0 0,1 4,6H7C6.54,6.62 6.14,7.29 5.83,8H4Z"
+                                    Fill="{StaticResource Purple}"
+                                    Stretch="Uniform" />
                                 <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    FontSize="16"
                                     d:Text="QTY_ON_SO"
-                                    FontStyle="Italic"
                                     FontWeight="SemiBold"
-                                    Opacity="0.6"
                                     Text="{Binding SelectedRequestProduct.QuantityOnSO, StringFormat='{}{0:#,##0} on Sales Order'}" />
-                            </StackPanel>
+                            </Grid>
                         </Grid>
+
+                        <StackPanel Visibility="{Binding SelectedRequestMainProduct, Converter={StaticResource NotNullToVisibility}}">
+                            <TextBlock Style="{StaticResource section}" Text="Product Analytics" />
+                            <Border
+                                Margin="5"
+                                Background="{StaticResource GreenFaded}"
+                                CornerRadius="5">
+                                <StackPanel
+                                    Margin="5"
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Path
+                                        Height="18"
+                                        Margin="5,0"
+                                        Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"
+                                        Fill="{StaticResource Green}"
+                                        Stretch="Uniform" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Green}"
+                                        Text="This archetype has not been made in the last year" />
+                                </StackPanel>
+                            </Border>
+
+
+                            <TextBlock Text="{Binding FrequencyAnalysis}" />
+
+                        </StackPanel>
 
                         <StackPanel Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToCollapsed}}">
                             <TextBlock Style="{StaticResource section}" Text="Recommended Order" />
-                            <Grid Margin="0,10">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                d:Text="Runtime Cap [X day(s)]"
+                                Style="{StaticResource InputLabel}"
+                                Text="{Binding TargetRuntime, StringFormat='{}Runtime Cap [{0:N0} day(s)]'}" />
+                            <Grid Margin="0,10" HorizontalAlignment="Left">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="30" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
-                                    Padding="10,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Foreground="{StaticResource Blue}"
-                                    Style="{StaticResource statement}"
-                                    Text="{Binding TargetRuntime, StringFormat='{}Runtime Cap [{0:N0} day(s)]'}" />
-                                <TextBlock
-                                    Grid.Column="1"
                                     Padding="10,0"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource OnBackground}"
-                                    Style="{StaticResource statement}"
-                                    Text="1 day" />
+                                    Text="1" />
                                 <Slider
-                                    Grid.Column="2"
+                                    MinWidth="300"
+                                    MaxWidth="500"
+                                    Grid.Column="1"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
                                     IsSnapToTickEnabled="True"
@@ -505,19 +583,10 @@
                                     TickPlacement="BottomRight"
                                     Value="{Binding TargetRuntime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock
-                                    Grid.Column="3"
+                                    Grid.Column="2"
                                     Padding="10,0"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource OnBackground}"
-                                    Style="{StaticResource statement}"
-                                    Text="14 days" />
-                                <Button
-                                    Grid.Column="4"
-                                    Margin="0,0,5,0"
-                                    Command="{Binding ViewMakeOrBuyCommand}"
-                                    Style="{StaticResource Action_Button}"
-                                    Tag="Order Builder"
-                                    Visibility="{Binding DataRequired, Converter={StaticResource boolToCollapsed}}" />
+                                    Text="14" />
 
                             </Grid>
                             <Grid>
@@ -531,29 +600,34 @@
                                 <Rectangle Fill="#01ffffff" />
                             </Grid>
 
-                            <StackPanel
-                                Margin="10,0"
-                                HorizontalAlignment="Right"
-                                Orientation="Horizontal">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontSize="11"
-                                    Opacity="0.25"
-                                    Text="Lighthouse Requests Engine" />
-                                <Path
-                                    Width="12"
-                                    Height="12"
-                                    Margin="3,1,0,0"
-                                    Data="M12 3C7.03 3 3 7.03 3 12S7.03 21 12 21C14 21 15.92 20.34 17.5 19.14L16.06 17.7C14.87 18.54 13.45 19 12 19C8.13 19 5 15.87 5 12S8.13 5 12 5 19 8.13 19 12H16L20 16L24 12H21C21 7.03 16.97 3 12 3M7.71 13.16C7.62 13.23 7.59 13.35 7.64 13.45L8.54 15C8.6 15.12 8.72 15.12 8.82 15.12L9.95 14.67C10.19 14.83 10.44 14.97 10.7 15.09L10.88 16.28C10.9 16.39 11 16.47 11.1 16.47H12.9C13 16.5 13.11 16.41 13.13 16.3L13.31 15.12C13.58 15 13.84 14.85 14.07 14.67L15.19 15.12C15.3 15.16 15.42 15.11 15.47 15L16.37 13.5C16.42 13.38 16.39 13.26 16.31 13.19L15.31 12.45C15.34 12.15 15.34 11.85 15.31 11.55L16.31 10.79C16.4 10.72 16.42 10.61 16.37 10.5L15.47 8.95C15.41 8.85 15.3 8.81 15.19 8.85L14.07 9.3C13.83 9.13 13.57 9 13.3 8.88L13.13 7.69C13.11 7.58 13 7.5 12.9 7.5H11.14C11.04 7.5 10.95 7.57 10.93 7.67L10.76 8.85C10.5 8.97 10.23 9.12 10 9.3L8.85 8.88C8.74 8.84 8.61 8.89 8.56 9L7.65 10.5C7.6 10.62 7.63 10.74 7.71 10.81L8.71 11.55C8.69 11.7 8.69 11.85 8.71 12C8.7 12.15 8.7 12.3 8.71 12.45L7.71 13.19M12 13.5H12C11.16 13.5 10.5 12.82 10.5 12C10.5 11.17 11.17 10.5 12 10.5S13.5 11.17 13.5 12 12.83 13.5 12 13.5"
-                                    Fill="Black"
-                                    Opacity="0.25"
-                                    Stretch="Uniform" />
-                            </StackPanel>
+                            <Grid Margin="10,0">
+                                <Button
+                                    Margin="0,0,5,0"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding ViewMakeOrBuyCommand}"
+                                    Style="{StaticResource Action_Button}"
+                                    Tag="Order Builder"
+                                    Visibility="{Binding DataRequired, Converter={StaticResource boolToCollapsed}}" />
+                                <Border HorizontalAlignment="Right">
+                                    <StackPanel Orientation="Horizontal">
+                                    <Path
+                                        Height="14"
+                                        Margin="3,1,2,0"
+                                        Data="M11 15H6L13 1V9H18L11 23V15Z"
+                                        Fill="{StaticResource BlueFaded}"
+                                        Stretch="Uniform" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="11"
+                                        Foreground="{StaticResource BlueFaded}"
+                                        FontWeight="SemiBold"
+                                        Text="Lighthouse Requests Engine" />
+                                        
+                                    </StackPanel>    
+                                </Border>
+                            </Grid>
                         </StackPanel>
 
-                        <!--<StackPanel Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToVisible}}">
-                            <uc:DisplayRequestProgress TheRequest="{Binding SelectedRequest, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>-->
                         <StackPanel Margin="0,10" Visibility="{Binding ApprovalControlsVis}">
                             <TextBlock Style="{StaticResource section}" Text="Approval" />
 
