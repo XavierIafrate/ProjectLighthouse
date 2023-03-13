@@ -257,18 +257,22 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void GetRecommendedManifest()
         {
+            RecommendedManifest = null;
+            OnPropertyChanged(nameof(RecommendedManifest));
+
             if (SelectedProduct == null || NewRequest == null)
             {
                 return;
             }
 
-            RecommendedManifest = null;
+            if (string.IsNullOrEmpty(NewRequest.Product))
+            {
+                return;
+            }
+
             RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(TurnedProducts,
-                SelectedProduct,
-                NewRequest.QuantityRequired,
-                TimeSpan.FromDays(5),
-                NewRequest.DateRequired,
-                enforceMOQ: false);
+                                                                            NewRequest,
+                                                                            TimeSpan.FromDays(5));
 
             OnPropertyChanged(nameof(RecommendedManifest));
         }
