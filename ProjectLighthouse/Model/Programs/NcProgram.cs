@@ -28,6 +28,31 @@ namespace ProjectLighthouse.Model.Programs
         public string FilePath { get; set; }
         public string? Description { get; set; }
 
+        public bool Inactive { get; set; }
+        public string? SchedulingProgramName { get; set; }
+
+        private string materials;
+        public string Materials
+        {
+            get { return materials; }
+            set 
+            { 
+                materials = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string machines;
+        public string Machines
+        {
+            get { return machines; }
+            set 
+            { 
+                machines = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string tags = "";
         public string Tags
         {
