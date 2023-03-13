@@ -122,7 +122,8 @@ namespace ProjectLighthouse.Model.Quality
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<CalibratedEquipment>(serialised);
 
         }
 

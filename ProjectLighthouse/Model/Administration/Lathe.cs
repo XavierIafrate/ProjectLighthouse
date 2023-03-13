@@ -68,7 +68,8 @@ namespace ProjectLighthouse.Model.Administration
 
         public object Clone()
         {
-            return this.MemberwiseClone() as Lathe;
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Lathe>(serialised);
         }
 
         public override string ToString()

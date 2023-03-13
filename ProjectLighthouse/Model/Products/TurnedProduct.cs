@@ -338,7 +338,8 @@ namespace ProjectLighthouse.Model.Products
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TurnedProduct>(serialised);
         }
 
         #region Scheduling Members
