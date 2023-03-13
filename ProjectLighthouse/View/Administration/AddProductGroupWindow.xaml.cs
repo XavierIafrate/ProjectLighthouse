@@ -1,7 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using ProjectLighthouse.Model.Products;
-using ProjectLighthouse.Model.Programs;
-using ProjectLighthouse.View.Programs;
+﻿using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,13 +12,12 @@ namespace ProjectLighthouse.View.Administration
         public ProductGroup? originalGroup;
         public Product Product { get; set; }
         public List<Product> Products { get; set; }
-        public List<Model.Programs.NcProgram> ProgramList { get; set; }
 
         public bool SaveExit = false;
         public AddProductGroupWindow(Product product, List<Product> products)
         {
             InitializeComponent();
-            Product = product;  
+            Product = product;
             Products = products;
             Group = new() { ProductId = product.Id };
 
@@ -31,19 +27,18 @@ namespace ProjectLighthouse.View.Administration
             DataContext = this;
         }
 
-        public AddProductGroupWindow(Product product, ProductGroup group, List<Model.Programs.NcProgram> programs, List<Product> products)
+        public AddProductGroupWindow(Product product, ProductGroup group, List<Product> products)
         {
             InitializeComponent();
             Product = product;
             Products = products;
-            ProgramList = programs;
 
             originalGroup = group;
             Group = (ProductGroup)group.Clone();
 
             this.Title = "Edit Archetype";
             CreateButton.Visibility = Visibility.Collapsed;
-            
+
             DataContext = this;
         }
 
@@ -105,7 +100,7 @@ namespace ProjectLighthouse.View.Administration
             }
         }
 
-        void CreateGroup()        
+        void CreateGroup()
         {
             try
             {
