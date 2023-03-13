@@ -1,12 +1,13 @@
 ﻿using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Programs
 {
-    public class NcProgram : BaseObject, IObjectWithValidation
+    public class NcProgram : BaseObject, IObjectWithValidation, ICloneable
     {
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
@@ -28,33 +29,97 @@ namespace ProjectLighthouse.Model.Programs
         public string FilePath { get; set; }
         public string? Description { get; set; }
 
+        public string Notepad { get; set; } = "";
+
         public bool Inactive { get; set; }
         public string? SchedulingProgramName { get; set; }
 
-        private string materials;
-        public string Materials
+        private string? groups;
+        public string? Groups
+        {
+            get { return groups; }
+            set
+            {
+                groups = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public List<string> GroupStringIds
+        {
+            get
+            {
+                if (Groups is null) return new();
+                return Groups.Split(";").ToList();
+            }
+        }
+
+        private string? materials;
+        public string? Materials
         {
             get { return materials; }
-            set 
-            { 
+            set
+            {
                 materials = value;
                 OnPropertyChanged();
             }
         }
 
-        private string machines;
-        public string Machines
+        [Ignore]
+        public List<string> MaterialsList
+        {
+            get
+            {
+                if (Materials is null) return new();
+                return Materials.Split(";").OrderBy(x => x).ToList();
+            }
+            set
+            {
+                if (value.Count > 0)
+                {
+                    Materials = string.Join(";", value);
+                    OnPropertyChanged();
+                    return;
+                }
+                Materials = null;
+                OnPropertyChanged();
+            }
+        }
+
+        private string? machines;
+        public string? Machines
         {
             get { return machines; }
-            set 
-            { 
+            set
+            {
                 machines = value;
                 OnPropertyChanged();
             }
         }
 
-        private string tags = "";
-        public string Tags
+        [Ignore]
+        public List<string> MachinesList
+        {
+            get
+            {
+                if (Machines is null) return new();
+                return Machines.Split(";").OrderBy(x => x).ToList();
+            }
+            set
+            {
+                if (value.Count > 0)
+                {
+                    Machines = string.Join(";", value);
+                    OnPropertyChanged();
+                    return;
+                }
+                Machines = null;
+                OnPropertyChanged();
+            }
+        }
+
+        private string? tags;
+        public string? Tags
         {
             get { return tags; }
             set
@@ -69,16 +134,28 @@ namespace ProjectLighthouse.Model.Programs
         {
             get
             {
-                return Tags.Replace(" ", "").ToLowerInvariant();
+                return Tags?.Replace(" ", "").ToLowerInvariant();
             }
         }
 
+        [Ignore]
         public List<string> TagsList
         {
             get
             {
-                if (Tags == "") return new();
+                if (Tags is null) return new();
                 return Tags.Split(";").OrderBy(x => x).ToList();
+            }
+            set
+            {
+                if (value.Count > 0)
+                {
+                    Tags = string.Join(";", value);
+                    OnPropertyChanged();
+                    return;
+                }
+                Tags = null;
+                OnPropertyChanged();
             }
         }
 
@@ -91,6 +168,11 @@ namespace ProjectLighthouse.Model.Programs
         {
             ValidateProperty(nameof(Name));
             ValidateProperty(nameof(Tags));
+            ValidateProperty(nameof(TagsList));
+        }
+
+        public void ValidateTags()
+        {
             ValidateProperty(nameof(TagsList));
         }
 
@@ -124,9 +206,9 @@ namespace ProjectLighthouse.Model.Programs
                     AddError(propertyName, "Maximum 10 tags");
                 }
 
-                if (tags.Any(x => x.Length > 16))
+                if (tags.Any(x => x.Length > 24))
                 {
-                    AddError(propertyName, "Maximum tag length is 16 characters");
+                    AddError(propertyName, "Maximum tag length is 24 characters");
                 }
 
                 if (tags.Any(x => x.Trim() != x))
@@ -142,7 +224,13 @@ namespace ProjectLighthouse.Model.Programs
                 return;
             }
 
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        public object Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<NcProgram>(serialised);
         }
     }
 }
