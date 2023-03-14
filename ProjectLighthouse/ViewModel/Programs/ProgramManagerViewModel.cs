@@ -110,7 +110,8 @@ namespace ProjectLighthouse.ViewModel.Programs
             EditProgramCmd = new(this);
 
             Programs = DatabaseHelper.Read<NcProgram>()
-                .OrderBy(x => x.Name)
+                .OrderBy(x => x.Name.Length)
+                .ThenBy(x => x.Name)
                 .ToList();
             Programs.ForEach(x => x.ValidateAll());
 
@@ -226,9 +227,13 @@ namespace ProjectLighthouse.ViewModel.Programs
                 .Where(x => x.DocumentReference == $"p{SelectedProgram.Id}")
                 .ToList();
 
-            if (SelectedProgram.Groups is null) return;
+            if (SelectedProgram.Groups is null)
+            {
+                UsedFor = new();
+                return;
+            }
 
-            List<string> groupStringIds = SelectedProgram.Groups.Split(";").ToList();
+                List<string> groupStringIds = SelectedProgram.Groups.Split(";").ToList();
             List<int> groupIds = new();
 
             for (int i = 0; i < groupStringIds.Count; i++)
