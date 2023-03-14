@@ -9,400 +9,487 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     d:DesignWidth="1445"
+    d:Height="800"
     Background="{StaticResource Background}"
     Loaded="UserControl_Loaded"
     mc:Ignorable="d">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="280" />
-            <ColumnDefinition Width="3*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
 
-        <Grid>
+        <Grid IsEnabled="True">
+            <!--<Grid.Effect>
+                <BlurEffect KernelType="Gaussian" Radius="15"  />
+            </Grid.Effect>-->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" MinWidth="280" />
+                <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
-            <TextBox
-                x:Name="searchBox"
-                Style="{StaticResource SearchBox}"
-                Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <Button
-                x:Name="ClearButton"
-                Grid.Column="1"
-                Click="ClearButton_Click"
-                Style="{StaticResource ClearButton}" />
-        </Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="searchBox"
+                    Style="{StaticResource SearchBox}"
+                    Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    x:Name="ClearButton"
+                    Grid.Column="1"
+                    Click="ClearButton_Click"
+                    Style="{StaticResource ClearButton}" />
+            </Grid>
 
-        <ListView
-            Grid.Row="1"
-            HorizontalContentAlignment="Stretch"
-            d:ItemsSource="{d:SampleData ItemCount=10}"
-            ItemsSource="{Binding FilteredPrograms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            ScrollViewer.CanContentScroll="false"
-            SelectedValue="{Binding SelectedProgram, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="10,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            FontSize="16"
-                            FontWeight="SemiBold"
-                            Text="{Binding Name}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="5,0"
-                            FontSize="16"
-                            FontWeight="SemiBold"
-                            Text="{Binding Description}" />
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <Grid Grid.Row="2" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock
-                VerticalAlignment="Center"
-                d:Text="PROGRAM_COUNT"
-                Opacity="0.6"
-                Text="{Binding FilteredPrograms.Count, StringFormat='{}{0} program(s)'}" />
-        </Grid>
-        <StackPanel
-            Grid.RowSpan="2"
-            Grid.Column="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Visibility="{Binding SelectedProgram, Converter={StaticResource NullToVisibility}}">
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="40"
-                FontStyle="Italic"
-                Opacity="0.6"
-                Text="What is this?" />
-
-            <Border
-                Grid.Row="3"
-                Grid.ColumnSpan="2"
-                Canvas.Left="55"
-                Canvas.Top="30"
-                Width="auto"
-                Margin="0,10"
-                VerticalAlignment="Top"
-                CornerRadius="18">
-                <Border.Effect>
-                    <DropShadowEffect
-                        BlurRadius="20"
-                        Direction="220"
-                        Opacity="0.2"
-                        ShadowDepth="20"
-                        Color="Black" />
-                </Border.Effect>
-                <Border Name="ReceiverColor" CornerRadius="15">
-                    <Grid MaxWidth="400" MaxHeight="300">
-                        <Border
-                            Name="Mask"
-                            Background="{StaticResource Purple}"
-                            CornerRadius="20" />
-                        <Grid x:Name="image">
-                            <Image
-                                Name="Receiver"
-                                MaxWidth="400"
-                                MaxHeight="300"
-                                gif:AnimationBehavior.AnimateInDesignMode="True"
-                                gif:AnimationBehavior.RepeatBehavior="3"
-                                gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/zoolander-what-is-this.gif"
-                                RenderOptions.BitmapScalingMode="HighQuality" />
-                            <Grid.OpacityMask>
-                                <VisualBrush Visual="{Binding ElementName=Mask}" />
-                            </Grid.OpacityMask>
-                        </Grid>
-
-                        <Grid>
+            <ListView
+                Grid.Row="1"
+                HorizontalContentAlignment="Stretch"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
+                ItemsSource="{Binding FilteredPrograms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                ScrollViewer.CanContentScroll="false"
+                SelectedValue="{Binding SelectedProgram, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="10,3">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" MinWidth="30" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-
-                            <Viewbox
-                                MaxHeight="60"
-                                Margin="20"
-                                VerticalAlignment="Bottom">
-                                <TextBlock Foreground="White" Text="{Binding SearchString, TargetNullValue='nothing found'}">
-                                    <TextBlock.Effect>
-                                        <DropShadowEffect
-                                            BlurRadius="4"
-                                            Opacity="0.8"
-                                            ShadowDepth="0"
-                                            Color="Black" />
-                                    </TextBlock.Effect>
-                                </TextBlock>
-                            </Viewbox>
-
-                            <Viewbox
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{Binding Name}" />
+                            <TextBlock
                                 Grid.Column="1"
-                                MaxWidth="100"
-                                Margin="0,0,20,40"
-                                VerticalAlignment="Bottom">
-                                <TextBlock Foreground="White" Text="Lighthouse">
-                                    <TextBlock.Effect>
-                                        <DropShadowEffect
-                                            BlurRadius="4"
-                                            Opacity="0.8"
-                                            ShadowDepth="0"
-                                            Color="Black" />
-                                    </TextBlock.Effect>
-                                </TextBlock>
-                            </Viewbox>
+                                Margin="5"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{Binding Description}" />
+                            <Border
+                                x:Name="inactiveBadge"
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource RedFaded}"
+                                CornerRadius="5">
+                                <TextBlock
+                                    Margin="8,3"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Red}"
+                                    Text="Inactive" />
+                            </Border>
                         </Grid>
-                    </Grid>
-                </Border>
-            </Border>
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="30"
-                FontStyle="Italic"
-                Opacity="0.6"
-                Text="{Binding SearchString, StringFormat='{}A {0} for ants?!', TargetNullValue=''}" />
-        </StackPanel>
-        <ScrollViewer
-            x:Name="scroller"
-            Grid.RowSpan="3"
-            Grid.Column="2"
-            ScrollChanged="ScrollViewer_ScrollChanged"
-            Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}">
-            <Grid MaxWidth="700" Margin="25,25,25,50">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Inactive}" Value="False">
+                                <Setter TargetName="inactiveBadge" Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-                <Border Background="White" CornerRadius="10">
+            <Grid Grid.Row="2" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Command="{Binding EditProgramCmd}"
+                    Style="{StaticResource Action_New_Button}"
+                    Tag="Add Program" />
+                <TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    d:Text="PROGRAM_COUNT"
+                    Opacity="0.6"
+                    Text="{Binding FilteredPrograms.Count, StringFormat='{}{0} program(s)'}" />
+            </Grid>
+            <StackPanel
+                Grid.RowSpan="2"
+                Grid.Column="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="{Binding SelectedProgram, Converter={StaticResource NullToVisibility}}">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="40"
+                    FontStyle="Italic"
+                    Opacity="0.6"
+                    Text="What is this?" />
+
+                <Border
+                    Grid.Row="3"
+                    Grid.ColumnSpan="2"
+                    Canvas.Left="55"
+                    Canvas.Top="30"
+                    Width="auto"
+                    Margin="0,10"
+                    VerticalAlignment="Top"
+                    CornerRadius="18">
                     <Border.Effect>
                         <DropShadowEffect
-                            BlurRadius="30"
-                            Opacity="0.4"
-                            ShadowDepth="0"
+                            BlurRadius="20"
+                            Direction="220"
+                            Opacity="0.2"
+                            ShadowDepth="20"
                             Color="Black" />
                     </Border.Effect>
-                </Border>
+                    <Border Name="ReceiverColor" CornerRadius="15">
+                        <Grid MaxWidth="400" MaxHeight="300">
+                            <Border
+                                Name="Mask"
+                                Background="{StaticResource Purple}"
+                                CornerRadius="20" />
+                            <Grid x:Name="image">
+                                <Image
+                                    Name="Receiver"
+                                    MaxWidth="400"
+                                    MaxHeight="300"
+                                    gif:AnimationBehavior.AnimateInDesignMode="True"
+                                    gif:AnimationBehavior.RepeatBehavior="3"
+                                    gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/zoolander-what-is-this.gif"
+                                    RenderOptions.BitmapScalingMode="HighQuality" />
+                                <Grid.OpacityMask>
+                                    <VisualBrush Visual="{Binding ElementName=Mask}" />
+                                </Grid.OpacityMask>
+                            </Grid>
 
-                <StackPanel Margin="25,15">
-                    <!--  Card Header  -->
-                    <Grid>
-                        <StackPanel HorizontalAlignment="Left">
-                            <TextBlock
-                                d:Text="PROGRAM_NAME"
-                                Style="{StaticResource title}"
-                                Text="{Binding SelectedProgram.Name, StringFormat='{}Program {0}'}" />
-                            <TextBlock
-                                d:Text="PROGRAM_DESCRIPTION"
-                                Style="{StaticResource subtitle}"
-                                Text="{Binding SelectedProgram.Description}" />
-                        </StackPanel>
-                        <Button Style="{StaticResource HeroEditButton}" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding EditProgramCmd}"/>
-                    </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                    <ItemsControl
-                        Margin="5"
-                        Background="{StaticResource Background}"
-                        ItemsSource="{Binding SelectedProgram.TagsList}"
-                        Style="{x:Null}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border
-                                    Margin="5,3"
-                                    Background="{StaticResource BlueFaded}"
-                                    CornerRadius="5">
-                                    <TextBlock
-                                        Margin="5,3"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource Blue}"
-                                        Text="{Binding}" />
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                                <Viewbox
+                                    MaxHeight="60"
+                                    Margin="20"
+                                    VerticalAlignment="Bottom">
+                                    <TextBlock Foreground="White" Text="{Binding SearchString, TargetNullValue='nothing found'}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="4"
+                                                Opacity="0.8"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </Viewbox>
 
-
-                    <ItemsControl
-                        Margin="5"
-                        Background="{StaticResource Background}"
-                        ItemsSource="{Binding SelectedProgram.MaterialsList}"
-                        Style="{x:Null}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border
-                                    Margin="5,3"
-                                    Background="{StaticResource RedFaded}"
-                                    CornerRadius="5">
-                                    <TextBlock
-                                        Margin="5,3"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource Red}"
-                                        Text="{Binding}" />
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-
-                    <ItemsControl
-                        Margin="5"
-                        Background="{StaticResource Background}"
-                        ItemsSource="{Binding SelectedProgram.MachinesList}"
-                        Style="{x:Null}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border
-                                    Margin="5,3"
-                                    Background="{StaticResource PurpleFaded}"
-                                    CornerRadius="5">
-                                    <TextBlock
-                                        Margin="5,3"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource Purple}"
-                                        Text="{Binding}" />
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-
-                    <TextBlock Style="{StaticResource section}" Text="Program Usage" />
-                    <Border Background="{StaticResource Surface}" CornerRadius="5" Margin="5,10" Visibility="{Binding UsedFor, Converter={StaticResource NullToVisibility}}">
-                        <TextBlock
-                            Margin="5,20"
-                            HorizontalAlignment="Center"
-                            Opacity="0.5"
-                            FontSize="16"
-                            Foreground="{StaticResource OnSurface}"
-                            Text="This program is not assigned to any archetypes" />
+                                <Viewbox
+                                    Grid.Column="1"
+                                    MaxWidth="100"
+                                    Margin="0,0,20,40"
+                                    VerticalAlignment="Bottom">
+                                    <TextBlock Foreground="White" Text="Lighthouse">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="4"
+                                                Opacity="0.8"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </Viewbox>
+                            </Grid>
+                        </Grid>
                     </Border>
-                    <ListView ItemsSource="{Binding UsedFor}" Visibility="{Binding UsedFor, Converter={StaticResource NotNullToVisibility}}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Margin="5" Text="{Binding Name}" />
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                </Border>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="30"
+                    FontStyle="Italic"
+                    Opacity="0.6"
+                    Text="{Binding SearchString, StringFormat='{}A {0} for ants?!', TargetNullValue=''}" />
+            </StackPanel>
+            <ScrollViewer
+                x:Name="scroller"
+                Grid.RowSpan="3"
+                Grid.Column="2"
+                ScrollChanged="ScrollViewer_ScrollChanged"
+                Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}">
 
-                    <!--<StackPanel Margin="10">
+                <Grid MaxWidth="700" Margin="25,25,25,50">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                        <Grid MinHeight="600">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="43*" />
-                                <ColumnDefinition Width="62*"/>
-                                <ColumnDefinition Width="105*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                    <Border Background="White" CornerRadius="10">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="30"
+                                Opacity="0.4"
+                                ShadowDepth="0"
+                                Color="Black" />
+                        </Border.Effect>
+                    </Border>
 
-                            <TextBlock
-                                Margin="30,10,30,10"
-                                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
-                                FontWeight="SemiBold"
-                                Foreground="{StaticResource Blue}"
-                                Text="$1 MAIN SPINDLE" Grid.ColumnSpan="2" />
-
-                            <TextBlock
-                                Grid.Column="2"
-                                Margin="30,10,30,10"
-                                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
-                                FontWeight="SemiBold"
-                                Foreground="{StaticResource Blue}"
-                                Text="$2 SUB SPINDLE" />
-
-                            <wv2:WebView2
-                                x:Name="dollarOne"
-                                Grid.Column="0"
-                                Width="Auto"
-                                Height="Auto"
-                                d:Visibility="Visible" Grid.ColumnSpan="2" Margin="0,37,0,0" Grid.RowSpan="2" />
-
-                            <wv2:WebView2
-                                x:Name="dollarTwo"
-                                Grid.Column="2"
-                                Width="Auto"
-                                Height="Auto"
-                                d:Visibility="Visible" Margin="0,37,0,0" Grid.RowSpan="2" />
+                    <StackPanel Margin="25,15">
+                        <!--  Card Header  -->
+                        <Grid>
+                            <StackPanel HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        d:Text="PROGRAM_NAME"
+                                        Style="{StaticResource title}"
+                                        Text="{Binding SelectedProgram.Name, StringFormat='{}Program {0}'}" />
+                                    <Border
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource RedFaded}"
+                                        CornerRadius="5"
+                                        Visibility="{Binding SelectedProgram.Inactive, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                                        <StackPanel Margin="13,7" Orientation="Horizontal">
+                                            <Path
+                                                Width="18"
+                                                Data="M15.8,18.5L21.8,20.1L21.4,22L12,19.5L2.6,22L2.1,20.1L8.1,18.5L2,16.9L2.5,15L11.9,17.5L21.3,15L21.8,16.9L15.8,18.5M18,8C18,9.8 17.2,11.3 16,12.4V15H14V13.7L14,13H13V15H11V13H10V13.7L10,15H8V12.4C6.8,11.3 6,9.8 6,8A6,6 0 0,1 12,2A6,6 0 0,1 18,8M11,7.5C11,6.7 10.3,6 9.5,6C8.7,6 8,6.7 8,7.5C8,8.3 8.7,9 9.5,9C10.3,9 11,8.3 11,7.5M13,11L12,9L11,11H13M16,7.5C16,6.7 15.3,6 14.5,6C13.7,6 13,6.7 13,7.5C13,8.3 13.7,9 14.5,9C15.3,9 16,8.3 16,7.5Z"
+                                                Fill="{StaticResource Red}"
+                                                Stretch="Uniform" />
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="18"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Red}"
+                                                Text="Retired" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock
+                                    d:Text="PROGRAM_DESCRIPTION"
+                                    Style="{StaticResource subtitle}"
+                                    Text="{Binding SelectedProgram.Description}" />
+                            </StackPanel>
+                            <Button
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Command="{Binding EditProgramCmd}"
+                                CommandParameter="{Binding SelectedProgram}"
+                                Style="{StaticResource HeroEditButton}" />
                         </Grid>
 
-                    </StackPanel>-->
+                        <ItemsControl
+                            Margin="5"
+                            Background="{StaticResource Background}"
+                            ItemsSource="{Binding SelectedProgram.TagsList}"
+                            Style="{x:Null}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Margin="5,3"
+                                        Background="{StaticResource BlueFaded}"
+                                        CornerRadius="5">
+                                        <TextBlock
+                                            Margin="5,3"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource Blue}"
+                                            Text="{Binding}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
 
 
-                    <TextBlock Style="{StaticResource section}" Text="Comments" />
+                        <ItemsControl
+                            Margin="5"
+                            Background="{StaticResource Background}"
+                            ItemsSource="{Binding ConstrainedMaterials}"
+                            Style="{x:Null}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Margin="5,3"
+                                        Background="{StaticResource TealFaded}"
+                                        CornerRadius="5">
+                                        <TextBlock
+                                            Margin="5,3"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource Teal}"
+                                            Text="{Binding}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
 
-                    <uc:DisplayListOfNotes
-                        MinHeight="80"
-                        Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}"
-                        ShowingEditControls="False" />
-                    <Grid x:Name="composeMessageControls" Grid.Row="2">
+                        <ItemsControl
+                            Margin="5"
+                            Background="{StaticResource Background}"
+                            ItemsSource="{Binding SelectedProgram.MachinesList}"
+                            Style="{x:Null}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Margin="5,3"
+                                        Background="{StaticResource PurpleFaded}"
+                                        CornerRadius="5">
+                                        <TextBlock
+                                            Margin="5,3"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource Purple}"
+                                            Text="{Binding}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox
-                            Style="{StaticResource MessageComposer}"
-                            Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            TextChanged="TextBox_TextChanged"
-                            TextWrapping="WrapWithOverflow" />
-                        <Button
-                            x:Name="SendButton"
-                            Grid.Column="1"
-                            Margin="10,0,0,0"
-                            Background="Transparent"
-                            Command="{Binding SendMessageCmd}"
-                            IsEnabled="False"
-                            Style="{StaticResource SendButton}" />
+                        <TextBlock Style="{StaticResource section}" Text="Program Usage" />
+                        <Border
+                            Margin="5,10"
+                            Background="{StaticResource Surface}"
+                            CornerRadius="5"
+                            Visibility="{Binding UsedFor, Converter={StaticResource NullToVisibility}}">
+                            <TextBlock
+                                Margin="5,20"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                Foreground="{StaticResource OnSurface}"
+                                Opacity="0.5"
+                                Text="This program is not assigned to any archetypes" />
+                        </Border>
+                        <ListView ItemsSource="{Binding UsedFor}" Visibility="{Binding UsedFor, Converter={StaticResource NotNullToVisibility}}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="5" Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
 
-                    </Grid>
-                </StackPanel>
-            </Grid>
-        </ScrollViewer>
-        <Border
-            x:Name="grad"
-            Grid.Column="1"
-            Height="20"
-            VerticalAlignment="Top"
-            CornerRadius="20,0,0,0"
-            IsHitTestVisible="False">
-            <Border.Background>
-                <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
-                    <GradientStop Offset="0" Color="Transparent" />
-                    <GradientStop Offset="1" Color="Gray" />
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
+                        <TextBlock Style="{StaticResource section}" Text="Notepad" />
+                        <Border
+                            MinHeight="50"
+                            Margin="5"
+                            Background="{StaticResource Surface}"
+                            CornerRadius="5">
+                            <TextBlock
+                                Margin="15,10"
+                                Text="{Binding SelectedProgram.Notepad, TargetNullValue='None'}"
+                                TextWrapping="Wrap" />
+                        </Border>
+                        <!--<TextBlock Style="{StaticResource section}" Text="Comments" />
+
+                        <uc:DisplayListOfNotes
+                            MinHeight="80"
+                            Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}"
+                            ShowingEditControls="False" />
+                        <Grid x:Name="composeMessageControls" Grid.Row="2">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                Style="{StaticResource MessageComposer}"
+                                Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextChanged="TextBox_TextChanged"
+                                TextWrapping="WrapWithOverflow" />
+                            <Button
+                                x:Name="SendButton"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Background="Transparent"
+                                Command="{Binding SendMessageCmd}"
+                                IsEnabled="False"
+                                Style="{StaticResource SendButton}" />
+
+                        </Grid>-->
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <Border
+                x:Name="grad"
+                Grid.Column="1"
+                Height="20"
+                VerticalAlignment="Top"
+                CornerRadius="20,0,0,0"
+                IsHitTestVisible="False">
+                <Border.Background>
+                    <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
+                        <GradientStop Offset="0" Color="Transparent" />
+                        <GradientStop Offset="1" Color="Gray" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+        </Grid>
+        <Grid Visibility="Collapsed">
+            <Border
+                Margin="100"
+                Background="{StaticResource OnBackground}"
+                CornerRadius="20">
+                <Border.Effect>
+                    <DropShadowEffect
+                        BlurRadius="40"
+                        Opacity="0.6"
+                        ShadowDepth="0"
+                        Color="Black" />
+                </Border.Effect>
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="43*" />
+                        <ColumnDefinition Width="62*" />
+                        <ColumnDefinition Width="105*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.ColumnSpan="2"
+                        Margin="30,10,30,10"
+                        FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource PurpleLight}"
+                        Text="$1 MAIN SPINDLE" />
+
+                    <TextBlock
+                        Grid.Column="2"
+                        Margin="30,10,30,10"
+                        FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource PurpleLight}"
+                        Text="$2 SUB SPINDLE" />
+
+                    <wv2:WebView2
+                        x:Name="dollarOne"
+                        Grid.RowSpan="2"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Width="Auto"
+                        Height="Auto"
+                        Margin="0,37,0,0"
+                        d:Visibility="Visible" />
+
+                    <wv2:WebView2
+                        x:Name="dollarTwo"
+                        Grid.RowSpan="2"
+                        Grid.Column="2"
+                        Width="Auto"
+                        Height="Auto"
+                        Margin="0,37,0,0"
+                        d:Visibility="Visible" />
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

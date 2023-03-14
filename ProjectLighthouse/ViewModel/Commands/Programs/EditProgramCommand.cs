@@ -21,7 +21,14 @@ namespace ProjectLighthouse.ViewModel.Commands.Programs
 
         public void Execute(object parameter)
         {
-            viewModel.EditProgram();
+            if (parameter is not null)
+            {
+                viewModel.EditProgram();
+            }
+            else
+            {
+                viewModel.AddProgram();
+            }
         }
     }
 }
