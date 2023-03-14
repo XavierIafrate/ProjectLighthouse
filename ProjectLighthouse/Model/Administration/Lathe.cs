@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace ProjectLighthouse.Model.Administration
 {
@@ -65,6 +64,15 @@ namespace ProjectLighthouse.Model.Administration
         public List<Attachment> Attachments { get; set; }
         [Ignore]
         public List<Attachment> ServiceRecords { get; set; }
+
+
+        public string MachineKey
+        {
+            get
+            {
+                return $"{Make} {Model}";
+            }
+        }
 
         public object Clone()
         {
@@ -182,7 +190,5 @@ namespace ProjectLighthouse.Model.Administration
 
             return changes.Count > 0;
         }
-
-
     }
 }
