@@ -15,7 +15,7 @@
             d:Text="Add/Edit Program"
             Style="{StaticResource title}"
             Text="{Binding Title}" />
-        <Grid Height="10"/>
+        <Grid Height="10" />
         <TabControl Height="400">
             <TabItem Header="Metadata" IsSelected="True">
                 <Grid>
@@ -185,6 +185,142 @@
                     </ListView>
                 </Grid>
             </TabItem>
+            <TabItem Header="Constrain">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border
+                        Grid.ColumnSpan="2"
+                        Margin="5"
+                        Background="{StaticResource BlueFaded}"
+                        CornerRadius="5">
+                        <StackPanel Margin="10,5" Orientation="Horizontal">
+                            <Path
+                                Width="14"
+                                Height="14"
+                                Margin="0,2,5,0"
+                                VerticalAlignment="Center"
+                                Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                                Fill="{StaticResource Blue}"
+                                Stretch="UniformToFill" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Blue}"
+                                Text="If nothing is selected the program will not be constrained to the property" />
+                        </StackPanel>
+
+                    </Border>
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource InputLabel}"
+                        Text="Materials" />
+                    <ListView
+                        x:Name="MaterialsListView"
+                        Grid.Row="2"
+                        ItemsSource="{Binding Materials}"
+                        SelectionMode="Multiple">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <StackPanel HorizontalAlignment="Left">
+                                        <TextBlock
+                                            Margin="8,3,0,0"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding MaterialText}" />
+                                        <TextBlock
+                                            Margin="8,0,0,3"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding GradeText, StringFormat='{}Grade: {0}'}" />
+                                    </StackPanel>
+                                    <Border
+                                        x:Name="Badge"
+                                        Margin="2"
+                                        HorizontalAlignment="Right"
+                                        Background="{StaticResource PurpleFaded}"
+                                        CornerRadius="5">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="10"
+                                                Margin="12,0,0,0"
+                                                Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
+                                                Fill="{StaticResource Purple}"
+                                                Stretch="Uniform" />
+                                            <TextBlock
+                                                Margin="5,3,12,3"
+                                                VerticalAlignment="Center"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Purple}"
+                                                Text="TARGETING" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="False">
+                                        <Setter TargetName="Badge" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource InputLabel}"
+                        Text="Machines" />
+                    <ListView
+                        x:Name="MachinesListView"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        ItemsSource="{Binding MachineKeys}"
+                        SelectionMode="Multiple">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock
+                                        Margin="8,5"
+                                        VerticalAlignment="Center"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding}" />
+                                    <Border
+                                        x:Name="Badge"
+                                        Margin="2"
+                                        HorizontalAlignment="Right"
+                                        Background="{StaticResource PurpleFaded}"
+                                        CornerRadius="5">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="10"
+                                                Margin="12,0,0,0"
+                                                Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
+                                                Fill="{StaticResource Purple}"
+                                                Stretch="Uniform" />
+                                            <TextBlock
+                                                Margin="5,3,12,3"
+                                                VerticalAlignment="Center"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Purple}"
+                                                Text="TARGETING" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="False">
+                                        <Setter TargetName="Badge" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </TabItem>
             <TabItem Header="Notepad" IsSelected="True">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -193,12 +329,12 @@
                     </Grid.RowDefinitions>
                     <TextBlock Style="{StaticResource InputLabel}" Text="Notepad" />
                     <TextBlock
+                        x:Name="TextLengthCounter"
                         Margin="5"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
                         d:Text="1024/1024"
                         Opacity="0.5"
-                        x:Name="TextLengthCounter"
                         Text="{Binding Program.Notepad.Length, StringFormat='{}{0}/1024', UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox
                         Grid.Row="1"

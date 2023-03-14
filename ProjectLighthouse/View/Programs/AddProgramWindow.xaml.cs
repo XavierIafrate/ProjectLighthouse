@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Programs;
@@ -11,7 +10,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Media3D;
 
 namespace ProjectLighthouse.View.Programs
 {
@@ -24,14 +22,15 @@ namespace ProjectLighthouse.View.Programs
         public List<ProductGroup> FilteredProductGroups
         {
             get { return filteredProductGroups; }
-            set 
-            { 
+            set
+            {
                 filteredProductGroups = value;
                 OnPropertyChanged();
             }
         }
 
-
+        public List<MaterialInfo> Materials { get; set; }
+        public List<string> MachineKeys { get; set; }
 
         public NcProgram? originalProgram { get; set; }
         public NcProgram Program { get; set; }
@@ -40,8 +39,8 @@ namespace ProjectLighthouse.View.Programs
         public string NewTag
         {
             get { return newTag; }
-            set 
-            { 
+            set
+            {
                 newTag = value;
                 OnPropertyChanged();
             }
@@ -56,11 +55,12 @@ namespace ProjectLighthouse.View.Programs
 
             Products = products;
             ProductGroups = groups;
-            FilteredProductGroups = ProductGroups;
+            FilteredProductGroups = new();
+            Materials = materials.OrderBy(x => x.MaterialText).ThenBy(x => x.GradeText).ToList();
+            MachineKeys = lathes.Select(x => x.MachineKey).Distinct().OrderBy(x => x).ToList();
 
             Program = new();
             DataContext = this;
-
             UpdateButton.Visibility = Visibility.Collapsed;
         }
 
@@ -72,6 +72,8 @@ namespace ProjectLighthouse.View.Programs
 
             Products = new(products);
             ProductGroups = new(groups);
+            Materials = materials.OrderBy(x => x.MaterialText).ThenBy(x => x.GradeText).ToList();
+            MachineKeys = lathes.Select(x => x.MachineKey).Distinct().OrderBy(x => x).ToList();
 
             Program = (NcProgram)existingProgram.Clone();
             originalProgram = existingProgram;
@@ -80,62 +82,106 @@ namespace ProjectLighthouse.View.Programs
             AddButton.Visibility = Visibility.Collapsed;
 
             LoadTargeting();
+            LoadConstraints();
         }
 
 
         void LoadTargeting()
         {
+            if (Program.Products is null) return;
             if (Program.Groups is null) return;
 
-            List<string> groupStringIds = Program.Groups.Split(";").ToList();
-            List<int> groupIds = new();
+            List<string> productStringIds = Program.ProductStringIds;
+            List<string> groupStringIds = Program.GroupStringIds;
 
+            List<int> productIds = new();
+            for (int i = 0; i < productStringIds.Count; i++)
+            {
+                if (!int.TryParse(productStringIds[i], out int product))
+                {
+                    MessageBox.Show($"Failed to convert '{productStringIds[i] ?? "null"}' to integer while looking for product ID.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    continue;
+                }
+
+                productIds.Add(product);
+            }
+
+            for (int i = 0; i < productIds.Count; i++)
+            {
+                Product p = Products.Find(x => x.Id == productIds[i]);
+                if (p is null) continue;
+                ProductsListView.SelectedItems.Add(p);
+            }
+
+            List<int> groupIds = new();
             for (int i = 0; i < groupStringIds.Count; i++)
             {
-                if (!int.TryParse(groupStringIds[i], out int group)) 
+                if (!int.TryParse(groupStringIds[i], out int group))
                 {
-                    MessageBox.Show($"Failed to convert {groupStringIds[i]} to integer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Failed to convert '{groupStringIds[i] ?? "null"}' to integer while looking for archetype ID.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     continue;
                 }
 
                 groupIds.Add(group);
             }
 
-            List<ProductGroup> targetedGroups = new();
-
-            for(int i = 0; i < groupIds.Count; i++)
-            {
-                int id = groupIds[i];
-                ProductGroup? g = ProductGroups.Find(x => x.Id == id);
-
-                if (g is null)
-                {
-                    MessageBox.Show($"Failed to find group with ID {id}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    continue;
-                }
-
-                targetedGroups.Add(g);
-            }
-
-            List<int> productIds = new();
-            for(int i = 0; i < Products.Count; i++)
-            {
-                Product p = Products[i];
-
-                if (targetedGroups.Any(x => x.ProductId == p.Id))
-                {
-                    ProductsListView.SelectedItems.Add(p);
-                    productIds.Add(p.Id);
-                }
-            }
 
             FilterProductGroups(productIds);
 
-            for (int i = 0; i < targetedGroups.Count; i++)
+            for (int i = 0; i < groupIds.Count; i++)
             {
-                ProductGroup g = FilteredProductGroups.Find(x => x.Id == targetedGroups[i].Id);
+                ProductGroup g = FilteredProductGroups.Find(x => x.Id == groupIds[i]);
                 if (g is null) continue;
                 FilteredArchetypesListBox.SelectedItems.Add(g);
+            }
+        }
+
+        void LoadConstraints()
+        {
+            if (!string.IsNullOrEmpty(Program.Materials))
+            {
+                LoadMaterialSelections();
+            }
+
+            if (!string.IsNullOrEmpty(Program.Machines))
+            {
+                LoadMachineSelections();
+            }
+        }
+
+        void LoadMachineSelections()
+        {
+            List<string> machineKeys = Program.MachinesList;
+
+            for (int i = 0; i < machineKeys.Count; i++)
+            {
+                string m = MachineKeys.Find(x => x == machineKeys[i]);
+                if (m is null) continue;
+                MachinesListView.SelectedItems.Add(m);
+            }
+        }
+
+        void LoadMaterialSelections()
+        {
+            List<string> materialStringIds = Program.MaterialsList;
+
+            List<int> materialIds = new();
+            for (int i = 0; i < materialStringIds.Count; i++)
+            {
+                if (!int.TryParse(materialStringIds[i], out int material))
+                {
+                    MessageBox.Show($"Failed to convert '{materialStringIds[i] ?? "null"}' to integer while looking for material ID.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    continue;
+                }
+
+                materialIds.Add(material);
+            }
+
+            for (int i = 0; i < materialIds.Count; i++)
+            {
+                MaterialInfo m = Materials.Find(x => x.Id == materialIds[i]);
+                if (m is null) continue;
+                MaterialsListView.SelectedItems.Add(m);
             }
         }
 
@@ -175,20 +221,51 @@ namespace ProjectLighthouse.View.Programs
 
         void ApplyTargeting()
         {
-            List<int> ids = new();
+            List<int> productIds = new();
+            foreach (Product product in ProductsListView.SelectedItems)
+            {
+                productIds.Add(product.Id);
+            }
+            Program.Products = productIds.Count == 0
+                ? null
+                : string.Join(";", productIds);
 
+            List<int> groupIds = new();
             foreach (ProductGroup group in FilteredArchetypesListBox.SelectedItems)
             {
-                ids.Add(group.Id);
+                groupIds.Add(group.Id);
             }
+            Program.Groups = groupIds.Count == 0
+                ? null
+                : string.Join(";", groupIds);
 
-            Program.Groups = string.Join(";", ids);
+            List<int> materialIds = new();
+            foreach (MaterialInfo material in MaterialsListView.SelectedItems)
+            {
+                materialIds.Add(material.Id);
+            }
+            Program.Materials = materialIds.Count == 0 
+                ? null 
+                : string.Join(";", materialIds);
+
+            List<string> machineKeys = new();
+            foreach (string machineKey in MachinesListView.SelectedItems)
+            {
+                machineKeys.Add(machineKey);
+            }
+            Program.Machines = machineKeys.Count == 0
+                ? null
+                : string.Join(";", machineKeys);
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             ApplyTargeting();
-            Program.Notepad = Program.Notepad.Trim();
+
+            Program.Notepad = string.IsNullOrWhiteSpace(Program.Notepad)
+                ? null
+                : Program.Notepad.Trim();
+
             Program.ValidateAll();
 
             if (originalProgram is not null)
@@ -274,7 +351,10 @@ namespace ProjectLighthouse.View.Programs
 
         void FilterProductGroups(List<int> productIds)
         {
-            FilteredProductGroups = ProductGroups.Where(x => x.ProductId is not null).Where(x => productIds.Contains((int)x.ProductId!)).ToList();
+            FilteredProductGroups = ProductGroups
+                .Where(x => x.ProductId is not null)
+                .Where(x => productIds.Contains((int)x.ProductId!))
+                .ToList();
         }
 
         private void Notepad_TextChanged(object sender, TextChangedEventArgs e)
