@@ -45,13 +45,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
-    <NoWarn>1701;1702;CS8632</NoWarn>
+    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
-    <NoWarn>1701;1702;CS8632</NoWarn>
+    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
