@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.ViewModel.Helpers;
+﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Programs
 {
-    public class NcProgram : BaseObject, IObjectWithValidation, ICloneable
+    public class NcProgram : BaseObject, IObjectWithValidation, ICloneable, IAutoIncrementPrimaryKey
     {
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
@@ -29,10 +30,39 @@ namespace ProjectLighthouse.Model.Programs
         public string FilePath { get; set; }
         public string? Description { get; set; }
 
-        public string Notepad { get; set; } = "";
+        private string? notepad;
+        public string? Notepad
+        {
+            get { return notepad; }
+            set 
+            { 
+                notepad = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool Inactive { get; set; }
         public string? SchedulingProgramName { get; set; }
+
+        private string? products;
+        public string? Products
+        {
+            get { return products; }
+            set
+            {
+                products = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public List<string> ProductStringIds
+        {
+            get
+            {
+                if (Products is null) return new();
+                return Products.Split(";").ToList();
+            }
+        }
 
         private string? groups;
         public string? Groups
