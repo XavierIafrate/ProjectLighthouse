@@ -17,6 +17,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static bool StringIsNumbers(string str)
         {
+            if(str is null) return false;
             Regex rx = Numbers;
 
             return rx.IsMatch(str);
