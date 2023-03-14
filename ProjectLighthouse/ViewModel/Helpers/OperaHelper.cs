@@ -103,7 +103,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
 
                 string accountRef = dbfRecord.Values[iAccount].ToString();
-                string poRef = dbfRecord.Values[iRef].ToString();
+                string poRef = dbfRecord.Values[iRef].ToString() ?? "";
                 if (accountRef != "AUTO01" || !refs.Contains(poRef.ToUpper()))
                 {
                     continue;
