@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.Model.Core;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.View.Programs;
@@ -28,6 +30,8 @@ namespace ProjectLighthouse.ViewModel.Programs
             }
         }
 
+        public List<MaterialInfo> Materials;
+        public List<Lathe> Machines;
         public List<ProductGroup> Archetypes { get; set; }
         public List<Product> Products { get; set; }
 
@@ -42,6 +46,17 @@ namespace ProjectLighthouse.ViewModel.Programs
                     if (list.Count == 0) value = null;
                 }
                 usedFor = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private List<MaterialInfo> constrainedMaterials;
+        public List<MaterialInfo> ConstrainedMaterials
+        {
+            get { return constrainedMaterials; }
+            set
+            {
+                constrainedMaterials = value;
                 OnPropertyChanged();
             }
         }
@@ -125,13 +140,16 @@ namespace ProjectLighthouse.ViewModel.Programs
             Products = DatabaseHelper.Read<Product>()
                 .OrderBy(x => x.Name)
                 .ToList();
+
+            Materials = DatabaseHelper.Read<MaterialInfo>();
+            Machines = DatabaseHelper.Read<Lathe>();
         }
 
         public void EditProgram()
         {
             if (SelectedProgram is null) return;
 
-            AddProgramWindow window = new(Products, Archetypes, new(), new(), SelectedProgram) { Owner = App.MainViewModel.MainWindow };
+            AddProgramWindow window = new(Products, Archetypes, Materials, Machines, SelectedProgram) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
             if (!window.SaveExit)
@@ -140,6 +158,24 @@ namespace ProjectLighthouse.ViewModel.Programs
             }
 
             int selectedProgramId = SelectedProgram.Id;
+
+            LoadData();
+            Search();
+
+            SelectedProgram = Programs.Find(x => x.Id == selectedProgramId);
+        }
+
+        public void AddProgram()
+        {
+            AddProgramWindow window = new(Products, Archetypes, Materials, Machines) { Owner = App.MainViewModel.MainWindow };
+            window.ShowDialog();
+
+            if (!window.SaveExit)
+            {
+                return;
+            }
+
+            int selectedProgramId = window.Program.Id;
 
             LoadData();
             Search();
@@ -230,40 +266,54 @@ namespace ProjectLighthouse.ViewModel.Programs
             if (SelectedProgram.Groups is null)
             {
                 UsedFor = new();
+                ConstrainedMaterials = new();
                 return;
             }
 
-                List<string> groupStringIds = SelectedProgram.Groups.Split(";").ToList();
-            List<int> groupIds = new();
+            List<string> groupStringIds = SelectedProgram.GroupStringIds;
+            List<ProductGroup> targetedGroups = new();
 
             for (int i = 0; i < groupStringIds.Count; i++)
             {
-                if (!int.TryParse(groupStringIds[i], out int group))
+                if (!int.TryParse(groupStringIds[i], out int groupId))
                 {
-                    MessageBox.Show($"Failed to convert {groupStringIds[i]} to integer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Failed to convert '{groupStringIds[i]}' to integer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     continue;
                 }
-
-                groupIds.Add(group);
-            }
-
-            List<ProductGroup> targetedGroups = new();
-
-            for (int i = 0; i < groupIds.Count; i++)
-            {
-                int id = groupIds[i];
-                ProductGroup? g = Archetypes.Find(x => x.Id == id);
+                ProductGroup? g = Archetypes.Find(x => x.Id == groupId);
 
                 if (g is null)
                 {
-                    MessageBox.Show($"Failed to find group with ID {id}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Failed to find group with ID '{groupId}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     continue;
                 }
 
                 targetedGroups.Add(g);
             }
 
+            List<string> materialStringIds = SelectedProgram.MaterialsList;
+            List<MaterialInfo> targetedMaterials = new();
+
+            for (int i = 0; i < materialStringIds.Count; i++)
+            {
+                if (!int.TryParse(materialStringIds[i], out int materialId))
+                {
+                    MessageBox.Show($"Failed to convert '{materialStringIds[i]}' to integer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    continue;
+                }
+                MaterialInfo? m = Materials.Find(x => x.Id == materialId);
+
+                if (m is null)
+                {
+                    MessageBox.Show($"Failed to find material with ID '{materialId}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    continue;
+                }
+
+                targetedMaterials.Add(m);
+            }
+
             UsedFor = targetedGroups.OrderBy(x => x.Name).ToList();
+            ConstrainedMaterials = targetedMaterials.OrderBy(x => x.ToString()).ToList();
         }
     }
 }
