@@ -173,6 +173,7 @@
             <Setter Property="BorderThickness" Value="2" />
             <Setter Property="AcceptsReturn" Value="True" />
             <Setter Property="AcceptsTab" Value="True" />
+            <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
