@@ -134,6 +134,7 @@ namespace ProjectLighthouse.Model.Programs
         {
             get
             {
+                if(Tags is null) return "";
                 return Tags?.Replace(" ", "").ToLowerInvariant();
             }
         }
