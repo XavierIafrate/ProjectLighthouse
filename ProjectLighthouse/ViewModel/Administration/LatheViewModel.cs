@@ -149,6 +149,11 @@ namespace ProjectLighthouse.ViewModel.Administration
             AddLatheWindow window = new(Lathes) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
+            if (!window.SaveExit)
+            {
+                return;
+            }
+
             GetData();
             FilterData();
 
