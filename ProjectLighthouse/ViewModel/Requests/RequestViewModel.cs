@@ -614,7 +614,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
             try
             {
-                OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId, (int)SelectedRequestProduct.MaterialId)
+                OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId, (int)SelectedRequestProduct.MaterialId, RecommendedManifest) 
                 {
                     Owner = Application.Current.MainWindow
                 };
@@ -735,8 +735,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 FilterRequests();
-                OnPropertyChanged(nameof(SelectedRequest));
-                SelectedRequest = Requests.First();
+                SelectedRequest = FilteredRequests.First();
             }
             else
             {
