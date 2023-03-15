@@ -57,6 +57,7 @@ namespace ProjectLighthouse
             }
 
             MainViewModel VM = LoadMain();
+            Task.Run(() => EnsureAppData());
 
             bool userLoggedIn = VM.LoginRoutine();
 
@@ -68,7 +69,6 @@ namespace ProjectLighthouse
 
             Window.Show();
             Window.AddVersionNumber();
-            Task.Run(() => EnsureAppData());
 
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {
