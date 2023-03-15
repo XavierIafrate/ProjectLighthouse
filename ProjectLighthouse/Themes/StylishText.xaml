@@ -35,9 +35,9 @@
                                     Stretch="Uniform" />
                                 <TextBlock
                                     Margin="0,2,4,3"
+                                    VerticalAlignment="Center"
                                     FontSize="10"
                                     FontWeight="SemiBold"
-                                    VerticalAlignment="Center"
                                     Foreground="{StaticResource Red}"
                                     Text="DATA ERROR" />
                             </StackPanel>

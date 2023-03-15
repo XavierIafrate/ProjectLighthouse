@@ -11,8 +11,8 @@
                         <Border
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
-                            CornerRadius="5"
-                            Background="{StaticResource Red}">
+                            Background="{StaticResource Red}"
+                            CornerRadius="5">
                             <StackPanel Orientation="Horizontal">
                                 <Path
                                     Width="10"
