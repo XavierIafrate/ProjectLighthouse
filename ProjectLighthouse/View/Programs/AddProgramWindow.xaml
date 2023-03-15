@@ -30,16 +30,10 @@
                             Tag="name"
                             Text="{Binding Program.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-                        <TextBlock Style="{StaticResource InputLabel}" Text="Description" />
-                        <TextBox
-                            Style="{StaticResource DefaultTextBox}"
-                            Tag="description"
-                            Text="{Binding Program.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-
                         <TextBlock Style="{StaticResource InputLabel}" Text="Scheduling Program Name" />
                         <TextBox
                             Style="{StaticResource DefaultTextBox}"
-                            Tag="description"
+                            Tag="scheduling program name"
                             Text="{Binding Program.SchedulingProgramName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                         <TextBlock Style="{StaticResource InputLabel}" Text="Inactive" />
