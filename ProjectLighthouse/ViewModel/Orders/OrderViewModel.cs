@@ -8,6 +8,7 @@ using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands.Orders;
@@ -47,6 +48,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public List<Product> Products { get; set; }
         public List<ProductGroup> ProductGroups { get; set; }
+        public List<NcProgram> Programs;
         #endregion
 
         #region Observable
@@ -57,6 +59,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public BarStock SelectedOrderBar { get; set; }
         public ProductGroup SelectedProductGroup { get; set; }
         public Product SelectedProduct { get; set; }
+        public List<NcProgram> ProgramCandidates { get;  set; }
         #endregion
 
         #region Charting
@@ -526,6 +529,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             SelectedOrderBar = new();
             Products = new();
             ProductGroups = new();
+            ProgramCandidates = new();
 
             FilteredDrawings = new();
             FilteredNotes = new();
@@ -652,6 +656,8 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             Products = DatabaseHelper.Read<Product>().ToList();
             ProductGroups = DatabaseHelper.Read<ProductGroup>().ToList();
+
+            Programs = DatabaseHelper.Read<NcProgram>().Where(x => !x.Inactive).ToList();
 
             BarStock = DatabaseHelper.Read<BarStock>().ToList();
             MaterialInfo = DatabaseHelper.Read<MaterialInfo>().ToList();
@@ -804,6 +810,23 @@ namespace ProjectLighthouse.ViewModel.Orders
             List<Lot> orderLots = Lots.Where(x => x.Order == SelectedOrder.Name).ToList();
             Task.Run(() => LoadProductionChart(orderLots, SelectedOrder.StartDate.Date));
             Task.Run(() => LoadBriefing());
+            Task.Run(() => GetProgramCandidates());
+        }
+
+        void GetProgramCandidates()
+        {
+            ProgramCandidates = GetPrograms(SelectedOrder.GroupId, SelectedOrder.MaterialId);
+            OnPropertyChanged(nameof(ProgramCandidates));
+        }
+
+        private List<NcProgram> GetPrograms(int groupId, int materialId)
+        {
+            List<NcProgram> candidates = Programs
+                .Where(x => x.GroupStringIds.Contains($"{groupId:0}"))
+                .Where(x => x.MaterialsList.Count == 0 || x.MaterialsList.Contains($"{materialId:0}"))
+                .ToList();
+
+            return candidates;
         }
 
         private void SetUiElements()
