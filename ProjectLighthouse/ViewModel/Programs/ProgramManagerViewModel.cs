@@ -35,13 +35,13 @@ namespace ProjectLighthouse.ViewModel.Programs
         public List<ProductGroup> Archetypes { get; set; }
         public List<Product> Products { get; set; }
 
-        private List<ProductGroup>? usedFor;
-        public List<ProductGroup>? UsedFor
+        private List<Product>? usedFor;
+        public List<Product>? UsedFor
         {
             get { return usedFor; }
             set
             {
-                if (value is List<ProductGroup> list)
+                if (value is List<Product> list)
                 {
                     if (list.Count == 0) value = null;
                 }
@@ -270,6 +270,26 @@ namespace ProjectLighthouse.ViewModel.Programs
                 return;
             }
 
+            List<string> productStringIds = SelectedProgram.ProductStringIds;
+            List<Product> targetedProducts = new();
+            for (int i = 0; i < productStringIds.Count; i++)
+            {
+                if (!int.TryParse(productStringIds[i], out int productId))
+                {
+                    MessageBox.Show($"Failed to convert '{productStringIds[i]}' to integer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    continue;
+                }
+                Product? p = Products.Find(x => x.Id == productId);
+
+                if (p is null)
+                {
+                    MessageBox.Show($"Failed to find group with ID '{productId}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    continue;
+                }
+
+                targetedProducts.Add(p);
+            }
+
             List<string> groupStringIds = SelectedProgram.GroupStringIds;
             List<ProductGroup> targetedGroups = new();
 
@@ -289,6 +309,11 @@ namespace ProjectLighthouse.ViewModel.Programs
                 }
 
                 targetedGroups.Add(g);
+            }
+
+            for (int i = 0; i < targetedProducts.Count; i++)
+            {
+                targetedProducts[i].Archetypes = targetedGroups.Where(x => x.ProductId == targetedProducts[i].Id).ToList();    
             }
 
             List<string> materialStringIds = SelectedProgram.MaterialsList;
@@ -312,7 +337,7 @@ namespace ProjectLighthouse.ViewModel.Programs
                 targetedMaterials.Add(m);
             }
 
-            UsedFor = targetedGroups.OrderBy(x => x.Name).ToList();
+            UsedFor = targetedProducts.OrderBy(x => x.Name).ToList();
             ConstrainedMaterials = targetedMaterials.OrderBy(x => x.ToString()).ToList();
         }
     }
