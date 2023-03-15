@@ -155,33 +155,8 @@ namespace ProjectLighthouse.Model.Drawings
 
         public object Clone()
         {
-            // TODO review
-            return new TechnicalDrawing()
-            {
-                Id = Id,
-                Revision = Revision,
-                URL = URL,
-                Created = Created,
-                CreatedBy = CreatedBy,
-                IsArchetype = IsArchetype,
-                Customer = Customer,
-                DrawingName = DrawingName,
-                DrawingStore = DrawingStore,
-                RawDrawingStore = RawDrawingStore,
-                IsApproved = IsApproved,
-                IsRejected = IsRejected,
-                RejectedDate = RejectedDate,
-                RejectionReason = RejectionReason,
-                ApprovedBy = ApprovedBy,
-                ApprovedDate = ApprovedDate,
-                TurnedProductId = TurnedProductId,
-                GroupId = GroupId,
-                MaterialId = MaterialId,
-                DrawingType = DrawingType,
-                AmendmentType = AmendmentType,
-                IssueDetails = IssueDetails,
-                IsCurrent = IsCurrent,
-            };
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TechnicalDrawing>(serialised);
         }
 
         public string GetSafeFileName()
@@ -199,7 +174,7 @@ namespace ProjectLighthouse.Model.Drawings
 
             string tmpFile = GetCopyOfRawDocument();
 
-            using var pdfDocument = PdfReader.Open(tmpFile, PdfDocumentOpenMode.Modify);
+            using PdfDocument pdfDocument = PdfReader.Open(tmpFile, PdfDocumentOpenMode.Modify);
             PdfPage page = pdfDocument.Pages[0];
 
             bool success;
