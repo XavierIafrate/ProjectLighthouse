@@ -206,6 +206,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public async void VerifySelectedDeliveryNote()
         {
+            if (SelectedDeliveryNote is null) return;
             CheckingOperaVis = Visibility.Visible;
             DisableControls = true;
             NoteIsNotVerified = false; //disable button
