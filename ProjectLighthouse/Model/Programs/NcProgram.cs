@@ -28,7 +28,6 @@ namespace ProjectLighthouse.Model.Programs
 
         [Unique]
         public string FilePath { get; set; }
-        public string? Description { get; set; }
 
         private string? notepad;
         public string? Notepad
@@ -200,6 +199,7 @@ namespace ProjectLighthouse.Model.Programs
             ValidateProperty(nameof(Name));
             ValidateProperty(nameof(Tags));
             ValidateProperty(nameof(TagsList));
+            ValidateProperty(nameof(SchedulingProgramName));
         }
 
         public void ValidateTags()
@@ -213,9 +213,28 @@ namespace ProjectLighthouse.Model.Programs
             {
                 ClearErrors(propertyName);
 
+                if (string.IsNullOrWhiteSpace(Name))
+                {
+                    AddError(propertyName, "Name cannot be empty");
+                    return;
+                }
+
                 if (!ValidationHelper.StringIsNumbers(Name))
                 {
                     AddError(propertyName, "Name must only contain numeric characters");
+                }
+
+                return;
+            }
+            else if (propertyName == nameof(SchedulingProgramName))
+            {
+                ClearErrors(propertyName);
+
+                if (SchedulingProgramName == null) return;
+
+                if (!ValidationHelper.StringIsNumbers(SchedulingProgramName))
+                {
+                    AddError(propertyName, "Scheduling Program Name must only contain numeric characters");
                 }
 
                 return;
