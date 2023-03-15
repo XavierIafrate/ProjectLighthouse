@@ -35,5 +35,23 @@ namespace ProjectLighthouse.View.Orders
         {
             OrderScroller?.ScrollToVerticalOffset(0);
         }
+
+        private void TabItem_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is not TabItem tabItem) return;
+
+            if (!tabItem.IsSelected) return;
+            if (tabItem.IsEnabled) return;
+
+            for (int i = 0; i < OrderTabControl.Items.Count; i++)
+            {
+                TabItem x = (TabItem)OrderTabControl.Items[i];
+                if (x.IsEnabled)
+                {
+                    OrderTabControl.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
     }
 }
