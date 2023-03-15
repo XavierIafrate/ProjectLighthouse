@@ -66,7 +66,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             set
             {
                 searchBoxText = value;
-                FilterDrawings(value);
+                Search();
                 OnPropertyChanged();
             }
         }
@@ -101,7 +101,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             {
                 showOldGroups = value;
                 OnPropertyChanged();
-                FilterDrawings(SearchBoxText);
+                Search();
             }
         }
 
@@ -168,7 +168,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
         {
             InitialiseVariables();
             LoadData();
-            FilterDrawings();
+            Search();
         }
 
         private void InitialiseVariables()
@@ -248,60 +248,67 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
                 DrawingGroups.Add(newGroup);
             }
+
+            DrawingGroups = DrawingGroups
+                .OrderByDescending(x => x.IsArchetypeGroup)
+                .ThenBy(x => x.Name)
+                .ToList();
         }
         #endregion
 
-        private void FilterDrawings(string searchString = "")
+        private void Search()
         {
-            if (string.IsNullOrEmpty(searchString))
+            if (string.IsNullOrEmpty(SearchBoxText))
             {
                 FilteredDrawingGroups = new(DrawingGroups);
+
                 if (!ShowOldGroups)
                 {
-                    FilteredDrawingGroups = FilteredDrawingGroups.Where(x => !x.AllDrawingsWithdrawn).ToList();
+                    FilteredDrawingGroups = FilteredDrawingGroups
+                        .Where(x => !x.AllDrawingsWithdrawn)
+                        .ToList();
                 }
-            }
-            else
-            {
-                searchString = searchString.Trim().ToUpperInvariant();
 
-                FilteredDrawingGroups = DrawingGroups.Where(x => x.Name.Contains(searchString)).ToList();
-            }
+                OnPropertyChanged(nameof(FilteredDrawingGroups));
 
-            FilteredDrawingGroups = FilteredDrawingGroups.OrderByDescending(x => x.IsArchetypeGroup).ThenBy(x => x.Name).ToList();
+                if (FilteredDrawingGroups.Count > 0)
+                {
+                    SelectedGroup = FilteredDrawingGroups[0];
+                }
+                else
+                {
+                    SelectedGroup = null;
+                }
+
+                return;
+            }
+            
+            string searchToken = SearchBoxText.Trim().ToUpperInvariant();
+
+            FilteredDrawingGroups = DrawingGroups
+                .Where(x => x.Name.Contains(searchToken))
+                .ToList();
+            OnPropertyChanged(nameof(FilteredDrawingGroups));
 
             if (FilteredDrawingGroups.Count > 0)
             {
                 SelectedGroup = FilteredDrawingGroups[0];
+                if (!ShowRejected && FilteredDrawings.Count == 0)
+                {
+                    ShowRejected = true;
+                }
             }
             else
             {
                 SelectedGroup = null;
-                SelectedDrawing = null;
             }
-
-            if (SelectedGroup is not null)
-            {
-                if (ShowRejected)
-                {
-                    FilteredDrawings = SelectedGroup.Drawings;
-                }
-                else
-                {
-                    FilteredDrawings = SelectedGroup.Drawings
-                        .Where(x => !x.IsRejected && !x.IsWithdrawn)
-                        .ToList();
-                }
-            }
-
-            OnPropertyChanged(nameof(FilteredDrawingGroups));
-            OnPropertyChanged(nameof(FilteredDrawings));
         }
 
         private void LoadGroup()
         {
             if (selectedGroup is null)
             {
+                SelectedDrawing = null;
                 return;
             }
 
@@ -326,6 +333,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
             {
                 SelectedDrawing = FilteredDrawings.Last();
             }
+            else
+            {
+                SelectedDrawing = null;
+            }
 
             OnPropertyChanged(nameof(FilteredDrawings));
         }
@@ -346,7 +357,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
             int newId = window.NewDrawing.Id;
             LoadData();
-            FilterDrawings();
+            Search();
 
             SelectedGroup = FilteredDrawingGroups.Find(x => x.Drawings.Any(d => d.Id == newId));
         }
