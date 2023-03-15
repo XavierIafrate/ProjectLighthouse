@@ -85,26 +85,8 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
-
         [Ignore]
-        public List<ToolingGroup> ToolingGroups { get; set; }
-        public class ToolingGroup
-        {
-            [PrimaryKey]
-            public string Name { get; set; }
-            public string MemberOf { get; set; }
-            public string CheckSheetUrl { get; set; }
-            [Ignore]
-            public List<TurnedProduct> Products { get; set; }
-
-            [Ignore]
-            public List<CheckSheetField> CheckSheetFields { get; set; }
-
-            public override string ToString()
-            {
-                return $"{MemberOf}>{Name}";
-            }
-        }
+        public List<ProductGroup> Archetypes { get; set; }
 
         public override string ToString()
         {
