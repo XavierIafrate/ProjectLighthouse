@@ -87,24 +87,27 @@ namespace ViewModel.Helpers
 
             if (productInfo != null)
             {
-                doc.SetCellValue(row, 5, productInfo.Description);
-                //SLPicture pic = new(productInfo.LocalRenderPath);
-                float newResolution;
-                using (var imageStream = File.OpenRead(productInfo.LocalRenderPath))
+                if (!string.IsNullOrEmpty(productInfo.LocalRenderPath))
                 {
-                    const double targetHeight = 60;
-                    var decoder = BitmapDecoder.Create(imageStream, BitmapCreateOptions.IgnoreColorProfile,
-                        BitmapCacheOption.Default);
-                    var height = decoder.Frames[0].PixelHeight;
-                    var res = decoder.Frames[0].DpiY;
-                    newResolution = Convert.ToSingle(targetHeight / height * res);
+                    doc.SetCellValue(row, 5, productInfo.Description);
+                    //SLPicture pic = new(productInfo.LocalRenderPath);
+                    float newResolution;
+                    using (var imageStream = File.OpenRead(productInfo.LocalRenderPath))
+                    {
+                        const double targetHeight = 60;
+                        var decoder = BitmapDecoder.Create(imageStream, BitmapCreateOptions.IgnoreColorProfile,
+                            BitmapCacheOption.Default);
+                        var height = decoder.Frames[0].PixelHeight;
+                        var res = decoder.Frames[0].DpiY;
+                        newResolution = Convert.ToSingle(targetHeight / height * res);
 
+                    }
+
+
+                    SLPicture pic = new(productInfo.LocalRenderPath, newResolution, newResolution);
+                    pic.SetPosition(row - 1, 0);
+                    doc.InsertPicture(pic);
                 }
-
-
-                SLPicture pic = new(productInfo.LocalRenderPath, newResolution, newResolution);
-                pic.SetPosition(row - 1, 0);
-                doc.InsertPicture(pic);
             }
 
             doc.SetCellValue(row, 6, order.AllocatedMachine);
