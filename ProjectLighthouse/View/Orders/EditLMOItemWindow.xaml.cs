@@ -38,8 +38,15 @@ namespace ProjectLighthouse.View.Orders
             LoadUI();
         }
 
+
+        private void LockControls()
+        {
+            this.IsEnabled = false;
+        }
+
         private void LoadData(int id)
         {
+            // TODO Refactor
             Item = DatabaseHelper.Read<LatheManufactureOrderItem>().Find(x => x.Id == id);
             Lots = DatabaseHelper.Read<Lot>().Where(x => x.ProductName == Item.ProductName && x.Order == Item.AssignedMO).ToList();
 
@@ -51,7 +58,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void LoadUI()
         {
-            SchedulingGrid.Visibility = App.CurrentUser.Role >= UserRole.Scheduling
+            SchedulingGrid.Visibility = App.CurrentUser.Role >= UserRole.Scheduling && CanEdit
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
@@ -61,6 +68,11 @@ namespace ProjectLighthouse.View.Orders
             if (Lots.Count > 0)
             {
                 BatchTextBox.Text = Lots.Last().MaterialBatch;
+            }
+
+            if (!CanEdit)
+            {
+                LockControls();
             }
 
             PopulateCycleTimes();

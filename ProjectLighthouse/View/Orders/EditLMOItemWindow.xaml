@@ -32,7 +32,7 @@
                     x:Name="SaveButton"
                     HorizontalAlignment="Right"
                     Click="SaveButton_Click"
-                    Style="{StaticResource HeroSaveButton}"/>
+                    Style="{StaticResource HeroSaveButton}" />
             </Grid>
             <StackPanel Orientation="Horizontal">
                 <TextBlock
@@ -48,7 +48,7 @@
             </StackPanel>
 
 
-            <Grid HorizontalAlignment="Stretch" Margin="5">
+            <Grid Margin="5" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -103,12 +103,8 @@
                     Text="{Binding Item.QuantityDelivered, StringFormat='{}{0:#,##0} pcs'}" />
             </Grid>
 
-            <TextBlock
-                Style="{StaticResource section}"
-                Text="Metadata" />
-            <TextBlock
-                Style="{StaticResource InputLabel}"
-                Text="Cycle Time" />
+            <TextBlock Style="{StaticResource section}" Text="Metadata" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Cycle Time" />
             <StackPanel Orientation="Horizontal">
                 <TextBox
                     x:Name="CycleTime_Min"
@@ -152,18 +148,34 @@
             </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Major Length" Style="{StaticResource InputLabel}"/>
-                <TextBox Style="{StaticResource DefaultTextBox}" Tag="major length" Grid.Row="1" Width="170" HorizontalAlignment="Left" Text="{Binding Item.MajorLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Text="Extra Requirement" Style="{StaticResource InputLabel}" Grid.Column="1"/>
-                <TextBox Style="{StaticResource DefaultTextBox}" Tag="extra requirement" Grid.Row="1" Grid.Column="1" Width="170" HorizontalAlignment="Left"  Text="{Binding Item.PartOffLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Style="{StaticResource InputLabel}" Text="Major Length" />
+                <TextBox
+                    Grid.Row="1"
+                    Width="170"
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="major length"
+                    Text="{Binding Item.MajorLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock
+                    Grid.Column="1"
+                    Style="{StaticResource InputLabel}"
+                    Text="Extra Requirement" />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="170"
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="extra requirement"
+                    Text="{Binding Item.PartOffLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
 
             <TextBlock
@@ -230,30 +242,32 @@
                 </StackPanel>
 
 
-                    <TextBox
-                         Grid.Row="1" Grid.ColumnSpan="2"
-                        x:Name="BatchTextBox"
-                        MaxLength="256"
-                        Tag="batch"
-                        Style="{StaticResource DefaultTextBox}"
-                        TextWrapping="Wrap" />
+                <TextBox
+                    x:Name="BatchTextBox"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    MaxLength="256"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="batch"
+                    TextWrapping="Wrap" />
 
 
-                    <TextBox
-                        Grid.Row="2" Grid.ColumnSpan="2"
-                            x:Name="RemarksTextBox"
-                            MaxLength="512"
-                            Tag="remarks"
-                            Style="{StaticResource DefaultTextBox}"
-                            TextWrapping="Wrap" />
+                <TextBox
+                    x:Name="RemarksTextBox"
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    MaxLength="512"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="remarks"
+                    TextWrapping="Wrap" />
 
                 <Button
                     x:Name="AddLotButton"
                     Grid.Row="4"
                     Grid.Column="2"
                     Click="AddLotButton_Click"
-                    Tag="Add Lot"
-                    Style="{StaticResource Action_New_Button}" />
+                    Style="{StaticResource Action_New_Button}"
+                    Tag="Add Lot" />
             </Grid>
 
         </StackPanel>
@@ -262,9 +276,7 @@
             Grid.Column="1"
             Margin="20,10"
             VerticalAlignment="Top">
-            <TextBlock
-                Style="{StaticResource SectionLabel}"
-                Text="Scheduling" />
+            <TextBlock Style="{StaticResource SectionLabel}" Text="Scheduling" />
             <TextBlock Style="{StaticResource InputLabel}" Text="Required Quantity" />
             <TextBox
                 x:Name="QuantityRequiredTextbox"
