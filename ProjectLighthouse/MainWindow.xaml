@@ -357,8 +357,7 @@
             x:Name="viewPort"
             Grid.Row="1"
             Grid.Column="1"
-            Content="{Binding SelectedViewModel}"
-            MouseDown="viewPort_MouseDown" />
+            Content="{Binding SelectedViewModel}"/>
         <!--#endregion-->
 
         <!--#region Notifications Bar-->

@@ -1,6 +1,4 @@
 ﻿using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Analytics;
-using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -82,7 +80,7 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            manage_database_button.Visibility = Visibility.Collapsed;
+            manage_database_button.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
 
             manage_users_button.IsEnabled = App.CurrentUser.Role is UserRole.Administrator;
             manage_products_button.IsEnabled = App.CurrentUser.Role is UserRole.Administrator;
@@ -97,18 +95,6 @@ namespace ProjectLighthouse
 
         private void Rectangle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            //CalculationsHelperWindow test = new();
-            //test.Show();
-
-            //Monaco monacoEditor = new();
-            //monacoEditor.Show();
-
-            //List<MachineOperatingBlock> blocks = DatabaseHelper.Read<MachineOperatingBlock>();
-            //CSVHelper.WriteListToCSV(blocks, "blocks");
-
-            //List<Lot> lots = DatabaseHelper.Read<Lot>();
-            //CSVHelper.WriteListToCSV(lots, "lots");
-
             AboutWindow window = new() { Owner = this };
             window.ShowDialog();
         }
@@ -130,11 +116,6 @@ namespace ProjectLighthouse
 
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
-        }
-
-        private void viewPort_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            App.MainViewModel.NotificationsBarVis = Visibility.Collapsed;
         }
     }
 }
