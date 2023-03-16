@@ -112,6 +112,7 @@ namespace ProjectLighthouse.ViewModel.Programs
 
         public SendMessageCommand SendMessageCmd { get; set; }
         public EditProgramCommand EditProgramCmd { get; set; }
+        public OpenProgramCommand OpenProgramCmd { get; set; }
 
         public ProgramManagerViewModel()
         {
@@ -123,6 +124,7 @@ namespace ProjectLighthouse.ViewModel.Programs
         {
             SendMessageCmd = new(this);
             EditProgramCmd = new(this);
+            OpenProgramCmd = new(this);
 
             Programs = DatabaseHelper.Read<NcProgram>()
                 .OrderBy(x => x.Name.Length)
@@ -163,6 +165,13 @@ namespace ProjectLighthouse.ViewModel.Programs
             Search();
 
             SelectedProgram = Programs.Find(x => x.Id == selectedProgramId);
+        }
+
+        public void OpenProgram()
+        {
+            Monaco window = new();
+            window.ShowDialog();
+
         }
 
         public void AddProgram()
