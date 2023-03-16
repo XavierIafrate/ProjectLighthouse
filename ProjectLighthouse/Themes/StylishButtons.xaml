@@ -2184,24 +2184,24 @@
         x:Key="SmallDeleteButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource OnRed}" />
-        <Setter Property="Background" Value="{StaticResource Red}" />
+        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Setter Property="Background" Value="{StaticResource RedFaded}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
-                        Width="20"
-                        Height="20"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="10">
-                        <Path
-                            Width="13"
-                            Height="13"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M17,7H14.5L13.5,6H10.5L9.5,7H7V9H17V7M9,18H15A1,1 0 0,0 16,17V10H8V17A1,1 0 0,0 9,18Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
+                        CornerRadius="5">
+                        <StackPanel Orientation="Horizontal" Margin="5,3">
+                            <Path
+                                Width="8"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock Foreground="{TemplateBinding Foreground}" Text="Delete" FontWeight="SemiBold" Margin="3,0,0,0" FontSize="10" />
+                        </StackPanel>
 
                     </Border>
                 </ControlTemplate>
