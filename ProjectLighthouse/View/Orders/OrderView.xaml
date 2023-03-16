@@ -128,8 +128,7 @@
                 HorizontalAlignment="Left"
                 Command="{Binding NewOrderCommand}"
                 Style="{StaticResource Action_New_Button}"
-                Tag="New Order"
-                Visibility="{Binding NewOrderButtonVis}" />
+                Tag="New Order"/>
 
             <Button
                 Grid.Column="1"
@@ -167,7 +166,7 @@
             Grid.Column="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="{Binding NothingVis}">
+            Visibility="{Binding SelectedOrder, Converter={StaticResource NullToVisibility}}">
             <Border
                 Grid.Row="3"
                 Grid.ColumnSpan="2"
@@ -211,14 +210,14 @@
                 HorizontalAlignment="Center"
                 FontSize="30"
                 Opacity="0.6"
-                Text="No results :(" />
+                Text="No results" />
         </StackPanel>
         <ScrollViewer
             x:Name="OrderScroller"
             Grid.RowSpan="4"
             Grid.Column="1"
             ScrollChanged="ScrollViewer_ScrollChanged"
-            Visibility="{Binding Path=CardVis, UpdateSourceTrigger=PropertyChanged}">
+            Visibility="{Binding Path=SelectedOrder, Converter={StaticResource NotNullToVisibility}}">
             <StackPanel>
                 <StackPanel Margin="25,10">
                     <Grid
@@ -363,7 +362,7 @@
 
                             <!--#region Metadata-->
 
-                            <Grid Margin="0,0,0,15" Visibility="{Binding Path=LiveInfoAvailable, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                            <Grid Margin="0,5,0,15" Visibility="{Binding Path=DisplayStats, Converter={StaticResource NotNullToVisibility}}">
                                 <Border
                                     d:Background="Black"
                                     Background="{Binding DisplayStats, Converter={StaticResource liveBadgeColour}}"
@@ -1017,7 +1016,7 @@
                                     Margin="0,15,0,5"
                                     Style="{StaticResource section}"
                                     Text="Drawings" />
-                                <ItemsControl ItemsSource="{Binding FilteredDrawings}" Visibility="{Binding DrawingsFoundVis}">
+                                <ItemsControl ItemsSource="{Binding FilteredDrawings}" Visibility="{Binding FilteredDrawings, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <uc:DisplayTechnicalDrawing Margin="10,2" Drawing="{Binding}" />
@@ -1030,7 +1029,7 @@
                                     FontStyle="Italic"
                                     Foreground="{StaticResource DisabledElement}"
                                     Text="None found"
-                                    Visibility="{Binding NoDrawingsFoundVis}" />
+                                    Visibility="{Binding FilteredDrawings, Converter={StaticResource EmptyListToVisibleOrCollapsed}}"/>
                             </StackPanel>
                             <!--#endregion-->
 
@@ -1039,7 +1038,7 @@
                                 Margin="0,15,0,5"
                                 Style="{StaticResource section}"
                                 Text="Notes" />
-                            <Grid Visibility="{Binding NoNotes, Converter={StaticResource boolToCollapsedOrVisible}}">
+                            <Grid Visibility="{Binding FilteredNotes, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="157*" />
                                     <ColumnDefinition Width="503*" />
@@ -1053,7 +1052,7 @@
                                 FontStyle="Italic"
                                 Foreground="{StaticResource DisabledElement}"
                                 Text="None found"
-                                Visibility="{Binding NoNotes, Converter={StaticResource boolToVisibleOrCollapsed}}" />
+                                Visibility="{Binding FilteredNotes, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
                             <!--#endregion-->
                         </StackPanel>
                     </Grid>
