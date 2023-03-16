@@ -189,7 +189,7 @@
                 FontSize="30"
                 FontStyle="Italic"
                 Opacity="0.6"
-                Text="{Binding SearchString, StringFormat='{}A {0} for ants?!', TargetNullValue=''}" />
+                Text="{Binding SearchString, StringFormat='{}A {0} for ants?!', TargetNullValue='A request for ants?!'}" />
         </StackPanel>
         <ScrollViewer
             x:Name="scroller"
@@ -433,7 +433,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         RenderOptions.BitmapScalingMode="Fant"
-                                        Source="{Binding SelectedRequestMainProduct.LocalRenderPath}" />
+                                        Source="{Binding SelectedRequestMainProduct.LocalRenderPath, TargetNullValue={x:Null}, FallbackValue={x:Null}}" />
                                 </Grid>
 
                             </Border>
