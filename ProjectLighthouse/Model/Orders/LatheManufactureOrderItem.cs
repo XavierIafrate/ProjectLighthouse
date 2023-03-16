@@ -155,7 +155,7 @@ namespace ProjectLighthouse.Model.Orders
 
             DateRequired = dateRequired;
             RequiredQuantity = requiredQuantity;
-            TargetQuantity = RequestsEngine.RoundQuantity(RequiredQuantity + TargetQuantity, roundUp: true);
+            TargetQuantity = RequestsEngine.RoundQuantity(TargetQuantity, roundUp: true);
         }
 
         public override string ToString()
