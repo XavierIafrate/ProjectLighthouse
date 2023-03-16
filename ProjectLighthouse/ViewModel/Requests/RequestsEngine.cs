@@ -13,13 +13,10 @@ namespace ProjectLighthouse.ViewModel.Requests
         {
             maxRuntime ??= new(days: 3, hours: 0, minutes: 0, seconds: 0);
             List<LatheManufactureOrderItem> recommendation = new();
-            TurnedProduct requirement = turnedProducts.Find(x => x.ProductName == request.Product);
 
-            if (requirement is null)
-            {
-                throw new Exception("Requests Engine: Requirement not found in product list");
-            }
-
+            TurnedProduct requirement = turnedProducts.Find(x => x.ProductName == request.Product) 
+                ?? throw new Exception("Requests Engine: Requirement not found in product list");
+            
             recommendation.Add(new(requirement, request.QuantityRequired, request.DateRequired));
 
             turnedProducts = turnedProducts
