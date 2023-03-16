@@ -3,6 +3,8 @@ using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -186,6 +188,26 @@ namespace ProjectLighthouse.Model.Programs
                 }
                 Tags = null;
                 OnPropertyChanged();
+            }
+        }
+
+        public Uri? Path
+        {
+            get
+            {
+                if(string.IsNullOrWhiteSpace(Name)) return null;
+
+                try
+                {
+                    Uri uri = new($@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\{Name}.PRG");
+
+                    return File.Exists(uri.LocalPath) ? uri : null;
+                }
+                catch (Exception e) 
+                {
+                    Debug.WriteLine(e.Message);
+                    return null;
+                }
             }
         }
 
