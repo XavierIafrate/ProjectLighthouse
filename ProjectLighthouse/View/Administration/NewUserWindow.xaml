@@ -40,7 +40,7 @@
         <TextBlock Style="{StaticResource InputLabel}" Text="Password" />
         <PasswordBox
             x:Name="password"
-            Height="30"
+            Height="35"
             FontSize="14"
             MaxLength="16"
             PasswordChanged="PasswordBox_PasswordChanged"
