@@ -36,6 +36,7 @@
                 ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                 d:ItemsSource="{d:SampleData ItemCount=10}"
                 ScrollViewer.CanContentScroll="False"
+                SelectionChanged="ListView_SelectionChanged"
                 SelectedValue="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -120,7 +121,7 @@
                 </StackPanel>
             </Grid>
         </StackPanel>
-        <ScrollViewer Grid.Row="1" Grid.Column="1">
+        <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="contentScrollViewer" ScrollChanged="ScrollViewer_ScrollChanged">
             <StackPanel MaxWidth="700" Margin="50,20">
 
                 <Grid Margin="0,5">
@@ -154,9 +155,9 @@
                         Style="{StaticResource section}"
                         Text="Email Address" />
                     <TextBox
+                        Margin="5"
                         Grid.Column="3"
                         MinWidth="300"
-                        Margin="0"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource UsernameTextBox}"
                         Text="{Binding SelectedUser.EmailAddress}" />
@@ -178,6 +179,7 @@
                         Text="{Binding SelectedUser.DefaultView, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         Visibility="{Binding ReadControlsVis}" />
                     <ComboBox
+                        Width="300"
                         Grid.Column="3"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         ItemsSource="{Binding views, Mode=OneTime}"
@@ -202,6 +204,7 @@
                         Text="{Binding SelectedUser.Role, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         Visibility="{Binding ReadControlsVis}" />
                     <ComboBox
+                        Width="300"
                         Grid.Column="3"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         ItemsSource="{Binding roles, Mode=OneTime}"
@@ -307,5 +310,20 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
+        <Border
+            x:Name="grad"
+            Grid.Row="1"
+            Grid.Column="1"
+            Height="20"
+            VerticalAlignment="Top"
+            CornerRadius="20,0,0,0"
+            IsHitTestVisible="False">
+            <Border.Background>
+                <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Gray" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
     </Grid>
 </UserControl>
