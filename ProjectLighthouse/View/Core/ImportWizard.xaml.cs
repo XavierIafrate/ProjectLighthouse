@@ -1,8 +1,6 @@
 ﻿using Microsoft.Win32;
 using ProjectLighthouse.Model.Products;
-using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -10,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using Windows.Data.Text;
 using static ProjectLighthouse.Model.BaseObject;
 
 namespace ProjectLighthouse.View.Core
@@ -23,8 +20,8 @@ namespace ProjectLighthouse.View.Core
         public Type SelectedImportType
         {
             get { return selectedImportType; }
-            set 
-            { 
+            set
+            {
                 selectedImportType = value;
                 ConfigureMapping(selectedImportType);
                 OnPropertyChanged();
@@ -36,8 +33,8 @@ namespace ProjectLighthouse.View.Core
         public string TargetFilePath
         {
             get { return targetFilePath; }
-            set 
-            { 
+            set
+            {
                 targetFilePath = value;
                 StoreColumns(targetFilePath);
                 OnPropertyChanged();
@@ -58,9 +55,9 @@ namespace ProjectLighthouse.View.Core
             InitializeComponent();
 
             ImportTypes = new() { typeof(TurnedProduct) };
-            if(ImportTypes.Count > 0 )
+            if (ImportTypes.Count > 0)
             {
-                SelectedImportType= ImportTypes.First();
+                SelectedImportType = ImportTypes.First();
             }
 
             DataContext = this;
@@ -71,7 +68,7 @@ namespace ProjectLighthouse.View.Core
             string[] lines = File.ReadAllLines(targetFilePath);
             fileContents = lines;
 
-            if(lines.Length == 0 )
+            if (lines.Length == 0)
             {
                 MessageBox.Show("No data");
                 return;
@@ -92,7 +89,7 @@ namespace ProjectLighthouse.View.Core
                 return;
             }
 
-            AvailableHeaders = fileHeader.Where(x => !Mapping.Any(y => y.From == x)).ToList(); 
+            AvailableHeaders = fileHeader.Where(x => !Mapping.Any(y => y.From == x)).ToList();
             OnPropertyChanged(nameof(AvailableHeaders));
 
 
@@ -143,7 +140,7 @@ namespace ProjectLighthouse.View.Core
 
             public ColumnMap(PropertyInfo to, Import att, string from)
             {
-                From= from; Attribute= att; To= to;
+                From = from; Attribute = att; To = to;
             }
         }
 
@@ -180,7 +177,7 @@ namespace ProjectLighthouse.View.Core
         {
             if (SelectedImportType.Name is nameof(TurnedProduct))
             {
-                
+
             }
         }
 
@@ -209,7 +206,7 @@ namespace ProjectLighthouse.View.Core
 
             List<string> userConfigMapping = Mapping.Select(x => x.From).ToList();
 
-            return userConfigMapping.All(x => !string.IsNullOrEmpty(x)) 
+            return userConfigMapping.All(x => !string.IsNullOrEmpty(x))
                 && userConfigMapping.Distinct().Count() == userConfigMapping.Count;
         }
     }

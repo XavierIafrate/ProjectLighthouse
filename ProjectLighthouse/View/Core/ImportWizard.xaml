@@ -56,6 +56,7 @@
                 <DataGridTextColumn
                     Width="*"
                     FontSize="14"
+                    IsReadOnly="True"
                     Binding="{Binding Attribute.Name}"
                     Header="Object Property" />
                 <DataGridComboBoxColumn
