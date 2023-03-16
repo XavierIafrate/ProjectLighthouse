@@ -970,8 +970,18 @@
                                         </Border>
                                     </StackPanel>
                                 </TabItem>
-                                <TabItem Header="Programs" Visibility="Collapsed">
-                                    <ItemsControl ItemsSource="{Binding ProgramCandidates}"/>
+                                <TabItem Header="Programs">
+                                    <ItemsControl ItemsSource="{Binding ProgramCandidates}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name, StringFormat='{}Program {0}'}"/>
+                                                    <ItemsControl ItemsSource="{Binding TagsList}"></ItemsControl>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                                
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </TabItem>
                             </TabControl>
 
