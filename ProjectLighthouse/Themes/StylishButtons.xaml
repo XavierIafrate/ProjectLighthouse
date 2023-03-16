@@ -2189,10 +2189,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="5">
-                        <StackPanel Orientation="Horizontal" Margin="5,3">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <StackPanel Margin="5,3" Orientation="Horizontal">
                             <Path
                                 Width="8"
                                 HorizontalAlignment="Center"
@@ -2200,7 +2198,12 @@
                                 Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
-                            <TextBlock Foreground="{TemplateBinding Foreground}" Text="Delete" FontWeight="SemiBold" Margin="3,0,0,0" FontSize="10" />
+                            <TextBlock
+                                Margin="3,0,0,0"
+                                FontSize="10"
+                                FontWeight="SemiBold"
+                                Foreground="{TemplateBinding Foreground}"
+                                Text="Delete" />
                         </StackPanel>
 
                     </Border>
