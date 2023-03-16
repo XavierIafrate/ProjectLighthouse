@@ -38,7 +38,7 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
-        private string webUrl;
+        private string webUrl = "";
         public string WebUrl
         {
             get { return webUrl; }
@@ -50,7 +50,7 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
-        private string imageUrl;
+        private string imageUrl = "";
         public string ImageUrl
         {
             get { return imageUrl; }
@@ -62,7 +62,7 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
-        private string webImageUrl;
+        private string webImageUrl = "";
         public string WebImageUrl
         {
             get { return webImageUrl; }
