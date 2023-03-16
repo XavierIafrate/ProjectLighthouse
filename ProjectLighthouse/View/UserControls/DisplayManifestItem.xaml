@@ -33,11 +33,11 @@
                 HorizontalAlignment="Right"
                 d:Text="Target: X,XXX pcs"
                 FontWeight="SemiBold"
-                Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" />
+                Text="{Binding TargetQuantity, StringFormat='{}Target: {0:#,##0} pcs'}" />
 
-            <TextBlock Text="{Binding RecommendedQuantity, StringFormat='{}{0:#,##0} pcs recommended'}" HorizontalAlignment="Right"/>
+            <!--<TextBlock Text="{Binding RecommendedQuantity, StringFormat='{}{0:#,##0} pcs recommended'}" HorizontalAlignment="Right"/>
             <TextBlock Text="{Binding YearStock, StringFormat='{}{0:#,##0} pcs yr stock'}" HorizontalAlignment="Right"/>
-            <TextBlock Text="{Binding QuantityInStock, StringFormat='{}{0:#,##0} pcs in stock'}" HorizontalAlignment="Right"/>
+            <TextBlock Text="{Binding QuantityInStock, StringFormat='{}{0:#,##0} pcs in stock'}" HorizontalAlignment="Right"/>-->
         </StackPanel>
     </Grid>
 </UserControl>
