@@ -21,7 +21,9 @@ namespace ProjectLighthouse.Model
         #region INotifyDataErrorInfo Members
 
         [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public Dictionary<string, List<string>> Errors { get; set; } = new();
+        [CsvHelper.Configuration.Attributes.Ignore]
         public bool HasErrors => Errors.Any();
 
 

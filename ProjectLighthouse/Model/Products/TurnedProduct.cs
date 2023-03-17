@@ -344,12 +344,16 @@ namespace ProjectLighthouse.Model.Products
 
         #region Scheduling Members
         [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public Request DeclinedRequest { get; set; }
         [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public LatheManufactureOrder AppendableOrder { get; set; }
         [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public LatheManufactureOrder ZeroSetOrder { get; set; }
         [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public int LighthouseGuaranteedQuantity { get; set; }
         #endregion
 
