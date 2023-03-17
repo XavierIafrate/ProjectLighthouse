@@ -1,8 +1,13 @@
-﻿using Microsoft.Win32;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.Win32;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.ViewModel.Core;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -63,14 +68,34 @@ namespace ProjectLighthouse.View.Core
             DataContext = this;
         }
 
+        private static string[] ReadAllLinesSafe(string path)
+        {
+            using FileStream csv = new(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using StreamReader sr = new(csv);
+            List<string> file = new();
+
+            while (!sr.EndOfStream)
+            {
+                file.Add(sr.ReadLine());
+            }
+
+            return file.ToArray();
+        }
+
         void StoreColumns(string targetFilePath)
         {
-            string[] lines = File.ReadAllLines(targetFilePath);
+            string[] lines =ReadAllLinesSafe(targetFilePath);
             fileContents = lines;
 
             if (lines.Length == 0)
             {
                 MessageBox.Show("No data");
+                return;
+            }
+
+            if (lines.Length == 1)
+            {
+                MessageBox.Show("Only Header row is in file");
                 return;
             }
 
@@ -162,25 +187,131 @@ namespace ProjectLighthouse.View.Core
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!MappingIsValid())
+            //if (!MappingIsValid())
+            //{
+            //    MessageBox.Show("Mapping is not valid", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
+
+            TestImport();
+
+            //SimulateImport();
+
+
+        }
+
+        void TestImport()
+        {
+            List<TmpProductImport> records;
+            try
             {
-                MessageBox.Show("Mapping is not valid", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                using StreamReader reader = new(TargetFilePath);
+                using CsvReader csv = new(reader, CultureInfo.InvariantCulture);
+                //csv.Context.RegisterClassMap<TurnedProductMap>();
+
+                records = csv.GetRecords<TmpProductImport>().ToList();
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
                 return;
             }
 
-            SimulateImport();
+            TryImport(records);
+        }
+
+        void TryImport(List<TmpProductImport> records)
+        {
+            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>(throwErrs:true);
 
 
+            foreach (TmpProductImport record in records)
+            {
+                TurnedProduct? existingRecord = products.Find(x => x.ProductName == record.ProductName);
+
+                if (existingRecord is null)
+                {
+                    // New record
+                    TurnedProduct newRecord = new() 
+                    { 
+                        ProductName = record.ProductName,
+                        MajorLength = record.MajorLength,
+                        MajorDiameter = record.MajorDiameter,
+                        PartOffLength = record.PartOffLength,
+                        MaterialId = record.MaterialId,
+                        GroupId = record.GroupId,
+                        AddedBy = App.CurrentUser.UserName,
+                        AddedDate = DateTime.Now,
+                    };
+
+                    try
+                    {
+                        DatabaseHelper.Insert<TurnedProduct>(newRecord, throwErrs: true);
+                    }
+                    catch (Exception ex)
+                    {
+                        NotificationManager.NotifyHandledException(ex);
+                        return;
+                    }
+                }
+                else
+                {
+
+                    if (existingRecord.MajorLength != record.MajorLength)
+                    {
+
+                    }
+                    existingRecord.MajorLength = record.MajorLength;
+                    existingRecord.MajorDiameter = record.MajorDiameter;
+                    existingRecord.PartOffLength = record.PartOffLength;
+                    existingRecord.MaterialId = record.MaterialId;
+                    existingRecord.GroupId = record.GroupId;
+
+                    try
+                    {
+                        DatabaseHelper.Update<TurnedProduct>(existingRecord, throwErrs: true);
+                    }
+                    catch (Exception ex)
+                    {
+                        NotificationManager.NotifyHandledException(ex);
+                        return;
+                    }
+                }
+            }
+        }
+
+        public sealed class TurnedProductMap : ClassMap<TurnedProduct>
+        {
+            public TurnedProductMap()
+            {
+
+                Map(m => m.QuantityInStock).Default(0);
+
+            }
         }
 
         private void SimulateImport()
         {
-            if (SelectedImportType.Name is nameof(TurnedProduct))
-            {
-
-            }
+            //if (SelectedImportType.Name is nameof(TurnedProduct))
+            //{
+            //    using (var reader = new StreamReader("path\\to\\file.csv"))
+            //    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            //    {
+            //        //csv.Context.RegisterClassMap<TurnedProductMap>();
+            //        IEnumerable<TurnedProduct> records = csv.GetRecords<TurnedProduct>();
+            //    }
+            //}
         }
 
+        public class TmpProductImport
+        {
+            public string ProductName { get; set; }
+            public double MajorLength { get; set; }
+            public double MajorDiameter { get; set; }
+            public double PartOffLength { get; set; }
+            public int MaterialId { get; set; }
+            public int GroupId { get; set; }
+        }
 
         void ImportTurnedProduct(bool simulate)
         {
