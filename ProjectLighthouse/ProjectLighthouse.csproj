@@ -81,6 +81,7 @@
     <None Remove="Resources\UKAS-calibration-logo.jpg" />
     <None Remove="Resources\UkasDark.png" />
     <None Remove="Resources\UkasLight.png" />
+    <None Remove="View\Programs\12.PRG" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -187,6 +188,9 @@
     <Resource Include="Resources\UkasLight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <EmbeddedResource Include="View\Programs\12.PRG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
