@@ -193,6 +193,9 @@ namespace ProjectLighthouse.ViewModel.Administration
                     BarLength = bar.Length,
                     BarCost = (double)bar.Cost / 100,
                     ProductMajorLength = product.MajorLength + product.PartOffLength + 2,
+                    GroupId = memberOf.Id,
+                    GroupName = memberOf.Name,
+                    MaterialId = material.Id,
                 };
 
                 itemCosts.Add(newItem);
@@ -225,6 +228,15 @@ namespace ProjectLighthouse.ViewModel.Administration
             
             [Name("Item Major Length (mm)")]
             public double ProductMajorLength { get; set; }
+
+            [Name("Group ID")]
+            public int GroupId { get; set; }
+
+            [Name("Material ID")]
+            public int MaterialId { get; set; }
+
+            [Name("Group Name")]
+            public string GroupName { get; set; }
         }
     }
 }
