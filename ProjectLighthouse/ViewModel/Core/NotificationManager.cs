@@ -352,6 +352,11 @@ namespace ProjectLighthouse.ViewModel.Core
             DatabaseHelper.Update(not);
         }
 
+        public static void NotifyHandledException(Exception exception)
+        {
+            MessageBox.Show($"An error was encountered and the procedure was aborted:{Environment.NewLine}{exception.Message}", "Handled Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
         public void NotifyQualityPassed(QualityCheck check, List<string> mentionedUsers = null)
         {
             List<User> toNotify = users.Where(x => x.HasQualityNotifications).ToList();
