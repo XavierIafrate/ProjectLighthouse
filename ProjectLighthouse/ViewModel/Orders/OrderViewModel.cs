@@ -18,7 +18,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,8 +56,8 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<LatheManufactureOrder> FilteredOrders
         {
             get { return filteredOrders; }
-            set 
-            { 
+            set
+            {
                 filteredOrders = value;
                 OnPropertyChanged();
             }
@@ -70,7 +69,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public BarStock SelectedOrderBar { get; set; }
         public ProductGroup SelectedProductGroup { get; set; }
         public Product SelectedProduct { get; set; }
-        public List<NcProgram> ProgramCandidates { get;  set; }
+        public List<NcProgram> ProgramCandidates { get; set; }
         #endregion
 
         #region Charting
@@ -307,7 +306,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
 
 
-            if ((Brush)Application.Current.Resources["Blue"] is not SolidColorBrush blue 
+            if ((Brush)Application.Current.Resources["Blue"] is not SolidColorBrush blue
                 || (Brush)Application.Current.Resources["Red"] is not SolidColorBrush red) return;
 
             var produced = new ColumnSeries<DateTimePoint>
@@ -530,8 +529,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 SelectedOrder = FilteredOrders.Find(x => x.Id == userSelection);
             }
-            else if(FilteredOrders.Count > 0) 
-            { 
+            else if (FilteredOrders.Count > 0)
+            {
                 SelectedOrder = FilteredOrders[0];
             }
 
@@ -623,15 +622,11 @@ namespace ProjectLighthouse.ViewModel.Orders
             switch (SelectedFilter)
             {
                 case "All Active":
-                    FilteredOrders = Orders.Where(x => x.State == OrderState.Running)
-                        .OrderBy(x => x.AllocatedMachine)
+                    FilteredOrders = Orders.Where(n => n.State < OrderState.Complete
+                            || n.ModifiedAt.AddDays(1) > DateTime.Now
+                            || !n.IsClosed)
+                        .OrderBy(x => x.State != OrderState.Running)
                         .ToList();
-                    FilteredOrders.AddRange(
-                        Orders.Where(n => n.State < OrderState.Complete
-                        || n.ModifiedAt.AddDays(1) > DateTime.Now
-                        || !n.IsClosed)
-                        .Where(o => o.State != OrderState.Running)
-                        .ToList());
                     break;
 
                 case "Assigned To Me":
@@ -660,7 +655,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                     break;
 
                 case "Development":
-                    FilteredOrders = Orders.Where(n => n.IsResearch).OrderByDescending(n => n.CreatedAt).ToList();
+                    FilteredOrders = Orders.Where(n => n.IsResearch && n.State < OrderState.Complete).OrderByDescending(n => n.CreatedAt).ToList();
                     break;
 
                 case "All":
@@ -737,7 +732,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             FilteredOrders = Results;
 
-            if (FilteredOrders.Count > 0) 
+            if (FilteredOrders.Count > 0)
             {
                 SelectedOrder = FilteredOrders.First();
             }
@@ -810,8 +805,21 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void SetLiveMachineInfo()
         {
+            if (SelectedOrder is null)
+            {
+                DisplayStats = null;
+                return;
+            }
+
+            if (SelectedOrder.State != OrderState.Running)
+            {
+                DisplayStats = null;
+                return;
+            }
+
+
             DisplayStats = MachineStatistics.Find(x => x.MachineID == SelectedOrder.AllocatedMachine);
-            
+
             if (DisplayStats is null)
             {
                 return;
