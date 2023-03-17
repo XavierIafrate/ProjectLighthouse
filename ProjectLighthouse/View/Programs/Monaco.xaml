@@ -6,10 +6,10 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.Programs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-    Title="Monaco"
+    Title="Lighthouse::Lumen"
     Width="1200"
     Height="800"
-    Background="#011627"
+    Background="{Binding BackgroundBrush, FallbackValue='#fff'}"
     Loaded="Window_Loaded"
     WindowState="Maximized"
     mc:Ignorable="d">
@@ -17,22 +17,45 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="10" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="200" />
-        </Grid.ColumnDefinitions>
-        <TextBlock
-            Margin="40,20"
-            FontSize="40"
-            Foreground="#d6deeb"
-            Text="Monaco Editor" />
+        <StackPanel Orientation="Horizontal" Margin="30,20">
+            <Path
+                Height="50"
+                Margin="0,0,10,0"
+                VerticalAlignment="Center"
+                Data="M11 15H6L13 1V9H18L11 23V15Z"
+                Fill="{Binding CursorForegroundBrush, FallbackValue='#000'}"
+                x:Name="Lightning"
+                Stretch="UniformToFill" />
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock
+                    FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                    FontWeight="SemiBold"
+                    Foreground="{Binding CursorForegroundBrush}"
+                    FontSize="10"
+                    Opacity="0.5"
+                    x:Name="LighthouseText"
+                    Text="PROJECT LIGHTHOUSE" />
+                <TextBlock
+                    FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                    FontSize="40"
+                    Margin="0,-7,0,0"
+                    FontWeight="Bold"
+                    Foreground="{Binding ForegroundBrush}"
+                    Text="Lumen Editor" />
+            </StackPanel>
+
+        </StackPanel>
+        <StackPanel Width="250" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,10">
+            <TextBlock Text="Select Theme" Style="{StaticResource InputLabel}" Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"/>
+            <ComboBox x:Name="themeName" SelectionChanged="themeName_SelectionChanged" />
+        </StackPanel>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -43,48 +66,39 @@
                 Margin="30,10"
                 FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
                 FontWeight="SemiBold"
-                Foreground="#d6deeb"
+                Foreground="{Binding CursorForegroundBrush}"
                 Text="$1 MAIN SPINDLE" />
 
             <TextBlock
-                Grid.Column="1"
+                Grid.Column="2"
                 Margin="30,10"
                 FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
                 FontWeight="SemiBold"
-                Foreground="#d6deeb"
+                Foreground="{Binding CursorForegroundBrush}"
                 Text="$2 SUB SPINDLE" />
 
             <wv2:WebView2
                 x:Name="dollarOne"
                 Grid.Row="1"
                 Grid.Column="0"
+                NavigationCompleted="dollarOne_NavigationCompleted"
                 Width="Auto"
                 Height="Auto"
                 d:Visibility="Visible"
                 Visibility="Hidden" />
+
+            <GridSplitter Width="5" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch"/>
 
             <wv2:WebView2
                 x:Name="dollarTwo"
                 Grid.Row="1"
-                Grid.Column="1"
+                Grid.Column="2"
+                NavigationCompleted="dollarTwo_NavigationCompleted"
                 Width="Auto"
                 Height="Auto"
+                ZoomFactor="1"
                 d:Visibility="Visible"
                 Visibility="Hidden" />
         </Grid>
-        <StackPanel Grid.RowSpan="2" Grid.Column="1">
-            <Button Click="Button_Click" Content="Test" />
-            <Button Click="Button_Click_1" Content="add snippet" />
-            <ComboBox x:Name="themeName" />
-            <Button
-                x:Name="SetThemeButton"
-                Click="SetThemeButton_Click"
-                Content="Set Theme" />
-        </StackPanel>
-
-        <Border
-            Grid.Row="2"
-            Grid.ColumnSpan="2"
-            Background="#7fdbca" />
     </Grid>
 </Window>

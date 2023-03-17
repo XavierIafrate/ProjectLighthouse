@@ -3,39 +3,96 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Path = System.IO.Path;
 
 namespace ProjectLighthouse.View.Programs
 {
-    public partial class Monaco : Window
+    public partial class Monaco : Window, INotifyPropertyChanged
     {
         List<string> themes;
         Uri path;
+        MonacoProgram Program;
+
+
+        private SolidColorBrush backgroundBrush;
+        public SolidColorBrush BackgroundBrush
+        {
+            get { return backgroundBrush; }
+            set
+            {
+                backgroundBrush = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private SolidColorBrush foregroundBrush;
+        public SolidColorBrush ForegroundBrush
+        {
+            get { return foregroundBrush; }
+            set
+            {
+                foregroundBrush = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private SolidColorBrush cursorForegroundBrush;
+        public SolidColorBrush CursorForegroundBrush
+        {
+            get { return cursorForegroundBrush; }
+            set
+            {
+                cursorForegroundBrush = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public Monaco(Uri path)
         {
             InitializeComponent();
-            this.path = path;
+            //this.path = path;
+
+            this.path = new Uri(Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        @"View\Programs\12.PRG"));
+
+            Program = GetProgramFromFile(this.path.LocalPath);
+
+            DataContext = this;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.dollarOne.Source =
-                    new Uri(System.IO.Path.Combine(
-                        System.AppDomain.CurrentDomain.BaseDirectory,
+                    new Uri(Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
                         @"Monaco\index.html"));
 
             this.dollarTwo.Source =
-                    new Uri(System.IO.Path.Combine(
-                        System.AppDomain.CurrentDomain.BaseDirectory,
+                    new Uri(Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
                         @"Monaco\index.html"));
 
-            themes = Directory.GetFiles(Path.Join(System.AppDomain.CurrentDomain.BaseDirectory, @"Monaco\themes")).ToList();
+            themes = Directory.GetFiles(Path.Join(AppDomain.CurrentDomain.BaseDirectory, @"Monaco\themes")).ToList();
 
             List<string> fileNames = new();
 
@@ -49,58 +106,17 @@ namespace ProjectLighthouse.View.Programs
                 fileNames.Add(f);
             }
 
+            await dollarOne.EnsureCoreWebView2Async();
+            await dollarTwo.EnsureCoreWebView2Async();
+
             themeName.ItemsSource = fileNames;
-            themeName.Text = "Cobalt2";
-
-            dollarOne.CoreWebView2InitializationCompleted += DollarOne_CoreWebView2InitializationCompleted;
-            dollarTwo.CoreWebView2InitializationCompleted += DollarTwo_CoreWebView2InitializationCompleted;
-        }
-
-        private void DollarOne_Loaded(object sender, RoutedEventArgs e)
-        {
-            dollarOne.Visibility = Visibility.Visible;
-            SetTheme(dollarOne, "Cobalt2");
-        }
-
-        private async void DollarTwo_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
-        {
-            dollarTwo.Visibility = Visibility.Visible;
-            SetTheme(dollarTwo, "Cobalt2");
-
-            if (dollarOne.IsInitialized)
-            {
-                MonacoProgram prog = GetProgramFromFile(path.LocalPath);
-                await ExecuteScriptFunctionAsync(dollarOne, "setContent", prog.dollarOneCode);
-                await ExecuteScriptFunctionAsync(dollarTwo, "setContent", prog.dollarTwoCode);
-            }
-        }
-
-        private async void DollarOne_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
-        {
-            SetTheme(dollarOne, "Cobalt2");
-            dollarOne.Visibility = Visibility.Visible;
-
-            if (dollarTwo.IsInitialized)
-            {
-                MonacoProgram prog = GetProgramFromFile(path.LocalPath);
-                await ExecuteScriptFunctionAsync(dollarOne, "setContent", prog.dollarOneCode);
-                await ExecuteScriptFunctionAsync(dollarTwo, "setContent", prog.dollarTwoCode);
-            }
+            themeName.SelectedIndex = fileNames.IndexOf("idleFingers");
         }
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Label _lbl = sender as Label;
             DragDrop.DoDragDrop(_lbl, _lbl.Content, DragDropEffects.Move);
-        }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-                MonacoProgram prog = GetProgramFromFile(path.LocalPath);
-            //NcProgram prog = GetProgramFromFile(@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\12.PRG");
-
-            await ExecuteScriptFunctionAsync(dollarOne, "setContent", prog.dollarOneCode);
-            await ExecuteScriptFunctionAsync(dollarTwo, "setContent", prog.dollarTwoCode);
         }
 
         private static MonacoProgram GetProgramFromFile(string path)
@@ -113,10 +129,10 @@ namespace ProjectLighthouse.View.Programs
 
             MonacoProgram prog = new()
             {
-                header = programData[..programData.IndexOf("$1")].Trim(),
-                dollarOneCode = programData.Substring(programData.IndexOf("$1") + 2, programData.IndexOf("$2") - programData.IndexOf("$1") - 2).Trim(),
-                dollarTwoCode = programData.Substring(programData.IndexOf("$2") + 2, programData.IndexOf("$0") - programData.IndexOf("$2") - 2).Trim(),
-                dollarZeroCode = programData.Substring(programData.IndexOf("$0") + 2, programData.Length - programData.IndexOf("$0") - 2).Trim()
+                Header = programData[..programData.IndexOf("$1")].Trim(),
+                DollarOneCode = programData.Substring(programData.IndexOf("$1") + 2, programData.IndexOf("$2") - programData.IndexOf("$1") - 2).Trim(),
+                DollarTwoCode = programData.Substring(programData.IndexOf("$2") + 2, programData.IndexOf("$0") - programData.IndexOf("$2") - 2).Trim(),
+                DollarZeroCode = programData.Substring(programData.IndexOf("$0") + 2, programData.Length - programData.IndexOf("$0") - 2).Trim()
             };
 
             return prog;
@@ -145,25 +161,123 @@ namespace ProjectLighthouse.View.Programs
 
         private void SetThemeButton_Click(object sender, RoutedEventArgs e)
         {
-            SetTheme(dollarOne, themeName.Text);
-            SetTheme(dollarTwo, themeName.Text);
+            string themeData = LoadThemeData(themeName.Text);
+            SetLumenTheme(themeData);
+            SetTheme(dollarOne, themeData);
+            SetTheme(dollarTwo, themeData);
         }
 
-        private async void SetTheme(WebView2 window, string name)
+        string LoadThemeData(string name)
         {
             string path = themes.Find(x => x.Contains(name));
-
             string data = File.ReadAllText(path);
+            return data;
+        }
+
+        void SetLumenTheme(string themeData)
+        {
+            string? targeting = null;
+
+            string? foreground = null;
+            string? background = null;
+            string? cursorForeground = null;
+
+            JsonTextReader reader = new(new StringReader(themeData));
+            while (reader.Read())
+            {
+                if (reader.Value != null)
+                {
+                    if (targeting is null)
+                    {
+                        // Nothing
+                    }
+                    else if (targeting == "editor.background")
+                    {
+                        background = reader.Value.ToString();
+                    }
+                    else if (targeting == "editor.foreground")
+                    {
+                        foreground = reader.Value.ToString();
+                    }
+                    else if (targeting == "editorCursor.foreground")
+                    {
+                        cursorForeground = reader.Value.ToString();
+                    }
+
+                    if (reader.Value.ToString() == "editor.background")
+                    {
+                        targeting = "editor.background";
+                    }
+                    else if (reader.Value.ToString() == "editor.foreground")
+                    {
+                        targeting = "editor.foreground";
+                    }
+                    else if (reader.Value.ToString() == "editorCursor.foreground")
+                    {
+                        targeting = "editorCursor.foreground";
+                    }
+                    else
+                    {
+                        targeting = null;
+                    }
+                }
+            }
+
+            if (foreground is null || background is null || cursorForeground is null)
+            {
+                throw new Exception("Invalid theme");
+            }
+
+            ForegroundBrush = (SolidColorBrush)new BrushConverter().ConvertFrom(foreground);
+            BackgroundBrush = (SolidColorBrush)new BrushConverter().ConvertFrom(background);
+            CursorForegroundBrush = (SolidColorBrush)new BrushConverter().ConvertFrom(cursorForeground);
+
+        }
+
+        private class ThemeData
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        private async void SetTheme(WebView2 window, string data)
+        {
             dynamic d = JObject.Parse(data);
             await ExecuteScriptFunctionAsync(window, "setTheme", d);
         }
 
+        private async void dollarOne_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            await ExecuteScriptFunctionAsync(dollarOne, "setContent", Program.DollarOneCode);
+            string themeData = LoadThemeData(themeName.Text);
+
+            SetTheme(dollarOne, themeData);
+            dollarOne.Visibility = Visibility.Visible;
+        }
+
+
+        private async void dollarTwo_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            await ExecuteScriptFunctionAsync(dollarTwo, "setContent", Program.DollarTwoCode);
+            string themeData = LoadThemeData(themeName.Text);
+
+            SetTheme(dollarTwo, themeData);
+            dollarTwo.Visibility = Visibility.Visible;
+        }
+
+        private void themeName_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string themeData = LoadThemeData((string)themeName.SelectedValue);
+            SetLumenTheme(themeData);
+            SetTheme(dollarOne, themeData);
+            SetTheme(dollarTwo, themeData);
+        }
     }
     internal class MonacoProgram
     {
-        public string header { get; set; }
-        public string dollarOneCode { get; set; }
-        public string dollarTwoCode { get; set; }
-        public string dollarZeroCode { get; set; }
+        public string Header { get; set; }
+        public string DollarOneCode { get; set; }
+        public string DollarTwoCode { get; set; }
+        public string DollarZeroCode { get; set; }
     }
 }
