@@ -52,7 +52,18 @@ namespace ProjectLighthouse.ViewModel.Orders
         #endregion
 
         #region Observable
-        public ObservableCollection<LatheManufactureOrder> FilteredOrders { get; set; }
+        private List<LatheManufactureOrder> filteredOrders;
+
+        public List<LatheManufactureOrder> FilteredOrders
+        {
+            get { return filteredOrders; }
+            set 
+            { 
+                filteredOrders = value;
+                OnPropertyChanged();
+            }
+        }
+
         public List<LatheManufactureOrderItem> FilteredOrderItems { get; set; }
         public List<Note> FilteredNotes { get; set; }
         public List<TechnicalDrawing> FilteredDrawings { get; set; }
@@ -153,7 +164,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             set
             {
                 selectedOrder = value;
-
                 LoadOrderCard();
                 OnPropertyChanged();
             }
@@ -188,43 +198,18 @@ namespace ProjectLighthouse.ViewModel.Orders
             get { return searchTerm; }
             set
             {
-                searchTerm = value.ToUpper();
-                OnPropertyChanged();
+                searchTerm = value;
                 Search();
+                OnPropertyChanged();
             }
         }
         #endregion
 
         #region Visibility variables
 
-        private bool liveInfoAvailable;
-        public bool LiveInfoAvailable
-        {
-            get { return liveInfoAvailable; }
-            set
-            {
-                liveInfoAvailable = value;
-                OnPropertyChanged();
-            }
-        }
 
         public bool NoNotes { get; set; }
 
-        private Visibility cardVis = Visibility.Hidden;
-        public Visibility CardVis
-        {
-            get { return cardVis; }
-            set
-            {
-                cardVis = value;
-                OnPropertyChanged();
-
-                NothingVis = value == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-                OnPropertyChanged(nameof(NothingVis));
-            }
-        }
-
-        public Visibility NothingVis { get; set; }
 
         private Visibility modifiedVis;
         public Visibility ModifiedVis
@@ -246,36 +231,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                 archiveVis = value;
                 OnPropertyChanged();
             }
-        }
-
-        private Visibility drawingsFoundVis;
-        public Visibility DrawingsFoundVis
-        {
-            get { return drawingsFoundVis; }
-            set
-            {
-                drawingsFoundVis = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility noDrawingsFoundVis;
-        public Visibility NoDrawingsFoundVis
-        {
-            get { return noDrawingsFoundVis; }
-            set
-            {
-                noDrawingsFoundVis = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility newOrderButtonVis;
-
-        public Visibility NewOrderButtonVis
-        {
-            get { return newOrderButtonVis; }
-            set { newOrderButtonVis = value; OnPropertyChanged(); }
         }
 
 
@@ -515,6 +470,11 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void InitialiseVariables()
         {
+            FilteredDrawings = new();
+            FilteredNotes = new();
+            FilteredOrderItems = new();
+            FilteredOrders = new();
+
             Notes = new();
             Orders = new();
             MachineStatistics = new();
@@ -531,11 +491,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             ProductGroups = new();
             ProgramCandidates = new();
 
-            FilteredDrawings = new();
-            FilteredNotes = new();
-            FilteredOrderItems = new();
-            FilteredOrders = new();
-
             ToolingIconBrush = (Brush)Application.Current.Resources["Red"];
             ProgramIconBrush = (Brush)Application.Current.Resources["Red"];
             BarVerifiedIconBrush = (Brush)Application.Current.Resources["Red"];
@@ -545,10 +500,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             EditCommand = new(this);
             NewOrderCommand = new(this);
             GetProgramPlannerCmd = new(this);
-
-            NewOrderButtonVis = App.CurrentUser.HasPermission(PermissionType.ApproveRequest)
-                ? Visibility.Visible
-                : Visibility.Collapsed;
         }
 
         #region Data Refreshing
@@ -575,14 +526,15 @@ namespace ProjectLighthouse.ViewModel.Orders
                 FilterOrders();
             }
 
-            // If available, scope to user selection
-            if (userSelection != null)
+            if (userSelection is not null)
             {
-                if (FilteredOrders.Any(x => x.Id == userSelection))
-                {
-                    SelectedOrder = FilteredOrders.First(x => x.Id == userSelection);
-                }
+                SelectedOrder = FilteredOrders.Find(x => x.Id == userSelection);
             }
+            else if(FilteredOrders.Count > 0) 
+            { 
+                SelectedOrder = FilteredOrders[0];
+            }
+
         }
 
         private void CheckForReopenedOrders()
@@ -591,7 +543,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             for (int i = 0; i < notClosed.Count; i++)
             {
                 notClosed[i].MarkAsNotClosed();
-                Orders.Find(x => x.Id == notClosed[i].Id).IsClosed = false;
+                Orders.Find(x => x.Id == notClosed[i].Id)!.IsClosed = false;
             }
         }
 
@@ -610,7 +562,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
 
                 order.MarkAsClosed();
-                Orders.Find(x => x.Id == doneButNotClosed[i].Id).IsClosed = true;
+                Orders.Find(x => x.Id == doneButNotClosed[i].Id)!.IsClosed = true;
             }
         }
 
@@ -668,16 +620,13 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void FilterOrders()
         {
-            FilteredOrders.Clear();
-
-            List<LatheManufactureOrder> orders = new();
             switch (SelectedFilter)
             {
                 case "All Active":
-                    orders = Orders.Where(x => x.State == OrderState.Running)
+                    FilteredOrders = Orders.Where(x => x.State == OrderState.Running)
                         .OrderBy(x => x.AllocatedMachine)
                         .ToList();
-                    orders.AddRange(
+                    FilteredOrders.AddRange(
                         Orders.Where(n => n.State < OrderState.Complete
                         || n.ModifiedAt.AddDays(1) > DateTime.Now
                         || !n.IsClosed)
@@ -686,45 +635,43 @@ namespace ProjectLighthouse.ViewModel.Orders
                     break;
 
                 case "Assigned To Me":
-                    orders = Orders
+                    FilteredOrders = Orders
                         .Where(x => !x.IsClosed && x.AssignedTo == App.CurrentUser.UserName)
+                        .Take(200)
                         .ToList();
                     break;
 
                 case "Not Ready":
-                    orders = Orders.Where(n => n.State == OrderState.Problem).ToList();
+                    FilteredOrders = Orders.Where(n => n.State == OrderState.Problem).ToList();
                     break;
 
                 case "No Program":
-                    orders = Orders.Where(n => !n.HasProgram && n.State < OrderState.Complete && n.StartDate > DateTime.MinValue)
+                    FilteredOrders = Orders.Where(n => !n.HasProgram && n.State < OrderState.Complete && n.StartDate > DateTime.MinValue)
                         .OrderBy(x => x.StartDate)
                         .ToList();
                     break;
 
                 case "Ready":
-                    orders = Orders.Where(n => n.State == OrderState.Ready || n.State == OrderState.Prepared).ToList();
+                    FilteredOrders = Orders.Where(n => n.State == OrderState.Ready || n.State == OrderState.Prepared).ToList();
                     break;
 
                 case "Complete":
-                    orders = Orders.Where(n => n.State > OrderState.Running && n.IsClosed).OrderByDescending(n => n.ModifiedAt).ToList();
+                    FilteredOrders = Orders.Where(n => n.State > OrderState.Running && n.IsClosed).OrderByDescending(n => n.ModifiedAt).Take(200).ToList();
                     break;
 
                 case "Development":
-                    orders = Orders.Where(n => n.IsResearch).OrderByDescending(n => n.CreatedAt).ToList();
+                    FilteredOrders = Orders.Where(n => n.IsResearch).OrderByDescending(n => n.CreatedAt).ToList();
                     break;
 
                 case "All":
-                    orders = Orders.OrderByDescending(n => n.CreatedAt).ToList();
+                    FilteredOrders = Orders.OrderByDescending(n => n.CreatedAt).Take(200).ToList();
                     break;
             }
 
-            for (int i = 0; i < orders.Count; i++)
+            if (FilteredOrders.Count > 0)
             {
-                FilteredOrders.Add(orders[i]);
+                SelectedOrder = FilteredOrders.First();
             }
-
-            if (FilteredOrders.Count > 0) SelectedOrder = FilteredOrders.First();
-            OnPropertyChanged(nameof(FilteredOrders));
         }
 
         #endregion Loading
@@ -740,16 +687,18 @@ namespace ProjectLighthouse.ViewModel.Orders
             List<LatheManufactureOrder> Results = new();
             List<string> FoundOrders = new();
 
+            string searchToken = SearchTerm.ToUpperInvariant();
+
             foreach (LatheManufactureOrder order in Orders)
             {
-                if (order.Name.Contains(SearchTerm))
+                if (order.Name.Contains(searchToken))
                 {
                     Results.Add(order);
                     FoundOrders.Add(order.Name);
                     continue;
                 }
 
-                if (order.BarID.Contains(SearchTerm))
+                if (order.BarID.Contains(searchToken))
                 {
                     Results.Add(order);
                     FoundOrders.Add(order.Name);
@@ -758,7 +707,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
                 if (order.POReference != null)
                 {
-                    if (order.POReference.Contains(SearchTerm) && order.POReference != "N/A")
+                    if (order.POReference.Contains(searchToken) && order.POReference != "N/A")
                     {
                         Results.Add(order);
                         FoundOrders.Add(order.Name);
@@ -775,7 +724,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                     continue;
                 }
 
-                if (item.ProductName.Contains(SearchTerm))
+                if (item.ProductName.Contains(searchToken))
                 {
                     FoundOrdersByItem.Add(item.AssignedMO);
                     continue;
@@ -786,25 +735,21 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             Results = Results.OrderByDescending(x => x.ModifiedAt).ToList();
 
-            FilteredOrders.Clear();
-            for (int i = 0; i < Results.Count; i++)
-            {
-                FilteredOrders.Add(Results[i]);
-            }
+            FilteredOrders = Results;
 
-            OnPropertyChanged(nameof(FilteredOrders));
-            if (FilteredOrders.Count > 0) SelectedOrder = FilteredOrders.First();
+            if (FilteredOrders.Count > 0) 
+            {
+                SelectedOrder = FilteredOrders.First();
+            }
         }
 
         private void LoadOrderCard()
         {
             if (SelectedOrder == null)
             {
-                CardVis = Visibility.Hidden;
                 return;
             }
 
-            CardVis = Visibility.Visible;
             LoadOrderObjects();
             SetUiElements();
             List<Lot> orderLots = Lots.Where(x => x.Order == SelectedOrder.Name).ToList();
@@ -861,27 +806,20 @@ namespace ProjectLighthouse.ViewModel.Orders
             ArchiveVis = SelectedOrder.IsClosed
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-
-            NoDrawingsFoundVis = FilteredDrawings.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-            DrawingsFoundVis = FilteredDrawings.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
-            NoNotes = FilteredNotes.Count == 0;
-            OnPropertyChanged(nameof(NoNotes));
         }
 
         private void SetLiveMachineInfo()
         {
             DisplayStats = MachineStatistics.Find(x => x.MachineID == SelectedOrder.AllocatedMachine);
-            if (DisplayStats == null || SelectedOrder.State != OrderState.Running)
+            
+            if (DisplayStats is null)
             {
-                LiveInfoAvailable = false;
+                return;
             }
-            else if (DisplayStats.DataTime.AddHours(1) < DateTime.Now)
+
+            if (DisplayStats.DataTime.AddMinutes(30) < DateTime.Now)
             {
-                LiveInfoAvailable = false;
-            }
-            else
-            {
-                LiveInfoAvailable = true;
+                DisplayStats = null;
             }
         }
 
@@ -897,8 +835,6 @@ namespace ProjectLighthouse.ViewModel.Orders
 
 
             // Order Notes
-            FilteredNotes = null;
-            OnPropertyChanged(nameof(FilteredNotes));
             FilteredNotes = Notes
                 .Where(n =>
                     n.DocumentReference == SelectedOrder.Name &&

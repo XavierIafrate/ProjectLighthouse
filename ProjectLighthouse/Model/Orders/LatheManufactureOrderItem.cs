@@ -146,7 +146,7 @@ namespace ProjectLighthouse.Model.Orders
             SetupFromProduct(fromProduct);
 
             RequiredQuantity = requiredQuantity;
-            TargetQuantity = RequestsEngine.RoundQuantity(RequiredQuantity + TargetQuantity, roundUp: true);
+            TargetQuantity = RequestsEngine.RoundQuantity(Math.Max(TargetQuantity, RequiredQuantity), roundUp: true);
         }
 
         public LatheManufactureOrderItem(TurnedProduct fromProduct, int requiredQuantity, DateTime dateRequired)
@@ -155,7 +155,7 @@ namespace ProjectLighthouse.Model.Orders
 
             DateRequired = dateRequired;
             RequiredQuantity = requiredQuantity;
-            TargetQuantity = RequestsEngine.RoundQuantity(TargetQuantity, roundUp: true);
+            TargetQuantity = RequestsEngine.RoundQuantity(Math.Max(TargetQuantity, RequiredQuantity), roundUp: true);
         }
 
         public override string ToString()
@@ -180,7 +180,10 @@ namespace ProjectLighthouse.Model.Orders
 
         public void ValidateAll()
         {
+            ValidateProperty(nameof(RequiredQuantity));
             ValidateProperty(nameof(TargetQuantity));
+            ValidateProperty(nameof(MajorLength));
+            ValidateProperty(nameof(PartOffLength));
         }
 
         public void ValidateProperty([CallerMemberName] string propertyName = "")
@@ -195,10 +198,32 @@ namespace ProjectLighthouse.Model.Orders
                     return;
                 }
 
-                if(TargetQuantity < RequiredQuantity)
+                if (TargetQuantity < RequiredQuantity)
                 {
                     AddError(propertyName, "Target Quantity must be greater than or equal to Required Quantity");
                     return;
+                }
+
+                if (TargetQuantity > 100_000)
+                {
+                    AddError(propertyName, "Max Target Quantity is 100,000");
+                }
+
+                return;
+            }
+            else if (propertyName == nameof(RequiredQuantity))
+            {
+                ClearErrors(propertyName);
+
+                if (TargetQuantity < 0)
+                {
+                    AddError(propertyName, "Required Quantity must be greater than or equal to zero");
+                    return;
+                }
+
+                if (RequiredQuantity > 100_000)
+                {
+                    AddError(propertyName, "Max Required Quantity is 100,000");
                 }
 
                 return;
@@ -227,9 +252,7 @@ namespace ProjectLighthouse.Model.Orders
 
                 return;
             }
-
-
-
+            
             throw new NotImplementedException();
         }
     }

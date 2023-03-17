@@ -270,9 +270,16 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(TurnedProducts,
-                                                                            NewRequest,
-                                                                            TimeSpan.FromDays(5));
+            try
+            {
+                RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(TurnedProducts,
+                                                                                NewRequest,
+                                                                                TimeSpan.FromDays(5));
+            }
+            catch
+            {
+                RecommendedManifest = new();
+            }
 
             OnPropertyChanged(nameof(RecommendedManifest));
         }

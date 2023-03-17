@@ -15,7 +15,6 @@ using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,7 +25,18 @@ namespace ProjectLighthouse.ViewModel.Requests
     {
         #region Variables
         public List<Request> Requests { get; set; }
-        public ObservableCollection<Request> FilteredRequests { get; set; }
+
+        private List<Request> filteredRequests;
+        public List<Request> FilteredRequests
+        {
+            get { return filteredRequests; }
+            set
+            {
+                filteredRequests = value;
+                OnPropertyChanged();
+            }
+        }
+
         public List<TurnedProduct> Products { get; set; }
         public List<LatheManufactureOrder> Orders { get; set; }
         public List<LatheManufactureOrderItem> OrderItems { get; set; }
@@ -37,8 +47,8 @@ namespace ProjectLighthouse.ViewModel.Requests
         public string FrequencyAnalysis
         {
             get { return frequencyAnalysis; }
-            set 
-            { 
+            set
+            {
                 frequencyAnalysis = value;
                 OnPropertyChanged();
             }
@@ -66,8 +76,15 @@ namespace ProjectLighthouse.ViewModel.Requests
             get { return searchString; }
             set
             {
+                if (value is not null)
+                {
+                    if (value == "")
+                    {
+                        value = null;
+                    }
+                }
                 searchString = value;
-                FilterRequests(search: true);
+                Search();
                 OnPropertyChanged();
             }
         }
@@ -96,7 +113,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             set
             {
                 selectedFilter = value;
-                FilterRequests();
+                Search();
             }
         }
 
@@ -361,6 +378,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 MessageBox.Show($"Product '{SelectedRequest.Product}' not found, please notify an administrator.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 SelectedRequestProductGroup = null;
                 SelectedRequestMainProduct = null;
+                SelectedRequest = null;
                 return;
             }
 
@@ -432,7 +450,7 @@ namespace ProjectLighthouse.ViewModel.Requests
         }
 
 
-        void GenerateAnalysis() 
+        void GenerateAnalysis()
         {
             if (SelectedRequest is null) return;
             if (SelectedRequestProduct is null) return;
@@ -446,10 +464,10 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
 
             List<LatheManufactureOrder> ordersInGroup = Orders
-                .Where(x => 
-                    x.State == OrderState.Complete && 
-                    x.StartDate.Date > DateTime.MinValue && 
-                    x.CreatedAt < SelectedRequest.DateRaised && 
+                .Where(x =>
+                    x.State == OrderState.Complete &&
+                    x.StartDate.Date > DateTime.MinValue &&
+                    x.CreatedAt < SelectedRequest.DateRaised &&
                     x.GroupId == group.Id
                 ).ToList();
 
@@ -495,7 +513,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 int quantityShipped = value.Value.Item1;
                 int frequencyShipped = value.Value.Item2;
 
-                if(product.QuantitySold > quantityShipped)
+                if (product.QuantitySold > quantityShipped)
                 {
                     continue;
                 }
@@ -534,7 +552,6 @@ namespace ProjectLighthouse.ViewModel.Requests
                 {
                     FrequencyAnalysis += $"{Environment.NewLine}\tTarget is appropriate: {ratio:P2}";
                 }
-                
             }
         }
 
@@ -550,8 +567,16 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
 
             TimeSpan targetTimeSpan = TimeSpan.FromDays(Math.Round(TargetRuntime));
-            // TODO add try catch
-            RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(Products, SelectedRequest, targetTimeSpan);
+
+            try
+            {
+                RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(Products, SelectedRequest, targetTimeSpan);
+            }
+            catch
+            {
+                RecommendedManifest = new();
+            }
+
             OnPropertyChanged(nameof(RecommendedManifest));
         }
 
@@ -580,7 +605,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void UpdateRequirements(string notes, int QuantityRequired)
         {
-            if(SelectedRequest is null) return;
+            if (SelectedRequest is null) return;
 
             SelectedRequest.LastModified = DateTime.Now;
             SelectedRequest.ModifiedBy = App.CurrentUser.GetFullName();
@@ -614,7 +639,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
             try
             {
-                OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId, (int)SelectedRequestProduct.MaterialId, RecommendedManifest) 
+                OrderConstructorWindow creationWindow = new((int)SelectedRequestProduct.GroupId, (int)SelectedRequestProduct.MaterialId, RecommendedManifest)
                 {
                     Owner = Application.Current.MainWindow
                 };
@@ -672,44 +697,32 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             SelectedRequest.MarkAsAccepted();
 
-            //TODO Move to notifications manager
-            User ToNotify = DatabaseHelper.Read<User>().Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
+            App.NotificationsManager.NotifyRequestApproved(SelectedRequest);
 
-            Notification not = new(
-                to: ToNotify.UserName,
-                from: App.CurrentUser.UserName,
-                header: "Request Approved",
-                body: $"Your request for {SelectedRequest.QuantityRequired:#,##0} pcs of {SelectedRequest.Product} has been approved! Please update Lighthouse with the Purchase Reference.",
-                toastAction: $"viewManufactureOrder:{SelectedRequest.ResultingLMO}");
-
-            if (not.TargetUser != not.Origin)
+            try
             {
-                DatabaseHelper.Insert(not);
+                DatabaseHelper.Update(SelectedRequest, throwErrs: true);
             }
-
-            if (!DatabaseHelper.Update(SelectedRequest))
+            catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while updating the request.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An error occurred while updating the request:{Environment.NewLine}{ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 return;
             }
 
             int id = SelectedRequest.Id;
+
             new ToastContentBuilder()
                 .AddText($"Order {SelectedRequest.ResultingLMO} created.")
                 .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
                 .AddText("You have successfully approved this request.")
                 .Show();
 
-            FilterRequests();
+            Search();
 
-            foreach (Request request in FilteredRequests)
-            {
-                if (request.Id == id)
-                {
-                    SelectedRequest = request;
-                    OnPropertyChanged(nameof(SelectedRequest));
-                }
-            }
+            SelectedRequest = FilteredRequests.Find(x => x.Id == id);
 
         }
 
@@ -730,16 +743,28 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             SelectedRequest.MarkAsDeclined();
 
-            if (DatabaseHelper.Update(SelectedRequest))
+            try
             {
-                MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                FilterRequests();
-                SelectedRequest = FilteredRequests.First();
+                DatabaseHelper.Update(SelectedRequest, throwErrs: true);
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Failed to update the request.", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An error occurred while updating the request:{Environment.NewLine}{ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+
+            MessageBox.Show("You have declined this request.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            int id = SelectedRequest.Id;
+
+            Search();
+
+            SelectedRequest = FilteredRequests.Find(x => x.Id == id);
+            if (SelectedRequest is null && FilteredRequests.Count > 0)
+            {
+                SelectedRequest = FilteredRequests[0];
             }
         }
 
@@ -760,7 +785,9 @@ namespace ProjectLighthouse.ViewModel.Requests
                 Orders[i].OrderItems = OrderItems.Where(x => x.AssignedMO == Orders[i].Name).ToList();
             }
 
-            List<Request> requests = DatabaseHelper.Read<Request>();
+            List<Request> requests = DatabaseHelper.Read<Request>()
+                .Where(x=> x.DateRaised.AddYears(1) > DateTime.Now)
+                .ToList();
             for (int i = 0; i < requests.Count; i++)
             {
                 if (!string.IsNullOrEmpty(requests[i].ResultingLMO))
@@ -774,72 +801,65 @@ namespace ProjectLighthouse.ViewModel.Requests
             SelectedFilter = "Active";
         }
 
-        public void FilterRequests(bool search = false)
+        public void Search()
         {
-            List<Request> requests = new(Requests);
-
-            if (search)
+            if (string.IsNullOrEmpty(SearchString))
             {
-                if (string.IsNullOrWhiteSpace(SearchString))
-                {
-                    SelectedFilter = "Active";
-                    return;
-                }
-
-                selectedFilter = "All";
-                OnPropertyChanged(nameof(SelectedFilter));
-
-                requests = requests
-                    .Where(x =>
-                        (x.POReference ?? "").ToUpperInvariant().Contains(searchString.ToUpperInvariant()) ||
-                        x.Product.Contains(searchString.ToUpperInvariant()))
-                    .ToList();
-            }
-            else
-            {
-                searchString = null;
-                OnPropertyChanged(nameof(SearchString));
-
                 switch (SelectedFilter)
                 {
                     case "All":
+                        FilteredRequests = Requests;
                         break;
                     case "Active":
-                        requests = requests.Where(x =>
-                        (!x.IsDeclined && !x.IsAccepted) ||
-                        (x.SubsequentOrder.State < OrderState.Complete && !string.IsNullOrEmpty(x.ResultingLMO)) ||
-                        x.LastModified.AddDays(4) > DateTime.Now)
-                            .ToList();
+                        FilteredRequests = Requests.Where(x =>
+                                        (!x.IsDeclined && !x.IsAccepted) ||
+                                        (x.SubsequentOrder.State < OrderState.Complete && !string.IsNullOrEmpty(x.ResultingLMO)) ||
+                                        x.LastModified.AddDays(4) > DateTime.Now)
+                                    .ToList();
                         break;
                     case "Last 14 Days":
-                        requests = requests.Where(n => n.DateRaised.AddDays(14) > DateTime.Now).ToList();
+                        FilteredRequests = Requests.Where(n => n.DateRaised.AddDays(14) > DateTime.Now).ToList();
                         break;
                     case "Pending":
-                        requests = requests.Where(n => !n.IsAccepted && !n.IsDeclined).ToList();
+                        FilteredRequests = Requests.Where(n => !n.IsAccepted && !n.IsDeclined).ToList();
                         break;
                     case "Accepted":
-                        requests = requests.Where(n => n.IsAccepted).ToList();
+                        FilteredRequests = Requests.Where(n => n.IsAccepted).ToList();
                         break;
                     case "Declined":
-                        requests = requests.Where(n => n.IsDeclined).ToList();
+                        FilteredRequests = Requests.Where(n => n.IsDeclined).ToList();
                         break;
                     case "My Requests":
-                        requests = requests.Where(n => n.RaisedBy == App.CurrentUser.GetFullName()).ToList();
+                        FilteredRequests = Requests.Where(n => n.RaisedBy == App.CurrentUser.GetFullName()).ToList();
                         break;
                     default:
                         break;
                 }
+                SelectFirstRequestIfPossible();
+                return;
             }
 
-            FilteredRequests = new ObservableCollection<Request>(requests.OrderByDescending(x => x.DateRaised));
+            string searchToken = SearchString.ToUpperInvariant();
 
+            FilteredRequests = Requests
+                .Where(x =>
+                    (x.POReference ?? "").ToUpperInvariant().Contains(searchToken) ||
+                    x.Product.Contains(searchToken))
+                .ToList();
+
+            SelectFirstRequestIfPossible();
+        }
+
+        void SelectFirstRequestIfPossible()
+        {
             if (FilteredRequests.Count > 0)
             {
                 SelectedRequest = FilteredRequests.First();
             }
-
-            OnPropertyChanged(nameof(FilteredRequests));
-            OnPropertyChanged(nameof(SelectedFilter));
+            else
+            {
+                SelectedRequest = null;
+            }
         }
 
         public void SendMessage()
@@ -859,7 +879,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 DatabaseHelper.Insert(newNote, throwErrs: true);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred while inserting to the database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -873,10 +893,10 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             for (int i = 0; i < otherUsers.Count; i++)
             {
-                Notification newNotification = new(otherUsers[i], 
-                    App.CurrentUser.UserName, 
-                    $"Comment: Request #{SelectedRequest.Id:0}", 
-                    $"{App.CurrentUser.FirstName} left a comment: {NewMessage}", toastAction:$"viewRequest:{SelectedRequest.Id:0}");
+                Notification newNotification = new(otherUsers[i],
+                    App.CurrentUser.UserName,
+                    $"Comment: Request #{SelectedRequest.Id:0}",
+                    $"{App.CurrentUser.FirstName} left a comment: {NewMessage}", toastAction: $"viewRequest:{SelectedRequest.Id:0}");
                 _ = DatabaseHelper.Insert(newNotification);
             }
 

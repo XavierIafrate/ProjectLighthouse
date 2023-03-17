@@ -48,9 +48,14 @@ namespace ProjectLighthouse.View.UserControls
             control.RatingImage.Data = g;
             control.RatingImage.Fill = b;
 
-            control.CycleTimeText.Text = control.Product.CycleTime == 0
-                ? "unknown"
-                : $"{Math.Floor((double)control.Product.CycleTime / 60):0}m {(control.Product.CycleTime % 60):0}s";
+            if (control.Product.CycleTime == 0)
+            {
+                control.CycleTimeBadge.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                control.CycleTimeText.Text = $"{Math.Floor((double)control.Product.CycleTime / 60):0}m {(control.Product.CycleTime % 60):0}s";
+            }
         }
 
         public LMOConstructionDisplayProducts()

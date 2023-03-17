@@ -1,10 +1,10 @@
-﻿using DocumentFormat.OpenXml.Presentation;
-using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Quality;
+using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using System.Windows;
-using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel.Core
 {
@@ -55,7 +54,7 @@ namespace ProjectLighthouse.ViewModel.Core
             if (App.CurrentUser is null) return;
             if (App.CurrentUser.UserName is null) return;
 
-            users = DatabaseHelper.Read<User>().Where(x => !x.IsBlocked && x.ReceivesNotifications).ToList();
+            users = DatabaseHelper.Read<User>().Where(x => !x.IsBlocked && x.ReceivesNotifications && x.UserName != App.CurrentUser.UserName).ToList();
             List<Permission> permissionsList = DatabaseHelper.Read<Permission>();
             for (int i = 0; i < users.Count; i++)
             {
@@ -155,7 +154,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
             SetInterfaceVariables();
 
-            int visibleNotSeenNots = App.MainViewModel.Notifications.Where(x => !x.Seen).Count();
+            int visibleNotSeenNots = App.MainViewModel.NotCount;
             if (visibleNotSeenNots > 3 && multiToast)
             {
                 string header = $"{numNewNots:0} new notification" + (numNewNots == 1 ? "" : "s");
@@ -266,15 +265,8 @@ namespace ProjectLighthouse.ViewModel.Core
                     string targetRequest = action.Replace("viewRequest:", "");
 
                     requestViewModel.SelectedFilter = "Last 14 Days";
-                    
-                    for(int i = 0; i < requestViewModel.FilteredRequests.Count; i++)
-                    {
-                        if (requestViewModel.FilteredRequests[i].Id.ToString("0") == targetRequest)
-                        {
-                            requestViewModel.SelectedRequest = requestViewModel.FilteredRequests[i];
-                            return;
-                        }
-                    }
+
+                    requestViewModel.SelectedRequest = requestViewModel.FilteredRequests.Find(x => $"{x.Id:0}" == targetRequest);
                 }
             }
             else if (action.StartsWith("viewManufactureOrder:"))
@@ -296,13 +288,13 @@ namespace ProjectLighthouse.ViewModel.Core
                 if (App.MainViewModel.SelectedViewModel is DrawingBrowserViewModel drawingBrowserVM)
                 {
                     TechnicalDrawingGroup? targetGroup = drawingBrowserVM.DrawingGroups.Find(x => x.Drawings.Any(y => y.Id.ToString("0") == targetDrawing));
-                    
+
                     if (targetGroup == null)
                     {
                         MessageBox.Show($"Drawing with internal ID '{targetDrawing}' cannot be found. It might have been deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return;
                     }
-                        
+
                     drawingBrowserVM.SelectedGroup = targetGroup;
                     drawingBrowserVM.SelectedDrawing = drawingBrowserVM.SelectedGroup.Drawings.Find(x => x.Id.ToString("0") == targetDrawing);
                 }
@@ -364,13 +356,13 @@ namespace ProjectLighthouse.ViewModel.Core
         {
             List<User> toNotify = users.Where(x => x.HasQualityNotifications).ToList();
 
-            for(int i = 0; i < mentionedUsers.Count; i++)
+            for (int i = 0; i < mentionedUsers.Count; i++)
             {
                 if (!toNotify.Any(x => x.UserName == mentionedUsers[i]))
                 {
                     User? u = users.Find(x => x.UserName == mentionedUsers[i]);
 
-                    if(u != null)
+                    if (u != null)
                     {
                         toNotify.Add(u);
                     }
@@ -383,10 +375,10 @@ namespace ProjectLighthouse.ViewModel.Core
             for (int i = 0; i < toNotify.Count; i++)
             {
                 Notification newNotification = new(
-                    to: toNotify[i].UserName, 
-                    from:App.CurrentUser.UserName, 
-                    header: $"{title}: {check.Product}", 
-                    body: $"This quality check request has been resolved", 
+                    to: toNotify[i].UserName,
+                    from: App.CurrentUser.UserName,
+                    header: $"{title}: {check.Product}",
+                    body: $"This quality check request has been resolved",
                     toastAction: $"viewQC:{check.Id}");
 
                 _ = DatabaseHelper.Insert(newNotification);
@@ -404,6 +396,22 @@ namespace ProjectLighthouse.ViewModel.Core
                 header: title,
                 body: body,
                 toastAction: $"viewManufactureOrder:{order.Name}");
+
+            _ = DatabaseHelper.Insert(newNotification);
+        }
+
+        public void NotifyRequestApproved(Request request)
+        {
+            User userToNotify = users.Find(x => x.GetFullName() == request.RaisedBy);
+
+            if (userToNotify == null) return;
+
+            Notification newNotification = new(
+                to: userToNotify.UserName,
+                from: App.CurrentUser.UserName,
+                header: "Request Approved",
+                body: $"Your request for {request.QuantityRequired:#,##0} pcs of {request.Product} has been approved! Please update Lighthouse with the Purchase Reference.",
+                toastAction: $"viewManufactureOrder:{request.ResultingLMO}");
 
             _ = DatabaseHelper.Insert(newNotification);
         }

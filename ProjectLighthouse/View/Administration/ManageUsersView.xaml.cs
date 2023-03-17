@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Administration
 {
@@ -7,6 +8,19 @@ namespace ProjectLighthouse.View.Administration
         public ManageUsersView()
         {
             InitializeComponent();
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (sender is not ScrollViewer scrollViewer) return;
+            grad.Visibility = scrollViewer.VerticalOffset == 0
+                ? Visibility.Hidden
+                : Visibility.Visible;
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            contentScrollViewer.ScrollToTop();
         }
     }
 }

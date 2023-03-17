@@ -53,6 +53,7 @@
             <converters:ObjectIsNotNullToVisibility x:Key="NotNullToVisibility" />
             <converters:ObjectIsNullToVisibility x:Key="NullToVisibility" />
             <converters:ListIsEmptyToCollapsedOrVisible x:Key="EmptyListToCollapsedOrVisible" />
+            <converters:ListIsEmptyToVisibleOrCollapsed x:Key="EmptyListToVisibleOrCollapsed" />
             <!--#endregion-->
 
             <!--#region DataTemplates-->

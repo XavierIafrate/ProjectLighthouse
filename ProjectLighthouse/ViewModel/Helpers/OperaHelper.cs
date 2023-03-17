@@ -489,7 +489,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     value = GetDefault(propType);
                 }
 
-                x.GetType().GetProperty(prop.Name).SetValue(x, value);
+                x.GetType().GetProperty(prop.Name)!.SetValue(x, value);
             }
 
             return x;
@@ -503,7 +503,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 PropertyInfo x = props.ElementAt(j);
                 OperaColumn attr = x.GetCustomAttribute<OperaColumn>();
-                int colIndex = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName.ToLowerInvariant() == attr.ColumnName));
+                int colIndex = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName.ToLowerInvariant() == attr!.ColumnName));
 
                 m.Add(x, colIndex);
             }
