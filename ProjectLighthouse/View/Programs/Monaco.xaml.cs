@@ -4,11 +4,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -82,12 +80,12 @@ namespace ProjectLighthouse.View.Programs
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.dollarOne.Source =
+            this.DollarOne.Source =
                     new Uri(Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
                         @"Monaco\index.html"));
 
-            this.dollarTwo.Source =
+            this.DollarTwo.Source =
                     new Uri(Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
                         @"Monaco\index.html"));
@@ -106,11 +104,10 @@ namespace ProjectLighthouse.View.Programs
                 fileNames.Add(f);
             }
 
-            await dollarOne.EnsureCoreWebView2Async();
-            await dollarTwo.EnsureCoreWebView2Async();
-
-            themeName.ItemsSource = fileNames;
-            themeName.SelectedIndex = fileNames.IndexOf("idleFingers");
+            await DollarOne.EnsureCoreWebView2Async();
+            await DollarTwo.EnsureCoreWebView2Async();
+            ItemsSource = fileNames;
+            ThemeName.SelectedIndex = fileNames.IndexOf("idleFingers");
         }
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
@@ -155,16 +152,16 @@ namespace ProjectLighthouse.View.Programs
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            await ExecuteScriptFunctionAsync(dollarOne, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
-            await ExecuteScriptFunctionAsync(dollarTwo, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
+            await ExecuteScriptFunctionAsync(DollarOne, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
+            await ExecuteScriptFunctionAsync(DollarTwo, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
         }
 
         private void SetThemeButton_Click(object sender, RoutedEventArgs e)
         {
-            string themeData = LoadThemeData(themeName.Text);
+            string themeData = LoadThemeData(ThemeName.Text);
             SetLumenTheme(themeData);
-            SetTheme(dollarOne, themeData);
-            SetTheme(dollarTwo, themeData);
+            SetTheme(DollarOne, themeData);
+            SetTheme(DollarTwo, themeData);
         }
 
         string LoadThemeData(string name)
@@ -246,31 +243,31 @@ namespace ProjectLighthouse.View.Programs
             await ExecuteScriptFunctionAsync(window, "setTheme", d);
         }
 
-        private async void dollarOne_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        private async void DollarOne_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
-            await ExecuteScriptFunctionAsync(dollarOne, "setContent", Program.DollarOneCode);
-            string themeData = LoadThemeData(themeName.Text);
+            await ExecuteScriptFunctionAsync(DollarOne, "setContent", Program.DollarOneCode);
+            string themeData = LoadThemeData(ThemeName.Text);
 
-            SetTheme(dollarOne, themeData);
-            dollarOne.Visibility = Visibility.Visible;
+            SetTheme(DollarOne, themeData);
+            DollarOne.Visibility = Visibility.Visible;
         }
 
 
-        private async void dollarTwo_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        private async void DollarTwo_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
-            await ExecuteScriptFunctionAsync(dollarTwo, "setContent", Program.DollarTwoCode);
-            string themeData = LoadThemeData(themeName.Text);
+            await ExecuteScriptFunctionAsync(DollarTwo, "setContent", Program.DollarTwoCode);
+            string themeData = LoadThemeData(ThemeName.Text);
 
-            SetTheme(dollarTwo, themeData);
-            dollarTwo.Visibility = Visibility.Visible;
+            SetTheme(DollarTwo, themeData);
+            DollarTwo.Visibility = Visibility.Visible;
         }
 
-        private void themeName_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ThemeName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string themeData = LoadThemeData((string)themeName.SelectedValue);
+            string themeData = LoadThemeData((string)ThemeName.SelectedValue);
             SetLumenTheme(themeData);
-            SetTheme(dollarOne, themeData);
-            SetTheme(dollarTwo, themeData);
+            SetTheme(DollarOne, themeData);
+            SetTheme(DollarTwo, themeData);
         }
     }
     internal class MonacoProgram

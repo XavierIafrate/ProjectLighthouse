@@ -48,7 +48,7 @@
         </StackPanel>
         <StackPanel Width="250" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,10">
             <TextBlock Text="Select Theme" Style="{StaticResource InputLabel}" Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"/>
-            <ComboBox x:Name="themeName" SelectionChanged="themeName_SelectionChanged" />
+            <ComboBox x:Name="ThemeName" SelectionChanged="ThemeName_SelectionChanged" />
         </StackPanel>
 
         <Grid Grid.Row="1">
@@ -78,10 +78,10 @@
                 Text="$2 SUB SPINDLE" />
 
             <wv2:WebView2
-                x:Name="dollarOne"
+                x:Name="DollarOne"
                 Grid.Row="1"
                 Grid.Column="0"
-                NavigationCompleted="dollarOne_NavigationCompleted"
+                NavigationCompleted="DollarOne_NavigationCompleted"
                 Width="Auto"
                 Height="Auto"
                 d:Visibility="Visible"
@@ -90,10 +90,10 @@
             <GridSplitter Width="5" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch"/>
 
             <wv2:WebView2
-                x:Name="dollarTwo"
+                x:Name="DollarTwo"
                 Grid.Row="1"
                 Grid.Column="2"
-                NavigationCompleted="dollarTwo_NavigationCompleted"
+                NavigationCompleted="DollarTwo_NavigationCompleted"
                 Width="Auto"
                 Height="Auto"
                 ZoomFactor="1"
