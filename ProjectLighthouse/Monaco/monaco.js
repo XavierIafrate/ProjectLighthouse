@@ -15,21 +15,6 @@ let snippets = [
 
 	},
 	{
-		label: '#region',
-		kind: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-		documentation: 'Test.',
-		insertText: 'region ${1:Region Name}\n\n\n#endregion',
-		insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-
-	},
-	{
-		label: '#endregion',
-		kind: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-		documentation: 'Test.',
-		insertText: 'endregion',
-
-	},
-	{
 		label: 'GXYZ',
 		kind: monaco.languages.CompletionItemKind.Function,
 		documentation: 'GXYZ',
@@ -53,28 +38,9 @@ let snippets = [
 		insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
 
 	},
-
-	{
-		label: 'var',
-		kind: monaco.languages.CompletionItemKind.Function,
-		documentation: 'test',
-		insertText: 'N301(M5 THREAD)\nX6.0\nG76X4.019Z#514+1.5P0.491Q0.2F0.8\nGOTO6',
-		insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-
-	},
-
-	{
-		label: 'M5 Thread',
-		kind: monaco.languages.CompletionItemKind.Function,
-		documentation: 'test',
-		insertText: 'N301(M5 THREAD)\nX6.0\nG76X4.019Z#514+1.5P0.491Q0.2F0.8\nGOTO6',
-		insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-
-	},
 ];
 
 let regions = [];
-
 monaco.languages.register({ id: 'gcode' });
 
 monaco.languages.setMonarchTokensProvider('gcode', {
@@ -86,7 +52,7 @@ monaco.languages.setMonarchTokensProvider('gcode', {
 			[/(IF|THEN|WHILE|GOTO|GT|LT|EQ|&&|AND|OR|\|\||!|NOT|==|!=|<|\<\=|>|\>=)/, 'keyword'],
 
 			[/(?<!L)-?\d+(\.\d{1,2})?/, 'constant.numeric'],
-			[/\#\d{1,3}/, 'variable.other.readwrite.instance'],
+			[/\#\d{1,3}/, 'variable'],
 			[/\(([^)]+)?\)/, 'comment'],
 
 			[/(M|G|X|Y|Z|S|W|C|F|P|Q){1}/, 'support.function'],
@@ -96,14 +62,12 @@ monaco.languages.setMonarchTokensProvider('gcode', {
 
 });
 
-
 var editor = monaco.editor.create(document.getElementById('container'), {
 	value: '',
 	language: 'gcode',
-	theme: "Cobalt2",
+	theme: "cobalt2",
 	automaticLayout: true,
 });
-
 
 monaco.languages.registerFoldingRangeProvider('gcode', {
 	provideFoldingRanges: function (model, context, token) {
@@ -131,9 +95,7 @@ monaco.languages.registerCompletionItemProvider('gcode', {
 	triggerCharacters: ["#"]
 });
 
-
 monaco.languages.setLanguageConfiguration('gcode', { autoClosingPairs: [{ open: '(', close: ')' }] });
-
 
 function createDependencyProposals(range) {
 	for(let i = 0; i < snippets.length; i++) {
@@ -143,11 +105,9 @@ function createDependencyProposals(range) {
 	return snippets;
 }
 
-
 function setContent(content) {
 	monaco.editor.getModels()[0].setValue(content);
 }
-
 
 function pushSnippet(text, doc, toInsert) {
 	snippets.push({
@@ -159,12 +119,7 @@ function pushSnippet(text, doc, toInsert) {
 	});
 }
 
-
-
-
 function setTheme(themeData) {
 	monaco.editor.defineTheme('monokai', themeData);
 	monaco.editor.setTheme('monokai');
 }
-
-setTheme("Cobalt2")
