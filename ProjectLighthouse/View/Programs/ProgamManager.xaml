@@ -262,9 +262,13 @@
                                 Style="{StaticResource HeroEditButton}" />
                         </Grid>
 
-                        <TextBlock Text="{Binding SelectedProgram.Path, TargetNullValue='null'}" d:Text="FILE_PATH"/>
-                        <Button Style="{StaticResource Action_Button}" Tag="View Program" Visibility="{Binding SelectedProgram.Path, Converter={StaticResource NotNullToVisibility}}" Command="{Binding OpenProgramCmd}"/>
-
+                        <Button
+                            HorizontalAlignment="Left"
+                            Command="{Binding OpenProgramCmd}"
+                            Style="{StaticResource Action_Button}"
+                            Tag="View in Lumen"
+                             />
+                        <!--Visibility="{Binding SelectedProgram.Path, Converter={StaticResource NotNullToVisibility}}"-->
                         <StackPanel Visibility="{Binding SelectedProgram.TagsList, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                             <TextBlock Style="{StaticResource InputLabel}" Text="Tags" />
                             <ItemsControl
