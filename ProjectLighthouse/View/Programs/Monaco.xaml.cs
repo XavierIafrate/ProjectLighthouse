@@ -16,10 +16,11 @@ namespace ProjectLighthouse.View.Programs
     public partial class Monaco : Window
     {
         List<string> themes;
-
-        public Monaco()
+        Uri path;
+        public Monaco(Uri path)
         {
             InitializeComponent();
+            this.path = path;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -61,16 +62,30 @@ namespace ProjectLighthouse.View.Programs
             SetTheme(dollarOne, "Cobalt2");
         }
 
-        private void DollarTwo_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+        private async void DollarTwo_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
         {
             dollarTwo.Visibility = Visibility.Visible;
             SetTheme(dollarTwo, "Cobalt2");
+
+            if (dollarOne.IsInitialized)
+            {
+                MonacoProgram prog = GetProgramFromFile(path.LocalPath);
+                await ExecuteScriptFunctionAsync(dollarOne, "setContent", prog.dollarOneCode);
+                await ExecuteScriptFunctionAsync(dollarTwo, "setContent", prog.dollarTwoCode);
+            }
         }
 
-        private void DollarOne_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+        private async void DollarOne_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
         {
             SetTheme(dollarOne, "Cobalt2");
             dollarOne.Visibility = Visibility.Visible;
+
+            if (dollarTwo.IsInitialized)
+            {
+                MonacoProgram prog = GetProgramFromFile(path.LocalPath);
+                await ExecuteScriptFunctionAsync(dollarOne, "setContent", prog.dollarOneCode);
+                await ExecuteScriptFunctionAsync(dollarTwo, "setContent", prog.dollarTwoCode);
+            }
         }
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
@@ -81,7 +96,7 @@ namespace ProjectLighthouse.View.Programs
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            MonacoProgram prog = GetProgramFromFile(@"C:\Users\xavie\Downloads\127.PRG");
+                MonacoProgram prog = GetProgramFromFile(path.LocalPath);
             //NcProgram prog = GetProgramFromFile(@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\12.PRG");
 
             await ExecuteScriptFunctionAsync(dollarOne, "setContent", prog.dollarOneCode);

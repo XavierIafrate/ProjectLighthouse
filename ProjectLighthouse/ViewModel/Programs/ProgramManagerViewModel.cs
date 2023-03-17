@@ -169,7 +169,10 @@ namespace ProjectLighthouse.ViewModel.Programs
 
         public void OpenProgram()
         {
-            Monaco window = new();
+            if (SelectedProgram is null) return;
+            if (SelectedProgram.Path is null) return;
+            
+            Monaco window = new(SelectedProgram.Path);
             window.ShowDialog();
 
         }
