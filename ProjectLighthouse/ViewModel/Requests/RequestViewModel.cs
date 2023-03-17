@@ -787,7 +787,9 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             List<Request> requests = DatabaseHelper.Read<Request>()
                 .Where(x=> x.DateRaised.AddYears(1) > DateTime.Now)
+                .OrderByDescending(x => x.DateRaised)
                 .ToList();
+
             for (int i = 0; i < requests.Count; i++)
             {
                 if (!string.IsNullOrEmpty(requests[i].ResultingLMO))
