@@ -2431,7 +2431,37 @@
     </Style>
 
 
+    <Style x:Key="MonacoCloseProgramButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
 
+                    <Border
+                        Width="30"
+                        Height="30"
+                        x:Name="border"
+                        Background="#01ffffff"
+                        CornerRadius="15">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                Width="8"
+                                Height="8"
+                                Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource OnRed}"/>
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource Red}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
 
