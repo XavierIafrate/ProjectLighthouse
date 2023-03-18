@@ -43,20 +43,21 @@ let snippets = [
 let regions = [];
 monaco.languages.register({ id: 'gcode' });
 
-monaco.languages.setMonarchTokensProvider('gcode', {
 
+
+monaco.languages.setMonarchTokensProvider('gcode', {
 	tokenizer: {
 		root: [
 			[/\#(end)?region.*$/, 'entity.name.class'],
+			[/(\+|-|=|GT|LT|EQ|&&|AND|OR|\|\||!|NOT|==|!=|<|\<\=|>|\>=)/, 'operator'],
 			
-			[/(IF|THEN|WHILE|GOTO|GT|LT|EQ|&&|AND|OR|\|\||!|NOT|==|!=|<|\<\=|>|\>=)/, 'keyword'],
 
 			[/(?<!L)-?\d+(\.\d{1,2})?/, 'constant.numeric'],
 			[/\#\d{1,3}/, 'variable'],
 			[/\(([^)]+)?\)/, 'comment'],
 
-			[/(M|G|X|Y|Z|S|W|C|F|P|Q){1}/, 'support.function'],
-
+			[/(IF|THEN|WHILE|GOTO)/, 'keyword'],
+			[/(A|T|M|G|X|Y|Z|S|W|C|F|P|Q){1}/, 'keyword'],
 		]
 	},
 
