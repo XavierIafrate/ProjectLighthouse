@@ -304,5 +304,17 @@ namespace ProjectLighthouse.Model.Programs
             string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<NcProgram>(serialised);
         }
+
+        [Ignore]
+        public MonacoProgram ProgramContent { get; set; }
+        public class MonacoProgram
+        {
+            public string Header { get; set; }
+            public string OriginalDollarOneCode { get; set; }
+            public string DollarOneCode { get; set; }
+            public string OriginalDollarTwoCode { get; set; }
+            public string DollarTwoCode { get; set; }
+            public string DollarZeroCode { get; set; }
+        }
     }
 }
