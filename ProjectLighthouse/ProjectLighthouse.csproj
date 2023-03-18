@@ -31,13 +31,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1</NoWarn>
+    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138</NoWarn>
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1</NoWarn>
+    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138</NoWarn>
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
   </PropertyGroup>
@@ -45,16 +45,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
-    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701</NoWarn>
+    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701;NETSDK1138</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
-    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701</NoWarn>
+    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701;NETSDK1138</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Monaco\index-diff.html" />
+    <None Remove="Monaco\monaco-diff.js" />
     <None Remove="Resources\Font\Montserrat-Bold.ttf" />
     <None Remove="Resources\Font\Montserrat-Light.ttf" />
     <None Remove="Resources\Font\Montserrat-Medium.ttf" />
