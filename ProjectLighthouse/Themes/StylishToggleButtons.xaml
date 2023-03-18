@@ -678,13 +678,13 @@
                                 Foreground="{TemplateBinding Foreground}"
                                 Text="DIFFERENTIAL MODE" />
                             <Border
+                                x:Name="container"
+                                Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Height, Converter={StaticResource divideDouble}, ConverterParameter=1.3}"
+                                Height="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Height, Converter={StaticResource divideDouble}, ConverterParameter=2}"
                                 VerticalAlignment="Center"
                                 Background="Transparent"
                                 BorderBrush="{TemplateBinding Foreground}"
                                 BorderThickness="3"
-                                x:Name="container"
-                                Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Height, Converter={StaticResource divideDouble}, ConverterParameter=1.3}"
-                                Height="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Height, Converter={StaticResource divideDouble}, ConverterParameter=2}"
                                 CornerRadius="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight, Converter={StaticResource divideDouble}, ConverterParameter=2}">
                                 <Border
                                     x:Name="pip"
@@ -701,11 +701,11 @@
                         </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsChecked" Value="True" >
-                            <Setter Property="HorizontalAlignment" Value="Right" TargetName="pip"/>
-                            <Setter Property="Background" Value="{StaticResource OnGreen}" TargetName="pip"/>
-                            <Setter Property="Background" Value="{StaticResource Green}" TargetName="container"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource OnGreen}" TargetName="container"/>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="pip" Property="HorizontalAlignment" Value="Right" />
+                            <Setter TargetName="pip" Property="Background" Value="{StaticResource OnGreen}" />
+                            <Setter TargetName="container" Property="Background" Value="{StaticResource Green}" />
+                            <Setter TargetName="container" Property="BorderBrush" Value="{StaticResource OnGreen}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

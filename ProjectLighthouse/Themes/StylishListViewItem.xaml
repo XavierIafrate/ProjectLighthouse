@@ -29,4 +29,36 @@
     <!--  Don't touch  -->
     <Style BasedOn="{StaticResource Default}" TargetType="ListViewItem" />
 
+    <Style
+        x:Key="MonacoListViewItem"
+        BasedOn="{x:Null}"
+        TargetType="ListViewItem">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border
+                        x:Name="container"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="5"
+                        CornerRadius="5">
+                        <ContentPresenter x:Name="content" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="container" Property="BorderBrush" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <!--<Setter TargetName="container" Property="Background" Value="{TemplateBinding Foreground}" />-->
+                            <Setter TargetName="container" Property="TextElement.Foreground" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="container" Property="Background" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

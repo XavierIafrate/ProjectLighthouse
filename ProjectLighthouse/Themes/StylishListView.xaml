@@ -70,35 +70,29 @@
         </Setter>
     </Style>
 
-    <!--<Style x:Key="ListViewWithNone" BasedOn="{StaticResource Default}" TargetType="ListView">
-        <Setter Property="MinHeight" Value="50"/>
+    <Style x:Key="MonacoListView"
+        BasedOn="{x:Null}"
+        TargetType="ListView" >
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="SelectionMode" Value="Single" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border
-                        x:Name="border"
-                        HorizontalAlignment="Stretch"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="5">
-                        <ScrollViewer
+                    <ScrollViewer
                             x:Name="PART_ContentHost"
-                            Margin="10"
                             HorizontalContentAlignment="Left"
                             CanContentScroll="True"
                             Focusable="false"
                             HorizontalScrollBarVisibility="Hidden"
                             VerticalScrollBarVisibility="Auto">
-                            <ItemsPresenter x:Name="items" />
-                        </ScrollViewer>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{TemplateBinding ItemsSource.Count}" Value="0">
-                            <Setter TargetName="border" Property="Background" Value="Red"/>
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
+                        <ItemsPresenter />
+                    </ScrollViewer>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>-->
-
+    </Style>
 </ResourceDictionary>
