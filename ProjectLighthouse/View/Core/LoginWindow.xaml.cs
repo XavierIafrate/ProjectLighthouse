@@ -20,12 +20,10 @@ namespace ProjectLighthouse.View
         public List<User> Users;
 
 
-        public LoginWindow(bool logistics = false)
+        public LoginWindow()
         {
             InitializeComponent();
             AddVersionNumber();
-
-            //dbPath.Text = DatabaseHelper.DatabasePath;
 
             MessageBadge.Visibility = Visibility.Hidden;
             Users = DatabaseHelper.Read<User>().ToList();
@@ -41,7 +39,7 @@ namespace ProjectLighthouse.View
                 PasswordBox.Password = user.Password;
                 _ = PasswordBox.Focus();
                 _ = PasswordBox.GetType()
-                    .GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic)?
                     .Invoke(PasswordBox, new object[] { user.Password.Length, 0 });
                 return;
             }
@@ -143,7 +141,6 @@ namespace ProjectLighthouse.View
             _ = DatabaseHelper.Insert(login);
 
             auth_user = User;
-
             Close();
         }
 
@@ -153,12 +150,5 @@ namespace ProjectLighthouse.View
                ? Visibility.Visible
                : Visibility.Hidden;
         }
-
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    System.IO.File.Copy($@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\test.db3", $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3");
-        //    DatabaseHelper.DatabasePath = $@"{ApplicationRootPaths.RELEASE_ROOT}throwaway\{dbFileName.Text}.db3";
-        //    dbPath.Text = DatabaseHelper.DatabasePath;
-        //}
     }
 }
