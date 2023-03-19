@@ -11,11 +11,12 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Programs
 {
-    public class ProgramManagerViewModel : BaseViewModel
+    public class ProgramManagerViewModel : BaseViewModel, IDisposable
     {
         public List<NcProgram> Programs;
 
@@ -118,6 +119,7 @@ namespace ProjectLighthouse.ViewModel.Programs
         {
             LoadData();
             Search();
+            //System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(() => LumenManager.Initialise());
         }
 
         void LoadData()
@@ -170,11 +172,10 @@ namespace ProjectLighthouse.ViewModel.Programs
         public void OpenProgram()
         {
             if (SelectedProgram is null) return;
+#if !DEBUG
             if (SelectedProgram.Path is null) return;
-            
-            Monaco window = new(SelectedProgram.Path);
-            window.ShowDialog();
-
+#endif       
+            LumenManager.Open(SelectedProgram);
         }
 
         public void AddProgram()
@@ -351,6 +352,11 @@ namespace ProjectLighthouse.ViewModel.Programs
 
             UsedFor = targetedProducts.OrderBy(x => x.Name).ToList();
             ConstrainedMaterials = targetedMaterials.OrderBy(x => x.ToString()).ToList();
+        }
+
+        public void Dispose()
+        {
+            //LumenManager.Close();
         }
     }
 }
