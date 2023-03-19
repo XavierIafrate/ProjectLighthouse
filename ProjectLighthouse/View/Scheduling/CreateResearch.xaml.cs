@@ -194,7 +194,7 @@ namespace ProjectLighthouse.View.Scheduling
             return valid;
         }
 
-        private void MarkControl(Control control, bool valid)
+        private static void MarkControl(Control control, bool valid)
         {
             BrushConverter converter = new();
             control.BorderBrush = valid
