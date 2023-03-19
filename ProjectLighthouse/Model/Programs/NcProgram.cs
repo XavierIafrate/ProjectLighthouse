@@ -191,7 +191,7 @@ namespace ProjectLighthouse.Model.Programs
             }
         }
 
-        public Uri? Path
+        public string Path
         {
             get
             {
@@ -199,9 +199,9 @@ namespace ProjectLighthouse.Model.Programs
 
                 try
                 {
-                    Uri uri = new($@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\{Name}.PRG");
+                    string path = $@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\{Name}.PRG";
 
-                    return File.Exists(uri.LocalPath) ? uri : null;
+                    return File.Exists(path) ? path : null;
                 }
                 catch (Exception e) 
                 {
