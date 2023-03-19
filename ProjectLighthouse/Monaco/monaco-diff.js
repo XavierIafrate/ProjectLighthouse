@@ -56,8 +56,8 @@ monaco.languages.setMonarchTokensProvider('gcode', {
 			[/\(([^)]+)?\)/, 'comment'],
 
 			[/(IF|THEN|WHILE|GOTO)/, 'keyword'],
-			[/(A|T|M|G|X|Y|Z|S|W|C|F|P|Q){1}/, 'keyword'],
-
+			//[/(A|T|M|G|X|Y|Z|S|W|C|F|P|Q){1}/, 'keyword'],
+			[/(A-Z){1}/, 'keyword'],
 		]
 	},
 
