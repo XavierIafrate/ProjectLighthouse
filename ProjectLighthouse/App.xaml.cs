@@ -137,7 +137,7 @@ namespace ProjectLighthouse
         }
 
 
-        private void StartNotificationsManager()
+        private static void StartNotificationsManager()
         {
             NotificationsManager = new();
             NotificationsManager.Initialise();
@@ -145,7 +145,7 @@ namespace ProjectLighthouse
             NotificationsManager.CheckForNotifications(true);
         }
 
-        private void EnsureAppData()
+        private static void EnsureAppData()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string specificFolder = Path.Combine(folder, "Lighthouse");
@@ -181,51 +181,6 @@ namespace ProjectLighthouse
                     Debug.WriteLine(ex.Message);
                 }
             }
-        }
-
-        void TestODBC()
-        {
-
-            OdbcConnection DbConnection = new(HanaCreds.GetConnString());
-            DbConnection.Open();
-
-            //DataTable tables = DbConnection.GetSchema("Tables");
-
-            //foreach (object table in tables.Rows)
-            //{
-            //    Debug.WriteLine(table.ToString());
-            //}
-
-            OdbcCommand DbCommand = DbConnection.CreateCommand();
-            DbCommand.CommandText = $"SELECT T0.\"ItemCode\", T0.\"ItemName\", T0.\"CardCode\", T0.\"U_V33_Automotion\", T0.\"OnHand\" FROM WIXROYD_UAT2.OITM T0 WHERE T0.\"U_V33_Automotion\" IS NOT NULL";
-            OdbcDataReader DbReader = DbCommand.ExecuteReader();
-
-            int fCount = DbReader.FieldCount;
-            Debug.Write(":");
-            for (int i = 0; i < fCount; i++)
-            {
-                string fName = DbReader.GetName(i);
-                Debug.Write(fName + ":");
-            }
-            Debug.WriteLine("");
-
-            while (DbReader.Read())
-            {
-                Debug.Write(":");
-                for (int i = 0; i < fCount; i++)
-                {
-
-                    string col = DbReader.GetString(i) ?? "Error";
-
-                    Debug.Write(col + ":");
-                }
-                Debug.WriteLine("");
-            }
-
-            DbReader.Close();
-            DbCommand.Dispose();
-            DbConnection.Close();
-
         }
 
         protected override void OnExit(ExitEventArgs e)
