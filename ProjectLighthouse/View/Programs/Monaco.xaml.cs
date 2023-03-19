@@ -1,16 +1,19 @@
 ﻿using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ProjectLighthouse.Model.Programs;
+using ProjectLighthouse.ViewModel.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using Path = System.IO.Path;
 
@@ -19,9 +22,29 @@ namespace ProjectLighthouse.View.Programs
     public partial class Monaco : Window, INotifyPropertyChanged
     {
         List<string> themes;
-        Uri path;
-        MonacoProgram Program;
 
+        private ObservableCollection<NcProgram> programs = new();
+        public ObservableCollection<NcProgram> Programs
+        {
+            get { return programs; }
+            set
+            {
+                programs = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private NcProgram selectedProgram;
+        public NcProgram SelectedProgram
+        {
+            get { return selectedProgram; }
+            set
+            {
+                selectedProgram = value;
+                SetContent();
+                OnPropertyChanged();
+            }
+        }
 
         private SolidColorBrush backgroundBrush;
         public SolidColorBrush BackgroundBrush
@@ -64,34 +87,30 @@ namespace ProjectLighthouse.View.Programs
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public Monaco(Uri path)
+        public Monaco()
         {
             InitializeComponent();
-            //this.path = path;
-
-            this.path = new Uri(Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        @"View\Programs\12.PRG"));
-
-            Program = GetProgramFromFile(this.path.LocalPath);
-
             DataContext = this;
+        }
+
+        async Task SetupEditors()
+        {
+            this.DollarOne.Source =
+                   new Uri(Path.Combine(
+                       AppDomain.CurrentDomain.BaseDirectory,
+                       @"Monaco\index.html"));
+            this.DollarTwo.Source =
+                   new Uri(Path.Combine(
+                       AppDomain.CurrentDomain.BaseDirectory,
+                       @"Monaco\index.html"));
+
+            await DollarOne.EnsureCoreWebView2Async();
+            await DollarTwo.EnsureCoreWebView2Async();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DollarOne.Source =
-                    new Uri(Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        @"Monaco\index.html"));
-
-            this.DollarTwo.Source =
-                    new Uri(Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        @"Monaco\index.html"));
-
             themes = Directory.GetFiles(Path.Join(AppDomain.CurrentDomain.BaseDirectory, @"Monaco\themes")).ToList();
-
             List<string> fileNames = new();
 
             for (int i = 0; i < themes.Count; i++)
@@ -104,69 +123,190 @@ namespace ProjectLighthouse.View.Programs
                 fileNames.Add(f);
             }
 
-            await DollarOne.EnsureCoreWebView2Async();
-            await DollarTwo.EnsureCoreWebView2Async();
-            ItemsSource = fileNames;
-            ThemeName.SelectedIndex = fileNames.IndexOf("idleFingers");
+            await SetupEditors();
+
+            ThemeName.ItemsSource = fileNames;
+            ThemeName.SelectedIndex = fileNames.IndexOf("Oceanic Next");
         }
 
-        private void Label_MouseDown(object sender, MouseButtonEventArgs e)
+        async void SetContent()
         {
-            Label _lbl = sender as Label;
-            DragDrop.DoDragDrop(_lbl, _lbl.Content, DragDropEffects.Move);
+            if (SelectedProgram is null) return;
+            await SetDollarOneContent();
+            await SetDollarTwoContent();
         }
 
-        private static MonacoProgram GetProgramFromFile(string path)
+        private void DollarOne_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
-            string programData = File.ReadAllText(path);
-            if (!programData.Contains("$0") || !programData.Contains("$1") || !programData.Contains("$2"))
+            OnDollarOneNavigationCompleted();
+        }
+
+        private void DollarTwo_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            OnDollarTwoNavigationCompleted();
+        }
+
+        async Task SetDollarOneContent()
+        {
+            if (DollarOne.Source.LocalPath.Contains("-diff"))
             {
-                throw new InvalidDataException("spindle missing");
+                await LumenManager.ExecuteScriptFunctionAsync(DollarOne, "setContent", SelectedProgram.ProgramContent.OriginalDollarOneCode, SelectedProgram.ProgramContent.DollarOneCode);
             }
-
-            MonacoProgram prog = new()
+            else
             {
-                Header = programData[..programData.IndexOf("$1")].Trim(),
-                DollarOneCode = programData.Substring(programData.IndexOf("$1") + 2, programData.IndexOf("$2") - programData.IndexOf("$1") - 2).Trim(),
-                DollarTwoCode = programData.Substring(programData.IndexOf("$2") + 2, programData.IndexOf("$0") - programData.IndexOf("$2") - 2).Trim(),
-                DollarZeroCode = programData.Substring(programData.IndexOf("$0") + 2, programData.Length - programData.IndexOf("$0") - 2).Trim()
-            };
-
-            return prog;
+                await LumenManager.ExecuteScriptFunctionAsync(DollarOne, "setContent", SelectedProgram.ProgramContent.DollarOneCode);
+            }
         }
 
-        public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
+        async Task SetDollarTwoContent()
         {
-            string script = functionName + "(";
-            for (int i = 0; i < parameters.Length; i++)
+            if (DollarTwo.Source.LocalPath.Contains("-diff"))
             {
-                script += JsonConvert.SerializeObject(parameters[i]);
-                if (i < parameters.Length - 1)
+                await LumenManager.ExecuteScriptFunctionAsync(DollarTwo, "setContent", SelectedProgram.ProgramContent.OriginalDollarTwoCode, SelectedProgram.ProgramContent.DollarTwoCode);
+            }
+            else
+            {
+                await LumenManager.ExecuteScriptFunctionAsync(DollarTwo, "setContent", SelectedProgram.ProgramContent.DollarTwoCode);
+            }
+        }
+
+        async void OnDollarOneNavigationCompleted()
+        {
+            if (SelectedProgram is null)
+            {
+                if (Programs.Count > 0)
                 {
-                    script += ", ";
+                    SelectedProgram = Programs.First();
+                }
+                else
+                {
+                    return;
                 }
             }
-            script += ");";
-            return await webView2.ExecuteScriptAsync(script);
+            
+            DollarOne.Visibility = Visibility.Hidden;
+            await SetDollarOneContent();
+            ApplyTheme();
+
+            DollarOne.Visibility = Visibility.Visible;
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        async void OnDollarTwoNavigationCompleted()
         {
-            await ExecuteScriptFunctionAsync(DollarOne, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
-            await ExecuteScriptFunctionAsync(DollarTwo, "pushSnippet", "test_snippet", "this is a programmatic snippet", "inserted ${1:test}");
+            if (SelectedProgram is null)
+            {
+                if (Programs.Count > 0)
+                {
+                    SelectedProgram = Programs.First();
+                }
+                else
+                {
+                    return;
+                }
+            }
+            
+            DollarTwo.Visibility = Visibility.Hidden;
+            await SetDollarTwoContent();
+            ApplyTheme();
+
+            DollarTwo.Visibility = Visibility.Visible;
         }
 
-        private void SetThemeButton_Click(object sender, RoutedEventArgs e)
+
+
+        private void ThemeName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string themeData = LoadThemeData(ThemeName.Text);
+            ApplyTheme();
+        }
+
+        void ApplyTheme()
+        {
+            string themeData;
+
+            try
+            {
+                themeData = LoadThemeData((string)ThemeName.SelectedValue);
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return;
+            }
+
             SetLumenTheme(themeData);
             SetTheme(DollarOne, themeData);
             SetTheme(DollarTwo, themeData);
         }
 
+        private async void DiffButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DollarOne.Source.LocalPath.Contains("-diff"))
+            {
+                this.DollarOne.Source =
+                   new Uri(Path.Combine(
+                       AppDomain.CurrentDomain.BaseDirectory,
+                       @"Monaco\index.html"));
+                this.DollarOneDiffModeText.Visibility = Visibility.Collapsed;
+
+                await DollarOne.EnsureCoreWebView2Async();
+            }
+            else
+            {
+                string jsFunc = "editor.getValue()";
+                string content = await DollarOne.CoreWebView2.ExecuteScriptAsync(jsFunc);
+                string textContent = Regex.Unescape(content.ToString());
+                textContent = textContent[1..^1];
+                SelectedProgram.ProgramContent.DollarOneCode = textContent;
+                SetToDiffMode(DollarOne);
+
+                this.DollarOneDiffModeText.Visibility = Visibility.Visible;
+            }
+
+
+            if (DollarTwo.Source.LocalPath.Contains("-diff"))
+            {
+                this.DollarTwo.Source =
+                   new Uri(Path.Combine(
+                       AppDomain.CurrentDomain.BaseDirectory,
+                       @"Monaco\index.html"));
+                this.DollarTwoDiffModeText.Visibility = Visibility.Collapsed;
+
+                await DollarTwo.EnsureCoreWebView2Async();
+            }
+            else
+            {
+                string jsFunc = "editor.getValue()";
+                string content = await DollarTwo.CoreWebView2.ExecuteScriptAsync(jsFunc);
+                string textContent = Regex.Unescape(content.ToString());
+                textContent = textContent[1..^1];
+                SelectedProgram.ProgramContent.DollarTwoCode = textContent;
+                SetToDiffMode(DollarTwo);
+
+                this.DollarTwoDiffModeText.Visibility = Visibility.Visible;
+            }
+        }
+
+        static async void SetToDiffMode(WebView2 webView)
+        {
+            webView.Source =
+                       new Uri(Path.Combine(
+                           AppDomain.CurrentDomain.BaseDirectory,
+                           @"Monaco\index-diff.html"));
+            await webView.EnsureCoreWebView2Async();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            LumenManager.DisposeWindow();
+
+        }
+
+        #region Themes
         string LoadThemeData(string name)
         {
-            string path = themes.Find(x => x.Contains(name));
+           string path = themes.Find(x => Path.GetFileNameWithoutExtension(x) == name) 
+                ?? throw new ArgumentException($"Could not find theme: '{name}'");
+
             string data = File.ReadAllText(path);
             return data;
         }
@@ -231,50 +371,19 @@ namespace ProjectLighthouse.View.Programs
 
         }
 
-        private class ThemeData
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-
-        private async void SetTheme(WebView2 window, string data)
+        private static async void SetTheme(WebView2 window, string data)
         {
             dynamic d = JObject.Parse(data);
-            await ExecuteScriptFunctionAsync(window, "setTheme", d);
+            await LumenManager.ExecuteScriptFunctionAsync(window, "setTheme", d);
         }
+        #endregion
 
-        private async void DollarOne_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        private void CloseProgramButton_Click(object sender, RoutedEventArgs e)
         {
-            await ExecuteScriptFunctionAsync(DollarOne, "setContent", Program.DollarOneCode);
-            string themeData = LoadThemeData(ThemeName.Text);
+            if (sender is not Button btn) return;
+            if (btn.CommandParameter is not NcProgram prog) return;
 
-            SetTheme(DollarOne, themeData);
-            DollarOne.Visibility = Visibility.Visible;
+            LumenManager.Close(prog);
         }
-
-
-        private async void DollarTwo_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
-        {
-            await ExecuteScriptFunctionAsync(DollarTwo, "setContent", Program.DollarTwoCode);
-            string themeData = LoadThemeData(ThemeName.Text);
-
-            SetTheme(DollarTwo, themeData);
-            DollarTwo.Visibility = Visibility.Visible;
-        }
-
-        private void ThemeName_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string themeData = LoadThemeData((string)ThemeName.SelectedValue);
-            SetLumenTheme(themeData);
-            SetTheme(DollarOne, themeData);
-            SetTheme(DollarTwo, themeData);
-        }
-    }
-    internal class MonacoProgram
-    {
-        public string Header { get; set; }
-        public string DollarOneCode { get; set; }
-        public string DollarTwoCode { get; set; }
-        public string DollarZeroCode { get; set; }
     }
 }

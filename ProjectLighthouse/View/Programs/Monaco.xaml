@@ -5,57 +5,137 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Programs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:programs="clr-namespace:ProjectLighthouse.Model.Programs"
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-    Title="Lighthouse::Lumen"
-    Width="1200"
-    Height="800"
+    Title="Lighthouse::Lumen (Preview)"
+    Width="1500"
+    Height="900"
     Background="{Binding BackgroundBrush, FallbackValue='#fff'}"
+    Closed="Window_Closed"
     Loaded="Window_Loaded"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <Grid>
+    <Grid TextElement.FontFamily="pack://application:,,,/Resources/Font/#Montserrat">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Margin="30,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="6*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel
+            Grid.ColumnSpan="2"
+            Margin="30,20"
+            Orientation="Horizontal">
             <Path
+                x:Name="Lightning"
                 Height="50"
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
                 Data="M11 15H6L13 1V9H18L11 23V15Z"
                 Fill="{Binding CursorForegroundBrush, FallbackValue='#000'}"
-                x:Name="Lightning"
                 Stretch="UniformToFill" />
             <StackPanel VerticalAlignment="Center">
                 <TextBlock
-                    FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                    x:Name="LighthouseText"
+                    FontSize="10"
                     FontWeight="SemiBold"
                     Foreground="{Binding CursorForegroundBrush}"
-                    FontSize="10"
                     Opacity="0.5"
-                    x:Name="LighthouseText"
                     Text="PROJECT LIGHTHOUSE" />
                 <TextBlock
-                    FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
-                    FontSize="40"
                     Margin="0,-7,0,0"
+                    FontSize="40"
                     FontWeight="Bold"
                     Foreground="{Binding ForegroundBrush}"
                     Text="Lumen Editor" />
             </StackPanel>
-
+            <ToggleButton
+                x:Name="DiffButton"
+                Background="{Binding BackgroundBrush}"
+                BorderBrush="{Binding ForegroundBrush}"
+                Click="DiffButton_Click"
+                Foreground="{Binding CursorForegroundBrush}"
+                Style="{StaticResource DiffModeToggleButton}"
+                Tag="Diff" />
         </StackPanel>
-        <StackPanel Width="250" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,10">
-            <TextBlock Text="Select Theme" Style="{StaticResource InputLabel}" Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"/>
+        <StackPanel
+            Grid.Column="1"
+            Width="250"
+            Margin="20,10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center">
+            <TextBlock
+                Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"
+                Style="{StaticResource InputLabel}"
+                Text="Select Theme" />
             <ComboBox x:Name="ThemeName" SelectionChanged="ThemeName_SelectionChanged" />
         </StackPanel>
 
-        <Grid Grid.Row="1">
+        <StackPanel Grid.Row="1">
+            <TextBlock
+                Margin="30,10"
+                FontWeight="SemiBold"
+                Foreground="{Binding CursorForegroundBrush}"
+                Text="PROGRAMS" />
+            <ListView
+                Margin="25,0"
+                d:ItemsSource="{d:SampleData ItemCount=5}"
+                Background="Transparent"
+                BorderThickness="0"
+                ItemsSource="{Binding Programs}"
+                SelectedValue="{Binding SelectedProgram, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource MonacoListView}">
+                <ListView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource MonacoListViewItem}" TargetType="ListViewItem">
+                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=BackgroundBrush}" />
+                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=ForegroundBrush}" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="15,10">
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                            <Button
+                                x:Name="CloseProgramButton"
+                                Click="CloseProgramButton_Click"
+                                CommandParameter="{Binding}"
+                                HorizontalAlignment="Right"
+                                Background="{Binding Path=DataContext.BackgroundBrush, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                Foreground="{Binding Path=DataContext.BackgroundBrush, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                Style="{StaticResource MonacoCloseProgramButton}">
+                                <Rectangle Fill="#01ffffff" />
+
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackPanel>
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            Visibility="{Binding SelectedProgram, Converter={StaticResource NullToVisibility}}">
+            <Image
+                x:Name="LogoMono"
+                Width="300"
+                VerticalAlignment="Center"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Source="/Resources/LighthouseLogo_Mono.png" />
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            d:Visibility="Collapsed"
+            Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" MinWidth="500" />
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" MinWidth="500" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -64,10 +144,22 @@
 
             <TextBlock
                 Margin="30,10"
-                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
                 FontWeight="SemiBold"
                 Foreground="{Binding CursorForegroundBrush}"
                 Text="$1 MAIN SPINDLE" />
+
+            <TextBlock
+                x:Name="DollarOneDiffModeText"
+                Margin="10,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                d:Visibility="Visible"
+                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                FontSize="12"
+                FontWeight="Bold"
+                Foreground="{Binding CursorForegroundBrush}"
+                Text="DIFFERENTIAL MODE"
+                Visibility="Collapsed" />
 
             <TextBlock
                 Grid.Column="2"
@@ -77,28 +169,47 @@
                 Foreground="{Binding CursorForegroundBrush}"
                 Text="$2 SUB SPINDLE" />
 
+            <TextBlock
+                x:Name="DollarTwoDiffModeText"
+                Grid.Column="2"
+                Margin="10,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                d:Visibility="Visible"
+                FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
+                FontSize="12"
+                FontWeight="Bold"
+                Foreground="{Binding CursorForegroundBrush}"
+                Text="DIFFERENTIAL MODE"
+                Visibility="Collapsed" />
+
             <wv2:WebView2
                 x:Name="DollarOne"
                 Grid.Row="1"
                 Grid.Column="0"
-                NavigationCompleted="DollarOne_NavigationCompleted"
                 Width="Auto"
                 Height="Auto"
                 d:Visibility="Visible"
+                NavigationCompleted="DollarOne_NavigationCompleted"
                 Visibility="Hidden" />
 
-            <GridSplitter Width="5" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch"/>
+            <GridSplitter
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                Width="5"
+                HorizontalAlignment="Stretch"
+                Visibility="Hidden" />
 
             <wv2:WebView2
                 x:Name="DollarTwo"
                 Grid.Row="1"
                 Grid.Column="2"
-                NavigationCompleted="DollarTwo_NavigationCompleted"
                 Width="Auto"
                 Height="Auto"
-                ZoomFactor="1"
                 d:Visibility="Visible"
-                Visibility="Hidden" />
+                NavigationCompleted="DollarTwo_NavigationCompleted"
+                Visibility="Hidden"
+                ZoomFactor="1" />
         </Grid>
     </Grid>
 </Window>
