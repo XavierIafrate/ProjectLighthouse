@@ -138,13 +138,9 @@ namespace ProjectLighthouse.View.Orders
             LoadData();
             MaterialId = materialId;
 
-            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup);
-
-            if (targetGroup is null)
-            {
-                throw new ArgumentNullException("Target group is null");
-            }
-
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup) 
+                ?? throw new Exception($"{nameof(targetGroup)} is null");
+            
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
 
@@ -162,18 +158,11 @@ namespace ProjectLighthouse.View.Orders
             LoadData();
             MaterialId = materialId;
 
-
-            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup);
-
-            if (targetGroup is null)
-            {
-                throw new Exception("Target group is null");
-            }
-
-
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup) 
+                ?? throw new Exception("Target group is null");
+            
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
-
 
             TurnedProduct product = required.Item1;
 
@@ -213,14 +202,9 @@ namespace ProjectLighthouse.View.Orders
             MaterialId = materialId;
 
 
-            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup);
-
-            if (targetGroup is null)
-            {
-                throw new Exception("Target group is null");
-            }
-
-
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup) 
+                ?? throw new Exception("Target group is null");
+            
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
 
@@ -476,13 +460,9 @@ namespace ProjectLighthouse.View.Orders
             ProductGroup group = SelectedGroup;
             NewOrder.MajorDiameter = group.MajorDiameter;
 
-            BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId);
-
-            if (orderBar is null)
-            {
-                throw new Exception("No bar records available that meet the size or material requirements for the product.");
-            }
-
+            BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId) 
+                ?? throw new Exception("No bar records available that meet the size or material requirements for the product.");
+            
             NewOrder.BarsInStockAtCreation = orderBar.InStock;
             NewOrder.MaterialId = MaterialId;
             NewOrder.GroupId = SelectedGroup.Id;
@@ -552,15 +532,13 @@ namespace ProjectLighthouse.View.Orders
                 Insights = new();
             }
 
+            if (SelectedGroup is null) return;
+
             NewOrderInsights insights = new();
 
-            BarStock? bar = SelectedGroup.GetRequiredBarStock(BarStock, MaterialId);
-
-            if (bar is null)
-            {
-                throw new Exception("No bar found for group");
-            }
-
+            BarStock? bar = SelectedGroup.GetRequiredBarStock(BarStock, MaterialId) 
+                ?? throw new Exception("No bar found for group");
+            
             insights.BarId = bar.Id;
             insights.BarPrice = bar.Cost;
             insights.NumberOfBarsRequired = NewOrderItems.CalculateNumberOfBars(bar, 0);

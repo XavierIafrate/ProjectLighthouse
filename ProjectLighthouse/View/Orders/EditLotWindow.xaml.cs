@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.View.Orders
@@ -12,7 +13,7 @@ namespace ProjectLighthouse.View.Orders
         public bool SaveExit = false;
         public Lot EditLot { get; set; }
         public bool CanEdit { get; set; }
-        private Lot originalLot { get; set; }
+        private Lot originalLot;
 
         public EditLotWindow(int lotId, bool edit)
         {
@@ -20,7 +21,8 @@ namespace ProjectLighthouse.View.Orders
 
             CanEdit = edit;
 
-            Lot lot = DatabaseHelper.Read<Lot>().Find(x => x.ID == lotId);
+            Lot lot = DatabaseHelper.Read<Lot>().Find(x => x.ID == lotId)
+                ?? throw new Exception($"Could not find lot with id '{lotId:0}'");
 
             EditLot = (Lot)lot.Clone();
             originalLot = lot;
@@ -53,9 +55,9 @@ namespace ProjectLighthouse.View.Orders
 
         public void Save()
         {
-            EditLot.IsReject = (bool)RejectCheckBox.IsChecked;
-            EditLot.IsAccepted = (bool)AcceptCheckBox.IsChecked;
-            EditLot.AllowDelivery = (bool)AllowDeliveryCheckbox.IsChecked;
+            EditLot.IsReject = RejectCheckBox.IsChecked ?? false;
+            EditLot.IsAccepted = AcceptCheckBox.IsChecked ?? false;
+            EditLot.AllowDelivery = AllowDeliveryCheckbox.IsChecked ?? false;
             EditLot.Remarks = RemarksTextBox.Text.Trim();
 
             if (originalLot.Quantity == EditLot.Quantity &&
@@ -85,12 +87,12 @@ namespace ProjectLighthouse.View.Orders
             e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
         }
 
-        private void BatchTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void BatchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             EditLot.MaterialBatch = BatchTextBox.Text ?? "";
         }
 
-        private void QuantityTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void QuantityTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (int.TryParse(QuantityTextBox.Text, out int j))
             {
@@ -110,7 +112,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void RejectCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if ((bool)AcceptCheckBox.IsChecked)
+            if (AcceptCheckBox.IsChecked ?? false)
             {
                 AcceptCheckBox.IsChecked = false;
             }
@@ -118,15 +120,17 @@ namespace ProjectLighthouse.View.Orders
 
         private void AcceptCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if ((bool)RejectCheckBox.IsChecked)
+            if (RejectCheckBox.IsChecked ?? false)
             {
                 RejectCheckBox.IsChecked = false;
             }
         }
 
-        private void ProducedDatePicker_SelectedDateChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void ProducedDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            System.Windows.Controls.DatePicker picker = sender as System.Windows.Controls.DatePicker;
+            if (sender is not DatePicker picker) return;
+            if (picker.SelectedDate is null) return;
+
             if (EditLot != null)
             {
                 EditLot.DateProduced = picker.SelectedDate.Value.AddHours(12);
@@ -135,7 +139,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void AllowDeliveryCheckbox_Checked(object sender, RoutedEventArgs e)
         {
-            EditLot.AllowDelivery = (bool)AllowDeliveryCheckbox.IsChecked;
+            EditLot.AllowDelivery = AllowDeliveryCheckbox.IsChecked ?? false;
         }
 
         private void PrintButton_Click(object sender, RoutedEventArgs e)

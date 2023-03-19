@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -110,7 +111,7 @@ namespace ProjectLighthouse.View.Orders
 
             Item.RequiredQuantity = reqqty;
             Item.TargetQuantity = tarqty;
-            Item.DateRequired = (DateTime)DateRequiredPicker.SelectedDate;
+            Item.DateRequired = DateRequiredPicker.SelectedDate ?? DateTime.MinValue;
             Item.UpdatedAt = DateTime.Now;
             Item.UpdatedBy = App.CurrentUser.GetFullName();
 
@@ -279,36 +280,44 @@ namespace ProjectLighthouse.View.Orders
         }
 
         private ICommand _saveCommand;
-        public static int? _toEdit = null;
+        static int? _toEdit = null;
         public ICommand EditCommand
         {
             get
             {
-                if (_saveCommand == null)
-                {
-                    _saveCommand = new RelayCommand(
+                _saveCommand ??= new RelayCommand(
                         param => SaveObject(),
                         param => CanSave()
                     );
-                }
                 return _saveCommand;
             }
         }
 
-        private bool CanSave()
+        private static bool CanSave()
         {
-            return true;// Verify command can be executed here
+            return true;
         }
 
         private void SaveObject()
         {
             if (_toEdit == null)
             {
-                MessageBox.Show("no edit");// Save command execution logic
+                MessageBox.Show("no edit");
+                return;
+            }
+            
+            EditLotWindow editWindow;
+
+            try
+            {
+                editWindow = new((int)_toEdit, CanEdit) { Owner = this };
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return;
             }
 
-
-            EditLotWindow editWindow = new((int)_toEdit, CanEdit) { Owner = this };
             Hide();
             editWindow.ShowDialog();
 
