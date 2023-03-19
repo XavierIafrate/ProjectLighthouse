@@ -17,7 +17,8 @@
     xmlns:requestsVm="clr-namespace:ProjectLighthouse.ViewModel.Requests"
     xmlns:researchView="clr-namespace:ProjectLighthouse.View.Research"
     xmlns:researchVm="clr-namespace:ProjectLighthouse.ViewModel.Research"
-    xmlns:scheduleView="clr-namespace:ProjectLighthouse.View.Scheduling">
+    xmlns:scheduleView="clr-namespace:ProjectLighthouse.View.Scheduling"
+    ShutdownMode="OnMainWindowClose">
 
     <Application.Resources>
         <ResourceDictionary>
