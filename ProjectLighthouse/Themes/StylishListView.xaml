@@ -70,9 +70,10 @@
         </Setter>
     </Style>
 
-    <Style x:Key="MonacoListView"
+    <Style
+        x:Key="MonacoListView"
         BasedOn="{x:Null}"
-        TargetType="ListView" >
+        TargetType="ListView">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -83,12 +84,12 @@
             <Setter.Value>
                 <ControlTemplate>
                     <ScrollViewer
-                            x:Name="PART_ContentHost"
-                            HorizontalContentAlignment="Left"
-                            CanContentScroll="True"
-                            Focusable="false"
-                            HorizontalScrollBarVisibility="Hidden"
-                            VerticalScrollBarVisibility="Auto">
+                        x:Name="PART_ContentHost"
+                        HorizontalContentAlignment="Left"
+                        CanContentScroll="True"
+                        Focusable="false"
+                        HorizontalScrollBarVisibility="Hidden"
+                        VerticalScrollBarVisibility="Auto">
                         <ItemsPresenter />
                     </ScrollViewer>
                 </ControlTemplate>
