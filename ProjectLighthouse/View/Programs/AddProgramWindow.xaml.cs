@@ -359,7 +359,7 @@ namespace ProjectLighthouse.View.Programs
 
         private void Notepad_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextLengthCounter.Text = $"{Program.Notepad.Length}/1024";
+            TextLengthCounter.Text = $"{Program.Notepad?.Length}/1024";
         }
     }
 }
