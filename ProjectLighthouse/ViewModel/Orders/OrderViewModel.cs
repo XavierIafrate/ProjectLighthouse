@@ -528,6 +528,11 @@ namespace ProjectLighthouse.ViewModel.Orders
             if (userSelection is not null)
             {
                 SelectedOrder = FilteredOrders.Find(x => x.Id == userSelection);
+
+                if (SelectedOrder is null && FilteredOrders.Count > 0)
+                {
+                    SelectedOrder = FilteredOrders[0];
+                }
             }
             else if (FilteredOrders.Count > 0)
             {
@@ -671,7 +676,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         #endregion Loading
 
-        public void Search() // TODO use linq
+        public void Search()
         {
             if (string.IsNullOrEmpty(SearchTerm))
             {
