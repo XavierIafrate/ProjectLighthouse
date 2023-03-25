@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.Presentation;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -10,9 +11,11 @@ using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
+using ViewModel.Commands.Programs;
 
 namespace ProjectLighthouse.ViewModel.Programs
 {
@@ -30,6 +33,21 @@ namespace ProjectLighthouse.ViewModel.Programs
                 OnPropertyChanged();
             }
         }
+
+        public List<NcProgramCommit> ProgramCommits;
+
+        private ObservableCollection<NcProgramCommit> filteredCommits = new();
+        public ObservableCollection<NcProgramCommit> FilteredCommits
+        {
+            get { return filteredCommits; }
+            set
+            {
+                filteredCommits = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
         public List<MaterialInfo> Materials;
         public List<Lathe> Machines;
@@ -114,12 +132,27 @@ namespace ProjectLighthouse.ViewModel.Programs
         public SendMessageCommand SendMessageCmd { get; set; }
         public EditProgramCommand EditProgramCmd { get; set; }
         public OpenProgramCommand OpenProgramCmd { get; set; }
+        public OpenCommitCommand OpenCommitCmd { get; set; }
+
+        private Timer timer;
 
         public ProgramManagerViewModel()
         {
+            timer = new(1000);
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
+
             LoadData();
             Search();
-            //System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(() => LumenManager.Initialise());
+        }
+
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (FilteredCommits is null) return;
+            if (FilteredCommits.Count == 0) return;
+
+            FilteredCommits[0].CommittedAt = DateTime.Now;
         }
 
         void LoadData()
@@ -127,12 +160,15 @@ namespace ProjectLighthouse.ViewModel.Programs
             SendMessageCmd = new(this);
             EditProgramCmd = new(this);
             OpenProgramCmd = new(this);
+            OpenCommitCmd = new(this);
 
             Programs = DatabaseHelper.Read<NcProgram>()
                 .OrderBy(x => x.Name.Length)
                 .ThenBy(x => x.Name)
                 .ToList();
             Programs.ForEach(x => x.ValidateAll());
+
+            ProgramCommits = DatabaseHelper.Read<NcProgramCommit>();
 
             Notes = DatabaseHelper.Read<Note>()
                 .Where(x => x.DocumentReference.StartsWith("p"))
@@ -269,8 +305,17 @@ namespace ProjectLighthouse.ViewModel.Programs
             if (SelectedProgram == null)
             {
                 FilteredNotes = null;
+                FilteredCommits = new();
                 return;
             }
+
+            List<NcProgramCommit> commits = ProgramCommits
+                .Where(x => x.ProgramId == SelectedProgram.Id)
+                .OrderByDescending(x => x.CommittedAt)
+                .ToList();
+            FilteredCommits = new(); 
+            commits.ForEach(x => FilteredCommits.Add(x));
+            OnPropertyChanged(nameof(FilteredCommits));
 
             FilteredNotes = Notes
                 .Where(x => x.DocumentReference == $"p{SelectedProgram.Id}")
@@ -326,7 +371,7 @@ namespace ProjectLighthouse.ViewModel.Programs
 
             for (int i = 0; i < targetedProducts.Count; i++)
             {
-                targetedProducts[i].Archetypes = targetedGroups.Where(x => x.ProductId == targetedProducts[i].Id).ToList();    
+                targetedProducts[i].Archetypes = targetedGroups.Where(x => x.ProductId == targetedProducts[i].Id).ToList();
             }
 
             List<string> materialStringIds = SelectedProgram.MaterialsList;
@@ -357,6 +402,11 @@ namespace ProjectLighthouse.ViewModel.Programs
         public void Dispose()
         {
             //LumenManager.Close();
+        }
+
+        public void OpenCommit(NcProgramCommit commit)
+        {
+            MessageBox.Show(commit.FileName);
         }
     }
 }
