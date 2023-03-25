@@ -268,8 +268,8 @@
                             Style="{StaticResource Action_Button}"
                             IsEnabled="{Binding SelectedProgram.Path, Converter={StaticResource NotNullToBoolean}}"
                             Tag="View in Lumen"
-                             />
-                        <!--Visibility="{Binding SelectedProgram.Path, Converter={StaticResource NotNullToVisibility}}"-->
+                            />
+                        
                         <StackPanel Visibility="{Binding SelectedProgram.TagsList, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                             <TextBlock Style="{StaticResource InputLabel}" Text="Tags" />
                             <ItemsControl
@@ -454,6 +454,35 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
+
+                        <TextBlock Style="{StaticResource section}" Text="Commits" />
+                        <Border
+                            Margin="5,10"
+                            Background="{StaticResource Surface}"
+                            CornerRadius="5"
+                            Visibility="{Binding FilteredCommits, Converter={StaticResource EmptyListToVisibleOrCollapsed}}">
+                            <TextBlock
+                                Margin="5,20"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                Foreground="{StaticResource OnSurface}"
+                                Opacity="0.5"
+                                Text="No commits recorded for this program" />
+                        </Border>
+                        <ListView
+                            d:ItemsSource="{d:SampleData ItemCount=2}"
+                            ItemsSource="{Binding FilteredCommits}"
+                            Visibility="{Binding FilteredCommits, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:DisplayNcProgramCommit Commit="{Binding}" OpenCommit="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor, AncestorLevel=1}, Path=DataContext.OpenCommitCmd}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <Border HorizontalAlignment="Right" Visibility="{Binding FilteredCommits, Converter={StaticResource EmptyListToCollapsedOrVisible}}" CornerRadius="5" Margin="5" Background="{StaticResource Surface}">
+                            <TextBlock Text="{Binding FilteredCommits.Count, StringFormat='{}{0:0} Commits'}" Margin="7,3" Foreground="{StaticResource OnSurface}" />
+                            
+                        </Border>
 
                         <TextBlock Style="{StaticResource section}" Text="Notepad" />
                         <Border
