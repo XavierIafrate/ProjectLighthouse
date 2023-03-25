@@ -626,6 +626,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                             || n.ModifiedAt.AddDays(1) > DateTime.Now
                             || !n.IsClosed)
                         .OrderBy(x => x.State != OrderState.Running)
+                        .ThenBy(x => x.State == OrderState.Running ? x.AllocatedMachine : "")
                         .ToList();
                     break;
 
@@ -655,7 +656,11 @@ namespace ProjectLighthouse.ViewModel.Orders
                     break;
 
                 case "Development":
-                    FilteredOrders = Orders.Where(n => n.IsResearch && n.State < OrderState.Complete).OrderByDescending(n => n.CreatedAt).ToList();
+                    FilteredOrders = Orders
+                        .Where(n => n.IsResearch && n.State < OrderState.Complete)
+                        .OrderByDescending(n => n.CreatedAt)
+                        .Take(200)
+                        .ToList();
                     break;
 
                 case "All":
