@@ -255,12 +255,12 @@ namespace ProjectLighthouse.Model.Drawings
             ApplyApprovalInformation(page);
             return true;
         }
-        private bool MarkDrawingAsNotApproved(PdfPage page)
+        private static bool MarkDrawingAsNotApproved(PdfPage page)
         {
             ApplyWatermark(page, "MANUFACTURE USE NOT PERMITTED", Color.Red);
             return true;
         }
-        private bool MarkDrawingAsRejected(PdfPage page)
+        private static bool MarkDrawingAsRejected(PdfPage page)
         {
             ApplyWatermark(page, "REJECTED - DO NOT USE", Color.Red);
             return true;
