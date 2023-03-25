@@ -2,22 +2,16 @@
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.View;
+using ProjectLighthouse.View.Core;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Sockets;
-using System.Net;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Navigation;
-using View.HelperWindows;
 using Windows.Foundation.Collections;
-using System.Linq;
-using ProjectLighthouse.View.Core;
 
 namespace ProjectLighthouse
 {
@@ -83,15 +77,12 @@ namespace ProjectLighthouse
             };
 
             Task.Run(() => StartNotificationsManager());
-
-            //Monaco monacoEditor = new();
-            //monacoEditor.Show();
         }
 
         private static bool VersionIsPermitted()
         {
             string[] allowed_versions = File.ReadAllLines($"{App.ROOT_PATH}valid_versions.txt");
-            if(!allowed_versions.Any(x => x == GetAppVersion()))
+            if (!allowed_versions.Any(x => x == GetAppVersion()))
             {
                 return false;
             }
@@ -105,19 +96,6 @@ namespace ProjectLighthouse
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
             return versionInfo.FileVersion;
-        }
-
-        public static string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
         private static MainViewModel LoadMain()
@@ -135,7 +113,6 @@ namespace ProjectLighthouse
 
             return VM;
         }
-
 
         private static void StartNotificationsManager()
         {
@@ -226,6 +203,7 @@ namespace ProjectLighthouse
 
             Window.Hide();
             errorWindow.ShowDialog();
+            App.Current.Shutdown();
         }
 
         static void RecordError(System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

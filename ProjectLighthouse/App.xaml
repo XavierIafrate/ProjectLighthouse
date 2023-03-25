@@ -55,6 +55,7 @@
             <converters:ObjectIsNullToVisibility x:Key="NullToVisibility" />
             <converters:ListIsEmptyToCollapsedOrVisible x:Key="EmptyListToCollapsedOrVisible" />
             <converters:ListIsEmptyToVisibleOrCollapsed x:Key="EmptyListToVisibleOrCollapsed" />
+            <converters:dateToLastModified x:Key="DateToLastModified" />
             <!--#endregion-->
 
             <!--#region DataTemplates-->
