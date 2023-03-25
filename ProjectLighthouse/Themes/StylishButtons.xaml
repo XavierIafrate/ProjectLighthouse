@@ -1320,6 +1320,72 @@
         </Style.Triggers>
     </Style>
 
+
+    <Style
+        x:Key="Action_Compare_File_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="30"
+                            MinWidth="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="16"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M10,18H6V16H10V18M10,14H6V12H10V14M10,1V2H6C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H10V23H12V1H10M20,8V20C20,21.11 19.11,22 18,22H14V20H18V11H14V9H18.5L14,4.5V2L20,8M16,14H14V12H16V14M16,18H14V16H16V18Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,6,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource TealFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Teal}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnTeal}" />
+                <Setter Property="Background" Value="{StaticResource Teal}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnTeal}" />
+                <Setter Property="Background" Value="{StaticResource TealDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style
         x:Key="Action_Orange_Button"
         BasedOn="{StaticResource Default}"
@@ -2437,16 +2503,16 @@
                 <ControlTemplate TargetType="Button">
 
                     <Border
+                        x:Name="border"
                         Width="20"
                         Height="20"
-                        x:Name="border"
                         Background="#01ffffff"
                         CornerRadius="15">
                         <Grid HorizontalAlignment="Center">
                             <Path
+                                x:Name="path"
                                 Width="8"
                                 Height="8"
-                                x:Name="path"
                                 Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
@@ -2455,8 +2521,9 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Fill" TargetName="path" Value="{StaticResource OnRed}"/>
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Red}"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnRed}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Red}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
