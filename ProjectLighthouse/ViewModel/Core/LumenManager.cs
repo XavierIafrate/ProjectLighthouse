@@ -32,8 +32,15 @@ namespace ProjectLighthouse.ViewModel.Core
                         @"View\Programs\12.PRG");
 
 
-
-            program.ProgramContent = GetProgramFromFile(path);
+            try
+            {
+                program.ProgramContent = GetProgramFromFile(path);
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return;
+            }
 
             program.ProgramContent.DollarOneCode = $"Program {program.Name}{Environment.NewLine}{Environment.NewLine}{program.ProgramContent.DollarOneCode}";
 

@@ -266,6 +266,7 @@
                             HorizontalAlignment="Left"
                             Command="{Binding OpenProgramCmd}"
                             Style="{StaticResource Action_Button}"
+                            IsEnabled="{Binding SelectedProgram.Path, Converter={StaticResource NotNullToBoolean}}"
                             Tag="View in Lumen"
                              />
                         <!--Visibility="{Binding SelectedProgram.Path, Converter={StaticResource NotNullToVisibility}}"-->

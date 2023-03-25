@@ -217,12 +217,17 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void ViewWebPage()
         {
+            if (string.IsNullOrEmpty(SelectedProduct.WebUrl))
+            {
+                MessageBox.Show("No URL on record", "Failed", MessageBoxButton.OK, MessageBoxImage.Information); 
+                return;
+            }
+
             Process.Start(new ProcessStartInfo(SelectedProduct.WebUrl) { UseShellExecute = true });
         }
 
         public void CreateProduct(Product? p = null)
         {
-
             if (p is not null)
             {
                 if (p.Id == -1)

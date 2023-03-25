@@ -43,7 +43,19 @@ namespace ProjectLighthouse.Model.Programs
         }
 
         public bool Inactive { get; set; }
-        public string? SchedulingProgramName { get; set; }
+        private string? schedulingProgramName;
+
+        public string? SchedulingProgramName
+        {
+            get { return schedulingProgramName; }
+            set 
+            { 
+                schedulingProgramName = value;
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
 
         private string? products;
         public string? Products
