@@ -38,18 +38,6 @@ namespace ProjectLighthouse.ViewModel.Core
             }
         }
 
-        private Visibility miBVis = Visibility.Collapsed;
-        public Visibility MiBVis
-        {
-            get { return miBVis; }
-            set
-            {
-                miBVis = value;
-                OnPropertyChanged();
-            }
-        }
-
-
         private BaseViewModel _selectedViewModel;
 
         public BaseViewModel SelectedViewModel

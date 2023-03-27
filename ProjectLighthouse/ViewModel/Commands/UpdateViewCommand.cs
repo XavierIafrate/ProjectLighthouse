@@ -36,7 +36,6 @@ namespace ProjectLighthouse.ViewModel.Commands
             if (targetView == "Schedule")
             {
                 viewModel.BetaWarningVis = Visibility.Hidden;
-                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new ScheduleViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -50,7 +49,6 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "View Requests")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new RequestViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -64,7 +62,6 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "New Request")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new NewRequestViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -78,7 +75,6 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Orders")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new OrderViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -92,7 +88,6 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Bar Stock")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new BarStockViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -106,7 +101,6 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Drawings")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DrawingBrowserViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -120,35 +114,18 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Programs")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ProgramManagerViewModel();
                 viewModel.NavText = "Program Manager";
-                //viewModel.NavText = App.CurrentUser.Locale switch
-                //{
-                //    "Polish" => "Rysunek Techniczney",
-                //    "Persian" => "نقشه های فنی",
-                //    "Welsh" => "Darluniau Technegol",
-                //    _ => "Technical Drawings"
-                //};
             }
             else if (targetView == "Research")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ResearchViewModel();
                 viewModel.NavText = "Development";
-                //viewModel.NavText = App.CurrentUser.Locale switch
-                //{
-                //    "Polish" => "Rysunek Techniczney",
-                //    "Persian" => "نقشه های فنی",
-                //    "Welsh" => "Darluniau Technegol",
-                //    _ => "Technical Drawings"
-                //};
             }
             else if (targetView == "Calibration")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new CalibrationViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -162,7 +139,6 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Quality Check")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new QualityCheckViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -176,7 +152,6 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Deliveries")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new DeliveriesViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -190,35 +165,30 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Manage Users")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ManageUsersViewModel();
                 viewModel.NavText = "Manage Users";
             }
             else if (targetView == "Lathe Config")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new LatheViewModel();
                 viewModel.NavText = "Lathe Configuration";
             }
             else if (targetView == "Analytics")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new AnalyticsViewModel();
                 viewModel.NavText = "Analytics";
             }
             else if (targetView == "Product Data")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.MiBVis = Visibility.Collapsed;
+                viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new ProductManagerViewModel();
                 viewModel.NavText = "Product Data";
             }
             else if (targetView == "DB Management")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.MiBVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DatabaseManagerViewModel();
                 viewModel.NavText = "Database Manager";
             }
@@ -227,7 +197,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                 App.ActiveViewModel = "";
             }
 
-            viewModel.MainWindow.SelectButton(parameter.ToString());
+            viewModel.MainWindow.SelectButton(targetView);
         }
     }
 }
