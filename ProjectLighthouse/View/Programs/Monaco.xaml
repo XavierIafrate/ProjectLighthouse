@@ -19,10 +19,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="6*" />
         </Grid.ColumnDefinitions>
         <StackPanel
             Grid.ColumnSpan="2"
@@ -46,25 +47,30 @@
                     Text="PROJECT LIGHTHOUSE" />
                 <TextBlock
                     Margin="0,-7,0,0"
+                    d:Text="Lumen Editor"
                     FontSize="40"
                     FontWeight="Bold"
                     Foreground="{Binding ForegroundBrush}"
-                    Text="Lumen Editor" />
+                    Text="{Binding Title}" />
             </StackPanel>
-            <ToggleButton
-                x:Name="DiffButton"
-                Background="{Binding BackgroundBrush}"
-                BorderBrush="{Binding ForegroundBrush}"
-                Click="DiffButton_Click"
-                Foreground="{Binding CursorForegroundBrush}"
-                Style="{StaticResource DiffModeToggleButton}"
-                Tag="Diff" />
+
         </StackPanel>
-        <StackPanel
+        <ToggleButton
+            x:Name="DiffButton"
             Grid.Column="1"
-            Width="250"
-            Margin="20,10"
             HorizontalAlignment="Right"
+            Background="{Binding BackgroundBrush}"
+            BorderBrush="{Binding ForegroundBrush}"
+            Click="DiffButton_Click"
+            Foreground="{Binding CursorForegroundBrush}"
+            Style="{StaticResource DiffModeToggleButton}"
+            Tag="Diff" />
+        <StackPanel
+            x:Name="ThemesComboBox"
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="5"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Center">
             <TextBlock
                 Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"
@@ -73,7 +79,10 @@
             <ComboBox x:Name="ThemeName" SelectionChanged="ThemeName_SelectionChanged" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1">
+        <StackPanel
+            x:Name="ProgramsList"
+            Grid.Row="1"
+            Width="300">
             <TextBlock
                 Margin="30,10"
                 FontWeight="SemiBold"
@@ -97,17 +106,29 @@
                     <DataTemplate>
                         <Grid Margin="15,10">
                             <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
-                            <Button
-                                x:Name="CloseProgramButton"
-                                Click="CloseProgramButton_Click"
-                                CommandParameter="{Binding}"
-                                HorizontalAlignment="Right"
-                                Background="{Binding Path=DataContext.BackgroundBrush, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
-                                Foreground="{Binding Path=DataContext.BackgroundBrush, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
-                                Style="{StaticResource MonacoCloseProgramButton}">
-                                <Rectangle Fill="#01ffffff" />
 
-                            </Button>
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                <Button
+                                    x:Name="PopoutProgramButton"
+                                    Background="{Binding Path=DataContext.BackgroundBrush, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                    Click="PopoutProgramButton_Click"
+                                    CommandParameter="{Binding}"
+                                    Foreground="{Binding Path=DataContext.BackgroundBrush, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                    Style="{StaticResource MonacoPopoutProgramButton}">
+                                    <Rectangle Fill="#01ffffff" />
+
+                                </Button>
+                                <Button
+                                    x:Name="CloseProgramButton"
+                                    Background="{Binding Path=DataContext.BackgroundBrush, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                    Click="CloseProgramButton_Click"
+                                    CommandParameter="{Binding}"
+                                    Foreground="{Binding Path=DataContext.BackgroundBrush, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                    Style="{StaticResource MonacoCloseProgramButton}">
+                                    <Rectangle Fill="#01ffffff" />
+
+                                </Button>
+                            </StackPanel>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -129,6 +150,7 @@
 
         <Grid
             Grid.Row="1"
+            Grid.RowSpan="2"
             Grid.Column="1"
             d:Visibility="Collapsed"
             Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}">
