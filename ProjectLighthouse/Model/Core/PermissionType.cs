@@ -10,6 +10,7 @@
     * 4xx = Quality Permissions
     * 5xx = Maintenance Permissions
     * 6xx = Development Permissions
+    * 7xx = Product Management Permissions
     * 
     */
 
@@ -30,5 +31,7 @@
         ConfigureMaintenance = 501,
         ManageProjects = 601,
         ModifyProjects = 602,
+        CreateProducts = 701,
+        UpdateProducts = 702,
     }
 }
