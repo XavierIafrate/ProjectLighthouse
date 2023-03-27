@@ -54,14 +54,34 @@ namespace ProjectLighthouse.ViewModel.Core
             if (App.CurrentUser is null) return;
             if (App.CurrentUser.UserName is null) return;
 
-            users = DatabaseHelper.Read<User>().Where(x => !x.IsBlocked && x.ReceivesNotifications && x.UserName != App.CurrentUser.UserName).ToList();
+            users = DatabaseHelper.Read<User>()
+                .Where(x => !x.IsBlocked && x.ReceivesNotifications && x.UserName != App.CurrentUser.UserName)
+                .ToList();
+
             List<Permission> permissionsList = DatabaseHelper.Read<Permission>();
             for (int i = 0; i < users.Count; i++)
             {
                 users[i].UserPermissions = permissionsList.Where(x => x.UserId == users[i].Id).ToList();
             }
 
-            MyNotifications = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName).ToList();
+            MyNotifications = DatabaseHelper.Read<Notification>()
+                .Where(x => x.TargetUser == App.CurrentUser.UserName)
+                .ToList();
+
+            DateTime cutoff = DateTime.Now.AddDays(-30);
+
+            for(int i = 0; i < MyNotifications.Count; i++)
+            {
+                Notification n = MyNotifications[i];
+                if(n.TimeStamp < cutoff)
+                {
+                    DatabaseHelper.Delete<Notification>(n);
+                }
+            }
+
+            MyNotifications = MyNotifications
+                .Where(x => x.TimeStamp > cutoff)
+                .ToList();
 
             SetInterfaceVariables();
         }
@@ -157,7 +177,7 @@ namespace ProjectLighthouse.ViewModel.Core
             int visibleNotSeenNots = App.MainViewModel.NotCount;
             if (visibleNotSeenNots > 3 && multiToast)
             {
-                string header = $"{numNewNots:0} new notification" + (numNewNots == 1 ? "" : "s");
+                string header = $"{visibleNotSeenNots:0} new notification" + (visibleNotSeenNots == 1 ? "" : "s");
                 new ToastContentBuilder()
                        .AddText(header)
                        .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
