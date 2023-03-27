@@ -524,7 +524,7 @@
                             </Grid>
                         </Grid>
 
-                        <StackPanel Visibility="{Binding SelectedRequestMainProduct, Converter={StaticResource NotNullToVisibility}}">
+                        <!--<StackPanel Visibility="{Binding SelectedRequestMainProduct, Converter={StaticResource NotNullToVisibility}}">
                             <TextBlock Style="{StaticResource section}" Text="Product Analytics" />
                             <Border
                                 Margin="5"
@@ -551,7 +551,7 @@
 
                             <TextBlock Text="{Binding FrequencyAnalysis}" />
 
-                        </StackPanel>
+                        </StackPanel>-->
 
                         <StackPanel Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToCollapsed}}">
                             <TextBlock Style="{StaticResource section}" Text="Recommended Order" />
@@ -600,7 +600,7 @@
                                 <Rectangle Fill="#01ffffff" />
                             </Grid>
 
-                            <Grid Margin="10,0">
+                            <Grid Margin="5,0">
                                 <Button
                                     Margin="0,0,5,0"
                                     HorizontalAlignment="Left"
@@ -631,10 +631,9 @@
                         <StackPanel Margin="0,10" Visibility="{Binding ApprovalControlsVis}">
                             <TextBlock Style="{StaticResource section}" Text="Approval" />
 
-                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                            <StackPanel HorizontalAlignment="Center">
                                 <TextBlock
-                                    Margin="20,0"
-                                    VerticalAlignment="Center"
+                                    Style="{StaticResource InputLabel}"
                                     Text="Reason for declining:" />
                                 <ComboBox
                                     x:Name="DeclineComboBox"
@@ -680,7 +679,7 @@
                         <Border
                             Margin="0,10"
                             Background="{StaticResource Background}"
-                            BorderBrush="{StaticResource Yellow}"
+                            BorderBrush="{StaticResource Orange}"
                             BorderThickness="3"
                             CornerRadius="5"
                             Visibility="{Binding DataRequired, Converter={StaticResource boolToVisible}}">
