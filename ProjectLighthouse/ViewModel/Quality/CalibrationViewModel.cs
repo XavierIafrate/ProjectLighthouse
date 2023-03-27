@@ -287,7 +287,11 @@ namespace ProjectLighthouse.ViewModel.Quality
             {
                 int id = window.Equipment.Id;
                 Refresh();
-                SelectedEquipment = Equipment.Find(x => x.Id == id);
+                SelectedEquipment = FilteredEquipment.Find(x => x.Id == id);
+                if (SelectedEquipment is null && FilteredEquipment.Count > 0)
+                {
+                    SelectedEquipment = FilteredEquipment.First();
+                }
             }
         }
 
@@ -300,7 +304,11 @@ namespace ProjectLighthouse.ViewModel.Quality
             {
                 int id = SelectedEquipment.Id;
                 Refresh();
-                SelectedEquipment = Equipment.Find(x => x.Id == id);
+                SelectedEquipment = FilteredEquipment.Find(x => x.Id == id);
+                if (SelectedEquipment is null && FilteredEquipment.Count > 0)
+                {
+                    SelectedEquipment = FilteredEquipment.First();
+                }
             }
         }
 
@@ -311,7 +319,11 @@ namespace ProjectLighthouse.ViewModel.Quality
             if (window.SaveExit)
             {
                 Refresh();
-                SelectedEquipment = Equipment.Find(x => x.Id == id);
+                SelectedEquipment = FilteredEquipment.Find(x => x.Id == id);
+                if (SelectedEquipment is null && FilteredEquipment.Count > 0)
+                {
+                    SelectedEquipment = FilteredEquipment.First();
+                }
             }
         }
 
