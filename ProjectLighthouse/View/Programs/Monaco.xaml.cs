@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.ViewModel.Core;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -21,7 +20,6 @@ namespace ProjectLighthouse.View.Programs
 {
     public partial class Monaco : Window, INotifyPropertyChanged
     {
-        List<string> themes;
 
         private ObservableCollection<NcProgram> programs = new();
         public ObservableCollection<NcProgram> Programs
@@ -110,23 +108,10 @@ namespace ProjectLighthouse.View.Programs
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            themes = Directory.GetFiles(Path.Join(AppDomain.CurrentDomain.BaseDirectory, @"Monaco\themes")).ToList();
-            List<string> fileNames = new();
-
-            for (int i = 0; i < themes.Count; i++)
-            {
-                string f = Path.GetFileNameWithoutExtension(themes[i]);
-                if (f == "themelist")
-                {
-                    continue;
-                }
-                fileNames.Add(f);
-            }
-
             await SetupEditors();
 
-            ThemeName.ItemsSource = fileNames;
-            ThemeName.SelectedIndex = fileNames.IndexOf("Oceanic Next");
+            ThemeName.ItemsSource = LumenManager.ThemeNames;
+            ThemeName.SelectedIndex = LumenManager.ThemeNames.IndexOf(LumenManager.SelectedThemeName);
         }
 
         async void SetContent()
@@ -183,10 +168,10 @@ namespace ProjectLighthouse.View.Programs
                     return;
                 }
             }
-            
+
             DollarOne.Visibility = Visibility.Hidden;
             await SetDollarOneContent();
-            ApplyTheme();
+            ApplyTheme(LumenManager.SelectedThemeData);
 
             DollarOne.Visibility = Visibility.Visible;
         }
@@ -204,35 +189,21 @@ namespace ProjectLighthouse.View.Programs
                     return;
                 }
             }
-            
+
             DollarTwo.Visibility = Visibility.Hidden;
             await SetDollarTwoContent();
-            ApplyTheme();
+            ApplyTheme(LumenManager.SelectedThemeData);
 
             DollarTwo.Visibility = Visibility.Visible;
         }
 
-
-
         private void ThemeName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ApplyTheme();
+            LumenManager.SetTheme((string)ThemeName.SelectedValue);
         }
 
-        void ApplyTheme()
+        public void ApplyTheme(string themeData)
         {
-            string themeData;
-
-            try
-            {
-                themeData = LoadThemeData((string)ThemeName.SelectedValue);
-            }
-            catch (Exception ex)
-            {
-                NotificationManager.NotifyHandledException(ex);
-                return;
-            }
-
             SetLumenTheme(themeData);
             SetTheme(DollarOne, themeData);
             SetTheme(DollarTwo, themeData);
@@ -297,19 +268,10 @@ namespace ProjectLighthouse.View.Programs
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            LumenManager.DisposeWindow();
-
+            LumenManager.DisposeWindow(this);
         }
 
         #region Themes
-        string LoadThemeData(string name)
-        {
-           string path = themes.Find(x => Path.GetFileNameWithoutExtension(x) == name) 
-                ?? throw new ArgumentException($"Could not find theme: '{name}'");
-
-            string data = File.ReadAllText(path);
-            return data;
-        }
 
         void SetLumenTheme(string themeData)
         {
@@ -384,6 +346,24 @@ namespace ProjectLighthouse.View.Programs
             if (btn.CommandParameter is not NcProgram prog) return;
 
             LumenManager.Close(prog);
+        }
+
+        private void PopoutProgramButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button) return;
+            LumenManager.OpenInSingleWindow(button.CommandParameter as NcProgram);
+        }
+
+        public void HideMenu()
+        {
+            ProgramsList.Visibility = Visibility.Collapsed;
+            ThemesComboBox.Visibility = Visibility.Collapsed;
+        }
+
+        public void ShowMenu()
+        {
+            ProgramsList.Visibility = Visibility.Visible;
+            ThemesComboBox.Visibility = Visibility.Visible;
         }
     }
 }
