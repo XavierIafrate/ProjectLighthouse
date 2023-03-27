@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.View;
@@ -30,13 +31,24 @@ namespace ProjectLighthouse
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            DateTime startTime = DateTime.Now;
             base.OnStartup(e);
             this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 
             if (!EnvironmentContext.Setup())
             {
                 SetupFailedWindow window = new("Something wen't wrong while setting up the environment.", App.ROOT_PATH);
+                window.ShowDialog();
+                Application.Current.Shutdown();
+                return;
+            }
+
+            try
+            {
+                _ = DatabaseHelper.Read<User>(throwErrs:true).ToList();
+            }
+            catch (SQLite.SQLiteException ex)
+            {
+                SetupFailedWindow window = new("The database cannot be read.", $"{ex.Source}: {ex.Result}");
                 window.ShowDialog();
                 Application.Current.Shutdown();
                 return;
