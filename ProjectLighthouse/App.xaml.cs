@@ -89,6 +89,8 @@ namespace ProjectLighthouse
             };
 
             Task.Run(() => StartNotificationsManager());
+
+            LumenManager.Initialise();
         }
 
         private static bool VersionIsPermitted()
