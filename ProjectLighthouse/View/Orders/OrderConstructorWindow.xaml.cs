@@ -228,7 +228,11 @@ namespace ProjectLighthouse.View.Orders
         {
             Products = DatabaseHelper.Read<Product>().OrderBy(x => x.Name).ToList();
             ProductGroups = DatabaseHelper.Read<ProductGroup>().OrderBy(x => x.Name).ToList();
-            TurnedProducts = DatabaseHelper.Read<TurnedProduct>().OrderBy(x => x.ProductName).ThenBy(x => x.IsSpecialPart).ToList();
+            TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
+                .OrderBy(x => x.MaterialId)
+                .ThenBy(x => x.ProductName)
+                .ThenBy(x => !x.IsSpecialPart)
+                .ToList();
             BarStock = DatabaseHelper.Read<BarStock>();
 
             NewOrder = new();
@@ -262,8 +266,6 @@ namespace ProjectLighthouse.View.Orders
 
             TurnedProducts
                 .Where(x => x.GroupId == SelectedGroup.Id)
-                .OrderBy(x => x.ProductName)
-                .ThenBy(x => !x.IsSpecialPart)
                 .ToList()
                 .ForEach(x => AvailableTurnedProducts.Add(x));
         }
@@ -458,6 +460,11 @@ namespace ProjectLighthouse.View.Orders
             }
 
             ProductGroup group = SelectedGroup;
+            if (group.Status == ProductGroup.GroupStatus.InDevelopment)
+            {
+                NewOrder.IsResearch = true;
+            }
+
             NewOrder.MajorDiameter = group.MajorDiameter;
 
             BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId) 
@@ -475,7 +482,9 @@ namespace ProjectLighthouse.View.Orders
             NewOrder.TargetCycleTime = targetCycleTime;
             NewOrder.TargetCycleTimeEstimated = estimated;
 
-            List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == TechnicalDrawing.Type.Production).ToList();
+            List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>()
+                .Where(x => x.DrawingType == (NewOrder.IsResearch? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production))
+                .ToList();
             List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.GroupId, NewOrder.MaterialId);
 
             if (!DatabaseHelper.Insert(NewOrder))
