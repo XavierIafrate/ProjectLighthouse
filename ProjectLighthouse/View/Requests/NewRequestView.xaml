@@ -189,7 +189,10 @@
                             <Run Text="{Binding SelectedProduct.ProductName, TargetNullValue='No product selected'}" />
                         </TextBlock>
                     </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding SelectedProductGroup, Converter={StaticResource NotNullToVisibility}}">
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        Visibility="{Binding SelectedProductGroup, Converter={StaticResource NotNullToVisibility}}">
                         <Border
                             Margin="0,3"
                             HorizontalAlignment="Left"
@@ -198,8 +201,8 @@
                             Visibility="{Binding SelectedProductGroup.Dormant, Converter={StaticResource boolToVisibleOrCollapsed}}">
                             <TextBlock
                                 Margin="7,1"
-                                FontWeight="SemiBold"
                                 FontSize="16"
+                                FontWeight="SemiBold"
                                 Foreground="{StaticResource Red}"
                                 Text="Dormant" />
                         </Border>
@@ -211,8 +214,8 @@
                             Visibility="{Binding SelectedProductGroup.InDevelopment, Converter={StaticResource boolToVisibleOrCollapsed}}">
                             <TextBlock
                                 Margin="7,1"
-                                FontWeight="SemiBold"
                                 FontSize="16"
+                                FontWeight="SemiBold"
                                 Foreground="{StaticResource Orange}"
                                 Text="Development" />
                         </Border>
