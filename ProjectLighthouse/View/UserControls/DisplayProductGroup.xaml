@@ -6,20 +6,55 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
-    d:DesignHeight="40"
     d:DesignWidth="300"
     mc:Ignorable="d">
     <Grid Margin="5">
-
-        <TextBlock
-            Grid.Row="0"
-            Grid.Column="1"
-            Margin="5,0"
-            VerticalAlignment="Center"
-            d:Text="GROUP_NAME"
-            FontSize="16"
-            FontWeight="SemiBold"
-            Text="{Binding Name}" />
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="5,0"
+                d:Text="GROUP_NAME"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="{Binding Name}" />
+            <Border
+                Margin="5,2"
+                HorizontalAlignment="Left"
+                Background="{StaticResource RedFaded}"
+                CornerRadius="5"
+                Visibility="{Binding Dormant, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                <TextBlock
+                    Margin="7,1"
+                    FontSize="12"
+                    Foreground="{StaticResource Red}"
+                    Text="Dormant" />
+            </Border>
+            <Border
+                Margin="5,2"
+                HorizontalAlignment="Left"
+                Background="{StaticResource OrangeFaded}"
+                CornerRadius="5"
+                Visibility="{Binding InDevelopment, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                <TextBlock
+                    Margin="7,1"
+                    FontSize="12"
+                    Foreground="{StaticResource Orange}"
+                    Text="Development" />
+            </Border>
+            <Border
+                Margin="5,2"
+                HorizontalAlignment="Left"
+                Background="{StaticResource GreenFaded}"
+                CornerRadius="5"
+                Visibility="{Binding Active, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                <TextBlock
+                    Margin="7,1"
+                    FontSize="12"
+                    Foreground="{StaticResource Green}"
+                    Text="Active" />
+            </Border>
+        </StackPanel>
 
         <Button
             Margin="0,0,5,0"
