@@ -88,9 +88,6 @@ namespace ProjectLighthouse.View.Programs
 
         void LoadTargeting()
         {
-            if (Program.Products is null) return;
-            if (Program.Groups is null) return;
-
             List<string> productStringIds = Program.ProductStringIds;
             List<string> groupStringIds = Program.GroupStringIds;
 
