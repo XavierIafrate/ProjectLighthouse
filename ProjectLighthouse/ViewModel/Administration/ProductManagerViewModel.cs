@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
-using ProjectLighthouse.Model.Drawings;
+﻿using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.View.Administration;
@@ -22,7 +21,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         public List<TurnedProduct> TurnedProducts { get; set; }
         public List<NcProgram> Programs { get; set; }
 
-
+        public List<Product> FilteredProducts { get; set; }
         public List<ProductGroup> FilteredProductGroups { get; set; }
         public List<TurnedProduct> FilteredTurnedProducts { get; set; }
 
@@ -50,6 +49,20 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
+        private string searchText;
+
+        public string SearchText
+        {
+            get { return searchText; }
+            set
+            {
+                searchText = value;
+                Search();
+                OnPropertyChanged();
+            }
+        }
+
+
         public AddProductGroupCommand AddProductGroupCmd { get; set; }
         public EditTurnedProductCommand EditTurnedProductCmd { get; set; }
         public AddTurnedProductCommand AddTurnedProductCmd { get; set; }
@@ -67,6 +80,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             AddProductCmd = new(this);
 
             LoadData();
+            Search();
         }
 
         private void LoadData()
@@ -137,6 +151,36 @@ namespace ProjectLighthouse.ViewModel.Administration
             OnPropertyChanged(nameof(FilteredTurnedProducts));
         }
 
+        void Search()
+        {
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                FilteredProducts = new(Products);
+
+                if (FilteredProducts.Count > 0)
+                {
+                    SelectedProduct = FilteredProducts.First();
+                }
+                else
+                {
+                    SelectedProduct = null;
+                }
+                return;
+            }
+
+            string token = SearchText.ToUpperInvariant();
+            FilteredProducts = Products.Where(x => x.Name.ToUpperInvariant().Contains(token) || x.Description.ToUpperInvariant().Contains(token)).ToList();
+            OnPropertyChanged(nameof(FilteredProducts));
+            if (FilteredProducts.Count > 0)
+            {
+                SelectedProduct = FilteredProducts.First();
+            }
+            else
+            {
+                SelectedProduct = null;
+            }
+        }
+
         public void AddProductGroup(ProductGroup? g)
         {
             if (g is not null)
@@ -152,11 +196,11 @@ namespace ProjectLighthouse.ViewModel.Administration
             AddProductGroupWindow window;
 
 
-            if (g is null) 
+            if (g is null)
             {
                 window = new(SelectedProduct, Products) { Owner = App.MainViewModel.MainWindow };
             }
-            else 
+            else
             {
                 window = new(SelectedProduct, g, Products) { Owner = App.MainViewModel.MainWindow };
             }
@@ -176,7 +220,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void AddTurnedProduct()
         {
-            AddTurnedProductWindow window = new(ProductGroups, groupId:SelectedProductGroup.Id) { Owner = App.MainViewModel.MainWindow };
+            AddTurnedProductWindow window = new(ProductGroups, groupId: SelectedProductGroup.Id) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
             if (!window.SaveExit)
@@ -219,7 +263,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             if (string.IsNullOrEmpty(SelectedProduct.WebUrl))
             {
-                MessageBox.Show("No URL on record", "Failed", MessageBoxButton.OK, MessageBoxImage.Information); 
+                MessageBox.Show("No URL on record", "Failed", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
