@@ -168,12 +168,6 @@
                             Content="Calibration"
                             Style="{StaticResource Calibration_MenuItem}" />
                         <ToggleButton
-                            x:Name="qc_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Quality Check"
-                            Content="Quality Check"
-                            Style="{StaticResource QualityCheck_MenuItem}" />
-                        <ToggleButton
                             x:Name="deliveries_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Deliveries"
@@ -188,18 +182,6 @@
                             CommandParameter="Analytics"
                             Content="Analytics"
                             Style="{StaticResource Analytics_MenuItem}" />
-                        <ToggleButton
-                            x:Name="manage_users_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Manage Users"
-                            Content="Manage Users"
-                            Style="{StaticResource ManageUsers_MenuItem}" />
-                        <ToggleButton
-                            x:Name="manage_lathes_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Lathe Config"
-                            Content="Lathe Config"
-                            Style="{StaticResource Lathe_MenuItem}" />
                         <ToggleButton
                             x:Name="manage_products_button"
                             Command="{Binding UpdateViewCommand}"
@@ -326,13 +308,6 @@
 
                 </Border>
             </Grid>
-            <!--<Image
-                Width="120"
-                Margin="30,0"
-                HorizontalAlignment="Left"
-                RenderOptions.BitmapScalingMode="Fant"
-                Source="/Resources/MiB_Logo_Stacked_Colour.jpg"
-                Visibility="{Binding MiBVis}" />-->
             <Viewbox
                 MaxHeight="70"
                 Margin="50,15"
