@@ -9,9 +9,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows;
 using ViewModel.Commands.UserManagement;
@@ -203,7 +201,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             {
                 return;
             }
-    
+
             if (Users.Any(x => x.Id == user))
             {
                 SelectedUser = Users.Find(x => x.Id == user);
@@ -252,7 +250,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             Array allPermissions = Enum.GetValues(typeof(PermissionType));
             List<EditablePermission> newPermissions = new();
-            
+
             for (int i = 0; i < allPermissions.Length; i++)
             {
                 if (allPermissions.GetValue(i) is not PermissionType p) continue;
@@ -261,9 +259,9 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             SelectedUserPermissions = newPermissions;
 
-            SelectedRole = SelectedUser.Role;            
+            SelectedRole = SelectedUser.Role;
             SelectedView = views.Find(n => n == (string.IsNullOrEmpty(SelectedUser.DefaultView) ? "Orders" : SelectedUser.DefaultView));
-           
+
             UserLogins = Logins.Where(x => x.User == SelectedUser.UserName && x.Time.AddDays(14) > DateTime.Now).ToList() ?? new();
             OnPropertyChanged(nameof(UserLogins));
         }
@@ -273,7 +271,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             NewUserWindow window = new() { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
-            if(window.SaveExit)
+            if (window.SaveExit)
             {
                 LoadData();
 
