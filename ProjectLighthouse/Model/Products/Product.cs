@@ -59,6 +59,7 @@ namespace ProjectLighthouse.Model.Products
                 imageUrl = value; 
                 ValidateProperty();
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(LocalRenderPath));
             }
         }
 
