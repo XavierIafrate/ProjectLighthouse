@@ -1,20 +1,16 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using DocumentFormat.OpenXml.Packaging;
-using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.View.Core;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows;
 using ViewModel.Commands.Administration;
 using static ProjectLighthouse.Model.BaseObject;
@@ -23,6 +19,9 @@ namespace ProjectLighthouse.ViewModel.Administration
 {
     public class DatabaseManagerViewModel : BaseViewModel
     {
+        public ManageUsersViewModel ManageUsersViewModel { get; set; }
+        public LatheViewModel LatheViewModel { get; set; }
+
         public List<LatheManufactureOrder> Orders { get; set; }
 
         public GetRecordsAsCsvCommand GetRecordsAsCsvCmd { get; set; }
@@ -32,6 +31,16 @@ namespace ProjectLighthouse.ViewModel.Administration
             GetRecordsAsCsvCmd = new(this);
 
             Orders = DatabaseHelper.Read<LatheManufactureOrder>();
+            
+            if (App.CurrentUser.Role == Model.Administration.UserRole.Administrator) 
+            {
+                ManageUsersViewModel = new();
+            }
+
+            if (App.CurrentUser.HasPermission(Model.Core.PermissionType.ConfigureMaintenance))
+            {
+                LatheViewModel = new();
+            }
 
         }
 
@@ -41,7 +50,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             {
                 case "Orders":
                     CSVHelper.WriteListToCSV(Orders, "orders");
-                        break;
+                    break;
                 case "WorkloadOrders":
                     GetWorkload();
                     break;
@@ -74,7 +83,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             for (int i = 0; i < 365; i++)
             {
-                DateTime date = DateTime.Today.AddDays(i*-1);
+                DateTime date = DateTime.Today.AddDays(i * -1);
 
                 WorkloadDay data = new()
                 {
@@ -110,7 +119,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             public DateTime Day { get; set; }
             public string WeekId { get; set; }
             public int CountOfOrders { get; set; }
-            public int CountOfProductionOrders { get;  set; }   
+            public int CountOfProductionOrders { get; set; }
             public int CountOfDevelopmentOrders { get; set; }
             public double AverageTurnaroundTime { get; set; }
         }
@@ -138,7 +147,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             {
                 File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\template.csv", headerLine);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -152,7 +161,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             products.ForEach(x => x.ValidateAll());
 
-            products = products.Where(x => !x.HasErrors).ToList();  
+            products = products.Where(x => !x.HasErrors).ToList();
 
             List<BarStock> barStock = DatabaseHelper.Read<BarStock>();
             List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>();
@@ -170,10 +179,10 @@ namespace ProjectLighthouse.ViewModel.Administration
                     continue;
                 }
 
-                List<BarStock> candidates = barStock.Where(x => 
+                List<BarStock> candidates = barStock.Where(x =>
                         x.Size >= (memberOf.MinBarSize ?? memberOf.MajorDiameter)
                         && x.MaterialId == material.Id)
-                    .OrderBy(x=> x.Size)
+                    .OrderBy(x => x.Size)
                     .ToList();
 
                 if (candidates.Count == 0)
@@ -210,22 +219,22 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             [Name("Item ID")]
             public string Product { get; set; }
-            
+
             [Name("Cycle Time (seconds)")]
             public int CycleTime { get; set; }
-            
+
             [Name("Material ID")]
             public string Material { get; set; }
-            
+
             [Name("Barstock ID")]
             public string BarId { get; set; }
-            
+
             [Name("Bar Length (mm)")]
             public int BarLength { get; set; }
-            
+
             [Name("Bar Cost")]
             public double BarCost { get; set; }
-            
+
             [Name("Item Major Length (mm)")]
             public double ProductMajorLength { get; set; }
 

@@ -1,6 +1,8 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.Presentation;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.View.Drawings;
 using ProjectLighthouse.ViewModel.Commands.Drawings;
 using ProjectLighthouse.ViewModel.Core;
@@ -10,6 +12,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Drawings
@@ -21,6 +24,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public List<TechnicalDrawingGroup> FilteredDrawingGroups { get; set; }
         public List<TechnicalDrawing> Drawings { get; set; }
         public List<Note> SelectedDrawingNotes { get; set; }
+
+        private List<ProductGroup> ProductGroups;
+        private List<Product> Products;
+        private List<TurnedProduct> TurnedProducts;
 
         #region Full Properties
         private List<TechnicalDrawing> filteredDrawings;
@@ -199,6 +206,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         private void LoadData()
         {
+            Products = DatabaseHelper.Read<Product>();
+            ProductGroups = DatabaseHelper.Read<ProductGroup>();
+            TurnedProducts = DatabaseHelper.Read<TurnedProduct>();
+
             Drawings = DatabaseHelper.Read<TechnicalDrawing>();
             Drawings = Drawings
                 .OrderBy(d => d.DrawingName)
@@ -206,39 +217,51 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 .ThenBy(x => x.Created)
                 .ToList();
 
-            List<Note> Notes = DatabaseHelper.Read<Note>()
-                .ToList();
+            List<Note> Notes = DatabaseHelper.Read<Note>().ToList();
 
-            for (int i = 0; i < Drawings.Count; i++)
-            {
-                Drawings[i].Notes = Notes.Where(x => x.DocumentReference == Drawings[i].Id.ToString("0")).ToList() ?? new();
-            }
+            List<int?> GroupIds = Drawings.Where(x => x.TurnedProductId is null && x.GroupId is not null).Select(x => x.GroupId).Distinct().ToList();
+            List<int?> ProductIds = Drawings.Where(x => x.TurnedProductId is not null).Select(x => x.TurnedProductId).Distinct().ToList();
 
-            string[] drawingGroups = Drawings.Select(x => x.DrawingName).Distinct().ToArray();
             DrawingGroups = new();
-
-            for (int i = 0; i < drawingGroups.Length; i++)
+            foreach (int? groupId in GroupIds)
             {
-                List<TechnicalDrawing> d = Drawings.Where(x => x.DrawingName == drawingGroups[i]).ToList();
-                int maxRev = d.Max(x => x.Revision);
-                TechnicalDrawing.Amendment maxAmd = d.Where(x => x.Revision == maxRev).Max(x => x.AmendmentType);
-
-                for (int j = 0; j < d.Count; j++)
+                ProductGroup? group;
+                if (groupId is null)
                 {
-                    if (d[j].AmendmentType == maxAmd && d[j].Revision == maxRev && d[j].IsApproved && !d[j].IsWithdrawn)
+                    continue;
+                }
+                else
+                {
+                   group = ProductGroups.Find(x => x.Id == groupId);  
+                }
+
+                if (group is null)
+                {
+                    MessageBox.Show($"Failed to find group with ID '{(groupId == null ? groupId : "null")}'");
+                    continue;
+                }
+
+                List<TechnicalDrawing> groupDrawings = Drawings.Where(x => x.GroupId == groupId && x.TurnedProductId is null).ToList();
+                int maxRev = groupDrawings.Max(x => x.Revision);
+                TechnicalDrawing.Amendment maxAmd = groupDrawings.Where(x => x.Revision == maxRev).Max(x => x.AmendmentType);
+
+                for (int j = 0; j < groupDrawings.Count; j++)
+                {
+                    if (groupDrawings[j].AmendmentType == maxAmd && groupDrawings[j].Revision == maxRev && groupDrawings[j].IsApproved && !groupDrawings[j].IsWithdrawn)
                     {
-                        d[j].IsCurrent = true;
+                        groupDrawings[j].IsCurrent = true;
                     }
                 }
+
                 TechnicalDrawingGroup newGroup = new()
                 {
-                    Drawings = d.OrderBy(x => x.Created).ToList(),
-                    Name = drawingGroups[i],
-                    CurrentRevision = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.Revision),
-                    LastIssue = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.ApprovedDate),
-                    Amendment = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.AmendmentType),
-                    AllDrawingsWithdrawn = d.All(x => x.IsWithdrawn || x.IsRejected),
-                    IsArchetypeGroup = d.First().IsArchetype
+                    Drawings = groupDrawings.OrderBy(x => x.Created).ToList(),
+                    Name = group.Name,
+                    CurrentRevision = maxRev,
+                    LastIssue = groupDrawings.Max(x => x.ApprovedDate),
+                    Amendment = maxAmd,
+                    AllDrawingsWithdrawn = groupDrawings.All(x => x.IsWithdrawn || x.IsRejected),
+                    IsArchetypeGroup = true
                 };
 
                 if (newGroup.LastIssue == DateTime.MinValue)
@@ -249,10 +272,93 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 DrawingGroups.Add(newGroup);
             }
 
-            DrawingGroups = DrawingGroups
-                .OrderByDescending(x => x.IsArchetypeGroup)
-                .ThenBy(x => x.Name)
-                .ToList();
+            foreach (int? productId in ProductIds)
+            {
+                if (productId is null) continue;
+
+                TurnedProduct? turnedProduct = TurnedProducts.Find(x => x.Id == productId);
+
+                if (turnedProduct is null)
+                {
+                    MessageBox.Show($"Failed to find turned product with ID '{productId}'");
+                    continue;
+                }
+
+
+                List<TechnicalDrawing> groupDrawings = Drawings.Where(x => x.TurnedProductId == productId).ToList();
+                int maxRev = groupDrawings.Max(x => x.Revision);
+                TechnicalDrawing.Amendment maxAmd = groupDrawings.Where(x => x.Revision == maxRev).Max(x => x.AmendmentType);
+
+                for (int j = 0; j < groupDrawings.Count; j++)
+                {
+                    if (groupDrawings[j].AmendmentType == maxAmd && groupDrawings[j].Revision == maxRev && groupDrawings[j].IsApproved && !groupDrawings[j].IsWithdrawn)
+                    {
+                        groupDrawings[j].IsCurrent = true;
+                    }
+                }
+
+                TechnicalDrawingGroup newGroup = new()
+                {
+                    Drawings = groupDrawings.OrderBy(x => x.Created).ToList(),
+                    Name = turnedProduct.ProductName,
+                    CurrentRevision = maxRev,
+                    LastIssue = groupDrawings.Max(x => x.ApprovedDate),
+                    Amendment = maxAmd,
+                    AllDrawingsWithdrawn = groupDrawings.All(x => x.IsWithdrawn || x.IsRejected),
+                    IsArchetypeGroup = false
+                };
+
+                if (newGroup.LastIssue == DateTime.MinValue)
+                {
+                    newGroup.LastIssue = null;
+                }
+
+                DrawingGroups.Add(newGroup);
+            }
+
+            //for (int i = 0; i < Drawings.Count; i++)
+            //{
+            //    Drawings[i].Notes = Notes.Where(x => x.DocumentReference == Drawings[i].Id.ToString("0")).ToList() ?? new();
+            //}
+
+            //string[] drawingGroups = Drawings.Select(x => x.DrawingName).Distinct().ToArray();
+
+            //for (int i = 0; i < drawingGroups.Length; i++)
+            //{
+            //    List<TechnicalDrawing> d = Drawings.Where(x => x.DrawingName == drawingGroups[i]).ToList();
+            //    int maxRev = d.Max(x => x.Revision);
+            //    TechnicalDrawing.Amendment maxAmd = d.Where(x => x.Revision == maxRev).Max(x => x.AmendmentType);
+
+            //    for (int j = 0; j < d.Count; j++)
+            //    {
+            //        if (d[j].AmendmentType == maxAmd && d[j].Revision == maxRev && d[j].IsApproved && !d[j].IsWithdrawn)
+            //        {
+            //            d[j].IsCurrent = true;
+            //        }
+            //    }
+            //    TechnicalDrawingGroup newGroup = new()
+            //    {
+            //        Drawings = d.OrderBy(x => x.Created).ToList(),
+            //        Name = drawingGroups[i],
+            //        CurrentRevision = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.Revision),
+            //        LastIssue = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.ApprovedDate),
+            //        Amendment = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.AmendmentType),
+            //        AllDrawingsWithdrawn = d.All(x => x.IsWithdrawn || x.IsRejected),
+            //        IsArchetypeGroup = d.First().IsArchetype
+            //    };
+
+            //    if (newGroup.LastIssue == DateTime.MinValue)
+            //    {
+            //        newGroup.LastIssue = null;
+            //    }
+
+            //    DrawingGroups.Add(newGroup);
+            //}
+
+            //DrawingGroups = DrawingGroups
+            //    .OrderByDescending(x => x.IsArchetypeGroup)
+            //    .ThenBy(x => x.Name)
+            //    .ToList();
         }
         #endregion
 
@@ -576,9 +682,9 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 return;
             }
 
-            if (SelectedDrawing.CreatedBy != App.CurrentUser.GetFullName() && App.CurrentUser.Role < UserRole.Administrator)
+            if (App.CurrentUser.Role < UserRole.Administrator)
             {
-                MessageBox.Show("You cannot withdraw a drawing you didn't upload.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("You do not have permission to withdraw drawings.", "Not available", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
