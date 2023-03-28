@@ -209,17 +209,7 @@ namespace ProjectLighthouse.Model.Programs
             {
                 if(string.IsNullOrWhiteSpace(Name)) return null;
 
-                try
-                {
-                    string path = $@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\{Name}.PRG";
-
-                    return File.Exists(path) ? path : null;
-                }
-                catch (Exception e) 
-                {
-                    Debug.WriteLine(e.Message);
-                    return null;
-                }
+                return $@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\{Name}.PRG";
             }
         }
 
