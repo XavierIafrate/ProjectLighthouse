@@ -11,8 +11,15 @@
     mc:Ignorable="d">
     <Grid Margin="5">
         <TabControl>
-            <TabItem Header="Requests" />
-            <TabItem Header="Orders" IsSelected="True">
+            <TabItem Header="Users" IsEnabled="{Binding ManageUsersViewModel, Converter={StaticResource NotNullToBoolean}}">
+                <ContentControl Content="{Binding ManageUsersViewModel}"/>
+            </TabItem>
+            <TabItem Header="Lathes">
+                <ContentControl Content="{Binding LatheViewModel}" IsEnabled="{Binding LatheViewModel, Converter={StaticResource NotNullToBoolean}}"/>
+            </TabItem>
+            <TabItem Header="Materials" IsEnabled="False"/>
+            <TabItem Header="Dev" IsEnabled="False"/>
+            <TabItem Header="Reports">
                 <Grid>
                     <StackPanel>
                         <Button
@@ -21,7 +28,7 @@
                             Command="{Binding GetRecordsAsCsvCmd}"
                             CommandParameter="Orders"
                             Style="{StaticResource Action_Button}"
-                            Tag="Get CSV" />
+                            Tag="Get CSV of orders" />
                         <Button
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
@@ -53,10 +60,6 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Order Items" />
-            <TabItem Header="Drawings" />
-            <TabItem Header="Bar Stock" />
-            <TabItem Header="Bar Issues" />
         </TabControl>
     </Grid>
 </UserControl>
