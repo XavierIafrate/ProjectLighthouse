@@ -177,17 +177,61 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock
-                        Grid.ColumnSpan="2"
-                        Margin="0,0,0,5"
-                        d:Text="PRODUCT_NAME"
-                        FontWeight="SemiBold"
-                        Style="{StaticResource section}"
-                        Text="{Binding SelectedProduct.ProductName, TargetNullValue='No product selected'}" />
 
+                    <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+                        <TextBlock FontSize="18" FontWeight="SemiBold">
+                            <Run Text="{Binding SelectedMainProduct.Name, TargetNullValue='No Product'}" />
+                            <Run Text="&gt;" />
+                            <Run Text="{Binding SelectedProductGroup.Name, TargetNullValue='No Group'}" />
+                            <Run Text="&gt;" />
+                            <Run Text="{Binding SelectedProduct.ProductName, TargetNullValue='No product selected'}" />
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding SelectedProductGroup, Converter={StaticResource NotNullToVisibility}}">
+                        <Border
+                            Margin="0,3"
+                            HorizontalAlignment="Left"
+                            Background="{StaticResource RedFaded}"
+                            CornerRadius="5"
+                            Visibility="{Binding SelectedProductGroup.Dormant, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                            <TextBlock
+                                Margin="7,1"
+                                FontWeight="SemiBold"
+                                FontSize="16"
+                                Foreground="{StaticResource Red}"
+                                Text="Dormant" />
+                        </Border>
+                        <Border
+                            Margin="0,3"
+                            HorizontalAlignment="Left"
+                            Background="{StaticResource OrangeFaded}"
+                            CornerRadius="5"
+                            Visibility="{Binding SelectedProductGroup.InDevelopment, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                            <TextBlock
+                                Margin="7,1"
+                                FontWeight="SemiBold"
+                                FontSize="16"
+                                Foreground="{StaticResource Orange}"
+                                Text="Development" />
+                        </Border>
+                        <Border
+                            Margin="0,3"
+                            HorizontalAlignment="Left"
+                            Background="{StaticResource GreenFaded}"
+                            CornerRadius="5"
+                            Visibility="{Binding SelectedProductGroup.Active, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                            <TextBlock
+                                Margin="7,1"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Green}"
+                                Text="Active" />
+                        </Border>
+                    </StackPanel>
                     <Border
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Width="120"
                         Height="120"
                         Background="{StaticResource Background}"
@@ -202,12 +246,12 @@
                                 Fill="{StaticResource OnBackground}"
                                 Opacity="0.3"
                                 Stretch="Uniform" />
-                            <Image RenderOptions.BitmapScalingMode="Fant" Source="{Binding SelectedMainProduct.LocalRenderPath}" />
+                            <Image RenderOptions.BitmapScalingMode="Fant" Source="{Binding SelectedMainProduct.LocalRenderPath, FallbackValue={x:Null}, TargetNullValue={x:Null}}" />
                         </Grid>
                     </Border>
 
                     <Grid
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="1"
                         Margin="10,0,0,0"
                         TextElement.FontFamily="Consolas">
@@ -221,7 +265,7 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
-                            <RowDefinition Height="16.393" />
+                            <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
@@ -263,18 +307,6 @@
                             Text="{Binding SelectedProduct.QuantityOnPO, StringFormat='{}{0:#,##0} pcs'}" />
 
                         <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="0"
-                            Text="Tooling Group" />
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            HorizontalAlignment="Right"
-                            d:Text="TOOLING_GROUP"
-                            FontWeight="SemiBold"
-                            Text="{Binding SelectedProductGroup, TargetNullValue='None'}" />
-
-                        <TextBlock
                             Grid.Row="4"
                             Grid.Column="0"
                             Text="Material" />
@@ -311,7 +343,7 @@
                             FontWeight="SemiBold"
                             Text="{Binding SelectedProduct.LighthouseGuaranteedQuantity, StringFormat='{}{0:#,##0} pcs'}" />
 
-                        <!--<TextBlock
+                        <TextBlock
                             Grid.Row="7"
                             Grid.Column="0"
                             Text="Total Manufactured" />
@@ -321,7 +353,7 @@
                             HorizontalAlignment="Right"
                             d:Text="QTY_MANUFACTURED"
                             FontWeight="SemiBold"
-                            Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />-->
+                            Text="{Binding SelectedProduct.QuantityManufactured, StringFormat='{}{0:#,##0} pcs'}" />
 
                         <TextBlock
                             Grid.Row="8"

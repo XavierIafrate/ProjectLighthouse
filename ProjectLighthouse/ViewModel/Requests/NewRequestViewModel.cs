@@ -61,6 +61,10 @@ namespace ProjectLighthouse.ViewModel.Requests
                 {
                     SelectedProduct = filteredList[0];
                 }
+                else
+                {
+                    SelectedProduct = null;
+                }
                 OnPropertyChanged();
             }
         }
@@ -339,6 +343,23 @@ namespace ProjectLighthouse.ViewModel.Requests
             Product product = group == null 
                 ? null 
                 : Products.Find(x => x.Id == group.ProductId);
+
+            if (group is not null)
+            {
+                if (group.Status == ProductGroup.GroupStatus.Dormant)
+                {
+                    MessageBox.Show($"This product is a member of a group that is marked as 'Dormant', we are unable to manufacture these.", "Cannot Proceed", MessageBoxButton.OK, MessageBoxImage.Hand);
+                    return;
+                }
+                if (group.Status == ProductGroup.GroupStatus.InDevelopment)
+                {
+                    MessageBoxResult res = MessageBox.Show($"This product is a member of a group that is marked as 'In Development', it is unlikely a customer requirement can be fulfilled.{Environment.NewLine}Do you want to submit anyway?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (res != MessageBoxResult.Yes)
+                    {
+                        return;
+                    }
+                }
+            }
 
             string toastImage = product == null 
                 ? null 
