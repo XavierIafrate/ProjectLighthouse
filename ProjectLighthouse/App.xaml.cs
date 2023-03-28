@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.View;
@@ -44,7 +43,7 @@ namespace ProjectLighthouse
 
             try
             {
-                _ = DatabaseHelper.Read<User>(throwErrs:true).ToList();
+                _ = DatabaseHelper.Read<User>(throwErrs: true).ToList();
             }
             catch (SQLite.SQLiteException ex)
             {
@@ -150,6 +149,28 @@ namespace ProjectLighthouse
             string copyTo = $@"{specificFolder}\lib\";
 
             CopyFilesRecursively(copyFrom, copyTo);
+        }
+
+
+        public static void MoveToLocalAppData(string path)
+        {
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string specificFolder = Path.Combine(folder, "Lighthouse");
+            if (!Directory.Exists(specificFolder))
+            {
+                Directory.CreateDirectory(specificFolder);
+            }
+
+            string copyTo = $@"{specificFolder}\lib\";
+
+            try
+            {
+                File.Copy(path, copyTo + Path.GetFileName(path), true);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         private static void CopyFilesRecursively(string sourcePath, string targetPath)
