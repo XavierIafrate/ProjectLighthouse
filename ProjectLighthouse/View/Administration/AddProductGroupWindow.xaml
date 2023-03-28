@@ -47,6 +47,11 @@
             Tag="min bar size"
             Text="{Binding Group.MinBarSize, Mode=TwoWay, ValidatesOnDataErrors=True}" />
 
+        <TextBlock Style="{StaticResource InputLabel}" Text="Status" />
+        <ComboBox
+            ItemsSource="{Binding Statuses}"
+            SelectedValue="{Binding Group.Status}" />
+
         <Grid Height="10" />
         <Button
             x:Name="CreateButton"

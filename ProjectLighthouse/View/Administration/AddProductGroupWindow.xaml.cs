@@ -3,6 +3,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using static ProjectLighthouse.Model.Products.ProductGroup;
 
 namespace ProjectLighthouse.View.Administration
 {
@@ -12,11 +13,15 @@ namespace ProjectLighthouse.View.Administration
         public ProductGroup? originalGroup;
         public Product Product { get; set; }
         public List<Product> Products { get; set; }
+        public Array Statuses { get; set; }
 
         public bool SaveExit = false;
         public AddProductGroupWindow(Product product, List<Product> products)
         {
             InitializeComponent();
+
+            Statuses = Enum.GetValues(typeof(GroupStatus));
+
             Product = product;
             Products = products;
             Group = new() { ProductId = product.Id };
@@ -30,6 +35,9 @@ namespace ProjectLighthouse.View.Administration
         public AddProductGroupWindow(Product product, ProductGroup group, List<Product> products)
         {
             InitializeComponent();
+
+            Statuses = Enum.GetValues(typeof(GroupStatus));
+            
             Product = product;
             Products = products;
 
