@@ -111,9 +111,6 @@ namespace ProjectLighthouse.View.Administration
 
         private void ChangeImageButton_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
-
-
             OpenFileDialog openFileDialog = new()
             {
                 Filter = "Images|*.jpg",
@@ -142,8 +139,17 @@ namespace ProjectLighthouse.View.Administration
 
             try
             {
-                string path = App.ROOT_PATH + @"lib\renders\" + Path.GetFileName(openFileDialog.FileName);
-                File.Copy(openFileDialog.FileName, path);
+                string newSource = Path.GetFileName(openFileDialog.FileName);
+                string path = App.ROOT_PATH + @"lib\renders\" + newSource;
+                if (!File.Exists(path))
+                {
+                    File.Copy(openFileDialog.FileName, path);
+                }
+
+                App.MoveToLocalAppData(path);
+
+                Product.ImageUrl = newSource;   
+                DatabaseHelper.Update(Product, throwErrs: true);
             }
             catch (Exception ex)
             {
