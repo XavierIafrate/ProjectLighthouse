@@ -64,9 +64,17 @@ namespace ProjectLighthouse.ViewModel.Core
 
         public static void Open(NcProgram program)
         {
-            string path = program.Path ?? Path.Combine(
+            string path = program.Path;
+
+
+#if DEBUG
+            if(!File.Exists(path))
+            {
+                path = Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
                         @"View\Programs\12.PRG");
+            }
+#endif
 
 
             try
