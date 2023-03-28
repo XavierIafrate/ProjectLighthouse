@@ -3,6 +3,7 @@ using LiveChartsCore.Defaults;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using Microsoft.Windows.Themes;
 using Model.Analytics;
 using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Orders;
@@ -11,8 +12,11 @@ using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using static Model.Analytics.KpiReport;
 
 namespace ProjectLighthouse.ViewModel.Administration
@@ -81,7 +85,19 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         };
 
+        public Axis[] YAxisStartAtZero { get; set; } =
+        {
+            new Axis
+            {
+                MinLimit=0
+            }
+        };
+
         public Axis[] KpiOverTimeXAxes { get; set; }
+
+
+        public ISeries[] TurnaroundTime { get; set; }
+        public ISeries[] ActiveOrders { get; set; }
 
         public int TotalPartsMade { get; set; }
         public int TotalPartsMadeThisYear { get; set; }
@@ -94,13 +110,13 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public AnalyticsViewModel()
         {
-            Analytics = new();
+            //Analytics = new();
 
             RuntimeReportCommand = new(this);
 
             //Task.Run(() => GetAnalytics());
             GetAnalytics();
-
+            GetWorkload();
         }
 
         private void GetAnalytics()
@@ -119,6 +135,125 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             //GetKpis();
             //GetMachineHistoryGraph();
+        }
+
+        class WorkloadDay
+        {
+            public DateTime Day { get; set; }
+            public string WeekId { get; set; }
+            public int CountOfOrders { get; set; }
+            public int CountOfProductionOrders { get; set; }
+            public int CountOfDevelopmentOrders { get; set; }
+            public double AverageTurnaroundTime { get; set; }
+        }
+
+        private void GetWorkload()
+        {
+            List<WorkloadDay> workload = new();
+
+            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>()
+                                                    .Where(x =>
+                                                        x.State < OrderState.Cancelled
+                                                        && x.StartDate.Date.AddMonths(18) > DateTime.Now
+                                                        && !string.IsNullOrEmpty(x.AllocatedMachine))
+                                                    .OrderBy(x => x.StartDate)
+                                                    .ToList();
+
+            List<DateTimePoint> turnaroundPoints = new();
+
+            List<DateTimePoint> totalOrders = new();
+            List<DateTimePoint> productionOrders = new();
+            List<DateTimePoint> developmentOrders = new();
+
+
+            for (int i = 0; i < 365; i++)
+            {
+                DateTime date = DateTime.Today.AddDays(i * -1);
+
+                WorkloadDay data = new()
+                {
+                    Day = date,
+                    WeekId = $"W{ISOWeek.GetWeekOfYear(date):00}-{date:yyyy}"
+                };
+
+                List<LatheManufactureOrder> ordersAtTime = orders.Where(x => x.CreatedAt <= date && x.EndsAt() >= date).ToList();
+
+                data.CountOfOrders = ordersAtTime.Count;
+                data.CountOfProductionOrders = ordersAtTime.Where(x => !x.IsResearch).Count();
+                data.CountOfDevelopmentOrders = ordersAtTime.Where(x => x.IsResearch).Count();
+
+                TimeSpan totalWorkTime = new();
+                ordersAtTime
+                    .Where(x => !x.IsResearch)
+                    .ToList()
+                    .ForEach(x => totalWorkTime += x.EndsAt() - x.CreatedAt);
+
+                data.AverageTurnaroundTime = totalWorkTime.TotalDays / 7;
+                data.AverageTurnaroundTime /= ordersAtTime.Where(x => !x.IsResearch).Count();
+
+                workload.Add(data);
+            }
+
+            workload.Reverse();
+
+            foreach (WorkloadDay data in workload)
+            {
+                turnaroundPoints.Add(new(data.Day, data.AverageTurnaroundTime));
+
+                totalOrders.Add(new(data.Day, data.CountOfOrders));
+                productionOrders.Add(new(data.Day, data.CountOfProductionOrders));
+                developmentOrders.Add(new(data.Day, data.CountOfDevelopmentOrders));
+            }
+
+            TurnaroundTime = new ISeries[]
+            {
+                new LineSeries<DateTimePoint>
+                {
+                    Values = turnaroundPoints,
+                    Name = "Average Production Turnaround",
+                    Fill=null,
+                    GeometrySize=0,
+                    TooltipLabelFormatter = (chartPoint) =>
+                    $"{new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0.0} weeks",
+                }
+            };
+
+            ActiveOrders = new ISeries[]
+            {
+                new LineSeries<DateTimePoint>
+                {
+                    Values = totalOrders,
+                    Name = "Total",
+                    Fill=null,
+                    GeometrySize=0,
+                    GeometryStroke= new SolidColorPaint(SKColors.DarkGray) {StrokeThickness=3},
+                    Stroke=new SolidColorPaint(SKColors.DarkGray) {StrokeThickness=3},
+                    TooltipLabelFormatter = (chartPoint) =>
+                    $"Total: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
+                },
+                new LineSeries<DateTimePoint>
+                {
+                    Values = productionOrders,
+                    Name = "Production",
+                    Fill=null,
+                    GeometryStroke=new SolidColorPaint(SKColors.ForestGreen) {StrokeThickness=2},
+                    Stroke=new SolidColorPaint(SKColors.ForestGreen) {StrokeThickness=2},
+                    GeometrySize=0,
+                    TooltipLabelFormatter = (chartPoint) =>
+                    $"Production: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
+                },
+                new LineSeries<DateTimePoint>
+                {
+                    Values = developmentOrders,
+                    Name = "Development",
+                    Fill=null,
+                    GeometryStroke=new SolidColorPaint(SKColors.DodgerBlue) {StrokeThickness=2},
+                    Stroke=new SolidColorPaint(SKColors.DodgerBlue) {StrokeThickness=2},
+                    GeometrySize=0,
+                    TooltipLabelFormatter = (chartPoint) =>
+                    $"Development: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
+                }
+            };
         }
 
         private void GetMachineHistoryGraph()

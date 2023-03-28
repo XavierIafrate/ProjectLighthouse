@@ -64,7 +64,12 @@
                 <lvc2:CartesianChart Height="500" Series="{Binding Path=KpiSeries}" YAxes="{Binding Path=YAxes}" XAxes="{Binding Path=KpiXAxes}" />
                 <lvc2:CartesianChart Series="{Binding WeeklyKpis}" Height="500" XAxes="{Binding Path=KpiOverTimeXAxes}"/>-->
             </StackPanel>
-            <Grid Height="50" />
+            <TextBlock Text="Average Turnaround Time" Style="{StaticResource SectionLabel}"/>
+            <lvc2:CartesianChart Height="500" Series="{Binding Path=TurnaroundTime}"  XAxes="{Binding Path=XAxes}" YAxes="{Binding YAxisStartAtZero}"/>
+            <TextBlock Text="Active Orders" Style="{StaticResource SectionLabel}"/>
+            <lvc2:CartesianChart Height="500" Series="{Binding Path=ActiveOrders}" LegendPosition="Top" XAxes="{Binding Path=XAxes}" YAxes="{Binding YAxisStartAtZero}"/>
+
+            <Grid Height="200" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>
