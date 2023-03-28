@@ -260,7 +260,7 @@ namespace ProjectLighthouse.ViewModel.Programs
             List<int> groups = Archetypes.Where(x => x.Name.ToLowerInvariant().Contains(tagSearch)).Select(x => x.Id).ToList();
             FilteredPrograms.AddRange(Programs.Where(x => groups.Any(y => x.GroupStringIds.Contains(y.ToString("0")))));
 
-            FilteredPrograms = FilteredPrograms.Distinct().ToList();
+            FilteredPrograms = FilteredPrograms.Distinct().OrderBy(x => x.Name.Length).ThenBy(x => x.Name).ToList();
 
             if (FilteredPrograms.Count > 0)
             {
