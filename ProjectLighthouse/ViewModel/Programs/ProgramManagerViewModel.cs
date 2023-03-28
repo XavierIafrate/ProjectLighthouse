@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Presentation;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -208,9 +207,8 @@ namespace ProjectLighthouse.ViewModel.Programs
         public void OpenProgram()
         {
             if (SelectedProgram is null) return;
-#if !DEBUG
             if (SelectedProgram.Path is null) return;
-#endif       
+
             LumenManager.Open(SelectedProgram);
         }
 
@@ -255,6 +253,9 @@ namespace ProjectLighthouse.ViewModel.Programs
                 x.Name.ToLowerInvariant().Contains(SearchString.ToLowerInvariant()) ||
                 x.SearchableTags.Contains(tagSearch))
                 .ToList();
+
+            List<int> products = Products.Where(x => x.Name.ToLowerInvariant().Contains(tagSearch)).Select(x => x.Id).ToList();
+            FilteredPrograms.AddRange(Programs.Where(x => products.Any(y => x.ProductStringIds.Contains(y.ToString("0")))));
 
             List<int> groups = Archetypes.Where(x => x.Name.ToLowerInvariant().Contains(tagSearch)).Select(x => x.Id).ToList();
             FilteredPrograms.AddRange(Programs.Where(x => groups.Any(y => x.GroupStringIds.Contains(y.ToString("0")))));
@@ -313,7 +314,7 @@ namespace ProjectLighthouse.ViewModel.Programs
                 .Where(x => x.ProgramId == SelectedProgram.Id)
                 .OrderByDescending(x => x.CommittedAt)
                 .ToList();
-            FilteredCommits = new(); 
+            FilteredCommits = new();
             commits.ForEach(x => FilteredCommits.Add(x));
             OnPropertyChanged(nameof(FilteredCommits));
 
@@ -325,7 +326,6 @@ namespace ProjectLighthouse.ViewModel.Programs
             {
                 UsedFor = new();
                 ConstrainedMaterials = new();
-                return;
             }
 
             List<string> productStringIds = SelectedProgram.ProductStringIds;
