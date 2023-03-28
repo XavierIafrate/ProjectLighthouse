@@ -80,16 +80,7 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            manage_database_button.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
-
-            manage_users_button.IsEnabled = App.CurrentUser.Role is UserRole.Administrator;
-            manage_lathes_button.IsEnabled = App.CurrentUser.HasPermission(Model.Core.PermissionType.ConfigureMaintenance);
             manage_products_button.IsEnabled = App.CurrentUser.HasPermission(Model.Core.PermissionType.UpdateProducts);
-            manage_database_button.IsEnabled = App.CurrentUser.Role is UserRole.Administrator;
-            
-            programs_button.Visibility = Visibility.Collapsed;
-            //programs_button.IsEnabled = App.CurrentUser.Role is UserRole.Administrator;
-
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.Role.ToString();
         }
