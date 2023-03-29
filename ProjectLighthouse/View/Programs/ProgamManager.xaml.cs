@@ -33,84 +33,10 @@ namespace ProjectLighthouse.View.Programs
                 : Visibility.Visible;
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TagButton_Click(object sender, RoutedEventArgs e)
         {
-            //if (sender is not TextBox textBox) return;
-            //SendButton.IsEnabled = !string.IsNullOrWhiteSpace(textBox.Text);
-        }
-
-
-
-        List<string> themes;
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.dollarOne.Source =
-                    new Uri(Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        @"Monaco\index.html"));
-
-            this.dollarTwo.Source =
-                    new Uri(Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        @"Monaco\index.html"));
-
-
-            themes = Directory.GetFiles(Path.Join(AppDomain.CurrentDomain.BaseDirectory, @"Monaco\themes")).ToList();
-
-            List<string> fileNames = new();
-
-            for (int i = 0; i < themes.Count; i++)
-            {
-                string f = Path.GetFileNameWithoutExtension(themes[i]);
-                if (f == "themelist")
-                {
-                    continue;
-                }
-                fileNames.Add(f);
-            }
-
-            dollarOne.CoreWebView2InitializationCompleted += DollarOne_CoreWebView2InitializationCompleted;
-            dollarTwo.CoreWebView2InitializationCompleted += DollarTwo_CoreWebView2InitializationCompleted;
-        }
-
-        private void DollarTwo_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
-        {
-            SetTheme(dollarTwo, "Cobalt2");
-
-        }
-
-        private void DollarOne_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
-        {
-            SetTheme(dollarOne, "Cobalt2");
-
-        }
-        private async void SetTheme(WebView2 window, string name)
-        {
-            string path = themes.Find(x => x.Contains(name));
-            if (path is null)
-            {
-                MessageBox.Show($"Could not find theme: '{name}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            string data = File.ReadAllText(path);
-            dynamic d = JObject.Parse(data);
-            await ExecuteScriptFunctionAsync(window, "setTheme", d);
-        }
-
-        public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
-        {
-            string script = functionName + "(";
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                script += JsonConvert.SerializeObject(parameters[i]);
-                if (i < parameters.Length - 1)
-                {
-                    script += ", ";
-                }
-            }
-            script += ");";
-            return await webView2.ExecuteScriptAsync(script);
+            if (sender is not Button tagButton) return;
+            searchBox.Text = (string)tagButton.Tag;
         }
     }
 }
