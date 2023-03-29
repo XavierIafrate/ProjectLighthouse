@@ -32,10 +32,17 @@
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="LightGray" />
                 <Setter Property="Foreground" Value="Gray" />
-                <Setter Property="Cursor" Value="Cross" />
             </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsEnabled" Value="False" />
+                    <Condition Property="IsMouseOver" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Cursor" Value="No" />
+            </MultiTrigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="{StaticResource PurpleLight}" />
+                <Setter Property="Cursor" Value="Wait" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -43,6 +50,29 @@
     <!--  Don't touch  -->
     <Style BasedOn="{StaticResource Default}" TargetType="Button" />
 
+
+    <Style x:Key="TagButton" TargetType="Button" BasedOn="{StaticResource Default}">
+        <Setter Property="Tag" Value="TAG_TEXT" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Margin="3"
+                        Padding="7,3"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            FontSize="12"
+                            Text="{TemplateBinding Tag}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
     <!--#region Notifications-->
@@ -279,6 +309,7 @@
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource BlueDark}" />
+                <Setter Property="Cursor" Value="Hand"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -1824,13 +1855,57 @@
         <Setter Property="Background" Value="{StaticResource Surface}" />
         <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
         <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+                <Setter Property="Background" Value="{StaticResource Blue}" />
+            </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="{StaticResource Surface}" />
                 <Setter Property="Foreground" Value="{StaticResource Blue}" />
             </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="Hero_Lumen_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="View in Lumen" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Height="40"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="3">
+                        <StackPanel Margin="13,7" Orientation="Horizontal">
+                            <Path
+                                Height="20"
+                                Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Margin="7,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}" />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
+        <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
-                <Setter Property="Background" Value="{StaticResource Blue}" />
+                <Setter Property="Foreground" Value="{StaticResource Background}" />
+                <Setter Property="Background" Value="{StaticResource OnBackground}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource Green}" />
+                <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -1860,13 +1935,13 @@
         <Setter Property="Background" Value="{StaticResource Surface}" />
         <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
         <Style.Triggers>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource Surface}" />
-                <Setter Property="Foreground" Value="{StaticResource Green}" />
-            </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource OnGreen}" />
                 <Setter Property="Background" Value="{StaticResource Green}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource Surface}" />
+                <Setter Property="Foreground" Value="{StaticResource Green}" />
             </Trigger>
         </Style.Triggers>
     </Style>
