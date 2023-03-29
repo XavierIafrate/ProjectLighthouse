@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Presentation;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Products;
@@ -12,7 +11,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Security.RightsManagement;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Drawings
@@ -25,6 +23,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public List<TechnicalDrawing> Drawings { get; set; }
         public List<Note> SelectedDrawingNotes { get; set; }
 
+        private List<Note> Notes;
         private List<ProductGroup> ProductGroups;
         private List<Product> Products;
         private List<TurnedProduct> TurnedProducts;
@@ -186,7 +185,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
             Drawings = new();
             FilteredDrawings = new();
-            SelectedDrawing = new();
             FilteredDrawingGroups = new();
             DrawingGroups = new();
 
@@ -199,9 +197,11 @@ namespace ProjectLighthouse.ViewModel.Drawings
             AddCommentToDrawingCmd = new(this);
             ApproveDrawingCmd = new(this);
             RejectDrawingCmd = new(this);
-            ConvertToDevelopmentCmd= new(this);
+            ConvertToDevelopmentCmd = new(this);
 
-            AdminVis = App.CurrentUser.Role == UserRole.Administrator ? Visibility.Visible : Visibility.Collapsed;
+            AdminVis = App.CurrentUser.Role == UserRole.Administrator
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         private void LoadData()
@@ -217,10 +217,19 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 .ThenBy(x => x.Created)
                 .ToList();
 
-            List<Note> Notes = DatabaseHelper.Read<Note>().ToList();
+            Notes = DatabaseHelper.Read<Note>().ToList();
 
-            List<int?> GroupIds = Drawings.Where(x => x.TurnedProductId is null && x.GroupId is not null).Select(x => x.GroupId).Distinct().ToList();
-            List<int?> ProductIds = Drawings.Where(x => x.TurnedProductId is not null).Select(x => x.TurnedProductId).Distinct().ToList();
+            List<int?> GroupIds = Drawings
+                .Where(x => x.TurnedProductId is null && x.GroupId is not null)
+                .Select(x => x.GroupId)
+                .Distinct()
+                .ToList();
+
+            List<int?> ProductIds = Drawings
+                .Where(x => x.TurnedProductId is not null)
+                .Select(x => x.TurnedProductId)
+                .Distinct()
+                .ToList();
 
             DrawingGroups = new();
             foreach (int? groupId in GroupIds)
@@ -232,7 +241,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 }
                 else
                 {
-                   group = ProductGroups.Find(x => x.Id == groupId);  
+                    group = ProductGroups.Find(x => x.Id == groupId);
                 }
 
                 if (group is null)
@@ -247,7 +256,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
                 for (int j = 0; j < groupDrawings.Count; j++)
                 {
-                    if (groupDrawings[j].AmendmentType == maxAmd && groupDrawings[j].Revision == maxRev && groupDrawings[j].IsApproved && !groupDrawings[j].IsWithdrawn)
+                    if (groupDrawings[j].AmendmentType == maxAmd
+                        && groupDrawings[j].Revision == maxRev
+                        && groupDrawings[j].IsApproved
+                        && !groupDrawings[j].IsWithdrawn)
                     {
                         groupDrawings[j].IsCurrent = true;
                     }
@@ -316,49 +328,11 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 DrawingGroups.Add(newGroup);
             }
 
-            //for (int i = 0; i < Drawings.Count; i++)
-            //{
-            //    Drawings[i].Notes = Notes.Where(x => x.DocumentReference == Drawings[i].Id.ToString("0")).ToList() ?? new();
-            //}
 
-            //string[] drawingGroups = Drawings.Select(x => x.DrawingName).Distinct().ToArray();
-
-            //for (int i = 0; i < drawingGroups.Length; i++)
-            //{
-            //    List<TechnicalDrawing> d = Drawings.Where(x => x.DrawingName == drawingGroups[i]).ToList();
-            //    int maxRev = d.Max(x => x.Revision);
-            //    TechnicalDrawing.Amendment maxAmd = d.Where(x => x.Revision == maxRev).Max(x => x.AmendmentType);
-
-            //    for (int j = 0; j < d.Count; j++)
-            //    {
-            //        if (d[j].AmendmentType == maxAmd && d[j].Revision == maxRev && d[j].IsApproved && !d[j].IsWithdrawn)
-            //        {
-            //            d[j].IsCurrent = true;
-            //        }
-            //    }
-            //    TechnicalDrawingGroup newGroup = new()
-            //    {
-            //        Drawings = d.OrderBy(x => x.Created).ToList(),
-            //        Name = drawingGroups[i],
-            //        CurrentRevision = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.Revision),
-            //        LastIssue = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.ApprovedDate),
-            //        Amendment = Drawings.Where(x => x.DrawingName == drawingGroups[i]).Max(x => x.AmendmentType),
-            //        AllDrawingsWithdrawn = d.All(x => x.IsWithdrawn || x.IsRejected),
-            //        IsArchetypeGroup = d.First().IsArchetype
-            //    };
-
-            //    if (newGroup.LastIssue == DateTime.MinValue)
-            //    {
-            //        newGroup.LastIssue = null;
-            //    }
-
-            //    DrawingGroups.Add(newGroup);
-            //}
-
-            //DrawingGroups = DrawingGroups
-            //    .OrderByDescending(x => x.IsArchetypeGroup)
-            //    .ThenBy(x => x.Name)
-            //    .ToList();
+            DrawingGroups = DrawingGroups
+                .OrderBy(x => !x.Drawings.Any(x => x.PendingApproval()))
+                .ThenBy(x => !x.IsArchetypeGroup)
+                .ToList();
         }
         #endregion
 
@@ -388,7 +362,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
                 return;
             }
-            
+
             string searchToken = SearchBoxText.Trim().ToUpperInvariant();
 
             FilteredDrawingGroups = DrawingGroups
@@ -477,9 +451,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             string filePath = Path.Join(App.ROOT_PATH, selectedDrawing.DrawingStore);
 
             // TODO Fix this
-            SelectedDrawingNotes = null;
-            OnPropertyChanged(nameof(SelectedDrawingNotes));
-            SelectedDrawingNotes = selectedDrawing.Notes;
+            SelectedDrawingNotes = Notes.Where(x => x.DocumentReference == $"{selectedDrawing.Id:0}").ToList();
             OnPropertyChanged(nameof(SelectedDrawingNotes));
 
             OpenFileButtonEnabled = File.Exists(filePath);
@@ -529,8 +501,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Comment: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} added a comment to this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
             }
 
-
-            SelectedDrawing.Notes.Add(newNote);
             string thisGroup = SelectedGroup.Name;
             int thisDrawing = SelectedDrawing.Id;
 
