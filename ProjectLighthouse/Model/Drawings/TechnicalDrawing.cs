@@ -68,9 +68,6 @@ namespace ProjectLighthouse.Model.Drawings
         public enum Type { Production, Research }
 
 
-        [Ignore]
-        public List<Note> Notes { get; set; }
-
         public static List<TechnicalDrawing> FindDrawings(List<TechnicalDrawing> drawings, List<LatheManufactureOrderItem> items, int groupId, int materialId)
         {
             List<TechnicalDrawing> drawingsList = new();
@@ -151,6 +148,11 @@ namespace ProjectLighthouse.Model.Drawings
                 .ToList();
 
             return matches.First();
+        }
+
+        public bool PendingApproval()
+        {
+            return !IsApproved && !IsRejected && !IsWithdrawn;
         }
 
         public object Clone()
