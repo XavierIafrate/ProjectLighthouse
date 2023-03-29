@@ -969,7 +969,7 @@
                                         </Border>
                                     </StackPanel>
                                 </TabItem>
-                                <TabItem Header="Programs" Visibility="Collapsed">
+                                <TabItem Header="Programs">
                                     <ItemsControl ItemsSource="{Binding ProgramCandidates}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
