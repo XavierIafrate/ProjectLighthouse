@@ -234,7 +234,6 @@
             <Setter Property="BorderBrush" Value="{StaticResource Surface}" />
             <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
             <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="Height" Value="35" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
