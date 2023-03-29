@@ -11,7 +11,11 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using ViewModel.Commands.Programs;
@@ -128,12 +132,21 @@ namespace ProjectLighthouse.ViewModel.Programs
             }
         }
 
+        private bool lumenButtonEnabled = true;
+
+        public bool LumenButtonEnabled
+        {
+            get { return lumenButtonEnabled; }
+            set { lumenButtonEnabled = value; OnPropertyChanged(); }
+        }
+
+
         public SendMessageCommand SendMessageCmd { get; set; }
         public EditProgramCommand EditProgramCmd { get; set; }
         public OpenProgramCommand OpenProgramCmd { get; set; }
         public OpenCommitCommand OpenCommitCmd { get; set; }
 
-        private Timer timer;
+        private System.Timers.Timer timer;
 
         public ProgramManagerViewModel()
         {
@@ -143,6 +156,70 @@ namespace ProjectLighthouse.ViewModel.Programs
 
             LoadData();
             Search();
+
+            CheckProgramStatuses();
+        }
+
+
+        private CancellationTokenSource cancellationTokenSource;
+        private void CheckProgramStatuses()
+        {
+            cancellationTokenSource = new();
+
+            Task.Run(() => CheckPrograms(cancellationTokenSource.Token), cancellationTokenSource.Token);
+        }
+
+
+        private async Task CheckPrograms(CancellationToken ct)
+        {
+            Thread.Sleep(500);
+            List<NcProgram> programs = new(Programs);
+
+            List<string> filesInDir = Directory.GetFiles($@"{App.ROOT_PATH}lib\pcom\").ToList();
+
+            foreach (NcProgram program in programs)
+            {
+                if (ct.IsCancellationRequested)
+                {
+                    Debug.WriteLine("Cancellation Requested");
+                    ct.ThrowIfCancellationRequested();
+                    return;
+                }
+
+                string path = filesInDir.Find(x => Path.GetFileNameWithoutExtension(x).ToLowerInvariant() == program.Name);
+
+                bool exists = path is not null;
+                DateTime? date;
+
+                if (path is not null)
+                {
+                    date = File.GetLastWriteTime(path);
+                }
+                else
+                {
+                    date = null;
+                }
+
+                Thread.Sleep(50); // dramatic effect
+                NcProgram p = Programs.Find(x => x.Name == program.Name);
+                if (p is null) continue;
+
+                p.FileExists = exists;
+                p.FileLastModified = date;
+
+                NcProgram? uiProgram = FilteredPrograms.Find(x => x.Id == program.Id);
+                if (uiProgram is not null)
+                {
+                    uiProgram.FileExists = exists;
+                    uiProgram.FileLastModified = date;
+                }
+            }
+
+
+            foreach (NcProgram program in FilteredPrograms)
+            {
+                program.FileExists = Programs.Find(x => x.Id == program.Id)?.FileExists;
+            }
         }
 
 
@@ -204,12 +281,26 @@ namespace ProjectLighthouse.ViewModel.Programs
             SelectedProgram = Programs.Find(x => x.Id == selectedProgramId);
         }
 
-        public void OpenProgram()
+        public async void OpenProgram()
         {
             if (SelectedProgram is null) return;
             if (SelectedProgram.Path is null) return;
 
-            LumenManager.Open(SelectedProgram);
+            //LumenButtonEnabled = false;
+            NcProgram p;
+            try
+            {
+                p = await LumenManager.LoadProgram(SelectedProgram);
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return;
+            }
+
+            LumenManager.Open(p);
+
+            LumenButtonEnabled = true;
         }
 
         public void AddProgram()
@@ -401,6 +492,7 @@ namespace ProjectLighthouse.ViewModel.Programs
 
         public void Dispose()
         {
+            cancellationTokenSource?.Cancel();
             //LumenManager.Close();
         }
 

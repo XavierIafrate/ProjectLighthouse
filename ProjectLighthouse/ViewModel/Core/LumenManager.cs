@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using static ProjectLighthouse.Model.Programs.NcProgram;
 
@@ -61,14 +62,12 @@ namespace ProjectLighthouse.ViewModel.Core
         //        MonacoWindow.Close();
         //    }
         //}
-
-        public static void Open(NcProgram program)
+        public static Task<NcProgram> LoadProgram(NcProgram program)
         {
             string path = program.Path;
 
-
 #if DEBUG
-            if(!File.Exists(path))
+            if (!File.Exists(path))
             {
                 path = Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
@@ -76,16 +75,22 @@ namespace ProjectLighthouse.ViewModel.Core
             }
 #endif
 
-
             try
             {
                 program.ProgramContent = GetProgramFromFile(path);
             }
-            catch (Exception ex)
+            catch
             {
-                NotificationManager.NotifyHandledException(ex);
-                return;
+                throw;
             }
+
+            return Task.FromResult(program);
+        }
+
+
+        public static void Open(NcProgram program)
+        {
+            
 
             for (int i = 0; i < SingleProgramWindows.Count; i++)
             {
