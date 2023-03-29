@@ -1,7 +1,7 @@
-﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.View.Programs;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,8 +30,8 @@ namespace ProjectLighthouse.ViewModel.Core
         public static string SelectedThemeData { get; set; }
 
         private static Monaco MonacoWindow;
-
-        private static List<Monaco> SingleProgramWindows { get; set; } = new();
+        private static List<Monaco> SingleProgramWindows = new();
+        public static List<NcProgramCommit> Commits;
 
 
         private static string MonacoTitle = "Lumen (preview)";
@@ -87,9 +87,7 @@ namespace ProjectLighthouse.ViewModel.Core
                 return;
             }
 
-            program.ProgramContent.DollarOneCode = $"Program {program.Name}{Environment.NewLine}{Environment.NewLine}{program.ProgramContent.DollarOneCode}";
-            
-            for(int i = 0; i < SingleProgramWindows.Count; i++)
+            for (int i = 0; i < SingleProgramWindows.Count; i++)
             {
                 if (SingleProgramWindows[i].SelectedProgram.Name == program.Name)
                 {
@@ -101,6 +99,10 @@ namespace ProjectLighthouse.ViewModel.Core
 
             bool monacoWasLoadedPrior = MonacoWindow != null;
             MonacoWindow ??= new() { Title = MonacoTitle };
+            if (!monacoWasLoadedPrior)
+            {
+                Commits = DatabaseHelper.Read<NcProgramCommit>();
+            }
 
             if (MonacoWindow.Programs.Contains(program))
             {
@@ -158,7 +160,7 @@ namespace ProjectLighthouse.ViewModel.Core
             MonacoWindow.Programs.Remove(program);
             if (MonacoWindow.Programs.Count > 0)
             {
-                MonacoWindow.SelectedProgram = MonacoWindow.Programs.First();   
+                MonacoWindow.SelectedProgram = MonacoWindow.Programs.First();
             }
         }
 
@@ -249,7 +251,7 @@ namespace ProjectLighthouse.ViewModel.Core
             }
             else
             {
-                MonacoWindow = null;    
+                MonacoWindow = null;
             }
         }
     }
