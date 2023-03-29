@@ -7,21 +7,71 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.Programs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:vc="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     d:DesignWidth="1445"
     d:Height="800"
     Background="{StaticResource Background}"
-    Loaded="UserControl_Loaded"
     mc:Ignorable="d">
     <Grid>
 
         <Grid IsEnabled="True">
+            <Grid.Resources>
+                <vc:DateTimeToRelativeTime x:Key="timeStampConverter" />
+                <Style x:Key="VisibleAnimation" TargetType="FrameworkElement">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Opacity" Value="0" />
+                    <Style.Triggers>
+                        <Trigger Property="Visibility" Value="Visible">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            From="0.0"
+                                            To="1.0"
+                                            Duration="0:0:2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style x:Key="VisibleAnimationRepeat" TargetType="FrameworkElement">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Opacity" Value="0" />
+                    <Style.Triggers>
+                        <Trigger Property="Visibility" Value="Visible">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            From="0.0"
+                                            To="1.0"
+                                            Duration="0:0:2" />
+                                        <DoubleAnimation
+                                            AutoReverse="True"
+                                            BeginTime="0:0:2"
+                                            RepeatBehavior="Forever"
+                                            Storyboard.TargetProperty="Opacity"
+                                            From="1.0"
+                                            To="0.5"
+                                            Duration="0:0:2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
+            </Grid.Resources>
             <!--<Grid.Effect>
                 <BlurEffect KernelType="Gaussian" Radius="15"  />
             </Grid.Effect>-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="280" />
-                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="4*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -63,24 +113,88 @@
                                 FontSize="16"
                                 FontWeight="SemiBold"
                                 Text="{Binding Name}" />
-                            <Border
-                                x:Name="inactiveBadge"
+
+
+                            <StackPanel
                                 Grid.Column="1"
                                 HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource RedFaded}"
-                                CornerRadius="5">
-                                <TextBlock
-                                    Margin="8,3"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Red}"
-                                    Text="Inactive" />
-                            </Border>
+                                Orientation="Horizontal">
+                                <StackPanel
+                                    x:Name="lastModifiedInfo"
+                                    d:Visibility="Visible"
+                                    Opacity="0.6"
+                                    Orientation="Horizontal"
+                                    Style="{StaticResource VisibleAnimation}"
+                                    Visibility="Collapsed">
+                                    <Path
+                                        Height="12"
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Data="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3"
+                                        Fill="{StaticResource Blue}"
+                                        Stretch="Uniform" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Blue}"
+                                        Text="{Binding FileLastModified, Converter={StaticResource timeStampConverter}}" />
+                                </StackPanel>
+                                <Border
+                                    x:Name="inactiveBadge"
+                                    Background="{StaticResource OrangeFaded}"
+                                    CornerRadius="5">
+                                    <TextBlock
+                                        Margin="8,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource Orange}"
+                                        Text="Inactive" />
+                                </Border>
+                                <Border
+                                    x:Name="notFound"
+                                    Margin="3,0,0,0"
+                                    d:Visibility="Visible"
+                                    Background="{StaticResource RedFaded}"
+                                    CornerRadius="5"
+                                    Style="{StaticResource VisibleAnimationRepeat}"
+                                    Visibility="Collapsed">
+                                    <StackPanel
+                                        Margin="5,0"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <Path
+                                            Height="12"
+                                            Data="M9,13A3,3 0 0,0 12,16A3,3 0 0,0 15,13A3,3 0 0,0 12,10A3,3 0 0,0 9,13M20,19.59V8L14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18C18.45,22 18.85,21.85 19.19,21.6L14.76,17.17C13.96,17.69 13,18 12,18A5,5 0 0,1 7,13A5,5 0 0,1 12,8A5,5 0 0,1 17,13C17,14 16.69,14.96 16.17,15.75L20,19.59Z"
+                                            Fill="{StaticResource Red}"
+                                            Stretch="Uniform" />
+                                        <TextBlock
+                                            Margin="3,0,0,0"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource Red}"
+                                            Text="File Missing" />
+                                    </StackPanel>
+                                </Border>
+
+
+                            </StackPanel>
                         </Grid>
                         <DataTemplate.Triggers>
                             <DataTrigger Binding="{Binding Inactive}" Value="False">
                                 <Setter TargetName="inactiveBadge" Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
+
+                            <DataTrigger Binding="{Binding FileExists}" Value="False">
+                                <Setter TargetName="notFound" Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding FileExists}" Value="True" />
+                                    <Condition Binding="{Binding Inactive}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="lastModifiedInfo" Property="Visibility" Value="Visible" />
+                            </MultiDataTrigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -254,41 +368,43 @@
                                     </Border>
                                 </StackPanel>
                             </StackPanel>
-                            <Button
+                            <StackPanel
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
-                                Command="{Binding EditProgramCmd}"
-                                CommandParameter="{Binding SelectedProgram}"
-                                Style="{StaticResource HeroEditButton}" />
+                                Orientation="Horizontal">
+                                <Button
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding OpenProgramCmd}"
+                                    IsEnabled="{Binding LumenButtonEnabled}"
+                                    Style="{StaticResource Hero_Lumen_Button}"
+                                    Tag="View in Lumen" />
+                                <Button
+                                    Command="{Binding EditProgramCmd}"
+                                    CommandParameter="{Binding SelectedProgram}"
+                                    Style="{StaticResource HeroEditButton}" />
+                            </StackPanel>
                         </Grid>
 
-                        <Button
-                            HorizontalAlignment="Left"
-                            Command="{Binding OpenProgramCmd}"
-                            Style="{StaticResource Action_Button}"
-                            IsEnabled="{Binding SelectedProgram.Path, Converter={StaticResource NotNullToBoolean}}"
-                            Tag="View in Lumen"
-                            />
-                        
+                        <Grid Height="20" />
+
+
                         <StackPanel Visibility="{Binding SelectedProgram.TagsList, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                             <TextBlock Style="{StaticResource InputLabel}" Text="Tags" />
                             <ItemsControl
                                 Margin="5,3"
+                                d:ItemsSource="{d:SampleData ItemCount=5}"
                                 Background="{StaticResource Background}"
                                 ItemsSource="{Binding SelectedProgram.TagsList}"
                                 Style="{x:Null}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border
-                                            Margin="5,3"
+                                        <Button
+                                            d:Tag="TAG_TEXT"
                                             Background="{StaticResource BlueFaded}"
-                                            CornerRadius="5">
-                                            <TextBlock
-                                                Margin="5,3"
-                                                FontWeight="SemiBold"
-                                                Foreground="{StaticResource Blue}"
-                                                Text="{Binding}" />
-                                        </Border>
+                                            Click="TagButton_Click"
+                                            Foreground="{StaticResource Blue}"
+                                            Style="{StaticResource TagButton}"
+                                            Tag="{Binding Path=.}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                                 <ItemsControl.ItemsPanel>
@@ -298,63 +414,72 @@
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
                         </StackPanel>
-                        <StackPanel Visibility="{Binding ConstrainedMaterials, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
-                            <TextBlock Style="{StaticResource InputLabel}" Text="Material Constraints" />
-                            <ItemsControl
-                                Margin="5,3"
-                                Background="{StaticResource Background}"
-                                ItemsSource="{Binding ConstrainedMaterials}"
-                                Style="{x:Null}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border
-                                            Margin="5,3"
-                                            Background="{StaticResource TealFaded}"
-                                            CornerRadius="5">
-                                            <TextBlock
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Visibility="{Binding SelectedProgram.MachinesList, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
+                                <TextBlock Style="{StaticResource InputLabel}" Text="Machine Constraints" />
+                                <ItemsControl
+                                    Margin="5"
+                                    Background="{StaticResource Background}"
+                                    ItemsSource="{Binding SelectedProgram.MachinesList}"
+                                    Style="{x:Null}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border
                                                 Margin="5,3"
-                                                FontWeight="SemiBold"
-                                                Foreground="{StaticResource Teal}"
-                                                Text="{Binding}" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </StackPanel>
+                                                Background="{StaticResource PurpleFaded}"
+                                                CornerRadius="5">
+                                                <TextBlock
+                                                    Margin="5,3"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Purple}"
+                                                    Text="{Binding}" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </StackPanel>
 
-                        <StackPanel Visibility="{Binding SelectedProgram.MachinesList, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
-                            <TextBlock Style="{StaticResource InputLabel}" Text="Machine Constraints" />
-                            <ItemsControl
-                                Margin="5"
-                                Background="{StaticResource Background}"
-                                ItemsSource="{Binding SelectedProgram.MachinesList}"
-                                Style="{x:Null}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border
-                                            Margin="5,3"
-                                            Background="{StaticResource PurpleFaded}"
-                                            CornerRadius="5">
-                                            <TextBlock
+                            <StackPanel Grid.Column="1" Visibility="{Binding ConstrainedMaterials, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
+                                <TextBlock Style="{StaticResource InputLabel}" Text="Material Constraints" />
+                                <ItemsControl
+                                    Margin="5,3"
+                                    Background="{StaticResource Background}"
+                                    ItemsSource="{Binding ConstrainedMaterials}"
+                                    Style="{x:Null}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border
                                                 Margin="5,3"
-                                                FontWeight="SemiBold"
-                                                Foreground="{StaticResource Purple}"
-                                                Text="{Binding}" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </StackPanel>
+                                                Background="{StaticResource TealFaded}"
+                                                CornerRadius="5">
+                                                <TextBlock
+                                                    Margin="5,3"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Teal}"
+                                                    Text="{Binding}" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Height="20" />
+
                         <TextBlock Style="{StaticResource section}" Text="Program Usage" />
                         <Border
                             Margin="5,10"
@@ -479,9 +604,17 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <Border HorizontalAlignment="Right" Visibility="{Binding FilteredCommits, Converter={StaticResource EmptyListToCollapsedOrVisible}}" CornerRadius="5" Margin="5" Background="{StaticResource Surface}">
-                            <TextBlock Text="{Binding FilteredCommits.Count, StringFormat='{}{0:0} Commits'}" Margin="7,3" Foreground="{StaticResource OnSurface}" />
-                            
+                        <Border
+                            Margin="5"
+                            HorizontalAlignment="Right"
+                            Background="{StaticResource Surface}"
+                            CornerRadius="5"
+                            Visibility="{Binding FilteredCommits, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
+                            <TextBlock
+                                Margin="7,3"
+                                Foreground="{StaticResource OnSurface}"
+                                Text="{Binding FilteredCommits.Count, StringFormat='{}{0:0} Commits'}" />
+
                         </Border>
 
                         <TextBlock Style="{StaticResource section}" Text="Notepad" />
