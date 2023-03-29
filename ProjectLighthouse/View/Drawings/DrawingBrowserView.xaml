@@ -692,6 +692,7 @@
                                     Grid.Column="3"
                                     Margin="10,0,0,17"
                                     HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
                                     Background="Transparent"
                                     Command="{Binding AddCommentToDrawingCmd}"
                                     Style="{StaticResource SendButton}" />
