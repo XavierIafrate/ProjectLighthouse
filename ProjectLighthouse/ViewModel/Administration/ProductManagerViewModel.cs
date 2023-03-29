@@ -215,7 +215,12 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             int id = SelectedProduct.Id;
             LoadData();
-            SelectedProduct = Products.Find(x => x.Id == id);
+            SelectedProduct = FilteredProducts.Find(x => x.Id == id);
+
+            if (SelectedProduct is null && FilteredProducts.Count > 0)
+            {
+                SelectedProduct = FilteredProducts.First();
+            }
         }
 
         public void AddTurnedProduct()
@@ -255,7 +260,12 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             LoadData();
 
-            SelectedProduct = Products.Find(x => x.Id == selectedProductId);
+            SelectedProduct = FilteredProducts.Find(x => x.Id == selectedProductId);
+            if (SelectedProduct is null && FilteredProducts.Count > 0)
+            {
+                SelectedProduct = FilteredProducts.First();
+                return;
+            }
             SelectedProductGroup = FilteredProductGroups.Find(x => x.Id == selectedGroupId);
         }
 
@@ -296,7 +306,11 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             LoadData();
 
-            SelectedProduct = Products.Find(x => x.Id == id);
+            SelectedProduct = FilteredProducts.Find(x => x.Id == id);
+            if (SelectedProduct is null && FilteredProducts.Count > 0)
+            {
+                SelectedProduct = FilteredProducts.First();
+            }
         }
     }
 }
