@@ -203,6 +203,25 @@ namespace ProjectLighthouse.Model.Programs
             }
         }
 
+
+        private DateTime? fileLastModified = null;
+        [Ignore]
+        public DateTime? FileLastModified
+        {
+            get { return fileLastModified; }
+            set { fileLastModified = value; OnPropertyChanged(); }
+        }
+
+
+        private bool? fileExists = null;
+        [Ignore]
+        public bool? FileExists
+        {
+            get { return fileExists; }
+            set { fileExists = value; OnPropertyChanged(); }
+        }
+
+
         public string Path
         {
             get
