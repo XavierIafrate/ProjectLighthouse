@@ -220,7 +220,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             ActiveOrders = new ISeries[]
             {
-                new LineSeries<DateTimePoint>
+                new StepLineSeries<DateTimePoint>
                 {
                     Values = totalOrders,
                     Name = "Total",
@@ -231,7 +231,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                     TooltipLabelFormatter = (chartPoint) =>
                     $"Total: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
                 },
-                new LineSeries<DateTimePoint>
+                new StepLineSeries<DateTimePoint>
                 {
                     Values = productionOrders,
                     Name = "Production",
@@ -242,7 +242,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                     TooltipLabelFormatter = (chartPoint) =>
                     $"Production: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
                 },
-                new LineSeries<DateTimePoint>
+                new StepLineSeries<DateTimePoint>
                 {
                     Values = developmentOrders,
                     Name = "Development",
