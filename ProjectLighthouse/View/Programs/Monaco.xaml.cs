@@ -32,6 +32,30 @@ namespace ProjectLighthouse.View.Programs
             }
         }
 
+        private ObservableCollection<NcProgramCommit> selectedProgramCommits = new();
+        public ObservableCollection<NcProgramCommit> SelectedProgramCommits
+        {
+            get { return selectedProgramCommits; }
+            set
+            {
+                selectedProgramCommits = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private NcProgramCommit? selectedCommit;
+        public NcProgramCommit? SelectedCommit
+        {
+            get { return selectedCommit; }
+            set
+            {
+                selectedCommit = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
         private NcProgram selectedProgram;
         public NcProgram SelectedProgram
         {
@@ -116,9 +140,42 @@ namespace ProjectLighthouse.View.Programs
 
         async void SetContent()
         {
-            if (SelectedProgram is null) return;
+            if (SelectedProgram is null)
+            {
+                CommitMenu.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            CommitMenu.Visibility = Visibility.Visible;
+
             await SetDollarOneContent();
             await SetDollarTwoContent();
+
+            LumenManager.Commits
+                .Where(x => x.ProgramId == SelectedProgram.Id)
+                .ToList()
+                .ForEach(x => SelectedProgramCommits.Add(x));
+
+            OnPropertyChanged(nameof(SelectedProgramCommits));
+            DiffButton.IsEnabled = SelectedProgramCommits.Count > 0;
+
+            //NcProgramCommit commit = new()
+            //{
+            //    ProgramId = SelectedProgram.Id,
+            //    FileName = Guid.NewGuid().ToString()[..8],
+            //    CommitMessage = "Initial Commit",
+            //    CommittedAt = DateTime.Now,
+            //    CommittedBy = App.CurrentUser.UserName
+            //};
+
+            //try
+            //{
+            //    DatabaseHelper.Insert(commit, throwErrs: true);
+            //}
+            //catch (Exception ex)
+            //{
+            //    NotificationManager.NotifyHandledException(ex);
+            //}
         }
 
         private void DollarOne_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -213,6 +270,8 @@ namespace ProjectLighthouse.View.Programs
         {
             if (DollarOne.Source.LocalPath.Contains("-diff"))
             {
+                SelectedCommit = null;
+                CommitCombobox.IsEnabled = false;
                 this.DollarOne.Source =
                    new Uri(Path.Combine(
                        AppDomain.CurrentDomain.BaseDirectory,
@@ -236,6 +295,8 @@ namespace ProjectLighthouse.View.Programs
 
             if (DollarTwo.Source.LocalPath.Contains("-diff"))
             {
+                SelectedCommit = null;
+                CommitCombobox.IsEnabled = false;
                 this.DollarTwo.Source =
                    new Uri(Path.Combine(
                        AppDomain.CurrentDomain.BaseDirectory,
@@ -254,6 +315,11 @@ namespace ProjectLighthouse.View.Programs
                 SetToDiffMode(DollarTwo);
 
                 this.DollarTwoDiffModeText.Visibility = Visibility.Visible;
+                if (SelectedProgramCommits.Count > 0)
+                {
+                    SelectedCommit = SelectedProgramCommits.First();
+                }
+                CommitCombobox.IsEnabled = true;
             }
         }
 
@@ -357,12 +423,14 @@ namespace ProjectLighthouse.View.Programs
         public void HideMenu()
         {
             ProgramsList.Visibility = Visibility.Collapsed;
+            CommitMenu.Visibility = Visibility.Collapsed;
             ThemesComboBox.Visibility = Visibility.Collapsed;
         }
 
         public void ShowMenu()
         {
             ProgramsList.Visibility = Visibility.Visible;
+            CommitMenu.Visibility = Visibility.Visible;
             ThemesComboBox.Visibility = Visibility.Visible;
         }
     }
