@@ -3,17 +3,19 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.ViewModel.Core;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static ProjectLighthouse.Model.Programs.NcProgram;
 using Path = System.IO.Path;
 
 namespace ProjectLighthouse.View.Programs
@@ -50,11 +52,22 @@ namespace ProjectLighthouse.View.Programs
             set
             {
                 selectedCommit = value;
+                if (value is not null) LoadCommit();
                 OnPropertyChanged();
             }
         }
 
-
+        private bool diffMode;
+        public bool DiffMode
+        {
+            get { return diffMode; }
+            set
+            {
+                diffMode = value;
+                ConfigureEditors();
+                OnPropertyChanged();
+            }
+        }
 
         private NcProgram selectedProgram;
         public NcProgram SelectedProgram
@@ -63,10 +76,55 @@ namespace ProjectLighthouse.View.Programs
             set
             {
                 selectedProgram = value;
-                SetContent();
+                DiffMode = false;
+
+                if (value is not null)
+                {
+                    NewCommit = new() { ProgramId = SelectedProgram.Id };
+
+                    SelectedProgramCommits.Clear();
+                    LumenManager.Commits
+                        .Where(x => x.ProgramId == SelectedProgram.Id)
+                        .ToList()
+                        .ForEach(x => SelectedProgramCommits.Add(x));
+
+                    OnPropertyChanged(nameof(SelectedProgramCommits));
+
+                    if (SelectedProgramCommits.Count == 0)
+                    {
+                        NewCommit.CommitMessage = "Initial commit";
+                    }
+
+                    DisplayedContent = value.ProgramContent;
+
+                }
                 OnPropertyChanged();
             }
         }
+
+        private NcProgramCommit newCommit;
+        public NcProgramCommit NewCommit
+        {
+            get { return newCommit; }
+            set
+            {
+                newCommit = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private MonacoProgram displayedContent;
+        public MonacoProgram DisplayedContent
+        {
+            get { return displayedContent; }
+            set
+            {
+                displayedContent = value;
+                SetContent();
+            }
+        }
+
+
 
         private SolidColorBrush backgroundBrush;
         public SolidColorBrush BackgroundBrush
@@ -138,26 +196,51 @@ namespace ProjectLighthouse.View.Programs
             ThemeName.SelectedIndex = LumenManager.ThemeNames.IndexOf(LumenManager.SelectedThemeName);
         }
 
-        async void SetContent()
+        void LoadCommit()
         {
-            if (SelectedProgram is null)
+            if (SelectedCommit is null)
             {
-                CommitMenu.Visibility = Visibility.Collapsed;
+                // TODO
                 return;
             }
 
-            CommitMenu.Visibility = Visibility.Visible;
+            MonacoProgram p;
+
+            List<NcProgramCommit> priorCommits = SelectedProgramCommits.ToList()
+                .Where(x => x.CommittedAt < SelectedCommit.CommittedAt)
+                .OrderByDescending(x => x.CommittedAt)
+                .ToList();
+
+            NcProgramCommit? compareAgainst = null;
+            if (priorCommits.Count > 0)
+            {
+                compareAgainst = priorCommits.First();
+            }
+
+            try
+            {
+                p = LumenManager.LoadCommit(SelectedCommit, compareAgainst);
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return;
+            }
+
+            DisplayedContent = p;
+        }
+
+        async void SetContent()
+        {
+            if (DisplayedContent is null)
+            {
+                return;
+            }
+
 
             await SetDollarOneContent();
             await SetDollarTwoContent();
 
-            LumenManager.Commits
-                .Where(x => x.ProgramId == SelectedProgram.Id)
-                .ToList()
-                .ForEach(x => SelectedProgramCommits.Add(x));
-
-            OnPropertyChanged(nameof(SelectedProgramCommits));
-            DiffButton.IsEnabled = SelectedProgramCommits.Count > 0;
 
             //NcProgramCommit commit = new()
             //{
@@ -190,25 +273,25 @@ namespace ProjectLighthouse.View.Programs
 
         async Task SetDollarOneContent()
         {
-            if (DollarOne.Source.LocalPath.Contains("-diff"))
+            if (DiffMode)
             {
-                await LumenManager.ExecuteScriptFunctionAsync(DollarOne, "setContent", SelectedProgram.ProgramContent.OriginalDollarOneCode, SelectedProgram.ProgramContent.DollarOneCode);
+                await LumenManager.ExecuteScriptFunctionAsync(DollarOne, "setContent", DisplayedContent.OriginalDollarOneCode, DisplayedContent.DollarOneCode);
             }
             else
             {
-                await LumenManager.ExecuteScriptFunctionAsync(DollarOne, "setContent", SelectedProgram.ProgramContent.DollarOneCode);
+                await LumenManager.ExecuteScriptFunctionAsync(DollarOne, "setContent", DisplayedContent.DollarOneCode);
             }
         }
 
         async Task SetDollarTwoContent()
         {
-            if (DollarTwo.Source.LocalPath.Contains("-diff"))
+            if (DiffMode)
             {
-                await LumenManager.ExecuteScriptFunctionAsync(DollarTwo, "setContent", SelectedProgram.ProgramContent.OriginalDollarTwoCode, SelectedProgram.ProgramContent.DollarTwoCode);
+                await LumenManager.ExecuteScriptFunctionAsync(DollarTwo, "setContent", DisplayedContent.OriginalDollarTwoCode, DisplayedContent.DollarTwoCode);
             }
             else
             {
-                await LumenManager.ExecuteScriptFunctionAsync(DollarTwo, "setContent", SelectedProgram.ProgramContent.DollarTwoCode);
+                await LumenManager.ExecuteScriptFunctionAsync(DollarTwo, "setContent", DisplayedContent.DollarTwoCode);
             }
         }
 
@@ -266,61 +349,42 @@ namespace ProjectLighthouse.View.Programs
             SetTheme(DollarTwo, themeData);
         }
 
-        private async void DiffButton_Click(object sender, RoutedEventArgs e)
+        private async void ConfigureEditors()
         {
-            if (DollarOne.Source.LocalPath.Contains("-diff"))
-            {
-                SelectedCommit = null;
-                CommitCombobox.IsEnabled = false;
-                this.DollarOne.Source =
-                   new Uri(Path.Combine(
-                       AppDomain.CurrentDomain.BaseDirectory,
-                       @"Monaco\index.html"));
-                this.DollarOneDiffModeText.Visibility = Visibility.Collapsed;
+            CommitMenu.Visibility = DiffMode
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
-                await DollarOne.EnsureCoreWebView2Async();
-            }
-            else
+            if (DiffMode)
             {
-                string jsFunc = "editor.getValue()";
-                string content = await DollarOne.CoreWebView2.ExecuteScriptAsync(jsFunc);
-                string textContent = Regex.Unescape(content.ToString());
-                textContent = textContent[1..^1];
-                SelectedProgram.ProgramContent.DollarOneCode = textContent;
                 SetToDiffMode(DollarOne);
-
-                this.DollarOneDiffModeText.Visibility = Visibility.Visible;
-            }
-
-
-            if (DollarTwo.Source.LocalPath.Contains("-diff"))
-            {
-                SelectedCommit = null;
-                CommitCombobox.IsEnabled = false;
-                this.DollarTwo.Source =
-                   new Uri(Path.Combine(
-                       AppDomain.CurrentDomain.BaseDirectory,
-                       @"Monaco\index.html"));
-                this.DollarTwoDiffModeText.Visibility = Visibility.Collapsed;
-
-                await DollarTwo.EnsureCoreWebView2Async();
-            }
-            else
-            {
-                string jsFunc = "editor.getValue()";
-                string content = await DollarTwo.CoreWebView2.ExecuteScriptAsync(jsFunc);
-                string textContent = Regex.Unescape(content.ToString());
-                textContent = textContent[1..^1];
-                SelectedProgram.ProgramContent.DollarTwoCode = textContent;
                 SetToDiffMode(DollarTwo);
 
+                this.DollarOneDiffModeText.Visibility = Visibility.Visible;
                 this.DollarTwoDiffModeText.Visibility = Visibility.Visible;
-                if (SelectedProgramCommits.Count > 0)
-                {
-                    SelectedCommit = SelectedProgramCommits.First();
-                }
-                CommitCombobox.IsEnabled = true;
+
+                return;
             }
+
+            this.DollarOne.Source =
+                new Uri(Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    @"Monaco\index.html"));
+            this.DollarTwo.Source =
+                new Uri(Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    @"Monaco\index.html"));
+
+            if (SelectedProgram is not null)
+            {
+                DisplayedContent = SelectedProgram.ProgramContent;
+            }
+
+            this.DollarOneDiffModeText.Visibility = Visibility.Collapsed;
+            this.DollarTwoDiffModeText.Visibility = Visibility.Collapsed;
+
+            await DollarOne.EnsureCoreWebView2Async();
+            await DollarTwo.EnsureCoreWebView2Async();
         }
 
         static async void SetToDiffMode(WebView2 webView)
@@ -423,14 +487,12 @@ namespace ProjectLighthouse.View.Programs
         public void HideMenu()
         {
             ProgramsList.Visibility = Visibility.Collapsed;
-            CommitMenu.Visibility = Visibility.Collapsed;
             ThemesComboBox.Visibility = Visibility.Collapsed;
         }
 
         public void ShowMenu()
         {
             ProgramsList.Visibility = Visibility.Visible;
-            CommitMenu.Visibility = Visibility.Visible;
             ThemesComboBox.Visibility = Visibility.Visible;
         }
     }
