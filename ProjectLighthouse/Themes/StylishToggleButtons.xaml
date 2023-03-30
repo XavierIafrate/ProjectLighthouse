@@ -264,9 +264,9 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Path
-                            Width="16"
+                            Width="18"
                             Margin="0,3,8,0"
-                            Data="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M6.12,15.5L9.86,19.24L11.28,17.83L8.95,15.5L11.28,13.17L9.86,11.76L6.12,15.5M17.28,15.5L13.54,11.76L12.12,13.17L14.45,15.5L12.12,17.83L13.54,19.24L17.28,15.5Z"
+                            Data="M14 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H18C19.11 22 20 21.11 20 20V8L14 2M18 20H6V4H13V9H18V20M9.54 15.65L11.63 17.74L10.35 19L7 15.65L10.35 12.3L11.63 13.56L9.54 15.65M17 15.65L13.65 19L12.38 17.74L14.47 15.65L12.38 13.56L13.65 12.3L17 15.65Z"
                             Fill="{TemplateBinding Foreground}"
                             Stretch="Uniform" />
                         <TextBlock
@@ -647,106 +647,9 @@
         </Style.Triggers>
     </Style>
 
+
     <Style
         x:Key="DiffModeToggleButton"
-        BasedOn="{x:Null}"
-        TargetType="ToggleButton">
-        <Style.Resources>
-            <vs:divideDouble x:Key="divideDouble" />
-        </Style.Resources>
-        <Setter Property="Background" Value="Black" />
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
-                    <StackPanel>
-                        <Path
-                            x:Name="topRound"
-                            Width="10"
-                            HorizontalAlignment="Right"
-                            Fill="{TemplateBinding Background}"
-                            Stretch="Uniform"
-                            StrokeThickness="0">
-                            <Path.Data>
-                                <CombinedGeometry GeometryCombineMode="Exclude">
-                                    <CombinedGeometry.Geometry1>
-                                        <RectangleGeometry Rect="0,0,20,20" />
-                                    </CombinedGeometry.Geometry1>
-                                    <CombinedGeometry.Geometry2>
-                                        <EllipseGeometry
-                                            Center="0,0"
-                                            RadiusX="20"
-                                            RadiusY="20" />
-                                    </CombinedGeometry.Geometry2>
-                                </CombinedGeometry>
-                            </Path.Data>
-                        </Path>
-                        <Border
-                            x:Name="badge"
-                            Height="{TemplateBinding Height}"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="10,0,0,10"
-                            ToolTip="{TemplateBinding ToolTip}">
-                            <StackPanel Margin="13,8" Orientation="Horizontal">
-                                <Path
-                                    Width="16"
-                                    Data="M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M12.75,13.5C15.5,13.5 16.24,11.47 16.43,10.4C17.34,10.11 18,9.26 18,8.25C18,7 17,6 15.75,6C14.5,6 13.5,7 13.5,8.25C13.5,9.19 14.07,10 14.89,10.33C14.67,11 14,12 12,12C10.62,12 9.66,12.35 9,12.84V8.87C9.87,8.56 10.5,7.73 10.5,6.75C10.5,5.5 9.5,4.5 8.25,4.5C7,4.5 6,5.5 6,6.75C6,7.73 6.63,8.56 7.5,8.87V15.13C6.63,15.44 6,16.27 6,17.25C6,18.5 7,19.5 8.25,19.5C9.5,19.5 10.5,18.5 10.5,17.25C10.5,16.32 9.94,15.5 9.13,15.18C9.41,14.5 10.23,13.5 12.75,13.5M8.25,16.5A0.75,0.75 0 0,1 9,17.25A0.75,0.75 0 0,1 8.25,18A0.75,0.75 0 0,1 7.5,17.25A0.75,0.75 0 0,1 8.25,16.5M8.25,6A0.75,0.75 0 0,1 9,6.75A0.75,0.75 0 0,1 8.25,7.5A0.75,0.75 0 0,1 7.5,6.75A0.75,0.75 0 0,1 8.25,6M15.75,7.5A0.75,0.75 0 0,1 16.5,8.25A0.75,0.75 0 0,1 15.75,9A0.75,0.75 0 0,1 15,8.25A0.75,0.75 0 0,1 15.75,7.5Z"
-                                    Fill="{TemplateBinding Foreground}"
-                                    Stretch="Uniform" />
-                                <TextBlock
-                                    Margin="5,0,8,0"
-                                    VerticalAlignment="Center"
-                                    FontFamily="pack://application:,,,/Resources/Font/#Montserrat"
-                                    FontWeight="SemiBold"
-                                    Foreground="{TemplateBinding Foreground}"
-                                    Text="Source Control" />
-
-                            </StackPanel>
-                        </Border>
-                        <Path
-                            x:Name="bottomRound"
-                            Width="10"
-                            HorizontalAlignment="Right"
-                            Fill="{TemplateBinding Background}"
-                            Stretch="Uniform"
-                            StrokeThickness="0">
-                            <Path.Data>
-                                <CombinedGeometry GeometryCombineMode="Exclude">
-                                    <CombinedGeometry.Geometry1>
-                                        <RectangleGeometry Rect="0,0,20,20" />
-                                    </CombinedGeometry.Geometry1>
-                                    <CombinedGeometry.Geometry2>
-                                        <EllipseGeometry
-                                            Center="0,20"
-                                            RadiusX="20"
-                                            RadiusY="20" />
-                                    </CombinedGeometry.Geometry2>
-                                </CombinedGeometry>
-                            </Path.Data>
-                        </Path>
-                    </StackPanel>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" TargetName="badge" Value="{StaticResource Red}"/>
-                            <Setter Property="Fill" TargetName="bottomRound" Value="{StaticResource Red}"/>
-                            <Setter Property="Fill" TargetName="topRound" Value="{StaticResource Red}"/>
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Opacity" TargetName="badge" Value="0.8"/>
-                            <Setter Property="Opacity" TargetName="bottomRound" Value="0.8"/>
-                            <Setter Property="Opacity" TargetName="topRound" Value="0.8"/>
-                            <Setter Property="Cursor" Value="Hand"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-
-    <Style
-        x:Key="SwitchToggleButton"
         BasedOn="{x:Null}"
         TargetType="ToggleButton">
         <Style.Resources>

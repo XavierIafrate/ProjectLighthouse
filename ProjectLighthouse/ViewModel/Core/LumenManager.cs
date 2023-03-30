@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.View.Programs;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -7,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -209,8 +207,8 @@ namespace ProjectLighthouse.ViewModel.Core
                 DollarZeroCode = programData.Substring(programData.IndexOf("$0") + 2, programData.Length - programData.IndexOf("$0") - 2).Trim()
             };
 
-            prog.OriginalDollarOneCode = "";
-            prog.OriginalDollarTwoCode = "";
+            prog.OriginalDollarOneCode = prog.DollarOneCode;
+            prog.OriginalDollarTwoCode = prog.DollarTwoCode;
 
             return prog;
         }
@@ -232,37 +230,6 @@ namespace ProjectLighthouse.ViewModel.Core
             string cleanedCode = string.Join('\n', lines);
             cleanedCode = cleanedCode.Trim();
             return cleanedCode;
-        }
-
-        public static MonacoProgram LoadCommit(NcProgramCommit target, NcProgramCommit? preceedingCommit)
-        {
-            MonacoProgram targetProgram;
-
-            try
-            {
-                targetProgram = GetProgramFromFile(target.Url);
-            }
-            catch
-            {
-                throw;
-            }
-
-            if (preceedingCommit is null) return targetProgram;
-
-            MonacoProgram preceedingProgram;
-            try
-            {
-                preceedingProgram = GetProgramFromFile(preceedingCommit.Url);
-            }
-            catch
-            {
-                throw;
-            }
-
-            targetProgram.OriginalDollarOneCode = preceedingProgram.DollarOneCode;
-            targetProgram.OriginalDollarTwoCode= preceedingProgram.DollarTwoCode ;
-
-            return targetProgram;
         }
 
         public static async Task<string> ExecuteScriptFunctionAsync(Microsoft.Web.WebView2.Wpf.WebView2 webView2, string functionName, params object[] parameters)
