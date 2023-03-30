@@ -3,8 +3,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -12,6 +10,9 @@ namespace ProjectLighthouse.Model.Programs
 {
     public class NcProgram : BaseObject, IObjectWithValidation, ICloneable, IAutoIncrementPrimaryKey
     {
+        // TODO refactor in constants
+        public static string BaseProgramPath { get; } = @"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\";
+
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
 
@@ -35,8 +36,8 @@ namespace ProjectLighthouse.Model.Programs
         public string? Notepad
         {
             get { return notepad; }
-            set 
-            { 
+            set
+            {
                 notepad = value;
                 OnPropertyChanged();
             }
@@ -48,8 +49,8 @@ namespace ProjectLighthouse.Model.Programs
         public string? SchedulingProgramName
         {
             get { return schedulingProgramName; }
-            set 
-            { 
+            set
+            {
                 schedulingProgramName = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -177,7 +178,7 @@ namespace ProjectLighthouse.Model.Programs
         {
             get
             {
-                if(Tags is null) return "";
+                if (Tags is null) return "";
                 return Tags?.Replace(" ", "").ToLowerInvariant();
             }
         }
@@ -226,9 +227,9 @@ namespace ProjectLighthouse.Model.Programs
         {
             get
             {
-                if(string.IsNullOrWhiteSpace(Name)) return null;
+                if (string.IsNullOrWhiteSpace(Name)) return null;
 
-                return $@"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\{Name}.PRG";
+                return $"{BaseProgramPath}{Name}.PRG";
             }
         }
 
