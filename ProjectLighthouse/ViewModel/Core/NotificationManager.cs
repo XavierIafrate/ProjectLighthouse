@@ -328,6 +328,8 @@ namespace ProjectLighthouse.ViewModel.Core
                     qcViewModel.SearchTerm = action;
                 }
             }
+
+            App.MainViewModel.MainWindow.Activate();
         }
 
         public void EnsureMarkedRead(Notification notification)

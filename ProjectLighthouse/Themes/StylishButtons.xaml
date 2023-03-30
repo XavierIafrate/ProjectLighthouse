@@ -42,7 +42,6 @@
             </MultiTrigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="{StaticResource PurpleLight}" />
-                <Setter Property="Cursor" Value="Wait" />
             </Trigger>
         </Style.Triggers>
     </Style>

@@ -20,11 +20,11 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <StackPanel
             Grid.ColumnSpan="2"
@@ -56,42 +56,10 @@
             </StackPanel>
 
         </StackPanel>
-        <StackPanel
-            x:Name="CommitMenu"
-            Grid.Row="2"
-            Margin="5"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Center">
-            <ToggleButton
-                x:Name="DiffButton"
-                HorizontalAlignment="Center"
-                Background="{Binding BackgroundBrush}"
-                BorderBrush="{Binding ForegroundBrush}"
-                Click="DiffButton_Click"
-                Foreground="{Binding CursorForegroundBrush}"
-                Style="{StaticResource DiffModeToggleButton}" />
-            <TextBlock
-                Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"
-                Style="{StaticResource InputLabel}"
-                Text="Compare Commit" />
-            <ComboBox
-                x:Name="CommitCombobox"
-                Margin="5"
-                DisplayMemberPath="FileName"
-                IsEnabled="False"
-                ItemsSource="{Binding SelectedProgramCommits}"
-                SelectedValue="{Binding SelectedCommit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Visibility="{Binding SelectedProgramCommits, Converter={StaticResource EmptyListToCollapsedOrVisible}}" />
-            <TextBlock
-                Height="35"
-                HorizontalAlignment="Center"
-                Foreground="{StaticResource Red}"
-                Text="No Commits"
-                Visibility="{Binding SelectedProgramCommits, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
-        </StackPanel>
+
         <StackPanel
             x:Name="ThemesComboBox"
-            Grid.Row="3"
+            Grid.Row="2"
             Grid.Column="0"
             Margin="5"
             HorizontalAlignment="Stretch"
@@ -162,7 +130,7 @@
 
         <Grid
             Grid.Row="1"
-            Grid.RowSpan="3"
+            Grid.RowSpan="2"
             Grid.Column="1"
             Visibility="{Binding SelectedProgram, Converter={StaticResource NullToVisibility}}">
             <Image
@@ -257,6 +225,87 @@
                 NavigationCompleted="DollarTwo_NavigationCompleted"
                 Visibility="Hidden"
                 ZoomFactor="1" />
+        </Grid>
+        <ToggleButton
+            x:Name="DiffButton"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Right"
+            Background="{Binding BackgroundBrush}"
+            BorderBrush="{Binding ForegroundBrush}"
+            IsChecked="{Binding DiffMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Foreground="{Binding ForegroundBrush}"
+            Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}"
+            Style="{StaticResource DiffModeToggleButton}" />
+        <Grid
+            x:Name="CommitMenu"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            d:Visibility="Visible"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Width="250"
+            Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock
+                    Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"
+                    Style="{StaticResource InputLabel}"
+                    Text="Compare" />
+                <ComboBox
+                    x:Name="CommitCombobox"
+                    Margin="5"
+                    ItemsSource="{Binding SelectedProgramCommits}"
+                    SelectedValue="{Binding SelectedCommit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding SelectedProgramCommits, Converter={StaticResource EmptyListToCollapsedOrVisible}}" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock Text="{Binding FileName}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock
+                    Height="35"
+                    HorizontalAlignment="Center"
+                    Foreground="{StaticResource Red}"
+                    Text="No Commits"
+                    Visibility="{Binding SelectedProgramCommits, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+
+            </StackPanel>
+            <StackPanel Grid.Row="1">
+                <TextBlock
+                    Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"
+                    Style="{StaticResource InputLabel}"
+                    Text="Commit Changes" />
+                <TextBox
+                    MinHeight="150"
+                    MaxLength="72"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="Enter commit message"
+                    Background="{Binding BackgroundBrush}"
+                    BorderBrush="{Binding CursorForegroundBrush}"
+                    Foreground="{Binding CursorForegroundBrush}"
+                    Text="{Binding NewCommit.CommitMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=False}"
+                    TextWrapping="Wrap" />
+
+                <Grid>
+                    <TextBlock
+                        Margin="5,0"
+                        d:Text="0/72"
+                    Foreground="{Binding CursorForegroundBrush, FallbackValue='#000'}"
+                        Opacity="0.5"
+                        Text="{Binding NewCommit.CommitMessage.Length, StringFormat='{}{0:0}/72'}" />
+                    <Button
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource Action_Button}"
+                        Tag="Commit" />
+                </Grid>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
