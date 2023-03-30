@@ -156,12 +156,10 @@ namespace ProjectLighthouse.ViewModel.Programs
 
             LoadData();
             Search();
-
-            CheckProgramStatuses();
         }
 
 
-        private CancellationTokenSource cancellationTokenSource;
+        private CancellationTokenSource cancellationTokenSource = new();
         private void CheckProgramStatuses()
         {
             cancellationTokenSource = new();
@@ -175,7 +173,7 @@ namespace ProjectLighthouse.ViewModel.Programs
             Thread.Sleep(500);
             List<NcProgram> programs = new(Programs);
 
-            List<string> filesInDir = Directory.GetFiles($@"{App.ROOT_PATH}lib\pcom\").ToList();
+            List<string> filesInDir = Directory.GetFiles(NcProgram.BaseProgramPath).ToList();
 
             foreach (NcProgram program in programs)
             {
@@ -186,7 +184,7 @@ namespace ProjectLighthouse.ViewModel.Programs
                     return;
                 }
 
-                string path = filesInDir.Find(x => Path.GetFileNameWithoutExtension(x).ToLowerInvariant() == program.Name);
+                string path = filesInDir.Find(x => x == program.Path);
 
                 bool exists = path is not null;
                 DateTime? date;
@@ -278,7 +276,7 @@ namespace ProjectLighthouse.ViewModel.Programs
             LoadData();
             Search();
 
-            SelectedProgram = Programs.Find(x => x.Id == selectedProgramId);
+            SelectedProgram = FilteredPrograms.Find(x => x.Id == selectedProgramId);
         }
 
         public async void OpenProgram()
@@ -318,11 +316,13 @@ namespace ProjectLighthouse.ViewModel.Programs
             LoadData();
             Search();
 
-            SelectedProgram = Programs.Find(x => x.Id == selectedProgramId);
+            SelectedProgram = FilteredPrograms.Find(x => x.Id == selectedProgramId);
         }
 
         void Search()
         {
+            cancellationTokenSource.Cancel();
+
             if (string.IsNullOrWhiteSpace(SearchString))
             {
                 FilteredPrograms = new(Programs);
@@ -334,6 +334,8 @@ namespace ProjectLighthouse.ViewModel.Programs
                 {
                     SelectedProgram = null;
                 }
+
+                CheckProgramStatuses();
                 return;
             }
 
@@ -361,6 +363,8 @@ namespace ProjectLighthouse.ViewModel.Programs
             {
                 SelectedProgram = null;
             }
+
+            CheckProgramStatuses();
         }
 
         public void SendMessage()
