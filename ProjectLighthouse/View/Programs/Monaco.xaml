@@ -10,7 +10,7 @@
     Title="Lighthouse::Lumen (Preview)"
     Width="1500"
     Height="900"
-    Background="{Binding BackgroundBrush, FallbackValue='#fff'}"
+    Background="{Binding BackgroundBrush, TargetNullValue='#fff'}"
     Closed="Window_Closed"
     Loaded="Window_Loaded"
     WindowState="Maximized"
@@ -77,8 +77,8 @@
             <ComboBox
                 x:Name="CommitCombobox"
                 Margin="5"
-                IsEnabled="False"
                 DisplayMemberPath="FileName"
+                IsEnabled="False"
                 ItemsSource="{Binding SelectedProgramCommits}"
                 SelectedValue="{Binding SelectedCommit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Visibility="{Binding SelectedProgramCommits, Converter={StaticResource EmptyListToCollapsedOrVisible}}" />
