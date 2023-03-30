@@ -344,10 +344,9 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
-            int GroupId = SelectedOrder.GroupId;
+            int GroupId = SelectedProductGroup.Id;
             int MaterialId = SelectedOrder.MaterialId;
 
-            SelectedProductGroup = ProductGroups.Find(x => x.Id == GroupId);
 
             if (SelectedProductGroup is not null)
             {
@@ -765,15 +764,26 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         void GetProgramCandidates()
         {
-            ProgramCandidates = GetPrograms(SelectedOrder.GroupId, SelectedOrder.MaterialId);
+            if (SelectedProductGroup is null)
+            {
+                ProgramCandidates = new();
+                return;
+            }
+
+            ProgramCandidates = GetPrograms(SelectedProductGroup, SelectedOrder.MaterialId);
             OnPropertyChanged(nameof(ProgramCandidates));
         }
 
-        private List<NcProgram> GetPrograms(int groupId, int materialId)
+        private List<NcProgram> GetPrograms(ProductGroup productGroup, int materialId)
         {
             List<NcProgram> candidates = Programs
-                .Where(x => x.GroupStringIds.Contains($"{groupId:0}"))
+                .Where(x => x.ProductStringIds.Contains($"{productGroup.ProductId:0}"))
+                .Where(x => x.GroupStringIds.Count == 0 || x.GroupStringIds.Contains($"{productGroup.Id:0}"))
                 .Where(x => x.MaterialsList.Count == 0 || x.MaterialsList.Contains($"{materialId:0}"))
+                .OrderByDescending(x => x.GroupStringIds.Count)
+                .ThenByDescending(x => x.MaterialsList.Count)
+                .ThenBy(x => x.Name.Length)
+                .ThenBy(x => x.Name)
                 .ToList();
 
             return candidates;
@@ -872,6 +882,8 @@ namespace ProjectLighthouse.ViewModel.Orders
                 .ToList();
 
             SelectedOrderBar = BarStock.Find(x => x.Id == SelectedOrder.BarID);
+            SelectedProductGroup = ProductGroups.Find(x => x.Id == SelectedOrder.GroupId);
+
 
             OnPropertyChanged(nameof(FilteredOrderItems));
             OnPropertyChanged(nameof(FilteredNotes));
