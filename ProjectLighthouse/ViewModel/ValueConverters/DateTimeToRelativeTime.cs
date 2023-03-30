@@ -47,7 +47,8 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             }
             else if (span.TotalDays < 370)
             {
-                return $"{Math.Round(span.TotalDays / (365.25 / 12)):0} months ago";
+                int months = (int)Math.Round(span.TotalDays / (365.25 / 12));
+                return months == 1 ? "a month ago" : $"{months:0} months ago";
             }
             else
             {
