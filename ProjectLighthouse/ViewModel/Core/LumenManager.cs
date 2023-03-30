@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static ProjectLighthouse.Model.Programs.NcProgram;
@@ -177,16 +178,32 @@ namespace ProjectLighthouse.ViewModel.Core
         private static MonacoProgram GetProgramFromFile(string path)
         {
             string programData = File.ReadAllText(path);
-            if (!programData.Contains("$0") || !programData.Contains("$1") || !programData.Contains("$2"))
+
+            if (!programData.Contains("$0"))
             {
-                throw new InvalidDataException("spindle missing");
+                throw new InvalidDataException("Missing Spindle: $0");
             }
+            if (!programData.Contains("$1"))
+            {
+                throw new InvalidDataException("Missing Spindle: $1");
+            }
+            if (!programData.Contains("$2"))
+            {
+                throw new InvalidDataException("Missing Spindle: $2");
+            }
+
+            string dollarOneCode = programData.Substring(programData.IndexOf("$1") + 2, programData.IndexOf("$2") - programData.IndexOf("$1") - 2).Trim();
+            string dollarTwoCode = programData.Substring(programData.IndexOf("$2") + 2, programData.IndexOf("$0") - programData.IndexOf("$2") - 2).Trim();
+
+            dollarOneCode = Unpack(dollarOneCode);
+            dollarTwoCode = Unpack(dollarTwoCode);
+
 
             MonacoProgram prog = new()
             {
                 Header = programData[..programData.IndexOf("$1")].Trim(),
-                DollarOneCode = programData.Substring(programData.IndexOf("$1") + 2, programData.IndexOf("$2") - programData.IndexOf("$1") - 2).Trim(),
-                DollarTwoCode = programData.Substring(programData.IndexOf("$2") + 2, programData.IndexOf("$0") - programData.IndexOf("$2") - 2).Trim(),
+                DollarOneCode = dollarOneCode,
+                DollarTwoCode = dollarTwoCode,
                 DollarZeroCode = programData.Substring(programData.IndexOf("$0") + 2, programData.Length - programData.IndexOf("$0") - 2).Trim()
             };
 
@@ -194,6 +211,25 @@ namespace ProjectLighthouse.ViewModel.Core
             prog.OriginalDollarTwoCode = prog.DollarTwoCode;
 
             return prog;
+        }
+
+        private static string Unpack(string dollarOneCode)
+        {
+            string[] lines = dollarOneCode.Split('\n');
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i];
+                line = Regex.Replace(line, @"(?<![A-Z|\!]{1})[A-Z]{1}(\d+|\#\d+|\-)", " $0");
+                //line = Regex.Replace(line, @"(?<![\s]{1})[A-Z]{1}(\[)", " $0");
+                //line = Regex.Replace(line, @"(?>![\s]{1})[A-Z]{1}(\])", "$0 ");
+                line = line.Trim();
+                lines[i] = line;
+            }
+
+            string cleanedCode = string.Join('\n', lines);
+            cleanedCode = cleanedCode.Trim();
+            return cleanedCode;
         }
 
         public static async Task<string> ExecuteScriptFunctionAsync(Microsoft.Web.WebView2.Wpf.WebView2 webView2, string functionName, params object[] parameters)
