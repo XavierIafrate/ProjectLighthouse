@@ -128,7 +128,7 @@
                 HorizontalAlignment="Left"
                 Command="{Binding NewOrderCommand}"
                 Style="{StaticResource Action_New_Button}"
-                Tag="New Order"/>
+                Tag="New Order" />
 
             <Button
                 Grid.Column="1"
@@ -954,7 +954,10 @@
                                         </Border>
                                     </StackPanel>
                                 </TabItem>
-                                <TabItem Header="Production Log" IsEnabled="{Binding Series, Converter={StaticResource NotNullToBoolean}}" IsEnabledChanged="TabItem_IsEnabledChanged">
+                                <TabItem
+                                    Header="Production Log"
+                                    IsEnabled="{Binding Series, Converter={StaticResource NotNullToBoolean}}"
+                                    IsEnabledChanged="TabItem_IsEnabledChanged">
                                     <StackPanel>
                                         <Border
                                             Margin="5"
@@ -970,25 +973,34 @@
                                     </StackPanel>
                                 </TabItem>
                                 <TabItem Header="Programs">
-                                    <ItemsControl ItemsSource="{Binding ProgramCandidates}">
+                                    <ItemsControl d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding ProgramCandidates}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
-                                                    <TextBlock Text="{Binding Name, StringFormat='{}Program {0}'}"/>
-                                                    <ItemsControl ItemsSource="{Binding TagsList}"></ItemsControl>
+                                                    <TextBlock Text="{Binding Name, StringFormat='{}Program {0}'}" FontWeight="SemiBold" FontSize="16" />
+
+                                                    <TextBlock Text="No Archetypes Targeted" Foreground="{StaticResource Orange}" Visibility="{Binding GroupStringIds, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+                                                    <TextBlock Text="Targets this Archetype" Foreground="{StaticResource Green}" Visibility="{Binding GroupStringIds, Converter={StaticResource EmptyListToCollapsedOrVisible}}" />
+
+                                                    <TextBlock Text="No Material Constraints" Foreground="{StaticResource Orange}" Visibility="{Binding MaterialsList, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+                                                    <TextBlock Text="Targets this material" Foreground="{StaticResource Green}" Visibility="{Binding MaterialsList, Converter={StaticResource EmptyListToCollapsedOrVisible}}" />
+
+                                                    <ItemsControl
+                                                        Margin="0"
+                                                        ItemsSource="{Binding TagsList}"
+                                                        Visibility="{Binding TagsList, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel />
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
                                                 </StackPanel>
                                             </DataTemplate>
-                                                
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </TabItem>
                             </TabControl>
-
-
-
-
-
-
 
                             <StackPanel>
                                 <TextBlock
@@ -1029,7 +1041,7 @@
                                     FontStyle="Italic"
                                     Foreground="{StaticResource DisabledElement}"
                                     Text="None found"
-                                    Visibility="{Binding FilteredDrawings, Converter={StaticResource EmptyListToVisibleOrCollapsed}}"/>
+                                    Visibility="{Binding FilteredDrawings, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
                             </StackPanel>
                             <!--#endregion-->
 
