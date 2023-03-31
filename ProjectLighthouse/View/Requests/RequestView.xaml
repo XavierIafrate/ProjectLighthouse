@@ -17,6 +17,7 @@
             <converters:dateToLastModified x:Key="modifiedFormatter" />
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisible" />
             <converters:boolToCollapsedOrVisible x:Key="boolToCollapsed" />
+            <converters:RequestToRequestedLeadTime x:Key="LeadTime" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="370" />
@@ -495,6 +496,7 @@
                                     FontSize="16"
                                     FontWeight="SemiBold">
                                     <Run Text="{Binding SelectedRequest.DateRequired, StringFormat='{}{0:dd MMMM yyyy}'}" />
+                                    <Run Text="{Binding SelectedRequest, Converter={StaticResource LeadTime}, StringFormat='{}({0:N1} weeks)'}" />
                                 </TextBlock>
 
                                 <Path
