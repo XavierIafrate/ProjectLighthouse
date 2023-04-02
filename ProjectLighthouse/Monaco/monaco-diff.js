@@ -44,23 +44,17 @@ let regions = [];
 monaco.languages.register({ id: 'gcode' });
 
 monaco.languages.setMonarchTokensProvider('gcode', {
-
 	tokenizer: {
 		root: [
-			[/\#(end)?region.*$/, 'entity.name.class'],
 			[/(\+|-|=|GT|LT|EQ|&&|AND|OR|\|\||!|NOT|==|!=|<|\<\=|>|\>=)/, 'operator'],
-
 
 			[/(?<!L)-?\d+(\.\d{1,2})?/, 'constant.numeric'],
 			[/\#\d{1,3}/, 'variable'],
 			[/\(([^)]+)?\)/, 'comment'],
 
-			[/(IF|THEN|WHILE|GOTO)/, 'keyword'],
-			//[/(A|T|M|G|X|Y|Z|S|W|C|F|P|Q){1}/, 'keyword'],
-			[/(A-Z){1}/, 'keyword'],
+			[/(IF|THEN|WHILE|GOTO|[A-Z]{1})/, 'keyword'],
 		]
 	},
-
 });
 
 var editor = monaco.editor.createDiffEditor(
@@ -126,7 +120,28 @@ function pushSnippet(text, doc, toInsert) {
 	});
 }
 
+
 function setTheme(themeData) {
+	if (themeData === "vs-dark") {
+		monaco.editor.setTheme("vs-dark");
+		return;
+	}
+
+	if (themeData === "vs") {
+		monaco.editor.setTheme("vs");
+		return;
+	}
+
+	if (themeData === "hc-black") {
+		monaco.editor.setTheme("hc-black");
+		return;
+	}
+
+	if (themeData === "hc-light") {
+		monaco.editor.setTheme("hc-light");
+		return;
+	}
+
 	monaco.editor.defineTheme('monokai', themeData);
 	monaco.editor.setTheme('monokai');
 }

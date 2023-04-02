@@ -122,6 +122,26 @@ function pushSnippet(text, doc, toInsert) {
 }
 
 function setTheme(themeData) {
+	if (themeData === "vs-dark") {
+		monaco.editor.setTheme("vs-dark");
+		return;
+	}
+
+	if (themeData === "vs") {
+		monaco.editor.setTheme("vs");
+		return;
+	}
+
+	if (themeData === "hc-black") {
+		monaco.editor.setTheme("hc-black");
+		return;
+	}
+
+	if (themeData === "hc-light") {
+		monaco.editor.setTheme("hc-light");
+		return;
+	}
+
 	monaco.editor.defineTheme('monokai', themeData);
 	monaco.editor.setTheme('monokai');
 }
