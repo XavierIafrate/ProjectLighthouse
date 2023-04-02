@@ -728,15 +728,15 @@
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" TargetName="badge" Value="{StaticResource Red}"/>
-                            <Setter Property="Fill" TargetName="bottomRound" Value="{StaticResource Red}"/>
-                            <Setter Property="Fill" TargetName="topRound" Value="{StaticResource Red}"/>
+                            <Setter TargetName="badge" Property="Background" Value="{StaticResource Red}" />
+                            <Setter TargetName="bottomRound" Property="Fill" Value="{StaticResource Red}" />
+                            <Setter TargetName="topRound" Property="Fill" Value="{StaticResource Red}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Opacity" TargetName="badge" Value="0.8"/>
-                            <Setter Property="Opacity" TargetName="bottomRound" Value="0.8"/>
-                            <Setter Property="Opacity" TargetName="topRound" Value="0.8"/>
-                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter TargetName="badge" Property="Opacity" Value="0.8" />
+                            <Setter TargetName="bottomRound" Property="Opacity" Value="0.8" />
+                            <Setter TargetName="topRound" Property="Opacity" Value="0.8" />
+                            <Setter Property="Cursor" Value="Hand" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -50,7 +50,10 @@
     <Style BasedOn="{StaticResource Default}" TargetType="Button" />
 
 
-    <Style x:Key="TagButton" TargetType="Button" BasedOn="{StaticResource Default}">
+    <Style
+        x:Key="TagButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Tag" Value="TAG_TEXT" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Template">
@@ -64,8 +67,8 @@
                         CornerRadius="5">
                         <TextBlock
                             VerticalAlignment="Center"
-                            FontWeight="SemiBold"
                             FontSize="12"
+                            FontWeight="SemiBold"
                             Text="{TemplateBinding Tag}" />
                     </Border>
                 </ControlTemplate>
@@ -308,7 +311,7 @@
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource BlueDark}" />
-                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Cursor" Value="Hand" />
             </Trigger>
         </Style.Triggers>
     </Style>
