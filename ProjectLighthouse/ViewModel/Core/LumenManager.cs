@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.View.Programs;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -7,9 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using static ProjectLighthouse.Model.Programs.NcProgram;
 
@@ -19,6 +16,14 @@ namespace ProjectLighthouse.ViewModel.Core
     {
         public static List<string> Themes { get; set; } = new();
         public static List<string> ThemeNames { get; set; } = new();
+
+        public static readonly Dictionary<string, string> builtInThemes = new()
+        {
+            { "Visual Studio", "vs" },
+            { "Visual Studio Dark", "vs-dark" },
+            { "VS High Contrast", "hc-black" },
+            { "VS High Contrast Light", "hc-light" }
+        };
 
         private static string selectedThemeName;
         public static string SelectedThemeName
@@ -45,17 +50,22 @@ namespace ProjectLighthouse.ViewModel.Core
         {
             Themes = Directory.GetFiles(Path.Join(AppDomain.CurrentDomain.BaseDirectory, @"Monaco\themes")).ToList();
 
+            foreach (string key in builtInThemes.Keys)
+            {
+                ThemeNames.Add(key);
+            }
+
             for (int i = 0; i < Themes.Count; i++)
             {
                 string f = Path.GetFileNameWithoutExtension(Themes[i]);
-                if (f == "themelist")
+                if (f == "themelist" || f == "Brilliance Dull" || f == "Brilliance Black" || f == "Upstream Sunburst")
                 {
                     continue;
                 }
                 ThemeNames.Add(f);
             }
 
-            SelectedThemeName = "Oceanic Next";
+            SelectedThemeName = "Visual Studio";
         }
 
         //public static void Close()
@@ -93,7 +103,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
         public static void Open(NcProgram program)
         {
-            
+
 
             for (int i = 0; i < SingleProgramWindows.Count; i++)
             {
@@ -206,11 +216,10 @@ namespace ProjectLighthouse.ViewModel.Core
                 Header = programData[..programData.IndexOf("$1")].Trim(),
                 DollarOneCode = dollarOneCode,
                 DollarTwoCode = dollarTwoCode,
-                DollarZeroCode = programData.Substring(programData.IndexOf("$0") + 2, programData.Length - programData.IndexOf("$0") - 2).Trim()
+                DollarZeroCode = programData.Substring(programData.IndexOf("$0") + 2, programData.Length - programData.IndexOf("$0") - 2).Trim(),
+                OriginalDollarOneCode = "",
+                OriginalDollarTwoCode = ""
             };
-
-            prog.OriginalDollarOneCode = "";
-            prog.OriginalDollarTwoCode = "";
 
             return prog;
         }
@@ -260,7 +269,7 @@ namespace ProjectLighthouse.ViewModel.Core
             }
 
             targetProgram.OriginalDollarOneCode = preceedingProgram.DollarOneCode;
-            targetProgram.OriginalDollarTwoCode= preceedingProgram.DollarTwoCode ;
+            targetProgram.OriginalDollarTwoCode = preceedingProgram.DollarTwoCode;
 
             return targetProgram;
         }
@@ -302,6 +311,11 @@ namespace ProjectLighthouse.ViewModel.Core
 
         static string LoadThemeData(string name)
         {
+            if (builtInThemes.ContainsKey(name))
+            {
+                return builtInThemes[name];
+            }
+
             string path = LumenManager.Themes.Find(x => Path.GetFileNameWithoutExtension(x) == name)
                  ?? throw new ArgumentException($"Could not find theme: '{name}'");
 

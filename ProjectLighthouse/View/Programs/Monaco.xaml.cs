@@ -343,7 +343,7 @@ namespace ProjectLighthouse.View.Programs
         }
 
         public void ApplyTheme(string themeData)
-        {
+        { 
             SetLumenTheme(themeData);
             SetTheme(DollarOne, themeData);
             SetTheme(DollarTwo, themeData);
@@ -405,8 +405,29 @@ namespace ProjectLighthouse.View.Programs
 
         void SetLumenTheme(string themeData)
         {
-            string? targeting = null;
+            if (themeData == "vs" || themeData == "hc-light")
+            {
+                ForegroundBrush = (SolidColorBrush)App.Current.Resources["OnBackground"];
+                BackgroundBrush = (SolidColorBrush)App.Current.Resources["Background"];
+                CursorForegroundBrush = (SolidColorBrush)App.Current.Resources["Purple"];
+                return;
+            }
+            else if (themeData == "vs-dark")
+            {
+                ForegroundBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#ffffff");
+                BackgroundBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#1e1e1e");
+                CursorForegroundBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#007acc");
+                return;
+            }
+            else if (themeData == "hc-black")
+            {
+                ForegroundBrush = (SolidColorBrush)Brushes.White;
+                BackgroundBrush = (SolidColorBrush)Brushes.Black;
+                CursorForegroundBrush = (SolidColorBrush)App.Current.Resources["PurpleLight"];
+                return;
+            }
 
+            string? targeting = null;
             string? foreground = null;
             string? background = null;
             string? cursorForeground = null;
@@ -465,7 +486,16 @@ namespace ProjectLighthouse.View.Programs
 
         private static async void SetTheme(WebView2 window, string data)
         {
-            dynamic d = JObject.Parse(data);
+            dynamic d;
+            if (LumenManager.builtInThemes.ContainsValue(data))
+            {
+                d = data;
+            }
+            else
+            {
+                d = JObject.Parse(data);
+            }
+
             await LumenManager.ExecuteScriptFunctionAsync(window, "setTheme", d);
         }
         #endregion
