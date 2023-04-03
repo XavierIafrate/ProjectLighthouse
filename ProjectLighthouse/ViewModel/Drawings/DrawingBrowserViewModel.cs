@@ -395,7 +395,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             if (!ShowRejected)
             {
                 FilteredDrawings = selectedGroup.Drawings
-                    .Where(x => !x.IsRejected && !x.IsWithdrawn)
+                    .Where(x => !x.IsRejected)
                     .ToList();
 
                 if (FilteredDrawings.Count == 0)
