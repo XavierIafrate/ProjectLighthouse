@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Windows;
 using ViewModel.Commands.Administration;
 using static ProjectLighthouse.Model.BaseObject;
+using static ProjectLighthouse.ViewModel.Administration.DatabaseManagerViewModel;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
@@ -31,8 +32,8 @@ namespace ProjectLighthouse.ViewModel.Administration
             GetRecordsAsCsvCmd = new(this);
 
             Orders = DatabaseHelper.Read<LatheManufactureOrder>();
-            
-            if (App.CurrentUser.Role == Model.Administration.UserRole.Administrator) 
+
+            if (App.CurrentUser.Role == Model.Administration.UserRole.Administrator)
             {
                 ManageUsersViewModel = new();
             }
@@ -56,6 +57,9 @@ namespace ProjectLighthouse.ViewModel.Administration
                     break;
                 case "ItemCosting":
                     GenerateItemCostingSheet();
+                    break;
+                case "BarStockEstimate":
+                    GetBarInventory();
                     break;
                 case "ProductImport":
                     GetTurnedProductImportSheet();
@@ -112,6 +116,54 @@ namespace ProjectLighthouse.ViewModel.Administration
             workload.Reverse();
 
             CSVHelper.WriteListToCSV(workload, "workloadOrders");
+        }
+
+        public class BarStockInventory
+        {
+            [CsvHelper.Configuration.Attributes.Name("Bar ID")]
+            public string Id { get; set; }
+            [CsvHelper.Configuration.Attributes.Name("In Stock")]
+            public int InStock { get; set; }
+            [CsvHelper.Configuration.Attributes.Name("Estimated On Rack")]
+            public int OnRack { get; set; }
+        }
+
+        private static void GetBarInventory()
+        {
+            List<LatheManufactureOrder> activeOrders = DatabaseHelper.Read<LatheManufactureOrder>()
+                .Where(x => x.State < OrderState.Complete && x.NumberOfBarsIssued > 0)
+                .ToList();
+
+            List<BarStock> barStock = DatabaseHelper.Read<BarStock>().OrderBy(x => x.Id).ToList();
+            List<BarStockInventory> result = new();
+
+            foreach (BarStock bar in barStock)
+            {
+                BarStockInventory x = new() { Id = bar.Id, InStock = (int)bar.InStock };
+                
+                List<LatheManufactureOrder> ordersUsingBar = activeOrders.Where(x => x.BarID == bar.Id).ToList();
+
+
+                int barsOnRack = 0;
+                foreach (LatheManufactureOrder order in ordersUsingBar)
+                {
+                    if(order.State < OrderState.Running)
+                    {
+                        barsOnRack += order.NumberOfBarsIssued;
+                        continue;
+                    }
+
+                    double progress = (DateTime.Now - order.StartDate) / (TimeSpan.FromSeconds(order.TimeToComplete)*(order.NumberOfBarsIssued/order.NumberOfBars));
+
+                    int barsConsumed = (int)Math.Floor(Math.Min(progress, 1) * order.NumberOfBarsIssued);
+                    barsOnRack += order.NumberOfBarsIssued - barsConsumed;
+                }
+
+                x.OnRack = barsOnRack;
+                result.Add(x);
+            }
+
+            CSVHelper.WriteListToCSV(result, "BarInventory");
         }
 
         class WorkloadDay
@@ -213,7 +265,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             CSVHelper.WriteListToCSV(itemCosts, "ItemMaterialDetails");
 
         }
-
 
         public class ItemCost
         {

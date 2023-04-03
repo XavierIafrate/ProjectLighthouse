@@ -57,6 +57,13 @@
                             CommandParameter="Wizard"
                             Style="{StaticResource Action_Button}"
                             Tag="Import Wizard" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="BarStockEstimate"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Estimate Bar Stock Inventory" />
                     </StackPanel>
                 </Grid>
             </TabItem>
