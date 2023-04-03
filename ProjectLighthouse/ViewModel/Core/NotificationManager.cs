@@ -307,7 +307,15 @@ namespace ProjectLighthouse.ViewModel.Core
                 App.MainViewModel.UpdateViewCommand.Execute("Drawings");
                 if (App.MainViewModel.SelectedViewModel is DrawingBrowserViewModel drawingBrowserVM)
                 {
-                    TechnicalDrawingGroup? targetGroup = drawingBrowserVM.DrawingGroups.Find(x => x.Drawings.Any(y => y.Id.ToString("0") == targetDrawing));
+                    TechnicalDrawingGroup? targetGroup = drawingBrowserVM.FilteredDrawingGroups.Find(x => x.Drawings.Any(y => y.Id.ToString("0") == targetDrawing));
+
+                    if(targetGroup is null)
+                    {
+                        drawingBrowserVM.ShowOldGroups = true;
+                        drawingBrowserVM.ShowRejected = true;
+
+                        targetGroup = drawingBrowserVM.FilteredDrawingGroups.Find(x => x.Drawings.Any(y => y.Id.ToString("0") == targetDrawing));
+                    }
 
                     if (targetGroup == null)
                     {
