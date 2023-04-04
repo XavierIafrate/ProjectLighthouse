@@ -22,39 +22,33 @@
 
             <StackPanel Grid.Column="0" VerticalAlignment="Center">
                 <TextBlock
-                    FontSize="10"
-                    FontWeight="SemiBold"
-                    Text="COMMIT ID" />
-                <TextBlock
-                    FontSize="14"
-                    FontWeight="SemiBold"
-                    Text="{Binding FileName}" />
-            </StackPanel>
-
-            <StackPanel
-                Grid.Column="1"
-                Margin="5,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center">
-                <TextBlock
-                    HorizontalAlignment="Right"
-                    d:Text="COMMITTED_BY"
-                    FontSize="12"
-                    Text="{Binding CommittedBy, StringFormat='{}{0} committed'}" />
-                <TextBlock
                     d:Text="COMMITTED_AT"
                     FontSize="12"
+                    FontWeight="SemiBold"
                     Text="{Binding CommittedAt, Converter={StaticResource DateToLastModified}}" />
+                <TextBlock
+                    d:Text="COMMITTED_BY"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="{Binding CommittedBy, StringFormat='{}{0} committed'}" />
             </StackPanel>
+
             <Button
+                x:Name="ViewCommitButton"
                 Grid.Column="2"
                 Margin="5"
-                x:Name="ViewCommitButton"
+                d:Tag="View Commit aaaaaa"
                 CommandParameter="{Binding}"
                 Style="{StaticResource Action_Compare_File_Button}"
-                Tag="View Commit" />
+                Tag="{Binding FileName, StringFormat='{}View Commit {0}'}" />
 
-            <TextBlock Text="{Binding CommitMessage}" Grid.Row="1" Grid.ColumnSpan="3"/>
+            <TextBlock
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                Margin="5"
+                d:Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam"
+                Text="{Binding CommitMessage}"
+                TextWrapping="Wrap" />
         </Grid>
     </Grid>
 </UserControl>
