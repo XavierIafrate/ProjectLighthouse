@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model.Products;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -28,7 +27,7 @@ namespace ProjectLighthouse.View.UserControls
 
             control.HotFlag.Visibility = control.Product.QuantitySold > 5000 ? Visibility.Visible : Visibility.Collapsed;
 
-            int recommendedQuantity = control.Product.GetRecommendedQuantity() + Math.Max(0, control.Product.QuantityOnSO - control.Product.QuantityOnPO - control.Product.QuantityInStock);
+            int recommendedQuantity = control.Product.GetRecommendedQuantity();
 
             Geometry g;
             Brush b;

@@ -23,7 +23,7 @@ namespace ProjectLighthouse.View.UserControls
                 return;
 
             control.DataContext = control.Product;
-            int recommendedQuantity = control.Product.GetRecommendedQuantity() + Math.Max(0, control.Product.QuantityOnSO - control.Product.QuantityOnPO - control.Product.QuantityInStock);
+            int recommendedQuantity = control.Product.GetRecommendedQuantity();
 
             control.recommendedQtyText.Text = $"{recommendedQuantity:#,##0} pcs";
             Geometry g;
