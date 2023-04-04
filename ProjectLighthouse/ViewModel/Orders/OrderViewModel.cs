@@ -335,7 +335,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void LoadBriefing()
         {
-            if (SelectedOrder is null)
+            if (SelectedOrder is null || SelectedProductGroup is null)
             {
                 RunBeforeText = null;
                 OnPropertyChanged(nameof(RunBeforeText));
@@ -343,10 +343,9 @@ namespace ProjectLighthouse.ViewModel.Orders
                 OnPropertyChanged(nameof(CycleTimeSeries));
                 return;
             }
-
-            int GroupId = SelectedProductGroup.Id;
+         
             int MaterialId = SelectedOrder.MaterialId;
-
+            int GroupId = SelectedProductGroup.Id;
 
             if (SelectedProductGroup is not null)
             {
