@@ -791,6 +791,11 @@ function validateModel() {
 	variableDefinitions = [];
 	hints = [];
 
+	let detectLfvOn = /G165\s?P[12]/;
+	let detectLfvOff = /G165\s?P0/;
+
+	let lfvOnMatch = null;
+
 	let consecutiveEmptyLines = 0;
 	let i = 1;
 	while (i <= model.getLineCount()) {
@@ -826,6 +831,57 @@ function validateModel() {
 			}
 		}
 
+		var pattern = /(?<!(,\s?))([C]\d+)/g;
+		while (match = pattern.exec(line)) {
+			markers.push({
+				source: "Lighthouse",
+				message: "Chamfer requires a comma preceeding",
+				severity: monaco.MarkerSeverity.Warning,
+				startLineNumber: i,
+				startColumn: match.index,
+				endLineNumber: i,
+				endColumn: match.index + match.length,
+				code: "lighthouse-05"
+			});
+		}
+
+		if (match = detectLfvOn.exec(line)) {
+			if (lfvOnMatch) {
+				markers.push({
+					source: "Lighthouse",
+					message: "LFV turned on more than once without being turned off",
+					severity: monaco.MarkerSeverity.Warning,
+					startLineNumber: i,
+					startColumn: match.index,
+					endLineNumber: i,
+					endColumn: match.index + match.length,
+					code: "lighthouse-06"
+				});
+			}
+
+
+			lfvOnMatch = match;
+			lfvOnMatch.line = i
+		}
+
+		if (match = detectLfvOff.exec(line)) {
+			if (!lfvOnMatch) {
+				markers.push({
+					source: "Lighthouse",
+					message: "LFV turned off without being turned on",
+					severity: monaco.MarkerSeverity.Warning,
+					startLineNumber: i,
+					startColumn: match.index,
+					endLineNumber: i,
+					endColumn: match.index + match.length,
+					code: "lighthouse-07"
+				});
+			}
+
+			lfvOnMatch = null;
+		}
+
+
 		if (line.trim() !== "") {
 			if (consecutiveEmptyLines >= 3) {
 				markers.push({
@@ -840,49 +896,39 @@ function validateModel() {
 				});
 			}
 
-			if (line.startsWith("N") && consecutiveEmptyLines === 0) {
-				markers.push({
-					source: "Lighthouse",
-					message: "Block should be preceeded by an empty line",
-					severity: monaco.MarkerSeverity.Info,
-					startLineNumber: i - consecutiveEmptyLines,
-					startColumn: 1,
-					endLineNumber: i,
-					endColumn: line.length + 1,
-					code: "lighthouse-05"
-				});
+			if (line.startsWith("N")) {
+				if (consecutiveEmptyLines === 0) {
+					markers.push({
+						source: "Lighthouse",
+						message: "Block should be preceeded by an empty line",
+						severity: monaco.MarkerSeverity.Info,
+						startLineNumber: i - consecutiveEmptyLines,
+						startColumn: 1,
+						endLineNumber: i,
+						endColumn: line.length + 1,
+						code: "lighthouse-04"
+					});
+				}
+
+				if (lfvOnMatch) {
+					markers.push({
+						source: "Lighthouse",
+						message: "LFV has not been turned off",
+						severity: monaco.MarkerSeverity.Warning,
+						startLineNumber: lfvOnMatch.line,
+						startColumn: lfvOnMatch.index,
+						endLineNumber: lfvOnMatch.line,
+						endColumn: lfvOnMatch.index + lfvOnMatch.length,
+						code: "lighthouse-08"
+					});
+					lfvOnMatch = null;
+				}
 			}
 
 			consecutiveEmptyLines = 0;
 		}
 		else {
 			consecutiveEmptyLines++;
-		}
-
-		
-
-
-		if (line.endsWith(" ")) {
-			let whitespaceStartsAt = line.length + 1;
-
-			for (let c = line.length; c > 0; c--) {
-				whitespaceStartsAt = c;
-				if (line[c] !== " ") {
-					break;
-				}
-			}
-
-
-			markers.push({
-				source: "Lighthouse",
-				message: "Trailing whitespace",
-				severity: monaco.MarkerSeverity.Info,
-				startLineNumber: i,
-				startColumn: whitespaceStartsAt +1,
-				endLineNumber: i,
-				endColumn: line.length + 1,
-				code: "lighthouse-02"
-			});
 		}
 
 
@@ -910,7 +956,7 @@ function validateModel() {
 						startColumn: line.indexOf(gcodes[x]) + 1,
 						endLineNumber: i,
 						endColumn: line.indexOf(gcodes[x]) + gcodes[x].length + 1,
-						code: "lighthouse-03"
+						code: "lighthouse-02"
 					});
 
 					continue;
@@ -925,7 +971,7 @@ function validateModel() {
 						startColumn: line.indexOf(gcodes[x]) + 1,
 						endLineNumber: i,
 						endColumn: line.indexOf(gcodes[x]) + gcodes[x].length + 1,
-						code: "lighthouse-04"
+						code: "lighthouse-03"
 					});
 				}
 				groups.push(def.group);
