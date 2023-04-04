@@ -5,6 +5,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace ProjectLighthouse.ViewModel.Core
 {
     public static class LumenManager
     {
+        //private static SerialPort mscomm1;
+
         public static List<string> Themes { get; set; } = new();
         public static List<string> ThemeNames { get; set; } = new();
 
@@ -45,6 +48,137 @@ namespace ProjectLighthouse.ViewModel.Core
 
         private static string MonacoTitle = "Lumen (preview)";
 
+
+        private static void DownloadProgram()
+        {
+            //    frmSerialComms.serialDataItem serialDataItem1 = new frmSerialComms.serialDataItem();
+            //    this.selectedMachine = selectedMachineID;
+            //    this.selectedMachineSettings = mSettings.getMachineSettings(this.selectedMachine);
+            //    frmSerialComms.serialDataItem serialDataItem2;
+            //    if (!this.setupCommPort(this.selectedMachine))
+            //    {
+            //        serialDataItem2 = serialDataItem1;
+            //    }
+            //    else
+            //    {
+            //        this.timRecProgram.Enabled = true;
+            //        try
+            //        {
+            //            this.mscomm1.Open();
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            ProjectData.SetProjectError(ex);
+            //            this.resetRecTimersAndComPort(true);
+            //            int num = (int)Interaction.MsgBox((object)mSettings.getLanguageText(nameof(frmSerialComms), "errCommPortOpen"), MsgBoxStyle.Exclamation);
+            //            serialDataItem2 = serialDataItem1;
+            //            ProjectData.ClearProjectError();
+            //            goto label_14;
+            //        }
+            //        try
+            //        {
+            //            if (this.receiveMsg == null)
+            //                this.receiveMsg = new frmReceiveMsg();
+            //            this.receiveMsg.Owner = (Form)startup.MDIForm1;
+            //            this.receiveMsg.Show();
+            //            while (!this.dataReceiveComplete)
+            //            {
+            //                if (this.receiveMsg.recCancelled)
+            //                {
+            //                    serialDataItem2 = serialDataItem1;
+            //                    goto label_14;
+            //                }
+            //                else
+            //                    Application.DoEvents();
+            //            }
+            //            serialDataItem1.successful = true;
+            //            serialDataItem1.program = this.recProg;
+            //            serialDataItem2 = serialDataItem1;
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            ProjectData.SetProjectError(ex);
+            //            this.resetRecTimersAndComPort(true);
+            //            int num = (int)Interaction.MsgBox((object)(mSettings.getLanguageText(nameof(frmSerialComms), "errDownloadProgram") + "    " + Conversion.ErrorToString()), MsgBoxStyle.Exclamation);
+            //            serialDataItem2 = serialDataItem1;
+            //            ProjectData.ClearProjectError();
+            //        }
+            //    }
+            //label_14:
+            //    return serialDataItem2;
+        }
+
+        private static void SetupCommPort()
+        {
+            //bool flag = true;
+            //this.mscomm1.Encoding = startup.encoding;
+            //try
+            //{
+            //    mSettings.machineSettings machineSettings = mSettings.getMachineSettings(machineNo);
+            //    this.mscomm1.BaudRate = Convert.ToInt32(machineSettings.baudRate);
+            //    string parity1 = machineSettings.parity;
+            //    Parity parity2;
+            //    if (Operators.CompareString(parity1, "N", false) != 0)
+            //    {
+            //        if (Operators.CompareString(parity1, "E", false) != 0)
+            //        {
+            //            if (Operators.CompareString(parity1, "O", false) == 0)
+            //                parity2 = Parity.Odd;
+            //        }
+            //        else
+            //            parity2 = Parity.Even;
+            //    }
+            //    else
+            //        parity2 = Parity.None;
+            //    this.mscomm1.Parity = parity2;
+            //    this.mscomm1.DataBits = Convert.ToInt32(machineSettings.dataBits);
+            //    StopBits stopBits;
+            //    switch (machineSettings.stopBits)
+            //    {
+            //        case 0:
+            //            stopBits = StopBits.None;
+            //            break;
+            //        case 1:
+            //            stopBits = StopBits.One;
+            //            break;
+            //        case 2:
+            //            stopBits = StopBits.Two;
+            //            break;
+            //    }
+            //    this.mscomm1.StopBits = stopBits;
+            //    string handshaking = machineSettings.handshaking;
+            //    Handshake handshake;
+            //    if (Operators.CompareString(handshaking, "0", false) != 0)
+            //    {
+            //        if (Operators.CompareString(handshaking, "1", false) != 0)
+            //        {
+            //            if (Operators.CompareString(handshaking, "2", false) != 0)
+            //            {
+            //                if (Operators.CompareString(handshaking, "3", false) == 0)
+            //                    handshake = Handshake.RequestToSendXOnXOff;
+            //            }
+            //            else
+            //                handshake = Handshake.RequestToSend;
+            //        }
+            //        else
+            //            handshake = Handshake.XOnXOff;
+            //    }
+            //    else
+            //        handshake = Handshake.None;
+            //    this.mscomm1.Handshake = handshake;
+            //    this.mscomm1.PortName = "COM" + Conversions.ToString(machineSettings.comPort);
+            //    this.mscomm1.RtsEnable = false;
+            //    this.mscomm1.DtrEnable = true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    ProjectData.SetProjectError(ex);
+            //    flag = false;
+            //    int num = (int)Interaction.MsgBox((object)(mSettings.getLanguageText(nameof(frmSerialComms), "errSetupCommPort") + "  " + Conversion.ErrorToString()), MsgBoxStyle.Exclamation);
+            //    ProjectData.ClearProjectError();
+            //}
+            //return flag;
+        }
 
         public static void Initialise()
         {
@@ -241,6 +375,28 @@ namespace ProjectLighthouse.ViewModel.Core
             string cleanedCode = string.Join('\n', lines);
             cleanedCode = cleanedCode.Trim();
             return cleanedCode;
+        }
+
+        public static MonacoProgram LoadCommit(MonacoProgram target, NcProgramCommit? preceedingCommit)
+        {
+            MonacoProgram targetProgram = target;
+
+            if (preceedingCommit is null) return targetProgram;
+
+            MonacoProgram preceedingProgram;
+            try
+            {
+                preceedingProgram = GetProgramFromFile(preceedingCommit.Url);
+            }
+            catch
+            {
+                throw;
+            }
+
+            targetProgram.OriginalDollarOneCode = preceedingProgram.DollarOneCode;
+            targetProgram.OriginalDollarTwoCode = preceedingProgram.DollarTwoCode;
+
+            return targetProgram;
         }
 
         public static MonacoProgram LoadCommit(NcProgramCommit target, NcProgramCommit? preceedingCommit)
