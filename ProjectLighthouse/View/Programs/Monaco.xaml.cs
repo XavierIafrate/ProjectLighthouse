@@ -52,7 +52,7 @@ namespace ProjectLighthouse.View.Programs
             set
             {
                 selectedCommit = value;
-                if (value is not null) LoadCommit();
+                LoadCommit();
                 OnPropertyChanged();
             }
         }
@@ -198,34 +198,54 @@ namespace ProjectLighthouse.View.Programs
 
         void LoadCommit()
         {
-            if (SelectedCommit is null)
-            {
-                // TODO
-                return;
-            }
-
             MonacoProgram p;
 
-            List<NcProgramCommit> priorCommits = SelectedProgramCommits.ToList()
-                .Where(x => x.CommittedAt < SelectedCommit.CommittedAt)
-                .OrderByDescending(x => x.CommittedAt)
-                .ToList();
+            if (SelectedCommit is null)
+            {
+                List<NcProgramCommit> priorCommits = SelectedProgramCommits.ToList()
+                    .OrderByDescending(x => x.CommittedAt)
+                    .ToList();
 
-            NcProgramCommit? compareAgainst = null;
-            if (priorCommits.Count > 0)
+                NcProgramCommit? compareAgainst = null;
+                if (priorCommits.Count > 0)
+                {
+                    compareAgainst = priorCommits.First();
+                }
+
+                try
+                {
+                    p = LumenManager.LoadCommit(SelectedProgram.ProgramContent, compareAgainst);
+                }
+                catch (Exception ex)
+                {
+                    NotificationManager.NotifyHandledException(ex);
+                    return;
+                }
+            }
+            else
             {
-                compareAgainst = priorCommits.First();
+                List<NcProgramCommit> priorCommits = SelectedProgramCommits.ToList()
+                    .Where(x => x.CommittedAt < SelectedCommit.CommittedAt)
+                    .OrderByDescending(x => x.CommittedAt)
+                    .ToList();
+
+                NcProgramCommit? compareAgainst = null;
+                if (priorCommits.Count > 0)
+                {
+                    compareAgainst = priorCommits.First();
+                }
+
+                try
+                {
+                    p = LumenManager.LoadCommit(SelectedCommit, compareAgainst);
+                }
+                catch (Exception ex)
+                {
+                    NotificationManager.NotifyHandledException(ex);
+                    return;
+                }
             }
 
-            try
-            {
-                p = LumenManager.LoadCommit(SelectedCommit, compareAgainst);
-            }
-            catch (Exception ex)
-            {
-                NotificationManager.NotifyHandledException(ex);
-                return;
-            }
 
             DisplayedContent = p;
         }
@@ -343,7 +363,7 @@ namespace ProjectLighthouse.View.Programs
         }
 
         public void ApplyTheme(string themeData)
-        { 
+        {
             SetLumenTheme(themeData);
             SetTheme(DollarOne, themeData);
             SetTheme(DollarTwo, themeData);
@@ -359,6 +379,8 @@ namespace ProjectLighthouse.View.Programs
             {
                 SetToDiffMode(DollarOne);
                 SetToDiffMode(DollarTwo);
+
+                SelectedCommit = null;
 
                 this.DollarOneDiffModeText.Visibility = Visibility.Visible;
                 this.DollarTwoDiffModeText.Visibility = Visibility.Visible;
