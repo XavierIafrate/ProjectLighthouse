@@ -332,7 +332,7 @@
                             HorizontalAlignment="Right"
                             d:Text="TARGET_STOCK"
                             FontWeight="SemiBold"
-                            Text="{Binding SelectedProduct.TargetStock, StringFormat='{}{0:#,##0} pcs'}" />
+                            Text="{Binding SelectedProduct.QuantitySold, StringFormat='{}{0:#,##0} pcs'}" />
 
                         <TextBlock
                             Grid.Row="6"

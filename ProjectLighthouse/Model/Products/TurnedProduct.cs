@@ -278,12 +278,6 @@ namespace ProjectLighthouse.Model.Products
 
         #region Helper Functions
 
-        [Ignore]
-        public int TargetStock
-        {
-            get { return GetRecommendedQuantity(); }
-        }
-
         public int GetCycleTime()
         {
             if (CycleTime != 0)
