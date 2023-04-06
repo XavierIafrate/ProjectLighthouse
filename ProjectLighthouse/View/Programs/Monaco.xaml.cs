@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.ViewModel.Core;
-using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -260,25 +259,6 @@ namespace ProjectLighthouse.View.Programs
 
             await SetDollarOneContent();
             await SetDollarTwoContent();
-
-
-            //NcProgramCommit commit = new()
-            //{
-            //    ProgramId = SelectedProgram.Id,
-            //    FileName = Guid.NewGuid().ToString()[..8],
-            //    CommitMessage = "Initial Commit",
-            //    CommittedAt = DateTime.Now,
-            //    CommittedBy = App.CurrentUser.UserName
-            //};
-
-            //try
-            //{
-            //    DatabaseHelper.Insert(commit, throwErrs: true);
-            //}
-            //catch (Exception ex)
-            //{
-            //    NotificationManager.NotifyHandledException(ex);
-            //}
         }
 
         private void DollarOne_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -375,8 +355,17 @@ namespace ProjectLighthouse.View.Programs
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
+            string d1Content;
+            string d2Content;
+
             if (DiffMode)
             {
+                //d1Content = await DollarOne.ExecuteScriptAsync("editor.getValue()");
+                //SelectedProgram.ProgramContent.DollarOneCode = d1Content == "null" ? "" : Regex.Unescape(d1Content)[1..^1];
+
+                //d2Content = await DollarTwo.ExecuteScriptAsync("editor.getValue()");
+                //SelectedProgram.ProgramContent.DollarTwoCode = d2Content == "null" ? "" : Regex.Unescape(d2Content)[1..^1];
+
                 SetToDiffMode(DollarOne);
                 SetToDiffMode(DollarTwo);
 
@@ -387,6 +376,12 @@ namespace ProjectLighthouse.View.Programs
 
                 return;
             }
+
+            //d1Content = await DollarOne.ExecuteScriptAsync("editor.getModifiedEditor().getValue()");
+            //SelectedProgram.ProgramContent.DollarOneCode = d1Content == "null" ? "" : Regex.Unescape(d1Content)[1..^1];
+
+            //d2Content = await DollarTwo.ExecuteScriptAsync("editor.getModifiedEditor().getValue()");
+            //SelectedProgram.ProgramContent.DollarTwoCode = d2Content == "null" ? "" : Regex.Unescape(d2Content)[1..^1];
 
             this.DollarOne.Source =
                 new Uri(Path.Combine(
