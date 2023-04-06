@@ -175,7 +175,7 @@ namespace ProjectLighthouse.ViewModel.Programs
                 if (ct.IsCancellationRequested)
                 {
                     Debug.WriteLine("Cancellation Requested");
-                    ct.ThrowIfCancellationRequested();
+                    //ct.ThrowIfCancellationRequested();
                     return;
                 }
 
