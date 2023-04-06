@@ -365,7 +365,7 @@ namespace ProjectLighthouse.ViewModel.Core
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
-                line = Regex.Replace(line, @"(?<![A-Z|\!]{1})[A-Z]{1}(\d+|\#\d+|\-)", " $0");
+                line = Regex.Replace(line, @"(?<![A-Z|\! ]{1})[A-Z]{1}(\d+|\#\d+|\-)", " $0");
                 //line = Regex.Replace(line, @"(?<![\s]{1})[A-Z]{1}(\[)", " $0");
                 //line = Regex.Replace(line, @"(?>![\s]{1})[A-Z]{1}(\])", "$0 ");
                 line = line.Trim();
@@ -375,6 +375,38 @@ namespace ProjectLighthouse.ViewModel.Core
             string cleanedCode = string.Join('\n', lines);
             cleanedCode = cleanedCode.Trim();
             return cleanedCode;
+        }
+
+        public static void PostCommit(MonacoProgram program, NcProgramCommit commit)
+        {
+            commit.CommittedAt = DateTime.Now;
+            commit.CommittedBy = App.CurrentUser.UserName;
+
+            commit.FileName = Guid.NewGuid().ToString()[..8];
+            while (File.Exists(commit.Url))
+            {
+                commit.FileName = Guid.NewGuid().ToString()[..8];
+            }
+
+            try
+            {
+                File.WriteAllText(commit.Url, program.Pack());
+            }
+            catch
+            {
+                throw;
+            }
+
+            try
+            {
+                DatabaseHelper.Insert(commit, throwErrs:true);
+            }
+            catch
+            {
+                throw;
+            }
+
+            Commits.Add(commit);
         }
 
         public static MonacoProgram LoadCommit(MonacoProgram target, NcProgramCommit? preceedingCommit)
