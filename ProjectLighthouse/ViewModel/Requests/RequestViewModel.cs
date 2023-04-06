@@ -889,7 +889,12 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             List<string> otherUsers = FilteredNotes.Select(x => x.SentBy).ToList();
             otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveRequest)).Select(x => x.UserName));
-            otherUsers.Add(App.NotificationsManager.users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy)!.UserName);
+            
+            User? userWhoRaisedRequest = App.NotificationsManager.users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
+            if (userWhoRaisedRequest is not null)
+            {
+                otherUsers.Add(userWhoRaisedRequest.UserName);
+            }
 
             otherUsers = otherUsers.Where(x => x != App.CurrentUser.UserName).Distinct().ToList();
 
