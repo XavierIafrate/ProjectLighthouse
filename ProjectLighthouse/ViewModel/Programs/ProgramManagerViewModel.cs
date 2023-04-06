@@ -146,14 +146,9 @@ namespace ProjectLighthouse.ViewModel.Programs
         public OpenProgramCommand OpenProgramCmd { get; set; }
         public OpenCommitCommand OpenCommitCmd { get; set; }
 
-        private System.Timers.Timer timer;
 
         public ProgramManagerViewModel()
         {
-            timer = new(1000);
-            timer.Elapsed += Timer_Elapsed;
-            timer.Start();
-
             LoadData();
             Search();
         }
@@ -168,7 +163,7 @@ namespace ProjectLighthouse.ViewModel.Programs
         }
 
 
-        private async Task CheckPrograms(CancellationToken ct)
+        private void CheckPrograms(CancellationToken ct)
         {
             Thread.Sleep(500);
             List<NcProgram> programs = new(Programs);
@@ -218,15 +213,8 @@ namespace ProjectLighthouse.ViewModel.Programs
             {
                 program.FileExists = Programs.Find(x => x.Id == program.Id)?.FileExists;
             }
-        }
 
-
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (FilteredCommits is null) return;
-            if (FilteredCommits.Count == 0) return;
-
-            FilteredCommits[0].CommittedAt = DateTime.Now;
+            return;
         }
 
         void LoadData()
@@ -284,7 +272,6 @@ namespace ProjectLighthouse.ViewModel.Programs
             if (SelectedProgram is null) return;
             if (SelectedProgram.Path is null) return;
 
-            //LumenButtonEnabled = false;
             NcProgram p;
             try
             {
@@ -409,6 +396,7 @@ namespace ProjectLighthouse.ViewModel.Programs
                 .Where(x => x.ProgramId == SelectedProgram.Id)
                 .OrderByDescending(x => x.CommittedAt)
                 .ToList();
+
             FilteredCommits = new();
             commits.ForEach(x => FilteredCommits.Add(x));
             OnPropertyChanged(nameof(FilteredCommits));
@@ -497,7 +485,6 @@ namespace ProjectLighthouse.ViewModel.Programs
         public void Dispose()
         {
             cancellationTokenSource?.Cancel();
-            //LumenManager.Close();
         }
 
         public void OpenCommit(NcProgramCommit commit)
