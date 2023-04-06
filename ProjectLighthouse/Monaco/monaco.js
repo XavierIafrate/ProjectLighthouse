@@ -624,7 +624,6 @@ monaco.languages.setMonarchTokensProvider('gcode', {
 var model = monaco.editor.createModel('', 'gcode');
 var handle = null;
 model.onDidChangeContent(() => {
-	validateModel(handle);
 	handle = setTimeout(() => validateModel(), 500);
 })
 
@@ -646,15 +645,21 @@ monaco.languages.registerFoldingRangeProvider('gcode', {
 
 monaco.languages.registerHoverProvider("gcode", {
 	provideHover: function (model, position) {
-		// TODO check not within brackets 
+		// TODO check not within brackets
+		let word = model.getWordAtPosition(position);
+
+		if (!word) {
+			return null;
+		}
+
 		return {
 			range: new monaco.Range(
 				position.lineNumber,
-				model.getWordAtPosition(position).startColumn,
+				word.startColumn,
 				position.lineNumber,
-				model.getWordAtPosition(position).endColumn
+				word.endColumn
 			),
-			contents: getHover(model.getWordAtPosition(position).word),
+			contents: getHover(word.word),
 		};
 	},
 });
@@ -798,6 +803,11 @@ function validateModel() {
 
 	let consecutiveEmptyLines = 0;
 	let i = 1;
+
+	let lineNumbers = [];
+	let goToCalls = [];
+
+
 	while (i <= model.getLineCount()) {
 		let line = model.getLineContent(i);
 
@@ -831,19 +841,33 @@ function validateModel() {
 			}
 		}
 
-		var pattern = /(?<!(,\s?))([C]\d+)/g;
-		while (match = pattern.exec(line)) {
+		let match = line.match(/[XYZ][\d.]+\s?[CR][\d.]+/)
+		if (match) {
 			markers.push({
 				source: "Lighthouse",
-				message: "Chamfer requires a comma preceeding",
-				severity: monaco.MarkerSeverity.Warning,
+				message: "Chamfer or Radius require a preceeding comma",
+				severity: monaco.MarkerSeverity.Error,
 				startLineNumber: i,
-				startColumn: match.index,
+				startColumn: match.index + 1,
 				endLineNumber: i,
-				endColumn: match.index + match.length,
+				endColumn: match.index + match[0].length + 1,
 				code: "lighthouse-05"
 			});
 		}
+
+		let goToCall;
+
+		if (line.startsWith("M98")) {
+			goToCall = line.match(/(GOTO|H)\s?\d+/)
+		}
+		else {
+			goToCall = line.match(/(GOTO)\s?\d+/)
+		}
+
+		if (goToCall) {
+			goToCalls.push({ lineCall:goToCall, index: goToCall.index, length: goToCall[0].length, line: i });
+		}
+		
 
 		if (match = detectLfvOn.exec(line)) {
 			if (lfvOnMatch) {
@@ -892,11 +916,48 @@ function validateModel() {
 					startColumn: 1,
 					endLineNumber: i,
 					endColumn: 1,
-					code:"lighthouse-01"
+					code: "lighthouse-01"
 				});
 			}
 
-			if (line.startsWith("N")) {
+
+			var pairs = [
+				{
+					opening: "{",
+					closing: "}",
+				},
+				{
+					opening: "[",
+					closing: "]",
+				},
+				{
+					opening: "(",
+					closing: ")",
+				},
+			]
+
+			for (let p = 0; p < pairs.length; p++) {
+				var pair = pairs[p];
+
+				if (getBracketDepth(line, pair.opening, pair.closing) != 0) {
+					markers.push({
+						source: "Lighthouse",
+						message: "Bracket mismatch",
+						severity: monaco.MarkerSeverity.Error,
+						startLineNumber: i,
+						startColumn: 1,
+						endLineNumber: i,
+						endColumn: line.length + 1,
+						code: "lighthouse-09"
+					});
+				}
+			}
+
+			let lineNumber = /(?<=N)(\d+)/.exec(line);
+
+			if (lineNumber) {
+				lineNumber["line"] = i;
+				lineNumbers.push(lineNumber);
 				if (consecutiveEmptyLines === 0) {
 					markers.push({
 						source: "Lighthouse",
@@ -923,66 +984,131 @@ function validateModel() {
 					});
 					lfvOnMatch = null;
 				}
+
 			}
 
+
+			let gcodes = getGCodes(line);
+
+			if (gcodes.length > 0) {
+
+				let groups = [];
+
+				for (let x = 0; x < gcodes.length; x++) {
+					let code = gcodes[x];
+					if (code.length === 3 && code[1] === "0") {
+						code = code[0] + code[2];
+					}
+
+					let def = codeDefinitions[code];
+
+					if (!def) {
+						markers.push({
+							source: "Lighthouse",
+							message: "Unrecognised G Code",
+							severity: monaco.MarkerSeverity.Error,
+							startLineNumber: i,
+							startColumn: line.indexOf(gcodes[x]) + 1,
+							endLineNumber: i,
+							endColumn: line.indexOf(gcodes[x]) + gcodes[x].length + 1,
+							code: "lighthouse-02"
+						});
+
+						continue;
+					}
+
+					if (groups.includes(def.group)) {
+						markers.push({
+							source: "Lighthouse",
+							message: "G Codes from the same modal group are not permitted on the same line",
+							severity: monaco.MarkerSeverity.Error,
+							startLineNumber: i,
+							startColumn: line.indexOf(gcodes[x]) + 1,
+							endLineNumber: i,
+							endColumn: line.indexOf(gcodes[x]) + gcodes[x].length + 1,
+							code: "lighthouse-03"
+						});
+					}
+					groups.push(def.group);
+				}
+			}
 			consecutiveEmptyLines = 0;
 		}
 		else {
 			consecutiveEmptyLines++;
 		}
 
-
-		let gcodes = getGCodes(line);
-
-		if (gcodes.length > 0) {
-
-			let groups = [];
-
-			for (let x = 0; x < gcodes.length; x++) {
-				let code = gcodes[x];
-				if (code.length === 3 && code[1] === "0") {
-					code = code[0] + code[2];
-				}
-
-				let def = codeDefinitions[code];
-
-				if (!def) {
-
-					markers.push({
-						source: "Lighthouse",
-						message: "Unrecognised G Code",
-						severity: monaco.MarkerSeverity.Error,
-						startLineNumber: i,
-						startColumn: line.indexOf(gcodes[x]) + 1,
-						endLineNumber: i,
-						endColumn: line.indexOf(gcodes[x]) + gcodes[x].length + 1,
-						code: "lighthouse-02"
-					});
-
-					continue;
-				}
-
-				if (groups.includes(def.group)) { 
-					markers.push({
-						source: "Lighthouse",
-						message: "G Codes from the same modal group are not permitted on the same line",
-						severity: monaco.MarkerSeverity.Error,
-						startLineNumber: i,
-						startColumn: line.indexOf(gcodes[x]) + 1,
-						endLineNumber: i,
-						endColumn: line.indexOf(gcodes[x]) + gcodes[x].length + 1,
-						code: "lighthouse-03"
-					});
-				}
-				groups.push(def.group);
-			}
-
-		}
-
 		i++;
 	}
 
+	for (let n = 0; n < lineNumbers.length; n++) {
+		let found = false;
+
+		for (let g = 0; g < goToCalls.length; g++) {
+			if (goToCalls[g].lineCall[0].endsWith(lineNumbers[n][0])) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			markers.push({
+				source: "Lighthouse",
+				message: "Line not called",
+				severity: monaco.MarkerSeverity.Warning,
+				startLineNumber: lineNumbers[n].line,
+				startColumn: 1,
+				endLineNumber: lineNumbers[n].line,
+				endColumn: 1,
+				code: "lighthouse-10"
+			});
+		}
+	}
+
+	for (let g = 0; g < goToCalls.length; g++) {
+		let found = false;
+		let calling = goToCalls[g].lineCall[0].match(/\d+/)[0];
+
+		for (let n = 0; n < lineNumbers.length; n++) {
+			if (lineNumbers[n][0] === calling) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			markers.push({
+				source: "Lighthouse",
+				message: 'Call to undeclared routine',
+				severity: monaco.MarkerSeverity.Error,
+				startLineNumber: goToCalls[g].line,
+				startColumn: goToCalls[g].index+1,
+				endLineNumber: goToCalls[g].line,
+				endColumn: goToCalls[g].index + goToCalls[g].length+1,
+				code: "lighthouse-11"
+			});
+		}
+	}
+
+
 	monaco.editor.setModelMarkers(model, "owner", markers);
+}
+
+function getBracketDepth(string, opening, closing) {
+	var depth = 0;
+
+	for (var i = 0; i < string.length; i++) {
+		var char = string.charAt(i);
+
+		if (char === opening) {
+			depth++;
+		}
+		else if (char === closing) {
+			depth--;
+		}
+	}
+
+	return depth;
 }
 
 
