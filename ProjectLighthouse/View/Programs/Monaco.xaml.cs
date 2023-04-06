@@ -547,5 +547,27 @@ namespace ProjectLighthouse.View.Programs
             ProgramsList.Visibility = Visibility.Visible;
             ThemesComboBox.Visibility = Visibility.Visible;
         }
+
+        private void CommitButton_Click(object sender, RoutedEventArgs e)
+        {
+            NewCommit.ValidateAll();
+
+            if (NewCommit.HasErrors)
+            {
+                MessageBox.Show("Commit has errors");
+                return;
+            }
+
+            try
+            {
+                LumenManager.PostCommit(DisplayedContent, NewCommit);
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+            }
+
+            SelectedProgramCommits.Add(NewCommit);
+        }
     }
 }

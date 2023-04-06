@@ -301,6 +301,8 @@
                         Opacity="0.5"
                         Text="{Binding NewCommit.CommitMessage.Length, StringFormat='{}{0:0}/72'}" />
                     <Button
+                        x:Name="CommitButton"
+                        Click="CommitButton_Click"
                         HorizontalAlignment="Right"
                         Style="{StaticResource Action_Button}"
                         Tag="Commit" />
