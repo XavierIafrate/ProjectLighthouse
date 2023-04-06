@@ -337,6 +337,11 @@ namespace ProjectLighthouse.Model.Programs
             public string OriginalDollarTwoCode { get; set; }
             public string DollarTwoCode { get; set; }
             public string DollarZeroCode { get; set; }
+
+            public string Pack()
+            {
+                return $"$1\n{DollarOneCode}\n\n$2\n{DollarTwoCode}\n\n$0\n{DollarZeroCode}";
+            }
         }
     }
 }
