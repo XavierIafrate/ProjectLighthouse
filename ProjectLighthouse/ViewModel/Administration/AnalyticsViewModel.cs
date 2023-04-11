@@ -176,7 +176,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                     WeekId = $"W{ISOWeek.GetWeekOfYear(date):00}-{date:yyyy}"
                 };
 
-                List<LatheManufactureOrder> ordersAtTime = orders.Where(x => x.CreatedAt <= date && x.EndsAt() >= date).ToList();
+                List<LatheManufactureOrder> ordersAtTime = orders.Where(x => x.CreatedAt.Date <= date && x.EndsAt() >= date).ToList();
 
                 data.CountOfOrders = ordersAtTime.Count;
                 data.CountOfProductionOrders = ordersAtTime.Where(x => !x.IsResearch).Count();
