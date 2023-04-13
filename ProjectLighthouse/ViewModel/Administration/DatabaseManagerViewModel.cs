@@ -14,7 +14,6 @@ using System.Reflection;
 using System.Windows;
 using ViewModel.Commands.Administration;
 using static ProjectLighthouse.Model.BaseObject;
-using static ProjectLighthouse.ViewModel.Administration.DatabaseManagerViewModel;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
@@ -22,6 +21,7 @@ namespace ProjectLighthouse.ViewModel.Administration
     {
         public ManageUsersViewModel ManageUsersViewModel { get; set; }
         public LatheViewModel LatheViewModel { get; set; }
+        public MaterialsViewModel MaterialsViewModel { get; set; }
 
         public List<LatheManufactureOrder> Orders { get; set; }
 
@@ -36,6 +36,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             if (App.CurrentUser.Role == Model.Administration.UserRole.Administrator)
             {
                 ManageUsersViewModel = new();
+                MaterialsViewModel = new();
             }
 
             if (App.CurrentUser.HasPermission(Model.Core.PermissionType.ConfigureMaintenance))

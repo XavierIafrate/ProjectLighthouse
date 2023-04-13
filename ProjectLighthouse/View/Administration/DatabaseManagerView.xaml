@@ -17,7 +17,9 @@
             <TabItem Header="Lathes">
                 <ContentControl Content="{Binding LatheViewModel}" IsEnabled="{Binding LatheViewModel, Converter={StaticResource NotNullToBoolean}}"/>
             </TabItem>
-            <TabItem Header="Materials" IsEnabled="False"/>
+            <TabItem Header="Materials">
+                <ContentControl Content="{Binding MaterialsViewModel}" IsEnabled="{Binding MaterialsViewModel, Converter={StaticResource NotNullToBoolean}}"/>
+            </TabItem>
             <TabItem Header="Dev" IsEnabled="False"/>
             <TabItem Header="Reports">
                 <Grid>
