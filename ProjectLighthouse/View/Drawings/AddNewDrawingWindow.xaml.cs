@@ -201,7 +201,6 @@ namespace ProjectLighthouse.View.Drawings
             CustomerIssueCheckBox.Visibility = App.CurrentUser.Role == UserRole.Administrator
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-
         }
 
         private void LoadData()
@@ -339,11 +338,34 @@ namespace ProjectLighthouse.View.Drawings
             return true;
         }
 
+        private bool CheckNoOpenDrawings()
+        {
+
+            List<TechnicalDrawing> pendingDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.PendingApproval()).ToList();
+            if (ArchetypeMode)
+            {
+                pendingDrawings = pendingDrawings.Where(x => x.GroupId == SelectedGroup!.Id).ToList();
+            }
+            else
+            {
+                pendingDrawings = pendingDrawings.Where(x => x.TurnedProductId == SelectedTurnedProduct!.Id).ToList();
+            }
+
+            return pendingDrawings.Count == 0;
+        }
+
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             NewDrawing.DrawingType = (ResearchCheckbox.IsChecked ?? false) ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production;
             if (!DataOk())
             {
+                return;
+            }
+
+            bool nothingPending = CheckNoOpenDrawings();
+            if (!nothingPending)
+            {
+                MessageBox.Show("The target drawing has a pending candidate - the candidate must be rejected or withdrawn if you wish to add a new candidate.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
 
