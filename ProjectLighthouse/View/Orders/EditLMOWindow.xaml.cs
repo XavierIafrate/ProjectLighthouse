@@ -1,12 +1,10 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Helpers;
-using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -86,10 +84,9 @@ namespace ProjectLighthouse.View.Orders
             if (BarStock is null)
             {
                 // TODO handle bad inputs
-                BarStock = DatabaseHelper.Read<BarStock>();
-                BarStock currentBar = BarStock.Find(x => x.Id == Order.BarID);
-
-                if (currentBar is null) throw new Exception($"Cannot find bar {Order.BarID}");
+                BarStock = DatabaseHelper.Read<BarStock>().Where(x => !x.IsDormant).ToList();
+                BarStock currentBar = BarStock.Find(x => x.Id == Order.BarID)
+                    ?? throw new Exception($"Cannot find bar {Order.BarID}");
 
                 BarStock = BarStock.Where(x => x.MaterialId == currentBar.MaterialId).ToList();
                 OnPropertyChanged(nameof(BarStock));
@@ -131,7 +128,7 @@ namespace ProjectLighthouse.View.Orders
             OnPropertyChanged(nameof(Drawings));
         }
 
-        
+
 
         private void FormatNoteDisplay()
         {
@@ -283,11 +280,11 @@ namespace ProjectLighthouse.View.Orders
             // people who have already commented
             List<string> toUpdate = Notes.Select(x => x.SentBy).Distinct().ToList();
 
-            List<string> otherUsers =  App.NotificationsManager.users
+            List<string> otherUsers = App.NotificationsManager.users
                 .Where(x => x.Role >= UserRole.Production && x.ReceivesNotifications)
                 .Select(x => x.UserName)
                 .ToList();
-            
+
             toUpdate.AddRange(otherUsers);
             toUpdate = toUpdate.Distinct().Where(x => x != App.CurrentUser.UserName).ToList();
 
@@ -325,7 +322,7 @@ namespace ProjectLighthouse.View.Orders
             {
                 return;
             }
-            
+
             CalculateTimeAndBar();
 
             if (savedOrder.IsUpdated(Order))
@@ -341,7 +338,7 @@ namespace ProjectLighthouse.View.Orders
 
         private bool SaveOrder()
         {
-            if(savedOrder.AssignedTo != Order.AssignedTo)
+            if (savedOrder.AssignedTo != Order.AssignedTo)
             {
                 NotifyAssignmentChanged(savedOrder.AssignedTo, Order.AssignedTo);
             }
@@ -373,7 +370,7 @@ namespace ProjectLighthouse.View.Orders
 
             if (to is not null)
             {
-                App.NotificationsManager.NotifyOrderAssignment(Order, to, unassigned:false);
+                App.NotificationsManager.NotifyOrderAssignment(Order, to, unassigned: false);
             }
         }
 
@@ -617,7 +614,7 @@ namespace ProjectLighthouse.View.Orders
         {
             if (BarIssuesListBox.SelectedValue == null) return;
 
-            LabelPrintingHelper.PrintIssue((BarIssue)BarIssuesListBox.SelectedValue, copies:2);
+            LabelPrintingHelper.PrintIssue((BarIssue)BarIssuesListBox.SelectedValue, copies: 2);
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
