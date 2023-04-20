@@ -233,7 +233,7 @@ namespace ProjectLighthouse.View.Orders
                 .ThenBy(x => x.ProductName)
                 .ThenBy(x => !x.IsSpecialPart)
                 .ToList();
-            BarStock = DatabaseHelper.Read<BarStock>();
+            BarStock = DatabaseHelper.Read<BarStock>().Where(x => !x.IsDormant).ToList();
 
             NewOrder = new();
         }
@@ -306,6 +306,8 @@ namespace ProjectLighthouse.View.Orders
 
         private void AddProductToOrder(TurnedProduct product, int requiredQuantity = 0, DateTime? requiredDate = null, int? targetQuantity = null)
         {
+            if (SelectedGroup is null) return;
+
             LatheManufactureOrderItem newItem;
 
             if (requiredDate is not null)
@@ -326,6 +328,12 @@ namespace ProjectLighthouse.View.Orders
             if (targetQuantity is not null)
             {
                 newItem.TargetQuantity = (int)targetQuantity;
+            }
+
+            if (SelectedGroup.GetRequiredBarStock(BarStock, MaterialId) is null)
+            {
+                MessageBox.Show("No bar stock is suitable to make this product", "Cannot creat order", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
             newItem.PropertyChanged += OnNewItemChanged;
