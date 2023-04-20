@@ -57,14 +57,62 @@ namespace ProjectLighthouse.Model.Material
             set { suggestedStock = value; }
         }
 
+        private bool isHexagon;
+
+        public bool IsHexagon
+        {
+            get { return isHexagon; }
+            set 
+            { 
+                isHexagon = value; 
+                OnPropertyChanged(); 
+            }
+        }
+
+        private bool isDormant;
+
+        public bool IsDormant
+        {
+            get { return isDormant; }
+            set 
+            { 
+                isDormant = value; 
+                OnPropertyChanged();
+            }
+        }
+
 
         [Ignore]
         public MaterialInfo MaterialData { get; set; }
         public int MaterialId { get; set; }
 
+        
+        public double MajorDiameter
+        {
+            get { return IsHexagon ? AcrossFlatsToAcrossCorners(Size)  : Size; }
+        }
+
+        private static double AcrossFlatsToAcrossCorners(double af)
+        {
+            return (2 / Math.Sqrt(3)) * af;
+        }
+
         public double GetUnitMassOfBar()
         {
-            double mass = 3.14159 * Math.Pow(Size / 2000, 2);
+            double area;
+            double size_m = Size / 1000;
+
+
+            if(IsHexagon)
+            {
+                area = 0.5 * Math.Sqrt(3) * Math.Pow(size_m, 2);
+            }
+            else
+            {
+                area = 3.14159 * Math.Pow(size_m / 2, 2);
+            }
+
+            double mass = area;
             mass *= (double)Length / 1000;
             mass *= MaterialData.Density;
             return mass;

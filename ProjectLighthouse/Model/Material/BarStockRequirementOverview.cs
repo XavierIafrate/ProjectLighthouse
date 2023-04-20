@@ -12,7 +12,8 @@ namespace ProjectLighthouse.Model.Material
         public double FreeBar { get; set; }
         public int Priority { get; set; }
         public bool UrgentProblem { get; set; }
-
+        public bool IsHexagon { get; set; }
+        public bool IsDormant { get; set; }
 
         public BarStockRequirementOverview(BarStock barStock, List<LatheManufactureOrder> orders)
         {
@@ -20,6 +21,8 @@ namespace ProjectLighthouse.Model.Material
             Orders = orders;
 
             BarsRequiredForOrders = System.Math.Max(orders.Sum(x => x.NumberOfBars) - orders.Sum(x => x.NumberOfBarsIssued), 0);
+            IsHexagon = BarStock.IsHexagon;
+            IsDormant = BarStock.IsDormant;
 
             FreeBar = BarStock.InStock + BarStock.OnOrder - BarsRequiredForOrders;
 
