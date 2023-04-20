@@ -44,6 +44,19 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
+        private bool usesHexagonBar;
+
+        public bool UsesHexagonBar
+        {
+            get { return usesHexagonBar; }
+            set 
+            { 
+                usesHexagonBar = value;
+                OnPropertyChanged(); 
+            }
+        }
+
+
         private GroupStatus status;
         public GroupStatus Status
         {
@@ -79,7 +92,7 @@ namespace ProjectLighthouse.Model.Products
 
         public BarStock? GetRequiredBarStock(List<BarStock> bars, int materialId)
         {
-            bars = bars.Where(x => x.MaterialId == materialId && x.Size >= GetRequiredBarSize())
+            bars = bars.Where(x => x.MaterialId == materialId && x.MajorDiameter >= GetRequiredBarSize() && x.IsHexagon == UsesHexagonBar)
                         .OrderBy(x => x.Size)
                         .ToList();
 
