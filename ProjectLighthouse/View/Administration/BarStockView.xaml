@@ -104,8 +104,15 @@
                     <Run d:Text="3,000mm long" Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}{0:#,##0}mm long,'}" />
                     <Run d:Text="size 7mm" Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}size {0}mm'}" />
                 </TextBlock>
-                <TextBlock Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Standard Cost {0}', Converter={StaticResource priceConverter}}" />
+                <TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Last Cost {0}', Converter={StaticResource priceConverter}}" />
+                <TextBlock d:Text="TARGET_STOCK_TEXT" Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}Suggested Stock: {0} pcs'}" />
 
+                <StackPanel Margin="0,5" Orientation="Horizontal" Visibility="{Binding SelectedBarStock.IsHexagon, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                    <Path Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"
+                          Height="20" Width="20" Fill="{StaticResource Blue}" Stretch="Uniform"/>
+                    <TextBlock Text="Hexagon Bar" Margin="3,0,0,0" Foreground="{StaticResource Blue}"/>
+                </StackPanel>
+                
                 <Grid Margin="0,20" HorizontalAlignment="Center">
                     <Grid.Resources>
                         <Style x:Key="FormulaNumber" TargetType="{x:Type TextBlock}">
