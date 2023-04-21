@@ -87,6 +87,17 @@ namespace ProjectLighthouse.Model.Products
         }
 
         [Ignore]
+        public string MasterRenderPath
+        {
+            get
+            {
+                return (string.IsNullOrEmpty(ImageUrl))
+                    ? null
+                    : $@"{App.ROOT_PATH}lib\renders\{ImageUrl}";
+            }
+        }
+
+        [Ignore]
         public List<ProductGroup> Archetypes { get; set; }
 
         public override string ToString()
