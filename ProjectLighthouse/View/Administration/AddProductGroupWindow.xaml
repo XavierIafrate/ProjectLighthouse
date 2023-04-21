@@ -40,6 +40,9 @@
             Style="{StaticResource DefaultTextBox}"
             Tag="major diameter"
             Text="{Binding Group.MajorDiameter, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+        <CheckBox Content="Use Hexagon Bar"
+                  Margin="7,5"
+            IsChecked="{Binding Group.UsesHexagonBar, Mode=TwoWay}" />
 
         <TextBlock Style="{StaticResource InputLabel}" Text="Minimum Bar Size (mm)" />
         <TextBox

@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Add Bar"
+    Title="New Bar Record"
     Width="550"
     ResizeMode="NoResize"
     SizeToContent="Height"
@@ -13,9 +13,9 @@
     mc:Ignorable="d">
     <StackPanel Margin="20">
         <TextBlock
-            d:Text="Add Bar"
+            d:Text="New Bar Record"
             Style="{StaticResource title}"
-            Text="{Binding Title}" />
+            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Title}" />
         <StackPanel Margin="20">
 
 
@@ -78,6 +78,17 @@
                 ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Materials}"
                 SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.MaterialId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                 SelectedValuePath="Id" />
+
+            <TextBlock
+                VerticalAlignment="Center"
+                Style="{StaticResource InputLabel}"
+                Text="Profile" />
+            <CheckBox
+                Width="250"
+                Margin="5"
+                HorizontalAlignment="Left"
+                Content="Bar Is Hexagon"
+                IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.IsHexagon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
 
         </StackPanel>
