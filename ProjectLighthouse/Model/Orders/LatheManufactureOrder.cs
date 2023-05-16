@@ -1,20 +1,15 @@
-﻿using CsvHelper.Configuration.Attributes;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
-using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Windows.Media.Media3D;
-using ViewModel.Helpers;
 
 namespace ProjectLighthouse.Model.Orders
 {
@@ -197,48 +192,8 @@ namespace ProjectLighthouse.Model.Orders
 
         public object Clone()
         {
-
-            // TODO refactor
-            return new LatheManufactureOrder
-            {
-                Id = Id,
-                Name = Name,
-                POReference = POReference,
-                CreatedAt = CreatedAt,
-                CreatedBy = CreatedBy,
-                ModifiedAt = ModifiedAt,
-                ModifiedBy = ModifiedBy,
-                TimeToComplete = TimeToComplete,
-                IsComplete = IsComplete,
-                IsClosed = IsClosed,
-                Status = Status,
-                IsCancelled = IsCancelled,
-                AllocatedMachine = AllocatedMachine,
-                StartDate = StartDate,
-                CompletedAt = CompletedAt,
-                ToolingReady = ToolingReady,
-                ToolingOrdered = ToolingOrdered,
-                NumberOfBarsIssued = NumberOfBarsIssued,
-                BarToolingReady = BarToolingReady,
-                BarToolingOrdered = BarToolingOrdered,
-                GaugingReady = GaugingReady,
-                GaugingOrdered = GaugingOrdered,
-                BaseProgramExists= BaseProgramExists,
-                HasProgram = HasProgram,
-                HasStarted = HasStarted,
-                BarID = BarID,
-                NumberOfBars = NumberOfBars,
-                BarIsVerified = BarIsVerified,
-                BarsInStockAtCreation = BarsInStockAtCreation,
-                IsResearch = IsResearch,
-                SpareBars = SpareBars,
-                OrderItems = new(OrderItems ?? new()),
-                TargetCycleTime = TargetCycleTime,
-                TargetCycleTimeEstimated = TargetCycleTimeEstimated,
-                GroupId = GroupId,
-                MaterialId = MaterialId,
-                AssignedTo = AssignedTo,
-            };
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<LatheManufactureOrder>(serialised);
         }
 
         public override string ToString()
@@ -274,7 +229,7 @@ namespace ProjectLighthouse.Model.Orders
                     sb.AppendLine($"\t{property.Name} modified");
                     sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
                     sb.AppendLine($"\t\tto  : '{property.GetValue(OtherOrder) ?? "null"}'");
-                    
+
                     mod = true;
                 }
 
@@ -282,7 +237,7 @@ namespace ProjectLighthouse.Model.Orders
 
             if (mod)
             {
-                string path = App.ROOT_PATH+ @"lib\logs\" + Name + ".log";
+                string path = App.ROOT_PATH + @"lib\logs\" + Name + ".log";
 
                 File.AppendAllText(path, sb.ToString());
             }
