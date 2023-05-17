@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace ViewModel.Helpers
+namespace ProjectLighthouse.ViewModel.Helpers
 {
     public static class ExtensionMethods
     {
