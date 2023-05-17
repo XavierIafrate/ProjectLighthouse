@@ -71,6 +71,15 @@ namespace ProjectLighthouse.ViewModel.Orders
         public string WorkloadInsights { get; set; }
         public bool StopRefresh { get; set; }
 
+        private List<ScheduleItem> activeItems;
+
+        public List<ScheduleItem> ActiveItems
+        {
+            get { return activeItems; }
+            set { activeItems = value; OnPropertyChanged(); }
+        }
+
+
         public ScheduleViewModel()
         {
             FilteredItems = new();
@@ -97,6 +106,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             ActiveOrders = new();
             Problems = new();
             Agenda = new();
+            ActiveItems = new();
 
             OrderHeaders = DatabaseHelper.Read<LatheManufactureOrder>();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
@@ -112,6 +122,8 @@ namespace ProjectLighthouse.ViewModel.Orders
                     order.OrderItems = items;
                     ActiveOrders.Add(order);
                 }
+
+                ActiveItems.Add(order);
             }
 
             Lathes = DatabaseHelper.Read<Lathe>().Where(x => !x.OutOfService).ToList();
@@ -126,6 +138,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
 
             OnPropertyChanged(nameof(FilterOptions));
+            OnPropertyChanged(nameof(ActiveItems));
         }
 
         private void SetView()

@@ -81,6 +81,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
             MyNotifications = MyNotifications
                 .Where(x => x.TimeStamp > cutoff)
+                .OrderByDescending(x => x.TimeStamp)
                 .ToList();
 
             SetInterfaceVariables();
@@ -112,7 +113,6 @@ namespace ProjectLighthouse.ViewModel.Core
 
             result.AddRange(nots.Where(x => x.Seen && x.SeenTimeStamp > DateTime.Now.AddDays(-1)));
             result.AddRange(nots.Where(x => !x.Seen && x.TimeStamp > DateTime.Now.AddDays(-7)));
-
 
             //TODO verify this
             List<Notification> deduplicatedNots = new();

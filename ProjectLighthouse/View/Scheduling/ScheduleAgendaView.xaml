@@ -18,6 +18,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <TextBlock
@@ -31,8 +32,8 @@
             <StackPanel Orientation="Horizontal">
                 <Button
                     Command="{Binding AddServiceCommand}"
-                    Tag="Maintenance"
                     Style="{StaticResource Action_New_Button}"
+                    Tag="Maintenance"
                     Visibility="{Binding AddButtonsVis}" />
             </StackPanel>
             <Button
@@ -57,72 +58,23 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <ListView
+                    d:ItemsSource="{d:SampleData ItemCount=5}"
                     FontSize="18"
                     ItemsSource="{Binding FilterOptions}"
                     SelectedValue="{Binding Filter, Mode=TwoWay}"
-                    SelectionMode="Single"
-                    SelectionChanged="ListView_SelectionChanged">
+                    SelectionChanged="ListView_SelectionChanged"
+                    SelectionMode="Single">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="10,3">
-                                <TextBlock FontWeight="SemiBold" Text="{Binding}" HorizontalAlignment="Center"/>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Border
-                    Grid.Row="1"
-                    Margin="5"
-                    Padding="15,10"
-                    Background="{StaticResource Surface}"
-                    CornerRadius="5"
-                    TextElement.Foreground="{StaticResource OnSurface}"
-                    Visibility="{Binding InsightsVis}">
-                    <StackPanel>
-                        <!--<TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="22"
-                            Text="Overview" />
-                        <TextBlock
-                            Margin="5,0"
-                            FontSize="16"
-                            FontStyle="Italic"
-                            Text="{Binding MachineInfoInsights, FallbackValue='MACHINE_MAKE_MODEL'}"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            Margin="5,0"
-                            FontSize="16"
-                            FontStyle="Italic"
-                            Text="{Binding MachineCapabilitiesInsights, FallbackValue='MAX_LENGTH_DIAMETER'}"
-                            TextWrapping="Wrap" />-->
-                        <TextBlock
-                            Margin="0,0,0,2"
-                            FontSize="22"
-                            Text="Workload" />
-                        <TextBlock
-                            Margin="5,0"
-                            FontSize="16"
-                            Text="{Binding NumberOfOrdersInsights, FallbackValue='NUM_ORDERS'}"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            Margin="5,0"
-                            FontSize="16"
-                            Text="{Binding BookedUntilInsights, FallbackValue='BOOKED_TO'}"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            Margin="5,0"
-                            FontSize="16"
-                            Text="{Binding WorkloadInsights, FallbackValue='NUM_DAYS_WORKLOAD'}"
-                            TextWrapping="Wrap" />
-                        <!--<TextBlock
-                            Margin="0,4,0,0"
-                            FontStyle="Italic"
-                            Opacity="0.6"
-                            Text="*workload calculations factor in approximations for setting and gaps between orders."
-                            TextWrapping="Wrap" />-->
-
-                    </StackPanel>
-                </Border>
 
                 <Border
                     Grid.Row="2"
@@ -159,11 +111,11 @@
                 VerticalAlignment="Stretch"
                 Background="{StaticResource Background}" />
             <ListView
+                x:Name="mainScheduleView"
                 Grid.Column="2"
                 HorizontalAlignment="Stretch"
                 ItemTemplateSelector="{DynamicResource templateSelector}"
-                ItemsSource="{Binding FilteredItems}"
-                x:Name="mainScheduleView">
+                ItemsSource="{Binding FilteredItems}">
                 <ItemsControl.Resources>
 
                     <DataTemplate x:Key="LatheManufactureOrder">
@@ -193,5 +145,8 @@
                 Text="No orders found"
                 Visibility="{Binding NoneFoundVis}" />
         </Grid>
+        <ScrollViewer Grid.Row="2">
+            <local:TimelineView ActiveItems="{Binding ActiveItems}" />
+        </ScrollViewer>
     </Grid>
 </UserControl>
