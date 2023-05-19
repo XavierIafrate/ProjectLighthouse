@@ -1,5 +1,4 @@
-﻿using Model.Scheduling;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.View.Scheduling;
@@ -9,9 +8,9 @@ using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
-using View.Scheduling;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -43,8 +42,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
-        public Visibility NoneFoundVis { get; set; }
-        public Visibility InsightsVis { get; set; }
         public Visibility PrintButtonVis { get; set; }
         public Visibility AddButtonsVis { get; set; }
 
@@ -73,15 +70,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
-        public string MachineInfoInsights { get; set; }
-        public string MachineCapabilitiesInsights { get; set; }
-        public string NumberOfOrdersInsights { get; set; }
-        public string BookedUntilInsights { get; set; }
-        public string WorkloadInsights { get; set; }
-        public bool StopRefresh { get; set; }
-
         private List<ScheduleItem> activeItems;
-
         public List<ScheduleItem> ActiveItems
         {
             get { return activeItems; }
@@ -102,8 +91,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                 ? Visibility.Visible
                 : Visibility.Collapsed;
             OnPropertyChanged(nameof(AddButtonsVis));
-
-            PrintScheduleCommand = new(this);
 
             LoadData();
 
@@ -210,22 +197,16 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             OnPropertyChanged(nameof(FilteredItems));
 
-            NoneFoundVis = FilteredItems.Count == 0
-                ? Visibility.Visible
-                : Visibility.Hidden;
-            OnPropertyChanged(nameof(NoneFoundVis));
-
-            InsightsVis = !string.IsNullOrEmpty(searchString)
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-            OnPropertyChanged(nameof(InsightsVis));
-
-
             ViewTitle = Filter == "Unallocated" ? "Unscheduled Orders" : $"Schedule for {Filter}";
             OnPropertyChanged(nameof(ViewTitle));
 
-            GetInsights();
             SetAgenda();
+
+            List<ScheduleItem> timelineItems = new();
+            timelineItems = new();
+            timelineItems.AddRange(OrderHeaders);
+            timelineItems.AddRange(PlannedServices);
+            ActiveItems = timelineItems;
         }
 
         private void SetAgenda()
@@ -328,28 +309,23 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
-        private void GetInsights()
+        public void AddMaintenance()
         {
-            if (SelectedLathe == null)
-            {
-                return;
-            }
+            CreateService window = new(new MachineService(), Lathes) { Owner = App.MainViewModel.MainWindow };
 
-            MachineInfoInsights = $"{SelectedLathe.Make} {SelectedLathe.Model} [ID: {SelectedLathe.Id}]";
-            MachineCapabilitiesInsights = $"Max part length: {SelectedLathe.MaxLength}mm\nMax part diameter: {SelectedLathe.MaxDiameter}mm";
+            window.ShowDialog();
 
-            if (FilteredItems.Where(x => x is LatheManufactureOrder).ToList().Count == 0)
+            if (window.Saved)
             {
-                NumberOfOrdersInsights = "No orders assigned.";
+                LoadData();
+                SetView();
             }
-            else if (FilteredItems.Where(x => x is LatheManufactureOrder).ToList().Count == 1)
-            {
-                NumberOfOrdersInsights = "1 order assigned";
-            }
-            else
-            {
-                NumberOfOrdersInsights = $"{FilteredItems.Where(x => x is LatheManufactureOrder).ToList().Count} orders assigned";
-            }
+        }
+
+        public void PrintSchedule()
+        {
+            PDFHelper.PrintSchedule(OrderHeaders.ToList(), OrderItems.ToList(), Lathes);
+        }
 
         #region Holiday Management
         public void EditHolidays()
@@ -365,16 +341,16 @@ namespace ProjectLighthouse.ViewModel.Orders
                     Holidays = new(window.Holidays);
                 }
                 catch(Exception ex)
-            {
+                {
                     NotificationManager.NotifyHandledException(ex);
                 }
             }
         }
 
         private static List<DateTime> LoadHolidays()
-            {
+        {
             try
-                { 
+            {
                 string holidaysJson = File.ReadAllText(App.ROOT_PATH + @"lib\holidays.json");
                 List<DateTime> holidays = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DateTime>>(holidaysJson);
                 return holidays.OrderBy(x => x).ToList();
@@ -383,7 +359,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 throw;
             }
-#endif
         }
 
         private static void SaveHolidays(List<DateTime> holidays)
@@ -394,7 +369,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 File.WriteAllText(App.ROOT_PATH + @"lib\holidays.json", data);
             }
             catch
-        {
+            {
                 throw;
             }
         }

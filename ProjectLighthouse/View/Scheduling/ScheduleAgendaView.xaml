@@ -29,18 +29,16 @@
 
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-            <StackPanel Orientation="Horizontal">
-                <Button
+            <Button
                 Command="{Binding ManageHolidaysCmd}"
                 Style="{StaticResource Action_Button}"
                 Tag="Manage Holidays"
                 Visibility="{Binding AddButtonsVis}" />
             <Button
-                    Command="{Binding AddServiceCommand}"
-                    Style="{StaticResource Action_New_Button}"
-                    Tag="Maintenance"
-                    Visibility="{Binding AddButtonsVis}" />
-            </StackPanel>
+                Command="{Binding AddServiceCommand}"
+                Style="{StaticResource Action_New_Button}"
+                Tag="Maintenance"
+                Visibility="{Binding AddButtonsVis}" />
             <Button
                 Command="{Binding PrintScheduleCommand}"
                 Style="{StaticResource Action_Pdf_Button}"
@@ -63,6 +61,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <ListView
+                    MaxHeight="150"
                     d:ItemsSource="{d:SampleData ItemCount=5}"
                     FontSize="18"
                     ItemsSource="{Binding FilterOptions}"
@@ -73,7 +72,7 @@
                         <DataTemplate>
                             <Grid Margin="10,3">
                                 <TextBlock
-                                    HorizontalAlignment="Center"
+                                    HorizontalAlignment="Left"
                                     FontWeight="SemiBold"
                                     Text="{Binding}" />
                             </Grid>
@@ -141,17 +140,9 @@
 
                 </ItemsControl.Resources>
             </ListView>
-            <TextBlock
-                Grid.Column="2"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="20"
-                Foreground="{StaticResource DisabledElement}"
-                Text="No orders found"
-                Visibility="{Binding NoneFoundVis}" />
         </Grid>
-        <ScrollViewer Grid.Row="2">
-            <local:TimelineView ActiveItems="{Binding ActiveItems}" />
+        <ScrollViewer Grid.Row="2" Style="{StaticResource HorizontalScrollViewer}">
+            <local:TimelineView ActiveItems="{Binding ActiveItems}" Holidays="{Binding Holidays}" />
         </ScrollViewer>
     </Grid>
 </UserControl>

@@ -2,6 +2,7 @@
 using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,20 @@ namespace ProjectLighthouse.View.Scheduling
 {
     public partial class TimelineView : UserControl
     {
+
+
+        public List<DateTime> Holidays
+        {
+            get { return (List<DateTime>)GetValue(HolidaysProperty); }
+            set { SetValue(HolidaysProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Holidays.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HolidaysProperty =
+            DependencyProperty.Register("Holidays", typeof(List<DateTime>), typeof(TimelineView), new PropertyMetadata(null, SetValues));
+
+
+
         public List<ScheduleItem> ActiveItems
         {
             get { return (List<ScheduleItem>)GetValue(ActiveItemsProperty); }
@@ -39,6 +54,8 @@ namespace ProjectLighthouse.View.Scheduling
             this.MainGrid.RowDefinitions.Clear();
 
             if (ActiveItems is null) return;
+            if (ActiveItems.Count == 0) return;
+            if (Holidays is null) return;
 
             DateTime minDate = DateTime.Today.AddDays(-3);
             DateTime maxDate = ActiveItems.Max(x => x.EndsAt()).Date.AddDays(1);
@@ -67,11 +84,11 @@ namespace ProjectLighthouse.View.Scheduling
                 }
             }
 
-            DrawGrid(minDate, daysSpan, itemsToDraw);
+            DrawGrid(minDate, daysSpan, itemsToDraw, Holidays);
             DrawEvents(minDate, itemsToDraw);
         }
 
-        private void DrawGrid(DateTime minDate, int daysSpan, List<ScheduleItem> items)
+        private void DrawGrid(DateTime minDate, int daysSpan, List<ScheduleItem> items, List<DateTime> holidays)
         {
             string[] rows = items.Select(x => x.AllocatedMachine)
                 .Distinct()
@@ -79,7 +96,7 @@ namespace ProjectLighthouse.View.Scheduling
                 .ToArray();
 
             // Rows
-            MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(50) });
+            MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
 
             for (int i = 0; i < rows.Length; i++)
             {
@@ -89,13 +106,15 @@ namespace ProjectLighthouse.View.Scheduling
                 {
                     Text = rows[i],
                     VerticalAlignment = VerticalAlignment.Center,
+                    FontWeight = FontWeights.SemiBold,
+                    Margin = new(5,0,5,0),
                 };
 
                 AddToMainGrid(rowHeader, 0, i +1);
             }
 
             // Columns
-            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(100) });
+            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
 
             for (int i = 0; i < daysSpan; i++)
             {
@@ -105,9 +124,30 @@ namespace ProjectLighthouse.View.Scheduling
                 TextBlock colHeader = new()
                 {
                     Text = $"{date:dd}",
+                    Margin=new(5),
+                    FontWeight=FontWeights.SemiBold,
+                    HorizontalAlignment= HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Bottom,
                 };
 
-                AddToMainGrid(colHeader, i+1, 0);
+                if (date == DateTime.Today)
+                {
+                    colHeader.Foreground = (Brush)Application.Current.Resources["Purple"];
+                    colHeader.TextDecorations = new() { TextDecorations.Underline };
+                    colHeader.FontWeight = FontWeights.Bold;
+                }
+
+                if (holidays.Contains(date))
+                {
+                    Border bg = new() { Background = (Brush)App.Current.Resources["PurpleFaded"] };
+                    AddToMainGrid(bg, column: i+1, row: 1, colSpan: 1, rowSpan: rows.Length);
+                }
+                else if (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+                {
+                    Border bg = new() { Background = Brushes.LightGray };
+                    AddToMainGrid(bg, column: i+1, row: 1, colSpan: 1, rowSpan: rows.Length);
+                }
+                AddToMainGrid(colHeader, i + 1, 0);
             }
         }
 
@@ -126,7 +166,7 @@ namespace ProjectLighthouse.View.Scheduling
                     int startColIndex = (int)(startDate.Date - minDate.Date).TotalDays;
                     int span = (int)Math.Ceiling((endsAt - startDate.Date).TotalDays);
                     int startMargin = 26; 
-                    int endMargin = 2;
+                    int endMargin = 50 - (endsAt.Hour * 2);
                     bool startClipped = false;
 
                     int row = Array.IndexOf(rows, order.AllocatedMachine) + 1;
@@ -154,8 +194,9 @@ namespace ProjectLighthouse.View.Scheduling
 
                     if (order.IsResearch)
                     {
-                        span = Math.Max(span, 2); 
-                        borderBrush = (Brush)Application.Current.Resources["Purple"];
+                        span = Math.Max(span, 3); 
+                        borderBrush = (Brush)Application.Current.Resources[order.IsComplete ? "OnSurface" : "Purple"];
+                        endMargin = 38;
                     }
 
                     Border element = new()
@@ -163,7 +204,7 @@ namespace ProjectLighthouse.View.Scheduling
                         Margin = new(startMargin, 2, endMargin, 2),
                         Background=borderBrush,
                         CornerRadius= startClipped? new CornerRadius(0,5,5,0) : new(5),
-                        Opacity = 0.6
+                        Opacity = 0.7
                     };
 
                     TextBlock itemTitle = new()
@@ -172,6 +213,7 @@ namespace ProjectLighthouse.View.Scheduling
                         Text = order.Name,
                         FontSize=10, 
                         VerticalAlignment= VerticalAlignment.Center,
+                        Foreground=Brushes.White
                     };
 
                     AddToMainGrid(element, startColIndex, row, span);
