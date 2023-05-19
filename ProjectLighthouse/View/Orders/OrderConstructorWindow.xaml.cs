@@ -395,7 +395,11 @@ namespace ProjectLighthouse.View.Orders
 
             try
             {
-                CreateManufactureOrder();
+                bool success = CreateManufactureOrder();
+                if (!success)
+                {
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -495,16 +499,12 @@ namespace ProjectLighthouse.View.Orders
                 .ToList();
             List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.GroupId, NewOrder.MaterialId);
 
-            if (!DatabaseHelper.Insert(NewOrder))
-            {
-                MessageBox.Show("Failed to insert to database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
+            DatabaseHelper.Insert(NewOrder, throwErrs: true);
 
             foreach (TechnicalDrawing drawing in drawings)
             {
                 OrderDrawing o = new() { DrawingId = drawing.Id, OrderId = NewOrder.Name };
-                DatabaseHelper.Insert(o);
+                DatabaseHelper.Insert(o, throwErrs:true);
             }
 
             foreach (LatheManufactureOrderItem item in NewOrderItems)
@@ -518,7 +518,7 @@ namespace ProjectLighthouse.View.Orders
                 item.AssignedMO = NewOrder.Name;
                 item.AddedBy = App.CurrentUser.GetFullName();
                 item.DateAdded = DateTime.Now;
-                DatabaseHelper.Insert(item);
+                DatabaseHelper.Insert(item, throwErrs: true);
             };
             return true;
 
