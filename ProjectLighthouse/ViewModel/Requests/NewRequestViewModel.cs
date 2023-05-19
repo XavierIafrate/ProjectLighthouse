@@ -199,12 +199,12 @@ namespace ProjectLighthouse.ViewModel.Requests
             for (int i = 0; i < lathes.Count; i++)
             {
                 List<ScheduleItem> ordersForLathe = CompleteOrders.Where(o => o.AllocatedMachine == lathes[i].Id).ToList();
-                Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
+                TimeSpan workload = WorkloadCalculationHelper.GetMachineWorkload(ordersForLathe);
 
                 LeadTime tmpSnippet = new()
                 {
                     Lathe = lathes[i],
-                    Workload = workload.Item1,
+                    Workload = workload,
                 };
 
 
@@ -397,17 +397,29 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-
             if (product is not null)
             {
                 string renderPath = product.LocalRenderPath;
-                new ToastContentBuilder()
-                   .AddText("New Request Raised")
-                   .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
-                   .AddText("People with approval permissions will get notified.")
-                   .AddArgument("action", $"viewRequest:{newRequestId:0}")
-                   .AddInlineImage(new Uri(renderPath))
-                   .Show();
+
+                if (renderPath is not null)
+                {
+                    new ToastContentBuilder()
+                       .AddText("New Request Raised")
+                       .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
+                       .AddText("People with approval permissions will get notified.")
+                       .AddArgument("action", $"viewRequest:{newRequestId:0}")
+                       .AddInlineImage(new Uri(renderPath))
+                       .Show();
+                }
+                else
+                {
+                    new ToastContentBuilder()
+                    .AddText("New Request Raised")
+                    .AddArgument("action", $"viewRequest:{newRequestId:0}")
+                    .AddText("People with approval permissions will get notified.")
+                    .AddHeroImage(new Uri($@"{App.AppDataDirectory}lib\renders\StartPoint.png"))
+                    .Show();
+                }
             }
             else
             {
