@@ -9,43 +9,32 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class WorkloadCalculationHelper
     {
-        public static Tuple<TimeSpan, DateTime> GetMachineWorkload(List<ScheduleItem> allItems)
+        public static TimeSpan GetMachineWorkload(List<ScheduleItem> allItems)
         {
             double secondsOfRuntime = 0;
-            DateTime lastItemFinished = DateTime.MinValue;
 
 
-            List<ScheduleItem> items = allItems.Where(x => x is not ScheduleWarning).OrderBy(x => x.StartDate).ToList();
+            List<ScheduleItem> items = allItems.Where(x => x is not ScheduleWarning && x.EndsAt() > DateTime.Now).OrderBy(x => x.StartDate).ToList();
 
             for (int i = 0; i < items.Count; i++)
             {
                 ScheduleItem item = items[i];
 
-                if (item is LatheManufactureOrder order)
+                DateTime endsAt = item.EndsAt();
+
+                if (i != items.Count - 1)
                 {
-                    secondsOfRuntime += GetTimeToMakeOrder(order, includeSetting: true);
-                }
-                else
-                {
-                    if (i == 0)
+                    ScheduleItem nextItem = items[i + 1];
+                    if (endsAt.AddHours(18).Date >= nextItem.StartDate)
                     {
-                        lastItemFinished = DateTime.Now;
+                        endsAt = nextItem.StartDate;
                     }
-
-                    secondsOfRuntime += item.TimeToComplete;
                 }
 
-                if (i == 0)
-                {
-                    lastItemFinished = DateTime.Now.AddSeconds(secondsOfRuntime).AddDays(7);
-                }
-                else
-                {
-                    lastItemFinished = item.StartDate.AddSeconds(item.TimeToComplete).AddDays(7);
-                }
+                secondsOfRuntime += (endsAt - item.StartDate).TotalSeconds;
             }
 
-            return new(TimeSpan.FromSeconds(secondsOfRuntime), lastItemFinished);
+            return TimeSpan.FromSeconds(secondsOfRuntime);
         }
 
         public static int GetTimeToMakeOrder(LatheManufactureOrder order, bool includeSetting)
