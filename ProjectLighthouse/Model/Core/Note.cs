@@ -4,19 +4,40 @@ using System;
 
 namespace ProjectLighthouse.Model.Core
 {
-    public class Note
+    public class Note : BaseObject
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string Message { get; set; }
+        private string message;
+
+        public string Message
+        {
+            get { return message; }
+            set { message = value; OnPropertyChanged(); }
+        }
+
         public string OriginalMessage { get; set; }
-        public bool IsEdited { get; set; }
+        private bool isEdited;
+
+        public bool IsEdited
+        {
+            get { return isEdited; }
+            set { isEdited = value; OnPropertyChanged(); }
+        }
+
 
         public string SentBy { get; set; }
         public string DateSent { get; set; }
         public string DateEdited { get; set; }
         public string DocumentReference { get; set; }
-        public bool IsDeleted { get; set; }
+
+        private bool isDeleted;
+        public bool IsDeleted
+        {
+            get { return isDeleted; }
+            set { isDeleted = value; OnPropertyChanged();  }
+        }
+
 
         [Ignore]
         public bool ShowHeader { get; set; }
