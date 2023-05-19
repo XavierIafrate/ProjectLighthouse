@@ -4,6 +4,7 @@ using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.UserControls;
+using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ViewModel.Helpers;
 
 namespace ProjectLighthouse.View.Orders
 {
@@ -55,6 +55,8 @@ namespace ProjectLighthouse.View.Orders
 
         public List<BarIssue> BarIssues { get; set; }
 
+        public OrderSaveEditNoteCommand SaveEditNoteCmd { get; set; }
+        public OrderDeleteNoteCommand DeleteNoteCmd { get; set; }
         #endregion
 
         public EditLMOWindow(string id, bool canEdit)
@@ -113,12 +115,12 @@ namespace ProjectLighthouse.View.Orders
 
 
             Lots = DatabaseHelper.Read<Lot>().Where(x => x.Order == id).ToList();
-            Notes = DatabaseHelper.Read<Note>().Where(x => x.DocumentReference == id && !x.IsDeleted).ToList();
+            Notes = DatabaseHelper.Read<Note>().Where(x => x.DocumentReference == id).ToList();
             OnPropertyChanged(nameof(Notes));
-            FormatNoteDisplay();
 
             DrawingReferences = DatabaseHelper.Read<OrderDrawing>().Where(x => x.OrderId == Order.Name).ToList();
             List<TechnicalDrawing> drawings = DatabaseHelper.Read<TechnicalDrawing>();
+
             Drawings = new();
             for (int i = 0; i < DrawingReferences.Count; i++)
             {
@@ -128,21 +130,37 @@ namespace ProjectLighthouse.View.Orders
             OnPropertyChanged(nameof(Drawings));
         }
 
-
-
-        private void FormatNoteDisplay()
+        public void SaveNoteEdit(Note note)
         {
-            string name = "";
-            DateTime lastTimeStamp = DateTime.MinValue;
-
-            for (int i = 0; i < Notes.Count; i++)
+            try
             {
-                Notes[i].ShowEdit = Notes[i].SentBy == App.CurrentUser.UserName;
-                Notes[i].ShowHeader = Notes[i].SentBy != name
-                    || DateTime.Parse(Notes[i].DateSent) > lastTimeStamp.AddHours(6);
-                lastTimeStamp = DateTime.Parse(Notes[i].DateSent);
-                name = Notes[i].SentBy;
+                note.IsEdited = true;
+                note.DateEdited = DateTime.Now.ToString("s");
+                DatabaseHelper.Update(note, throwErrs: true);
             }
+            catch
+            {
+                MessageBox.Show("Failed to update database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            Notes = DatabaseHelper.Read<Note>().Where(x => x.DocumentReference == Order.Name).ToList();
+            OnPropertyChanged(nameof(Notes));
+        }
+
+        public void DeleteNote(Note note)
+        {
+            try
+            {
+                note.IsDeleted = true;
+                DatabaseHelper.Update(note, throwErrs: true);
+            }
+            catch
+            {
+                MessageBox.Show("Failed to update database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            Notes = DatabaseHelper.Read<Note>().Where(x => x.DocumentReference == Order.Name).ToList();
+            OnPropertyChanged(nameof(Notes));
         }
 
         private void UpdateControls(bool canEdit)
@@ -162,6 +180,12 @@ namespace ProjectLighthouse.View.Orders
             SaveButton.IsEnabled = canEdit;
 
             SetCheckboxEnabling(canEdit);
+
+            if (canEdit)
+            {
+                SaveEditNoteCmd = new(this);
+                DeleteNoteCmd = new(this);
+            }
         }
 
         private void SetCheckboxEnabling(bool canEdit)
@@ -299,8 +323,6 @@ namespace ProjectLighthouse.View.Orders
             NotesDisplay.Notes = Notes;
             Message.Text = "";
             SaveExit = true;
-
-            FormatNoteDisplay();
         }
 
         private void Message_KeyDown(object sender, KeyEventArgs e)

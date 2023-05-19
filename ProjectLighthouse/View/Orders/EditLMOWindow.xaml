@@ -557,17 +557,18 @@
                                                         Text="{Binding BarId}" />
                                                 </StackPanel>
                                                 <StackPanel HorizontalAlignment="Center">
-                                                    <TextBlock Text="Batch Ref"/>
+                                                    <TextBlock Text="Batch Ref" />
                                                     <TextBlock
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         FontFamily="Consolas"
                                                         Text="{Binding MaterialBatch}" />
                                                 </StackPanel>
-                                                <TextBlock 
-                                                    FontSize="16" FontWeight="Bold"
+                                                <TextBlock
+                                                    HorizontalAlignment="Right"
                                                     VerticalAlignment="Center"
-                                                    HorizontalAlignment="Right" 
+                                                    FontSize="16"
+                                                    FontWeight="Bold"
                                                     Text="{Binding Quantity, StringFormat='{}{0:+#;-#;0}'}" />
 
                                             </Grid>
@@ -636,6 +637,8 @@
                         <uc:DisplayListOfNotes
                             x:Name="NotesDisplay"
                             Notes="{Binding Notes}"
+                            SaveEditCommand="{Binding SaveEditNoteCmd}"
+                            DeleteCommand="{Binding DeleteNoteCmd}"
                             ShowingEditControls="True" />
                     </ScrollViewer>
 
