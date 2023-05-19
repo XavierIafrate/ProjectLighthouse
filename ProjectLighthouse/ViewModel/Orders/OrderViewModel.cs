@@ -708,6 +708,13 @@ namespace ProjectLighthouse.ViewModel.Orders
                     continue;
                 }
 
+                if (order.AssignedTo?.ToUpperInvariant() == searchToken)
+                {
+                    Results.Add(order);
+                    FoundOrders.Add(order.Name);
+                    continue;
+                }
+
                 if (order.POReference != null)
                 {
                     if (order.POReference.Contains(searchToken) && order.POReference != "N/A")
@@ -864,8 +871,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             // Order Notes
             FilteredNotes = Notes
                 .Where(n =>
-                    n.DocumentReference == SelectedOrder.Name &&
-                    !n.IsDeleted)
+                    n.DocumentReference == SelectedOrder.Name)
                 .OrderBy(x => x.Id) // Time is not synchronised
                 .ToList();
 
