@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -17,13 +18,7 @@ namespace ProjectLighthouse.View.UserControls
         }
 
         public static readonly DependencyProperty ShowingEditControlsProperty =
-            DependencyProperty.Register("ShowingEditControls", typeof(bool), typeof(DisplayListOfNotes), new PropertyMetadata(false, SetEditVis));
-
-        private static void SetEditVis(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not DisplayListOfNotes control) return;
-
-        }
+            DependencyProperty.Register("ShowingEditControls", typeof(bool), typeof(DisplayListOfNotes), new PropertyMetadata(false, SetValues));
 
         public List<Note> Notes
         {
@@ -34,7 +29,27 @@ namespace ProjectLighthouse.View.UserControls
         public static readonly DependencyProperty NotesProperty =
             DependencyProperty.Register("Notes", typeof(List<Note>), typeof(DisplayListOfNotes), new PropertyMetadata(null, SetValues));
 
+
         public List<Note> displayNotes { get; set; }
+
+
+        public ICommand DeleteCommand
+        {
+            get { return (ICommand)GetValue(DeleteCommandProperty); }
+            set { SetValue(DeleteCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty DeleteCommandProperty =
+            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(DisplayListOfNotes), new PropertyMetadata(null));
+
+        public ICommand SaveEditCommand
+        {
+            get { return (ICommand)GetValue(SaveEditCommandProperty); }
+            set { SetValue(SaveEditCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty SaveEditCommandProperty =
+            DependencyProperty.Register("SaveEditCommand", typeof(ICommand), typeof(DisplayListOfNotes), new PropertyMetadata(null));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
