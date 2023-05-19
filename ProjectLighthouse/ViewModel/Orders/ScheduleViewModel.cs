@@ -47,9 +47,18 @@ namespace ProjectLighthouse.ViewModel.Orders
         public Visibility InsightsVis { get; set; }
         public Visibility PrintButtonVis { get; set; }
         public Visibility AddButtonsVis { get; set; }
+
         public PrintScheduleCommand PrintScheduleCommand { get; set; }
-        public AddResearchCommand AddResearchCommand { get; set; }
+        public ManageHolidaysCommand ManageHolidaysCmd { get; set; }
         public AddServiceCommand AddServiceCommand { get; set; }
+
+        private List<DateTime> holidays;
+        public List<DateTime> Holidays
+        {
+            get { return holidays; }
+            set { holidays = value; OnPropertyChanged(); }
+        }
+
 
         public List<string> FilterOptions { get; set; }
 
@@ -85,8 +94,9 @@ namespace ProjectLighthouse.ViewModel.Orders
             FilteredItems = new();
             FilterOptions = new();
 
-            AddResearchCommand = new(this);
+            ManageHolidaysCmd = new(this);
             AddServiceCommand = new(this);
+            PrintScheduleCommand = new(this);
 
             AddButtonsVis = App.CurrentUser.Role >= UserRole.Scheduling
                 ? Visibility.Visible
@@ -96,6 +106,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             PrintScheduleCommand = new(this);
 
             LoadData();
+
             Filter = FilterOptions.Count > 1
                 ? FilterOptions[1]
                 : FilterOptions[0];
@@ -137,8 +148,19 @@ namespace ProjectLighthouse.ViewModel.Orders
                 FilterOptions.Add(lathe.FullName);
             }
 
+            try
+            {
+                Holidays = new();
+                Holidays = LoadHolidays();
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+            }
+
             OnPropertyChanged(nameof(FilterOptions));
             OnPropertyChanged(nameof(ActiveItems));
+            OnPropertyChanged(nameof(Holidays));
         }
 
         private void SetView()
@@ -329,72 +351,53 @@ namespace ProjectLighthouse.ViewModel.Orders
                 NumberOfOrdersInsights = $"{FilteredItems.Where(x => x is LatheManufactureOrder).ToList().Count} orders assigned";
             }
 
-            Tuple<TimeSpan, DateTime> workload = WorkloadCalculationHelper.GetMachineWorkload(FilteredItems);
-
-            WorkloadInsights = $"~{Math.Ceiling(2 * ((workload.Item1.TotalDays + 1) / 7)) / 2:N1} weeks [{Math.Ceiling(workload.Item1.TotalDays) + 1} days]";
-            BookedUntilInsights = $"Booked until {workload.Item2:dddd, dd MMMM}";
-
-            OnPropertyChanged(nameof(MachineInfoInsights));
-            OnPropertyChanged(nameof(MachineCapabilitiesInsights));
-            OnPropertyChanged(nameof(NumberOfOrdersInsights));
-            OnPropertyChanged(nameof(BookedUntilInsights));
-            OnPropertyChanged(nameof(WorkloadInsights));
-        }
-
-        public void AddResearch()
+        #region Holiday Management
+        public void EditHolidays()
         {
-            CreateResearch window = new(new ResearchTime(), Lathes);
-
+            ManageHolidaysWindow window = new(Holidays) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
 
-            if (window.Saved)
+            if (window.SaveExit)
             {
-                LoadData();
-                SetView();
+                try
+                {
+                    SaveHolidays(window.Holidays);
+                    Holidays = new(window.Holidays);
+                }
+                catch(Exception ex)
+            {
+                    NotificationManager.NotifyHandledException(ex);
+                }
             }
         }
 
-        public void AddMaintenance()
-        {
-#if DEBUG
-            GanttView test = new();
-            GanttData chartData = new()
+        private static List<DateTime> LoadHolidays()
             {
-                Title = "Schedule"
-            };
-
-            foreach (Lathe lathe in Lathes)
-            {
-                List<ScheduleItem> events = new();
-                events.AddRange(ActiveOrders.Where(x => x.AllocatedMachine == lathe.Id).ToList());
-                GanttDivision div = new() 
+            try
                 { 
-                    Title = lathe.FullName, 
-                    Events = events
-                };
-                chartData.Data.Add(div);
+                string holidaysJson = File.ReadAllText(App.ROOT_PATH + @"lib\holidays.json");
+                List<DateTime> holidays = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DateTime>>(holidaysJson);
+                return holidays.OrderBy(x => x).ToList();
             }
-
-            test.Draw(chartData);
-            test.Show();
-
-            return;
-#else
-            CreateService window = new(new MachineService(), Lathes) { Owner = App.MainViewModel.MainWindow };
-
-            window.ShowDialog();
-
-            if (window.Saved)
+            catch
             {
-                LoadData();
-                SetView();
+                throw;
             }
 #endif
         }
 
-        public void PrintSchedule()
+        private static void SaveHolidays(List<DateTime> holidays)
         {
-            PDFHelper.PrintSchedule(OrderHeaders.ToList(), OrderItems.ToList(), Lathes);
+            try
+            {
+                string data = Newtonsoft.Json.JsonConvert.SerializeObject(holidays);
+                File.WriteAllText(App.ROOT_PATH + @"lib\holidays.json", data);
+            }
+            catch
+        {
+                throw;
+            }
         }
+        #endregion
     }
 }

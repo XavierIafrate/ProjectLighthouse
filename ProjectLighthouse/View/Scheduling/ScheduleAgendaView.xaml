@@ -31,6 +31,11 @@
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
             <StackPanel Orientation="Horizontal">
                 <Button
+                Command="{Binding ManageHolidaysCmd}"
+                Style="{StaticResource Action_Button}"
+                Tag="Manage Holidays"
+                Visibility="{Binding AddButtonsVis}" />
+            <Button
                     Command="{Binding AddServiceCommand}"
                     Style="{StaticResource Action_New_Button}"
                     Tag="Maintenance"
