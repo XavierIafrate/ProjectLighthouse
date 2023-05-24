@@ -7,6 +7,7 @@
     Title="Register Equipment"
     Width="620"
     ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner"
     SizeToContent="Height"
     mc:Ignorable="d">
     <StackPanel Margin="20,10">

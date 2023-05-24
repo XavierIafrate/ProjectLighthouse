@@ -281,7 +281,7 @@ namespace ProjectLighthouse.ViewModel.Quality
 
         public void AddNewEquipment()
         {
-            AddNewCalibratedEquipmentWindow window = new(Equipment);
+            AddNewCalibratedEquipmentWindow window = new(Equipment) { Owner=App.MainViewModel.MainWindow };
             window.ShowDialog();
             if (window.SaveExit)
             {
@@ -297,7 +297,7 @@ namespace ProjectLighthouse.ViewModel.Quality
 
         public void AddCertificate()
         {
-            AddNewCalibrationCertificateWindow window = new(SelectedEquipment, Certificates);
+            AddNewCalibrationCertificateWindow window = new(SelectedEquipment, Certificates) { Owner = App.MainViewModel.MainWindow }; ;
             window.ShowDialog();
 
             if (window.SaveExit)
@@ -314,7 +314,7 @@ namespace ProjectLighthouse.ViewModel.Quality
 
         public void EditEquipment(int id)
         {
-            AddNewCalibratedEquipmentWindow window = new(Equipment, id);
+            AddNewCalibratedEquipmentWindow window = new(Equipment, id) { Owner = App.MainViewModel.MainWindow }; ;
             window.ShowDialog();
             if (window.SaveExit)
             {

@@ -8,6 +8,7 @@
     Title="Add New Calibration Certificate"
     Width="675"
     ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner"
     SizeToContent="Height"
     mc:Ignorable="d">
     <StackPanel Margin="30">
