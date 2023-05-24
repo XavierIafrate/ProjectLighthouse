@@ -12,15 +12,15 @@
     <Grid Margin="5">
         <TabControl>
             <TabItem Header="Users" IsEnabled="{Binding ManageUsersViewModel, Converter={StaticResource NotNullToBoolean}}">
-                <ContentControl Content="{Binding ManageUsersViewModel}"/>
+                <ContentControl Content="{Binding ManageUsersViewModel}" />
             </TabItem>
             <TabItem Header="Lathes">
-                <ContentControl Content="{Binding LatheViewModel}" IsEnabled="{Binding LatheViewModel, Converter={StaticResource NotNullToBoolean}}"/>
+                <ContentControl Content="{Binding LatheViewModel}" IsEnabled="{Binding LatheViewModel, Converter={StaticResource NotNullToBoolean}}" />
             </TabItem>
             <TabItem Header="Materials">
-                <ContentControl Content="{Binding MaterialsViewModel}" IsEnabled="{Binding MaterialsViewModel, Converter={StaticResource NotNullToBoolean}}"/>
+                <ContentControl Content="{Binding MaterialsViewModel}" IsEnabled="{Binding MaterialsViewModel, Converter={StaticResource NotNullToBoolean}}" />
             </TabItem>
-            <TabItem Header="Dev" IsEnabled="False"/>
+            <TabItem Header="Dev" IsEnabled="False" />
             <TabItem Header="Reports">
                 <Grid>
                     <StackPanel>
@@ -66,6 +66,13 @@
                             CommandParameter="BarStockEstimate"
                             Style="{StaticResource Action_Button}"
                             Tag="Estimate Bar Stock Inventory" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="Delivered"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Get Delivered Items" />
                     </StackPanel>
                 </Grid>
             </TabItem>

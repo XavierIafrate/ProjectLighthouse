@@ -1,4 +1,5 @@
 ﻿using CsvHelper.Configuration.Attributes;
+using ProjectLighthouse.Model.Deliveries;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
@@ -69,9 +70,50 @@ namespace ProjectLighthouse.ViewModel.Administration
                     ImportWizard window = new() { Owner = App.MainViewModel.MainWindow };
                     window.ShowDialog();
                     break;
+                case "Delivered":
+                    GetDeliveredItems();
+                    break;
                 default:
                     throw new NotImplementedException();
             };
+        }
+
+        class DeliveryLine
+        {
+            public DateTime Date { get; set; }
+            public string ProductName { get; set; }
+            public string DeliveryNote { get; set; }
+            public int Quantity { get; set; }
+        }
+
+        private void GetDeliveredItems()
+        {
+            List<DeliveryLine> result = new();
+
+            List<DeliveryNote> deliveryNotes = DatabaseHelper.Read<DeliveryNote>().Where(x => x.DeliveryDate.AddYears(2) > DateTime.Now).ToList();
+            List<DeliveryItem> deliveryLines = DatabaseHelper.Read<DeliveryItem>();
+
+            foreach (DeliveryNote deliveryNote in deliveryNotes)
+            {
+                List<DeliveryItem> items = deliveryLines.Where(x => x.AllocatedDeliveryNote == deliveryNote.Name).ToList();
+
+                foreach (DeliveryItem item in items)
+                {
+                    result.Add(new()
+                    {
+                        Date = deliveryNote.DeliveryDate,
+                        DeliveryNote = deliveryNote.Name,
+                        ProductName = string.IsNullOrEmpty(item.ExportProductName)
+                            ? item.Product
+                            : item.ExportProductName,
+                        Quantity = item.QuantityThisDelivery
+                    }
+                    );
+                }
+            }
+
+            CSVHelper.WriteListToCSV(result, "delivered");
+
         }
 
         private void GetWorkload()
@@ -141,20 +183,20 @@ namespace ProjectLighthouse.ViewModel.Administration
             foreach (BarStock bar in barStock)
             {
                 BarStockInventory x = new() { Id = bar.Id, InStock = (int)bar.InStock };
-                
+
                 List<LatheManufactureOrder> ordersUsingBar = activeOrders.Where(x => x.BarID == bar.Id).ToList();
 
 
                 int barsOnRack = 0;
                 foreach (LatheManufactureOrder order in ordersUsingBar)
                 {
-                    if(order.State < OrderState.Running)
+                    if (order.State < OrderState.Running)
                     {
                         barsOnRack += order.NumberOfBarsIssued;
                         continue;
                     }
 
-                    double progress = (DateTime.Now - order.StartDate) / (TimeSpan.FromSeconds(order.TimeToComplete)*(order.NumberOfBarsIssued/order.NumberOfBars));
+                    double progress = (DateTime.Now - order.StartDate) / (TimeSpan.FromSeconds(order.TimeToComplete) * (order.NumberOfBarsIssued / order.NumberOfBars));
 
                     int barsConsumed = (int)Math.Floor(Math.Min(progress, 1) * order.NumberOfBarsIssued);
                     barsOnRack += order.NumberOfBarsIssued - barsConsumed;
