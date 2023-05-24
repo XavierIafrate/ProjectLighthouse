@@ -164,6 +164,11 @@ namespace ProjectLighthouse.ViewModel.Research
                 .Where(x => x.HasPermission(PermissionType.ManageProjects) || x.HasPermission(PermissionType.ModifyProjects))
                 .ToList();
 
+            if (CanManage)
+            {
+                Designers.Add(App.CurrentUser);
+            }
+
             Projects = DatabaseHelper.Read<ResearchProject>().ToList();
             Archetypes = DatabaseHelper.Read<ResearchArchetype>().ToList();
             Notes = DatabaseHelper.Read<Note>().ToList();
