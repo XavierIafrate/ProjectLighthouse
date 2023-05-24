@@ -1,12 +1,10 @@
-﻿
-using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
-namespace Model.Analytics
+namespace ProjectLighthouse.Model.Analytics
 {
     public class OperatingEfficiencyKpi
     {
@@ -30,7 +28,7 @@ namespace Model.Analytics
         public OperatingEfficiencyKpi(DateTime startDate, TimeSpan timeSpan, List<ScheduleItem> itemsWithinSpan)
         {
             StartDate = startDate;
-            DaysSpan = timeSpan;    
+            DaysSpan = timeSpan;
 
             CalculateScheduledTime(startDate, timeSpan, itemsWithinSpan);
             //CalculateEquipmentTime()
@@ -51,7 +49,7 @@ namespace Model.Analytics
 
                 // Change currentDate if MachineService?
                 (DateTime itemStartsAt, DateTime itemEndsAt, TimeSpan remainderAfter) = GetStartAndEnd(item, startDate, currentDate);
-                
+
                 TimeSpan timeForItem = itemEndsAt - itemStartsAt;
                 UnscheduledTime -= timeForItem;
 
@@ -84,7 +82,7 @@ namespace Model.Analytics
             if (order.IsResearch)
             {
                 DevelopmentTime += timeForItem + remainderAfter + settingTime;
-                
+
                 if (order.StartDate.Date == startDate.Date)
                 {
                     BudgetedSettingTime -= settingTime;
@@ -97,8 +95,8 @@ namespace Model.Analytics
             double weightedCycleTime = order.CalculateWeightedCycleTime();
 
             List<Lot> producedInTimeSpan = order.Lots
-                .Where(x => 
-                    x.DateProduced > startDate && 
+                .Where(x =>
+                    x.DateProduced > startDate &&
                     x.DateProduced < startDate + timeSpan)
                 .ToList();
 
@@ -184,7 +182,7 @@ namespace Model.Analytics
 
         public double GetSchedulingEfficiency()
         {
-            double effectiveness = (AvailableTime - PlannedMaintenanceTime - DevelopmentTime - UnscheduledTime) /  (AvailableTime - PlannedMaintenanceTime - DevelopmentTime);
+            double effectiveness = (AvailableTime - PlannedMaintenanceTime - DevelopmentTime - UnscheduledTime) / (AvailableTime - PlannedMaintenanceTime - DevelopmentTime);
             return effectiveness;
         }
 

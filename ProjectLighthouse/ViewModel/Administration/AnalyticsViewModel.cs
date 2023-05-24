@@ -3,20 +3,15 @@ using LiveChartsCore.Defaults;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using Microsoft.Windows.Themes;
-using Model.Analytics;
-using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using static Model.Analytics.KpiReport;
 
 namespace ProjectLighthouse.ViewModel.Administration
@@ -205,6 +200,17 @@ namespace ProjectLighthouse.ViewModel.Administration
                 developmentOrders.Add(new(data.Day, data.CountOfDevelopmentOrders));
             }
 
+            List<DateTimePoint> depletion = new();
+
+            for (int i = 0; i < 60; i++)
+            {
+                DateTime date = DateTime.Today.AddDays(i);
+
+                int count = orders.Where(x => x.EndsAt() > date).Count();
+
+                depletion.Add(new(date, count));
+            }
+
             TurnaroundTime = new ISeries[]
             {
                 new LineSeries<DateTimePoint>
@@ -252,62 +258,18 @@ namespace ProjectLighthouse.ViewModel.Administration
                     GeometrySize=0,
                     TooltipLabelFormatter = (chartPoint) =>
                     $"Development: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
-                }
-            };
-        }
-
-        private void GetMachineHistoryGraph()
-        {
-            int span = 7;
-
-            DateTime date = DateTime.Today.AddDays(-span);
-
-            List<MachineStatistics> machineStates = DatabaseHelper.QueryMachineHistory(date);
-
-            machineStates = machineStates
-                .OrderBy(x => x.DataTime)
-                .Where(x => x.MachineID == "C01")
-                .ToList();
-
-
-            List<DateTimePoint> points = new();
-
-            for (int i = 0; i < span; i++)
-            {
-                List<MachineStatistics> stats = machineStates.Where(x => x.DataTime.Date == date).ToList();
-
-                for (int j = 0; j < 4; j++)
-                {
-                    List<MachineStatistics> statsOnHour = stats
-                        .Where(x => x.DataTime.Hour == j * 6)
-                        .ToList();
-
-                    double? maxParts = null;
-
-                    if (statsOnHour.Count > 0)
-                    {
-                        maxParts = statsOnHour.Max(x => x.PartCountAll);
-                    }
-
-
-                    DateTime dateAndTime = date.AddHours(j * 6);
-                    points.Add(new(dateAndTime, maxParts));
-                }
-
-                date = date.AddDays(1);
-            }
-
-            TestSeries = new ISeries[]
-            {
-                new LineSeries<DateTimePoint>
-                {
-                    Values = points,
-                    Name = "C01 Part Counter",
-                    Fill=null,
-                    GeometrySize=3,
-                    TooltipLabelFormatter = (chartPoint) =>
-                    $"{new DateTime((long) chartPoint.SecondaryValue):dd/MM HH}: {chartPoint.PrimaryValue:#,##0}",
-                }
+                },
+                //new StepLineSeries<DateTimePoint>
+                //{
+                //    Values = depletion,
+                //    Name = "Depletion",
+                //    Fill=null,
+                //    GeometryStroke=new SolidColorPaint(SKColors.Red) {StrokeThickness=2},
+                //    Stroke=new SolidColorPaint(SKColors.Red) {StrokeThickness=2 },
+                //    GeometrySize=0,
+                //    TooltipLabelFormatter = (chartPoint) =>
+                //    $"Forecast: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
+                //}
             };
         }
 
