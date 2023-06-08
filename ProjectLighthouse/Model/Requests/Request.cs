@@ -4,11 +4,18 @@ using System;
 
 namespace ProjectLighthouse.Model.Requests
 {
-    public class Request : ICloneable
+    public class Request : BaseObject, ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string Product { get; set; }
+
+        private string product;
+        public string Product
+        {
+            get { return product; }
+            set { product = value; OnPropertyChanged();  }
+        }
+
         public string POReference { get; set; }
         public int QuantityRequired { get; set; }
         public DateTime DateRequired { get; set; }
