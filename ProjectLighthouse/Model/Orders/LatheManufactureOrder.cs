@@ -189,6 +189,7 @@ namespace ProjectLighthouse.Model.Orders
 
         #region Helpers
         public DateTime Deadline;
+        public bool SameBar;
 
         public object Clone()
         {
