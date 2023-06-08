@@ -33,7 +33,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             Console.ForegroundColor = initialColour;
         }
 
-        public static void WriteListToCSV<T>(List<T> stuff, string filePrefix)
+        public static void WriteListToCSV<T>(List<T> stuff, string filePrefix, string dateFormat = "s")
         {
             string filename = $"{filePrefix}_{DateTime.Now:ddMMyy_HHmmss}.csv";
             filename = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), filename);
@@ -41,7 +41,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             using (StreamWriter writer = new(filename))
             using (CsvWriter csv = new(writer, CultureInfo.InvariantCulture))
             {
-                TypeConverterOptions options = new() { Formats = new[] { "s" } };
+                TypeConverterOptions options = new() { Formats = new[] { dateFormat } };
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
                 csv.WriteRecords(stuff);
             }
