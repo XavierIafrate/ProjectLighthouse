@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using ViewModel.Helpers;
 
 namespace ProjectLighthouse.View.Orders
 {
@@ -101,6 +100,7 @@ namespace ProjectLighthouse.View.Orders
         }
 
         private int MaterialId;
+        private bool Plating;
 
         private NewOrderInsights insights;
 
@@ -138,9 +138,9 @@ namespace ProjectLighthouse.View.Orders
             LoadData();
             MaterialId = materialId;
 
-            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup) 
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup)
                 ?? throw new Exception($"{nameof(targetGroup)} is null");
-            
+
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
 
@@ -158,9 +158,9 @@ namespace ProjectLighthouse.View.Orders
             LoadData();
             MaterialId = materialId;
 
-            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup) 
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup)
                 ?? throw new Exception("Target group is null");
-            
+
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
 
@@ -202,9 +202,9 @@ namespace ProjectLighthouse.View.Orders
             MaterialId = materialId;
 
 
-            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup) 
+            ProductGroup? targetGroup = ProductGroups.Find(x => x.Id == requiredGroup)
                 ?? throw new Exception("Target group is null");
-            
+
             SelectedProduct = Products.Find(x => x.Id == targetGroup.ProductId);
             SelectedGroup = targetGroup;
 
@@ -226,8 +226,14 @@ namespace ProjectLighthouse.View.Orders
 
         private void LoadData()
         {
-            Products = DatabaseHelper.Read<Product>().OrderBy(x => x.Name).ToList();
-            ProductGroups = DatabaseHelper.Read<ProductGroup>().OrderBy(x => x.Name).ToList();
+            ProductGroups = DatabaseHelper.Read<ProductGroup>()
+                .Where(x => x.Status > ProductGroup.GroupStatus.Dormant)
+                .OrderBy(x => x.Name)
+                .ToList();
+            Products = DatabaseHelper.Read<Product>()
+                .Where(x => ProductGroups.Any(g => g.ProductId == x.Id))
+                .OrderBy(x => x.Name)
+                .ToList();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
                 .OrderBy(x => x.MaterialId)
                 .ThenBy(x => x.ProductName)
@@ -294,6 +300,7 @@ namespace ProjectLighthouse.View.Orders
 
             MaterialId = (int)product.MaterialId;
 
+
             AddProductToOrder(product);
 
             CalculateInsights();
@@ -332,10 +339,11 @@ namespace ProjectLighthouse.View.Orders
 
             if (SelectedGroup.GetRequiredBarStock(BarStock, MaterialId) is null)
             {
-                MessageBox.Show("No bar stock is suitable to make this product", "Cannot creat order", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("No bar stock is suitable to make this product", "Cannot create order", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
+            Plating = product.PlatedPart;
             newItem.PropertyChanged += OnNewItemChanged;
 
             NewOrderItems.Add(newItem);
@@ -347,6 +355,13 @@ namespace ProjectLighthouse.View.Orders
                 if (AvailableTurnedProducts[i].MaterialId != product.MaterialId)
                 {
                     AvailableTurnedProducts.RemoveAt(i);
+                    continue;
+                }
+
+                if (AvailableTurnedProducts[i].PlatedPart != product.PlatedPart)
+                {
+                    AvailableTurnedProducts.RemoveAt(i);
+                    continue;
                 }
             }
         }
@@ -421,7 +436,7 @@ namespace ProjectLighthouse.View.Orders
 
             try
             {
-                request = DatabaseHelper.Read<Request>(throwErrs:true).Find(x => x.Id == RequestId);
+                request = DatabaseHelper.Read<Request>(throwErrs: true).Find(x => x.Id == RequestId);
             }
             catch
             {
@@ -459,7 +474,7 @@ namespace ProjectLighthouse.View.Orders
 
             if (failedValidation > 0)
             {
-                throw new Exception($"{failedValidation:0} items have failed validation, cannot proceed.");
+                throw new Exception($"{failedValidation:0} item(s) have failed validation, cannot proceed.");
             }
 
             NewOrder.Name = GetNewOrderId();
@@ -479,11 +494,12 @@ namespace ProjectLighthouse.View.Orders
 
             NewOrder.MajorDiameter = group.MajorDiameter;
 
-            BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId) 
+            BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId)
                 ?? throw new Exception("No bar records available that meet the size or material requirements for the product.");
-            
+
             NewOrder.BarsInStockAtCreation = orderBar.InStock;
             NewOrder.MaterialId = MaterialId;
+            NewOrder.PartsWillBePlated = Plating;
             NewOrder.GroupId = SelectedGroup.Id;
             NewOrder.BarID = orderBar.Id;
             NewOrder.NumberOfBars = NewOrderItems.CalculateNumberOfBars(orderBar, 0);
@@ -495,7 +511,7 @@ namespace ProjectLighthouse.View.Orders
             NewOrder.TargetCycleTimeEstimated = estimated;
 
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>()
-                .Where(x => x.DrawingType == (NewOrder.IsResearch? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production))
+                .Where(x => x.DrawingType == (NewOrder.IsResearch ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production))
                 .ToList();
             List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, NewOrderItems.ToList(), NewOrder.GroupId, NewOrder.MaterialId);
 
@@ -504,7 +520,7 @@ namespace ProjectLighthouse.View.Orders
             foreach (TechnicalDrawing drawing in drawings)
             {
                 OrderDrawing o = new() { DrawingId = drawing.Id, OrderId = NewOrder.Name };
-                DatabaseHelper.Insert(o, throwErrs:true);
+                DatabaseHelper.Insert(o, throwErrs: true);
             }
 
             foreach (LatheManufactureOrderItem item in NewOrderItems)
@@ -553,9 +569,9 @@ namespace ProjectLighthouse.View.Orders
 
             NewOrderInsights insights = new();
 
-            BarStock? bar = SelectedGroup.GetRequiredBarStock(BarStock, MaterialId) 
+            BarStock? bar = SelectedGroup.GetRequiredBarStock(BarStock, MaterialId)
                 ?? throw new Exception("No bar found for group");
-            
+
             insights.BarId = bar.Id;
             insights.BarPrice = bar.Cost;
             insights.NumberOfBarsRequired = NewOrderItems.CalculateNumberOfBars(bar, 0);
@@ -568,7 +584,7 @@ namespace ProjectLighthouse.View.Orders
 
             TimeSpan orderTime = TimeSpan.FromSeconds(insights.TimeToComplete);
 
-            insights.CostOfMachineTime = orderTime.TotalMinutes * 0.45;
+            insights.CostOfMachineTime = orderTime.TotalMinutes * .00505 * 60;
 
             insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
 
