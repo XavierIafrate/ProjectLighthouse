@@ -9,6 +9,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is null) return null;
             if (value is not Request request) throw new ArgumentException("Request expected");
 
             double weeks = (request.DateRequired - request.DateRaised).TotalDays / 7;
