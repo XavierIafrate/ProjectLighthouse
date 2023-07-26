@@ -73,6 +73,13 @@
                             CommandParameter="Delivered"
                             Style="{StaticResource Action_Button}"
                             Tag="Get Delivered Items" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="Drawings"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Get Drawings" />
                     </StackPanel>
                 </Grid>
             </TabItem>

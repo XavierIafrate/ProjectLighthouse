@@ -1,5 +1,7 @@
 ﻿using CsvHelper.Configuration.Attributes;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using ProjectLighthouse.Model.Deliveries;
+using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
@@ -73,6 +75,12 @@ namespace ProjectLighthouse.ViewModel.Administration
                 case "Delivered":
                     GetDeliveredItems();
                     break;
+                case "Drawings":
+
+                    List<TechnicalDrawing> drawings = DatabaseHelper.Read<TechnicalDrawing>();
+                    CSVHelper.WriteListToCSV(drawings, "drawings");
+
+                    break;
                 default:
                     throw new NotImplementedException();
             };
@@ -112,7 +120,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 }
             }
 
-            CSVHelper.WriteListToCSV(result, "delivered");
+            CSVHelper.WriteListToCSV(result, "delivered", "dd/MM/yyyy");
 
         }
 
@@ -262,6 +270,8 @@ namespace ProjectLighthouse.ViewModel.Administration
             List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>();
             List<ProductGroup> groups = DatabaseHelper.Read<ProductGroup>();
 
+            string[] settledTimes = File.ReadAllLines(App.ROOT_PATH + "settled.csv");
+
 
             List<ItemCost> itemCosts = new();
             foreach (TurnedProduct product in products)
@@ -302,11 +312,108 @@ namespace ProjectLighthouse.ViewModel.Administration
                     MaterialId = material.Id,
                 };
 
-                itemCosts.Add(newItem);
+                newItem.MaterialCost = (newItem.BarCost / newItem.BarLength) * newItem.ProductMajorLength;
+                newItem.SettledCycleTime = LookupSettledCycleTime(newItem.GroupId, newItem.MaterialId, settledTimes);
+                
+                if (newItem.Product.EndsWith("2X"))
+                {
+                    ItemCost tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("2X", "A2");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("2X", "VI");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("2X", "TX");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("2X", "2S");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("2X", "2V");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("2X", "2E");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("2X", "2N");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("2X", "2F");
+                    itemCosts.Add(tmpItem);
+
+
+                }
+                else if (newItem.Product.EndsWith("4X"))
+                {
+                    ItemCost tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("4X", "A4");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("4X", "4S");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("4X", "4V");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("4X", "4E");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("4X", "4N");
+                    itemCosts.Add(tmpItem);
+
+                    tmpItem = (ItemCost)newItem.Clone();
+                    tmpItem.Product = newItem.Product.Replace("4X", "4F");
+                    itemCosts.Add(tmpItem);
+                }
+                else
+                {
+                    itemCosts.Add(newItem);
+                }
             }
 
             CSVHelper.WriteListToCSV(itemCosts, "ItemMaterialDetails");
 
+        }
+
+        private double? LookupSettledCycleTime(int groupId, int materialId, string[] settledTimes)
+        {
+            string[] header = settledTimes[0].Split(",");
+            int groupIdx = Array.IndexOf(header, groupId.ToString("0"));
+
+            if (groupIdx == -1)
+            {
+                return null;
+            }
+
+            for(int i = 1; i < settledTimes.Length; i++)
+            {
+                string[] line = settledTimes[i].Split(",");
+                if(materialId.ToString("0") == line[0])
+                {
+                    string target = line[groupIdx];
+
+                    if(double.TryParse(target, out double result))
+                    {
+                        return result;
+                    }
+
+                    return null;
+                }
+            }
+
+            return null;
         }
 
         public class ItemCost
@@ -340,6 +447,18 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             [Name("Group Name")]
             public string GroupName { get; set; }
+
+            [Name("Material Cost")]
+            public double MaterialCost { get; set; } = 0;
+
+            [Name("Settled Cycle Time")]
+            public double? SettledCycleTime { get; set; } = null;
+
+            public object Clone()
+            {
+                string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<ItemCost>(serialised);
+            }
         }
     }
 }
