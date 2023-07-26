@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ProjectLighthouse.Model.Orders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ProjectLighthouse.Model.Analytics
 {
-    public class MachineOperatingBlock
+    public class MachineOperatingBlock : ICloneable
     {
         public string MachineID { get; set; }
         public string MachineName { get; set; }
@@ -41,6 +42,12 @@ namespace ProjectLighthouse.Model.Analytics
                     x => !x.Contains("T02 Auto operation pause signal ON")
                             && !string.IsNullOrWhiteSpace(x))
                 .ToList();
+        }
+
+        public object Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MachineOperatingBlock>(serialised);
         }
     }
 }
