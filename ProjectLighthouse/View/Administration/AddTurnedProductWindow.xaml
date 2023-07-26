@@ -103,6 +103,9 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>-->
             </ComboBox>
+            <CheckBox Content="Plated Part" IsChecked="{Binding Product.PlatedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                      Margin="0,5"/>
+
             <!--<TextBlock Text="{Binding Product.GroupId, TargetNullValue='No group assigned', StringFormat='{}Group ID: {0}', Mode=OneWay}" />-->
         </StackPanel>
 

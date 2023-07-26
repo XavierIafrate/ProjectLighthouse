@@ -116,8 +116,6 @@ namespace ProjectLighthouse.View.Administration
         {
             try
             {
-                Product.AddedBy = App.CurrentUser.UserName;
-                Product.AddedDate = DateTime.Now;
                 DatabaseHelper.Update(Product, throwErrs: true);
                 originalProduct = Product;
             }
@@ -131,6 +129,8 @@ namespace ProjectLighthouse.View.Administration
         {
             try
             {
+                Product.AddedBy = App.CurrentUser.UserName;
+                Product.AddedDate = DateTime.Now;
                 DatabaseHelper.Insert(Product, throwErrs: true);
             }
             catch
