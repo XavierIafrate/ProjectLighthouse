@@ -1,10 +1,12 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.Defaults;
-using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Orders;
-using ProjectLighthouse.ViewModel.Commands.Administration;
+using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
@@ -12,26 +14,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using static Model.Analytics.KpiReport;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
     public class AnalyticsViewModel : BaseViewModel
     {
         #region Vars
-
-        private AnalyticsHelper analytics;
-
-        public AnalyticsHelper Analytics
-        {
-            get { return analytics; }
-            set
-            {
-                analytics = value;
-                OnPropertyChanged();
-            }
-        }
-
         public Axis[] XAxes { get; set; }
         public List<string> YearsAvailable { get; set; }
         private string selectedYear;
@@ -48,70 +36,197 @@ namespace ProjectLighthouse.ViewModel.Administration
         }
 
         public ISeries[] Series { get; set; }
-        public IEnumerable<ISeries> GaugeSeries { get; set; }
-        public ISeries[] TestSeries { get; set; }
-        public ISeries[] KpiSeries { get; set; }
-
-        public ISeries[] WeeklyKpis { get; set; }
-
-        public string TitleText { get; set; }
-        public Axis[] KpiXAxes { get; set; }
-        public Axis[] YAxes { get; set; } =
-        {
-            new Axis
-            {
-                Labels = new string[]
-                {
-                    "Quality Loss",
-                    "Cycle Time",
-                    "Not Running", 
-                    //"Breakdown", 
-                    "Setting",
-                    "Schedule Loss",
-                    "Maintenance",
-                    "Development",
-                    "Available",
-                },
-                LabelsRotation=0,
-                MinStep=1,
-                ForceStepToMin=true,
-                MinLimit=-0.5,
-                MaxLimit=7.5,
-            }
-        };
-
-        public Axis[] YAxisStartAtZero { get; set; } =
-        {
-            new Axis
-            {
-                MinLimit=0
-            }
-        };
-
-        public Axis[] KpiOverTimeXAxes { get; set; }
-
-
         public ISeries[] TurnaroundTime { get; set; }
         public ISeries[] ActiveOrders { get; set; }
+        public ISeries[] ProductSeries { get; set; }
 
         public int TotalPartsMade { get; set; }
         public int TotalPartsMadeThisYear { get; set; }
 
-        #endregion
+        private OperatingEfficiencyKpi ooe;
+        public OperatingEfficiencyKpi OOE
+        {
+            get { return ooe; }
+            set
+            {
+                ooe = value;
+                OnPropertyChanged();
+            }
+        }
 
-        #region Commands
-        public SendRuntimeReportCommand RuntimeReportCommand { get; set; }
+
         #endregion
 
         public AnalyticsViewModel()
         {
-            //Analytics = new();
-
-            RuntimeReportCommand = new(this);
-
-            //Task.Run(() => GetAnalytics());
             GetAnalytics();
             GetWorkload();
+            //GetOEE(
+            //    start: DateTime.Today.AddDays((int)DateTime.Today.DayOfWeek * -1).AddDays(-7),
+            //    end: DateTime.Today.AddDays((int)DateTime.Today.DayOfWeek * -1));
+
+            GetProductAnalytics();
+        }
+
+        private void GetOEE(DateTime start, DateTime end)
+        {
+            //return;
+            string lathe = "C03";
+            List<MachineOperatingBlock> blocks = DatabaseHelper.Read<MachineOperatingBlock>()
+                .Where(x => x.StateLeft >= start && x.StateEntered <= end && x.MachineID == lathe)
+                .ToList();
+
+            blocks = blocks.Denoise(start, end, 30 * 60);
+            blocks = blocks.Slice(start);
+            blocks = blocks.Slice(end);
+            blocks = blocks.Where(x => x.StateEntered >= start && x.StateLeft <= end).ToList();
+
+
+
+            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>()
+                .Where(x => x.State < OrderState.Cancelled && x.AllocatedMachine == lathe && x.StartDate <= end && x.EndsAt() >= start)
+                .OrderBy(x => x.StartDate)
+                .ToList();
+
+            //orders.ForEach(x => scheduleItems.Add(x));
+
+            //Schedule s = new(scheduleItems);
+
+
+            TimeSpan performanceChange = new();
+
+            TimeSpan availabilityLoss = new();
+
+
+            foreach (LatheManufactureOrder order in orders)
+            {
+                List<MachineOperatingBlock> orderBlocks = blocks.Slice(order.StartDate);
+                orderBlocks = blocks.Slice((order.CompletedAt == DateTime.MinValue ? order.EndsAt() : order.CompletedAt.Date.AddHours(6)));
+
+                orderBlocks = orderBlocks.Where(x => x.StateEntered >= order.StartDate && x.StateLeft <= (order.CompletedAt == DateTime.MinValue ? order.EndsAt() : order.CompletedAt.Date.AddHours(6))).ToList();
+
+                availabilityLoss = availabilityLoss.Add(new(0, 0, orderBlocks.Where(x => x.State != "Running").Sum(x => (int)x.SecondsElapsed)));
+                performanceChange = performanceChange.Add(new(0, 0, orderBlocks.Where(x => x.State == "Running").Sum(x => (int)x.SecondsElapsed / (x.CycleTime - order.TargetCycleTime))));
+            }
+
+            TimeSpan developmentTime = new();
+            TimeSpan settingTime = new();
+            TimeSpan maintenanceTime = new();
+
+            List<ScheduleItem> scheduleItems = new();
+
+            foreach (LatheManufactureOrder order in orders)
+            {
+
+                if (order.IsResearch)
+                {
+                    developmentTime = developmentTime.Add(new(
+                        Math.Min(end.Ticks, order.StartDate.AddSeconds(Math.Max(order.TimeToComplete, 86400 * 2)).Ticks)
+                        - Math.Max(start.Ticks, order.StartDate.Ticks)));
+                }
+                else
+                {
+                    if (order.StartDate >= start)
+                    {
+                        settingTime = settingTime.Add(new(6, 0, 0));
+                    }
+                    maintenanceTime = maintenanceTime.Add(new(0, 15, 0));
+                }
+
+                scheduleItems.Add(order);
+            }
+
+            TimeSpan scheduleLoss = Schedule.GetScheduleLoss(scheduleItems, start, end);
+
+            List<MaintenanceEvent> maintenance = DatabaseHelper.Read<MaintenanceEvent>()
+                .Where(x => x.AllocatedMachine == lathe && x.EndsAt() > start && x.StartDate < end)
+                .ToList();
+            foreach (MaintenanceEvent maintenanceEvent in maintenance)
+            {
+                maintenanceTime = maintenanceTime.Add(new(
+                    Math.Min(end.Ticks, maintenanceEvent.EndsAt().Ticks)
+                    - Math.Max(start.Ticks, maintenanceEvent.StartDate.Ticks)));
+            }
+
+            OperatingEfficiencyKpi kpi = new()
+            {
+                AvailableTime = end - start,
+                MaintenanceLoss = maintenanceTime,
+                DevelopmentLoss = developmentTime,
+                ScheduleLoss = scheduleLoss,
+                ChangeoverLoss = settingTime,
+                AvailabilityLoss = availabilityLoss,
+                PerformanceChange = performanceChange,
+                QualityLoss = new(0, 0, 0)
+            };
+
+            kpi.OperationsTime = kpi.AvailableTime;
+
+            OOE = kpi;
+        }
+
+        private void GetProductAnalytics()
+        {
+            List<Lot> stockLots = DatabaseHelper.Read<Lot>().Where(x => x.IsDelivered).ToList();
+            List<TurnedProduct> turnedProducts = DatabaseHelper.Read<TurnedProduct>();
+            List<ProductGroup> groups = DatabaseHelper.Read<ProductGroup>();
+            List<Product> products = DatabaseHelper.Read<Product>();
+
+            Dictionary<string, int> productionRecords = new();
+
+            string[] uniqueProducts = stockLots.Select(x => x.ProductName).Distinct().ToArray();
+
+            foreach (string productName in uniqueProducts)
+            {
+                int totalProduced = stockLots.Where(x => x.ProductName == productName).Sum(x => x.Quantity);
+
+                TurnedProduct? sku = turnedProducts.Find(x => x.ProductName == productName);
+
+                if (sku is null) continue;
+                if (sku.GroupId is null) continue;
+
+                ProductGroup? group = groups.Find(x => x.Id == sku.GroupId);
+                if (group is null) continue;
+                if (group.ProductId is null) continue;
+
+                Product? product = products.Find(x => x.Id == group.ProductId);
+                if (product is null) continue;
+
+                if (!productionRecords.ContainsKey(product.Name))
+                {
+                    productionRecords.Add(product.Name, totalProduced);
+                }
+                else
+                {
+                    productionRecords[product.Name] += totalProduced;
+                }
+            }
+
+            List<KeyValuePair<string, int>> result = productionRecords
+                .ToList()
+                .OrderByDescending(x => x.Value)
+                .Take(7)
+                .ToList();
+
+            int sumAccountedFor = result.Sum(x => x.Value);
+
+            result.Add(new("Other", stockLots.Sum(x => x.Quantity) - sumAccountedFor));
+
+            List<ISeries> pieChartValues = new();
+
+            foreach (KeyValuePair<string, int> item in result)
+            {
+                pieChartValues.Add(new PieSeries<int>
+                {
+                    Name = item.Key,
+                    Values = new List<int> { item.Value },
+                    InnerRadius = 50,
+                    TooltipLabelFormatter = (chartPoint) => $"{chartPoint.Context.Series.Name}: {chartPoint.PrimaryValue:#,##0}"
+                });
+            }
+
+            ProductSeries = pieChartValues.ToArray();
+            OnPropertyChanged(nameof(ProductSeries));
         }
 
         private void GetAnalytics()
@@ -126,10 +241,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             OnPropertyChanged(nameof(TotalPartsMadeThisYear));
 
             GetChartData(stockLots);
-            //KpiReport report = new(start: new(2023, 1, 10), daysSpan: 7);
-
-            //GetKpis();
-            //GetMachineHistoryGraph();
         }
 
         class WorkloadDay
@@ -341,206 +452,6 @@ namespace ProjectLighthouse.ViewModel.Administration
                 axis.MinLimit = yearDate.Ticks;
                 axis.MaxLimit = yearDate.AddYears(1).Ticks;
             }
-        }
-
-        public void GetKpis()
-        {
-            int dayOfWeekToday = (int)DateTime.Now.DayOfWeek; // Sunday = 0
-            //DateTime mondayThisWeek = DateTime.Today.AddDays(1 - dayOfWeekToday -7); // TODO Change back
-            DateTime reportStartDate = new(2023, 1, 4);
-            reportStartDate = reportStartDate.Date.AddHours(6);
-
-            int totalReportDaysSpan = 7;
-
-            OperatingData baseData = new(reportStartDate, totalReportDaysSpan);
-            baseData.GetData();
-
-
-            Dictionary<DateTime, OperatingEfficiencyKpi> weeklyKpis = new();
-
-            for (int i = 0; i < totalReportDaysSpan; i++)
-            {
-                DateTime startDate = reportStartDate.AddDays(i);
-
-                OperatingEfficiencyKpi weeksKpi = baseData.GetKpi(startDate, span: 1);
-                weeksKpi.Normalise(24 * 4);
-                weeklyKpis.Add(startDate, weeksKpi);
-            }
-
-            DateTime targetKey = weeklyKpis.Keys.ElementAt(0);
-            OperatingEfficiencyKpi kpi = weeklyKpis[targetKey];
-
-            //OperatingEfficiencyKpi kpi = baseData.GetKpi(reportStartDate, totalReportDaysSpan);
-
-            Tuple<double, double>[] seriesPoints = new Tuple<double, double>[8];
-
-            double baseline = kpi.AvailableTime.TotalHours;
-            double delta = 0;
-            seriesPoints[0] = new(baseline, delta);
-
-            baseline += delta;
-            delta = -kpi.DevelopmentTime.TotalHours;
-            seriesPoints[1] = new(baseline, delta);
-
-            baseline += delta;
-            delta = -kpi.PlannedMaintenanceTime.TotalHours;
-            seriesPoints[2] = new(baseline, delta);
-
-            baseline += delta;
-            delta = -kpi.UnscheduledTime.TotalHours;
-            seriesPoints[3] = new(baseline, delta);
-
-            baseline += delta;
-            delta = -kpi.BudgetedSettingTime.TotalHours;
-            seriesPoints[4] = new(baseline, delta);
-
-            baseline += delta;
-            delta = -kpi.NonRunningTime.TotalHours;
-            seriesPoints[5] = new(baseline, delta);
-
-            baseline += delta;
-            delta = -kpi.PerformanceDeltaTime.TotalHours;
-            seriesPoints[6] = new(baseline, delta);
-
-            baseline += delta;
-            delta = -kpi.QualityLossTime.TotalHours;
-            seriesPoints[7] = new(baseline, delta);
-
-            KpiSeries = new ISeries[]
-            {
-                new RowSeries<double> // LOSS
-                {
-                    IsHoverable = false, // disables the series from the tooltips 
-                    Values = new double[]
-                    {
-                        seriesPoints[7].Item1,
-                        seriesPoints[6].Item1,
-                        seriesPoints[5].Item1,
-                        seriesPoints[4].Item1,
-                        seriesPoints[3].Item1,
-                        seriesPoints[2].Item1,
-                        seriesPoints[1].Item1,
-                        seriesPoints[0].Item1,
-                    },
-                    Stroke = null,
-                    Fill = new SolidColorPaint(SKColors.OrangeRed),
-                    IgnoresBarPosition = true,
-
-                },
-                new RowSeries<double> // GAIN
-                {
-                    IsHoverable = false, // disables the series from the tooltips 
-                    Values = new double[]
-                    {
-                        seriesPoints[7].Item1 + seriesPoints[7].Item2,
-                        seriesPoints[6].Item1 + seriesPoints[6].Item2,
-                        seriesPoints[5].Item1 + seriesPoints[5].Item2,
-                        seriesPoints[4].Item1 + seriesPoints[4].Item2,
-                        seriesPoints[3].Item1 + seriesPoints[3].Item2,
-                        seriesPoints[2].Item1 + seriesPoints[2].Item2,
-                        seriesPoints[1].Item1 + seriesPoints[1].Item2,
-                        seriesPoints[0].Item1 + seriesPoints[0].Item2,
-
-                    },
-                    Stroke = null,
-                    Fill = new SolidColorPaint(SKColors.SpringGreen),
-                    IgnoresBarPosition = true,
-                    TooltipLabelFormatter = (chartPoint) =>
-                    $"{chartPoint.PrimaryValue:0.0} h",
-                },
-                new RowSeries<double> // SMALLEST
-                {
-                    IsHoverable = true, // disables the series from the tooltips 
-                    Values = new double[]
-                    {
-                        Math.Min(seriesPoints[7].Item1, seriesPoints[7].Item1 + seriesPoints[7].Item2),
-                        Math.Min(seriesPoints[6].Item1, seriesPoints[6].Item1 + seriesPoints[6].Item2),
-                        Math.Min(seriesPoints[5].Item1, seriesPoints[5].Item1 + seriesPoints[5].Item2),
-                        Math.Min(seriesPoints[4].Item1, seriesPoints[4].Item1 + seriesPoints[4].Item2),
-                        Math.Min(seriesPoints[3].Item1, seriesPoints[3].Item1 + seriesPoints[3].Item2),
-                        Math.Min(seriesPoints[2].Item1, seriesPoints[2].Item1 + seriesPoints[2].Item2),
-                        Math.Min(seriesPoints[1].Item1, seriesPoints[1].Item1 + seriesPoints[1].Item2),
-                        Math.Min(seriesPoints[0].Item1, seriesPoints[0].Item1 + seriesPoints[0].Item2),
-                    },
-                    Stroke = null,
-                    Fill = new SolidColorPaint(SKColors.DodgerBlue),
-                    IgnoresBarPosition = true,
-                    TooltipLabelFormatter = (chartPoint) =>
-                    $"{chartPoint.PrimaryValue:0.0}",
-                }
-            };
-
-            OnPropertyChanged(nameof(KpiSeries));
-
-            KpiXAxes = new Axis[]
-            {
-                new Axis { MinLimit = 0, MaxLimit = seriesPoints.Max(x => x.Item1) }
-            };
-
-            OnPropertyChanged(nameof(KpiXAxes));
-
-
-
-            TitleText = $"Efficiency for date range {targetKey:ddd dd/MM/yy HHmm} to {targetKey.AddDays(1):ddd dd/MM/yy HHmm}";
-
-            OnPropertyChanged(nameof(TitleText));
-
-
-            double[] oees = new double[totalReportDaysSpan];
-            double[] ooes = new double[totalReportDaysSpan];
-            string[] xAxisLabels = new string[totalReportDaysSpan];
-
-            for (int x = 0; x < totalReportDaysSpan; x++)
-            {
-                OperatingEfficiencyKpi kvp = weeklyKpis.ElementAt(x).Value;
-                oees[x] = kvp.GetEquipmentEfficiency() * 100;
-                ooes[x] = kvp.GetOperationsEfficiency() * 100;
-                xAxisLabels[x] = kvp.StartDate.ToString("dd/MM");
-            }
-
-
-
-            WeeklyKpis = new ISeries[]
-            {
-                new LineSeries<double>
-                {
-                    Values = oees,
-                    Fill = null,
-                    Name = "OEE"
-                },
-                new LineSeries<double>
-                {
-                    Values = ooes,
-                    Fill = null,
-                    Name = "OOE"
-                }
-            };
-
-            KpiOverTimeXAxes = new Axis[]
-            {
-                new Axis { MinLimit = 0, Labels =  xAxisLabels, MinStep=1, ForceStepToMin=true}
-            };
-
-            OnPropertyChanged(nameof(KpiOverTimeXAxes));
-
-            OnPropertyChanged(nameof(WeeklyKpis));
-
-
-
-
-            GaugeSeries = new GaugeBuilder()
-            .WithLabelsSize(20)
-            .WithLabelsPosition(PolarLabelsPosition.Start)
-            .WithLabelFormatter(point => $"{point.Context.Series.Name} {point.PrimaryValue:0.0}")
-            .WithInnerRadius(20)
-            .WithOffsetRadius(8)
-            .WithBackgroundInnerRadius(20)
-            .AddValue(kpi.GetOperationsEfficiency() * 100, "OOE %")
-            .AddValue(kpi.GetSchedulingEfficiency() * 100, "OSE %")
-            .AddValue(kpi.GetEquipmentEfficiency() * 100, "OEE %")
-            .BuildSeries();
-
-            OnPropertyChanged(nameof(GaugeSeries));
         }
     }
 }
