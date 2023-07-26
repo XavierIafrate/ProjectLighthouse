@@ -109,12 +109,12 @@ namespace ProjectLighthouse.ViewModel.Core
 
         private static List<Notification> GetVisibleNotifications(List<Notification> nots)
         {
-            List<Notification> result = new();
+            List<Notification> result = nots
+                .Where(x => x.TimeStamp > DateTime.Now.AddDays(-5))
+                .OrderByDescending(x => x.TimeStamp)
+                .ToList();
 
-            result.AddRange(nots.Where(x => x.Seen && x.SeenTimeStamp > DateTime.Now.AddDays(-1)));
-            result.AddRange(nots.Where(x => !x.Seen && x.TimeStamp > DateTime.Now.AddDays(-7)));
-
-            //TODO verify this
+            
             List<Notification> deduplicatedNots = new();
 
             for (int i = 0; i < result.Count; i++)
