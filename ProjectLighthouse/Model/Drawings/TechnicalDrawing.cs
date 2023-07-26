@@ -4,6 +4,7 @@ using PdfSharp.Pdf.IO;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.ValueConverters;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,8 @@ namespace ProjectLighthouse.Model.Drawings
         public string IssueDetails { get; set; }
         public string SubmissionType { get; set; }
         public bool WatermarkOnly { get; set; }
+
+        public bool PlatingStatement = false;
 
         [Ignore]
         public bool IsCurrent { get; set; }
@@ -267,6 +270,33 @@ namespace ProjectLighthouse.Model.Drawings
             ApplyWatermark(page, "REJECTED - DO NOT USE", Color.Red);
             return true;
         }
+
+        public static bool AddPlatingStatement(string path)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            using PdfDocument pdfDocument = PdfReader.Open(path, PdfDocumentOpenMode.Modify);
+            PdfPage page = pdfDocument.Pages[0];
+
+            Color colour = Color.Red;
+
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            XFont font = new("Consolas", 16, XFontStyle.Bold);
+            XBrush brush = new XSolidBrush(XColor.FromArgb((int)(0.25 * 255), colour.R, colour.G, colour.B));
+
+            gfx.DrawString("PART SHALL BE PLATED - ALLOW 1-3 MICRONS PER SURFACE", font, brush,
+                new XRect(page.Width*0.2, 0, page.Width*0.8, page.Height - 10),
+                  XStringFormats.BottomCenter);
+
+            gfx.Dispose();
+
+            pdfDocument.Save(path);
+
+            return true;
+        }
+
+
 
         private void ApplyApprovalInformation(PdfPage page)
         {
