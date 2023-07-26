@@ -5,188 +5,191 @@ using System.Linq;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
-    public class MachinePerformanceHelper
+    public static class MachinePerformanceHelper
     {
-        public static List<MachineOperatingBlock> SplitBlocksIntoDays(List<MachineOperatingBlock> data, int hour = 0, int minute = 0)
+        public static List<MachineOperatingBlock> Denoise(this List<MachineOperatingBlock> blocks, DateTime start, DateTime end, int secondsThreshold)
         {
-            List<MachineOperatingBlock> cleanedData = new();
+            blocks = FillGaps(blocks, start, end);
+            blocks = AmalgamateRapidChanges(blocks, secondsThreshold: secondsThreshold);
+            blocks = RemoveSmallBlocks(blocks, secondsThreshold: secondsThreshold);
+            blocks = RemoveConsecutiveStatusBlocks(blocks);
 
-            foreach (MachineOperatingBlock record in data)
-            {
-                cleanedData.AddRange(SplitBlockIntoDays(record, hour, minute));
-            }
-
-            return cleanedData;
+            return blocks;
         }
 
-        private static List<MachineOperatingBlock> SplitBlockIntoDays(MachineOperatingBlock block, int hour = 0, int minute = 0)
+        public static List<MachineOperatingBlock> FillGaps(List<MachineOperatingBlock> input, DateTime start, DateTime end)
         {
             List<MachineOperatingBlock> result = new();
 
-            block.StateEntered = block.StateEntered.AddHours(-hour).AddMinutes(-minute);
-            block.StateLeft = block.StateLeft.AddHours(-hour).AddMinutes(-minute);
-
-            DateTime blockStartDay = block.StateEntered.Date;
-            DateTime blockEndDay = block.StateLeft.Date;
-
-            int numberOfDays = Convert.ToInt32((blockEndDay - blockStartDay).TotalDays);
-
-            DateTime newBlockStarts = block.StateEntered;
-
-            for (int i = 0; i < numberOfDays + 1; i++)
+            if (input.Count == 0)
             {
-                MachineOperatingBlock newBlock = new()
-                {
-                    State = block.State,
-                    MachineID = block.MachineID,
-                    MachineName = block.MachineName,
-                    StateEntered = newBlockStarts,
-                    CycleTime = block.CycleTime,
-                    ErrorMessages = block.ErrorMessages,
-                    Messages = block.Messages,
-                };
+                result.Add(new() { State = "No Data", StateEntered = start, StateLeft = end, SecondsElapsed = (int)(end - start).TotalSeconds });
+                return result;
+            }
 
-                if (i == numberOfDays)
+            if (input[0].StateEntered > start)
+            {
+                result.Add(new() { State = "No Data", StateEntered = start, StateLeft = input[0].StateEntered, SecondsElapsed = (int)(input[0].StateEntered - start).TotalSeconds });
+            }
+            else if (input[0].StateEntered < start)
+            {
+                input[0].StateEntered = start;
+                input[0].SecondsElapsed = (int)(input[0].StateLeft - input[0].StateEntered).TotalSeconds;
+            }
+
+            for (int i = 0; i < input.Count - 1; i++)
+            {
+                result.Add(input[i]);
+                if (input[i + 1].StateEntered > input[i].StateLeft.AddSeconds(1))
                 {
-                    newBlock.StateLeft = block.StateLeft;
+                    result.Add(new()
+                    {
+                        State = "No Data",
+                        StateEntered = input[i].StateLeft,
+                        StateLeft = input[i + 1].StateEntered,
+                        SecondsElapsed = (int)(input[i + 1].StateEntered - input[i].StateLeft).TotalSeconds
+                    });
                 }
-                else
-                {
 
-                    newBlock.StateLeft = newBlock.StateEntered.Date.AddDays(1).AddSeconds(-1);
-                    newBlockStarts = newBlock.StateEntered.Date.AddDays(1);
-                }
+            }
 
-                newBlock.SecondsElapsed = (newBlock.StateLeft - newBlock.StateEntered).TotalSeconds;
+            if (input[^1].StateLeft.AddSeconds(1) < end)
+            {
+                result.Add(input[^1]);
+                result.Add(new() { State = "No Data", StateEntered = input[^1].StateLeft, StateLeft = end, SecondsElapsed = (int)(end - input[^1].StateLeft).TotalSeconds });
+            }
+            else if (input[^1].StateLeft > end)
+            {
+                input[^1].StateLeft = end;
+                input[^1].SecondsElapsed = (int)(input[^1].StateLeft - input[^1].StateEntered).TotalSeconds;
+                result.Add(input[^1]);
 
-                newBlock.StateEntered = newBlock.StateEntered.AddHours(hour).AddMinutes(minute);
-                newBlock.StateLeft = newBlock.StateLeft.AddHours(hour).AddMinutes(minute);
-
-                result.Add(newBlock);
             }
 
             return result;
         }
 
-        public static List<MachineOperatingBlock> Convolute(List<MachineOperatingBlock> input, int resolutionMinutes)
+        public static List<MachineOperatingBlock> AmalgamateRapidChanges(List<MachineOperatingBlock> input, int secondsThreshold)
         {
+            if (input.Count == 0) return input;
+            if (input.Count == 1) return input;
+
             List<MachineOperatingBlock> result = new();
 
-            input = input.Where(x => x.SecondsElapsed >= resolutionMinutes * 60).OrderBy(x => x.StateEntered).ToList();
-            if (input.Count <= 1)
+            string[] statuses = input.Select(x => x.State).ToArray();
+            int i = 0;
+            while (i < input.Count)
             {
-                return input;
-            }
-
-            int x = 0;
-            string lastState = input[x].State;
-
-            for (int i = 1; i < input.Count; i++)
-            {
-                MachineOperatingBlock curr = input[i];
-                MachineOperatingBlock first = input[x];
-                if (curr.State != lastState)
-                {
-                    MachineOperatingBlock newBlock = new()
-                    {
-                        MachineID = curr.MachineID,
-                        MachineName = curr.MachineName,
-                        StateEntered = first.StateEntered,
-                        StateLeft = input[i - 1].StateLeft,
-                        State = first.State,
-                        SecondsElapsed = (input[i - 1].StateLeft - first.StateEntered).TotalSeconds,
-                        CycleTime = first.CycleTime,
-                        Messages = first.Messages,
-                        ErrorMessages = first.ErrorMessages,
-                    };
-                    result.Add(newBlock);
-                    x = i;
-                    lastState = input[x].State;
-                }
-
-                if (i == input.Count - 1)
+                if (input[i].SecondsElapsed > secondsThreshold)
                 {
                     result.Add(input[i]);
+                    i++;
+                    continue;
                 }
+
+                int j = i + 1;
+                while (j < input.Count && secondsThreshold > input[j].SecondsElapsed)
+                {
+                    j++;
+                }
+
+                input[i].State = "Setting";
+                input[i].StateLeft = input[j - 1].StateLeft;
+                input[i].SecondsElapsed = (int)(input[i].StateLeft - input[i].StateEntered).TotalSeconds;
+
+                result.Add(input[i]);
+
+                i = j;
+            }
+
+
+            return result;
+        }
+
+        public static List<MachineOperatingBlock> RemoveSmallBlocks(List<MachineOperatingBlock> input, int secondsThreshold)
+        {
+            if (input.Count < 2) return input;
+
+            List<MachineOperatingBlock> result = new();
+
+            for (int i = input.Count - 1; i >= 1; i--)
+            {
+                if (input[i - 1].SecondsElapsed < secondsThreshold && input[i].SecondsElapsed > secondsThreshold)
+                {
+                    input[i].StateEntered = input[i - 1].StateEntered;
+                    input[i].SecondsElapsed = (int)(input[i].StateLeft - input[i].StateEntered).TotalSeconds;
+
+                    result.Add(input[i]);
+
+                    i--;
+                    continue;
+                }
+
+                result.Add(input[i]);
+            }
+
+            result.Add(input[0]);
+
+            result.Reverse();
+
+            return result;
+        }
+
+        public static List<MachineOperatingBlock> RemoveConsecutiveStatusBlocks(List<MachineOperatingBlock> input)
+        {
+            if (input.Count == 0) return input;
+            if (input.Count == 1) return input;
+
+            List<MachineOperatingBlock> result = new();
+
+            string[] statuses = input.Select(x => x.State).ToArray();
+            int i = 0;
+            while (i < input.Count)
+            {
+                int j = i + 1;
+                while (j < input.Count && input[i].State == input[j].State)
+                {
+                    j++;
+                }
+
+                input[i].StateLeft = input[j - 1].StateLeft;
+                input[i].SecondsElapsed = (int)(input[i].StateLeft - input[i].StateEntered).TotalSeconds;
+
+                result.Add(input[i]);
+
+                i = j;
             }
 
             return result;
         }
 
-        public static List<MachineOperatingBlock> Backfill(List<MachineOperatingBlock> blocks, int? clampHour = null)
+        public static List<MachineOperatingBlock> Slice(this List<MachineOperatingBlock> list, DateTime dateTime)
         {
-            List<MachineOperatingBlock> results = new();
+            List<MachineOperatingBlock> result = new();
 
-            if (blocks == null || blocks.Count == 0)
+            for (int i = 0; i < list.Count; i++)
             {
-                return results;
-            }
+                MachineOperatingBlock block = list[i];
 
-            if (clampHour != null)
-            {
-                MachineOperatingBlock firstBlock = blocks.First();
-                DateTime firstBlockStarts = firstBlock.StateEntered;
-
-                if (firstBlockStarts.Hour != clampHour && firstBlockStarts.Minute != 0 && firstBlockStarts.Second != 0)
+                if (block.StateEntered > dateTime || block.StateLeft < dateTime)
                 {
-                    results.Add(new()
-                    {
-                        StateEntered = firstBlock.StateEntered.Date.AddHours((double)clampHour),
-                        StateLeft = firstBlock.StateEntered,
-                        State = "Unknown",
-                        MachineID = firstBlock.MachineID,
-                        MachineName = firstBlock.MachineName,
-                        SecondsElapsed = (firstBlock.StateEntered - firstBlock.StateEntered.Date.AddHours((double)clampHour)).TotalSeconds
-                    });
-                }
-            }
-            if (blocks.Count != 1)
-            {
-                for (int i = 0; i < blocks.Count - 1; i++)
-                {
-                    results.Add(blocks[i]);
-
-                    if (Math.Abs((blocks[i].StateLeft - blocks[i + 1].StateEntered).TotalSeconds) <= 1)
-                    {
-                        continue;
-                    }
-
-                    results.Add(new()
-                    {
-                        StateEntered = blocks[i].StateLeft,
-                        StateLeft = blocks[i + 1].StateEntered.AddSeconds(-1),
-                        State = "Unknown",
-                        MachineID = blocks[i].MachineID,
-                        MachineName = blocks[i].MachineName,
-                        SecondsElapsed = (blocks[i + 1].StateEntered - blocks[i].StateLeft.AddSeconds(1)).TotalSeconds,
-                    });
+                    result.Add(block);
+                    continue;
                 }
 
-                results.Add(blocks.Last());
-            }
-            else
-            {
-                results.Add(blocks.First());
+                MachineOperatingBlock firstBlock = (MachineOperatingBlock)block.Clone();
+                firstBlock.StateLeft = dateTime;
+                firstBlock.SecondsElapsed = (int)(firstBlock.StateLeft - firstBlock.StateEntered).TotalSeconds;
+
+                MachineOperatingBlock secondBlock = (MachineOperatingBlock)block.Clone();
+                secondBlock.StateEntered = dateTime;
+                secondBlock.SecondsElapsed = (int)(secondBlock.StateLeft - secondBlock.StateEntered).TotalSeconds;
+
+                result.Add(firstBlock);
+                result.Add(secondBlock);
             }
 
-            if (clampHour != null)
-            {
-                MachineOperatingBlock lastBlock = results.Last();
-                if (lastBlock.StateLeft.AddHours(1).Hour != clampHour && lastBlock.StateLeft.Minute != 59 && lastBlock.StateLeft.Second != 59)
-                {
-                    results.Add(new()
-                    {
-                        StateEntered = lastBlock.StateLeft.AddSeconds(1),
-                        StateLeft = lastBlock.StateLeft.Hour < clampHour ? lastBlock.StateLeft.Date.AddHours((double)clampHour).AddSeconds(-1) : lastBlock.StateLeft.Date.AddDays(1).AddHours((double)clampHour).AddSeconds(-1),
-                        State = "Unknown",
-                        MachineID = lastBlock.MachineID,
-                        MachineName = lastBlock.MachineName,
-                        SecondsElapsed = ((lastBlock.StateLeft.Hour < clampHour ? lastBlock.StateLeft.Date.AddHours((double)clampHour).AddSeconds(-1) : lastBlock.StateLeft.Date.AddDays(1).AddHours((double)clampHour).AddSeconds(-1)) - lastBlock.StateLeft.AddSeconds(1)).TotalSeconds
-                    });
-                }
-            }
-
-            return results;
+            return result;
         }
     }
 }
