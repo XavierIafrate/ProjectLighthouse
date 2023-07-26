@@ -103,6 +103,14 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
+        private bool platedPart;
+        public bool PlatedPart
+        {
+            get { return platedPart; }
+            set { platedPart = value; OnPropertyChanged(); }
+        }
+
+
         #endregion
 
         #region Validation
