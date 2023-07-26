@@ -1,5 +1,7 @@
-﻿using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +14,7 @@ namespace ProjectLighthouse.View.Scheduling
 {
     public partial class TimelineView : UserControl
     {
-
+        private List<BarStock> bars;
 
         public List<DateTime> Holidays
         {
@@ -20,11 +22,8 @@ namespace ProjectLighthouse.View.Scheduling
             set { SetValue(HolidaysProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Holidays.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HolidaysProperty =
             DependencyProperty.Register("Holidays", typeof(List<DateTime>), typeof(TimelineView), new PropertyMetadata(null, SetValues));
-
-
 
         public List<ScheduleItem> ActiveItems
         {
@@ -45,6 +44,7 @@ namespace ProjectLighthouse.View.Scheduling
         public TimelineView()
         {
             InitializeComponent();
+            bars = DatabaseHelper.Read<BarStock>();
         }
 
         private void Draw()
@@ -58,7 +58,7 @@ namespace ProjectLighthouse.View.Scheduling
             if (Holidays is null) return;
 
             DateTime minDate = DateTime.Today.AddDays(-3);
-            DateTime maxDate = ActiveItems.Max(x => x.EndsAt()).Date.AddDays(1);
+            DateTime maxDate = ActiveItems.Max(x => x.EndsAt()).Date.AddDays(2);
 
             int daysSpan = (int)(maxDate - minDate).TotalDays;
 
@@ -80,6 +80,10 @@ namespace ProjectLighthouse.View.Scheduling
                         continue;
                     }
 
+                    itemsToDraw.Add(item);
+                }
+                else if (item is MachineService)
+                {
                     itemsToDraw.Add(item);
                 }
             }
@@ -155,21 +159,66 @@ namespace ProjectLighthouse.View.Scheduling
         {
             string[] rows = items.Select(x => x.AllocatedMachine).Distinct().OrderBy(x => x).ToArray();
 
-            for (int i = 0; i < items.Count; i++)
-            {
-                ScheduleItem item = items[i];
 
-                if (item is LatheManufactureOrder order)
+            items = items.OrderBy(x => x.StartDate).ToList();
+
+            List<ScheduleItem> latheItems;
+
+            foreach (string row in rows)
+            {
+                BarStock bar = null;
+
+                latheItems = items.Where(x => x.AllocatedMachine == row).OrderBy(x => x.StartDate).ToList();
+
+                for (int i = 0; i < latheItems.Count; i++)
                 {
+                    ScheduleItem item = latheItems[i];
+
+                    if (item is MachineService service)
+                    {
+                        Border serviceMarker = new()
+                        {
+                            Margin = new(service.StartDate.Hour * 2, 2, 50 - (service.EndsAt().Hour * 2), 2),
+                            Background = (Brush)Application.Current.Resources["Orange"],
+                            CornerRadius = new(5),
+                            Opacity = 0.7,
+                            ToolTip="Maintenance"
+                        };
+
+                        AddToMainGrid(
+                            control: serviceMarker, 
+                            column: (int)(service.StartDate.Date - minDate.Date).TotalDays + 1, 
+                            row: Array.IndexOf(rows, row) + 1, 
+                            colSpan: (int)Math.Ceiling((service.EndsAt() - service.StartDate.Date).TotalDays), 
+                            rowSpan: 1);   
+
+                        continue;
+                    }
+
+                    if (item is not LatheManufactureOrder order)
+                    {
+                        continue;
+                    }
+                    if (i == 0)
+                    {
+                        bar = bars.Find(x => x.Id == order.BarID);
+                    }
+
+
+                    BarStock orderBar = bars.Find(x => x.Id == order.BarID);
+                    
+                    if (bar is null) return;
+                    if (orderBar is null) return;
+
                     DateTime startDate = order.StartDate;
                     DateTime endsAt = order.EndsAt();
                     int startColIndex = (int)(startDate.Date - minDate.Date).TotalDays;
                     int span = (int)Math.Ceiling((endsAt - startDate.Date).TotalDays);
-                    int startMargin = 26; 
+                    int startMargin = 14; 
                     int endMargin = 50 - (endsAt.Hour * 2);
                     bool startClipped = false;
 
-                    int row = Array.IndexOf(rows, order.AllocatedMachine) + 1;
+                    int iRow = Array.IndexOf(rows, row) + 1;
 
                     if (startColIndex < 0)
                     {
@@ -210,16 +259,27 @@ namespace ProjectLighthouse.View.Scheduling
                     TextBlock itemTitle = new()
                     {
                         Margin=new(28,0,4,0),
-                        Text = order.Name,
+                        Text = order.Name + " " + orderBar.Size.ToString("0") + (orderBar.IsHexagon? "H" :"R"),
                         FontSize=10, 
-                        VerticalAlignment= VerticalAlignment.Center,
-                        Foreground=Brushes.White
+                        Background=borderBrush,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Foreground=Brushes.White,
+                        HorizontalAlignment=HorizontalAlignment.Left
                     };
 
-                    AddToMainGrid(element, startColIndex, row, span);
-                    AddToMainGrid(itemTitle, startColIndex, row, span);
+                    if (bar.Size == orderBar.Size && bar.IsHexagon == orderBar.IsHexagon)
+                    {
+                        itemTitle.Text += "*";
+                    }
+
+                    AddToMainGrid(element, startColIndex, iRow, span);
+                    AddToMainGrid(itemTitle, startColIndex, iRow, span);
+
+                    bar = orderBar;
+                
                 }
             }
+
         }
 
         private void AddToMainGrid(UIElement control, int column, int row, int colSpan = 1, int rowSpan = 1)
