@@ -139,7 +139,7 @@
                     FontSize="16"
                     Foreground="Black"
                     Opacity="0.2"
-                    Text="No products found." />
+                    Text="No products found" />
             </StackPanel>
 
 
@@ -190,6 +190,7 @@
                         </TextBlock>
                     </StackPanel>
                     <StackPanel
+                        Orientation="Horizontal"
                         Grid.Row="1"
                         Grid.ColumnSpan="2"
                         Visibility="{Binding SelectedProductGroup, Converter={StaticResource NotNullToVisibility}}">
@@ -372,15 +373,15 @@
                     </Grid>
                 </Grid>
             </Border>
-            <TextBlock Style="{StaticResource section}" Text="Customer's Required Quantity" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Required Quantity" />
 
             <TextBox
                 x:Name="quantityTextBox"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="Quantity"
+                Tag="quantity"
                 Text="{Binding NewRequest.QuantityRequired, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                 TextChanged="TextBox_TextChanged" />
-            <TextBlock Style="{StaticResource section}" Text="Customer's Required Date" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Required Date" />
             <DatePicker
                 x:Name="requiredDatePicker"
                 Margin="5"
@@ -393,9 +394,11 @@
                 Background="{StaticResource Surface}"
                 CornerRadius="5">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="10">
                         <Path
-                            Margin="12,5,0,7"
+                            Height="15"
+                            Stretch="Uniform"
+                            Margin="0,0,5,0"
                             VerticalAlignment="Center"
                             Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
                             Fill="{StaticResource Blue}">
@@ -410,9 +413,8 @@
                             </Path.ToolTip>
                         </Path>
                         <TextBlock
-                            Margin="5,5,5,7"
                             VerticalAlignment="Center"
-                            FontSize="20"
+                            FontSize="18"
                             Foreground="{StaticResource OnSurface}"
                             Text="Our estimated lead times" />
                     </StackPanel>
