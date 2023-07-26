@@ -7,7 +7,6 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.Model.Scheduling;
-using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.View.Requests;
 using ProjectLighthouse.ViewModel.Commands.Requests;
 using ProjectLighthouse.ViewModel.Core;
@@ -89,8 +88,8 @@ namespace ProjectLighthouse.ViewModel.Requests
         public ProductGroup? SelectedProductGroup
         {
             get { return selectedProductGroup; }
-            set 
-            { 
+            set
+            {
                 selectedProductGroup = value;
                 OnPropertyChanged();
             }
@@ -112,10 +111,10 @@ namespace ProjectLighthouse.ViewModel.Requests
         public MaterialInfo? SelectedProductMaterial
         {
             get { return selectedProductMaterial; }
-            set 
-            { 
+            set
+            {
                 selectedProductMaterial = value;
-                OnPropertyChanged();    
+                OnPropertyChanged();
             }
         }
 
@@ -166,7 +165,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             ToNotify = DatabaseHelper.Read<User>().Where(x => x.HasPermission(PermissionType.ApproveRequest) && x.ReceivesNotifications).ToList();
 
-            NewRequest = new();
+            NewRequest = new() { DateRequired = DateTime.Today.AddDays(30) };
             SubmitRequestCommand = new(this);
             AddSpecialCommand = new(this);
             FilteredList = new();
@@ -218,10 +217,11 @@ namespace ProjectLighthouse.ViewModel.Requests
         {
             if (SelectedProduct == null)
             {
-                NewRequest = null;
-                SelectedMainProduct= null;
-                SelectedProductGroup= null;
+                NewRequest = new() { DateRequired = DateTime.Today.AddDays(30) };
+                SelectedMainProduct = null;
+                SelectedProductGroup = null;
                 RecommendedManifest = null;
+                SelectedProductMaterial = null;
                 OnPropertyChanged(nameof(RecommendedManifest));
                 return;
             }
@@ -229,7 +229,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             if (SelectedProduct.GroupId is not null)
             {
                 SelectedProductGroup = ProductGroups.Find(x => x.Id == SelectedProduct.GroupId);
-                if(SelectedProductGroup is not null)
+                if (SelectedProductGroup is not null)
                 {
                     SelectedMainProduct = Products.Find(x => x.Id == SelectedProductGroup.ProductId);
                 }
@@ -296,8 +296,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 FilteredList = TurnedProducts
                     .Where(x => x.FreeStock() < 0)
-                    .OrderBy(n => n.MaterialId)
-                    .ThenBy(n => n.ProductName)
+                    .OrderBy(n => n.ProductName)
                     .ToList();
 
                 NoSearchResults = false;
@@ -340,8 +339,8 @@ namespace ProjectLighthouse.ViewModel.Requests
             newRequest.Product = SelectedProduct.ProductName;
 
             ProductGroup? group = ProductGroups.Find(x => x.Id == SelectedProduct.GroupId);
-            Product product = group == null 
-                ? null 
+            Product product = group == null
+                ? null
                 : Products.Find(x => x.Id == group.ProductId);
 
             if (group is not null)
@@ -361,8 +360,8 @@ namespace ProjectLighthouse.ViewModel.Requests
                 }
             }
 
-            string toastImage = product == null 
-                ? null 
+            string toastImage = product == null
+                ? null
                 : $@"lib\renders\{product.ImageUrl}";
 
             int newRequestId = DatabaseHelper.Read<sqlite_sequence>().Find(x => x.name == nameof(Request))!.seq + 1;
