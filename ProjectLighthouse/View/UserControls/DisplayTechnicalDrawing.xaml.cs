@@ -65,6 +65,13 @@ namespace ProjectLighthouse.View.UserControls
             {
                 File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath);
             }
+
+            if (Drawing.PlatingStatement)
+            {
+                File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath, overwrite:true);
+                TechnicalDrawing.AddPlatingStatement(tmpPath);
+            }
+
             fileopener.StartInfo.Arguments = "\"" + tmpPath + "\"";
             _ = fileopener.Start();
         }
