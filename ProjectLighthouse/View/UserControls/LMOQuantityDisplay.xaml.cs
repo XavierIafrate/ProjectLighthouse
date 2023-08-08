@@ -6,14 +6,8 @@ using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for LMOQuantityDisplay.xaml
-    /// </summary>
     public partial class LMOQuantityDisplay : UserControl
     {
-
-
-
         public LatheManufactureOrderItem Item
         {
             get { return (LatheManufactureOrderItem)GetValue(ItemProperty); }
@@ -37,7 +31,7 @@ namespace ProjectLighthouse.View.UserControls
             control.delivered.Visibility = control.Item.QuantityMade > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             control.made.Visibility = control.Item.QuantityMade != control.Item.QuantityDelivered ? Visibility.Visible : Visibility.Collapsed;
-            control.made.Text = $"{control.Item.QuantityMade - control.Item.QuantityDelivered} / ";
+            control.made.Text = $"{control.Item.QuantityMade - control.Item.QuantityDelivered:#,##0} / ";
 
             double lWidth = (double)control.Item.RequiredQuantity / (double)control.Item.TargetQuantity;
             if (double.IsNaN(lWidth))
