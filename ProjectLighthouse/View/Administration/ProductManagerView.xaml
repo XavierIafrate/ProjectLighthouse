@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:usercontrols="clr-namespace:ProjectLighthouse.View.UserControls"
     d:Background="White"
@@ -207,6 +208,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Grid.Column="0">
                         <TextBlock
@@ -323,6 +325,7 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    <lvc2:CartesianChart EasingFunction="{x:Null}" Grid.Column="1" Grid.Row="2" Height="400" Series="{Binding CycleResponseSeries}" YAxes="{Binding YStartAtZero}" XAxes="{Binding XStartAtZero}"/>
                 </Grid>
                 <Grid Height="200" />
             </StackPanel>
