@@ -40,6 +40,14 @@ namespace ProjectLighthouse.ViewModel.Administration
         public ISeries[] ActiveOrders { get; set; }
         public ISeries[] ProductSeries { get; set; }
 
+        public Axis[] YAxisStartAtZero { get; set; } =
+        {
+            new Axis
+            {
+                MinLimit=0
+            }
+        };
+
         public int TotalPartsMade { get; set; }
         public int TotalPartsMadeThisYear { get; set; }
 
@@ -221,7 +229,10 @@ namespace ProjectLighthouse.ViewModel.Administration
                     Name = item.Key,
                     Values = new List<int> { item.Value },
                     InnerRadius = 50,
-                    TooltipLabelFormatter = (chartPoint) => $"{chartPoint.Context.Series.Name}: {chartPoint.PrimaryValue:#,##0}"
+                    TooltipLabelFormatter = (chartPoint) => $"{chartPoint.Context.Series.Name}: {chartPoint.PrimaryValue:#,##0}",
+                    DataLabelsFormatter = (chartPoint) => $"{chartPoint.Context.Series.Name}: {chartPoint.PrimaryValue:#,##0}",
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Outer,
+                    DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30))
                 });
             }
 
