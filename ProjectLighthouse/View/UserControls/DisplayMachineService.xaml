@@ -14,57 +14,50 @@
     </UserControl.Resources>
     <Grid>
         <Border
-            Background="{StaticResource Yellow}"
-            BorderBrush="{StaticResource OnYellow}"
+            Background="{StaticResource Background}"
+            BorderBrush="{StaticResource Orange}"
             BorderThickness="3"
-            CornerRadius="10" />
+            CornerRadius="5" />
         <Grid>
             <StackPanel Margin="25,15" Orientation="Horizontal">
                 <Path
-                    Width="30"
-                    Height="30"
+                    Width="25"
+                    Height="25"
                     Margin="0,0,10,0"
                     Data="M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z"
-                    Fill="{StaticResource OnYellow}"
+                    Fill="{StaticResource Orange}"
                     Stretch="Uniform" />
                 <StackPanel>
                     <TextBlock
-                        VerticalAlignment="Center"
-                        FontSize="25"
-                        FontWeight="Bold"
-                        Foreground="{StaticResource OnYellow}"
-                        Text="Maintenance" />
-                    <TextBlock
-                        Margin="0,3,0,0"
-                        VerticalAlignment="Center"
-                        FontSize="17"
-                        FontWeight="Bold"
-                        Foreground="{StaticResource OnYellow}"
-                        Text="{Binding StartDate, StringFormat='{}{0:dd/MM/yy} at {0:h:mm tt}', FallbackValue='01/01/1970 00:00 AM'}" />
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="{Binding Name, FallbackValue='Service_Name'}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,3,0,0"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="{Binding StartDate, StringFormat='{}{0:dd/MM/yy} at {0:h:mm tt}', FallbackValue='01/01/1970 00:00 AM'}" />
+                        <TextBlock
+                            Margin="0,3,0,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="{Binding TimeToComplete, StringFormat='{} for {0}h', FallbackValue=' for ?h', Converter='{StaticResource inttohours}'}" />
+                    </StackPanel>
                 </StackPanel>
-                <Button
-                    x:Name="Edit_Button"
-                    Click="Edit_Button_Click"
-                    Content="edit"
-                    Style="{StaticResource EditButton}" />
+
             </StackPanel>
-            <StackPanel
-                Grid.Column="1"
-                Margin="0,15,25,15"
+
+            <Button
+                x:Name="Edit_Button"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                TextElement.Foreground="{StaticResource OnYellow}">
-                <TextBlock
-                    HorizontalAlignment="Right"
-                    FontSize="20"
-                    FontStyle="Italic"
-                    FontWeight="SemiBold"
-                    Text="{Binding Name, FallbackValue='Service_Name'}" />
-                <TextBlock
-                    HorizontalAlignment="Right"
-                    FontSize="16"
-                    FontStyle="Italic"
-                    Text="{Binding TimeToComplete, StringFormat='{}estimated time: {0}h', FallbackValue='estimated time: 8h', Converter='{StaticResource inttohours}'}" />
-            </StackPanel>
+                Margin="10"
+                Click="Edit_Button_Click"
+                Content="edit"
+                Style="{StaticResource EditButton}" />
+
         </Grid>
     </Grid>
 </UserControl>
