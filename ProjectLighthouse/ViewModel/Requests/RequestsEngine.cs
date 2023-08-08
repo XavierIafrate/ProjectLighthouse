@@ -1,6 +1,8 @@
 ﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
+using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,12 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ?? throw new Exception("Requests Engine: Requirement not found in product list");
             
             recommendation.Add(new(requirement, request.QuantityRequired, request.DateRequired));
+
+            TimeModel timeModel = OrderResourceHelper.GetCycleResponse(
+                turnedProducts
+                    .Where(x => x.MaterialId == requirement.MaterialId && x.GroupId == requirement.GroupId)
+                    .ToList())
+                .Item1;
 
             turnedProducts = turnedProducts
                                 .Where(x => !x.Retired
@@ -39,14 +47,14 @@ namespace ProjectLighthouse.ViewModel.Requests
                 recommendation.Add(newItem);
             }
 
-            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendation, (TimeSpan)maxRuntime);
+            List<LatheManufactureOrderItem> filteredItems = CapQuantitiesForTimeSpan(recommendation, (TimeSpan)maxRuntime, timeModel);
 
             filteredItems = filteredItems.Take(numberOfItems).ToList();
 
             return filteredItems;
         }
 
-        public static List<LatheManufactureOrderItem> CapQuantitiesForTimeSpan(List<LatheManufactureOrderItem> items, TimeSpan maxRuntime)
+        public static List<LatheManufactureOrderItem> CapQuantitiesForTimeSpan(List<LatheManufactureOrderItem> items, TimeSpan maxRuntime, TimeModel timeModel)
         {
             List<LatheManufactureOrderItem> cleanedItems = new();
             int permittedSeconds = Convert.ToInt32(maxRuntime.TotalSeconds);
@@ -71,13 +79,13 @@ namespace ProjectLighthouse.ViewModel.Requests
 
                 int quantityNotRequired = item.TargetQuantity - item.RequiredQuantity;
 
-                int timeToMakeToTarget = quantityNotRequired * item.GetCycleTime();
+                int timeToMakeToTarget = quantityNotRequired * (item.PreviousCycleTime ?? timeModel.At(item.MajorLength));
 
                 if (availableTime < timeToMakeToTarget)
                 {
                     item.TargetQuantity = Math.Max(
                                                 item.RequiredQuantity,
-                                                RoundQuantity(item.RequiredQuantity + (int)Math.Floor((double)availableTime / item.GetCycleTime()))
+                                                RoundQuantity(item.RequiredQuantity + (int)Math.Floor((double)availableTime / (item.PreviousCycleTime ?? timeModel.At(item.MajorLength))))
                                                 );
                     cleanedItems.Add(item);
                     break;
