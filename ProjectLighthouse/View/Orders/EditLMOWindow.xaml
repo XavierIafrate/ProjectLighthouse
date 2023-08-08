@@ -77,7 +77,7 @@
                 Click="SaveButton_Click"
                 Style="{StaticResource HeroSaveButton}" />
         </Grid>
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer Grid.Row="1" ScrollChanged="ScrollViewer_ScrollChanged">
             <Grid>
                 <Grid.Resources>
                     <converter:boolToCollapsedOrVisible x:Key="boolToCollapsedOrVisible" />
@@ -491,6 +491,13 @@
                                     Content="Research and Development"
                                     IsChecked="{Binding Order.IsResearch}" />
 
+                                <CheckBox
+                                    x:Name="platingCheckBox"
+                                    HorizontalAlignment="Right"
+                                    Checked="platingCheckBox_Checked"
+                                    Content="Parts will be plated"
+                                    IsChecked="{Binding Order.PartsWillBePlated}"
+                                    Unchecked="platingCheckBox_Unchecked" />
                             </StackPanel>
                         </TabItem>
                         <TabItem Header="Drawings">
@@ -636,9 +643,9 @@
                         VerticalScrollBarVisibility="Auto">
                         <uc:DisplayListOfNotes
                             x:Name="NotesDisplay"
+                            DeleteCommand="{Binding DeleteNoteCmd}"
                             Notes="{Binding Notes}"
                             SaveEditCommand="{Binding SaveEditNoteCmd}"
-                            DeleteCommand="{Binding DeleteNoteCmd}"
                             ShowingEditControls="True" />
                     </ScrollViewer>
 
@@ -655,7 +662,8 @@
                             <TextBox
                                 x:Name="Message"
                                 KeyDown="Message_KeyDown"
-                                Style="{StaticResource MessageComposer}" />
+                                Style="{StaticResource MessageComposer}"
+                                TextWrapping="Wrap" />
                             <Button
                                 x:Name="SendButton"
                                 Grid.Column="1"
@@ -667,8 +675,36 @@
                     </Grid>
                 </Grid>
             </Grid>
-
         </ScrollViewer>
+        <Border
+            x:Name="gradTop"
+            Grid.Row="1"
+            Height="20"
+            VerticalAlignment="Top"
+            CornerRadius="10,10,0,0"
+            IsHitTestVisible="False">
+            <Border.Background>
+                <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Gray" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <Border
+            x:Name="gradBottom"
+            Grid.Row="1"
+            Height="20"
+            VerticalAlignment="Bottom"
+            CornerRadius="0,0,10,10"
+            IsHitTestVisible="False">
+            <Border.Background>
+                <LinearGradientBrush Opacity="0.08" StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Gray" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
     </Grid>
 
 

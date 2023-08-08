@@ -6,6 +6,7 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.ValueConverters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -137,6 +138,7 @@ namespace ProjectLighthouse.View.Orders
                 note.IsEdited = true;
                 note.DateEdited = DateTime.Now.ToString("s");
                 DatabaseHelper.Update(note, throwErrs: true);
+                SaveExit = true;
             }
             catch
             {
@@ -153,6 +155,7 @@ namespace ProjectLighthouse.View.Orders
             {
                 note.IsDeleted = true;
                 DatabaseHelper.Update(note, throwErrs: true);
+                SaveExit = true;
             }
             catch
             {
@@ -171,6 +174,7 @@ namespace ProjectLighthouse.View.Orders
             BarStockComboBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && !Order.BarIsVerified && canEdit;
             SpareBarsTextBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             researchCheckBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
+            platingCheckBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             AssignedComboBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             composeMessageControls.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
 
@@ -314,7 +318,7 @@ namespace ProjectLighthouse.View.Orders
 
             for (int i = 0; i < toUpdate.Count; i++)
             {
-                DatabaseHelper.Insert<Notification>(new(to: toUpdate[i], from: App.CurrentUser.UserName, header: $"Comment - {Order.Name}", body: "New comment left on this order", toastAction: $"viewManufactureOrder:{Order.Name}"));
+                DatabaseHelper.Insert<Notification>(new(to: toUpdate[i], from: App.CurrentUser.UserName, header: $"Comment - {Order.Name}", body: note[..Math.Min(note.Length, 150)], toastAction: $"viewManufactureOrder:{Order.Name}"));
             }
 
             DatabaseHelper.Insert(newNote);
@@ -335,6 +339,20 @@ namespace ProjectLighthouse.View.Orders
 
         private void Checkbox_Checked(object sender, RoutedEventArgs e)
         {
+            if (sender is not CheckBox checkBox) return;
+            if (checkBox.Name == "Complete_Checkbox" && (checkBox.IsChecked ?? false))
+            {
+                if (Items.Any(x => x.QuantityDelivered < x.RequiredQuantity))
+                {
+                    MessageBox.Show(
+                        "The customer requirement has not been delivered - please ensure we have enough to cover.", 
+                        "Warning", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Hand);
+                }
+            }
+
+
             SetCheckboxEnabling(CanEdit);
         }
 
@@ -425,15 +443,25 @@ namespace ProjectLighthouse.View.Orders
         {
             LatheManufactureOrderItem item = (LatheManufactureOrderItem)ItemsListBox.SelectedValue;
             MessageBoxResult userChoice = MessageBox.Show($"Are you sure you want to delete {item.ProductName} from {Order.Name}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (userChoice == MessageBoxResult.Yes)
+            
+            if (userChoice != MessageBoxResult.Yes)
             {
-                DatabaseHelper.Delete(item);
-                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
-                (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime();
-                SaveExit = true;
-                SaveOrder();
-                LoadData(Order.Name);
+                return;
             }
+
+            bool deleted = DatabaseHelper.Delete(item);
+
+            if (!deleted)
+            {
+                MessageBox.Show("Failed to delete record from database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
+            (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime();
+            SaveExit = true;
+            SaveOrder();
+            LoadData(Order.Name);
         }
 
         private void AddItemButton_Click(object sender, RoutedEventArgs e)
@@ -460,7 +488,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void CalculateTimeAndBar()
         {
-            (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime(Order.TargetCycleTime);
+            Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Items);
 
             double? partOff = null;
             if (!string.IsNullOrEmpty(Order.AllocatedMachine))
@@ -574,13 +602,26 @@ namespace ProjectLighthouse.View.Orders
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == (Order.IsResearch ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production)).ToList();
             List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, Items, Order.GroupId, Order.MaterialId);
 
-            int[] currentDrawingIds = DrawingReferences.Select(x => x.DrawingId).ToArray();
-            int[] upToDateDrawingIds = drawings.Select(x => x.Id).ToArray();
+            int[] currentDrawingIds = DrawingReferences.Select(x => x.DrawingId).OrderBy(x => x).ToArray();
+            int[] upToDateDrawingIds = drawings.Select(x => x.Id).OrderBy(x => x).ToArray();
 
-            if (currentDrawingIds.OrderBy(x => x) == upToDateDrawingIds.OrderBy(x => x))
+            if (currentDrawingIds.Length == upToDateDrawingIds.Length)
             {
-                MessageBox.Show("No drawing updates have been found.", "Up to date", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
+                bool diff = false;
+                for (int i = 0; i < currentDrawingIds.Length; i++)
+                {
+                    if (currentDrawingIds[i] != upToDateDrawingIds[i])
+                    {
+                        diff = true;
+                        break;
+                    }
+                }
+
+                if (!diff)
+                {
+                    MessageBox.Show("No drawing updates have been found.", "Up to date", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
             }
             else if (currentDrawingIds.Length == 0 && upToDateDrawingIds.Length == 0)
             {
@@ -642,6 +683,29 @@ namespace ProjectLighthouse.View.Orders
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (sender is not ScrollViewer scrollViewer) return;
+
+            gradTop.Visibility = scrollViewer.VerticalOffset == 0
+                ? Visibility.Hidden
+                : Visibility.Visible;
+
+            gradBottom.Visibility = scrollViewer.VerticalOffset + 1 > scrollViewer.ScrollableHeight
+                ? Visibility.Hidden
+                : Visibility.Visible;
+        }
+
+        private void platingCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Drawings.ForEach(x => x.PlatingStatement = true);
+        }
+
+        private void platingCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Drawings.ForEach(x => x.PlatingStatement = false);
         }
     }
 }
