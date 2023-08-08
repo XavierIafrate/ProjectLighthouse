@@ -87,6 +87,19 @@ namespace ProjectLighthouse.Model.Material
         public int MaterialId { get; set; }
 
         
+        public double? ExpectedCost
+        {
+            get 
+            { 
+                if( MaterialData is null ) return null;
+                if (MaterialData.Cost is null) return null;
+
+                return MaterialData.Cost * GetUnitMassOfBar();
+            }
+        }
+
+
+
         public double MajorDiameter
         {
             get { return IsHexagon ? AcrossFlatsToAcrossCorners(Size)  : Size; }
@@ -109,7 +122,7 @@ namespace ProjectLighthouse.Model.Material
             }
             else
             {
-                area = 3.14159 * Math.Pow(size_m / 2, 2);
+                area = Math.PI * Math.Pow(size_m / 2, 2);
             }
 
             double mass = area;

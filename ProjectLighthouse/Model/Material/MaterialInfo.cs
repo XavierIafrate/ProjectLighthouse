@@ -18,6 +18,7 @@ namespace ProjectLighthouse.Model.Material
         public string GradeText { get; set; }
 
         public double Density { get; set; }
+        public int? Cost { get; set; }
 
         public override string ToString()
         {

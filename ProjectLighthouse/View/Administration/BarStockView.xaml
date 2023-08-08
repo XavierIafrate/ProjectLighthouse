@@ -105,6 +105,7 @@
                     <Run d:Text="size 7mm" Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}size {0}mm'}" />
                 </TextBlock>
                 <TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Last Cost {0}', Converter={StaticResource priceConverter}}" />
+                <TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.ExpectedCost, StringFormat='{}Expected Cost {0}', Converter={StaticResource priceConverter}}" />
                 <TextBlock d:Text="TARGET_STOCK_TEXT" Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}Suggested Stock: {0} pcs'}" />
 
                 <StackPanel Margin="0,5" Orientation="Horizontal" Visibility="{Binding SelectedBarStock.IsHexagon, Converter={StaticResource boolToVisibleOrCollapsed}}">
