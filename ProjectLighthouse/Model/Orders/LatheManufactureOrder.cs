@@ -7,7 +7,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -21,7 +20,6 @@ namespace ProjectLighthouse.Model.Orders
         public string CreatedBy { get; set; }
         public DateTime ModifiedAt { get; set; }
         public string ModifiedBy { get; set; }
-
 
         public string Status { get; set; } // Legacy
         public OrderState State
@@ -104,6 +102,15 @@ namespace ProjectLighthouse.Model.Orders
         public bool GaugingReady { get; set; }
 
 
+        private bool partsWillBePlated;
+        [UpdateWatch]
+        public bool PartsWillBePlated
+        {
+            get { return partsWillBePlated; }
+            set { partsWillBePlated = value; OnPropertyChanged(); }
+        }
+
+
         [SQLite.Ignore]
         public bool BarIsAllocated
         {
@@ -134,6 +141,28 @@ namespace ProjectLighthouse.Model.Orders
 
         public DateTime CompletedAt { get; set; }
 
+        private DateTime scheduledEnd;
+        [UpdateWatch]
+        public DateTime ScheduledEnd
+        {
+            get
+            {
+                if (scheduledEnd == DateTime.MinValue)
+                {
+                    return EndsAt();
+                }
+                else
+                {
+                    return scheduledEnd;
+                }
+            }
+            set
+            {
+                scheduledEnd = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region Bar Configuration
         [UpdateWatch]
         public string BarID { get; set; }
@@ -152,8 +181,51 @@ namespace ProjectLighthouse.Model.Orders
         [UpdateWatch]
         public bool IsResearch { get; set; }
 
-        public int TargetCycleTime { get; set; }
-        public bool TargetCycleTimeEstimated { get; set; }
+        [UpdateWatch]
+        public string? TimeCodePlanned { get; set; }
+        public bool TimeCodeIsEstimate { get; set; }
+
+        [UpdateWatch]
+        public string? TimeCodeActual { get; set; }
+
+        [SQLite.Ignore]
+        public TimeModel? TimeModelPlanned
+        {
+            get
+            {
+                if (TimeCodePlanned is null) return null;
+                return new(TimeCodePlanned);
+            }
+            set
+            {
+                if (value is null)
+                {
+                    TimeCodePlanned = null;
+                    return;
+                }
+                TimeCodePlanned = value.ToString();
+            }
+        }
+
+        [SQLite.Ignore]
+        public TimeModel? TimeModelActual
+        {
+            get
+            {
+                if (TimeCodeActual is null) return null;
+                return new(TimeCodeActual);
+            }
+            set
+            {
+                if (value is null)
+                {
+                    TimeCodeActual = null;
+                    return;
+                }
+                TimeCodeActual = value.ToString();
+            }
+        }
+
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
@@ -313,22 +385,11 @@ namespace ProjectLighthouse.Model.Orders
                 throw new Exception("Items are unknown, cannot calculate time");
             }
 
-            int seconds = OrderItems.Sum(x => x.TargetQuantity) * TargetCycleTime;
+            int seconds = OrderResourceHelper.CalculateOrderRuntime(this, OrderItems);
 
             return StartDate.AddSeconds(seconds);
         }
 
-        public double CalculateWeightedCycleTime()
-        {
-            if (OrderItems.Count == 0)
-            {
-                throw new Exception("Items are unknown, cannot calculate time");
-            }
-
-            (int secondsForOrder, _, _) = OrderItems.CalculateOrderRuntime();
-
-            return secondsForOrder / OrderItems.Sum(x => x.TargetQuantity);
-        }
         #endregion
 
         public void UpdateStartDate(DateTime date, string machine)
@@ -347,6 +408,18 @@ namespace ProjectLighthouse.Model.Orders
         public void MarkAsNotClosed()
         {
             DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {false} WHERE Id={Id}");
+        }
+
+        public new DateTime EndsAt()
+        {
+            if (IsResearch)
+            {
+                return StartDate.AddSeconds(Math.Max(TimeToComplete, 86400 * 1.75));
+            }
+            else
+            {
+                return StartDate.AddSeconds(TimeToComplete);
+            }
         }
     }
 }

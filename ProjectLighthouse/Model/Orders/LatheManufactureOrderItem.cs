@@ -46,6 +46,8 @@ namespace ProjectLighthouse.Model.Orders
         public int QuantityReject { get; set; }
         public int QuantityDelivered { get; set; }
         public int CycleTime { get; set; }
+        public int? PreviousCycleTime { get; set; }
+        public int? ModelledCycleTime { get; set; }
 
         private double majorLength;
         public double MajorLength
@@ -119,7 +121,7 @@ namespace ProjectLighthouse.Model.Orders
         {
             ProductName = fromProduct.ProductName;
             ProductId = fromProduct.Id;
-            CycleTime = fromProduct.CycleTime;
+            PreviousCycleTime = fromProduct.CycleTime > 0 ? fromProduct.CycleTime : null;
             MajorDiameter = fromProduct.MajorDiameter;
             MajorLength = fromProduct.MajorLength;
             PartOffLength = fromProduct.PartOffLength;
@@ -163,19 +165,14 @@ namespace ProjectLighthouse.Model.Orders
             return ProductName;
         }
 
-        public int GetCycleTime()
+        public int PlannedCycleTime()
         {
-            if (CycleTime != 0)
-            {
-                return CycleTime;
-            }
-
-            return RequestsEngine.EstimateCycleTime(MajorDiameter);
+            return PreviousCycleTime ?? ModelledCycleTime ?? RequestsEngine.EstimateCycleTime(MajorDiameter);
         }
 
         public int GetTimeToMakeRequired()
         {
-            return GetCycleTime() * RequiredQuantity;
+            return (CycleTime == 0 ? PlannedCycleTime() : CycleTime) * RequiredQuantity;
         }
 
         public void ValidateAll()
