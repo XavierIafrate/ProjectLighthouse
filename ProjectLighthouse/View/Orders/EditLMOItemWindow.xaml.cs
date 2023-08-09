@@ -32,7 +32,14 @@ namespace ProjectLighthouse.View.Orders
             AllowDelivery = allowDelivery;
             CanEdit = canEdit;
 
-            LoadData(ItemId);
+            try
+            {
+                LoadData(ItemId);
+            }
+            catch
+            {
+                throw;
+            }
 
             DataContext = this;
 
@@ -49,6 +56,12 @@ namespace ProjectLighthouse.View.Orders
         {
             // TODO Refactor
             Item = DatabaseHelper.Read<LatheManufactureOrderItem>().Find(x => x.Id == id);
+
+            if (Item is null)
+            {
+                throw new Exception($"Cannot find order item with id {id}");
+            }
+
             Lots = DatabaseHelper.Read<Lot>().Where(x => x.ProductName == Item.ProductName && x.Order == Item.AssignedMO).ToList();
 
             Item.QuantityMade = Lots.Where(x => !x.IsReject).Sum(x => x.Quantity);
@@ -62,6 +75,8 @@ namespace ProjectLighthouse.View.Orders
             SchedulingGrid.Visibility = App.CurrentUser.Role >= UserRole.Scheduling && CanEdit
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+
+            PreviousCycleTimeTextBox.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && CanEdit;
 
             LotsListBox.ItemsSource = null;
             LotsListBox.ItemsSource = Lots.Where(l => l.ProductName == Item.ProductName).ToList();
@@ -124,13 +139,24 @@ namespace ProjectLighthouse.View.Orders
             }
             else
             {
-                product.CycleTime = cycleTime;
-                if(LotAdded) product.LastManufactured = DateTime.Now;
-                if (!DatabaseHelper.Update(product))
+                if (cycleTime > 0)
                 {
-                    MessageBox.Show("An error occurred while updating the product record", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    product.CycleTime = cycleTime;
                 }
 
+                if (LotAdded)
+                {
+                    product.LastManufactured = DateTime.Now;
+                }
+
+                try
+                {
+                    DatabaseHelper.Update(product, throwErrs: true);
+                }
+                catch (Exception ex)
+                {
+                    NotificationManager.NotifyHandledException(ex);
+                }
             }
 
             SaveExit = true;

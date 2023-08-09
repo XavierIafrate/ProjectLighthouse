@@ -5,6 +5,7 @@ using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Commands.Orders;
+using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using ProjectLighthouse.ViewModel.ValueConverters;
 using System;
@@ -448,7 +449,7 @@ namespace ProjectLighthouse.View.Orders
             {
                 return;
             }
-
+            
             bool deleted = DatabaseHelper.Delete(item);
 
             if (!deleted)
@@ -457,8 +458,7 @@ namespace ProjectLighthouse.View.Orders
                 return;
             }
 
-            Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
-            (Order.TimeToComplete, _, _) = Items.CalculateOrderRuntime();
+            CalculateTimeAndBar();
             SaveExit = true;
             SaveOrder();
             LoadData(Order.Name);
@@ -533,8 +533,18 @@ namespace ProjectLighthouse.View.Orders
         private void SaveObject()
         {
             if (_toEdit is not int) return;
+            EditLMOItemWindow editWindow;
 
-            EditLMOItemWindow editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch, Order.AllocatedMachine ?? "");
+            try
+            {
+                editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch, Order.AllocatedMachine ?? "");
+            }
+            catch(Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return;
+            }
+
             Hide();
             editWindow.ShowDialog();
 
@@ -564,7 +574,7 @@ namespace ProjectLighthouse.View.Orders
 
             public RelayCommand(Action<object> execute, Predicate<object> canExecute)
             {
-                _execute = execute ?? throw new ArgumentNullException("execute");
+                _execute = execute ?? throw new ArgumentNullException(nameof(execute));
                 _canExecute = canExecute;
             }
 
