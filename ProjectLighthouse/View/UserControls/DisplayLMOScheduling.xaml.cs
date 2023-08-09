@@ -1,18 +1,15 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.Scheduling;
-using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml.Linq;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -89,7 +86,9 @@ namespace ProjectLighthouse.View.UserControls
                         continue;
                     }
 
-                    int secondsToRequirement = (item.RequiredQuantity - item.QuantityDelivered) * item.GetCycleTime();
+                    int cycleTimeToUse = item.CycleTime == 0 ? item.PlannedCycleTime() : item.CycleTime;
+
+                    int secondsToRequirement = (item.RequiredQuantity - item.QuantityDelivered) * cycleTimeToUse;
                     int diff = (int)(item.DateRequired.Date - startDate.Date.AddSeconds(secondsBudgeted)).TotalSeconds;
 
                     if (item.DateRequired < DateTime.Today && item.RequiredQuantity > item.QuantityDelivered)
@@ -126,7 +125,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            SetDateWindow dateWindow = new(orderObject) { Owner = App.MainViewModel.MainWindow};
+            SetDateWindow dateWindow = new(orderObject) { Owner = App.MainViewModel.MainWindow };
             dateWindow.ShowDialog();
 
             if (dateWindow.SaveExit)
@@ -156,7 +155,7 @@ namespace ProjectLighthouse.View.UserControls
             double height = this.mainGrid.ActualHeight;
 
             CopyButton.Visibility = Visibility.Hidden;
-            
+
             RenderTargetBitmap bmpCopied = new((int)Math.Round(width), (int)Math.Round(height), 96, 96, PixelFormats.Default);
             DrawingVisual dv = new();
 
@@ -169,8 +168,14 @@ namespace ProjectLighthouse.View.UserControls
             }
 
             bmpCopied.Render(dv);
-            Clipboard.SetImage(bmpCopied);
-
+            try
+            {
+                Clipboard.SetImage(bmpCopied);
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+            }
             CopyButton.Visibility = Visibility.Visible;
         }
     }
