@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
-    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
     d:DesignWidth="989"
     Background="{StaticResource Background}"
     mc:Ignorable="d">
@@ -40,7 +40,7 @@
 
             <!--<TextBlock Text="Efficiency" Style="{StaticResource SectionLabel}"/>
             <userControls:DisplayOOE Height="250" Data="{Binding OOE}"/>-->
-            
+
             <StackPanel HorizontalAlignment="Center" Style="{StaticResource AnalyticsGroupContainer}">
                 <TextBlock
                     d:Text="1,000,000"
@@ -56,16 +56,32 @@
                 <TextBlock Style="{StaticResource analyticsKey}" Text=" THIS YEAR" />
             </StackPanel>
             <StackPanel>
-                <ComboBox ItemsSource="{Binding Path=YearsAvailable}" SelectedValue="{Binding SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Right"/>
-                <lvc2:CartesianChart Height="500" Series="{Binding Path=Series}" XAxes="{Binding Path=XAxes}"/>
+                <ComboBox
+                    Width="100"
+                    HorizontalAlignment="Right"
+                    ItemsSource="{Binding Path=YearsAvailable}"
+                    SelectedValue="{Binding SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <lvc2:CartesianChart
+                    Height="500"
+                    Series="{Binding Path=Series}"
+                    XAxes="{Binding Path=XAxes}" />
             </StackPanel>
-            <TextBlock Text="Average Turnaround Time" Style="{StaticResource SectionLabel}"/>
-            <lvc2:CartesianChart Height="500" Series="{Binding Path=TurnaroundTime}"  XAxes="{Binding Path=XAxes}" YAxes="{Binding YAxisStartAtZero}"/>
-            <TextBlock Text="Active Orders" Style="{StaticResource SectionLabel}"/>
-            <lvc2:CartesianChart Height="500" Series="{Binding Path=ActiveOrders}" LegendPosition="Top" XAxes="{Binding Path=XAxes}" YAxes="{Binding YAxisStartAtZero}"/>
-            <TextBlock Text="Products Delivered" Style="{StaticResource SectionLabel}"/>
-            <lvc2:PieChart Height="500" Series="{Binding Path=ProductSeries}"/>
-            
+            <TextBlock Style="{StaticResource SectionLabel}" Text="Average Turnaround Time" />
+            <lvc2:CartesianChart
+                Height="500"
+                Series="{Binding Path=TurnaroundTime}"
+                XAxes="{Binding Path=XAxes}"
+                YAxes="{Binding YAxisStartAtZero}" />
+            <TextBlock Style="{StaticResource SectionLabel}" Text="Active Orders" />
+            <lvc2:CartesianChart
+                Height="500"
+                LegendPosition="Top"
+                Series="{Binding Path=ActiveOrders}"
+                XAxes="{Binding Path=XAxes}"
+                YAxes="{Binding YAxisStartAtZero}" />
+            <TextBlock Style="{StaticResource SectionLabel}" Text="Products Delivered" />
+            <lvc2:PieChart Height="500" Series="{Binding Path=ProductSeries}" />
+
 
             <Grid Height="200" />
         </StackPanel>
