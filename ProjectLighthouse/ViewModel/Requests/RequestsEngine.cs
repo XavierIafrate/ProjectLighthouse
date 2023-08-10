@@ -24,8 +24,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             TimeModel timeModel = OrderResourceHelper.GetCycleResponse(
                 turnedProducts
                     .Where(x => x.MaterialId == requirement.MaterialId && x.GroupId == requirement.GroupId)
-                    .ToList())
-                .Item1;
+                    .ToList());
 
             turnedProducts = turnedProducts
                                 .Where(x => !x.Retired
