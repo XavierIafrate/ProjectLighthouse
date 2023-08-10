@@ -211,7 +211,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                     $"{(m == null ? "N/A" : m.MaterialCode)} {chartPoint.SecondaryValue}: {chartPoint.PrimaryValue}",
                 }).ToArray();
 
-                (TimeModel timeModel, double r2) = OrderResourceHelper.GetCycleResponse(withCycleTimesInMaterial);
+                TimeModel timeModel = OrderResourceHelper.GetCycleResponse(withCycleTimesInMaterial);
                 ObservableCollection<ObservablePoint> cyclePointsBF = new();
 
                 double minLength = FilteredTurnedProducts.Min(x => x.MajorLength);
