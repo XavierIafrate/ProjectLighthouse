@@ -53,15 +53,16 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Grid Grid.Row="2">
-                <Button Style="{StaticResource Action_New_Button}"
-                        Command="{Binding AddBarCmd}"
-                        HorizontalAlignment="Left"
-                        Tag="New Bar"/>
+                <Button
+                    HorizontalAlignment="Left"
+                    Command="{Binding AddBarCmd}"
+                    Style="{StaticResource Action_New_Button}"
+                    Tag="New Bar" />
                 <CheckBox
-                Grid.Row="2"
-                HorizontalAlignment="Right"
-                Content="Requisitions Only"
-                IsChecked="{Binding ShowRequisitionsOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Grid.Row="2"
+                    HorizontalAlignment="Right"
+                    Content="Requisitions Only"
+                    IsChecked="{Binding ShowRequisitionsOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </Grid>
         <TextBlock
@@ -70,7 +71,7 @@
             VerticalAlignment="Center"
             Style="{StaticResource GhostText}"
             Text="None found"
-            Visibility="{Binding SelectedBarStock, Converter={StaticResource NullToVisibility}}"/>
+            Visibility="{Binding SelectedBarStock, Converter={StaticResource NullToVisibility}}" />
         <ScrollViewer Grid.Column="1" Visibility="{Binding SelectedBarStock, Converter={StaticResource NotNullToVisibility}}">
             <StackPanel MaxWidth="700">
                 <Grid>
@@ -108,12 +109,22 @@
                 <TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.ExpectedCost, StringFormat='{}Expected Cost {0}', Converter={StaticResource priceConverter}}" />
                 <TextBlock d:Text="TARGET_STOCK_TEXT" Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}Suggested Stock: {0} pcs'}" />
 
-                <StackPanel Margin="0,5" Orientation="Horizontal" Visibility="{Binding SelectedBarStock.IsHexagon, Converter={StaticResource boolToVisibleOrCollapsed}}">
-                    <Path Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"
-                          Height="20" Width="20" Fill="{StaticResource Blue}" Stretch="Uniform"/>
-                    <TextBlock Text="Hexagon Bar" Margin="3,0,0,0" Foreground="{StaticResource Blue}"/>
+                <StackPanel
+                    Margin="0,5"
+                    Orientation="Horizontal"
+                    Visibility="{Binding SelectedBarStock.IsHexagon, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                    <Path
+                        Width="20"
+                        Height="20"
+                        Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"
+                        Fill="{StaticResource Blue}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        Margin="3,0,0,0"
+                        Foreground="{StaticResource Blue}"
+                        Text="Hexagon Bar" />
                 </StackPanel>
-                
+
                 <Grid Margin="0,20" HorizontalAlignment="Center">
                     <Grid.Resources>
                         <Style x:Key="FormulaNumber" TargetType="{x:Type TextBlock}">
@@ -215,33 +226,45 @@
 
                 </Grid>
 
-                <Border Visibility="{Binding SuggestedOrderText, Converter={StaticResource NotNullToVisibility}}" Background="{StaticResource PurpleFaded}" BorderBrush="{StaticResource Purple}" BorderThickness="3,0,0,0" CornerRadius="5">
-                    <TextBlock Text="{Binding SuggestedOrderText}" d:Text="SUGGESTED_ORDER_TEXT" Foreground="{StaticResource Purple}" FontSize="18" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center"/>
+                <Border
+                    Background="{StaticResource PurpleFaded}"
+                    BorderBrush="{StaticResource Purple}"
+                    BorderThickness="3,0,0,0"
+                    CornerRadius="5"
+                    Visibility="{Binding SuggestedOrderText, Converter={StaticResource NotNullToVisibility}}">
+                    <TextBlock
+                        Margin="5"
+                        HorizontalAlignment="Center"
+                        d:Text="SUGGESTED_ORDER_TEXT"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource Purple}"
+                        Text="{Binding SuggestedOrderText}" />
                 </Border>
 
-                <Grid Height="20"/>
+                <Grid Height="20" />
                 <Grid Visibility="{Binding DependentOrdersVis}">
                     <TextBlock
                         VerticalAlignment="Center"
                         Style="{StaticResource section}"
                         Text="{Binding SelectedBarStock.Orders.Count, StringFormat='{}Dependent Orders [{0}]'}" />
                     <Button
-                        Margin="0,5"
-                        IsEnabled="false"
-                        HorizontalAlignment="Right"
                         x:Name="NewIssueButton"
-                        Style="{StaticResource Action_New_Button}"
+                        Margin="0,5"
+                        HorizontalAlignment="Right"
                         Command="{Binding IssueBarCmd}"
+                        IsEnabled="false"
+                        Style="{StaticResource Action_New_Button}"
                         Tag="New Issue" />
                 </Grid>
                 <ListView
-                    d:ItemsSource="{d:SampleData ItemCount=5}"
                     x:Name="OrderListView"
-                    SelectionChanged="OrderListView_SelectionChanged"
                     Margin="5,5,5,50"
                     HorizontalContentAlignment="Stretch"
+                    d:ItemsSource="{d:SampleData ItemCount=5}"
                     ItemsSource="{Binding SelectedBarStock.Orders}"
                     SelectedValue="{Binding SelectedOrder}"
+                    SelectionChanged="OrderListView_SelectionChanged"
                     Visibility="{Binding DependentOrdersVis}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
