@@ -30,9 +30,25 @@ namespace ProjectLighthouse.View.UserControls
                 ? Visibility.Collapsed
                 : Visibility.Visible;
 
-            control.CycleTimeText.Text = control.Item.CycleTime == 0 
-                ? "unknown" 
-                : $"{Math.Floor((double)control.Item.CycleTime / 60):0}m {(control.Item.CycleTime%60):0}s";
+
+
+            if (control.Item.PreviousCycleTime is null)
+            {
+                control.historicalCycleTimeIndicator.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                control.historicalCycleTimeText.Text = $"{Math.Floor((double)control.Item.PreviousCycleTime! / 60):0}m {control.Item.PreviousCycleTime % 60}s";
+            }
+
+            if (control.Item.ModelledCycleTime is null)
+            {
+                control.modelledCycleTimeIndicator.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                control.modelledCycleTimeText.Text = $"{Math.Floor((double)control.Item.ModelledCycleTime! / 60):0}m {control.Item.ModelledCycleTime % 60}s";
+            }
 
             control.StockText.Text = $"{control.Item.QuantityInStock:#,##0} in stock";
         }
