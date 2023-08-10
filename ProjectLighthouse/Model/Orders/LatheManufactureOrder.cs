@@ -182,14 +182,14 @@ namespace ProjectLighthouse.Model.Orders
         public bool IsResearch { get; set; }
 
         [UpdateWatch]
-        public string? TimeCodePlanned { get; set; }
+        public string TimeCodePlanned { get; set; }
         public bool TimeCodeIsEstimate { get; set; }
 
         [UpdateWatch]
         public string? TimeCodeActual { get; set; }
 
         [SQLite.Ignore]
-        public TimeModel? TimeModelPlanned
+        public TimeModel TimeModelPlanned
         {
             get
             {
