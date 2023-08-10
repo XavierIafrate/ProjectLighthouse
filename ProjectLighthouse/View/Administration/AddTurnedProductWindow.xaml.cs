@@ -60,6 +60,9 @@ namespace ProjectLighthouse.View.Administration
                 }
                 AddButton.Visibility = Visibility.Visible;
                 UpdateButton.Visibility = Visibility.Collapsed;
+
+                CycleTimeLabel.Visibility = Visibility.Collapsed;
+                CycleTimeTextBox.Visibility = Visibility.Collapsed;
             }
 
 

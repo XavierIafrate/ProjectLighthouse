@@ -87,10 +87,10 @@
                 TextChanged="TextBox_TextChanged" />-->
             <ComboBox
                 IsEditable="True"
-                StaysOpenOnEdit="True"
                 ItemsSource="{Binding ProductGroups}"
                 SelectedValue="{Binding Product.GroupId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectedValuePath="Id">
+                SelectedValuePath="Id"
+                StaysOpenOnEdit="True">
                 <!--<ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="5,2" Orientation="Horizontal">
@@ -103,8 +103,18 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>-->
             </ComboBox>
-            <CheckBox Content="Plated Part" IsChecked="{Binding Product.PlatedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                      Margin="0,5"/>
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Cycle time (s)" x:Name="CycleTimeLabel" />
+            <TextBox
+                x:Name="CycleTimeTextBox"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="cycle time"
+                Text="{Binding Product.CycleTime}" />
+
+            <CheckBox
+                Margin="0,5"
+                Content="Plated Part"
+                IsChecked="{Binding Product.PlatedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <!--<TextBlock Text="{Binding Product.GroupId, TargetNullValue='No group assigned', StringFormat='{}Group ID: {0}', Mode=OneWay}" />-->
         </StackPanel>
@@ -113,9 +123,9 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource annotation}">
                     <Run Text="Created" />
-                    <Run Text="{Binding Product.AddedDate, Converter={StaticResource modifiedFormatter}, TargetNullValue='(unknown date)'}" d:Text="(unknown date)"/>
+                    <Run d:Text="(unknown date)" Text="{Binding Product.AddedDate, Converter={StaticResource modifiedFormatter}, TargetNullValue='(unknown date)'}" />
                     <Run Text="by" />
-                    <Run Text="{Binding Product.AddedBy, TargetNullValue='(unknown person)'}" d:Text="(unknown person)"/>
+                    <Run d:Text="(unknown person)" Text="{Binding Product.AddedBy, TargetNullValue='(unknown person)'}" />
                 </TextBlock>
             </StackPanel>
             <StackPanel HorizontalAlignment="Right">
