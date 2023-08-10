@@ -17,7 +17,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 if (item.CycleTime > 0)
                 {
-                    totalTime += item.CycleTime * item.TargetQuantity;
+                    totalTime += item.CycleTime * (item.TargetQuantity + item.QuantityReject); // factor in scrap time
                 }
                 else
                 {
@@ -25,10 +25,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
 
+            totalTime += (int)order.NumberOfBars * 30;
+
             return totalTime;
         }
 
-        public static (TimeModel, double) GetCycleResponse(List<LatheManufactureOrderItem> items)
+        public static TimeModel GetCycleResponse(List<LatheManufactureOrderItem> items)
         {
             List<(double, int)> values = new();
 
@@ -48,7 +50,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        public static (TimeModel, double) GetCycleResponse(List<TurnedProduct> products)
+        public static TimeModel GetCycleResponse(List<TurnedProduct> products)
         {
             List<(double, int)> values = new();
 
@@ -68,7 +70,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        private static (TimeModel, double) GetCycleResponse(List<(double, int)> items)
+        private static TimeModel GetCycleResponse(List<(double, int)> items)
         {
             int numPoints = items.Count;
 
@@ -92,7 +94,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             // no decrease
             if (a1 < 0 || double.IsNaN(a1))
             {
-                return (new TimeModel() { Intercept = meanY, Gradient = 0, Floor = min }, 0);
+                // TODO Handle capped gradient properly
+                return new TimeModel() { Intercept = meanY, Gradient = 0, Floor = min, RecordCount=0, CoefficientOfDetermination=0 };
             }
 
             double b1 = (meanY - a1 * meanX);
@@ -105,16 +108,16 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             foreach ((double, int) item in items)
             {
-                double bestFitVal = a1 * (item.Item1 - minLength) + b1;
+                double bestFitVal = a1 * item.Item1 + b1;
                 rss += Math.Pow((double)item.Item2 - bestFitVal, 2);
                 tss += Math.Pow((double)item.Item2 - meanY, 2);
             }
 
             r2 = 1 - (rss / tss);
 
-            TimeModel model = new() { Intercept = b1, Gradient = a1, Floor = min };
+            TimeModel model = new() { Intercept = b1, Gradient = a1, Floor = min, RecordCount = numPoints, CoefficientOfDetermination = r2 };
 
-            return (model, r2);
+            return model;
         }
     }
 }
