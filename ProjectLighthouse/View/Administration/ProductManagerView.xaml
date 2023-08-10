@@ -325,7 +325,14 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <lvc2:CartesianChart EasingFunction="{x:Null}" Grid.Column="1" Grid.Row="2" Height="400" Series="{Binding CycleResponseSeries}" YAxes="{Binding YStartAtZero}" XAxes="{Binding XStartAtZero}"/>
+                    <lvc2:CartesianChart
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Height="400"
+                        EasingFunction="{x:Null}"
+                        Series="{Binding CycleResponseSeries}"
+                        XAxes="{Binding XStartAtZero}"
+                        YAxes="{Binding YStartAtZero}" />
                 </Grid>
                 <Grid Height="200" />
             </StackPanel>
