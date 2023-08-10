@@ -40,8 +40,9 @@
             Style="{StaticResource DefaultTextBox}"
             Tag="major diameter"
             Text="{Binding Group.MajorDiameter, Mode=TwoWay, ValidatesOnDataErrors=True}" />
-        <CheckBox Content="Use Hexagon Bar"
-                  Margin="7,5"
+        <CheckBox
+            Margin="7,5"
+            Content="Use Hexagon Bar"
             IsChecked="{Binding Group.UsesHexagonBar, Mode=TwoWay}" />
 
         <TextBlock Style="{StaticResource InputLabel}" Text="Minimum Bar Size (mm)" />
@@ -50,10 +51,14 @@
             Tag="min bar size"
             Text="{Binding Group.MinBarSize, Mode=TwoWay, ValidatesOnDataErrors=True}" />
 
+        <TextBlock Style="{StaticResource InputLabel}" Text="Default Time Code (M C F N R X)" />
+        <TextBox
+            Style="{StaticResource DefaultTextBox}"
+            Tag="default time code"
+            Text="{Binding Group.DefaultTimeCode, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+
         <TextBlock Style="{StaticResource InputLabel}" Text="Status" />
-        <ComboBox
-            ItemsSource="{Binding Statuses}"
-            SelectedValue="{Binding Group.Status}" />
+        <ComboBox ItemsSource="{Binding Statuses}" SelectedValue="{Binding Group.Status}" />
 
         <Grid Height="10" />
         <Button
