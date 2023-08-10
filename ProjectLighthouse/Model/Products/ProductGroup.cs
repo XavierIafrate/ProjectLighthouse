@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
@@ -55,6 +56,21 @@ namespace ProjectLighthouse.Model.Products
                 OnPropertyChanged(); 
             }
         }
+
+        private string? defaultTimeCode;
+
+        public string? DefaultTimeCode
+        {
+            get { return defaultTimeCode; }
+            set 
+            { 
+                defaultTimeCode = value; 
+                ValidateProperty();
+                OnPropertyChanged(); 
+            }
+        }
+
+
 
 
         private GroupStatus status;
@@ -113,6 +129,7 @@ namespace ProjectLighthouse.Model.Products
 
             ValidateProperty(nameof(Name));
             ValidateProperty(nameof(MajorDiameter));
+            ValidateProperty(nameof(DefaultTimeCode));
         }
 
         public void ValidateProperty([CallerMemberName] string propertyName = "")
@@ -146,6 +163,23 @@ namespace ProjectLighthouse.Model.Products
                 {
                     AddError(nameof(MajorDiameter), "Major Diameter must be greater than zero");
                     return;
+                }
+
+                return;
+            }
+            else if (propertyName == nameof(DefaultTimeCode))
+            {
+                ClearErrors(propertyName);
+
+                if (string.IsNullOrEmpty(DefaultTimeCode)) return;
+
+                try
+                {
+                    TimeModel _ = new(DefaultTimeCode);
+                }
+                catch
+                {
+                    AddError(nameof(DefaultTimeCode), "Time Code could not be parsed");
                 }
 
                 return;
