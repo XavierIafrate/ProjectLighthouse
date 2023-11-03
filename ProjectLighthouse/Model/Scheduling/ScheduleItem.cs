@@ -8,8 +8,15 @@ namespace ProjectLighthouse.Model.Scheduling
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public string Name { get; set; }
+
+        private int timeToComplete;
         [UpdateWatch]
-        public int TimeToComplete { get; set; }
+        public int TimeToComplete
+        {
+            get { return timeToComplete; }
+            set { timeToComplete = value; OnPropertyChanged(); }
+        }
+
         public DateTime StartDate { get; set; }
         public string AllocatedMachine { get; set; }
         [Ignore]
