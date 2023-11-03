@@ -1,4 +1,10 @@
-﻿using System;
+﻿using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using ProjectLighthouse.ViewModel.Requests;
+using SkiaSharp;
+using System;
+using System.Collections.ObjectModel;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
@@ -8,7 +14,12 @@ namespace ProjectLighthouse.Model.Scheduling
         public double Gradient
         {
             get { return gradient; }
-            set { if (gradient == value) return; gradient = value; OnPropertyChanged(); }
+            set
+            {
+                if (gradient == value) return;
+                gradient = value;
+                OnPropertyChanged();
+            }
         }
 
         private double intercept;
@@ -58,7 +69,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 Floor = int.Parse(targetText);
 
                 targetText = code[(code.IndexOf("N") + 1)..code.IndexOf("R")];
-                RecordCount= int.Parse(targetText);
+                RecordCount = int.Parse(targetText);
 
                 targetText = code[(code.IndexOf("R") + 1)..code.IndexOf("X")];
                 CoefficientOfDetermination = double.Parse(targetText);
@@ -67,6 +78,19 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 throw new Exception("Failed to parse code");
             }
+        }
+
+        public static TimeModel Default(double diameter, double gradient = 0.5)
+        {
+            int estimatedByDiameter = RequestsEngine.EstimateCycleTime(diameter);
+            return new TimeModel()
+            {
+                Gradient = gradient,
+                Intercept = estimatedByDiameter - 20,
+                Floor = estimatedByDiameter,
+                CoefficientOfDetermination = 0,
+                RecordCount = 0
+            };
         }
 
         public override string ToString()
@@ -83,6 +107,37 @@ namespace ProjectLighthouse.Model.Scheduling
         public int At(double length)
         {
             return Math.Max(Floor, Convert.ToInt32(Gradient * length + Intercept));
+        }
+
+        public static LineSeries<ObservablePoint> GetSeries(TimeModel model, double toLength, string seriesName)
+        {
+            ObservableCollection<ObservablePoint> cyclePointsBF = new();
+
+            if (model.Floor <= model.Intercept)
+            {
+                cyclePointsBF.Add(new(0, model.Intercept));
+            }
+            else
+            {
+                cyclePointsBF.Add(new(0, model.Floor));
+                cyclePointsBF.Add(new((model.Floor - model.Intercept) / model.Gradient, model.Floor));
+            }
+            double gradMaxY = model.Gradient * toLength + model.Intercept;
+
+            if (gradMaxY >= model.Floor)
+            {
+                cyclePointsBF.Add(new(toLength, gradMaxY));
+            }
+
+            return new LineSeries<ObservablePoint>
+            {
+                Values = cyclePointsBF,
+                Name = seriesName,
+                Fill = null,
+                LineSmoothness = 0,
+                GeometrySize = 0,
+                Stroke = new SolidColorPaint(SKColors.DarkBlue),
+            };
         }
     }
 }
