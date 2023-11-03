@@ -64,6 +64,18 @@ namespace ProjectLighthouse.View.UserControls
                     ? "?"
                     : $"{Math.Floor((double)control.LatheManufactureOrderItem.CycleTime / 60):0}m {control.LatheManufactureOrderItem.CycleTime % 60}s";
 
+                if (control.cycleTimeIndicator.Visibility == Visibility.Visible && control.LatheManufactureOrderItem.CycleTime == 0)
+                {
+                    control.cycleTimeIndicator.Background = (Brush)Application.Current.Resources["RedFaded"];
+                    control.cycleTimeIndicatorIcon.Fill = (Brush)Application.Current.Resources["Red"];
+                    control.CycleTimeText.Foreground = (Brush)Application.Current.Resources["Red"];
+                }
+                else
+                {
+                    control.cycleTimeIndicator.Background = (Brush)Application.Current.Resources["TealFaded"];
+                    control.cycleTimeIndicatorIcon.Fill = (Brush)Application.Current.Resources["Teal"];
+                    control.CycleTimeText.Foreground = (Brush)Application.Current.Resources["Teal"];
+                }
 
                 if (control.LatheManufactureOrderItem.PreviousCycleTime is null)
                 {
