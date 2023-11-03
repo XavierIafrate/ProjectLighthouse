@@ -1,6 +1,8 @@
 ﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Requests;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using ProjectLighthouse.ViewModel.Requests;
 using SQLite;
@@ -281,6 +283,16 @@ namespace ProjectLighthouse.Model.Products
         public string SpecificationDetails { get; set; }
 
         public bool Retired { get; set; }
+
+        private Cost itemCost;
+        [Ignore]
+        public Cost ItemCost
+        {
+            get { return itemCost; }
+            set { itemCost = value; OnPropertyChanged(); }
+        }
+
+
         #endregion
 
 
@@ -300,7 +312,7 @@ namespace ProjectLighthouse.Model.Products
         {
             int toMake = (int)Math.Max(QuantitySold - QuantityInStock + QuantityOnSO - QuantityOnPO, 0);
 
-            return RequestsEngine.RoundQuantity(toMake, roundUp:true);
+            return RequestsEngine.RoundQuantity(toMake, roundUp: true);
         }
 
         public TimeSpan GetTimeToMake(int quantity)
@@ -359,5 +371,67 @@ namespace ProjectLighthouse.Model.Products
         public int LighthouseGuaranteedQuantity { get; set; }
         #endregion
 
+        public class Cost : BaseObject
+        {
+            public MaterialInfo Material;
+            public BarStock BarStock;
+            public TimeModel TimeModel;
+            public double Length;
+            public double MaterialBudget;
+
+            private double timeCost;
+            public double TimeCost
+            {
+                get { return timeCost; }
+                set { timeCost = value; OnPropertyChanged(); }
+            }
+
+            private double materialCost;
+            public double MaterialCost
+            {
+                get { return materialCost; }
+                set { materialCost = value; OnPropertyChanged(); }
+            }
+
+            private bool estimated;
+            public bool Estimated
+            {
+                get { return estimated; }
+                set { estimated = value; OnPropertyChanged(); }
+            }
+
+            private double totalCost;
+
+            public double TotalCost
+            {
+                get { return totalCost; }
+                set { totalCost = value; OnPropertyChanged(); }
+            }
+
+
+
+            public Cost(MaterialInfo materialInfo, BarStock bar, TimeModel model, double length, double materialBudget)
+            {
+                this.Material = materialInfo;
+                this.BarStock = bar;
+                this.TimeModel = model;
+                this.Length = length;
+                this.MaterialBudget = materialBudget;
+
+                CalculateCost();
+            }
+
+            private void CalculateCost()
+            {
+                if (this.Material is null) return;
+                BarStock.MaterialData = this.Material;
+                MaterialCost = BarStock.GetUnitMassOfBar() / BarStock.Length * this.MaterialBudget;
+
+                //TODO constants
+                TimeCost = 0.00505 * TimeModel.At(Length);
+
+                TotalCost = TimeCost + MaterialCost;
+            }
+        }
     }
 }
