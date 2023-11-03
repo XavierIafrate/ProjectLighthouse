@@ -47,7 +47,14 @@ namespace ProjectLighthouse.Model.Orders
         public int QuantityDelivered { get; set; }
         public int CycleTime { get; set; }
         public int? PreviousCycleTime { get; set; }
-        public int? ModelledCycleTime { get; set; }
+
+        private int? modelledCycleTime;
+        public int? ModelledCycleTime
+        {
+            get { return modelledCycleTime; }
+            set { modelledCycleTime = value; OnPropertyChanged(); }
+        }
+
 
         private double majorLength;
         public double MajorLength

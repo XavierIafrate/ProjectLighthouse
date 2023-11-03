@@ -927,10 +927,17 @@
                                                 Height="300"
                                                 Margin="0"
                                                 AnimationsSpeed="0"
+                                                Sections="{Binding Sections}"
                                                 Series="{Binding CycleTimeSeries}"
                                                 XAxes="{Binding CycleTimeXAxes}"
                                                 YAxes="{Binding CycleTimeYAxes}" />
                                         </Border>
+                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned}" />
+                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.Gradient, StringFormat='{}Time Response: {0:0.00}mm/s'}" />
+                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.Intercept, StringFormat='{}Intercept of gradient: {0}s'}" />
+                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.Floor, StringFormat='{}Floor {0}s'}" />
+                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.RecordCount, StringFormat='{}Based on N records: {0}'}" />
+                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.CoefficientOfDetermination, StringFormat='{}Confidence {0:P1}'}" />
                                     </StackPanel>
                                 </TabItem>
                                 <TabItem

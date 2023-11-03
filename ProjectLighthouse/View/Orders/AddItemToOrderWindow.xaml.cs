@@ -1,6 +1,6 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using ProjectLighthouse.ViewModel.Requests;
 using System;
@@ -20,7 +20,6 @@ namespace ProjectLighthouse.View.Orders
         public event PropertyChangedEventHandler PropertyChanged;
 
         private List<LatheManufactureOrderItem> possibleItems;
-        int parentOrderId;
         string parentOrderName;
         public bool ItemsWereAdded { get; set; }
 
@@ -37,7 +36,6 @@ namespace ProjectLighthouse.View.Orders
         public AddItemToOrderWindow(int OrderId)
         {
             InitializeComponent();
-            parentOrderId = OrderId;
             LoadData(OrderId);
             DataContext = this;
 
@@ -45,34 +43,39 @@ namespace ProjectLighthouse.View.Orders
 
         void LoadData(int orderId)
         {
-            LatheManufactureOrder order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Id == orderId);
-            if (order is null)
-            {
-                throw new System.Exception($"Order with ID '{orderId}' not found.");
-            }
-
+            LatheManufactureOrder order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Id == orderId) 
+                ?? throw new Exception($"Order with ID '{orderId}' not found.");
             parentOrderName = order.Name;
 
+            TimeModel timeModel = order.TimeModelPlanned;
+
             List<LatheManufactureOrderItem> currentOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(x => x.AssignedMO == order.Name).ToList();
-            
+
             PossibleProducts = DatabaseHelper.Read<TurnedProduct>()
-                .Where(x => 
-                    x.MaterialId == order.MaterialId && 
-                    x.GroupId == order.GroupId && 
+                .Where(x =>
+                    x.MaterialId == order.MaterialId &&
+                    x.GroupId == order.GroupId &&
                     !currentOrderItems.Any(y => y.ProductName == x.ProductName)
                 ).ToList();
 
             List<LatheManufactureOrderItem> items = new();
             for (int i = 0; i < PossibleProducts.Count; i++)
             {
-                items.Add(new(PossibleProducts[i]) 
-                { 
+                LatheManufactureOrderItem newItem = new(PossibleProducts[i])
+                {
                     TargetQuantity = Math.Max(
-                        PossibleProducts[i].GetRecommendedQuantity(), 
+                        PossibleProducts[i].GetRecommendedQuantity(),
                         RequestsEngine.GetMiniumumOrderQuantity(PossibleProducts[i])
                         )
-                });
-        }
+                };
+
+                if (newItem.PreviousCycleTime is null)
+                {
+                    newItem.ModelledCycleTime = timeModel.At(newItem.MajorLength);
+                }
+
+                items.Add(newItem);
+            }
 
             PossibleItems = new(items);
         }

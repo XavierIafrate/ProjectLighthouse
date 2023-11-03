@@ -1,19 +1,27 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
-using ProjectLighthouse.ViewModel.ValueConverters;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,7 +50,14 @@ namespace ProjectLighthouse.View.Orders
 
         public List<LatheManufactureOrderItem> Items { get; set; }
         public List<Lot> Lots;
-        public bool SaveExit { get; set; }
+
+        private bool saveExit;
+        public bool SaveExit
+        {
+            get { return saveExit; }
+            set { saveExit = value; OnPropertyChanged(); }
+        }
+
         public List<Note> Notes { get; set; }
         public List<TechnicalDrawing> Drawings { get; set; }
         private List<Lathe> Lathes;
@@ -59,6 +74,41 @@ namespace ProjectLighthouse.View.Orders
 
         public OrderSaveEditNoteCommand SaveEditNoteCmd { get; set; }
         public OrderDeleteNoteCommand DeleteNoteCmd { get; set; }
+
+        private TimeModel? tmpTimeModel;
+
+        public TimeModel? TmpTimeModel
+        {
+            get { return tmpTimeModel; }
+            set { tmpTimeModel = value; }
+        }
+
+
+        public ISeries[] TimeModelSeries { get; set; }
+        public Axis[] YAxes { get; set; } =
+        {
+            new Axis
+            {
+                MinLimit = 0,
+                Name="Time",
+                NameTextSize=14,
+                TextSize=12
+            }
+        };
+
+        public RectangularSection[] Sections { get; set; }
+
+        public Axis[] XAxes { get; set; } =
+        {
+            new Axis
+            {
+                MinLimit = 0,
+                Name="Major Length",
+                NameTextSize=14,
+                TextSize=12
+            }
+        };
+
         #endregion
 
         public EditLMOWindow(string id, bool canEdit)
@@ -84,6 +134,11 @@ namespace ProjectLighthouse.View.Orders
             Lathes = DatabaseHelper.Read<Lathe>();
 
             if (Order is null) throw new Exception($"Cannot find order {id}");
+
+            if (!string.IsNullOrEmpty(Order.TimeCodePlanned))
+            {
+                TmpTimeModel = new(Order.TimeCodePlanned);
+            }
 
             if (BarStock is null)
             {
@@ -130,6 +185,105 @@ namespace ProjectLighthouse.View.Orders
             }
 
             OnPropertyChanged(nameof(Drawings));
+
+            Task.Run(() => ChartTimeModel());
+        }
+
+        private void ChartTimeModel()
+        {
+            if (TmpTimeModel is null) return;
+
+            TimeModelSeries = null;
+            OnPropertyChanged(nameof(TimeModelSeries));
+
+            Sections = null;
+            OnPropertyChanged(nameof(Sections));
+
+            ISeries[] series = Array.Empty<ISeries>();
+            List<RectangularSection> sections = new();
+
+            ObservableCollection<ObservablePoint> historicalPoints = new();
+            ObservableCollection<ObservablePoint> modelledPoints = new();
+            ObservableCollection<ObservablePoint> newReadings = new();
+
+            double maxLength = Items.Max(x => x.MajorLength)*1.1;
+
+
+            Items.ForEach(x =>
+            {
+                if (x.CycleTime > 0)
+                {
+                    newReadings.Add(new(x.MajorLength, x.CycleTime));
+                }
+
+                if (x.PreviousCycleTime is not null)
+                {
+                    historicalPoints.Add(new(x.MajorLength, x.PreviousCycleTime));
+
+                    if (x.CycleTime > 0 && x.CycleTime != x.PreviousCycleTime)
+                    {
+                        sections.Add(new RectangularSection
+                        {
+                            Yi = x.PreviousCycleTime,
+                            Yj = x.CycleTime,
+                            Xi = x.MajorLength,
+                            Xj = x.MajorLength,
+                            Stroke = new SolidColorPaint
+                            {
+                                Color =x.CycleTime > x.PreviousCycleTime ? SKColors.DarkRed.WithAlpha(50) : SKColors.DarkGreen.WithAlpha(50),
+                                StrokeThickness = 3
+                            }
+                        });
+                    }
+                }
+                else if (x.ModelledCycleTime is not null)
+                {
+                    modelledPoints.Add(new(x.MajorLength, x.ModelledCycleTime));
+                }
+            });
+
+            LineSeries<ObservablePoint> modelSeries = TimeModel.GetSeries(TmpTimeModel, maxLength, "Model");
+            modelSeries.Stroke = new SolidColorPaint(SKColors.Gray);
+            series = series.Append(modelSeries).ToArray();
+
+            if (newReadings.Count > 0)
+            {
+                series = series.Append(new ScatterSeries<ObservablePoint>
+                {
+                    Values = newReadings,
+                    Name = "New Readings",
+                    GeometrySize = 8,
+                    Fill = new SolidColorPaint(SKColors.DarkRed)
+                }).ToArray();
+            }
+
+            if (modelledPoints.Count > 0)
+            {
+                series = series.Append(new ScatterSeries<ObservablePoint>
+                {
+                    Values = modelledPoints,
+                    Name = "Modelled",
+                    GeometrySize = 8,
+                    Fill = new SolidColorPaint(SKColors.MediumPurple)
+                }).ToArray();
+            }
+
+            if (historicalPoints.Count > 0)
+            {
+                series = series.Append(new ScatterSeries<ObservablePoint>
+                {
+                    Values = historicalPoints,
+                    GeometrySize = 8,
+                    Name = "Historical",
+                    Fill = new SolidColorPaint(SKColors.Black)
+                }).ToArray();
+            }
+
+            Sections = sections.ToArray();
+            OnPropertyChanged(nameof(Sections));
+
+            TimeModelSeries = series;
+            OnPropertyChanged(nameof(TimeModelSeries));
         }
 
         public void SaveNoteEdit(Note note)
@@ -185,6 +339,8 @@ namespace ProjectLighthouse.View.Orders
             SaveButton.IsEnabled = canEdit;
 
             SetCheckboxEnabling(canEdit);
+
+            TimeTab.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit && TmpTimeModel is not null;
 
             if (canEdit)
             {
@@ -256,7 +412,6 @@ namespace ProjectLighthouse.View.Orders
             GaugesOrdered_Checkbox.IsEnabled = tier1;
             BaseProgram_Checkbox.IsEnabled = tier1;
             BarVerified_Checkbox.IsEnabled = tier1;
-
 
             ToolingArrived_Checkbox.IsEnabled = tier2;
             BarToolingArrived_Checkbox.IsEnabled = tier2;
@@ -346,13 +501,12 @@ namespace ProjectLighthouse.View.Orders
                 if (Items.Any(x => x.QuantityDelivered < x.RequiredQuantity))
                 {
                     MessageBox.Show(
-                        "The customer requirement has not been delivered - please ensure we have enough to cover.", 
-                        "Warning", 
-                        MessageBoxButton.OK, 
+                        "The customer requirement has not been delivered - please ensure we have enough to cover.",
+                        "Warning",
+                        MessageBoxButton.OK,
                         MessageBoxImage.Hand);
                 }
             }
-
 
             SetCheckboxEnabling(CanEdit);
         }
@@ -362,6 +516,15 @@ namespace ProjectLighthouse.View.Orders
             if (!CanEdit)
             {
                 return;
+            }
+
+            if (TmpTimeModel is not null)
+            {
+                if (Order.TimeCodePlanned != TmpTimeModel.ToString())
+                {
+                    // reset if not saved
+                    //Order.TimeModelPlanned = new(originalTimeCode);
+                }
             }
 
             CalculateTimeAndBar();
@@ -444,12 +607,12 @@ namespace ProjectLighthouse.View.Orders
         {
             LatheManufactureOrderItem item = (LatheManufactureOrderItem)ItemsListBox.SelectedValue;
             MessageBoxResult userChoice = MessageBox.Show($"Are you sure you want to delete {item.ProductName} from {Order.Name}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            
+
             if (userChoice != MessageBoxResult.Yes)
             {
                 return;
             }
-            
+
             bool deleted = DatabaseHelper.Delete(item);
 
             if (!deleted)
@@ -539,7 +702,7 @@ namespace ProjectLighthouse.View.Orders
             {
                 editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch, Order.AllocatedMachine ?? "");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 NotificationManager.NotifyHandledException(ex);
                 return;
@@ -716,6 +879,42 @@ namespace ProjectLighthouse.View.Orders
         private void platingCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             Drawings.ForEach(x => x.PlatingStatement = false);
+        }
+
+        private void TimeModel_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ChartTimeModel();
+        }
+
+        private void CancelModelChanges_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Order.TimeCodePlanned))
+            {
+                TmpTimeModel = new(Order.TimeCodePlanned);
+                ChartTimeModel();
+            }
+        }
+
+        private void UpdateModelChanges_Click(object sender, RoutedEventArgs e)
+        {
+            if (TmpTimeModel is null) return;
+            Order.TimeModelPlanned = TmpTimeModel;
+            foreach (LatheManufactureOrderItem item in Items)
+            {
+                if (item.ModelledCycleTime is null)
+                {
+                    continue;
+                }
+
+                item.ModelledCycleTime = Order.TimeModelPlanned.At(item.MajorLength);
+                DatabaseHelper.Update(item);
+            }
+            Items = new(Items);
+            OnPropertyChanged(nameof(Items));
+
+            CalculateTimeAndBar();
+
+            ChartTimeModel();
         }
     }
 }

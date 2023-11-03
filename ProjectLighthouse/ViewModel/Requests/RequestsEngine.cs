@@ -20,11 +20,18 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ?? throw new Exception("Requests Engine: Requirement not found in product list");
             
             recommendation.Add(new(requirement, request.QuantityRequired, request.DateRequired));
-
-            TimeModel timeModel = OrderResourceHelper.GetCycleResponse(
-                turnedProducts
-                    .Where(x => x.MaterialId == requirement.MaterialId && x.GroupId == requirement.GroupId)
-                    .ToList());
+            TimeModel? timeModel = null;
+            try
+            {
+                timeModel = OrderResourceHelper.GetCycleResponse(
+                    turnedProducts
+                        .Where(x => x.MaterialId == requirement.MaterialId && x.GroupId == requirement.GroupId)
+                        .ToList());
+            }
+            catch
+            {
+                timeModel = TimeModel.Default(requirement.MajorDiameter);
+            }
 
             turnedProducts = turnedProducts
                                 .Where(x => !x.Retired

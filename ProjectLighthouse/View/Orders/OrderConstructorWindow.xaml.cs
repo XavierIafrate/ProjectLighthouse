@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using ProjectLighthouse.ViewModel.Requests;
 using System;
@@ -21,6 +22,7 @@ namespace ProjectLighthouse.View.Orders
         public List<ProductGroup> ProductGroups { get; set; }
         public List<TurnedProduct> TurnedProducts { get; set; }
         public List<BarStock> BarStock { get; set; }
+        public List<MaterialInfo> Materials { get; set; }
 
         public int? RequestId = null;
 
@@ -109,6 +111,8 @@ namespace ProjectLighthouse.View.Orders
             get { return insights; }
             set { insights = value; OnPropertyChanged(); }
         }
+
+        private Dictionary<int, string?> TimeModels;
 
         #endregion
 
@@ -240,6 +244,12 @@ namespace ProjectLighthouse.View.Orders
                 .ThenBy(x => !x.IsSpecialPart)
                 .ToList();
             BarStock = DatabaseHelper.Read<BarStock>().Where(x => !x.IsDormant).ToList();
+            Materials = DatabaseHelper.Read<MaterialInfo>().ToList();
+
+            foreach (BarStock bar in BarStock)
+            {
+                bar.MaterialData = Materials.Find(x => x.Id == bar.MaterialId);
+            }
 
             NewOrder = new();
         }
@@ -274,6 +284,24 @@ namespace ProjectLighthouse.View.Orders
                 .Where(x => x.GroupId == SelectedGroup.Id)
                 .ToList()
                 .ForEach(x => AvailableTurnedProducts.Add(x));
+
+            List<int> materialIds = AvailableTurnedProducts.Select(x => (int)x.MaterialId!).Distinct().ToList();
+            TimeModels = new();
+            foreach (int materialId in materialIds)
+            {
+                string? modelCode;
+                try
+                {
+                    modelCode = OrderResourceHelper.GetCycleResponse(
+                            AvailableTurnedProducts.ToList().Where(x => x.MaterialId == materialId).ToList()).ToString();
+                }
+                catch
+                {
+                    modelCode = SelectedGroup.DefaultTimeCode;
+                }
+
+                TimeModels.Add(materialId, modelCode);
+            }
         }
 
         public void SetConfirmButtonsVisibility(Visibility vis)
@@ -345,6 +373,32 @@ namespace ProjectLighthouse.View.Orders
 
             Plating = product.PlatedPart;
             newItem.PropertyChanged += OnNewItemChanged;
+
+            if (newItem.PreviousCycleTime is null)
+            {
+                TimeModel timeModel;
+                try
+                {
+                    if (!string.IsNullOrEmpty(TimeModels[MaterialId]))
+                    {
+                        timeModel = new(TimeModels[MaterialId]);
+                    }
+                    else if (!string.IsNullOrEmpty(SelectedGroup.DefaultTimeCode))
+                    {
+                        timeModel = new(SelectedGroup.DefaultTimeCode);
+                    }
+                    else
+                    {
+                        timeModel = TimeModel.Default(newItem.MajorDiameter);
+                    }
+                }
+                catch
+                {
+                    timeModel = TimeModel.Default(newItem.MajorDiameter);
+                }
+
+                newItem.ModelledCycleTime = timeModel.At(newItem.MajorLength);
+            }
 
             NewOrderItems.Add(newItem);
 
@@ -504,11 +558,44 @@ namespace ProjectLighthouse.View.Orders
             NewOrder.BarID = orderBar.Id;
             NewOrder.NumberOfBars = NewOrderItems.CalculateNumberOfBars(orderBar, 0);
 
-            (int totalTime, int targetCycleTime, bool estimated) = NewOrderItems.CalculateOrderRuntime();
+            //(int totalTime, int targetCycleTime, bool estimated) = NewOrderItems.CalculateOrderRuntime();
 
-            NewOrder.TimeToComplete = totalTime;
-            NewOrder.TargetCycleTime = targetCycleTime;
-            NewOrder.TargetCycleTimeEstimated = estimated;
+            //NewOrder.TimeToComplete = totalTime;
+            //NewOrder.TargetCycleTime = targetCycleTime;
+            //NewOrder.TargetCycleTimeEstimated = estimated;
+
+            TimeModel timeModel;
+            string? timeCode = TimeModels[MaterialId];
+
+            try
+            {
+                if (string.IsNullOrEmpty(timeCode))
+                {
+                    if (!string.IsNullOrEmpty(SelectedGroup.DefaultTimeCode))
+                    {
+                        timeModel = new(SelectedGroup.DefaultTimeCode);
+                    }
+                    else
+                    {
+                        timeModel = TimeModel.Default(NewOrder.MajorDiameter);
+                    }
+
+                    NewOrder.TimeCodeIsEstimate = true;
+                }
+                else
+                {
+                    timeModel = new(timeCode);
+                    NewOrder.TimeCodeIsEstimate = false;
+                }
+            }
+            catch
+            {
+                timeModel = TimeModel.Default(NewOrder.MajorDiameter);
+                NewOrder.TimeCodeIsEstimate = true;
+            }
+
+            NewOrder.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList());
+            NewOrder.TimeModelPlanned = timeModel;
 
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>()
                 .Where(x => x.DrawingType == (NewOrder.IsResearch ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production))
@@ -573,23 +660,25 @@ namespace ProjectLighthouse.View.Orders
                 ?? throw new Exception("No bar found for group");
 
             insights.BarId = bar.Id;
-            insights.BarPrice = bar.Cost;
+            insights.BarPrice = bar.ExpectedCost ?? 0;
             insights.NumberOfBarsRequired = NewOrderItems.CalculateNumberOfBars(bar, 0);
-            insights.TotalBarCost = bar.Cost * insights.NumberOfBarsRequired;
+            insights.TotalBarCost = (bar.ExpectedCost ?? 0) * insights.NumberOfBarsRequired;
 
-            (int totalTime, _, bool estimated) = NewOrderItems.CalculateOrderRuntime();
+            int totalTime = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList());
 
-            insights.TimeIsEstimate = estimated;
-            insights.TimeToComplete = Math.Max(totalTime, 86400);
+            insights.TimeIsEstimate = true; // TODO fix
+            insights.TimeToComplete = totalTime;
 
             TimeSpan orderTime = TimeSpan.FromSeconds(insights.TimeToComplete);
 
-            insights.CostOfMachineTime = orderTime.TotalMinutes * .00505 * 60;
+            insights.CostOfMachineTime = orderTime.TotalSeconds * .00505; // TODO constants
 
             insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
 
             insights.CostOfOrder = insights.CostOfMachineTime + (insights.TotalBarCost / 100);
             insights.NetProfit = insights.ValueProduced - insights.CostOfOrder;
+
+            insights.TimeCode = TimeModels[MaterialId] ?? SelectedGroup.DefaultTimeCode;
 
             Insights = insights;
         }
@@ -607,8 +696,8 @@ namespace ProjectLighthouse.View.Orders
             public double CostOfMachineTime { get; set; }
             public double NetProfit { get; set; }
             public double ValueProduced { get; set; }
+            public string TimeCode { get; set; }
         }
-
     }
     #endregion
 }

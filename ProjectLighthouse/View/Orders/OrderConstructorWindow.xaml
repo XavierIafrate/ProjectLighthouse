@@ -259,8 +259,10 @@
                                 TextWrapping="Wrap"
                                 Visibility="{Binding Path=Insights.TimeIsEstimate, Converter={StaticResource visConverter}}" />
 
+                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.TimeCode, TargetNullValue='None'}" />
+                            <TextBlock Style="{StaticResource InsightTag}" Text="TIME CODE" />
                             <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
-                            <TextBlock Style="{StaticResource InsightTag}" Text="TIME TO COMPLETE" />
+                            <TextBlock Style="{StaticResource InsightTag}" Text="TIME TO MACHINE" />
 
                             <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.CostOfMachineTime, StringFormat='{}£{0:N2}'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="COST OF MACHINE TIME" />
