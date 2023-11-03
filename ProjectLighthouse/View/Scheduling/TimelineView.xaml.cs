@@ -199,16 +199,14 @@ namespace ProjectLighthouse.View.Scheduling
                     {
                         continue;
                     }
-                    if (i == 0)
-                    {
-                        bar = bars.Find(x => x.Id == order.BarID);
-                    }
+
+                    bar ??= bars.Find(x => x.Id == order.BarID);
 
 
                     BarStock orderBar = bars.Find(x => x.Id == order.BarID);
                     
-                    if (bar is null) return;
-                    if (orderBar is null) return;
+                    if (bar is null) continue;
+                    if (orderBar is null) continue;
 
                     DateTime startDate = order.StartDate;
                     DateTime endsAt = order.EndsAt();
