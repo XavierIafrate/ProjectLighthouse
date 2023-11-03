@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -38,7 +39,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             string filename = $"{filePrefix}_{DateTime.Now:ddMMyy_HHmmss}.csv";
             filename = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), filename);
 
-            using (StreamWriter writer = new(filename))
+            using (StreamWriter writer = new(filename, false, Encoding.UTF8))
             using (CsvWriter csv = new(writer, CultureInfo.InvariantCulture))
             {
                 TypeConverterOptions options = new() { Formats = new[] { dateFormat } };
