@@ -203,6 +203,7 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MaxWidth="250" />
+                        <ColumnDefinition MaxWidth="300" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -252,7 +253,8 @@
                         Grid.Column="1"
                         VerticalAlignment="Top"
                         d:ItemsSource="{d:SampleData ItemCount=10}"
-                        ItemsSource="{Binding FilteredTurnedProducts}">
+                        ItemsSource="{Binding FilteredTurnedProducts}"
+                        SelectedValue="{Binding SelectedPart}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="2">
@@ -270,15 +272,16 @@
                                                 Stretch="Uniform"
                                                 Visibility="{Binding IsSpecialPart, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                                         </StackPanel>
-                                        <StackPanel Margin="5,0" Orientation="Horizontal">
+                                        <StackPanel Margin="5,0,5,2" Orientation="Horizontal">
                                             <Button
-                                                Margin="0,0,0,2"
+                                                Margin="0"
                                                 Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.EditTurnedProductCmd}"
                                                 CommandParameter="{Binding Id}"
                                                 Style="{StaticResource Action_Edit_Button_Small}"
                                                 Tag="Edit" />
                                             <Border
-                                                Margin="5,0"
+                                                Height="20"
+                                                Margin="5,0,0,0"
                                                 Background="{StaticResource RedFaded}"
                                                 CornerRadius="3"
                                                 Visibility="{Binding HasErrors, Converter={StaticResource boolToVisibleOrCollapsed}}">
@@ -290,22 +293,42 @@
                                                     Foreground="{StaticResource Red}"
                                                     Text="Error" />
                                             </Border>
+                                            <Border
+                                                Height="20"
+                                                Margin="5,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource PurpleFaded}"
+                                                CornerRadius="3"
+                                                Visibility="{Binding CycleTime, Converter={StaticResource IntGreaterThanZero}}">
+                                                <TextBlock
+                                                    Margin="8,0,8,1"
+                                                    VerticalAlignment="Center"
+                                                    d:Text="CYCLE_TIME"
+                                                    FontSize="12"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Purple}"
+                                                    Text="{Binding CycleTime, Converter={StaticResource CycleTimeConverter}}" />
+                                            </Border>
+                                            <Border
+                                                Height="20"
+                                                Margin="5,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource TealFaded}"
+                                                CornerRadius="3"
+                                                Visibility="{Binding CycleTime, Converter={StaticResource IntGreaterThanZero}}">
+                                                <TextBlock
+                                                    Margin="8,0,8,1"
+                                                    VerticalAlignment="Center"
+                                                    d:Text="COST"
+                                                    FontSize="12"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource Teal}"
+                                                    Text="{Binding ItemCost.TotalCost, StringFormat='{}£{0:0.00}'}" />
+                                            </Border>
                                         </StackPanel>
                                     </StackPanel>
 
-                                    <Border
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Background="{StaticResource PurpleFaded}"
-                                        CornerRadius="5"
-                                        Visibility="{Binding CycleTime, Converter={StaticResource IntGreaterThanZero}}">
-                                        <TextBlock
-                                            Margin="7,3"
-                                            d:Text="CYCLE_TIME"
-                                            FontWeight="SemiBold"
-                                            Foreground="{StaticResource Purple}"
-                                            Text="{Binding CycleTime, Converter={StaticResource CycleTimeConverter}}" />
-                                    </Border>
+
 
                                     <Border
                                         Margin="5,0"
@@ -325,14 +348,39 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <lvc2:CartesianChart
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Height="400"
-                        EasingFunction="{x:Null}"
-                        Series="{Binding CycleResponseSeries}"
-                        XAxes="{Binding XStartAtZero}"
-                        YAxes="{Binding YStartAtZero}" />
+                    <ScrollViewer Grid.RowSpan="2" Grid.Column="2">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource section}" Text="Time Models" />
+                            <lvc2:CartesianChart
+                                Height="400"
+                                VerticalAlignment="Top"
+                                EasingFunction="{x:Null}"
+                                Series="{Binding CycleResponseSeries}"
+                                XAxes="{Binding XStartAtZero}"
+                                YAxes="{Binding YStartAtZero}" />
+                            <ItemsControl ItemsSource="{Binding TimeModels}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding Key, StringFormat='{}[{0}]'}" />
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding Value}" Margin="5,0,0,0" />
+                                            </StackPanel>
+                                            <Button
+                                                HorizontalAlignment="Right"
+                                                Click="Button_Click"
+                                                Content="{Binding}"
+                                                Style="{StaticResource ClipboardButton}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Style="{StaticResource section}" Text="Costing" />
+                            <TextBlock Style="{StaticResource annotation}" Text="{Binding SelectedPart, StringFormat='{}For {0}'}" />
+                            <TextBlock Style="{StaticResource annotation}" Text="{Binding SelectedPart.ItemCost.TotalCost, StringFormat='{}£{0:0.00}'}" />
+                        </StackPanel>
+                    </ScrollViewer>
+
                 </Grid>
                 <Grid Height="200" />
             </StackPanel>
