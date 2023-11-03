@@ -70,16 +70,65 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
+        private static List<(double, int)> RemoveTail(List<(double, int)> items)
+        {
+            List<(double, int)> newItems = new();
+
+            if (items.Count <= 2)
+            {
+                return items;
+            }
+
+            if (items[0].Item2 > items[1].Item2)
+            {
+                return items;
+            }
+
+            int initialValue = items.First().Item2;
+            bool latch = false;
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (items[i].Item2 > initialValue)
+                {
+                    if (!latch)
+                    {
+                        newItems.Add(items[i-1]);
+                    }
+
+                    latch = true;
+                    newItems.Add(items[i]);
+                }
+            }
+
+            return newItems;
+        }
+
+
+        // TODO calculate flat start
         private static TimeModel GetCycleResponse(List<(double, int)> items)
         {
+            items = items.Where(x => x.Item2 > 0).OrderBy(x => x.Item1).ToList();
+
+            if (items.Count <= 1)
+            {
+                throw new Exception("Not enough data");
+            }
+
+            if (items.All(x => x.Item2 == items.First().Item2))
+            {
+                return new() { Intercept = items.First().Item2, Gradient = 0, Floor = items.First().Item2, RecordCount = items.Count, CoefficientOfDetermination = 1 };
+            }
+
+            items = RemoveTail(items);
+
             int numPoints = items.Count;
+
 
             if (numPoints == 0)
             {
                 throw new Exception("Not enough data");
             }
 
-            items = items.Where(x => x.Item2 > 0).OrderBy(x => x.Item1).ToList();
             int min = items.Min(x => x.Item2);
 
             double meanX = items.Average(point => point.Item1);
@@ -112,8 +161,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 rss += Math.Pow((double)item.Item2 - bestFitVal, 2);
                 tss += Math.Pow((double)item.Item2 - meanY, 2);
             }
-
+            
             r2 = 1 - (rss / tss);
+
+            r2 = double.IsNaN(r2) ? 1 : r2;
 
             TimeModel model = new() { Intercept = b1, Gradient = a1, Floor = min, RecordCount = numPoints, CoefficientOfDetermination = r2 };
 
