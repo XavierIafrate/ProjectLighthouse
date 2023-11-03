@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;
@@ -22,6 +21,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 DateTime endsAt = item.EndsAt();
 
+                if (item is LatheManufactureOrder order)
+                {
+                    endsAt = order.EndsAt();
+                }
+
                 if (i != items.Count - 1)
                 {
                     ScheduleItem nextItem = items[i + 1];
@@ -35,19 +39,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
 
             return TimeSpan.FromSeconds(secondsOfRuntime);
-        }
-
-        public static int GetTimeToMakeOrder(LatheManufactureOrder order, bool includeSetting)
-        {
-            int runtime = includeSetting ? 86400 / 2 : 0;
-
-            for (int i = 0; i < order.OrderItems.Count; i++)
-            {
-                LatheManufactureOrderItem item = order.OrderItems[i];
-                runtime += item.GetCycleTime() * Math.Max(item.TargetQuantity - item.QuantityMade, 0);
-            }
-
-            return runtime;
         }
 
         public static List<ScheduleItem> GetItemsForDayForMachine(List<ScheduleItem> items, DateTime day, string machineId)
@@ -73,7 +64,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 if (item is LatheManufactureOrder order)
                 {
-                    plannedEndDate = order.EndsAt(); // Must be adjusted time knowing the cycle time
+                    plannedEndDate = order.IsResearch
+                        ? (order.EndsAt() > order.StartDate.AddDays(2) ? order.EndsAt() : order.StartDate.AddDays(2))
+                        : order.EndsAt(); // Must be adjusted time knowing the cycle time
                 }
                 else if (item is MachineService maint)
                 {
@@ -84,13 +77,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     throw new Exception("Unexpected type");
                 }
 
-                if (plannedEndDate >= day) 
-                { 
+                if (plannedEndDate >= day)
+                {
                     result.Add(item);
                 }
                 else
                 {
-                    break; 
+                    break;
                 }
             }
 
