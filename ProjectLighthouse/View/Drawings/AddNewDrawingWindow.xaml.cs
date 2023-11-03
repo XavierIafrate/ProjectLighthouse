@@ -215,6 +215,7 @@ namespace ProjectLighthouse.View.Drawings
                 .OrderBy(x => x.Name)
                 .ToList();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>()
+                .Where(x => !x.Retired)
                 .OrderBy(x => x.ProductName)
                 .ToList();
             Materials = DatabaseHelper.Read<MaterialInfo>();
