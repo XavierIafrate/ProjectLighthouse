@@ -33,10 +33,22 @@ namespace ProjectLighthouse.ViewModel.Core
             get { return betaWarningVis; }
             set
             {
+                PoppyVis = remembrancePeriod && value != Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
                 betaWarningVis = value;
                 OnPropertyChanged();
             }
         }
+
+        private Visibility poppyVis;
+
+        public Visibility PoppyVis
+        {
+            get { return poppyVis; }
+            set { poppyVis = value; OnPropertyChanged(); }
+        }
+
+        bool remembrancePeriod;
+
 
         private BaseViewModel _selectedViewModel;
 
@@ -135,6 +147,8 @@ namespace ProjectLighthouse.ViewModel.Core
             UpdateViewCommand = new(this);
             ToggleShowNotsCommand = new(this);
             ReadAllCommand = new();
+
+            remembrancePeriod = DateTime.Today.Day < 14 && DateTime.Today.Month == 11;
         }
 
 

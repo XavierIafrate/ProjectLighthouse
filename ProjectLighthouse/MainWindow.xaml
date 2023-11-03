@@ -72,6 +72,7 @@
                             RenderOptions.BitmapScalingMode="HighQuality"
                             Source="/Resources/LighthouseLogo.png"
                             Visibility="Hidden" />
+                        
                         <Rectangle
                             Cursor="Hand"
                             Fill="Transparent"
@@ -202,9 +203,9 @@
             <!--#region User controls-->
             <Button
                 Grid.Row="2"
+                d:Visibility="Collapsed"
                 Command="{Binding ToggleShowNotsCommand}"
                 Style="{StaticResource NotificationsMainButton}"
-                d:Visibility="Collapsed"
                 Visibility="{Binding NoNewNotifications, Converter={StaticResource hideIfTrue}}">
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Path
@@ -278,8 +279,8 @@
                 VerticalAlignment="Center"
                 Visibility="{Binding BetaWarningVis}">
                 <Border
-                    BorderBrush="{StaticResource Red}"
                     Background="{StaticResource RedFaded}"
+                    BorderBrush="{StaticResource Red}"
                     BorderThickness="3,0,0,0"
                     CornerRadius="5">
                     <StackPanel Orientation="Horizontal">
@@ -308,6 +309,15 @@
 
                 </Border>
             </Grid>
+                <Image
+                    x:Name="poppy"
+                    Width="80"
+                    Margin="20,10"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    Source="/Resources/remembrance.png"
+                    Visibility="{Binding PoppyVis}" />
             <Viewbox
                 MaxHeight="70"
                 Margin="50,15"
@@ -328,7 +338,7 @@
             x:Name="viewPort"
             Grid.Row="1"
             Grid.Column="1"
-            Content="{Binding SelectedViewModel}"/>
+            Content="{Binding SelectedViewModel}" />
         <!--#endregion-->
 
         <!--#region Notifications Bar-->
