@@ -425,7 +425,8 @@ namespace ProjectLighthouse.Model.Products
             {
                 if (this.Material is null) return;
                 BarStock.MaterialData = this.Material;
-                MaterialCost = BarStock.GetUnitMassOfBar() / BarStock.Length * this.MaterialBudget;
+                if (this.Material.Cost is null) return;
+                MaterialCost = BarStock.GetUnitMassOfBar() / BarStock.Length * this.MaterialBudget * ((double)this.Material.Cost/100);
 
                 //TODO constants
                 TimeCost = 0.00505 * TimeModel.At(Length);
