@@ -15,6 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:intToDays x:Key="intToDays" />
+            <converters:secondsToEstimatedTime x:Key="secondsToEstimatedTime" />
             <converters:intToStringCycleTime x:Key="intToStringCycleTime" />
             <converters:stringToAssignedLathe x:Key="stringToAssignedLathe" />
             <converters:StatsToLiveColour x:Key="liveBadgeColour" />
@@ -624,7 +625,7 @@
                                                     HorizontalAlignment="Center"
                                                     d:Text="10.5 days"
                                                     FontWeight="SemiBold"
-                                                    Text="{Binding SelectedOrder.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
+                                                    Text="{Binding SelectedOrder.TimeToComplete, Converter={StaticResource secondsToEstimatedTime}}" />
 
                                             </Viewbox>
 
@@ -932,12 +933,74 @@
                                                 XAxes="{Binding CycleTimeXAxes}"
                                                 YAxes="{Binding CycleTimeYAxes}" />
                                         </Border>
-                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned}" />
-                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.Gradient, StringFormat='{}Time Response: {0:0.00}mm/s'}" />
-                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.Intercept, StringFormat='{}Intercept of gradient: {0}s'}" />
-                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.Floor, StringFormat='{}Floor {0}s'}" />
-                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.RecordCount, StringFormat='{}Based on N records: {0}'}" />
-                                        <TextBlock Text="{Binding SelectedOrder.TimeModelPlanned.CoefficientOfDetermination, StringFormat='{}Confidence {0:P1}'}" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Text="Response" />
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                d:Text="99.99 mm/s"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Purple}"
+                                                Text="{Binding SelectedOrder.TimeModelPlanned.Gradient, StringFormat='{}{0:0.00} mm/s'}" />
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Text="Response Intercept" />
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                d:Text="-5s"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Purple}"
+                                                Text="{Binding SelectedOrder.TimeModelPlanned.Intercept, StringFormat='{}{0}s'}" />
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="2"
+                                                Text="Time Floor" />
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="2"
+                                                d:Text="60s"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Purple}"
+                                                Text="{Binding SelectedOrder.TimeModelPlanned.Floor, StringFormat='{}{0}s'}" />
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="3"
+                                                Text="Record Count" />
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="3"
+                                                d:Text="10"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Purple}"
+                                                Text="{Binding SelectedOrder.TimeModelPlanned.RecordCount, StringFormat='{}{0:0}'}" />
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="4"
+                                                Text="Confidence" />
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="4"
+                                                d:Text="100.0%"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Purple}"
+                                                Text="{Binding SelectedOrder.TimeModelPlanned.CoefficientOfDetermination, StringFormat='{}{0:P1}'}" />
+                                        </Grid>
                                     </StackPanel>
                                 </TabItem>
                                 <TabItem
