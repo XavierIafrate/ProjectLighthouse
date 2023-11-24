@@ -18,7 +18,6 @@ namespace ProjectLighthouse.ViewModel.Orders
     {
         public List<ScheduleWarning> Problems { get; set; }
         public List<MachineService> PlannedServices { get; set; }
-        public List<ResearchTime> PlannedResearch { get; set; }
 
         public List<LatheManufactureOrder> OrderHeaders;
         public List<LatheManufactureOrderItem> OrderItems;
@@ -109,8 +108,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             OrderHeaders = DatabaseHelper.Read<LatheManufactureOrder>();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
 
-            PlannedServices = DatabaseHelper.Read<MachineService>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > DateTime.Now).ToList();
-            PlannedResearch = DatabaseHelper.Read<ResearchTime>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > DateTime.Now).ToList();
+            PlannedServices = DatabaseHelper.Read<MachineService>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete).AddDays(7) > DateTime.Now).ToList();
 
             foreach (LatheManufactureOrder order in OrderHeaders)
             {
@@ -176,8 +174,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                         .OrderBy(o => o.StartDate)
                         .ToList());
 
-            FilteredItems.AddRange(PlannedServices.Where(s => s.AllocatedMachine == searchString));
-            FilteredItems.AddRange(PlannedResearch.Where(r => r.AllocatedMachine == searchString));
+            FilteredItems.AddRange(PlannedServices.Where(s => s.AllocatedMachine == searchString && s.EndsAt() > DateTime.Today));
 
             FilteredItems = FilteredItems.OrderBy(i => i.StartDate).ToList();
 
@@ -217,7 +214,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             ordersOnAgenda.AddRange(ActiveOrders
                 .Where(x => x.StartDate < DateTime.Now.AddDays(numDays))
                 .ToList());
-            ordersOnAgenda.AddRange(PlannedResearch);
             ordersOnAgenda.AddRange(PlannedServices);
 
             ordersOnAgenda = ordersOnAgenda.OrderBy(x => x.StartDate).ToList();
