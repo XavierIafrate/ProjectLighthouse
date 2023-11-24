@@ -3,13 +3,10 @@ using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Products;
-using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.Model.Reporting.Internal;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text;
-
 using Paragraph = MigraDoc.DocumentObjectModel.Paragraph;
 using Section = MigraDoc.DocumentObjectModel.Section;
 using Table = MigraDoc.DocumentObjectModel.Tables.Table;
@@ -23,7 +20,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
         public DimensionCheckSheet()
         {
             document = new();
-            CustomStyles.Define(document);
+            CheckSheetStyles.Define(document);
         }
 
         private void SetupSection(Section section)
@@ -40,77 +37,110 @@ namespace ProjectLighthouse.Model.Quality.Internal
             section.PageSetup.FooterDistance = Size.HeaderFooterMargin;
         }
 
-        public void BuildContent(TechnicalDrawing drawing, List<CheckSheetDimension> dimensions, TurnedProduct product)
+        public void BuildContent(TechnicalDrawing drawing, List<ToleranceDefinition> dimensions)
         {
             Section content = new();
             SetupSection(content);
 
             AddHeader(content, drawing);
-            AddCheckSheetTable(content, dimensions);
+            AddCheckSheetTable(content, dimensions, drawing);
+            //AddToleranceDescriptions(content, dimensions);
 
             document.Add(content);
 
-            ExportPdf(@"C:\Users\xavie\Documents\checksheet.pdf");
+            ExportPdf(@"C:\Users\x.iafrate\Documents\checksheet.pdf");
         }
 
+        private Section AddToleranceDescriptions(Section section, List<ToleranceDefinition> dimensions)
+        {
+            for (int i = 0; i < dimensions.Count; i++)
+            {
+                Paragraph p = new();
+                p.AddFormattedText($"{i.ToString("[0]").PadLeft(6, '\u00A0')} {dimensions[i].Id.PadRight(30, '\u00A0')}{dimensions[i].ToString().PadRight(30, '\u00A0')}{dimensions[i].standard?.Name} ({dimensions[i].standard?.Description})", CheckSheetStyles.ToleranceDef);
+                section.Add(p);
+            }
+
+            return section;
+        }
 
         private Section AddHeader(Section content, TechnicalDrawing drawing)
         {
-            Paragraph paragraph = new();
-            paragraph.AddText("Xav's epic check sheet");
-            content.Add(paragraph);
+            Paragraph p = new();
+            p.AddText("Inspection Log");
+            p.Style = CheckSheetStyles.Title;
+            p.Format.SpaceAfter = "5 mm";
+            content.Add(p);
 
             return content;
         }
 
-        private Section AddCheckSheetTable(Section content, List<CheckSheetDimension> dimensions)
+        private Section AddCheckSheetTable(Section content, List<ToleranceDefinition> dimensions, TechnicalDrawing drawing)
         {
-            Table table = new();
+            Table table = content.AddTable();
 
-            BuildTableFrame(table, content);
+            BuildTableFrame(table, content, drawing);
             AddRows(table, dimensions);
 
-            content.Add(table);
+            table.Borders.DistanceFromTop = "1 cm";
 
             return new();
         }
 
-        private Table AddRows(Table t, List<CheckSheetDimension> dims)
+        private Table AddRows(Table t, List<ToleranceDefinition> dims)
         {
             Row row;
 
             for (int i = 0; i < dims.Count; i++)
             {
-                row = t.AddRow();
-                row.Cells[0].AddParagraph(dims[i].Name);
-                row.Cells[1].AddParagraph(dims[i].IsNumeric ? dims[i].NumericValue.ToString(dims[i].StringFormatter) : dims[i].StringValue);
-                row.Cells[2].AddParagraph(dims[i].LowerLimit);
-                row.Cells[3].AddParagraph(dims[i].UpperLimit);
+                if (dims[i] == null)
+                {
+                    continue;
+                }
 
-                for (int j = 0; j < 12; j++)
+                row = t.AddRow();
+
+                row.Cells[0].Style = CheckSheetStyles.RowHeader;
+                row.Cells[1].Style = CheckSheetStyles.ToleranceDef;
+                row.Cells[2].Style = CheckSheetStyles.ToleranceDef;
+                row.Cells[3].Style = CheckSheetStyles.ToleranceDef;
+
+                row.Cells[0].AddParagraph(dims[i].Name);
+                row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
+
+                row.Cells[1].AddParagraph(dims[i].Nominal);
+                row.Cells[1].VerticalAlignment = VerticalAlignment.Center;
+                row.Cells[1].Format.Font.Bold = true;
+
+                row.Cells[2].AddParagraph(dims[i].LowerLimit);
+                row.Cells[2].VerticalAlignment = VerticalAlignment.Center;
+
+                row.Cells[3].AddParagraph(dims[i].UpperLimit);
+                row.Cells[3].Borders.Right.Width = 2;
+                row.Cells[3].VerticalAlignment = VerticalAlignment.Center;
+
+
+                for (int j = 0; j < 14; j++)
                 {
                     row.Cells[j].Borders.Width = 1;
                 }
-
-
             }
 
             return t;
         }
 
-        private Table BuildTableFrame(Table t, Section c)
+        private Table BuildTableFrame(Table t, Section c, TechnicalDrawing d)
         {
             t.Rows.LeftIndent = 0;
 
-            t.LeftPadding = Size.TableCellPadding;
-            t.TopPadding = Size.TableCellPadding;
-            t.RightPadding = Size.TableCellPadding;
-            t.BottomPadding = Size.TableCellPadding;
+            t.LeftPadding = 0;
+            t.TopPadding = 0;
+            t.RightPadding = 0;
+            t.BottomPadding = 0;
 
 
-            Console.WriteLine($"Section Width: {c.PageSetup.PageWidth - c.PageSetup.LeftMargin - c.PageSetup.RightMargin}");
+            //Console.WriteLine($"Section Width: {c.PageSetup.PageWidth - c.PageSetup.LeftMargin - c.PageSetup.RightMargin}");
             double rowHeadersWidth = 0;
-            double thisColWidth = 100;
+            double thisColWidth = 140;
 
             t.AddColumn(thisColWidth);
             rowHeadersWidth += thisColWidth;
@@ -129,7 +159,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
             PdfSharp.Drawing.XSize size = PdfSharp.PageSizeConverter.ToSize(PdfSharp.PageSize.A4);
 
 
-            thisColWidth = (size.Height - c.PageSetup.LeftMargin - c.PageSetup.RightMargin - rowHeadersWidth) / 8;
+            thisColWidth = (size.Height - c.PageSetup.LeftMargin - c.PageSetup.RightMargin - rowHeadersWidth) / 10;
             Console.WriteLine($"New Col Width {thisColWidth}");
 
             t.AddColumn(thisColWidth);
@@ -140,9 +170,146 @@ namespace ProjectLighthouse.Model.Quality.Internal
             t.AddColumn(thisColWidth);
             t.AddColumn(thisColWidth);
             t.AddColumn(thisColWidth);
+            t.AddColumn(thisColWidth);
+            t.AddColumn(thisColWidth);
 
 
-            Row row = t.AddRow();
+            Row row;
+
+            row = t.AddRow();
+            row.Cells[4].AddParagraph("Sample Inspections");
+            row.Cells[4].Borders.Color = Colors.Black;
+            row.Cells[4].Borders.Width = 1;
+            row.Cells[4].MergeRight = 9;
+            row.Cells[4].Style = CheckSheetStyles.ColumnHeader;
+
+            row = t.AddRow();
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].AddParagraph(i.ToString());
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+                row.Cells[i + 3].Style = CheckSheetStyles.ColumnHeader;
+            }
+
+            row = t.AddRow();
+            row.Cells[2].AddParagraph("Date");
+            row.Cells[2].Borders.Color = Colors.Black;
+            row.Cells[2].Format.RightIndent = 5;
+            row.Cells[2].Borders.Width = 1;
+            row.Cells[2].Format.Alignment = ParagraphAlignment.Right;
+            row.Cells[2].Style = CheckSheetStyles.ColumnHeader;
+            row.Cells[2].MergeRight = 1;
+
+            row.Cells[0].AddParagraph("Specification");
+            row.Cells[0].Borders.Color = Colors.Black;
+            row.Cells[0].Format.RightIndent = 5;
+            row.Cells[0].Borders.Width = 1;
+            row.Cells[0].Borders.Bottom.Width = 0;
+            row.Cells[0].Format.Alignment = ParagraphAlignment.Center;
+            row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
+
+            row.Cells[0].Style = CheckSheetStyles.ColumnHeader;
+            row.Cells[0].MergeRight = 1;
+            row.Cells[0].MergeDown = 0;
+
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+
+            row = t.AddRow();
+            row.Cells[0].AddParagraph($"Drawing: {d.DrawingName}\nVersion: {d.Revision}{d.AmendmentType}\nApproved Date: {d.ApprovedDate:dd/MM/yyyy}\nApproved By: {d.ApprovedBy}");
+            row.Cells[0].Borders.Color = Colors.Black;
+            row.Cells[0].Format.RightIndent = 5;
+            row.Cells[0].Borders.Width = 1;
+            row.Cells[0].Borders.Top.Width = 0;
+            row.Cells[0].Format.Alignment = ParagraphAlignment.Center;
+            row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
+
+            row.Cells[0].Style = CheckSheetStyles.ToleranceDef;
+            row.Cells[0].MergeRight = 1;
+            row.Cells[0].MergeDown = 6;
+
+            row.Cells[2].AddParagraph("Time");
+            row.Cells[2].Borders.Color = Colors.Black;
+            row.Cells[2].Format.RightIndent = 5;
+            row.Cells[2].Borders.Width = 1;
+            row.Cells[2].Style = CheckSheetStyles.ColumnHeader;
+            row.Cells[2].Format.Alignment = ParagraphAlignment.Right;
+            row.Cells[2].MergeRight = 1;
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+
+
+            row = t.AddRow();
+            row.Cells[2].AddParagraph("Checked By");
+            row.Cells[2].Borders.Color = Colors.Black;
+            row.Cells[2].Borders.Width = 1;
+            row.Cells[2].Format.RightIndent = 5;
+            row.Cells[2].Format.Alignment = ParagraphAlignment.Right;
+            row.Cells[2].Style = CheckSheetStyles.ColumnHeader;
+            row.Cells[2].MergeRight = 1;
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+
+            row = t.AddRow();
+            row.Cells[2].AddParagraph("Quantity");
+            row.Cells[2].Borders.Color = Colors.Black;
+            row.Cells[2].Format.RightIndent = 5;
+            row.Cells[2].Borders.Width = 1;
+            row.Cells[2].Format.Alignment = ParagraphAlignment.Right;
+            row.Cells[2].Style = CheckSheetStyles.ColumnHeader;
+            row.Cells[2].MergeRight = 1;
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+
+            row = t.AddRow();
+            row.Cells[2].AddParagraph("Calibrated Equipment");
+            row.Cells[2].Borders.Color = Colors.Black;
+            row.Cells[2].Format.RightIndent = 5;
+            row.Cells[2].Borders.Width = 1;
+            row.Cells[2].Format.Alignment = ParagraphAlignment.Right;
+            row.Cells[2].VerticalAlignment = VerticalAlignment.Center;
+            row.Cells[2].Style = CheckSheetStyles.ColumnHeader;
+            row.Cells[2].MergeDown = 3;
+            row.Cells[2].MergeRight = 1;
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+            row = t.AddRow();
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+            row = t.AddRow();
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+            row = t.AddRow();
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+
+
+            row = t.AddRow();
             row.HeadingFormat = true;
             row.Format.Alignment = ParagraphAlignment.Center;
             row.Format.Font.Bold = true;
@@ -154,46 +321,56 @@ namespace ProjectLighthouse.Model.Quality.Internal
             row.Cells[1].AddParagraph("Specification");
             row.Cells[1].Borders.Color = Colors.Black;
             row.Cells[1].Borders.Width = 1;
+            row.Cells[1].Borders.Right.Width = 2;
             row.Cells[1].MergeRight = 2;
+            row.Cells[1].Style = CheckSheetStyles.ColumnHeader;
 
-            row.Cells[4].AddParagraph("Sample Inspections");
+            row.Cells[4].AddParagraph("Variation");
             row.Cells[4].Borders.Color = Colors.Black;
             row.Cells[4].Borders.Width = 1;
-            row.Cells[4].MergeRight = 7;
+            row.Cells[4].MergeRight = 9;
+            row.Cells[4].Style = CheckSheetStyles.ColumnHeader;
+
 
             row = t.AddRow();
             row.HeadingFormat = true;
             row.Format.Alignment = ParagraphAlignment.Center;
             row.Format.Font.Bold = true;
-            row.Cells[0].AddParagraph("Feature Name");
+            row.Cells[0].AddParagraph("Feature");
             row.Cells[0].Format.Alignment = ParagraphAlignment.Left;
+            row.Cells[0].Format.LeftIndent = 5;
             row.Cells[0].Borders.Color = Colors.Black;
             row.Cells[0].Borders.Width = 1;
+            row.Cells[0].Style = CheckSheetStyles.ColumnHeader;
+
 
             row.Cells[1].AddParagraph("Nominal");
-            row.Cells[1].Format.Alignment = ParagraphAlignment.Left;
             row.Cells[1].Borders.Color = Colors.Black;
             row.Cells[1].Borders.Width = 1;
+            row.Cells[1].Style = CheckSheetStyles.ColumnHeader;
 
-            row.Cells[2].AddParagraph("Max Limit");
-            row.Cells[2].Format.Alignment = ParagraphAlignment.Left;
+            row.Cells[2].AddParagraph("Min Limit");
             row.Cells[2].Borders.Color = Colors.Black;
             row.Cells[2].Borders.Width = 1;
+            row.Cells[2].Style = CheckSheetStyles.ColumnHeader;
 
-            row.Cells[3].AddParagraph("Min Limit");
-            row.Cells[3].Format.Alignment = ParagraphAlignment.Left;
+            row.Cells[3].AddParagraph("Max Limit");
             row.Cells[3].Borders.Color = Colors.Black;
             row.Cells[3].Borders.Width = 1;
+            row.Cells[3].Borders.Right.Width = 2;
+            row.Cells[3].Style = CheckSheetStyles.ColumnHeader;
 
-            for (int i = 1; i < 9; i++)
+
+            for (int i = 1; i < 11; i++)
             {
-                row.Cells[i + 3].AddParagraph(i.ToString());
                 row.Cells[i + 3].Borders.Color = Colors.Black;
                 row.Cells[i + 3].Borders.Width = 1;
+                row.Cells[i + 3].Style = CheckSheetStyles.ColumnHeader;
             }
 
-            row.BottomPadding = 5;
+            //row.BottomPadding = 5;
             row.Borders.Bottom.Width = 2;
+            row.Cells[1].Style = CheckSheetStyles.ColumnHeader;
 
 
             return t;

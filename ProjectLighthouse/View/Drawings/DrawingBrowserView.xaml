@@ -662,6 +662,28 @@
 
                         </StackPanel>
 
+                        <StackPanel Margin="20,0,20,10" Visibility="{Binding SelectedDrawing.IsApproved, Converter={StaticResource showIfTrue}}">
+                            <Grid>
+                                <TextBlock Style="{StaticResource section}" Text="Specification" />
+                                <Button
+                                    HorizontalAlignment="Right"
+                                    Style="{StaticResource Action_Edit_Button}"
+                                    Tag="Configure"
+                                    Command="{Binding EditSpecificationCmd}"/>
+                            </Grid>
+                            <ListView
+                                Margin="5"
+                                HorizontalContentAlignment="Stretch"
+                                ItemsSource="{Binding Specification}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <userControls:DisplayToleranceDefinition Tolerance="{Binding}"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+
+
                         <StackPanel x:Name="Comments" Margin="20,0,20,0">
                             <TextBlock Style="{StaticResource section}" Text="Comments" />
                             <userControls:DisplayListOfNotes

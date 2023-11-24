@@ -2,6 +2,7 @@
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.View.Drawings;
 using ProjectLighthouse.ViewModel.Commands.Drawings;
 using ProjectLighthouse.ViewModel.Core;
@@ -22,6 +23,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public List<TechnicalDrawingGroup> FilteredDrawingGroups { get; set; }
         public List<TechnicalDrawing> Drawings { get; set; }
         public List<Note> SelectedDrawingNotes { get; set; }
+        public List<ToleranceDefinition> Tolerances { get; set; }
+        public List<ToleranceDefinition?> Specification { get; set; }
 
         private List<Note> Notes;
         private List<ProductGroup> ProductGroups;
@@ -165,6 +168,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
         public ApproveDrawingCommand ApproveDrawingCmd { get; set; }
         public RejectDrawingCommand RejectDrawingCmd { get; set; }
         public ConvertToDevelopmentCommand ConvertToDevelopmentCmd { get; set; }
+        public EditSpecificationCommand EditSpecificationCmd { get; set; }
         #endregion
 
         #endregion
@@ -187,6 +191,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             FilteredDrawings = new();
             FilteredDrawingGroups = new();
             DrawingGroups = new();
+            Specification = new();
 
             NewNoteText = "";
             RejectionStatement = "";
@@ -198,6 +203,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             ApproveDrawingCmd = new(this);
             RejectDrawingCmd = new(this);
             ConvertToDevelopmentCmd = new(this);
+            EditSpecificationCmd = new(this);
 
             AdminVis = App.CurrentUser.Role == UserRole.Administrator
                 ? Visibility.Visible
@@ -209,6 +215,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
             Products = DatabaseHelper.Read<Product>();
             ProductGroups = DatabaseHelper.Read<ProductGroup>();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>();
+            Tolerances = DatabaseHelper.Read<ToleranceDefinition>().OrderBy(x => x.Id).ToList();
 
             Drawings = DatabaseHelper.Read<TechnicalDrawing>();
             Drawings = Drawings
@@ -392,6 +399,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 return;
             }
 
+            Specification = new();
+
             if (!ShowRejected)
             {
                 FilteredDrawings = selectedGroup.Drawings
@@ -412,6 +421,14 @@ namespace ProjectLighthouse.ViewModel.Drawings
             if (FilteredDrawings.Count > 0)
             {
                 SelectedDrawing = FilteredDrawings.Last();
+                List<string> baseSpec = SelectedDrawing.Specification;
+
+                foreach (string address in baseSpec)
+                {
+                    Specification.Add(Tolerances.Find(x => x.Id == address));
+                }
+
+                OnPropertyChanged(nameof(Specification));
             }
             else
             {
@@ -700,6 +717,12 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
             if (SelectedDrawing is null) return;
             MessageBox.Show($"{SelectedDrawing.DrawingName} R{SelectedDrawing.Revision}{SelectedDrawing.AmendmentType} has been withdrawn for manufacture.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public void EditSpecification()
+        {
+            CheckSheetEditor editor = new(Tolerances, SelectedDrawing);
+            editor.ShowDialog();
         }
     }
 }
