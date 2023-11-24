@@ -22,6 +22,7 @@ namespace ProjectLighthouse
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
         public static bool DevMode { get; set; }
+        public static Constants Constants { get; set; }
 
         private static MainWindow Window;
         public static MainViewModel MainViewModel { get; set; }
@@ -36,6 +37,23 @@ namespace ProjectLighthouse
             if (!EnvironmentContext.Setup())
             {
                 SetupFailedWindow window = new("Something wen't wrong while setting up the environment.", App.ROOT_PATH);
+                window.ShowDialog();
+                Application.Current.Shutdown();
+                return;
+            }
+
+            try
+            {
+                //Constants constants = new();
+                //string constantsJson = Newtonsoft.Json.JsonConvert.SerializeObject(constants);
+                //File.WriteAllText(App.ROOT_PATH + "config.json", constantsJson);
+                string constantsJson = File.ReadAllText(App.ROOT_PATH + "config.json");
+                Constants = Newtonsoft.Json.JsonConvert.DeserializeObject<Constants>(constantsJson);
+
+            }
+            catch (Exception ex)
+            {
+                SetupFailedWindow window = new("Cannot load config file.", $"{ex.Message}");
                 window.ShowDialog();
                 Application.Current.Shutdown();
                 return;
