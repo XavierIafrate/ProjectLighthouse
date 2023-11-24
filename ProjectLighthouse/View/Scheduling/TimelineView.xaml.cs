@@ -111,10 +111,10 @@ namespace ProjectLighthouse.View.Scheduling
                     Text = rows[i],
                     VerticalAlignment = VerticalAlignment.Center,
                     FontWeight = FontWeights.SemiBold,
-                    Margin = new(5,0,5,0),
+                    Margin = new(5, 0, 5, 0),
                 };
 
-                AddToMainGrid(rowHeader, 0, i +1);
+                AddToMainGrid(rowHeader, 0, i + 1);
             }
 
             // Columns
@@ -128,9 +128,9 @@ namespace ProjectLighthouse.View.Scheduling
                 TextBlock colHeader = new()
                 {
                     Text = $"{date:dd}",
-                    Margin=new(5),
-                    FontWeight=FontWeights.SemiBold,
-                    HorizontalAlignment= HorizontalAlignment.Center,
+                    Margin = new(5),
+                    FontWeight = FontWeights.SemiBold,
+                    HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Bottom,
                 };
 
@@ -144,12 +144,12 @@ namespace ProjectLighthouse.View.Scheduling
                 if (holidays.Contains(date))
                 {
                     Border bg = new() { Background = (Brush)App.Current.Resources["PurpleFaded"] };
-                    AddToMainGrid(bg, column: i+1, row: 1, colSpan: 1, rowSpan: rows.Length);
+                    AddToMainGrid(bg, column: i + 1, row: 1, colSpan: 1, rowSpan: rows.Length);
                 }
                 else if (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
                 {
                     Border bg = new() { Background = Brushes.LightGray };
-                    AddToMainGrid(bg, column: i+1, row: 1, colSpan: 1, rowSpan: rows.Length);
+                    AddToMainGrid(bg, column: i + 1, row: 1, colSpan: 1, rowSpan: rows.Length);
                 }
                 AddToMainGrid(colHeader, i + 1, 0);
             }
@@ -173,50 +173,21 @@ namespace ProjectLighthouse.View.Scheduling
                 for (int i = 0; i < latheItems.Count; i++)
                 {
                     ScheduleItem item = latheItems[i];
+                    Border element;
+                    TextBlock itemTitle;
 
-                    if (item is MachineService service)
-                    {
-                        Border serviceMarker = new()
-                        {
-                            Margin = new(service.StartDate.Hour * 2, 2, 50 - (service.EndsAt().Hour * 2), 2),
-                            Background = (Brush)Application.Current.Resources["Orange"],
-                            CornerRadius = new(5),
-                            Opacity = 0.7,
-                            ToolTip="Maintenance"
-                        };
+                    int span;
+                    int startColIndex;
+                    int iRow;
 
-                        AddToMainGrid(
-                            control: serviceMarker, 
-                            column: (int)(service.StartDate.Date - minDate.Date).TotalDays + 1, 
-                            row: Array.IndexOf(rows, row) + 1, 
-                            colSpan: (int)Math.Ceiling((service.EndsAt() - service.StartDate.Date).TotalDays), 
-                            rowSpan: 1);   
-
-                        continue;
-                    }
-
-                    if (item is not LatheManufactureOrder order)
-                    {
-                        continue;
-                    }
-
-                    bar ??= bars.Find(x => x.Id == order.BarID);
-
-
-                    BarStock orderBar = bars.Find(x => x.Id == order.BarID);
-                    
-                    if (bar is null) continue;
-                    if (orderBar is null) continue;
-
-                    DateTime startDate = order.StartDate;
-                    DateTime endsAt = order.EndsAt();
-                    int startColIndex = (int)(startDate.Date - minDate.Date).TotalDays;
-                    int span = (int)Math.Ceiling((endsAt - startDate.Date).TotalDays);
-                    int startMargin = 14; 
+                    iRow = Array.IndexOf(rows, row) + 1;
+                    DateTime startDate = item.StartDate;
+                    DateTime endsAt = item.EndsAt();
+                    startColIndex = (int)(startDate.Date - minDate.Date).TotalDays;
+                    span = (int)Math.Ceiling((endsAt - startDate.Date).TotalDays);
+                    int startMargin = 14;
                     int endMargin = 50 - (endsAt.Hour * 2);
                     bool startClipped = false;
-
-                    int iRow = Array.IndexOf(rows, row) + 1;
 
                     if (startColIndex < 0)
                     {
@@ -230,54 +201,86 @@ namespace ProjectLighthouse.View.Scheduling
                     // starts in column 1
                     startColIndex++;
 
-                    Brush borderBrush = order.State switch
-                    {
-                        OrderState.Problem => (Brush)Application.Current.Resources["Red"],
-                        OrderState.Ready => (Brush)Application.Current.Resources["Green"],
-                        OrderState.Prepared => (Brush)Application.Current.Resources["GreenDark"],
-                        OrderState.Running => (Brush)Application.Current.Resources["Blue"],
-                        _ => (Brush)Application.Current.Resources["OnBackground"],
-                    };
-
-                    if (order.IsResearch)
-                    {
-                        span = Math.Max(span, 3); 
-                        borderBrush = (Brush)Application.Current.Resources[order.IsComplete ? "OnSurface" : "Purple"];
-                        endMargin = 38;
-                    }
-
-                    Border element = new()
+                    element = new()
                     {
                         Margin = new(startMargin, 2, endMargin, 2),
-                        Background=borderBrush,
-                        CornerRadius= startClipped? new CornerRadius(0,5,5,0) : new(5),
+                        CornerRadius = startClipped ? new CornerRadius(0, 5, 5, 0) : new(5),
                         Opacity = 0.7
                     };
 
-                    TextBlock itemTitle = new()
+                    itemTitle = new()
                     {
-                        Margin=new(28,0,4,0),
-                        Text = order.Name + " " + orderBar.Size.ToString("0") + (orderBar.IsHexagon? "H" :"R"),
-                        FontSize=10, 
-                        Background=borderBrush,
+                        Margin = new(28, 0, 4, 0),
+                        Text = item.Name,
+                        FontSize = 10,
+                        Background = element.Background,
                         VerticalAlignment = VerticalAlignment.Center,
-                        Foreground=Brushes.White,
-                        HorizontalAlignment=HorizontalAlignment.Left
+                        Foreground = Brushes.White,
+                        HorizontalAlignment = HorizontalAlignment.Left
                     };
 
-                    if (bar.Size == orderBar.Size && bar.IsHexagon == orderBar.IsHexagon)
+
+                    if (item is LatheManufactureOrder order)
                     {
-                        itemTitle.Text += "*";
+                        BarStock orderBar = bars.Find(x => x.Id == order.BarID);
+                        bar ??= bars.Find(x => x.Id == order.BarID);
+
+                        if (bar is null) break;
+                        if (orderBar is null) break;
+
+                        element.Background = order.State switch
+                        {
+                            OrderState.Problem => (Brush)Application.Current.Resources["Red"],
+                            OrderState.Ready => (Brush)Application.Current.Resources["Green"],
+                            OrderState.Prepared => (Brush)Application.Current.Resources["GreenDark"],
+                            OrderState.Running => (Brush)Application.Current.Resources["Blue"],
+                            _ => (Brush)Application.Current.Resources["OnBackground"],
+                        };
+
+                        if (order.IsResearch)
+                        {
+                            span = Math.Max(span, 3);
+                            element.Background = (Brush)Application.Current.Resources[order.IsComplete ? "OnSurface" : "Purple"];
+                            endMargin = 38;
+                        }
+
+                        itemTitle = new()
+                        {
+                            Margin = new(28, 0, 4, 0),
+                            Text = order.Name + " " + orderBar.Size.ToString("0") + (orderBar.IsHexagon ? "H" : "R"),
+                            FontSize = 10,
+                            Background = element.Background,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Foreground = Brushes.White,
+                            HorizontalAlignment = HorizontalAlignment.Left
+                        };
+
+                        if (bar.Size == orderBar.Size && bar.IsHexagon == orderBar.IsHexagon)
+                        {
+                            itemTitle.Text += "*";
+                        }
+
+                        bar = orderBar;
+                    }
+                    else if (item is MachineService)
+                    {
+                        element.Background = (Brush)Application.Current.Resources["Orange"];
+                        itemTitle = new()
+                        {
+                            Margin = new(28, 0, 4, 0),
+                            Text = item.Name,
+                            FontSize = 10,
+                            Background = element.Background,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Foreground = Brushes.White,
+                            HorizontalAlignment = HorizontalAlignment.Left
+                        };
                     }
 
                     AddToMainGrid(element, startColIndex, iRow, span);
                     AddToMainGrid(itemTitle, startColIndex, iRow, span);
-
-                    bar = orderBar;
-                
                 }
             }
-
         }
 
         private void AddToMainGrid(UIElement control, int column, int row, int colSpan = 1, int rowSpan = 1)
