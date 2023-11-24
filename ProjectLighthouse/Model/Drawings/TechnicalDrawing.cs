@@ -4,7 +4,6 @@ using PdfSharp.Pdf.IO;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
-using ProjectLighthouse.ViewModel.ValueConverters;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -63,6 +62,29 @@ namespace ProjectLighthouse.Model.Drawings
         public bool WatermarkOnly { get; set; }
 
         public bool PlatingStatement = false;
+        public string? CheckSheetReferences { get; set; }
+
+        [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public List<string> Specification
+        {
+            get
+            {
+                if (CheckSheetReferences is null) return new();
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(CheckSheetReferences) ?? new();
+            }
+            set
+            {
+                if (value.Count == 0)
+                {
+                    CheckSheetReferences = null;
+                    return;
+                }
+                CheckSheetReferences = Newtonsoft.Json.JsonConvert.SerializeObject(value);
+            }
+        }
+
+
 
         [Ignore]
         public bool IsCurrent { get; set; }
@@ -286,7 +308,7 @@ namespace ProjectLighthouse.Model.Drawings
             XBrush brush = new XSolidBrush(XColor.FromArgb((int)(0.25 * 255), colour.R, colour.G, colour.B));
 
             gfx.DrawString("PART SHALL BE PLATED - ALLOW 1-3 MICRONS PER SURFACE", font, brush,
-                new XRect(page.Width*0.2, 0, page.Width*0.8, page.Height - 10),
+                new XRect(page.Width * 0.2, 0, page.Width * 0.8, page.Height - 10),
                   XStringFormats.BottomCenter);
 
             gfx.Dispose();
