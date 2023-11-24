@@ -9,6 +9,10 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
             <TextBlock
                 Grid.Row="0"
@@ -57,7 +61,8 @@
         </StackPanel>
 
         <Button
-            Margin="0,0,5,0"
+            Grid.Column="1"
+            Margin="5,0,5,0"
             HorizontalAlignment="Right"
             Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=2}, Path=DataContext.AddProductGroupCmd}"
             CommandParameter="{Binding Path=.}"
