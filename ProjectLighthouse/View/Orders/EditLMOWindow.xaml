@@ -606,16 +606,19 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Orientation="Horizontal">
+                                    <TextBlock Text="M" VerticalAlignment="Center" FontSize="16"/>
                                     <TextBox
                                         d:Text="RATE"
                                         Style="{StaticResource DefaultTextBox}"
                                         Text="{Binding TmpTimeModel.Gradient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         TextChanged="TimeModel_TextChanged" />
+                                    <TextBlock Text="C" VerticalAlignment="Center" FontSize="16"/>
                                     <TextBox
                                         d:Text="INTERCEPT"
                                         Style="{StaticResource DefaultTextBox}"
                                         Text="{Binding TmpTimeModel.Intercept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         TextChanged="TimeModel_TextChanged" />
+                                    <TextBlock Text="F" VerticalAlignment="Center" FontSize="16"/>
                                     <TextBox
                                         d:Text="FLOOR"
                                         Style="{StaticResource DefaultTextBox}"
