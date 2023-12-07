@@ -491,13 +491,13 @@
                 Style="{StaticResource Action_Button}"
                 Tag="Submit Request" />
         </StackPanel>
-        <Border
+        <!--<Border
             Grid.Row="1"
             Grid.Column="2"
             Margin="5"
             Background="{StaticResource Surface}"
             CornerRadius="10">
-            <!--<Grid>
+            --><!--<Grid>
                 <ListView ItemsSource="{Binding RecommendedManifest}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -507,7 +507,7 @@
                 </ListView>
                 <Rectangle Fill="#01ffffff" />
             </Grid>-->
-            <StackPanel VerticalAlignment="Center">
+            <!--<StackPanel VerticalAlignment="Center">
                 <Image
                     Width="200"
                     Margin="0,0,0,10"
@@ -524,7 +524,7 @@
                     Opacity="0.6"
                     Style="{StaticResource subsubtitle}"
                     Text="Coming soon" />
-            </StackPanel>
-        </Border>
+            </StackPanel>--><!--
+        </Border>-->
     </Grid>
 </UserControl>

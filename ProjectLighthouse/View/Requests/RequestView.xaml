@@ -529,7 +529,7 @@
                             </Grid>
                         </Grid>
 
-                        <StackPanel Visibility="{Binding SelectedRequestMainProduct, Converter={StaticResource NotNullToVisibility}}">
+                        <!--<StackPanel Visibility="{Binding SelectedRequestMainProduct, Converter={StaticResource NotNullToVisibility}}">
                             <TextBlock Style="{StaticResource section}" Text="Product Analytics" />
                             <Border
                                 Margin="5"
@@ -556,7 +556,7 @@
 
                             <TextBlock Text="{Binding FrequencyAnalysis}" />
 
-                        </StackPanel>
+                        </StackPanel>-->
 
                         <StackPanel Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToCollapsed}}">
                             <TextBlock Style="{StaticResource section}" Text="Recommended Order" />
