@@ -114,7 +114,8 @@ namespace ProjectLighthouse.ViewModel.Administration
                 orderBlocks = orderBlocks.Where(x => x.StateEntered >= order.StartDate && x.StateLeft <= (order.CompletedAt == DateTime.MinValue ? order.EndsAt() : order.CompletedAt.Date.AddHours(6))).ToList();
 
                 availabilityLoss = availabilityLoss.Add(new(0, 0, orderBlocks.Where(x => x.State != "Running").Sum(x => (int)x.SecondsElapsed)));
-                performanceChange = performanceChange.Add(new(0, 0, orderBlocks.Where(x => x.State == "Running").Sum(x => (int)x.SecondsElapsed / (x.CycleTime - order.TargetCycleTime))));
+                // TODO: THIS IS BROKEN DUE TO TIME CHANGE!!!! FIX IT XAV!
+                performanceChange = performanceChange.Add(new(0, 0, orderBlocks.Where(x => x.State == "Running").Sum(x => (int)x.SecondsElapsed / (x.CycleTime - 0))));
             }
 
             TimeSpan developmentTime = new();
