@@ -168,7 +168,7 @@ namespace ProjectLighthouse.ViewModel.Programs
             Thread.Sleep(500);
             List<NcProgram> programs = new(Programs);
 
-            List<string> filesInDir = Directory.GetFiles(NcProgram.BaseProgramPath).ToList();
+            List<string> filesInDir = Directory.GetFiles(App.Constants.BaseProgramPath).ToList();
 
             foreach (NcProgram program in programs)
             {

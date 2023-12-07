@@ -2,6 +2,7 @@
 
   <PropertyGroup Label="Globals">
     <WebView2UseDispatchAdapter>True</WebView2UseDispatchAdapter>
+    <Configurations>Debug;Release;Demo</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -36,7 +37,19 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Demo|AnyCPU'">
+    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138</NoWarn>
+    <Optimize>False</Optimize>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138</NoWarn>
+    <Optimize>False</Optimize>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Demo|x64'">
     <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138</NoWarn>
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
@@ -218,9 +231,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="View\Scheduling\CreateResearch.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -243,10 +253,6 @@
 
   <ItemGroup>
     <Page Update="Themes\GlobalColours.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="View\Scheduling\CreateResearch.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

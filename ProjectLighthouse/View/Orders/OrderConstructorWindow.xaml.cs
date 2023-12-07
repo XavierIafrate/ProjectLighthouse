@@ -671,7 +671,7 @@ namespace ProjectLighthouse.View.Orders
 
             TimeSpan orderTime = TimeSpan.FromSeconds(insights.TimeToComplete);
 
-            insights.CostOfMachineTime = orderTime.TotalSeconds * .00505; // TODO constants
+            insights.CostOfMachineTime = orderTime.TotalSeconds * App.Constants.AbsorptionRate; 
 
             insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
 

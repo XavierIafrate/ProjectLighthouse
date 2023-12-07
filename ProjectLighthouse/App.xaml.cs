@@ -1,11 +1,13 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.View;
 using ProjectLighthouse.View.Core;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,12 +24,14 @@ namespace ProjectLighthouse
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
         public static bool DevMode { get; set; }
+        public static bool DemoMode { get; set; }
         public static Constants Constants { get; set; }
 
         private static MainWindow Window;
         public static MainViewModel MainViewModel { get; set; }
         public static NotificationManager NotificationsManager { get; set; }
         public static string AppDataDirectory { get; set; }
+        public static List<StandardFit> StandardFits { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -36,7 +40,7 @@ namespace ProjectLighthouse
 
             if (!EnvironmentContext.Setup())
             {
-                SetupFailedWindow window = new("Something wen't wrong while setting up the environment.", App.ROOT_PATH);
+                SetupFailedWindow window = new("Something went wrong while setting up the environment.", App.ROOT_PATH);
                 window.ShowDialog();
                 Application.Current.Shutdown();
                 return;
@@ -47,6 +51,7 @@ namespace ProjectLighthouse
                 //Constants constants = new();
                 //string constantsJson = Newtonsoft.Json.JsonConvert.SerializeObject(constants);
                 //File.WriteAllText(App.ROOT_PATH + "config.json", constantsJson);
+
                 string constantsJson = File.ReadAllText(App.ROOT_PATH + "config.json");
                 Constants = Newtonsoft.Json.JsonConvert.DeserializeObject<Constants>(constantsJson);
 
@@ -112,7 +117,17 @@ namespace ProjectLighthouse
 
         private static bool VersionIsPermitted()
         {
-            string[] allowed_versions = File.ReadAllLines($"{App.ROOT_PATH}valid_versions.txt");
+            string[] allowed_versions;
+
+            try
+            {
+                allowed_versions = File.ReadAllLines($"{App.ROOT_PATH}valid_versions.txt");
+            }
+            catch
+            {
+                return false;
+            }
+
             if (!allowed_versions.Any(x => x == GetAppVersion()))
             {
                 return false;
@@ -268,6 +283,11 @@ namespace ProjectLighthouse
                 $"COMP: {Environment.MachineName}\n" +
                 $"VIEW: {App.ActiveViewModel}";
             File.WriteAllText($"{ROOT_PATH}/errors/supp_{filename}.txt", textInfo);
+        }
+
+        internal static bool CloneDemoFiles()
+        {
+            return true;
         }
     }
 }

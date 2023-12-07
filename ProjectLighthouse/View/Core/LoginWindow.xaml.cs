@@ -25,6 +25,8 @@ namespace ProjectLighthouse.View
             InitializeComponent();
             AddVersionNumber();
 
+            DemoVersionBaner.Visibility = App.DemoMode ? Visibility.Visible : Visibility.Collapsed;
+
             MessageBadge.Visibility = Visibility.Hidden;
             Users = DatabaseHelper.Read<User>().ToList();
 

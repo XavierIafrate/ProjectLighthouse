@@ -37,16 +37,32 @@
             <ColumnDefinition Width="4*" MinWidth="800" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="8*" />
         </Grid.RowDefinitions>
 
         <!--#endregion-->
 
-        <Rectangle Grid.RowSpan="2" Fill="{StaticResource Surface}" />
+        <Border
+            x:Name="DemoBanner"
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            Background="{StaticResource Red}">
+            <TextBlock
+                Margin="0,3"
+                HorizontalAlignment="Center"
+                FontFamily="Consolas"
+                Foreground="{StaticResource OnRed}"
+                Text="DEMONSTRATION VERSION - FILE SYSTEM BASED RESOURCES MAY BE UNSTABLE" />
+        </Border>
+        <Rectangle
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Fill="{StaticResource Surface}" />
 
         <!--#region Main Menu-->
-        <Grid Grid.RowSpan="2">
+        <Grid Grid.Row="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
@@ -72,7 +88,7 @@
                             RenderOptions.BitmapScalingMode="HighQuality"
                             Source="/Resources/LighthouseLogo.png"
                             Visibility="Hidden" />
-                        
+
                         <Rectangle
                             Cursor="Hand"
                             Fill="Transparent"
@@ -151,13 +167,13 @@
                             Content="Programs"
                             Style="{StaticResource Programs_MenuItem}" />
 
-                        <ToggleButton
+                        <!--<ToggleButton
                             x:Name="research_button"
                             Command="{Binding UpdateViewCommand}"
                             CommandParameter="Research"
                             Content="R&amp;D"
                             Style="{StaticResource Research_MenuItem}"
-                            Visibility="Visible" />
+                            Visibility="Visible" />-->
 
                     </StackPanel>
 
@@ -271,7 +287,10 @@
         <!--#endregion-->
 
         <!--#region Window adorners-->
-        <Grid Grid.Column="1" Visibility="Visible">
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            Visibility="Visible">
 
             <Grid
                 Margin="20,5,10,5"
@@ -309,15 +328,15 @@
 
                 </Border>
             </Grid>
-                <Image
-                    x:Name="poppy"
-                    Width="80"
-                    Margin="20,10"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
-                    RenderOptions.BitmapScalingMode="HighQuality"
-                    Source="/Resources/remembrance.png"
-                    Visibility="{Binding PoppyVis}" />
+            <Image
+                x:Name="poppy"
+                Width="80"
+                Margin="20,10"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Source="/Resources/remembrance.png"
+                Visibility="{Binding PoppyVis}" />
             <Viewbox
                 MaxHeight="70"
                 Margin="50,15"
@@ -336,14 +355,14 @@
         <!--#region ViewModel binding-->
         <ContentControl
             x:Name="viewPort"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="1"
             Content="{Binding SelectedViewModel}" />
         <!--#endregion-->
 
         <!--#region Notifications Bar-->
         <Grid
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="2"
             Width="420"
             HorizontalAlignment="Right"

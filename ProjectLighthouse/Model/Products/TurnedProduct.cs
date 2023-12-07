@@ -13,10 +13,6 @@ namespace ProjectLighthouse.Model.Products
 {
     public class TurnedProduct : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation, ICloneable
     {
-        // TODO refactor to network constants or calculated
-        public const double MaxDiameter = 38;
-        public const double MaxLength = 150;
-
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
 
@@ -428,8 +424,7 @@ namespace ProjectLighthouse.Model.Products
                 if (this.Material.Cost is null) return;
                 MaterialCost = BarStock.GetUnitMassOfBar() / BarStock.Length * this.MaterialBudget * ((double)this.Material.Cost/100);
 
-                //TODO constants
-                TimeCost = 0.00505 * TimeModel.At(Length);
+                TimeCost = App.Constants.AbsorptionRate * TimeModel.At(Length);
 
                 TotalCost = TimeCost + MaterialCost;
             }

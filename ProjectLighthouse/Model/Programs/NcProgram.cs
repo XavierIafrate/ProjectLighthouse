@@ -10,8 +10,6 @@ namespace ProjectLighthouse.Model.Programs
 {
     public class NcProgram : BaseObject, IObjectWithValidation, ICloneable, IAutoIncrementPrimaryKey
     {
-        // TODO refactor in constants
-        public static string BaseProgramPath { get; } = @"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\";
 
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
@@ -229,7 +227,7 @@ namespace ProjectLighthouse.Model.Programs
             {
                 if (string.IsNullOrWhiteSpace(Name)) return null;
 
-                return $"{BaseProgramPath}{Name}.PRG";
+                return $"{App.Constants.BaseProgramPath}{Name}.PRG";
             }
         }
 

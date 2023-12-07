@@ -46,6 +46,7 @@ namespace ProjectLighthouse
 #endif
 
             DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
+            DemoBanner.Visibility = App.DemoMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject

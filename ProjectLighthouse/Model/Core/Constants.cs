@@ -1,6 +1,7 @@
-﻿using System;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace ProjectLighthouse.Model.Core
 {
@@ -8,5 +9,21 @@ namespace ProjectLighthouse.Model.Core
     {
         // Cost of machine time per second
         public double AbsorptionRate { get; set; }
+
+        public string BaseProgramPath { get; set; } = @"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\";
+
+        public int BarRemainder { get; set; } = 300;
+
+        public double MaxPartLength { get; set; }
+        public double MaxPartDiameter { get; set; }
+
+
+        public Constants()
+        {
+            // Automated inputs
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
+            MaxPartLength = lathes.Max(x => x.MaxLength);
+            MaxPartDiameter = lathes.Max(x => x.MaxDiameter);
+        }
     }
 }
