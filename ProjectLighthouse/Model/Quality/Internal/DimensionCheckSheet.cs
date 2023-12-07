@@ -1,8 +1,8 @@
 ﻿using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using ProjectLighthouse.Model.Drawings;
-using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Reporting.Internal;
 using System;
 using System.Collections.Generic;
@@ -37,22 +37,27 @@ namespace ProjectLighthouse.Model.Quality.Internal
             section.PageSetup.FooterDistance = Size.HeaderFooterMargin;
         }
 
-        public void BuildContent(TechnicalDrawing drawing, List<ToleranceDefinition> dimensions)
+        public void BuildContent(TechnicalDrawing drawing, List<ToleranceDefinition> dimensions, string? order)
         {
             Section content = new();
             SetupSection(content);
 
-            AddHeader(content, drawing);
-            AddCheckSheetTable(content, dimensions, drawing);
-            //AddToleranceDescriptions(content, dimensions);
+            AddHeader(content);
+            AddCheckSheetTable(content, dimensions, drawing, order);
+            AddToleranceDescriptions(content, dimensions);
 
             document.Add(content);
+
+            document.Info.Title = $"Spec_{drawing.DrawingName}R{drawing.Revision}{drawing.AmendmentType}";
+
+            document.Info.Author = "Lighthouse MRP";
 
             ExportPdf(@"C:\Users\x.iafrate\Documents\checksheet.pdf");
         }
 
         private Section AddToleranceDescriptions(Section section, List<ToleranceDefinition> dimensions)
         {
+            section.AddPageBreak();
             for (int i = 0; i < dimensions.Count; i++)
             {
                 Paragraph p = new();
@@ -63,22 +68,33 @@ namespace ProjectLighthouse.Model.Quality.Internal
             return section;
         }
 
-        private Section AddHeader(Section content, TechnicalDrawing drawing)
+        private Section AddHeader(Section section)
         {
-            Paragraph p = new();
-            p.AddText("Inspection Log");
-            p.Style = CheckSheetStyles.Title;
-            p.Format.SpaceAfter = "5 mm";
-            content.Add(p);
+            Image logo = section.AddImage(new LogoImage().GetMigraDocFileName());
+            logo.Width = "6 cm";
+            logo.LockAspectRatio = true;
+            logo.WrapFormat.Style = WrapStyle.Through;
+            logo.RelativeHorizontal = RelativeHorizontal.Margin;
 
-            return content;
+
+            Paragraph header = section.AddParagraph();
+            header.Style = CheckSheetStyles.Title;
+            header.Format.Alignment = ParagraphAlignment.Right;
+
+            header.AddText("Inspection Log");
+            header.Format.LeftIndent = "1 cm";
+
+            header.Format.SpaceAfter = "5 mm";
+
+
+            return section;
         }
 
-        private Section AddCheckSheetTable(Section content, List<ToleranceDefinition> dimensions, TechnicalDrawing drawing)
+        private Section AddCheckSheetTable(Section content, List<ToleranceDefinition> dimensions, TechnicalDrawing drawing, string? order)
         {
             Table table = content.AddTable();
 
-            BuildTableFrame(table, content, drawing);
+            BuildTableFrame(table, content, drawing, order);
             AddRows(table, dimensions);
 
             table.Borders.DistanceFromTop = "1 cm";
@@ -128,7 +144,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
             return t;
         }
 
-        private Table BuildTableFrame(Table t, Section c, TechnicalDrawing d)
+        private Table BuildTableFrame(Table t, Section c, TechnicalDrawing d, string? o)
         {
             t.Rows.LeftIndent = 0;
 
@@ -177,6 +193,31 @@ namespace ProjectLighthouse.Model.Quality.Internal
             Row row;
 
             row = t.AddRow();
+            row.HeadingFormat = true;
+            if (o is not null)
+            {
+                row.Cells[0].AddParagraph($"Prepared for order {o}");
+                row.Cells[0].Borders.Color = Colors.Black;
+                row.Cells[0].Borders.Width = 1;
+                row.Cells[0].MergeRight = 1;
+                row.Cells[0].MergeDown = 1;
+                row.Cells[0].Style = CheckSheetStyles.ToleranceDef;
+                row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
+            }
+
+            Paragraph p = row.Cells[2].AddParagraph("Page ");
+            p.AddPageField();
+            p.AddText(" of ");
+            p.AddNumPagesField();
+            row.Cells[2].Style = CheckSheetStyles.ToleranceDef;
+            row.Cells[2].MergeDown = 1;
+            row.Cells[2].MergeRight = 1;
+            row.Cells[2].VerticalAlignment = VerticalAlignment.Center;
+            row.Cells[2].Borders.Color = Colors.Black;
+            row.Cells[2].Borders.Width = 1;
+
+
+
             row.Cells[4].AddParagraph("Sample Inspections");
             row.Cells[4].Borders.Color = Colors.Black;
             row.Cells[4].Borders.Width = 1;
@@ -184,6 +225,8 @@ namespace ProjectLighthouse.Model.Quality.Internal
             row.Cells[4].Style = CheckSheetStyles.ColumnHeader;
 
             row = t.AddRow();
+            row.HeadingFormat = true;
+
             for (int i = 1; i < 11; i++)
             {
                 row.Cells[i + 3].AddParagraph(i.ToString());
@@ -220,12 +263,13 @@ namespace ProjectLighthouse.Model.Quality.Internal
             }
 
             row = t.AddRow();
-            row.Cells[0].AddParagraph($"Drawing: {d.DrawingName}\nVersion: {d.Revision}{d.AmendmentType}\nApproved Date: {d.ApprovedDate:dd/MM/yyyy}\nApproved By: {d.ApprovedBy}");
+            row.Cells[0].AddParagraph($"Drawing: {d.DrawingName}\nVersion: {d.Revision}{d.AmendmentType}\nApproved Date: {d.ApprovedDate:dd/MM/yyyy}\nApproved By: {d.ApprovedBy}\n\nGenerated {DateTime.Now:s}\nby {App.CurrentUser.GetFullName()}");
             row.Cells[0].Borders.Color = Colors.Black;
             row.Cells[0].Format.RightIndent = 5;
+            row.Cells[0].Format.LeftIndent = 5;
             row.Cells[0].Borders.Width = 1;
             row.Cells[0].Borders.Top.Width = 0;
-            row.Cells[0].Format.Alignment = ParagraphAlignment.Center;
+            row.Cells[0].Format.Alignment = ParagraphAlignment.Left;
             row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
 
             row.Cells[0].Style = CheckSheetStyles.ToleranceDef;
@@ -260,19 +304,6 @@ namespace ProjectLighthouse.Model.Quality.Internal
                 row.Cells[i + 3].Borders.Width = 1;
             }
 
-            row = t.AddRow();
-            row.Cells[2].AddParagraph("Quantity");
-            row.Cells[2].Borders.Color = Colors.Black;
-            row.Cells[2].Format.RightIndent = 5;
-            row.Cells[2].Borders.Width = 1;
-            row.Cells[2].Format.Alignment = ParagraphAlignment.Right;
-            row.Cells[2].Style = CheckSheetStyles.ColumnHeader;
-            row.Cells[2].MergeRight = 1;
-            for (int i = 1; i < 11; i++)
-            {
-                row.Cells[i + 3].Borders.Color = Colors.Black;
-                row.Cells[i + 3].Borders.Width = 1;
-            }
 
             row = t.AddRow();
             row.Cells[2].AddParagraph("Calibrated Equipment");
@@ -282,8 +313,14 @@ namespace ProjectLighthouse.Model.Quality.Internal
             row.Cells[2].Format.Alignment = ParagraphAlignment.Right;
             row.Cells[2].VerticalAlignment = VerticalAlignment.Center;
             row.Cells[2].Style = CheckSheetStyles.ColumnHeader;
-            row.Cells[2].MergeDown = 3;
+            row.Cells[2].MergeDown = 4;
             row.Cells[2].MergeRight = 1;
+            for (int i = 1; i < 11; i++)
+            {
+                row.Cells[i + 3].Borders.Color = Colors.Black;
+                row.Cells[i + 3].Borders.Width = 1;
+            }
+            row = t.AddRow();
             for (int i = 1; i < 11; i++)
             {
                 row.Cells[i + 3].Borders.Color = Colors.Black;

@@ -74,6 +74,7 @@ namespace ProjectLighthouse.Model.Quality
                     ToleranceType.Max => "-",
                     ToleranceType.Symmetric => $"{(NumericValue - Max).ToString(StringFormatter)}",
                     ToleranceType.Bilateral => $"{(NumericValue - Min).ToString(StringFormatter)}",
+                    ToleranceType.Fit => (NumericValue + (double)App.StandardFits.Find(x => x.Symbol == FitId)?.At(NumericValue).Min).ToString(StringFormatter),
                     _ => "-",
                 };
             }
@@ -109,6 +110,7 @@ namespace ProjectLighthouse.Model.Quality
                     ToleranceType.Max => NumericValue.ToString(StringFormatter),
                     ToleranceType.Symmetric => $"{(NumericValue + Max).ToString(StringFormatter)}",
                     ToleranceType.Bilateral => $"{(NumericValue + Max).ToString(StringFormatter)}",
+                    ToleranceType.Fit => (NumericValue + (double)App.StandardFits.Find(x => x.Symbol == FitId)?.At(NumericValue).Max).ToString(StringFormatter),
                     _ => "-",
                 };
             }

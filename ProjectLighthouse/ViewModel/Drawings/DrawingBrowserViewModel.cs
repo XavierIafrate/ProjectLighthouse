@@ -721,7 +721,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         public void EditSpecification()
         {
-            CheckSheetEditor editor = new(Tolerances, SelectedDrawing);
+            CheckSheetEditor editor = new(Tolerances, SelectedDrawing, null);
             editor.ShowDialog();
         }
     }
