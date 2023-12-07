@@ -126,10 +126,6 @@
                         <userControls:DisplayLMOScheduling orderObject="{Binding Path=., Mode=TwoWay}" />
                     </DataTemplate>
 
-                    <DataTemplate x:Key="ResearchTime">
-                        <userControls:DisplayResearch Research="{Binding Path=., Mode=TwoWay}" />
-                    </DataTemplate>
-
                     <DataTemplate x:Key="MachineService">
                         <userControls:DisplayMachineService Service="{Binding Path=., Mode=TwoWay}" />
                     </DataTemplate>

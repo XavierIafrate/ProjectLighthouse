@@ -254,10 +254,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             for (int i = 0; i < FilteredItems.Count - 1; i++)
             {
                 DateTime starting = FilteredItems[i].StartDate;
-                if (FilteredItems[i] is ResearchTime)
-                {
-                    starting = starting.Date;
-                }
                 DateTime ending = starting.AddSeconds(FilteredItems[i].TimeToComplete);
                 DateTime nextStarting = FilteredItems[i + 1].StartDate.AddHours(-4); //factor in setting
 

@@ -2,7 +2,6 @@
 using ProjectLighthouse.ViewModel.Programs;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
-using ProjectLighthouse.ViewModel.Research;
 using System;
 using System.Windows.Input;
 
@@ -33,10 +32,6 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
             else if (viewModel is QualityCheckViewModel qcvm)
             {
                 qcvm.SendMessage();
-            }
-            else if (viewModel is ResearchViewModel devvm)
-            {
-                devvm.SendMessage();
             }
             else if (viewModel is ProgramManagerViewModel progvm)
             {
