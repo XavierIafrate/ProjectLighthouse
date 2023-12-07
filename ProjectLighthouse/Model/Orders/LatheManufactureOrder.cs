@@ -147,14 +147,14 @@ namespace ProjectLighthouse.Model.Orders
         {
             get
             {
-                if (scheduledEnd == DateTime.MinValue)
-                {
-                    return EndsAt();
-                }
-                else
-                {
-                    return scheduledEnd;
-                }
+                return EndsAt();
+                //if (scheduledEnd == DateTime.MinValue)
+                //{
+                //}
+                //else
+                //{
+                //    return scheduledEnd;
+                //}
             }
             set
             {
@@ -316,42 +316,6 @@ namespace ProjectLighthouse.Model.Orders
             }
 
             return mod;
-        }
-
-        public void Update(LatheManufactureOrder otherOrder)
-        {
-            if (otherOrder.Name != Name)
-            {
-                throw new InvalidOperationException($"Cannot update order {Name} with record {otherOrder.Name}");
-            }
-
-            IsCancelled = otherOrder.IsCancelled;
-            IsComplete = otherOrder.IsComplete;
-            IsClosed = otherOrder.IsClosed;
-
-            NumberOfBarsIssued = otherOrder.NumberOfBarsIssued;
-
-            ToolingOrdered = otherOrder.ToolingOrdered;
-            GaugingOrdered = otherOrder.GaugingOrdered;
-            BarToolingOrdered = otherOrder.BarToolingOrdered;
-            BaseProgramExists = otherOrder.BaseProgramExists;
-            BarIsVerified = otherOrder.BarIsVerified;
-
-            ToolingReady = otherOrder.ToolingReady;
-            GaugingReady = otherOrder.GaugingReady;
-            BarToolingReady = otherOrder.BarToolingReady;
-            HasProgram = otherOrder.HasProgram;
-
-            HasStarted = otherOrder.HasStarted;
-
-            POReference = otherOrder.POReference;
-            NumberOfBars = otherOrder.NumberOfBars;
-            TimeToComplete = otherOrder.TimeToComplete;
-            ModifiedAt = otherOrder.ModifiedAt;
-            ModifiedBy = otherOrder.ModifiedBy;
-            POReference = otherOrder.POReference;
-
-            AssignedTo = otherOrder.AssignedTo;
         }
 
         public bool RequiresBar()

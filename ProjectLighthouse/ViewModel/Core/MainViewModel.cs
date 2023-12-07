@@ -51,7 +51,6 @@ namespace ProjectLighthouse.ViewModel.Core
 
 
         private BaseViewModel _selectedViewModel;
-
         public BaseViewModel SelectedViewModel
         {
             get { return _selectedViewModel; }

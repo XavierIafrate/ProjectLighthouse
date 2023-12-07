@@ -5,7 +5,6 @@ using ProjectLighthouse.ViewModel.Orders;
 using ProjectLighthouse.ViewModel.Programs;
 using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
-using ProjectLighthouse.ViewModel.Research;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -35,7 +34,7 @@ namespace ProjectLighthouse.ViewModel.Commands
 
             if (targetView == "Schedule")
             {
-                viewModel.BetaWarningVis = Visibility.Hidden;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ScheduleViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -117,12 +116,6 @@ namespace ProjectLighthouse.ViewModel.Commands
                 viewModel.SelectedViewModel = new ProgramManagerViewModel();
                 viewModel.NavText = "Program Manager";
             }
-            else if (targetView == "Research")
-            {
-                viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.SelectedViewModel = new ResearchViewModel();
-                viewModel.NavText = "Development";
-            }
             else if (targetView == "Calibration")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
@@ -182,7 +175,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (targetView == "Product Data")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ProductManagerViewModel();
                 viewModel.NavText = "Product Data";
             }

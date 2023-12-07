@@ -183,11 +183,9 @@ namespace ProjectLighthouse.ViewModel.Requests
             List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
             List<MachineService> servicing = DatabaseHelper.Read<MachineService>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > DateTime.Now).ToList();
-            List<ResearchTime> research = DatabaseHelper.Read<ResearchTime>().Where(x => x.StartDate.AddSeconds(x.TimeToComplete) > DateTime.Now).ToList();
-
+           
             List<ScheduleItem> CompleteOrders = new();
 
-            CompleteOrders.AddRange(research);
             CompleteOrders.AddRange(servicing);
             foreach (LatheManufactureOrder order in orders)
             {
