@@ -109,7 +109,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             items = items.Where(x => x.Item2 > 0).OrderBy(x => x.Item1).ToList();
 
-            if (items.Count <= 1)
+            if (items.Count == 0)
             {
                 throw new Exception("Not enough data");
             }
