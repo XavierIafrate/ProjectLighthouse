@@ -1,5 +1,4 @@
 ﻿using DbfDataReader;
-using DocumentFormat.OpenXml.Wordprocessing;
 using ProjectLighthouse.Model.Deliveries;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -204,7 +203,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             List<OperaFields> cleanedLiveData = new();
             foreach (string stockReference in uniqueStockReferences)
             {
-                List <OperaFields> targets = liveData.Where(x => x.StockReference == stockReference).ToList();
+                List<OperaFields> targets = liveData.Where(x => x.StockReference == stockReference).ToList();
 
                 OperaFields record = new()
                 {
@@ -233,7 +232,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
 
                 TurnedProduct productRecord = products.Find(x => x.ProductName == record.StockReference || x.ExportProductName == record.StockReference);
-                
+
                 if (productRecord is not null)
                 {
                     UpdateProduct(productRecord, record);
@@ -272,6 +271,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_ONORDER"));
             int iSell = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_SELL"));
             int iCost = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_LCOST"));
+            int iDormant = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_DORMANT"));
 
             DbfRecord dbfRecord = new(dbfTable);
 
@@ -283,16 +283,36 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 double percent_progress = (double)i / (double)total_records;
                 percent_progress *= 100;
 
-                Console.Write($"\rReading Opera... [  {percent_progress:#.00}%  ]");
+                Console.Write($"\rReading Opera... [  {percent_progress:#0.00}%  ]");
 
                 i++;
 
                 if (dbfRecord.IsDeleted)
                     continue;
 
-                string name = dbfRecord.Values[iStockRef].ToString() ?? "";
-                string factor = dbfRecord.Values[iFactor].ToString();
-                string searchref = dbfRecord.Values[iSearchRef].ToString();
+                string name = dbfRecord.GetStringValue(iStockRef);
+                string searchref = dbfRecord.GetStringValue(iSearchRef);
+
+                bool dormant = true;
+                try
+                {
+                    if (dbfRecord.GetValue(iDormant) is not null)
+                    {
+                        dormant = dbfRecord.GetValue<bool>(iDormant);
+                    }
+                }
+                catch
+                {
+
+                }
+
+                if (dormant)
+                {
+                    continue;
+                }
+
+
+                string factor = dbfRecord.GetStringValue(iFactor);
                 bool searchRefUsed = false;
 
                 if (!itemsForUpdate.Contains(name))
