@@ -80,6 +80,20 @@
                             CommandParameter="Drawings"
                             Style="{StaticResource Action_Button}"
                             Tag="Get Drawings" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="TimeModels"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Get Time Models" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="TotalManufactured"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Total Manufactured" />
                     </StackPanel>
                 </Grid>
             </TabItem>
