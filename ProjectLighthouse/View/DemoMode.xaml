@@ -1,0 +1,60 @@
+﻿<Window
+    x:Class="ProjectLighthouse.DemoMode"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Lighthouse :: Demo Mode"
+    Width="700"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Grid>
+        <StackPanel
+            MaxWidth="500"
+            Margin="50"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <Image
+                x:Name="LogoColour"
+                Width="150"
+                HorizontalAlignment="Center"
+                RenderOptions.BitmapScalingMode="Fant"
+                Source="/Resources/LighthouseLogo.png" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource title}"
+                Text="Demo Mode" />
+            <TextBlock
+                Margin="20"
+                HorizontalAlignment="Center"
+                Style="{StaticResource subtitle}"
+                Text="Welcome to the Lighthouse demonstration build" />
+            <TextBlock
+                Margin="5"
+                Text="This build is designed to showcase as much functionality as possible without requiring any network changes."
+                TextWrapping="Wrap" />
+            <TextBlock
+                Margin="5"
+                Text="In it's implementation, Lighthouse remains very stable and bug free - please excuse any glitches you find as this copy will be running on unknown hardware and in a different IT environment!"
+                TextWrapping="Wrap" />
+            <Border
+                Margin="10"
+                Background="{StaticResource BlueFaded}"
+                CornerRadius="5">
+                <TextBlock
+                    Margin="10,5"
+                    HorizontalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Blue}"
+                    Text="To get started, click the button to select the root directory for the application."
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+            </Border>
+
+            <Button Style="{StaticResource Action_Button}" Tag="Select Directory" Click="Button_Click"/>
+
+        </StackPanel>
+    </Grid>
+</Window>

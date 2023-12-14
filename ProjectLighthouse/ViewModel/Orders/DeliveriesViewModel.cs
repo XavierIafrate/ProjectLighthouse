@@ -206,6 +206,12 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public async void VerifySelectedDeliveryNote()
         {
+            if (App.DemoMode)
+            {
+                MessageBox.Show("This feature is not available in the demo version", "Cannot proceed", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             if (SelectedDeliveryNote is null) return;
             CheckingOperaVis = Visibility.Visible;
             DisableControls = true;

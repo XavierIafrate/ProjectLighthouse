@@ -11,7 +11,7 @@
     Width="1500"
     Height="850"
     MinWidth="1200"
-    MinHeight="700"
+    MinHeight="600"
     MaxWidth="2200"
     MaxHeight="2200"
     d:Height="1000"
@@ -21,7 +21,6 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     mc:Ignorable="d">
-
     <Grid>
         <!--#region Layout setup and resources-->
         <Grid.Resources>
@@ -48,13 +47,14 @@
             x:Name="DemoBanner"
             Grid.Row="0"
             Grid.ColumnSpan="2"
-            Background="{StaticResource Red}">
+            Background="{StaticResource Red}"
+            Visibility="Collapsed">
             <TextBlock
                 Margin="0,3"
                 HorizontalAlignment="Center"
                 FontFamily="Consolas"
                 Foreground="{StaticResource OnRed}"
-                Text="DEMONSTRATION VERSION - FILE SYSTEM BASED RESOURCES MAY BE UNSTABLE" />
+                Text="DEMONSTRATION VERSION" />
         </Border>
         <Rectangle
             Grid.Row="1"

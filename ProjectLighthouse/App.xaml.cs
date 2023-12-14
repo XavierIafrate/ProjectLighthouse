@@ -97,6 +97,10 @@ namespace ProjectLighthouse
 
             Window.Show();
             Window.AddVersionNumber();
+#if DEMO
+            App.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+            App.Constants.BaseProgramPath = $"{App.ROOT_PATH}lib\\programs\\";
+#endif
 
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {
@@ -285,8 +289,71 @@ namespace ProjectLighthouse
             File.WriteAllText($"{ROOT_PATH}/errors/supp_{filename}.txt", textInfo);
         }
 
-        internal static bool CloneDemoFiles()
+        public static bool ValidateRootDirectory(string rootDirectory, bool demo = false)
         {
+            string dbFile;
+
+            if (demo)
+            {
+                dbFile = $"{rootDirectory}{ApplicationRootPaths.DEMO_DB_NAME}";
+            }
+            else
+            {
+                dbFile = DatabaseHelper.DatabasePath;
+            }
+
+            if (!File.Exists(dbFile))
+            {
+                return false;
+            }
+
+            string[] directories = new string[]
+            {
+                "Calibration",
+                "errors",
+                "lib",
+                "lib\\gen",
+                "lib\\logs",
+                "lib\\pcom",
+                "lib\\renders",
+                "print",
+            };
+
+            foreach (string directory in directories)
+            {
+                if (!Directory.Exists($"{rootDirectory}{directory}"))
+                {
+                    return false;
+                }
+            }
+
+            if (demo)
+            {
+                if (!Directory.Exists($"{rootDirectory}lib\\programs"))
+                {
+                    return false;
+                }
+            }
+
+            string[] files = new string[]
+            {
+                "config.json",
+                "fits.txt",
+                "lathes.json",
+                "Lighthouse_dark.png",
+                "Lighthouse_Mono_L_Embedded.png",
+                "valid_versions.txt",
+                "lib\\holidays.json",
+            };
+
+            foreach (string file in files)
+            {
+                if (!File.Exists($"{rootDirectory}{file}"))
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
     }

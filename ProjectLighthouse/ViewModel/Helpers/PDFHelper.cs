@@ -25,10 +25,16 @@ namespace ProjectLighthouse.ViewModel.Helpers
         //
         // *****************************************
 
-        private static string DEL_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Delivery Notes";
-        private static string SCH_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Schedule Printouts";
-        private static string REQ_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Requisition Printouts";
-        private static string PFM_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Performance Reports";
+        //private static string DEL_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Delivery Notes";
+        //private static string SCH_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Schedule Printouts";
+        //private static string REQ_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Requisition Printouts";
+        //private static string PFM_PDF_OUTPUTDIR = @"H:\Production\Administration\Manufacture Records\Performance Reports";
+
+        private static string DEL_PDF_OUTPUTDIR = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        private static string SCH_PDF_OUTPUTDIR = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        private static string REQ_PDF_OUTPUTDIR = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        private static string PFM_PDF_OUTPUTDIR = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
         private static string Address = "Automotion Components\nAlexia House\nGlenmore Business Park\nChichester, UK\nP019 7BJ";
 
         #region Schedule Formats
@@ -915,7 +921,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             return (Environment.UserName == "xavier")
                 ? @"C:\Users\xavie\Desktop\Lighthouse_Mono_L_Embedded.png"
-                : @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\Lighthouse_Mono_L_Embedded.png";
+                : $"{App.ROOT_PATH}Lighthouse_Mono_L_Embedded.png";
         }
 
         public static void OpenWithDefaultProgram(string path)
