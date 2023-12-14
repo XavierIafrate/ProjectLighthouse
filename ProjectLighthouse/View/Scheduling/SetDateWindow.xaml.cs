@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
-using Windows.AI.MachineLearning;
 
 namespace ProjectLighthouse.View.Scheduling
 {
@@ -38,18 +36,22 @@ namespace ProjectLighthouse.View.Scheduling
 
             Item = item;
             OrderText.Text = $"Item: '{Item.Name}'";
+            TimeText.Text = $"{Item.StartDate:HH}:00";
 
             calendar.SelectedDate = Item.StartDate == DateTime.MinValue
                 ? DateTime.Today.AddDays(1)
                 : Item.StartDate;
+
+            SelectedDate = (DateTime)calendar.SelectedDate;
 
             AllocatedMachine = Item.AllocatedMachine;
         }
 
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
+            DateTime timePart = SelectedDate;
             SelectedDate = calendar.SelectedDate ?? DateTime.Today;
-            SelectedDate.AddHours(12);
+            SelectedDate = SelectedDate.ChangeTime(timePart.Hour, timePart.Minute, timePart.Second, 0);
 
             if (machine.SelectedValue is Lathe l)
             {
@@ -68,6 +70,29 @@ namespace ProjectLighthouse.View.Scheduling
 
             SaveExit = true;
             Close();
+        }
+
+        private void IncrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            int hourCurrent = SelectedDate.Hour;
+            hourCurrent++;
+            hourCurrent = hourCurrent % 24;
+            SelectedDate = SelectedDate.ChangeTime(hourCurrent, 0, 0, 0);
+            TimeText.Text = $"{SelectedDate:HH}:00";
+        }
+
+        private void DecrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            int hourCurrent = SelectedDate.Hour;
+            hourCurrent--;
+            if (hourCurrent < 0)
+            {
+                hourCurrent = 23;
+            }
+
+            SelectedDate = SelectedDate.ChangeTime(hourCurrent, 0, 0, 0);
+
+            TimeText.Text = $"{SelectedDate:HH}:00";
         }
     }
 }

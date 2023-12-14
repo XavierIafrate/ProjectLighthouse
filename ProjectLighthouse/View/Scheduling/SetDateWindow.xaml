@@ -27,6 +27,20 @@
             
             <TextBlock Style="{StaticResource InputLabel}" Text="Start Date" />
             <Calendar x:Name="calendar" Margin="10"/>
+            <TextBlock Style="{StaticResource InputLabel}" Text="Start Time" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="00:00" x:Name="TimeText" FontSize="30" FontFamily="Consolas" FontWeight="SemiBold" Margin="5,0" HorizontalAlignment="Right" Grid.RowSpan="2" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Grid.Row="0" Style="{StaticResource Counter_Up}" HorizontalAlignment="Left" Click="IncrementButton_Click"/>
+                <Button Grid.Column="1" Grid.Row="1" Style="{StaticResource Counter_Down}" HorizontalAlignment="Left" Click="DecrementButton_Click"/>
+            </Grid>
             <TextBlock Style="{StaticResource InputLabel}" Text="Assigned Machine" />
             <ComboBox x:Name="machine" Margin="5" DisplayMemberPath="FullName"/>
             <Grid Height="10" />
