@@ -17,7 +17,13 @@ namespace ProjectLighthouse.Model.Scheduling
             set { timeToComplete = value; OnPropertyChanged(); }
         }
 
-        public DateTime StartDate { get; set; }
+        private DateTime startDate;
+        public DateTime StartDate
+        {
+            get { return startDate; }
+            set { startDate = value; OnPropertyChanged(); }
+        }
+
         public string AllocatedMachine { get; set; }
         [Ignore]
         public bool IsZeroSet { get; set; }
