@@ -13,6 +13,8 @@ namespace ProjectLighthouse.Model.Core
         public string BaseProgramPath { get; set; } = @"\\groupfile01\Sales\Production\Programs\Citizen\Part Programs\";
 
         public int BarRemainder { get; set; } = 300;
+        public int BarRequisitionDays { get; set; } = 14;
+        public int DefaultSettingTime { get; set; } = 6;
 
         public double MaxPartLength { get; set; }
         public double MaxPartDiameter { get; set; }
