@@ -157,6 +157,12 @@ namespace ProjectLighthouse.Model.Products
                     return;
                 }
 
+                if (ProductName.ToUpperInvariant() == "ORDER")
+                {
+                    AddError(nameof(ProductName), "Product Name cannot be 'Order'");
+                    return;
+                }
+
                 return;
             }
             else if (propertyName == nameof(ExportProductName))
