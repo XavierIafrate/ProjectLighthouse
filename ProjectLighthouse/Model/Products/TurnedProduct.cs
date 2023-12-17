@@ -136,7 +136,7 @@ namespace ProjectLighthouse.Model.Products
 
         public void ValidateForRequest()
         {
-
+            ValidateProperty(nameof(ProductName));
         }
 
         public void ValidateProperty([CallerMemberName] string propertyName = "")
@@ -359,18 +359,9 @@ namespace ProjectLighthouse.Model.Products
         }
 
         #region Scheduling Members
-        [Ignore]
-        [CsvHelper.Configuration.Attributes.Ignore]
-        public Request DeclinedRequest { get; set; }
-        [Ignore]
-        [CsvHelper.Configuration.Attributes.Ignore]
-        public LatheManufactureOrder AppendableOrder { get; set; }
-        [Ignore]
-        [CsvHelper.Configuration.Attributes.Ignore]
-        public LatheManufactureOrder ZeroSetOrder { get; set; }
-        [Ignore]
-        [CsvHelper.Configuration.Attributes.Ignore]
-        public int LighthouseGuaranteedQuantity { get; set; }
+        public LatheManufactureOrder AppendableOrder;
+        public LatheManufactureOrder ZeroSetOrder;
+        public int LighthouseGuaranteedQuantity;
         #endregion
 
         public class Cost : BaseObject
