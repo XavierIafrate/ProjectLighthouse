@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.View.Requests
 {
@@ -28,6 +29,14 @@ namespace ProjectLighthouse.View.Requests
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             searchBox.Text = "";
+        }
+
+        private void TextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(this.MessageTextBox.Text) && e.Key == Key.Enter)
+            {
+                SendButton.Command.Execute(null);
+            }
         }
     }
 }

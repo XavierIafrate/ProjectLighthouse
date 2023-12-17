@@ -9,9 +9,9 @@ namespace ProjectLighthouse.ViewModel.Commands.Requests
     {
         public event EventHandler CanExecuteChanged;
 
-        private NewRequestViewModel viewModel;
+        private RequestViewModel viewModel;
 
-        public NewRequestCommand(NewRequestViewModel vm)
+        public NewRequestCommand(RequestViewModel vm)
         {
             viewModel = vm;
         }
@@ -23,7 +23,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Requests
 
         public void Execute(object parameter)
         {
-            viewModel.SubmitRequest();
+            viewModel.RaiseRequest();
         }
     }
 }

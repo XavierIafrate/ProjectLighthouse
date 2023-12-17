@@ -9,38 +9,30 @@ namespace ProjectLighthouse.Model.Requests
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        private string product;
-        public string Product
+        private string description = "";
+        public string Description
         {
-            get { return product; }
-            set { product = value; OnPropertyChanged();  }
+            get { return description; }
+            set { description = value; OnPropertyChanged(); }
         }
 
-        public string POReference { get; set; }
-        public int QuantityRequired { get; set; }
-        public DateTime DateRequired { get; set; }
+        public int TotalQuantity { get; set; }
+
+        public RequestStatus Status { get; set; } = RequestStatus.Pending;
+        public int? ArchetypeId { get; set; }
 
         public string RaisedBy { get; set; }
-        public DateTime DateRaised { get; set; }
-        public string ModifiedBy { get; set; }
-        public DateTime LastModified { get; set; }
-        public DateTime? DecisionMade { get; set; }
-        public bool IsDeclined { get; set; } = false;
-        public bool IsAccepted { get; set; } = false;
-        public string AcceptedBy { get; set; }
+        public DateTime RaisedAt { get; set; }
 
-        public string DeclinedReason { get; set; } = "";
-        public string ResultingLMO { get; set; }
-        public string Status { get; set; } = "Pending approval";
-        public string Likeliness { get; set; }
-        public string Notes { get; set; }
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
 
-        public bool CanAppend;
-        public string ExistingOrder;
-        public bool UpdateOrder;
+        public DateTime? DecisionAt { get; set; }
+        public string? DecisionBy { get; set; }
 
-        [Ignore]
-        public LatheManufactureOrder SubsequentOrder { get; set; } = new();
+        public int? OrderId { get; set; }
+        public LatheManufactureOrder? order;
+
 
         public object Clone()
         {
@@ -48,25 +40,23 @@ namespace ProjectLighthouse.Model.Requests
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Request>(serialised);
         }
 
-        public void MarkAsAccepted()
+        public void Mark(bool accepted)
         {
-            IsAccepted = true;
-            IsDeclined = false;
-            LastModified = DateTime.Now;
-            DecisionMade = LastModified;
-            ModifiedBy = App.CurrentUser.GetFullName();
-            AcceptedBy = App.CurrentUser.FirstName;
-            Status = $"Accepted by {AcceptedBy} - {ResultingLMO}";
+            Status = accepted ? RequestStatus.Accepted : RequestStatus.Declined;
+
+            ModifiedAt = DateTime.Now;
+            ModifiedBy = App.CurrentUser.UserName;
+
+            DecisionAt = DateTime.Now;
+            DecisionBy = App.CurrentUser.UserName;
         }
 
-        public void MarkAsDeclined()
+        public enum RequestStatus
         {
-            IsAccepted = false;
-            IsDeclined = true;
-            LastModified = DateTime.Now;
-            DecisionMade = LastModified;
-            ModifiedBy = App.CurrentUser.GetFullName();
-            Status = $"Declined - {DeclinedReason}";
+            Draft = -2,
+            Declined = -1,
+            Pending = 0,
+            Accepted = 1,
         }
     }
 }

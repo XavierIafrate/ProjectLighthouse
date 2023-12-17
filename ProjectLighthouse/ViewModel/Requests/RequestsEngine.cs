@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Orders;
+﻿using DocumentFormat.OpenXml.Office2016.Excel;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.Model.Scheduling;
@@ -11,34 +12,52 @@ namespace ProjectLighthouse.ViewModel.Requests
 {
     public class RequestsEngine
     {
-        public static List<LatheManufactureOrderItem> GetRecommendedOrderItems(List<TurnedProduct> turnedProducts, Request request, TimeSpan? maxRuntime, int numberOfItems = 4)
+        public static List<LatheManufactureOrderItem> GetRecommendedOrderItems(List<TurnedProduct> turnedProducts, List<RequestItem> items, TimeSpan? maxRuntime, int numberOfItems = 4)
         {
+
             maxRuntime ??= new(days: 3, hours: 0, minutes: 0, seconds: 0);
             List<LatheManufactureOrderItem> recommendation = new();
 
-            TurnedProduct requirement = turnedProducts.Find(x => x.ProductName == request.Product) 
+            int groupId = -1;
+            int materialId = -1;
+            double majorDiameter = -1;
+
+            foreach (RequestItem item in items)
+            {
+                TurnedProduct requirement = turnedProducts.Find(x => x.Id == item.ItemId)
                 ?? throw new Exception("Requests Engine: Requirement not found in product list");
+                recommendation.Add(new(requirement, item.QuantityRequired, item.DateRequired ?? DateTime.Today));
+
+                groupId = requirement.GroupId??-1;
+                materialId = requirement.MaterialId??-1;
+                majorDiameter = requirement.MajorDiameter;
+            }
+
+            if (groupId == -1 || materialId == -1)
+            {
+                throw new Exception("Requests Engine: no materialId or groupId");
+            }
             
-            recommendation.Add(new(requirement, request.QuantityRequired, request.DateRequired));
+
             TimeModel? timeModel = null;
             try
             {
                 timeModel = OrderResourceHelper.GetCycleResponse(
                     turnedProducts
-                        .Where(x => x.MaterialId == requirement.MaterialId && x.GroupId == requirement.GroupId)
+                        .Where(x => x.MaterialId == materialId && x.GroupId == groupId)
                         .ToList());
             }
             catch
             {
-                timeModel = TimeModel.Default(requirement.MajorDiameter);
+                timeModel = TimeModel.Default(majorDiameter);
             }
 
             turnedProducts = turnedProducts
                                 .Where(x => !x.Retired
                                          && !x.IsSpecialPart
-                                         && x.Id != requirement.Id
-                                         && x.MaterialId == requirement.MaterialId
-                                         && x.GroupId == requirement.GroupId)
+                                         && !recommendation.Any(r => r.Id != x.Id)
+                                         && x.MaterialId == materialId
+                                         && x.GroupId == groupId)
                                 .OrderByDescending(x => x.GetRecommendedQuantity())
                                 .ThenBy(x => x.QuantityInStock)
                                 .ToList();
@@ -172,34 +191,6 @@ namespace ProjectLighthouse.ViewModel.Requests
                 <= 25 => 270,
                 _ => 320
             };
-        }
-
-
-        // TODO: Refactor
-        public static List<TurnedProduct> PopulateInsightFields(List<TurnedProduct> products, List<LatheManufactureOrder> activeOrders, List<Request> recentlyDeclinedRequests)
-        {
-            for (int i = 0; i < products.Count; i++)
-            {
-                for (int j = 0; j < activeOrders.Count; j++)
-                {
-                    if (activeOrders[j].OrderItems.Any(x => x.ProductName == products[i].ProductName))
-                    {
-                        products[i].AppendableOrder = activeOrders[j];
-                        products[i].LighthouseGuaranteedQuantity += activeOrders[j].OrderItems.Find(x => x.ProductName == products[i].ProductName)!.RequiredQuantity;
-                    }
-                    else if (activeOrders[j].GroupId == products[i].GroupId)
-                    {
-                        products[i].ZeroSetOrder = activeOrders[j];
-                    }
-                }
-
-                if (products[i].ZeroSetOrder == null && products[i].AppendableOrder == null && recentlyDeclinedRequests.Any(x => x.Product == products[i].ProductName))
-                {
-                    products[i].DeclinedRequest = recentlyDeclinedRequests.OrderByDescending(x => x.LastModified).First(x => x.Product == products[i].ProductName);
-                }
-            }
-
-            return products;
         }
     }
 }

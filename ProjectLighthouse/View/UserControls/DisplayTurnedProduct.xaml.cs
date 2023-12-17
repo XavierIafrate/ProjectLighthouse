@@ -50,45 +50,6 @@ namespace ProjectLighthouse.View.UserControls
 
             control.RatingImage.Data = g;
             control.RatingImage.Fill = b;
-
-            if (control.Product.AppendableOrder != null)
-            {
-                int numberNeeded = -control.Product.FreeStock();
-
-                if (numberNeeded > 0)
-                {
-                    control.CouldBeAddedFlag.Text = $"update {control.Product.AppendableOrder.Name}: +{numberNeeded:#,##0} pcs";
-                }
-                else
-                {
-                    control.CouldBeAddedFlag.Text = $"{control.Product.LighthouseGuaranteedQuantity:#,##0}pcs on {control.Product.AppendableOrder.Name}";
-                }
-
-                control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["Green"];
-                control.CouldBeAddedFlag.Visibility = Visibility.Visible;
-                control.RecentlyDeclined.Visibility = Visibility.Collapsed;
-                control.stock.Visibility = Visibility.Collapsed;
-            }
-            else if (control.Product.ZeroSetOrder != null)
-            {
-                control.CouldBeAddedFlag.Text = $"compatible with {control.Product.ZeroSetOrder.Name}";
-                control.CouldBeAddedFlag.Foreground = (Brush)App.Current.Resources["Blue"];
-                control.RecentlyDeclined.Visibility = Visibility.Collapsed;
-                control.stock.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                control.RecentlyDeclined.Visibility = control.Product.DeclinedRequest != null
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-
-                control.stock.Visibility = control.Product.DeclinedRequest == null
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-
-                control.CouldBeAddedFlag.Visibility = Visibility.Collapsed;
-            }
-
         }
 
         public DisplayTurnedProduct()

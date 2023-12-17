@@ -20,6 +20,10 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             {
                 return (Brush)App.Current.Resources["Red"];
             }
+            else if (status == RequestStatus.Draft)
+            {
+                return (Brush)App.Current.Resources["Purple"];
+            }
             else
             {
                 return (Brush)App.Current.Resources["Green"];

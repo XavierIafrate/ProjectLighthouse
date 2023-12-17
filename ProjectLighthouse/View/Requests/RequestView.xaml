@@ -18,85 +18,95 @@
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisible" />
             <converters:boolToCollapsedOrVisible x:Key="boolToCollapsed" />
             <converters:RequestToRequestedLeadTime x:Key="LeadTime" />
+            <converters:ObjectIsNull x:Key="NullToBool" />
+            <converters:RequestStatusToBrush x:Key="statusBrush" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="370" />
+            <ColumnDefinition Width="*" MinWidth="280" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-
+        <!--#region SideBar-->
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <TextBox
-                x:Name="searchBox"
-                Style="{StaticResource SearchBox}"
-                Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="searchBox"
+                    Style="{StaticResource SearchBox}"
+                    Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    x:Name="ClearButton"
+                    Grid.Column="1"
+                    Click="ClearButton_Click"
+                    Style="{StaticResource ClearButton}" />
+            </Grid>
+
             <Button
-                x:Name="ClearButton"
-                Grid.Column="1"
-                Click="ClearButton_Click"
-                Style="{StaticResource ClearButton}" />
+                Grid.Row="1"
+                Command="{Binding NewRequestCmd}"
+                IsEnabled="{Binding NewRequest, Converter={StaticResource NullToBool}}"
+                Style="{StaticResource Action_New_Request_Button}"
+                Tag="New Request" />
+
+            <ListView
+                x:Name="requests_ListView"
+                Grid.Row="2"
+                HorizontalContentAlignment="Stretch"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
+                ItemsSource="{Binding FilteredRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                ScrollViewer.CanContentScroll="false"
+                SelectedItem="{Binding SelectedRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <uc:DisplayRequest Margin="10,5" Request="{Binding}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Grid Grid.Row="3" Margin="5,0,5,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Opacity="0.6"
+                    Text="{Binding FilteredRequests.Count, StringFormat='{}{0} request(s)', FallbackValue='10 request(s)'}" />
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="5,0,5,0"
+                    VerticalAlignment="Center"
+                    Text="Filter by:" />
+                <ComboBox
+                    x:Name="filterComboBox"
+                    Grid.Column="2"
+                    Margin="0"
+                    Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="Active" IsSelected="True" />
+                    <ComboBoxItem Content="Last 14 Days" />
+                    <ComboBoxItem Content="My Requests" />
+                    <ComboBoxItem Content="Pending" />
+                    <ComboBoxItem Content="Accepted" />
+                    <ComboBoxItem Content="Declined" />
+                    <ComboBoxItem Content="All" />
+                </ComboBox>
+            </Grid>
         </Grid>
 
-        <ListView
-            x:Name="requests_ListView"
-            Grid.Row="1"
-            HorizontalContentAlignment="Stretch"
-            d:ItemsSource="{d:SampleData ItemCount=10}"
-            ItemsSource="{Binding FilteredRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            ScrollViewer.CanContentScroll="false"
-            SelectedItem="{Binding SelectedRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <uc:DisplayRequest Margin="10,5" Request="{Binding}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <!--#endregion-->
 
-        <Grid Grid.Row="2" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock
-                VerticalAlignment="Center"
-                Opacity="0.6"
-                Text="{Binding FilteredRequests.Count, StringFormat='{}{0} request(s)', FallbackValue='10 request(s)'}" />
-            <TextBlock
-                Grid.Column="1"
-                Margin="5,0,5,0"
-                VerticalAlignment="Center"
-                Text="Filter by:" />
-            <ComboBox
-                x:Name="filterComboBox"
-                Grid.Column="2"
-                Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ComboBoxItem Content="Active" IsSelected="True" />
-                <ComboBoxItem Content="Last 14 Days" />
-                <ComboBoxItem Content="My Requests" />
-                <ComboBoxItem Content="Pending" />
-                <ComboBoxItem Content="Accepted" />
-                <ComboBoxItem Content="Declined" />
-                <ComboBoxItem Content="All" />
-            </ComboBox>
-            <Button
-                Grid.Column="3"
-                Margin="5,0,0,0"
-                Command="{Binding ExportCommand}"
-                Style="{StaticResource CSVButton}" />
-        </Grid>
+        <!--#region Not found gif-->
         <StackPanel
-            Grid.RowSpan="2"
             Grid.Column="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
@@ -109,10 +119,6 @@
                 Text="What is this?" />
 
             <Border
-                Grid.Row="3"
-                Grid.ColumnSpan="2"
-                Canvas.Left="55"
-                Canvas.Top="30"
                 Width="auto"
                 Margin="0,10"
                 VerticalAlignment="Top"
@@ -192,13 +198,15 @@
                 Opacity="0.6"
                 Text="{Binding SearchString, StringFormat='{}A {0} for ants?!', TargetNullValue='A request for ants?!'}" />
         </StackPanel>
+
+        <!--#endregion-->
+
         <ScrollViewer
             x:Name="scroller"
-            Grid.RowSpan="3"
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged"
             Visibility="{Binding SelectedRequest, Converter={StaticResource NotNullToVisibility}}">
-            <Grid MaxWidth="700" Margin="0,20,0,50">
+            <Grid MaxWidth="700" Margin="25,25,25,60">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
@@ -218,71 +226,30 @@
                     <!--  Card Header  -->
                     <Grid>
                         <TextBlock
-                            d:Text="REQUEST_ID"
+                            d:Text="REQUEST_DESC"
                             Style="{StaticResource title}"
-                            Text="{Binding SelectedRequest.Id, StringFormat='{}Request #{0}'}" />
+                            Text="{Binding SelectedRequest.Description}" />
+
+
                         <Grid
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Visibility="{Binding ApprovedVis}">
+                            Visibility="{Binding SelectedRequest.DecisionBy, Converter={StaticResource NullToVisibility}}">
                             <Border
-                                Background="{StaticResource Green}"
-                                CornerRadius="3"
-                                Opacity="0.15" />
-                            <Border
-                                BorderBrush="{StaticResource Green}"
-                                BorderThickness="3,0,0,0"
-                                CornerRadius="3">
-                                <TextBlock
-                                    Margin="10,5"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Green}"
-                                    Text="Request approved" />
+                                d:Background="{StaticResource Blue}"
+                                Background="{Binding SelectedRequest.Status, Converter={StaticResource statusBrush}}"
+                                CornerRadius="5"
+                                Opacity="0.2" />
 
-                            </Border>
-                        </Grid>
-                        <Grid
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Visibility="{Binding DeclinedVis}">
-                            <Border
-                                Background="{StaticResource Red}"
-                                CornerRadius="3"
-                                Opacity="0.15" />
-                            <Border
-                                BorderBrush="{StaticResource Red}"
-                                BorderThickness="3,0,0,0"
-                                CornerRadius="3">
-                                <TextBlock
-                                    Margin="10,5"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Red}"
-                                    Text="Request declined" />
+                            <TextBlock
+                                Margin="10,5"
+                                d:Foreground="{StaticResource Blue}"
+                                d:Text="STATUS"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{Binding SelectedRequest.Status, Converter={StaticResource statusBrush}}"
+                                Text="{Binding SelectedRequest.Status}" />
 
-                            </Border>
-                        </Grid>
-                        <Grid
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Visibility="{Binding ApprovalControlsVis}">
-                            <Border
-                                Background="{StaticResource Blue}"
-                                CornerRadius="3"
-                                Opacity="0.15" />
-                            <Border
-                                BorderBrush="{StaticResource Blue}"
-                                BorderThickness="3,0,0,0"
-                                CornerRadius="3">
-                                <TextBlock
-                                    Margin="10,5"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Blue}"
-                                    Text="Pending approval" />
-
-                            </Border>
                         </Grid>
                     </Grid>
 
@@ -309,25 +276,25 @@
                                 Fill="{StaticResource Purple}"
                                 Stretch="Uniform" />
                             <TextBlock
+                                d:Text="RAISED_BY"
                                 FontSize="13"
-                                FontStyle="Italic"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
                                 Opacity="0.8"
                                 Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}" />
                             <TextBlock
+                                d:Text=" RAISED_AT"
                                 FontSize="13"
-                                FontStyle="Italic"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
                                 Opacity="0.8"
-                                Text="{Binding SelectedRequest.DateRaised, UpdateSourceTrigger=PropertyChanged, StringFormat='{} {0}', Converter={StaticResource modifiedFormatter}}" />
+                                Text="{Binding SelectedRequest.RaisedAt, UpdateSourceTrigger=PropertyChanged, StringFormat='{} {0}', Converter={StaticResource modifiedFormatter}}" />
                         </StackPanel>
                         <StackPanel
                             Grid.Row="1"
                             Margin="0,5"
                             Orientation="Horizontal"
-                            Visibility="{Binding ModifiedVis, UpdateSourceTrigger=PropertyChanged}">
+                            Visibility="{Binding SelectedRequest.ModifiedAt, Converter={StaticResource NotNullToVisibility}}">
                             <Path
                                 Width="15"
                                 Height="15"
@@ -338,8 +305,8 @@
 
                             <TextBlock
                                 Grid.Row="1"
+                                d:Text="UPDATED_BY"
                                 FontSize="13"
-                                FontStyle="Italic"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Blue}"
                                 Opacity="0.8"
@@ -348,57 +315,34 @@
                                 Grid.Row="1"
                                 Grid.Column="2"
                                 HorizontalAlignment="Right"
-                                d:Text="Updated by Kyle Brovloski yesterday"
+                                d:Text=" UPDATED_AT"
                                 FontSize="13"
-                                FontStyle="Italic"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Blue}"
                                 Opacity="0.8"
-                                Text="{Binding SelectedRequest.LastModified, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource modifiedFormatter}, StringFormat='{} {0}'}" />
-                        </StackPanel>
-
-                        <StackPanel
-                            Grid.Row="2"
-                            Margin="0,5"
-                            Orientation="Horizontal"
-                            Visibility="{Binding SelectedRequest.IsDeclined, Converter={StaticResource boolToVisible}}">
-                            <Path
-                                Width="15"
-                                Height="15"
-                                Margin="0,0,5,0"
-                                Data="M12,3A3,3 0 0,0 9,6C9,9 14,13 6,13A2,2 0 0,0 4,15V17H20V15A2,2 0 0,0 18,13C10,13 15,9 15,6C15,4 13.66,3 12,3M6,19V21H18V19H6Z"
-                                Fill="{StaticResource Red}"
-                                Stretch="Uniform" />
-
-                            <TextBlock
-                                d:Text="Declined - Uneconomical"
-                                FontSize="13"
-                                FontStyle="Italic"
-                                FontWeight="SemiBold"
-                                Foreground="{StaticResource Red}"
-                                Opacity="0.8"
-                                Text="{Binding SelectedRequest.Status, UpdateSourceTrigger=PropertyChanged}" />
+                                Text="{Binding SelectedRequest.ModifiedAt, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource modifiedFormatter}, StringFormat='{} {0}'}" />
                         </StackPanel>
 
                         <StackPanel
                             Grid.Row="3"
                             Margin="0,5"
                             Orientation="Horizontal"
-                            Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToVisible}}">
+                            Visibility="{Binding SelectedRequest.DecisionAt, Converter={StaticResource NotNullToVisibility}}">
                             <Path
                                 Width="15"
                                 Height="15"
                                 Margin="0,0,5,0"
+                                d:Fill="{StaticResource Green}"
                                 Data="M12,3A3,3 0 0,0 9,6C9,9 14,13 6,13A2,2 0 0,0 4,15V17H20V15A2,2 0 0,0 18,13C10,13 15,9 15,6C15,4 13.66,3 12,3M6,19V21H18V19H6Z"
-                                Fill="{StaticResource Green}"
+                                Fill="{Binding SelectedRequest.Status, Converter={StaticResource statusBrush}}"
                                 Stretch="Uniform" />
 
                             <TextBlock
-                                d:Text="Approved by Eric - M00000"
+                                d:Foreground="{StaticResource Green}"
+                                d:Text="REQUEST_STATUS"
                                 FontSize="13"
-                                FontStyle="Italic"
                                 FontWeight="SemiBold"
-                                Foreground="{StaticResource Green}"
+                                Foreground="{Binding SelectedRequest.Status, Converter={StaticResource statusBrush}}"
                                 Opacity="0.8"
                                 Text="{Binding SelectedRequest.Status, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -410,6 +354,46 @@
 
                     <StackPanel Margin="10">
 
+                        <StackPanel Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                            <TextBlock Style="{StaticResource section}" Text="Select Items" />
+                            <TextBox
+                                Style="{StaticResource DefaultTextBox}"
+                                Tag="search items"
+                                Text="{Binding NewRequestSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Visibility="{Binding SelectedRequestItems, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+                            <ItemsControl
+                                Height="250"
+                                d:ItemsSource="{d:SampleData ItemCount=5}"
+                                ItemsSource="{Binding NewRequestSearchResults}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <uc:DisplayItemForRequest
+                                            Margin="0,0,5,5"
+                                            AddCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.AddToRequestCmd}"
+                                            Item="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <StackPanel
+                                Grid.Row="4"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal"
+                                Visibility="{Binding SelectedRequestItems, Converter={StaticResource EmptyListToVisibleOrCollapsed}}">
+                                <TextBlock
+                                    Margin="0,0,5,4"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Opacity="0.4"
+                                    Text="Need something else?" />
+                                <Button
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding AddSpecialCmd}"
+                                    Style="{StaticResource Action_New_Button_Small}"
+                                    Tag="Add Bespoke Item" />
+                            </StackPanel>
+                        </StackPanel>
+
 
                         <TextBlock Style="{StaticResource section}" Text="Request Details" />
                         <Grid Margin="10">
@@ -418,13 +402,13 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Border
-                                Width="140"
-                                Height="140"
+                                Width="100"
+                                Height="100"
                                 Background="{StaticResource Surface}"
                                 CornerRadius="5">
                                 <Grid>
                                     <Path
-                                        Height="50"
+                                        Height="30"
                                         Margin="0,0,2,0"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
@@ -437,128 +421,75 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         RenderOptions.BitmapScalingMode="Fant"
-                                        Source="{Binding SelectedRequestMainProduct.LocalRenderPath, TargetNullValue={x:Null}, FallbackValue={x:Null}}" />
+                                        Source="{Binding SelectedRequestProduct.LocalRenderPath, TargetNullValue={x:Null}, FallbackValue={x:Null}}" />
                                 </Grid>
 
                             </Border>
-                            <Grid
-                                Grid.Column="1"
-                                Margin="15,0"
-                                VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
+                            <StackPanel Grid.Column="1" Margin="10">
+
                                 <TextBlock
                                     Grid.ColumnSpan="2"
                                     d:Text="PRODUCT_NAME"
                                     FontSize="22"
+                                    FontWeight="Bold"
+                                    Text="{Binding SelectedRequestProduct.Name}" />
+                                <TextBlock
+                                    Grid.ColumnSpan="2"
+                                    d:Text="PRODUCT_DESC"
+                                    FontSize="18"
                                     FontWeight="SemiBold"
-                                    Text="{Binding SelectedRequestProduct.ProductName}" />
-
-                                <Path
-                                    Grid.Row="1"
-                                    Height="20"
-                                    Margin="10,5"
-                                    Data="M8.46,15.06L7.05,16.47L5.68,15.1C4.82,16.21 4.24,17.54 4.06,19H6V21H2V20C2,15.16 5.44,11.13 10,10.2V8.2L2,5V3H22V5L14,8.2V10.2C18.56,11.13 22,15.16 22,20V21H18V19H19.94C19.76,17.54 19.18,16.21 18.32,15.1L16.95,16.47L15.54,15.06L16.91,13.68C15.8,12.82 14.46,12.24 13,12.06V14H11V12.06C9.54,12.24 8.2,12.82 7.09,13.68L8.46,15.06M12,18A2,2 0 0,1 14,20A2,2 0 0,1 12,22C11.68,22 11.38,21.93 11.12,21.79L7.27,20L11.12,18.21C11.38,18.07 11.68,18 12,18Z"
-                                    Fill="{StaticResource Purple}"
-                                    Stretch="Uniform" />
+                                    Text="{Binding SelectedRequestProduct.Description}" />
                                 <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    d:Text="QTY_REQUESTED"
-                                    FontSize="16"
-                                    FontWeight="SemiBold">
-                                    <Run Text="{Binding SelectedRequest.QuantityRequired, StringFormat='{}{0:#,##0}pcs'}" />
-                                </TextBlock>
-
-
-                                <Path
-                                    Grid.Row="2"
-                                    Margin="10,5"
-                                    Data="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z"
-                                    Fill="{StaticResource Purple}"
-                                    Stretch="Uniform" />
-
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    d:Text="DATE_REQUESTED"
-                                    FontSize="16"
-                                    FontWeight="SemiBold">
-                                    <Run Text="{Binding SelectedRequest.DateRequired, StringFormat='{}{0:dd MMMM yyyy}'}" />
-                                    <Run Text="{Binding SelectedRequest, Converter={StaticResource LeadTime}, StringFormat='{}({0:N1} weeks)'}" />
-                                </TextBlock>
-
-                                <Path
-                                    Grid.Row="3"
-                                    Margin="10,5"
-                                    Data="M6 19H8V21H6V19M12 3L2 8V21H4V13H20V21H22V8L12 3M8 11H4V9H8V11M14 11H10V9H14V11M20 11H16V9H20V11M6 15H8V17H6V15M10 15H12V17H10V15M10 19H12V21H10V19M14 19H16V21H14V19Z"
-                                    Fill="{StaticResource Purple}"
-                                    Stretch="Uniform" />
-                                <TextBlock
-                                    Grid.Row="3"
-                                    Grid.Column="1"
-                                    d:Text="QTY_IN_STOCK"
-                                    FontSize="16"
+                                    Grid.ColumnSpan="2"
+                                    d:Text="GROUP_NAME"
+                                    FontSize="18"
                                     FontWeight="SemiBold"
-                                    Text="{Binding SelectedRequestProduct.QuantityInStock, StringFormat='{}{0:#,##0} in stock'}" />
+                                    Text="{Binding SelectedRequestArchetype.Name}" />
+                            </StackPanel>
 
-                                <Path
-                                    Grid.Row="4"
-                                    Margin="10,5"
-                                    Data="M15,4A8,8 0 0,1 23,12A8,8 0 0,1 15,20A8,8 0 0,1 7,12A8,8 0 0,1 15,4M15,6A6,6 0 0,0 9,12A6,6 0 0,0 15,18A6,6 0 0,0 21,12A6,6 0 0,0 15,6M14,8H15.5V11.78L17.83,14.11L16.77,15.17L14,12.4V8M2,18A1,1 0 0,1 1,17A1,1 0 0,1 2,16H5.83C6.14,16.71 6.54,17.38 7,18H2M3,13A1,1 0 0,1 2,12A1,1 0 0,1 3,11H5.05L5,12L5.05,13H3M4,8A1,1 0 0,1 3,7A1,1 0 0,1 4,6H7C6.54,6.62 6.14,7.29 5.83,8H4Z"
-                                    Fill="{StaticResource Purple}"
-                                    Stretch="Uniform" />
-                                <TextBlock
-                                    Grid.Row="4"
-                                    Grid.Column="1"
-                                    d:Text="QTY_ON_SO"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding SelectedRequestProduct.QuantityOnSO, StringFormat='{}{0:#,##0} on Sales Order'}" />
-                            </Grid>
+
+
                         </Grid>
 
-                        <!--<StackPanel Visibility="{Binding SelectedRequestMainProduct, Converter={StaticResource NotNullToVisibility}}">
-                            <TextBlock Style="{StaticResource section}" Text="Product Analytics" />
-                            <Border
-                                Margin="5"
-                                Background="{StaticResource GreenFaded}"
-                                CornerRadius="5">
-                                <StackPanel
-                                    Margin="5"
-                                    HorizontalAlignment="Center"
-                                    Orientation="Horizontal">
-                                    <Path
-                                        Height="18"
-                                        Margin="5,0"
-                                        Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"
-                                        Fill="{StaticResource Green}"
-                                        Stretch="Uniform" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource Green}"
-                                        Text="This archetype has not been made in the last year" />
-                                </StackPanel>
-                            </Border>
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Requested Items" />
 
+                        <ItemsControl d:ItemsSource="{d:SampleData ItemCount=2}" ItemsSource="{Binding SelectedRequestItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:DisplayRequestItem
+                                        CanEdit="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.CanEditRequestItems}"
+                                        EditItemCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.EditItemCmd}"
+                                        RemoveCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.RemoveFromRequestCmd}"
+                                        RequestItem="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                            <TextBlock Text="{Binding FrequencyAnalysis}" />
+                        <StackPanel Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                            <Button
+                                HorizontalAlignment="Right"
+                                Command="{Binding SubmitRequestCmd}"
+                                Style="{StaticResource Action_Button}"
+                                Tag="Submit" />
+                        </StackPanel>
 
-                        </StackPanel>-->
+                        <StackPanel Margin="0,10" Visibility="{Binding SelectedRequest.OrderId, Converter={StaticResource NotNullToVisibility}}">
+                            <TextBlock Style="{StaticResource section}" Text="Order Progress" />
+                            <StackPanel Margin="15,10">
+                                <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding SelectedRequestOrder}" />
+                                <ItemsControl d:ItemsSource="{d:SampleData ItemCount=2}" ItemsSource="{Binding SelectedRequestOrder.OrderItems}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
-                        <StackPanel Visibility="{Binding SelectedRequest.IsAccepted, Converter={StaticResource boolToCollapsed}}">
+                            </StackPanel>
+                            <!--<TextBlock Text="{Binding SelectedRequestOrder.Status}" FontSize="16" FontWeight="SemiBold" d:Text="ORDER_STATUS"/>-->
+                        </StackPanel>
+
+                        <StackPanel Visibility="{Binding ShowRecommendation, Converter={StaticResource boolToVisible}}">
                             <TextBlock Style="{StaticResource section}" Text="Recommended Order" />
                             <TextBlock
                                 VerticalAlignment="Center"
@@ -595,10 +526,10 @@
 
                             </Grid>
                             <Grid>
-                                <ListView ItemsSource="{Binding RecommendedManifest}">
+                                <ListView ItemsSource="{Binding RecommendedManifest}" d:ItemsSource="{d:SampleData ItemCount=4}">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <uc:DisplayManifestItem Margin="10,2" Item="{Binding}" />
+                                            <uc:DisplayLMOItems Margin="10,2" LatheManufactureOrderItem="{Binding}" />
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
@@ -611,8 +542,7 @@
                                     HorizontalAlignment="Left"
                                     Command="{Binding ViewMakeOrBuyCommand}"
                                     Style="{StaticResource Action_Button}"
-                                    Tag="Order Builder"
-                                    Visibility="{Binding DataRequired, Converter={StaticResource boolToCollapsed}}" />
+                                    Tag="Order Builder" />
                                 <Border HorizontalAlignment="Right">
                                     <StackPanel Orientation="Horizontal">
                                         <Path
@@ -633,24 +563,8 @@
                             </Grid>
                         </StackPanel>
 
-                        <StackPanel Margin="0,10" Visibility="{Binding ApprovalControlsVis}">
+                        <StackPanel Margin="0,10" Visibility="{Binding ShowApproval, Converter={StaticResource boolToVisibleOrCollapsed}}">
                             <TextBlock Style="{StaticResource section}" Text="Approval" />
-
-                            <StackPanel HorizontalAlignment="Center">
-                                <TextBlock Style="{StaticResource InputLabel}" Text="Reason for declining:" />
-                                <ComboBox
-                                    x:Name="DeclineComboBox"
-                                    Width="300"
-                                    Margin="0,0,0,5"
-                                    Text="{Binding SelectedRequest.DeclinedReason, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-                                    <ComboBoxItem Content="Uneconomical" />
-                                    <ComboBoxItem Content="No active requirement" />
-                                    <ComboBoxItem Content="Cannot deliver on time" />
-                                    <ComboBoxItem Content="Machining not possible" />
-                                    <ComboBoxItem Content="Duplicate request" />
-                                    <ComboBoxItem Content="Merged with active order" />
-                                </ComboBox>
-                            </StackPanel>
 
                             <Grid
                                 x:Name="approvalControls"
@@ -671,147 +585,50 @@
                                     Grid.Column="1"
                                     Command="{Binding ApproveCommand}"
                                     Style="{StaticResource ApproveButton}" />
-                                <Button
-                                    x:Name="MergeButton"
-                                    Grid.Column="2"
-                                    Command="{Binding MergeCommand}"
-                                    Style="{StaticResource MergeButton}"
-                                    Visibility="{Binding MergeVis}" />
                             </Grid>
                         </StackPanel>
-                        <Border
-                            Margin="0,10"
-                            Background="{StaticResource Background}"
-                            BorderBrush="{StaticResource Orange}"
-                            BorderThickness="3"
-                            CornerRadius="5"
-                            Visibility="{Binding DataRequired, Converter={StaticResource boolToVisible}}">
-                            <StackPanel Margin="20">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Path
-                                        Width="25"
-                                        Margin="0,3,7,0"
-                                        Data="M21.54 10.8L13.24 2.5A1.63 1.63 0 0 0 10.84 2.5L2.54 10.8A1.63 1.63 0 0 0 2.54 13.2L10.84 21.5A1.63 1.63 0 0 0 13.24 21.5L21.54 13.2A1.83 1.83 0 0 0 21.54 10.8M13 17H11V15H13M13 13H11V7H13Z"
-                                        Fill="{StaticResource OnSurface}"
-                                        Stretch="Uniform" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource OnSurface}"
-                                        Style="{StaticResource section}"
-                                        Text="Data Required" />
-                                </Grid>
-                                <TextBlock
-                                    Margin="10"
-                                    Foreground="{StaticResource OnSurface}"
-                                    Text="The required data for manufacture is not available for this product. Please review the specifications below and amend the product record."
-                                    TextWrapping="Wrap" />
-                                <TextBlock
-                                    Margin="10"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Style="{StaticResource section}"
-                                    Text="Spec Details" />
-                                <TextBlock
-                                    Margin="20,0"
-                                    d:Text="None given"
-                                    Text="{Binding SelectedRequestProduct.SpecificationDetails, TargetNullValue='None given'}"
-                                    TextWrapping="Wrap" />
-
-                                <TextBlock
-                                    Margin="10"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Style="{StaticResource section}"
-                                    Text="Spec Document" />
-                                <uc:DisplayPdf Margin="20,0" FilePath="{Binding SelectedRequestProduct.SpecificationDocument, TargetNullValue=''}" />
-
-                                <Grid Margin="0,20,0,0" HorizontalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <Button
-                                        Margin="10,0"
-                                        Command="{Binding ModifyProductCommand}"
-                                        Style="{StaticResource Action_Edit_Button}"
-                                        Tag="Edit Product Data" />
-                                </Grid>
-
-                            </StackPanel>
-                        </Border>
-
                     </StackPanel>
+                    <StackPanel Visibility="{Binding NewRequestMode, Converter={StaticResource boolToCollapsedOrVisible}}">
 
-                    <StackPanel
-                        Grid.Row="2"
-                        Margin="10"
-                        Visibility="{Binding EditControlsVis}">
-                        <TextBlock
-                            Margin="0,5"
-                            Style="{StaticResource section}"
-                            Text="Edit Request" />
-                        <Grid Margin="10">
+                        <TextBlock Style="{StaticResource section}" Text="Comments" />
+
+                        <uc:DisplayListOfNotes
+                            MinHeight="80"
+                            Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}"
+                            ShowingEditControls="False" />
+                        <Grid x:Name="composeMessageControls" Grid.Row="2">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
                             <TextBox
-                                x:Name="quantityTextbox"
-                                Margin="0"
-                                IsEnabled="{Binding CanEditRequirements}"
-                                Style="{StaticResource DefaultTextBox}"
-                                Tag="quantity required"
-                                Text="{Binding SelectedRequest.QuantityRequired, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
+                                x:Name="MessageTextBox"
+                                KeyDown="TextBox_KeyDown"
+                                Style="{StaticResource MessageComposer}"
+                                Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextChanged="TextBox_TextChanged"
+                                TextWrapping="WrapWithOverflow" />
+                            <Button
+                                x:Name="SendButton"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Background="Transparent"
+                                Command="{Binding SendMessageCommand}"
+                                IsEnabled="False"
+                                Style="{StaticResource SendButton}" />
 
-                        <Grid Margin="10">
-                            <DatePicker
-                                x:Name="EditDate_DatePicker"
-                                DisplayDateStart="{x:Static sys:DateTime.Now}"
-                                IsEnabled="{Binding CanEditRequirements}"
-                                SelectedDate="{Binding SelectedRequest.DateRequired, Mode=TwoWay}" />
                         </Grid>
-
-                        <Button
-                            HorizontalAlignment="Right"
-                            Command="{Binding UpdateRequestCmd}"
-                            CommandParameter="{Binding SelectedRequest}"
-                            Style="{StaticResource Action_Button}"
-                            Tag="Update" />
                     </StackPanel>
-                    <TextBlock Style="{StaticResource section}" Text="Comments" />
 
-                    <uc:DisplayListOfNotes
-                        MinHeight="80"
-                        Notes="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.FilteredNotes}"
-                        ShowingEditControls="False" />
-                    <Grid x:Name="composeMessageControls" Grid.Row="2">
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox
-                            Style="{StaticResource MessageComposer}"
-                            Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            TextChanged="TextBox_TextChanged"
-                            TextWrapping="WrapWithOverflow" />
-                        <Button
-                            x:Name="SendButton"
-                            Grid.Column="1"
-                            Margin="10,0,0,0"
-                            Background="Transparent"
-                            Command="{Binding SendMessageCommand}"
-                            IsEnabled="False"
-                            Style="{StaticResource SendButton}" />
 
-                    </Grid>
+
                 </StackPanel>
             </Grid>
         </ScrollViewer>
+
+        <!--#region scroll grad-->
         <Border
             x:Name="grad"
             Grid.Column="1"
@@ -826,5 +643,7 @@
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
+        <!--#endregion-->
+
     </Grid>
 </UserControl>

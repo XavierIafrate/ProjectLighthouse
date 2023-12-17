@@ -45,7 +45,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Schedule"
                 };
             }
-            else if (targetView == "View Requests")
+            else if (targetView == "Requests")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new RequestViewModel();
@@ -55,20 +55,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Persian" => "مشاهده درخواست ها",
                     "Welsh" => "Gweld Ceisiadau",
                     "Latvian" => "Pieprasījumi",
-                    _ => "View Requests"
-                };
-            }
-            else if (targetView == "New Request")
-            {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new NewRequestViewModel();
-                viewModel.NavText = App.CurrentUser.Locale switch
-                {
-                    "Polish" => "Nowe Żądanie",
-                    "Persian" => "درخواست جدید",
-                    "Welsh" => "Cais Newydd",
-                    "Latvian" => "Jauns Pieprasījums",
-                    _ => "New Request"
+                    _ => "Requests"
                 };
             }
             else if (targetView == "Orders")
@@ -127,19 +114,6 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Welsh" => "Calibradu",
                     "Latvian" => "Tehniskie Rasējumi",
                     _ => "Calibration"
-                };
-            }
-            else if (targetView == "Quality Check")
-            {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new QualityCheckViewModel();
-                viewModel.NavText = App.CurrentUser.Locale switch
-                {
-                    "Polish" => "Kontrola Jakości",
-                    "Persian" => "بررسی کیفیت",
-                    "Welsh" => "Gwiriad Ansawdd",
-                    "Latvian" => "Kvalitātes Kontrole",
-                    _ => "Quality Check"
                 };
             }
             else if (targetView == "Deliveries")

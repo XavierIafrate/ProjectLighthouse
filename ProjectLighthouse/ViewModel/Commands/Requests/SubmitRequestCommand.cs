@@ -1,28 +1,29 @@
-﻿using ProjectLighthouse.Model.Core;
-using ProjectLighthouse.ViewModel.Requests;
+﻿using ProjectLighthouse.ViewModel.Requests;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.Requests
 {
-    public class NewSpecialPartCommand : ICommand
+    public class SubmitRequestCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
         private RequestViewModel viewModel;
 
-        public NewSpecialPartCommand(RequestViewModel vm)
+        public SubmitRequestCommand(RequestViewModel vm)
         {
-            viewModel = vm;
+            this.viewModel = vm;
         }
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.HasPermission(PermissionType.CreateSpecial);
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.RaiseRequest);
         }
 
         public void Execute(object parameter)
         {
-            viewModel.CreateSpecial();
+            viewModel.SubmitRequest();
         }
     }
 }

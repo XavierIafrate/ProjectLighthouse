@@ -612,12 +612,15 @@ namespace ProjectLighthouse.View.Orders
                     continue;
                 }
 
-                item.CycleTime = 0; //force to update if different
+                item.CycleTime = 0; 
                 item.AssignedMO = NewOrder.Name;
                 item.AddedBy = App.CurrentUser.GetFullName();
                 item.DateAdded = DateTime.Now;
                 DatabaseHelper.Insert(item, throwErrs: true);
             };
+
+           NewOrder.OrderItems = NewOrderItems.ToList();
+
             return true;
 
         }

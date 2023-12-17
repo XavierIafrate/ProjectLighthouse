@@ -1,28 +1,31 @@
-﻿using ProjectLighthouse.Model.Core;
+﻿using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Requests;
 using System;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.Requests
 {
-    public class NewSpecialPartCommand : ICommand
+    public class AddToRequestCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
         private RequestViewModel viewModel;
 
-        public NewSpecialPartCommand(RequestViewModel vm)
+        public AddToRequestCommand(RequestViewModel vm)
         {
-            viewModel = vm;
+            this.viewModel = vm;
         }
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.HasPermission(PermissionType.CreateSpecial);
+            return true;
         }
 
         public void Execute(object parameter)
         {
-            viewModel.CreateSpecial();
+            if (parameter is TurnedProduct p)
+            {
+                viewModel.AddToRequest(p);
+            }
         }
     }
 }
