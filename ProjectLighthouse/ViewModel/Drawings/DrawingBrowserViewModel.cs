@@ -28,7 +28,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         private List<Note> Notes;
         private List<ProductGroup> ProductGroups;
-        private List<Product> Products;
         private List<TurnedProduct> TurnedProducts;
 
         #region Full Properties
@@ -212,7 +211,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
         private void LoadData()
         {
-            Products = DatabaseHelper.Read<Product>();
             ProductGroups = DatabaseHelper.Read<ProductGroup>();
             TurnedProducts = DatabaseHelper.Read<TurnedProduct>();
             Tolerances = DatabaseHelper.Read<ToleranceDefinition>().OrderBy(x => x.Id).ToList();
