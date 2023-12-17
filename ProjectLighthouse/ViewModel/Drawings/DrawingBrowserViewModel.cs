@@ -260,7 +260,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 List<TechnicalDrawing> groupDrawings = Drawings.Where(x => x.GroupId == groupId && x.TurnedProductId is null).ToList();
                 int maxRev = groupDrawings.Max(x => x.Revision);
                 TechnicalDrawing.Amendment maxAmd = groupDrawings.Where(x => x.Revision == maxRev).Max(x => x.AmendmentType);
-
+                bool leadHasCheckSheet = false;
                 for (int j = 0; j < groupDrawings.Count; j++)
                 {
                     if (groupDrawings[j].AmendmentType == maxAmd
@@ -269,6 +269,10 @@ namespace ProjectLighthouse.ViewModel.Drawings
                         && !groupDrawings[j].IsWithdrawn)
                     {
                         groupDrawings[j].IsCurrent = true;
+                        if (groupDrawings[j].Specification.Count > 0)
+                        {
+                            leadHasCheckSheet = true;
+                        }
                     }
                 }
 
@@ -280,7 +284,8 @@ namespace ProjectLighthouse.ViewModel.Drawings
                     LastIssue = groupDrawings.Max(x => x.ApprovedDate),
                     Amendment = maxAmd,
                     AllDrawingsWithdrawn = groupDrawings.All(x => x.IsWithdrawn || x.IsRejected),
-                    IsArchetypeGroup = true
+                    IsArchetypeGroup = true,
+                    HasCheckSheet = leadHasCheckSheet
                 };
 
                 if (newGroup.LastIssue == DateTime.MinValue)
@@ -723,6 +728,21 @@ namespace ProjectLighthouse.ViewModel.Drawings
         {
             CheckSheetEditor editor = new(Tolerances, SelectedDrawing, null);
             editor.ShowDialog();
+
+            if (!editor.SaveExit) return;
+            if (SelectedDrawing is null) return;
+
+
+            List<string> baseSpec = SelectedDrawing.Specification;
+            Specification = new();
+
+            foreach (string address in baseSpec)
+            {
+                Specification.Add(Tolerances.Find(x => x.Id == address));
+            }
+
+            OnPropertyChanged(nameof(Specification));
+
         }
     }
 }

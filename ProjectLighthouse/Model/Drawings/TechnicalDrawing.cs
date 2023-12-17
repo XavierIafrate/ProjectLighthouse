@@ -21,11 +21,9 @@ namespace ProjectLighthouse.Model.Drawings
         public int Id { get; set; }
 
         public int Revision { get; set; } = 0;
-        public string URL { get; set; }
         public DateTime Created { get; set; }
         public string CreatedBy { get; set; }
         public bool IsArchetype { get; set; }
-        public string Customer { get; set; }
         public string DrawingName { get; set; }
         public string DrawingStore { get; set; }
         public string RawDrawingStore { get; set; }
@@ -43,14 +41,6 @@ namespace ProjectLighthouse.Model.Drawings
         public string ApprovedBy { get; set; }
         public DateTime ApprovedDate { get; set; }
 
-        public bool ManufacturingApproved { get; set; }
-        public string? ManufacturingApprovalBy { get; set; }
-        public DateTime? ManufacturingApprovalDate { get; set; }
-
-        public bool EngineeringApproved { get; set; }
-        public string? EngineeringApprovalBy { get; set; }
-        public DateTime? EngineeringApprovalDate { get; set; }
-
         public int? TurnedProductId { get; set; }
         public int? GroupId { get; set; }
         public int? MaterialId { get; set; }
@@ -58,7 +48,6 @@ namespace ProjectLighthouse.Model.Drawings
         public Type DrawingType { get; set; }
         public Amendment AmendmentType { get; set; }
         public string IssueDetails { get; set; }
-        public string SubmissionType { get; set; }
         public bool WatermarkOnly { get; set; }
 
         public bool PlatingStatement = false;

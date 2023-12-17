@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.Model.Quality.Internal;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,16 +27,20 @@ namespace ProjectLighthouse.View.Drawings
         }
 
         public List<ToleranceDefinition> AvailableTolerances { get; set; }
-        public List<ToleranceDefinition?> ReferencedTolerances { get; set; }
+        public List<ToleranceDefinition> ReferencedTolerances { get; set; }
         private string? order;
+        private string buildPath;
+        public bool SaveExit;
 
         public CheckSheetEditor(List<ToleranceDefinition> dimensions, TechnicalDrawing drawing, string? orderReference)
         {
             InitializeComponent();
 
+            buildPath = Path.GetTempPath() + "checksheet.pdf";
+            webView.Source =  new Uri($"file:///{buildPath}#toolbar=0");
 
-            string testJson = File.ReadAllText(@"C:\Users\x.iafrate\Desktop\fitTest.txt");
-            App.StandardFits = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StandardFit>>(testJson);
+            string fitsJson = File.ReadAllText($"{App.ROOT_PATH}fits.txt");
+            App.StandardFits = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StandardFit>>(fitsJson);
 
 
             this.order = orderReference;
@@ -66,7 +71,7 @@ namespace ProjectLighthouse.View.Drawings
             StandardsFilter.SelectedIndex = 0;
 
             DimensionCheckSheet checkSheet = new();
-            checkSheet.BuildContent(drawing, ReferencedTolerances, order);
+            checkSheet.BuildContent(drawing, ReferencedTolerances, order, buildPath);
         }
 
         void FilterAvailable()
@@ -86,7 +91,7 @@ namespace ProjectLighthouse.View.Drawings
         void RebuildCheckSheet()
         {
             DimensionCheckSheet checkSheet = new();
-            checkSheet.BuildContent(drawing, ReferencedTolerances, order);
+            checkSheet.BuildContent(drawing, ReferencedTolerances, order, buildPath);
             webView.Reload();
         }
 
@@ -232,6 +237,23 @@ namespace ProjectLighthouse.View.Drawings
             string serialisedReferences = Newtonsoft.Json.JsonConvert.SerializeObject(
                 ReferencedTolerances.Where(x => x is not null).Select(x => x!.Id).ToList());
             Clipboard.SetText(serialisedReferences);
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            drawing.Specification = ReferencedTolerances.Select(x => x.Id).ToList();
+            try
+            {
+                DatabaseHelper.Update(drawing, throwErrs: true);
+                SaveExit = true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Close();
         }
     }
 }

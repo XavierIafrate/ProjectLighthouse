@@ -12,5 +12,6 @@ namespace ProjectLighthouse.Model.Drawings
         public List<TechnicalDrawing> Drawings { get; set; }
         public bool AllDrawingsWithdrawn { get; set; }
         public bool IsArchetypeGroup { get; set; }
+        public bool HasCheckSheet { get; set; }
     }
 }

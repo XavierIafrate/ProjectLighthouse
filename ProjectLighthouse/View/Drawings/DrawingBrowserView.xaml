@@ -445,39 +445,6 @@
                                         <Run Text="by" />
                                         <Run Text="{Binding SelectedDrawing.ApprovedBy}" />
                                     </TextBlock>
-
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="1"
-                                        FontSize="13"
-                                        FontStyle="Italic"
-                                        Foreground="{StaticResource Green}"
-                                        TextWrapping="Wrap"
-                                        Visibility="{Binding SelectedDrawing.ManufacturingApproved, Converter={StaticResource showIfTrue}}">
-
-                                        <Run Text="Manufacturing approval granted on" />
-                                        <Run Text="{Binding SelectedDrawing.ManufacturingApprovalDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
-                                        <Run Text="by" />
-                                        <Run Text="{Binding SelectedDrawing.ManufacturingApprovalBy}" />
-                                    </TextBlock>
-
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="1"
-                                        FontSize="13"
-                                        FontStyle="Italic"
-                                        Foreground="{StaticResource Green}"
-                                        TextWrapping="Wrap"
-                                        Visibility="{Binding SelectedDrawing.EngineeringApproved, Converter={StaticResource showIfTrue}}">
-
-                                        <Run Text="Engineering approval granted on" />
-                                        <Run Text="{Binding SelectedDrawing.EngineeringApprovalDate, StringFormat='{}{0:dd MMMM yyyy} at {0:HH:mm tt}'}" />
-                                        <Run Text="by" />
-                                        <Run Text="{Binding SelectedDrawing.EngineeringApprovalBy}" />
-                                    </TextBlock>
-
-
-
                                 </Grid>
 
                             </Grid>
@@ -674,7 +641,8 @@
                             <ListView
                                 Margin="5"
                                 HorizontalContentAlignment="Stretch"
-                                ItemsSource="{Binding Specification}">
+                                ItemsSource="{Binding Specification}"
+                                d:ItemsSource="{d:SampleData ItemCount=5}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <userControls:DisplayToleranceDefinition Tolerance="{Binding}"/>

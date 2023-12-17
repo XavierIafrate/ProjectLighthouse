@@ -1,6 +1,12 @@
-﻿using ProjectLighthouse.Model.Drawings;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Quality;
+using ProjectLighthouse.Model.Quality.Internal;
+using ProjectLighthouse.ViewModel.Helpers;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -14,9 +20,21 @@ namespace ProjectLighthouse.View.UserControls
             set { SetValue(DrawingProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Drawing.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DrawingProperty =
             DependencyProperty.Register("Drawing", typeof(TechnicalDrawing), typeof(DisplayTechnicalDrawing), new PropertyMetadata(null, SetValues));
+
+
+
+        public string OrderReference
+        {
+            get { return (string)GetValue(OrderReferenceProperty); }
+            set { SetValue(OrderReferenceProperty, value); }
+        }
+
+        public static readonly DependencyProperty OrderReferenceProperty =
+            DependencyProperty.Register("OrderReference", typeof(string), typeof(DisplayTechnicalDrawing), new PropertyMetadata(null));
+
+
 
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -28,6 +46,7 @@ namespace ProjectLighthouse.View.UserControls
                     control.filename.Text = "<null>";
                     control.rev.Text = "n/a";
                     control.openButton.IsEnabled = false;
+                    control.inspectionLogButton.IsEnabled = false;
                     return;
                 }
 
@@ -37,20 +56,22 @@ namespace ProjectLighthouse.View.UserControls
                 control.rev.Text = control.Drawing.DrawingType == TechnicalDrawing.Type.Production
                     ? $"Revision {control.Drawing.Revision}{control.Drawing.AmendmentType}"
                     : $"Development v.{control.Drawing.Revision}{control.Drawing.AmendmentType}";
-                control.issueDate.Text = $"Issued {control.Drawing.ApprovedDate:dd/MM/yyyy}";
+                control.issueDate.Text = control.Drawing.ApprovedDate == System.DateTime.MinValue ? "Issued [missing date]" :  $"Issued {control.Drawing.ApprovedDate:dd/MM/yyyy}";
                 control.newBadge.Visibility = control.Drawing.ApprovedDate.AddDays(7) > System.DateTime.Now 
                     ? Visibility.Visible 
                     : Visibility.Collapsed;
 
+                control.inspectionLogButton.Visibility = control.Drawing.Specification.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
 
                 if (!File.Exists(filePath))
                 {
-                    control.openButton.Content = "file not found";
+                    control.openButton.Tag = "Not Found";
                     control.openButton.IsEnabled = false;
                 }
                 else
                 {
-                    control.openButton.Content = "Open";
+                    control.openButton.Tag = "Drawing";
                     control.openButton.IsEnabled = true;
                 }
             }
@@ -79,6 +100,38 @@ namespace ProjectLighthouse.View.UserControls
         public DisplayTechnicalDrawing()
         {
             InitializeComponent();
+        }
+
+        private void InspectionLogButton_Click(object sender, RoutedEventArgs e)
+        {
+            DimensionCheckSheet checkSheet = new();
+
+            List<ToleranceDefinition> referencedTolerances = DatabaseHelper.Read<ToleranceDefinition>().Where(x => Drawing.Specification.Contains(x.Id)).ToList();
+
+            List<ToleranceDefinition> orderedReferences = new();
+            foreach (string spec in Drawing.Specification)
+            {
+                ToleranceDefinition? t = referencedTolerances.Find(x  => x.Id == spec);
+                if (t is not null)
+                {
+                    orderedReferences.Add(t);
+                }
+            }
+
+
+            string buildPath = $"{App.ROOT_PATH}lib\\checksheets\\{Drawing.DrawingName}_R{Drawing.Revision:0}{Drawing.AmendmentType}";
+            if (OrderReference is not null)
+            {
+                buildPath += $"_{OrderReference}";
+            }
+            buildPath += $".pdf";
+
+            checkSheet.BuildContent(Drawing, orderedReferences, OrderReference, buildPath);
+
+            Process fileopener = new();
+            fileopener.StartInfo.FileName = "explorer";
+            fileopener.StartInfo.Arguments = "\"" + buildPath + "\"";
+            _ = fileopener.Start();
         }
     }
 }

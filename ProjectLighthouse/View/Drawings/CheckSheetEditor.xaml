@@ -19,7 +19,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="5*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
@@ -31,20 +31,31 @@
         <TextBlock
             Grid.Column="1"
             Grid.ColumnSpan="2"
-            Margin="20"
+            Margin="20,0,20,0"
             VerticalAlignment="Center"
             Style="{StaticResource title}"
             Text="Edit Specification" />
 
+        <Button
+            Grid.Column="4"
+            HorizontalAlignment="Right"
+            Click="SaveButton_Click"
+            Style="{StaticResource Action_Update_Button}"
+            Tag="Save" />
+
         <TextBlock
             Grid.Row="1"
             Grid.Column="1"
-            Style="{StaticResource section}"
+            Style="{StaticResource InputLabel}"
             Text="Master Tolerances" />
-        <Grid Grid.Row="2" Grid.Column="1">
+        <Grid
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            Grid.Column="1"
+            Margin="0,26,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <ListView x:Name="MasterToleranceListView" SelectionChanged="MasterToleranceListView_SelectionChanged">
                 <ListView.ItemTemplate>
@@ -53,12 +64,20 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ComboBox x:Name="StandardsFilter" Grid.Row="1" SelectionChanged="StandardsFilter_SelectionChanged" Margin="5,0,5,5" Height="30">
+            <ComboBox
+                x:Name="StandardsFilter"
+                Grid.Row="1"
+                Height="30"
+                Margin="5,0,5,5"
+                SelectionChanged="StandardsFilter_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding Description}" FontSize="10"  />
+                            <TextBlock
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Text="{Binding Name}" />
+                            <TextBlock FontSize="10" Text="{Binding Description}" />
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
@@ -67,7 +86,8 @@
         <StackPanel
             Grid.Row="2"
             Grid.Column="2"
-            VerticalAlignment="Center">
+            Margin="0,222,0,0"
+            VerticalAlignment="Top">
             <Button
                 x:Name="AddButton"
                 HorizontalAlignment="Right"
@@ -86,42 +106,53 @@
         <TextBlock
             Grid.Row="1"
             Grid.Column="3"
-            Style="{StaticResource section}"
+            Style="{StaticResource InputLabel}"
             Text="Referenced Tolerances" />
-        <Grid Grid.Row="2" Grid.Column="3">
+        <Grid
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            Grid.Column="3"
+            Margin="0,26,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ListView
-            x:Name="ReferencedTolerancesListView"
-            SelectionChanged="ReferencedTolerancesListView_SelectionChanged">
+            <ListView x:Name="ReferencedTolerancesListView" SelectionChanged="ReferencedTolerancesListView_SelectionChanged">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayToleranceDefinition
-                        AllowDrop="True"
-                        Drop="ReferencedTolerancesListView_Drop"
-                        PreviewMouseLeftButtonDown="ReferencedTolerancesListView_PreviewMouseLeftButtonDown"
-                        Tolerance="{Binding}" />
+                            AllowDrop="True"
+                            Drop="ReferencedTolerancesListView_Drop"
+                            PreviewMouseLeftButtonDown="ReferencedTolerancesListView_PreviewMouseLeftButtonDown"
+                            Tolerance="{Binding}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackPanel Orientation="Horizontal" Grid.Row="1">
-                <Button Style="{StaticResource Action_Button}" Tag="Copy" x:Name="CopyButton" Click="CopyButton_Click"/>
-                <Button Style="{StaticResource Action_Button}" Tag="Paste" x:Name="PasteButton" Click="PasteButton_Click"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Button
+                    x:Name="CopyButton"
+                    Click="CopyButton_Click"
+                    Style="{StaticResource Action_Button}"
+                    Tag="Copy" />
+                <Button
+                    x:Name="PasteButton"
+                    Click="PasteButton_Click"
+                    Style="{StaticResource Action_Button}"
+                    Tag="Paste" />
             </StackPanel>
         </Grid>
         <TextBlock
             Grid.Row="1"
             Grid.Column="4"
-            Style="{StaticResource section}"
+            Style="{StaticResource InputLabel}"
             Text="Inspection Log Preview" />
         <wv2:WebView2
             Name="webView"
             Grid.Row="2"
+            Grid.RowSpan="2"
             Grid.Column="4"
             Margin="0,5,0,0"
-            Source="file:///C:/Users/x.iafrate/Documents/checksheet.pdf#toolbar=0" />
+            Source="file://" />
     </Grid>
 </Window>

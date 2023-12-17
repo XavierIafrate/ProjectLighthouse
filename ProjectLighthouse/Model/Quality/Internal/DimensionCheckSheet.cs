@@ -37,14 +37,17 @@ namespace ProjectLighthouse.Model.Quality.Internal
             section.PageSetup.FooterDistance = Size.HeaderFooterMargin;
         }
 
-        public void BuildContent(TechnicalDrawing drawing, List<ToleranceDefinition> dimensions, string? order)
+        public void BuildContent(TechnicalDrawing drawing, List<ToleranceDefinition> dimensions, string? order,  string path)
         {
             Section content = new();
             SetupSection(content);
 
             AddHeader(content);
             AddCheckSheetTable(content, dimensions, drawing, order);
-            AddToleranceDescriptions(content, dimensions);
+            if (order == null)
+            {
+                AddToleranceDescriptions(content, dimensions);
+            }
 
             document.Add(content);
 
@@ -52,7 +55,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
 
             document.Info.Author = "Lighthouse MRP";
 
-            ExportPdf(@"C:\Users\x.iafrate\Documents\checksheet.pdf");
+            ExportPdf(path);
         }
 
         private Section AddToleranceDescriptions(Section section, List<ToleranceDefinition> dimensions)

@@ -37,8 +37,8 @@
             d:Text="Description"
             FontFamily="Segoe UI"
             FontSize="11"
-            Opacity="0.6"
-            FontWeight="SemiBold" />
+            FontWeight="SemiBold"
+            Opacity="0.6" />
         <TextBlock
             x:Name="NominalText"
             Grid.RowSpan="2"
