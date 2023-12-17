@@ -9,14 +9,8 @@
     MinWidth="200"
     MinHeight="50"
     d:Background="White"
-    d:DesignWidth="398.187"
     mc:Ignorable="d">
     <Grid>
-
-        <Grid.Resources>
-            <ValueConverters:boolToVisibleOrCollapsed x:Key="boolToHide" />
-            <ValueConverters:orderToShowStaleIndicator x:Key="staleVis" />
-        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
@@ -25,11 +19,11 @@
         <StackPanel Margin="0,5" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <TextBlock
-                    x:Name="MOTextBlock"
+                    x:Name="OrderNameTextBlock"
+                    d:Text="ORDER_NAME"
                     FontSize="20"
                     FontWeight="Bold"
-                    Foreground="{StaticResource OnBackground}"
-                    Text="{Binding Name, FallbackValue='M00001'}" />
+                    Foreground="{StaticResource OnBackground}" />
                 <Border
                     x:Name="RecentUpdateFlag"
                     Width="10"
@@ -43,19 +37,18 @@
 
             <StackPanel Opacity="0.7" Orientation="Horizontal">
                 <TextBlock
+                    x:Name="AllocatedMachineTextBlock"
                     Margin="0,0,5,0"
-                    d:Text="C00"
+                    d:Text="MACHINE"
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Foreground="{StaticResource OnBackground}"
-                    Text="{Binding AllocatedMachine, TargetNullValue='n/a'}" />
+                    Foreground="{StaticResource OnBackground}" />
                 <TextBlock
                     x:Name="PoTextBlock"
-                    d:Text="POR12345"
+                    d:Text="PURCHASE_ORDER"
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Foreground="{StaticResource Blue}"
-                    Text="{Binding POReference, TargetNullValue='n/a'}" />
+                    Foreground="{StaticResource Blue}" />
 
                 <Path
                     x:Name="clippy"
@@ -69,8 +62,7 @@
                     d:Text="randy"
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Foreground="{StaticResource Purple}"
-                    Text="{Binding AssignedTo, TargetNullValue='n/a'}" />
+                    Foreground="{StaticResource Purple}" />
             </StackPanel>
 
         </StackPanel>
@@ -80,88 +72,76 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center">
             <Border
-                BorderBrush="{StaticResource OnBackground}"
-                BorderThickness="3,0,0,0"
-                CornerRadius="3,0,0,3"
-                ToolTip="This order has been completed and all lots delivered/scrapped."
-                Visibility="{Binding IsClosed, Converter={StaticResource boolToHide}}">
-                <Grid>
-                    <Border
-                        Background="{StaticResource OnBackground}"
-                        CornerRadius="0,5,5,0"
-                        Opacity="0.15" />
-                    <StackPanel Margin="5,3" Orientation="Horizontal">
-                        <Path
-                            Width="12"
-                            Height="12"
-                            Margin="0,0,5,0"
-                            VerticalAlignment="Center"
-                            Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
-                            Fill="{StaticResource OnBackground}"
-                            Stretch="Uniform" />
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource OnBackground}"
-                            Text="Closed" />
-                    </StackPanel>
-                </Grid>
+                x:Name="ClosedBadge"
+                Height="22"
+                Background="{StaticResource OnBackgroundFaded}"
+                CornerRadius="3"
+                ToolTip="This order has been completed and all lots delivered/scrapped.">
+
+                <StackPanel Margin="8,2" Orientation="Horizontal">
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Margin="0,0,5,0"
+                        VerticalAlignment="Center"
+                        Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
+                        Fill="{StaticResource OnBackground}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                    Margin="0,0,0,1"
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource OnBackground}"
+                        Text="Closed" />
+                </StackPanel>
             </Border>
 
             <Border
-                BorderBrush="{StaticResource Red}"
-                BorderThickness="3,0,0,0"
-                CornerRadius="3,0,0,3"
-                ToolTip="Last update on problem was over 3 days ago"
-                Visibility="{Binding Path=., Converter={StaticResource staleVis}}">
-                <Grid>
-                    <Border
-                        Background="{StaticResource Red}"
-                        CornerRadius="0,5,5,0"
-                        Opacity="0.15" />
-                    <StackPanel Margin="5,3" Orientation="Horizontal">
-                        <Path
-                            Width="12"
-                            Height="12"
-                            Margin="0,0,5,0"
-                            HorizontalAlignment="Right"
-                            Data="M12,2C16.46,2 20.26,4.95 21.54,9H18V20C16.33,21.25 14.25,22 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M16.2,16.2L17,14.9L12.5,12.2V7H11V13L16.2,16.2M20,11H22V18H20V11M20,20H22V22H20V20Z"
-                            Fill="{StaticResource Red}"
-                            Stretch="Uniform" />
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Red}"
-                            Text="Update" />
-                    </StackPanel>
-                </Grid>
+                x:Name="StaleBadge"
+                Height="22"
+                Background="{StaticResource RedFaded}"
+                CornerRadius="3"
+                ToolTip="Last update on problem was over 3 days ago">
+
+                <StackPanel Margin="8,2" Orientation="Horizontal">
+                    <Path
+                        Width="10"
+                        Height="10"
+                        Margin="0,0,5,0"
+                        HorizontalAlignment="Right"
+                        Data="M12,2C16.46,2 20.26,4.95 21.54,9H18V20C16.33,21.25 14.25,22 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M16.2,16.2L17,14.9L12.5,12.2V7H11V13L16.2,16.2M20,11H22V18H20V11M20,20H22V22H20V20Z"
+                        Fill="{StaticResource Red}"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        Margin="0,0,0,1"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource Red}"
+                        Text="Update" />
+                </StackPanel>
             </Border>
 
 
 
         </StackPanel>
         <Grid Grid.Column="2" VerticalAlignment="Center">
-            <Grid.Resources>
-                <ValueConverters:OrderStateToBrush x:Key="stateToBrush" />
-            </Grid.Resources>
             <Border
-                x:Name="badgeBackground"
-                Height="20"
-                MinWidth="20"
-                d:Background="{StaticResource Purple}"
-                Background="{Binding State, Converter={StaticResource stateToBrush}}"
-                CornerRadius="10">
-                <Border.ToolTip>
-                    <local:OrderStatusTooltip
-                        Margin="0"
-                        Order="{Binding}"
-                        ToolTipService.ShowDuration="60" />
-                </Border.ToolTip>
+                x:Name="StatusBadge"
+                Height="22"
+                MinWidth="22"
+                d:Background="{StaticResource PurpleFaded}"
+                CornerRadius="5">
                 <TextBlock
-                    x:Name="BadgeText"
+                    x:Name="StatusBadgeText"
                     Width="90"
+                    Margin="0,0,0,1"
                     HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    d:Text="STATUS"
+                    d:Visibility="Visible"
                     FontSize="14"
-                    Foreground="{StaticResource OnPurple}"
-                    Text="{Binding State, FallbackValue='ORDER_STATE'}"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Purple}"
                     TextAlignment="Center"
                     Visibility="Collapsed" />
             </Border>
