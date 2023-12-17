@@ -314,6 +314,7 @@ namespace ProjectLighthouse
                 "lib",
                 "lib\\gen",
                 "lib\\logs",
+                "lib\\checksheets",
                 "lib\\pcom",
                 "lib\\renders",
                 "print",
