@@ -51,10 +51,7 @@
                             CanContentScroll="True"
                             Focusable="false"
                             HorizontalScrollBarVisibility="Auto"
-                            Style="{StaticResource HorizontalScrollViewer}"
                             VerticalScrollBarVisibility="Hidden">
-
-
                             <ItemsPresenter />
                         </ScrollViewer>
                     </Border>
