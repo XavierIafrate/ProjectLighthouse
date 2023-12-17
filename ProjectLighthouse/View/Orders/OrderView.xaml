@@ -71,114 +71,103 @@
             <ColumnDefinition Width="*" MinWidth="280" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
 
+        <!--#region SideBar-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="SearchBox"
+                    Style="{StaticResource SearchBox}"
+                    Text="{Binding Path=SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+                <Button
+                    x:Name="ClearButton"
+                    Grid.Column="1"
+                    Click="ClearButton_Click"
+                    Style="{StaticResource ClearButton}" />
+            </Grid>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <TextBox
-                x:Name="SearchBox"
-                Style="{StaticResource SearchBox}"
-                Text="{Binding Path=SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <ListView
+                Grid.Row="1"
+                HorizontalContentAlignment="Stretch"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
+                ItemsSource="{Binding Path=FilteredOrders}"
+                SelectedValue="{Binding Path=SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectionChanged="ListView_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding}" />
+                    </DataTemplate>
 
-            <Button
-                x:Name="ClearButton"
-                Grid.Column="1"
-                Click="ClearButton_Click"
-                Style="{StaticResource ClearButton}" />
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Grid
+                Grid.Row="2"
+                Margin="5,5"
+                Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Column="0"
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Left"
+                    Command="{Binding NewOrderCommand}"
+                    Style="{StaticResource Action_New_Button}"
+                    Tag="New" />
+                <ComboBox
+                    Grid.Column="2"
+                    Margin="0"
+                    Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="All Active" IsSelected="True" />
+                    <ComboBoxItem Content="Assigned To Me" />
+                    <ComboBoxItem Content="Not Ready" />
+                    <ComboBoxItem Content="No Program" />
+                    <ComboBoxItem Content="Ready" />
+                    <ComboBoxItem Content="Complete" />
+                    <ComboBoxItem Content="Development" />
+                    <ComboBoxItem Content="All" />
+                </ComboBox>
+                <Border
+                    Grid.Column="3"
+                    Width="35"
+                    Height="35"
+                    Margin="5,0,0,0"
+                    Background="{StaticResource Surface}"
+                    CornerRadius="5">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        d:Text="99"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource OnSurface}"
+                        Text="{Binding FilteredOrders.Count}" />
+                </Border>
+            </Grid>
         </Grid>
+        <!--#endregion-->
 
-        <ListView
-            Grid.Row="2"
-            HorizontalContentAlignment="Stretch"
-            d:ItemsSource="{d:SampleData ItemCount=10}"
-            ItemsSource="{Binding Path=FilteredOrders}"
-            SelectedValue="{Binding Path=SelectedOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            SelectionChanged="ListView_SelectionChanged">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding}" />
-                </DataTemplate>
+        <!--#region Not found gif-->
 
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <Grid
-            Grid.Row="3"
-            Margin="5,5"
-            Background="Transparent">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <Button
-                Grid.Column="0"
-                Margin="0,0,5,0"
-                HorizontalAlignment="Left"
-                Command="{Binding NewOrderCommand}"
-                Style="{StaticResource Action_New_Button}"
-                Tag="New" />
-
-            <!--<Button
-                Grid.Column="1"
-                Margin="0,0,5,0"
-                HorizontalAlignment="Left"
-                Command="{Binding ShowWorkloadCmd}"
-                Style="{StaticResource Action_Button}"
-                Tag="Workload" />-->
-            <ComboBox
-                Grid.Column="2"
-                Margin="0"
-                Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ComboBoxItem Content="All Active" IsSelected="True" />
-                <ComboBoxItem Content="Assigned To Me" />
-                <ComboBoxItem Content="Not Ready" />
-                <ComboBoxItem Content="No Program" />
-                <ComboBoxItem Content="Ready" />
-                <ComboBoxItem Content="Complete" />
-                <ComboBoxItem Content="Development" />
-                <ComboBoxItem Content="All" />
-            </ComboBox>
-            <Border
-                Grid.Column="3"
-                Width="35"
-                Height="35"
-                Margin="5,0,0,0"
-                Background="{StaticResource Surface}"
-                CornerRadius="5">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    d:Text="99"
-                    FontWeight="SemiBold"
-                    Foreground="{StaticResource OnSurface}"
-                    Text="{Binding FilteredOrders.Count}" />
-            </Border>
-        </Grid>
-
-        <!--#region Display Order-->
         <StackPanel
-            Grid.Row="2"
             Grid.Column="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Visibility="{Binding SelectedOrder, Converter={StaticResource NullToVisibility}}">
             <Border
-                Grid.Row="3"
-                Grid.ColumnSpan="2"
-                Canvas.Left="55"
-                Canvas.Top="30"
                 Width="auto"
                 Margin="0,10"
                 VerticalAlignment="Top"
@@ -219,9 +208,12 @@
                 Opacity="0.6"
                 Text="No results" />
         </StackPanel>
+
+        <!--#endregion-->
+
+        <!--#region Display Order-->
         <ScrollViewer
             x:Name="OrderScroller"
-            Grid.RowSpan="4"
             Grid.Column="1"
             ScrollChanged="ScrollViewer_ScrollChanged"
             Visibility="{Binding Path=SelectedOrder, Converter={StaticResource NotNullToVisibility}}">
@@ -1065,7 +1057,10 @@
                                     </ItemsControl>
                                 </TabItem>
                                 <TabItem Header="Performance">
-                                    <uc:DisplayTimeUsage Order="{Binding SelectedOrder}" OrderItems="{Binding FilteredOrderItems}" MinHeight="50"/>
+                                    <uc:DisplayTimeUsage
+                                        MinHeight="50"
+                                        Order="{Binding SelectedOrder}"
+                                        OrderItems="{Binding FilteredOrderItems}" />
                                 </TabItem>
                             </TabControl>
 
@@ -1120,7 +1115,10 @@
                                 <ItemsControl ItemsSource="{Binding FilteredDrawings}" Visibility="{Binding FilteredDrawings, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <uc:DisplayTechnicalDrawing Margin="10,2" Drawing="{Binding}" OrderReference="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.SelectedOrder.Name}" />
+                                            <uc:DisplayTechnicalDrawing
+                                                Margin="10,2"
+                                                Drawing="{Binding}"
+                                                OrderReference="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.SelectedOrder.Name}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -1183,28 +1181,6 @@
                             Foreground="{StaticResource OnBackground}"
                             Text="{Binding SelectedOrder.CreatedBy, StringFormat='{} by {0}'}" />
                     </StackPanel>
-
-                    <!--<StackPanel MaxWidth="700">
-
-                        <TextBlock Text="{Binding SelectedOrder.StartDate, StringFormat='{}Start Date: {0:dd/MM/yy HH:mm}'}" />
-                        <TextBlock Text="{Binding SelectedOrder.CompletedAt, StringFormat='{}Completed At: {0:dd/MM/yy HH:mm}'}" />
-                        <TextBlock Text="{Binding TotalTimeSeconds, StringFormat='{}Total Time (s): {0:#,##0}'}" />
-                        <TextBlock Text="{Binding RunTimeSeconds, StringFormat='{}Up Time (s): {0:#,##0}'}" />
-                        <TextBlock Text="{Binding Availability, StringFormat='{}Availability: {0:P2}'}" />
-                        <TextBlock Text="{Binding UnknownPct, StringFormat='{}Unknown Time: {0:P2}'}" />
-
-                        <ScrollViewer Style="{StaticResource HorizontalScrollViewer}">
-                            <uc:DisplayOperationalTimeline HorizontalAlignment="Center" OperatingBlocks="{Binding MachineOperatingBlocks}" />
-                        </ScrollViewer>
-                        <ItemsControl ItemsSource="{Binding MachineOperatingBlocks}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <uc:DisplayMachineOperatingBlock Block="{Binding}" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>-->
-
                 </StackPanel>
                 <Grid Height="100">
                     <Image
@@ -1214,10 +1190,12 @@
                 </Grid>
             </StackPanel>
         </ScrollViewer>
+        <!--#endregion-->
+        
+        <!--#region Scroll Grad-->
 
         <Border
             x:Name="grad"
-            Grid.RowSpan="2"
             Grid.Column="1"
             Height="20"
             VerticalAlignment="Top"
@@ -1230,6 +1208,7 @@
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
+        
         <!--#endregion-->
 
     </Grid>
