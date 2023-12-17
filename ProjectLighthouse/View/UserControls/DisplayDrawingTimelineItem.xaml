@@ -15,63 +15,66 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock
             x:Name="NameText"
             Margin="5,0,10,0"
             FontWeight="SemiBold"
             Text="AMENDMENT" />
-        <StackPanel Grid.Row="1"
-                    Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left">
+        <StackPanel
+            Grid.Row="1"
+            Grid.ColumnSpan="3"
+            HorizontalAlignment="Left"
+            Orientation="Horizontal">
             <Border
-            x:Name="researchFlag"
-            Grid.Column="2"
-            Margin="3"
-            VerticalAlignment="Center"
-            Background="{StaticResource TealFaded}"
-            CornerRadius="3">
-                <TextBlock
-                Margin="8,2,8,3"
+                x:Name="researchFlag"
+                Grid.Column="2"
+                Margin="3"
                 VerticalAlignment="Center"
-                FontSize="10"
-                FontWeight="SemiBold"
-                Foreground="{StaticResource Teal}"
-                Text="R&amp;D" />
+                Background="{StaticResource TealFaded}"
+                CornerRadius="3">
+                <TextBlock
+                    Margin="8,2,8,3"
+                    VerticalAlignment="Center"
+                    FontSize="10"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Teal}"
+                    Text="R&amp;D" />
             </Border>
             <Border
-            x:Name="currentFlag"
-            Grid.Column="3"
-            Margin="3"
-            VerticalAlignment="Center"
-            Background="{StaticResource BlueFaded}"
-            CornerRadius="3">
-                <TextBlock
-                Margin="8,2,8,3"
+                x:Name="currentFlag"
+                Grid.Column="3"
+                Margin="3"
                 VerticalAlignment="Center"
-                FontSize="10"
-                FontWeight="SemiBold"
-                Foreground="{StaticResource Blue}"
-                Text="CURRENT" />
+                Background="{StaticResource BlueFaded}"
+                CornerRadius="3">
+                <TextBlock
+                    Margin="8,2,8,3"
+                    VerticalAlignment="Center"
+                    FontSize="10"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Blue}"
+                    Text="CURRENT" />
             </Border>
             <Border
-            x:Name="withdrawnFlag"
-            Grid.Column="4"
-            Margin="3"
-            VerticalAlignment="Center"
-            Background="{StaticResource RedFaded}"
-            CornerRadius="3">
-                <TextBlock
-                Margin="8,2,8,3"
+                x:Name="withdrawnFlag"
+                Grid.Column="4"
+                Margin="3"
                 VerticalAlignment="Center"
-                FontSize="10"
-                FontWeight="SemiBold"
-                Foreground="{StaticResource Red}"
-                Text="WITHDRAWN" />
+                Background="{StaticResource RedFaded}"
+                CornerRadius="3">
+                <TextBlock
+                    Margin="8,2,8,3"
+                    VerticalAlignment="Center"
+                    FontSize="10"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Red}"
+                    Text="WITHDRAWN" />
             </Border>
         </StackPanel>
-        
+
         <Border
             x:Name="Indicator"
             Grid.Column="5"
