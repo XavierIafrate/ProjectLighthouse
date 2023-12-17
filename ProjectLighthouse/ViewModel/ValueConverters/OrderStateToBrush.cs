@@ -16,23 +16,39 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
                 return null;
             }
 
+            bool faded = false;
+            if (parameter is string str)
+            {
+                faded = str == "faded";
+            }
+
+            string colour;
+
             if (state == OrderState.Problem)
             {
-                return (Brush)Application.Current.Resources["Red"];
+                colour = "Red";
             }
             else if (state is OrderState.Ready or OrderState.Prepared)
             {
-                return (Brush)Application.Current.Resources["Green"];
+                colour = "Green";
 
             }
             else if (state is OrderState.Running)
             {
-                return (Brush)Application.Current.Resources["Blue"];
+                colour = "Blue";
             }
             else
             {
-                return (Brush)Application.Current.Resources["OnBackground"];
+                colour = "OnBackground";
             }
+
+            if (faded)
+            {
+                colour += "Faded";
+            }
+
+
+            return (Brush)Application.Current.Resources[colour];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
