@@ -1064,6 +1064,9 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </TabItem>
+                                <TabItem Header="Performance">
+                                    <uc:DisplayTimeUsage Order="{Binding SelectedOrder}" OrderItems="{Binding FilteredOrderItems}" MinHeight="50"/>
+                                </TabItem>
                             </TabControl>
 
                             <StackPanel>
@@ -1117,7 +1120,7 @@
                                 <ItemsControl ItemsSource="{Binding FilteredDrawings}" Visibility="{Binding FilteredDrawings, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <uc:DisplayTechnicalDrawing Margin="10,2" Drawing="{Binding}" />
+                                            <uc:DisplayTechnicalDrawing Margin="10,2" Drawing="{Binding}" OrderReference="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.SelectedOrder.Name}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
