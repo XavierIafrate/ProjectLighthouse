@@ -32,11 +32,15 @@ namespace ProjectLighthouse.View.UserControls
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            control.WithdrawnText.Visibility = control.Group.AllDrawingsWithdrawn
+            control.WithdrawnBadge.Visibility = control.Group.AllDrawingsWithdrawn
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
             control.ArchetypeBadge.Visibility = control.Group.IsArchetypeGroup
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            control.HasCheckSheetBadge.Visibility = control.Group.HasCheckSheet
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
