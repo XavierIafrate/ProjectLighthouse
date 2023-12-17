@@ -32,12 +32,12 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <ListView
+                d:ItemsSource="{d:SampleData ItemCount=10}"
                 BorderThickness="0"
                 ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                d:ItemsSource="{d:SampleData ItemCount=10}"
                 ScrollViewer.CanContentScroll="False"
-                SelectionChanged="ListView_SelectionChanged"
-                SelectedValue="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                SelectedValue="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                SelectionChanged="ListView_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="7,5">
@@ -121,7 +121,11 @@
                 </StackPanel>
             </Grid>
         </StackPanel>
-        <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="contentScrollViewer" ScrollChanged="ScrollViewer_ScrollChanged">
+        <ScrollViewer
+            x:Name="contentScrollViewer"
+            Grid.Row="1"
+            Grid.Column="1"
+            ScrollChanged="ScrollViewer_ScrollChanged">
             <StackPanel MaxWidth="700" Margin="50,20">
 
                 <Grid Margin="0,5">
@@ -153,14 +157,13 @@
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         Style="{StaticResource section}"
-                        Text="Email Address" />
-                    <TextBox
-                        Margin="5"
+                        Text="Receives Notifications" />
+                    <CheckBox
+                        Margin="5,0"
                         Grid.Column="3"
-                        MinWidth="300"
-                        IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource UsernameTextBox}"
-                        Text="{Binding SelectedUser.EmailAddress}" />
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding SelectedUser.ReceivesNotifications, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding EditControlsVis}" />
                 </Grid>
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
@@ -179,8 +182,8 @@
                         Text="{Binding SelectedUser.DefaultView, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         Visibility="{Binding ReadControlsVis}" />
                     <ComboBox
-                        Width="300"
                         Grid.Column="3"
+                        Width="300"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         ItemsSource="{Binding views, Mode=OneTime}"
                         SelectedItem="{Binding SelectedView, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
@@ -204,8 +207,8 @@
                         Text="{Binding SelectedUser.Role, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         Visibility="{Binding ReadControlsVis}" />
                     <ComboBox
-                        Width="300"
                         Grid.Column="3"
+                        Width="300"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         ItemsSource="{Binding roles, Mode=OneTime}"
                         SelectedValue="{Binding SelectedRole, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
