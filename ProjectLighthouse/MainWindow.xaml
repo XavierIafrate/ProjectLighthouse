@@ -118,16 +118,10 @@
                     </Grid>
                     <StackPanel x:Name="PurchasingModule" Margin="0,15">
                         <ToggleButton
-                            x:Name="new_request_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="New Request"
-                            Content="New Request"
-                            Style="{StaticResource NewRequest_MenuItem}" />
-                        <ToggleButton
                             x:Name="requests_button"
                             Command="{Binding UpdateViewCommand}"
-                            CommandParameter="View Requests"
-                            Content="View Requests"
+                            CommandParameter="Requests"
+                            Content="Requests"
                             Style="{StaticResource ViewRequests_MenuItem}" />
                     </StackPanel>
 

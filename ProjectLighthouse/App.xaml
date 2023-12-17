@@ -67,10 +67,6 @@
                 <requestsView:RequestView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type requestsVm:NewRequestViewModel}">
-                <requestsView:NewRequestView />
-            </DataTemplate>
-
             <DataTemplate DataType="{x:Type ordersVm:OrderViewModel}">
                 <ordersView:OrderView />
             </DataTemplate>
@@ -109,10 +105,6 @@
 
             <DataTemplate DataType="{x:Type adminVm:LatheViewModel}">
                 <adminView:LatheView />
-            </DataTemplate>
-
-            <DataTemplate DataType="{x:Type qualityVm:QualityCheckViewModel}">
-                <qualityView:QualityCheckView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type adminVm:ProductManagerViewModel}">

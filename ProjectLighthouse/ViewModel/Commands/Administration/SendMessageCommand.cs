@@ -29,10 +29,6 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
             {
                 rvm.SendMessage();
             }
-            else if (viewModel is QualityCheckViewModel qcvm)
-            {
-                qcvm.SendMessage();
-            }
             else if (viewModel is ProgramManagerViewModel progvm)
             {
                 progvm.SendMessage();
