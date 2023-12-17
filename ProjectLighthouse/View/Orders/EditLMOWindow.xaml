@@ -493,6 +493,83 @@
                                         Style="{StaticResource DefaultTextBox}"
                                         Text="{Binding Order.SpareBars}" />
                                 </Grid>
+                                <Grid Margin="10,0">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="Setting Time (hrs)" />
+                                    <TextBox
+                                        x:Name="SettingTimeHrs"
+                                        Width="50"
+                                        Height="30"
+                                        Margin="0,5"
+                                        HorizontalAlignment="Right"
+                                        FontSize="14"
+                                        MaxLength="3"
+                                        PreviewKeyDown="SpareBarsTextBox_PreviewKeyDown"
+                                        Style="{StaticResource DefaultTextBox}"
+                                        Text="{Binding Order.TimeToSet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                                <Grid Margin="10,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock
+                                        Grid.RowSpan="2"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="End Date" />
+                                    <DatePicker
+                                        x:Name="EndDatePicker"
+                                        Grid.RowSpan="2"
+                                        Height="30"
+                                        Margin="0,5"
+                                        HorizontalAlignment="Right"
+                                        FontSize="14"
+                                        SelectedDateChanged="EndDatePicker_SelectedDateChanged"
+                                        Text="{Binding Order.ScheduledEnd, Mode=OneTime}" />
+
+                                    <TextBlock
+                                        x:Name="TimeText"
+                                        Grid.RowSpan="2"
+                                        Grid.Column="1"
+                                        Margin="5,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        d:Text="00:00"
+                                        FontFamily="Consolas"
+                                        FontSize="22"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Order.ScheduledEnd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:HH}:00', TargetNullValue='--:--'}" />
+                                    <Button
+                                        x:Name="incrementButton"
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Left"
+                                        Click="IncrementButton_Click"
+                                        Style="{StaticResource Counter_Up}" />
+                                    <Button
+                                        x:Name="decrementButton"
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Left"
+                                        Click="DecrementButton_Click"
+                                        Style="{StaticResource Counter_Down}" />
+                                    <Button
+                                        x:Name="clearButton"
+                                        Grid.RowSpan="2"
+                                        Grid.Column="3"
+                                        HorizontalAlignment="Left"
+                                        Click="clearButton_Click"
+                                        Style="{StaticResource ClearButton}" />
+                                </Grid>
 
                                 <CheckBox
                                     x:Name="researchCheckBox"
@@ -606,19 +683,28 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Orientation="Horizontal">
-                                    <TextBlock Text="M" VerticalAlignment="Center" FontSize="16"/>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="M" />
                                     <TextBox
                                         d:Text="RATE"
                                         Style="{StaticResource DefaultTextBox}"
                                         Text="{Binding TmpTimeModel.Gradient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         TextChanged="TimeModel_TextChanged" />
-                                    <TextBlock Text="C" VerticalAlignment="Center" FontSize="16"/>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="C" />
                                     <TextBox
                                         d:Text="INTERCEPT"
                                         Style="{StaticResource DefaultTextBox}"
                                         Text="{Binding TmpTimeModel.Intercept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         TextChanged="TimeModel_TextChanged" />
-                                    <TextBlock Text="F" VerticalAlignment="Center" FontSize="16"/>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="F" />
                                     <TextBox
                                         d:Text="FLOOR"
                                         Style="{StaticResource DefaultTextBox}"

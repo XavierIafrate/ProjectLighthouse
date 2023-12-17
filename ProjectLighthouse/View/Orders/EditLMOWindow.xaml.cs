@@ -2,7 +2,6 @@
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
@@ -157,6 +156,12 @@ namespace ProjectLighthouse.View.Orders
             Order.NumberOfBarsIssued = BarIssues.Sum(x => x.Quantity);
             TotalBarsText.Text = $"{Order.NumberOfBarsIssued}/{Math.Ceiling(Order.NumberOfBars)} Prepared";
 
+            if (Order.StartDate.Date > DateTime.MinValue)
+            {
+                EndDatePicker.DisplayDateStart = Order.StartDate.Date.AddDays(1);
+                EndDatePicker.DisplayDateEnd = Order.StartDate.Date.AddYears(1);
+            }
+
 
             Items = DatabaseHelper.Read<LatheManufactureOrderItem>()
                 .Where(x => x.AssignedMO == id)
@@ -206,7 +211,7 @@ namespace ProjectLighthouse.View.Orders
             ObservableCollection<ObservablePoint> modelledPoints = new();
             ObservableCollection<ObservablePoint> newReadings = new();
 
-            double maxLength = Items.Max(x => x.MajorLength)*1.1;
+            double maxLength = Items.Max(x => x.MajorLength) * 1.1;
 
 
             Items.ForEach(x =>
@@ -230,7 +235,7 @@ namespace ProjectLighthouse.View.Orders
                             Xj = x.MajorLength,
                             Stroke = new SolidColorPaint
                             {
-                                Color =x.CycleTime > x.PreviousCycleTime ? SKColors.DarkRed.WithAlpha(50) : SKColors.DarkGreen.WithAlpha(50),
+                                Color = x.CycleTime > x.PreviousCycleTime ? SKColors.DarkRed.WithAlpha(50) : SKColors.DarkGreen.WithAlpha(50),
                                 StrokeThickness = 3
                             }
                         });
@@ -331,6 +336,11 @@ namespace ProjectLighthouse.View.Orders
             researchCheckBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             platingCheckBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             AssignedComboBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
+            incrementButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
+            decrementButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
+            EndDatePicker.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
+            clearButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
+            SettingTimeHrs.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
             composeMessageControls.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
 
             AddItemButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && Order.State < OrderState.Complete && canEdit;
@@ -915,6 +925,52 @@ namespace ProjectLighthouse.View.Orders
             CalculateTimeAndBar();
 
             ChartTimeModel();
+        }
+
+        private void EndDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Order is null) return;
+
+            if (EndDatePicker.SelectedDate is not null)
+            {
+                DateTime end = (DateTime)EndDatePicker.SelectedDate;
+                end = end.ChangeTime(6, 0, 0, 0);
+
+                Order.ScheduledEnd = end;
+            }
+            else
+            {
+                Order.ScheduledEnd = null;
+            }
+        }
+
+        private void IncrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Order.ScheduledEnd is null) return;
+            DateTime dt = (DateTime)Order.ScheduledEnd;
+            int hourCurrent = dt.Hour;
+            hourCurrent++;
+            hourCurrent = hourCurrent % 24;
+            Order.ScheduledEnd = dt.ChangeTime(hourCurrent, 0, 0, 0);
+        }
+
+        private void DecrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Order.ScheduledEnd is null) return;
+            DateTime dt = (DateTime)Order.ScheduledEnd;
+            int hourCurrent = dt.Hour;
+            hourCurrent--;
+            if (hourCurrent < 0)
+            {
+                hourCurrent = 23;
+            }
+
+            Order.ScheduledEnd = dt.ChangeTime(hourCurrent, 0, 0, 0);
+        }
+
+        private void clearButton_Click(object sender, RoutedEventArgs e)
+        {
+            Order.ScheduledEnd = null;
         }
     }
 }
