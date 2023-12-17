@@ -502,7 +502,7 @@ namespace ProjectLighthouse.View.Orders
                 throw new Exception("Error finding request");
             }
 
-            if (request.IsAccepted || request.IsDeclined)
+            if (request.Status != Request.RequestStatus.Pending)
             {
                 throw new Exception("Request already approved");
             }
@@ -534,6 +534,7 @@ namespace ProjectLighthouse.View.Orders
             NewOrder.Name = GetNewOrderId();
             NewOrder.CreatedAt = DateTime.Now;
             NewOrder.CreatedBy = App.CurrentUser.GetFullName();
+            NewOrder.TimeToSet = App.Constants.DefaultSettingTime;
 
             if (SelectedGroup is null)
             {
@@ -557,12 +558,6 @@ namespace ProjectLighthouse.View.Orders
             NewOrder.GroupId = SelectedGroup.Id;
             NewOrder.BarID = orderBar.Id;
             NewOrder.NumberOfBars = NewOrderItems.CalculateNumberOfBars(orderBar, 0);
-
-            //(int totalTime, int targetCycleTime, bool estimated) = NewOrderItems.CalculateOrderRuntime();
-
-            //NewOrder.TimeToComplete = totalTime;
-            //NewOrder.TargetCycleTime = targetCycleTime;
-            //NewOrder.TargetCycleTimeEstimated = estimated;
 
             TimeModel timeModel;
             string? timeCode = TimeModels[MaterialId];
