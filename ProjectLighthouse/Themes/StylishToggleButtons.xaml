@@ -125,7 +125,7 @@
                         <TextBlock
                             Grid.Column="1"
                             FontSize="{TemplateBinding FontSize}"
-                            Text="View Requests" />
+                            Text="Requests" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -556,7 +556,7 @@
                         <TextBlock
                             Grid.Column="1"
                             FontSize="{TemplateBinding FontSize}"
-                            Text="Product Manager" />
+                            Text="Products" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -592,7 +592,7 @@
                         <TextBlock
                             Grid.Column="1"
                             FontSize="{TemplateBinding FontSize}"
-                            Text="Database Manager" />
+                            Text="Database" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
