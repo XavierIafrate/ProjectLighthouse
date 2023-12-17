@@ -10,6 +10,8 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is null) return Visibility.Visible;
+
             if (value is not IList list)
             {
                 throw new ArgumentException($"ListIsEmptyToVisibleOrCollapsed: Expected a list but received {value.GetType()}");
