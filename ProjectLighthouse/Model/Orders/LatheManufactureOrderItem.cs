@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Products;
+﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Requests;
 using SQLite;
 using System;
@@ -6,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Orders
 {
-    public class LatheManufactureOrderItem : BaseObject, IObjectWithValidation
+    public class LatheManufactureOrderItem : BaseObject, IObjectWithValidation, IAutoIncrementPrimaryKey
     {
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
