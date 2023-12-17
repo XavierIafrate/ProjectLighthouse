@@ -13,9 +13,9 @@
     <Grid>
         <Grid VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" d:Width="250" />
+                <ColumnDefinition Width="*" d:Width="250" />
                 <ColumnDefinition Width="180" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="200" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
