@@ -141,20 +141,14 @@ namespace ProjectLighthouse.Model.Orders
 
         public DateTime CompletedAt { get; set; }
 
-        private DateTime scheduledEnd;
+        private DateTime? scheduledEnd;
+
         [UpdateWatch]
-        public DateTime ScheduledEnd
+        public DateTime? ScheduledEnd
         {
             get
             {
-                return EndsAt();
-                //if (scheduledEnd == DateTime.MinValue)
-                //{
-                //}
-                //else
-                //{
-                //    return scheduledEnd;
-                //}
+                return scheduledEnd;
             }
             set
             {
@@ -162,6 +156,20 @@ namespace ProjectLighthouse.Model.Orders
                 OnPropertyChanged();
             }
         }
+
+        private int timeToSet;
+        [UpdateWatch]
+        public int TimeToSet
+        {
+            get { return timeToSet; }
+            set { timeToSet = value; OnPropertyChanged(); }
+        }
+
+        public DateTime GetSettingStartDateTime()
+        {
+            return StartDate.AddHours(TimeToSet * -1);
+        }
+
 
         #region Bar Configuration
         [UpdateWatch]
@@ -320,7 +328,8 @@ namespace ProjectLighthouse.Model.Orders
 
         public bool RequiresBar()
         {
-            return DateTime.Now.AddDays(14) > StartDate && StartDate.Year != DateTime.MinValue.Year && NumberOfBars > NumberOfBarsIssued;
+            return DateTime.Now.AddDays(App.Constants.BarRequisitionDays) > StartDate 
+                && StartDate.Year != DateTime.MinValue.Year && NumberOfBars > NumberOfBarsIssued;
         }
 
         public DateTime GetStartDeadline()
@@ -342,23 +351,11 @@ namespace ProjectLighthouse.Model.Orders
             return dateTime;
         }
 
-        public DateTime AnticipatedEndDate()
-        {
-            if (OrderItems.Count == 0)
-            {
-                throw new Exception("Items are unknown, cannot calculate time");
-            }
-
-            int seconds = OrderResourceHelper.CalculateOrderRuntime(this, OrderItems);
-
-            return StartDate.AddSeconds(seconds);
-        }
-
         #endregion
 
         public void UpdateStartDate(DateTime date, string machine)
         {
-            StartDate = date.Date == DateTime.MinValue.Date ? DateTime.MinValue : date.Date.AddHours(12);
+            StartDate = date == DateTime.MinValue ? DateTime.MinValue : date;
             AllocatedMachine = string.IsNullOrEmpty(machine) ? null : machine;
             string dbMachineEntry = string.IsNullOrEmpty(AllocatedMachine) ? "NULL" : $"'{AllocatedMachine}'";
             DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
@@ -376,7 +373,11 @@ namespace ProjectLighthouse.Model.Orders
 
         public new DateTime EndsAt()
         {
-            if (IsResearch)
+            if (ScheduledEnd is not null)
+            {
+                return (DateTime)ScheduledEnd;
+            }
+            else if (IsResearch)
             {
                 return StartDate.AddSeconds(Math.Max(TimeToComplete, 86400 * 1.75));
             }
