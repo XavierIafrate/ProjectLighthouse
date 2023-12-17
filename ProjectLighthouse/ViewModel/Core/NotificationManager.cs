@@ -328,14 +328,6 @@ namespace ProjectLighthouse.ViewModel.Core
                 }
 
             }
-            else if (action.StartsWith("viewQC:"))
-            {
-                App.MainViewModel.UpdateViewCommand.Execute("Quality Check");
-                if (App.MainViewModel.SelectedViewModel is QualityCheckViewModel qcViewModel)
-                {
-                    qcViewModel.SearchTerm = action;
-                }
-            }
 
             App.MainViewModel.MainWindow.Activate();
         }
@@ -431,22 +423,6 @@ namespace ProjectLighthouse.ViewModel.Core
                 header: title,
                 body: body,
                 toastAction: $"viewManufactureOrder:{order.Name}");
-
-            _ = DatabaseHelper.Insert(newNotification);
-        }
-
-        public void NotifyRequestApproved(Request request)
-        {
-            User userToNotify = users.Find(x => x.GetFullName() == request.RaisedBy);
-
-            if (userToNotify == null) return;
-
-            Notification newNotification = new(
-                to: userToNotify.UserName,
-                from: App.CurrentUser.UserName,
-                header: "Request Approved",
-                body: $"Your request for {request.QuantityRequired:#,##0} pcs of {request.Product} has been approved! Please update Lighthouse with the Purchase Reference.",
-                toastAction: $"viewManufactureOrder:{request.ResultingLMO}");
 
             _ = DatabaseHelper.Insert(newNotification);
         }
