@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
@@ -279,12 +280,12 @@ namespace ProjectLighthouse.ViewModel.Core
 
             if (action.StartsWith("viewRequest:"))
             {
-                App.MainViewModel.UpdateViewCommand.Execute("View Requests");
+                App.MainViewModel.UpdateViewCommand.Execute("Requests");
                 if (App.MainViewModel.SelectedViewModel is RequestViewModel requestViewModel)
                 {
                     string targetRequest = action.Replace("viewRequest:", "");
 
-                    requestViewModel.SelectedFilter = "Last 14 Days";
+                    requestViewModel.SelectedFilter = "All";
 
                     requestViewModel.SelectedRequest = requestViewModel.FilteredRequests.Find(x => $"{x.Id:0}" == targetRequest);
                 }
@@ -379,37 +380,36 @@ namespace ProjectLighthouse.ViewModel.Core
             MessageBox.Show($"An error was encountered and the procedure was aborted:{Environment.NewLine}{exception.Message}", "Handled Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
-        public void NotifyQualityPassed(QualityCheck check, List<string> mentionedUsers = null)
+        public void NotifyRequestApproved(Request request)
         {
-            List<User> toNotify = users.Where(x => x.HasQualityNotifications).ToList();
+            User userToNotify = users.Find(x => x.GetFullName() == request.RaisedBy);
 
-            for (int i = 0; i < mentionedUsers.Count; i++)
-            {
-                if (!toNotify.Any(x => x.UserName == mentionedUsers[i]))
-                {
-                    User? u = users.Find(x => x.UserName == mentionedUsers[i]);
+            if (userToNotify == null) return;
 
-                    if (u != null)
-                    {
-                        toNotify.Add(u);
-                    }
-                }
-            }
+            Notification newNotification = new(
+                to: userToNotify.UserName,
+                from: App.CurrentUser.UserName,
+                header: "Request Approved",
+                body: $"Your request for {request.Description} has been approved. Please update Lighthouse with the Purchase Reference.");
 
-            toNotify = toNotify.Where(x => x.UserName != App.CurrentUser.UserName).ToList();
+            _ = DatabaseHelper.Insert(newNotification);
+        }
 
-            string title = check.IsAccepted ? "Accepted" : "Rejected";
-            for (int i = 0; i < toNotify.Count; i++)
+        public void NotifyRequestRaised(Request request)
+        {
+            List<User> usersToNotify = users.Where(x => x.HasPermission(PermissionType.ApproveRequest) && x.GetFullName() != request.RaisedBy).ToList();
+            foreach(User user in usersToNotify)
             {
                 Notification newNotification = new(
-                    to: toNotify[i].UserName,
+                    to: user.UserName,
                     from: App.CurrentUser.UserName,
-                    header: $"{title}: {check.Product}",
-                    body: $"This quality check request has been resolved",
-                    toastAction: $"viewQC:{check.Id}");
+                    header: "New Request",
+                    body: $"{App.CurrentUser.FirstName} has raised a request for {request.Description}.",
+                    toastAction: $"viewRequest:{request.Id}");
 
                 _ = DatabaseHelper.Insert(newNotification);
             }
+
         }
 
         public void NotifyOrderAssignment(LatheManufactureOrder order, string targetUsername, bool unassigned)
