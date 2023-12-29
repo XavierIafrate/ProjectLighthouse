@@ -1,10 +1,11 @@
-﻿using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Orders;
 using SQLite;
 using System;
 
 namespace ProjectLighthouse.Model.Requests
 {
-    public class Request : BaseObject, ICloneable
+    public class Request : BaseObject, ICloneable, IAutoIncrementPrimaryKey
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -45,10 +46,10 @@ namespace ProjectLighthouse.Model.Requests
             Status = accepted ? RequestStatus.Accepted : RequestStatus.Declined;
 
             ModifiedAt = DateTime.Now;
-            ModifiedBy = App.CurrentUser.UserName;
+            ModifiedBy = App.CurrentUser.GetFullName();
 
             DecisionAt = DateTime.Now;
-            DecisionBy = App.CurrentUser.UserName;
+            DecisionBy = App.CurrentUser.GetFullName();
         }
 
         public enum RequestStatus

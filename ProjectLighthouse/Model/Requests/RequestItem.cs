@@ -26,6 +26,18 @@ namespace ProjectLighthouse.Model.Requests
 
         public int? OrderItemId { get; set; }
 
+        public event Action RequirementChanged;
+
+        public void NotifyRequirementChanged()
+        {
+            RequirementChanged?.Invoke();
+        }
+
+        public void ClearSubscribers()
+        {
+            RequirementChanged = null;
+        }
+
         public void ValidateAll()
         {
             ValidateProperty(nameof(DateRequired));
