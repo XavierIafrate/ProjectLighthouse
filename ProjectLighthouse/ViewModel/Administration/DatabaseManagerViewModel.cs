@@ -10,6 +10,7 @@ using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -35,16 +36,19 @@ namespace ProjectLighthouse.ViewModel.Administration
         public DatabaseManagerViewModel()
         {
             GetRecordsAsCsvCmd = new(this);
-
             Orders = DatabaseHelper.Read<LatheManufactureOrder>();
 
-            if (App.CurrentUser.Role == Model.Administration.UserRole.Administrator)
+            if (App.CurrentUser.HasPermission(Model.Core.PermissionType.EditUsers))
             {
                 ManageUsersViewModel = new();
+            }
+
+            if (App.CurrentUser.HasPermission(Model.Core.PermissionType.EditMaterials))
+            {
                 MaterialsViewModel = new();
             }
 
-            if (App.CurrentUser.HasPermission(Model.Core.PermissionType.ConfigureMaintenance))
+            if (App.CurrentUser.HasPermission(Model.Core.PermissionType.ManageLathes))
             {
                 LatheViewModel = new();
             }
@@ -90,9 +94,69 @@ namespace ProjectLighthouse.ViewModel.Administration
                 case "TotalManufactured":
                     UpdateTotalManufactured();
                     break;
+
+                case "ImportTriggers":
+                    ImportTriggers();
+                    break;
                 default:
                     throw new NotImplementedException();
             };
+        }
+
+        private void ImportTriggers()
+        {
+            string[] data = File.ReadAllLines(@"C:\Users\x.iafrate\Desktop\newTriggers.txt");
+            List<TurnedProduct> turnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
+            Dictionary<string, int> newTriggers = new();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                string entry = data[i];
+                string[] split = entry.Split(',');
+                if (split.Length != 2)
+                {
+                    Debug.WriteLine($"Length not 2: '{entry}'");
+                    continue;
+                }
+
+                int trigger;
+                if (!int.TryParse(split[1], out trigger))
+                {
+                    Debug.WriteLine($"Could not parse int: '{split[1]}'");
+                    continue;
+                }
+
+                newTriggers.Add(split[0], trigger);
+            }
+
+            foreach (KeyValuePair<string, int> trigger in newTriggers)
+            {
+                TurnedProduct? p = turnedProducts.Find(x => x.ProductName == trigger.Key);
+                p ??= turnedProducts.Find(x => x.ExportProductName == trigger.Key);
+
+                if (p is null)
+                {
+                    Debug.WriteLine($"Could not find product: '{trigger.Key}'");
+                    continue;
+                }
+
+                if (p.QuantitySold == trigger.Value)
+                {
+                    continue;
+                }
+
+                p.QuantitySold = trigger.Value;
+                try
+                {
+                    DatabaseHelper.Update(p, throwErrs: true);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+
+            }
+            
         }
 
         private void UpdateTotalManufactured()

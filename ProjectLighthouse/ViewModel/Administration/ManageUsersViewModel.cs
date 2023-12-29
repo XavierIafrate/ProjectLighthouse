@@ -135,7 +135,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         public ManageUsersViewModel()
         {
             roles = Enum.GetValues(typeof(UserRole));
-            views = new() { "View Requests", "Orders", "Schedule", "New Request" };
+            views = new() { "Requests", "Orders", "Schedule" };
 
             SelectedUserPermissions = new();
             Logins = new();

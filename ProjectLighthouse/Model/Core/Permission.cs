@@ -31,6 +31,10 @@ namespace ProjectLighthouse.Model.Core
             { PermissionType.ModifyProjects, "Modify Development Projects" },
             {PermissionType.CreateProducts, "Create Products" },
             {PermissionType.UpdateProducts, "Edit Products" },
+            {PermissionType.ViewReports, "View Reports" },
+            {PermissionType.ManageLathes, "Manage Lathes" },
+            {PermissionType.EditMaterials, "Edit Materials" },
+            {PermissionType.EditUsers, "Edit Users" },
         };
     }
 }

@@ -11,17 +11,17 @@
     mc:Ignorable="d">
     <Grid Margin="5">
         <TabControl>
-            <TabItem Header="Users" IsEnabled="{Binding ManageUsersViewModel, Converter={StaticResource NotNullToBoolean}}">
+            <TabItem Header="Users" IsEnabled="{Binding ManageUsersViewModel, Converter={StaticResource NotNullToBoolean}}" x:Name="usersTab">
                 <ContentControl Content="{Binding ManageUsersViewModel}" />
             </TabItem>
-            <TabItem Header="Lathes">
+            <TabItem Header="Lathes" x:Name="lathesTab">
                 <ContentControl Content="{Binding LatheViewModel}" IsEnabled="{Binding LatheViewModel, Converter={StaticResource NotNullToBoolean}}" />
             </TabItem>
-            <TabItem Header="Materials">
+            <TabItem Header="Materials" x:Name="materialsTab">
                 <ContentControl Content="{Binding MaterialsViewModel}" IsEnabled="{Binding MaterialsViewModel, Converter={StaticResource NotNullToBoolean}}" />
             </TabItem>
-            <TabItem Header="Dev" IsEnabled="False" />
-            <TabItem Header="Reports">
+            <TabItem Header="Dev" IsEnabled="False" x:Name="devTab" />
+            <TabItem Header="Reports" x:Name="reportsTab">
                 <Grid>
                     <StackPanel>
                         <Button
@@ -94,6 +94,13 @@
                             CommandParameter="TotalManufactured"
                             Style="{StaticResource Action_Button}"
                             Tag="Total Manufactured" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Command="{Binding GetRecordsAsCsvCmd}"
+                            CommandParameter="ImportTriggers"
+                            Style="{StaticResource Action_Button}"
+                            Tag="Import Triggers" />
                     </StackPanel>
                 </Grid>
             </TabItem>

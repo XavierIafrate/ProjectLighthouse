@@ -81,7 +81,13 @@ namespace ProjectLighthouse
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            manage_products_button.IsEnabled = App.CurrentUser.HasPermission(Model.Core.PermissionType.UpdateProducts);
+            manage_database_button.Visibility = 
+                (App.CurrentUser.HasPermission(Model.Core.PermissionType.ViewReports) ||
+                App.CurrentUser.HasPermission(Model.Core.PermissionType.ManageLathes) ||
+                App.CurrentUser.HasPermission(Model.Core.PermissionType.EditMaterials) ||
+                App.CurrentUser.HasPermission(Model.Core.PermissionType.EditUsers))
+                ? Visibility.Visible : Visibility.Collapsed;
+
             LoggedInUserName.Text = App.CurrentUser.GetFullName();
             LoggedInUserRole.Text = App.CurrentUser.Role.ToString();
         }

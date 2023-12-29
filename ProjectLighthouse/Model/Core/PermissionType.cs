@@ -11,6 +11,7 @@
     * 5xx = Maintenance Permissions
     * 6xx = Development Permissions
     * 7xx = Product Management Permissions
+    * 9xx = DB Management Permissions
     * 
     */
 
@@ -33,5 +34,9 @@
         ModifyProjects = 602,
         CreateProducts = 701,
         UpdateProducts = 702,
+        ViewReports = 901,
+        ManageLathes = 902,
+        EditMaterials = 903,
+        EditUsers = 904,
     }
 }

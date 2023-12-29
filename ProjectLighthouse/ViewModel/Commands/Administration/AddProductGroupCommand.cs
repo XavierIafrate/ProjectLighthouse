@@ -17,7 +17,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return App.CurrentUser.HasPermission(Model.Core.PermissionType.CreateProducts);
         }
 
         public void Execute(object parameter)
