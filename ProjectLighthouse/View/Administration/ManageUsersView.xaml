@@ -70,7 +70,7 @@
             <Button
                 Grid.Row="1"
                 HorizontalAlignment="Right"
-                Command="{Binding addUserCommand}"
+                Command="{Binding AddUserCmd}"
                 Style="{StaticResource Action_New_Button}"
                 Tag="New User" />
         </Grid>
@@ -216,7 +216,7 @@
                 </Grid>
                 <Button
                     HorizontalAlignment="Right"
-                    Command="{Binding resetPasswordCommand}"
+                    Command="{Binding ResetPasswordCmd}"
                     IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource Action_Button}"
                     Tag="Reset Password" />
@@ -232,13 +232,13 @@
                         <Button
                             Margin="5,0"
                             VerticalAlignment="Bottom"
-                            Command="{Binding removePermissionCommand}"
+                            Command="{Binding RemovePermissionCmd}"
                             Style="{StaticResource Action_Remove_Button}"
                             Tag="Revoke" />
                         <Button
                             Margin="5,0"
                             VerticalAlignment="Bottom"
-                            Command="{Binding addPermissionCommand}"
+                            Command="{Binding AddPermissionCmd}"
                             Style="{StaticResource Action_New_Button}"
                             Tag="Add" />
 
@@ -295,18 +295,18 @@
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
                     <Button
-                        Command="{Binding editCommand}"
+                        Command="{Binding EditCmd}"
                         Style="{StaticResource Action_Edit_Button}"
                         Tag="Edit User"
                         Visibility="{Binding ReadControlsVis}" />
                     <Button
                         d:Visibility="Visible"
-                        Command="{Binding saveCommand}"
+                        Command="{Binding SaveCmd}"
                         Style="{StaticResource Action_Update_Button}"
                         Tag="Save Changes"
                         Visibility="{Binding EditControlsVis, FallbackValue='Collapsed'}" />
                     <Button
-                        Command="{Binding deleteUserCommand}"
+                        Command="{Binding DeleteUserCmd}"
                         Style="{StaticResource Action_Remove_Button}"
                         Tag="Delete User"
                         Visibility="{Binding EditControlsVis}" />

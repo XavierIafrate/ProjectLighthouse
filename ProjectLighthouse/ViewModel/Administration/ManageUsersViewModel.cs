@@ -121,14 +121,13 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
-        public EditUserCommand editCommand { get; set; }
-        public SaveUserEditCommand saveCommand { get; set; }
-        public AddUserCommand addUserCommand { get; set; }
-        public DeleteUserCommand deleteUserCommand { get; set; }
-        public ResetUserPasswordCommand resetPasswordCommand { get; set; }
-        public GetLoginReportCommand getLoginReportCommand { get; set; }
-        public GrantPermissionCommand addPermissionCommand { get; set; }
-        public RevokePermissionCommand removePermissionCommand { get; set; }
+        public EditUserCommand EditCmd { get; set; }
+        public SaveUserEditCommand SaveCmd { get; set; }
+        public AddUserCommand AddUserCmd { get; set; }
+        public DeleteUserCommand DeleteUserCmd { get; set; }
+        public ResetUserPasswordCommand ResetPasswordCmd { get; set; }
+        public GrantPermissionCommand AddPermissionCmd { get; set; }
+        public RevokePermissionCommand RemovePermissionCmd { get; set; }
 
 
         #endregion
@@ -146,20 +145,19 @@ namespace ProjectLighthouse.ViewModel.Administration
             EditControlsVis = Visibility.Collapsed;
             ReadControlsVis = Visibility.Visible;
 
-            editCommand = new(this);
-            saveCommand = new(this);
-            deleteUserCommand = new(this);
-            resetPasswordCommand = new(this);
-            getLoginReportCommand = new(this);
-            addPermissionCommand = new(this);
-            removePermissionCommand = new(this);
-            addUserCommand = new(this);
+            EditCmd = new(this);
+            SaveCmd= new(this);
+            DeleteUserCmd= new(this);
+            ResetPasswordCmd= new(this);
+            AddPermissionCmd= new(this);
+            RemovePermissionCmd= new(this);
+            AddUserCmd= new(this);
 
             LoadData();
 
             if (Users.Count > 0)
             {
-                SelectedUser = Users.FirstOrDefault();
+                SelectedUser = Users.First();
             }
         }
 
