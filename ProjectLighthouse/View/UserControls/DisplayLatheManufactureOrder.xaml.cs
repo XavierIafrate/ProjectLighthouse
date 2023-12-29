@@ -48,7 +48,7 @@ namespace ProjectLighthouse.View.UserControls
                             : Visibility.Collapsed;
 
             control.StatusBadgeText.Text = control.LatheManufactureOrder.State.ToString();
-            control.StatusBadgeText.Visibility = control.LatheManufactureOrder.IsClosed || needsUpdate ? Visibility.Collapsed : Visibility.Visible;
+            control.StatusBadge.Visibility = control.LatheManufactureOrder.IsClosed || needsUpdate ? Visibility.Collapsed : Visibility.Visible;
             OrderStateToBrush converter = new();
             control.StatusBadge.Background = converter.Convert(control.LatheManufactureOrder.State, null, "faded", null) as Brush;
             control.StatusBadgeText.Foreground = converter.Convert(control.LatheManufactureOrder.State, null, null, null) as Brush;

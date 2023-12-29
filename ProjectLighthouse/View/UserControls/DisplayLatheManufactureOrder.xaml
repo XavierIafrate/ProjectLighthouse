@@ -68,20 +68,19 @@
         </StackPanel>
         <StackPanel
             Grid.Column="1"
-            Margin="5,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Center">
             <Border
                 x:Name="ClosedBadge"
-                Height="22"
+                Height="22" Width="90"
                 Background="{StaticResource OnBackgroundFaded}"
                 CornerRadius="3"
                 ToolTip="This order has been completed and all lots delivered/scrapped.">
 
-                <StackPanel Margin="8,2" Orientation="Horizontal">
+                <StackPanel Margin="8,2" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Path
-                        Width="12"
-                        Height="12"
+                        Width="10"
+                        Height="10"
                         Margin="0,0,5,0"
                         VerticalAlignment="Center"
                         Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
@@ -98,12 +97,12 @@
 
             <Border
                 x:Name="StaleBadge"
-                Height="22"
+                Height="22" Width="90"
                 Background="{StaticResource RedFaded}"
                 CornerRadius="3"
                 ToolTip="Last update on problem was over 3 days ago">
 
-                <StackPanel Margin="8,2" Orientation="Horizontal">
+                <StackPanel Margin="8,2" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Path
                         Width="10"
                         Height="10"
@@ -138,12 +137,10 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     d:Text="STATUS"
-                    d:Visibility="Visible"
                     FontSize="14"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource Purple}"
-                    TextAlignment="Center"
-                    Visibility="Collapsed" />
+                    TextAlignment="Center" />
             </Border>
         </Grid>
     </Grid>
