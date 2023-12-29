@@ -119,8 +119,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                     continue;
                 }
 
-                int trigger;
-                if (!int.TryParse(split[1], out trigger))
+                if (!int.TryParse(split[1], out int trigger))
                 {
                     Debug.WriteLine($"Could not parse int: '{split[1]}'");
                     continue;
