@@ -6,6 +6,7 @@ using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Reporting.Internal;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Paragraph = MigraDoc.DocumentObjectModel.Paragraph;
 using Section = MigraDoc.DocumentObjectModel.Section;
@@ -39,6 +40,12 @@ namespace ProjectLighthouse.Model.Quality.Internal
 
         public void BuildContent(TechnicalDrawing drawing, List<ToleranceDefinition> dimensions, string? order,  string path)
         {
+            if (App.StandardFits == null)
+            {
+                string fitsJson = File.ReadAllText($"{App.ROOT_PATH}fits.txt");
+                App.StandardFits = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StandardFit>>(fitsJson);
+            }
+
             Section content = new();
             SetupSection(content);
 
