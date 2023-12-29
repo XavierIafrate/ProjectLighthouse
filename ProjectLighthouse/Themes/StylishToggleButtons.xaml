@@ -183,7 +183,7 @@
                         <Path
                             Width="18"
                             Margin="0,3,8,0"
-                            Data="M21 17V8H7V17H21M21 3C22.1 3 23 3.9 23 5V17C23 18.1 22.1 19 21 19H7C5.89 19 5 18.1 5 17V5C5 3.9 5.9 3 7 3H8V1H10V3H18V1H20V3H21M3 21H17V23H3C1.89 23 1 22.1 1 21V9H3V21Z"
+                            Data="M2,2H4V20H22V22H2V2M7,10H17V13H7V10M11,15H21V18H11V15M6,4H22V8H20V6H8V8H6V4Z"
                             Fill="{TemplateBinding Foreground}"
                             Stretch="Uniform" />
                         <TextBlock
