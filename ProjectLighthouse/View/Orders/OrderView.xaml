@@ -913,7 +913,6 @@
                                         </Grid>
                                         <Border
                                             Margin="5"
-                                            Background="{StaticResource Surface}"
                                             CornerRadius="5"
                                             Visibility="{Binding CycleTimeSeries, Converter={StaticResource NotNullToVisibility}}">
                                             <lvc2:CartesianChart
@@ -944,10 +943,10 @@
                                             <TextBlock
                                                 Grid.Row="1"
                                                 Grid.Column="0"
-                                                d:Text="99.99 mm/s"
+                                                d:Text="99.99 s/mm"
                                                 FontWeight="SemiBold"
                                                 Foreground="{StaticResource Purple}"
-                                                Text="{Binding SelectedOrder.TimeModelPlanned.Gradient, StringFormat='{}{0:0.00} mm/s'}" />
+                                                Text="{Binding SelectedOrder.TimeModelPlanned.Gradient, StringFormat='{}{0:0.00} s/mm'}" />
                                             <TextBlock
                                                 Grid.Row="0"
                                                 Grid.Column="1"
@@ -1002,7 +1001,6 @@
                                     <StackPanel>
                                         <Border
                                             Margin="5"
-                                            Background="{StaticResource Surface}"
                                             CornerRadius="5">
                                             <lvc2:CartesianChart
                                                 Height="300"
