@@ -63,7 +63,8 @@
                 d:ItemsSource="{d:SampleData ItemCount=10}"
                 ItemsSource="{Binding FilteredRequests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 ScrollViewer.CanContentScroll="false"
-                SelectedItem="{Binding SelectedRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                SelectedItem="{Binding SelectedRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectionChanged="requests_ListView_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayRequest Margin="10,5" Request="{Binding}" />
@@ -205,6 +206,7 @@
             x:Name="scroller"
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged"
+            VerticalScrollBarVisibility="Visible"
             Visibility="{Binding SelectedRequest, Converter={StaticResource NotNullToVisibility}}">
             <Grid MaxWidth="700" Margin="25,25,25,60">
                 <Grid.RowDefinitions>
@@ -230,11 +232,9 @@
                             Style="{StaticResource title}"
                             Text="{Binding SelectedRequest.Description}" />
 
-
                         <Grid
                             HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Visibility="{Binding SelectedRequest.DecisionBy, Converter={StaticResource NullToVisibility}}">
+                            VerticalAlignment="Center">
                             <Border
                                 d:Background="{StaticResource Blue}"
                                 Background="{Binding SelectedRequest.Status, Converter={StaticResource statusBrush}}"
@@ -249,7 +249,6 @@
                                 FontWeight="SemiBold"
                                 Foreground="{Binding SelectedRequest.Status, Converter={StaticResource statusBrush}}"
                                 Text="{Binding SelectedRequest.Status}" />
-
                         </Grid>
                     </Grid>
 
@@ -269,8 +268,8 @@
 
                         <StackPanel Margin="0,5" Orientation="Horizontal">
                             <Path
-                                Width="15"
-                                Height="15"
+                                Width="12"
+                                Height="12"
                                 Margin="0,2,5,0"
                                 Data="M4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2M12.19,5.5C11.3,5.5 10.59,5.68 10.05,6.04C9.5,6.4 9.22,7 9.27,7.69H11.24C11.24,7.41 11.34,7.2 11.5,7.06C11.7,6.92 11.92,6.85 12.19,6.85C12.5,6.85 12.77,6.93 12.95,7.11C13.13,7.28 13.22,7.5 13.22,7.8C13.22,8.08 13.14,8.33 13,8.54C12.83,8.76 12.62,8.94 12.36,9.08C11.84,9.4 11.5,9.68 11.29,9.92C11.1,10.16 11,10.5 11,11H13C13,10.72 13.05,10.5 13.14,10.32C13.23,10.15 13.4,10 13.66,9.85C14.12,9.64 14.5,9.36 14.79,9C15.08,8.63 15.23,8.24 15.23,7.8C15.23,7.1 14.96,6.54 14.42,6.12C13.88,5.71 13.13,5.5 12.19,5.5M11,12V14H13V12H11Z"
                                 Fill="{StaticResource Purple}"
@@ -280,14 +279,12 @@
                                 FontSize="13"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
-                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}" />
                             <TextBlock
                                 d:Text=" RAISED_AT"
                                 FontSize="13"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
-                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.RaisedAt, UpdateSourceTrigger=PropertyChanged, StringFormat='{} {0}', Converter={StaticResource modifiedFormatter}}" />
                         </StackPanel>
                         <StackPanel
@@ -296,8 +293,8 @@
                             Orientation="Horizontal"
                             Visibility="{Binding SelectedRequest.ModifiedAt, Converter={StaticResource NotNullToVisibility}}">
                             <Path
-                                Width="15"
-                                Height="15"
+                                Width="12"
+                                Height="12"
                                 Margin="0,0,5,0"
                                 Data="M21,10.12H14.22L16.96,7.3C14.23,4.6 9.81,4.5 7.08,7.2C4.35,9.91 4.35,14.28 7.08,17C9.81,19.7 14.23,19.7 16.96,17C18.32,15.65 19,14.08 19,12.1H21C21,14.08 20.12,16.65 18.36,18.39C14.85,21.87 9.15,21.87 5.64,18.39C2.14,14.92 2.11,9.28 5.62,5.81C9.13,2.34 14.76,2.34 18.27,5.81L21,3V10.12M12.5,8V12.25L16,14.33L15.28,15.54L11,13V8H12.5Z"
                                 Fill="{StaticResource Blue}"
@@ -309,7 +306,6 @@
                                 FontSize="13"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Blue}"
-                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.ModifiedBy, StringFormat='{}Updated by {0}', UpdateSourceTrigger=PropertyChanged}" />
                             <TextBlock
                                 Grid.Row="1"
@@ -319,7 +315,6 @@
                                 FontSize="13"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Blue}"
-                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.ModifiedAt, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource modifiedFormatter}, StringFormat='{} {0}'}" />
                         </StackPanel>
 
@@ -329,8 +324,8 @@
                             Orientation="Horizontal"
                             Visibility="{Binding SelectedRequest.DecisionAt, Converter={StaticResource NotNullToVisibility}}">
                             <Path
-                                Width="15"
-                                Height="15"
+                                Width="12"
+                                Height="12"
                                 Margin="0,0,5,0"
                                 d:Fill="{StaticResource Green}"
                                 Data="M12,3A3,3 0 0,0 9,6C9,9 14,13 6,13A2,2 0 0,0 4,15V17H20V15A2,2 0 0,0 18,13C10,13 15,9 15,6C15,4 13.66,3 12,3M6,19V21H18V19H6Z"
@@ -343,7 +338,6 @@
                                 FontSize="13"
                                 FontWeight="SemiBold"
                                 Foreground="{Binding SelectedRequest.Status, Converter={StaticResource statusBrush}}"
-                                Opacity="0.8"
                                 Text="{Binding SelectedRequest.Status, UpdateSourceTrigger=PropertyChanged}" />
 
                         </StackPanel>
@@ -460,13 +454,20 @@
                                         CanEdit="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.CanEditRequestItems}"
                                         EditItemCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.EditItemCmd}"
                                         RemoveCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DataContext.RemoveFromRequestCmd}"
-                                        RequestItem="{Binding}" />
+                                        RequestItem="{Binding Path=., Mode=OneWay}" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <StackPanel Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                        <StackPanel >
                             <Button
+                                Visibility="{Binding ChangesMade, Converter={StaticResource boolToVisibleOrCollapsed}}"
+                                Command="{Binding UpdateRequestCmd}"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource Action_Update_Button}"
+                                Tag="Save Changes" />
+                            <Button
+                                Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}"
                                 HorizontalAlignment="Right"
                                 Command="{Binding SubmitRequestCmd}"
                                 Style="{StaticResource Action_Button}"
@@ -489,52 +490,17 @@
                             <!--<TextBlock Text="{Binding SelectedRequestOrder.Status}" FontSize="16" FontWeight="SemiBold" d:Text="ORDER_STATUS"/>-->
                         </StackPanel>
 
-                        <StackPanel Visibility="{Binding ShowRecommendation, Converter={StaticResource boolToVisible}}">
-                            <TextBlock Style="{StaticResource section}" Text="Recommended Order" />
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                d:Text="Runtime Cap [X day(s)]"
-                                Style="{StaticResource InputLabel}"
-                                Text="{Binding TargetRuntime, StringFormat='{}Runtime Cap [{0:N0} day(s)]'}" />
-                            <Grid Margin="0,10" HorizontalAlignment="Left">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Padding="10,0"
-                                    VerticalAlignment="Center"
-                                    Text="1" />
-                                <Slider
-                                    Grid.Column="1"
-                                    MinWidth="300"
-                                    MaxWidth="500"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    IsSnapToTickEnabled="True"
-                                    Maximum="14"
-                                    Minimum="1"
-                                    TickPlacement="BottomRight"
-                                    Value="{Binding TargetRuntime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Padding="10,0"
-                                    VerticalAlignment="Center"
-                                    Text="14" />
+                        <StackPanel Margin="0,10" Visibility="{Binding ShowRecommendation, Converter={StaticResource boolToVisible}}">
+                            <TextBlock Style="{StaticResource section}" Text="Suggested Order" />
 
-                            </Grid>
-                            <Grid>
-                                <ListView ItemsSource="{Binding RecommendedManifest}" d:ItemsSource="{d:SampleData ItemCount=4}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <uc:DisplayLMOItems Margin="10,2" LatheManufactureOrderItem="{Binding}" />
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                                <Rectangle Fill="#01ffffff" />
-                            </Grid>
+                            <ListView d:ItemsSource="{d:SampleData ItemCount=4}" ItemsSource="{Binding RecommendedManifest}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <uc:DisplayLMOItems Margin="10,2" LatheManufactureOrderItem="{Binding}" />
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <Rectangle Fill="#01ffffff" />
 
                             <Grid Margin="5,0">
                                 <Button
@@ -568,7 +534,7 @@
 
                             <Grid
                                 x:Name="approvalControls"
-                                Margin="0,20"
+                                Margin="0,10,0,0"
                                 HorizontalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto" />

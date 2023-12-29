@@ -47,7 +47,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (targetView == "Requests")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.BetaWarningVis = Visibility.Visible;
                 viewModel.SelectedViewModel = new RequestViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {

@@ -102,7 +102,11 @@ namespace ProjectLighthouse.View.UserControls
 
         private void RequiredDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            RequestItem.DateRequired = RequiredDatePicker.SelectedDate;
+            if (RequestItem.DateRequired != RequiredDatePicker.SelectedDate)
+            {
+                RequestItem.DateRequired = RequiredDatePicker.SelectedDate;
+                RequestItem.NotifyRequirementChanged();
+            }
         }
 
         private void QuantityTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -110,11 +114,19 @@ namespace ProjectLighthouse.View.UserControls
             QuantityTextBox.BorderBrush = (Brush)App.Current.Resources["Surface"];
             if (int.TryParse(QuantityTextBox.Text, out int value))
             {
-                RequestItem.QuantityRequired = value;
+                if(RequestItem.QuantityRequired != value) 
+                { 
+                    RequestItem.QuantityRequired = value;
+                    RequestItem.NotifyRequirementChanged();
+                }
             }
             else
             {
-                RequestItem.QuantityRequired = 0;
+                if (RequestItem.QuantityRequired != 0)
+                {
+                    RequestItem.QuantityRequired = 0;
+                    RequestItem.NotifyRequirementChanged();
+                }
                 QuantityTextBox.BorderBrush = (Brush)App.Current.Resources["Red"];
             }
 

@@ -38,5 +38,10 @@ namespace ProjectLighthouse.View.Requests
                 SendButton.Command.Execute(null);
             }
         }
+
+        private void requests_ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            scroller?.ScrollToVerticalOffset(0);
+        }
     }
 }
