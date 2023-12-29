@@ -1,5 +1,4 @@
-﻿using MigraDoc.DocumentObjectModel.Tables;
-using ProjectLighthouse.Model.Material;
+﻿using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -25,7 +24,7 @@ namespace ProjectLighthouse.View.Scheduling
 
         // Using a DependencyProperty as the backing store for ColumnWidth.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ColumnWidthProperty =
-            DependencyProperty.Register("ColumnWidth", typeof(int), typeof(TimelineView), new PropertyMetadata(96, SetValues));
+            DependencyProperty.Register("ColumnWidth", typeof(int), typeof(TimelineView), new PropertyMetadata(48, SetValues));
 
         public List<DateTime> Holidays
         {
@@ -296,7 +295,7 @@ namespace ProjectLighthouse.View.Scheduling
                         Border set = new()
                         {
                             Background = (Brush)Application.Current.Resources["Orange"],
-                            Margin = new(order.GetSettingStartDateTime().Hour * unitsPerHour, 2, (24-order.StartDate.Hour) * unitsPerHour, 2),
+                            Margin = new(order.GetSettingStartDateTime().Hour * unitsPerHour, 2, (24 - order.StartDate.Hour) * unitsPerHour, 2),
                             CornerRadius = new(5, 0, 0, 5),
                             Opacity = 0.7
                         };
@@ -327,7 +326,7 @@ namespace ProjectLighthouse.View.Scheduling
         }
 
         private void AddToMainGrid(UIElement control, int column, int row, int colSpan = 1, int rowSpan = 1)
-       {
+        {
             MainGrid.Children.Add(control);
             Grid.SetColumn(control, column);
             Grid.SetRow(control, row);
