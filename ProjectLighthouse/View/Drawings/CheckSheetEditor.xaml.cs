@@ -39,10 +39,6 @@ namespace ProjectLighthouse.View.Drawings
             buildPath = Path.GetTempPath() + "checksheet.pdf";
             webView.Source =  new Uri($"file:///{buildPath}#toolbar=0");
 
-            string fitsJson = File.ReadAllText($"{App.ROOT_PATH}fits.txt");
-            App.StandardFits = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StandardFit>>(fitsJson);
-
-
             this.order = orderReference;
 
             this.drawing = drawing;
