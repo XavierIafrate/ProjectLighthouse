@@ -84,7 +84,9 @@
     <None Remove="Resources\GIF\sylvester.gif" />
     <None Remove="Resources\GIF\zoolander-what-is-this.gif" />
     <None Remove="Resources\GIF\zoolander.gif" />
+    <None Remove="Resources\LighthouseLogo_Mini.png" />
     <None Remove="Resources\LighthouseLogo_Mono.png" />
+    <None Remove="Resources\LighthouseLogo_Mono_Mini.png" />
     <None Remove="Resources\Lighthouse_Mono_L_Embedded.png" />
     <None Remove="Resources\Lighthouse_Splash_Screen.png" />
     <None Remove="Resources\MiB_Logo_Stacked_Colour.jpg" />
@@ -183,7 +185,13 @@
       <CopyLocal>True</CopyLocal>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Resource Include="Resources\LighthouseLogo_Mini.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\LighthouseLogo_Mono.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\LighthouseLogo_Mono_Mini.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Lighthouse_Mono_L.png">

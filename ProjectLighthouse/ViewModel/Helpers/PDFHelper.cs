@@ -42,9 +42,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
         private static double DOCUMENT_GUTTER = 30;
         private static double HEADER_HEIGHT = 40;
 
-        private static XFont TITLE_FONT = new("Tahoma", 25, XFontStyleEx.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
-        private static XFont HEADER_FONT = new("Tahoma", 18, XFontStyleEx.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
-        private static XFont DEFAULT_FONT = new("Tahoma", 12, XFontStyleEx.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        private static XFont TITLE_FONT = new("Tahoma", 25, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        private static XFont HEADER_FONT = new("Tahoma", 18, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
+        private static XFont DEFAULT_FONT = new("Tahoma", 12, XFontStyle.Bold, new XPdfFontOptions(PdfFontEncoding.Unicode));
 
         private static double SCHEDULE_ROW_HEIGHT = 20;
         private static double BAR_ROW_HEIGHT = 20;
@@ -154,7 +154,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 new XPoint(page.Width - DOCUMENT_GUTTER, cursor_y + 0.5 * SCHEDULE_ROW_HEIGHT));
 
             gfx.DrawString($"Generated in Lighthouse by {(object)App.CurrentUser.GetFullName()} at {(object)DateTime.Now:dd/MM/yy HH:mm}",
-                new XFont("Courier New", 8, XFontStyleEx.Regular, new(PdfFontEncoding.Unicode)),
+                new XFont("Courier New", 8, XFontStyle.Regular, new(PdfFontEncoding.Unicode)),
                 XBrushes.Gray,
                 new XRect(DOCUMENT_GUTTER, page.Height - DOCUMENT_GUTTER, page.Width - 2 * DOCUMENT_GUTTER, 20),
                 XStringFormats.CenterLeft);
@@ -352,12 +352,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
             //gfx.DrawImage(logo, logoRect);
 
             // Title
-            XFont font = new("Tahoma", 35, XFontStyleEx.Bold, options);
+            XFont font = new("Tahoma", 35, XFontStyle.Bold, options);
             XRect titleRect = new(page.Width / 2 - 150, 100, 300, 40);
             gfx.DrawString(deliveryNote.Name, font, XBrushes.Black, titleRect, XStringFormats.Center);
 
             //subtitle
-            font = new("Tahoma", 20, XFontStyleEx.Bold, options);
+            font = new("Tahoma", 20, XFontStyle.Bold, options);
             titleRect.Y += titleRect.Height;
             gfx.DrawString("DELIVERY NOTE", font, XBrushes.Black, titleRect, XStringFormats.Center);
 
@@ -366,21 +366,21 @@ namespace ProjectLighthouse.ViewModel.Helpers
             #region Metadata
 
             // Manufacturer
-            font = new("Tahoma", 12, XFontStyleEx.Bold, options);
+            font = new("Tahoma", 12, XFontStyle.Bold, options);
             gfx.DrawString("MANUFACTURER",
                 font, XBrushes.Black,
                 new XRect(100, 190, 150, 20),
                 XStringFormats.CenterLeft);
-            font = new("Tahoma", 12, XFontStyleEx.Regular, options);
+            font = new("Tahoma", 12, XFontStyle.Regular, options);
             formatter.DrawString(Address, font, XBrushes.Black, new XRect(100, 210, 150, 90));
 
             // Shipping Information
-            font = new("Tahoma", 12, XFontStyleEx.Bold, options);
+            font = new("Tahoma", 12, XFontStyle.Bold, options);
             gfx.DrawString("SHIPPING",
                 font, XBrushes.Black,
                 new XRect(page.Width - 270, 190, 150, 20),
                 XStringFormats.CenterLeft);
-            font = new("Tahoma", 12, XFontStyleEx.Regular, options);
+            font = new("Tahoma", 12, XFontStyle.Regular, options);
             gfx.DrawString($"Shipped by: {deliveryNote.DeliveredBy}",
                 font, XBrushes.Black,
                 new XRect(page.Width - 270, 190 + 17, 150, 20),
@@ -395,11 +395,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             #region Order Details
 
             XRect subtitleRect = new(page.Width / 2 - 150, 290, 300, 25);
-            font = new XFont("Tahoma", 16, XFontStyleEx.Bold, options);
+            font = new XFont("Tahoma", 16, XFontStyle.Bold, options);
             gfx.DrawString("DELIVERY DETAILS", font, XBrushes.Black, subtitleRect, XStringFormats.Center);
 
             int y = 320;
-            font = new XFont("Tahoma", 12, XFontStyleEx.Bold, options);
+            font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
 
             XRect RowNumCol = new(0, y, 40, 20);
             XRect PurchaseRefCol = new(0, y, 130, 20);
@@ -427,7 +427,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             y += 3;
             int i = 1;
 
-            font = new("Tahoma", 12, XFontStyleEx.Regular, options);
+            font = new("Tahoma", 12, XFontStyle.Regular, options);
 
             // Init barcode
             BarCode barcode = new Code3of9Standard("EMPTY", new XSize(PurchaseRefCol.Width, ProductCol.Height * 0.8))
@@ -466,7 +466,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
 
             y += 3;
-            font = new XFont("Tahoma", 12, XFontStyleEx.Bold, options);
+            font = new XFont("Tahoma", 12, XFontStyle.Bold, options);
             gfx.DrawLine(stroke, offset, y, page.Width - offset, y);
             gfx.DrawString("*** END ***", font, XBrushes.Black, new XRect(offset, y, page.Width - 2 * offset, 15), XStringFormats.BottomCenter);
 
@@ -475,7 +475,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             #region Footer
 
             // Signing area
-            font = new("Tahoma", 12, XFontStyleEx.Regular, options);
+            font = new("Tahoma", 12, XFontStyle.Regular, options);
             stroke = new(XColors.Black, 1);
             y = (int)page.Height - (int)offset - 20;
             gfx.DrawLine(stroke, offset, y, page.Width / 2, y);
@@ -484,7 +484,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             gfx.DrawString("Date received", font, XBrushes.Black, new XRect(page.Width / 2 + offset, y, 100, 20), XStringFormats.CenterLeft);
 
             // Print stamp
-            font = new XFont("Tahoma", 8, XFontStyleEx.Regular, options);
+            font = new XFont("Tahoma", 8, XFontStyle.Regular, options);
             XRect footer = new(offset, page.Height - offset, page.Width - 2 * offset, 20);
             gfx.DrawString($"Generated in Lighthouse by {App.CurrentUser.GetFullName()} at {DateTime.Now:dd/MM/yy HH:mm}", font, XBrushes.Black, footer, XStringFormats.BottomLeft);
 
@@ -637,7 +637,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     + (BAR_ROW_HEIGHT * 2.5)));
 
             gfx.DrawString($"Generated in Lighthouse by {App.CurrentUser.GetFullName()} at {DateTime.Now:dd/MM/yy HH:mm}",
-                new XFont("Courier New", 8, XFontStyleEx.Regular, new(PdfFontEncoding.Unicode)),
+                new XFont("Courier New", 8, XFontStyle.Regular, new(PdfFontEncoding.Unicode)),
                 XBrushes.Gray,
                 new XRect(DOCUMENT_GUTTER, page.Height - DOCUMENT_GUTTER, page.Width - 2 * DOCUMENT_GUTTER, 20),
                 XStringFormats.CenterLeft);
@@ -852,7 +852,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     y: cursor));
 
             gfx.DrawString($"Generated in Lighthouse by {App.CurrentUser.GetFullName()} at {DateTime.Now:dd/MM/yy HH:mm}",
-                new XFont("Courier New", 8, XFontStyleEx.Regular, new(PdfFontEncoding.Unicode)),
+                new XFont("Courier New", 8, XFontStyle.Regular, new(PdfFontEncoding.Unicode)),
                 XBrushes.Gray,
                 new XRect(DOCUMENT_GUTTER, page.Height - DOCUMENT_GUTTER, page.Width - 2 * DOCUMENT_GUTTER, 20),
                 XStringFormats.CenterLeft);

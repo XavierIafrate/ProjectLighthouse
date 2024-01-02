@@ -323,8 +323,8 @@ namespace ProjectLighthouse
                 errors.Add($"File '{dbFile}' does not exist.");
             }
 
-            string[] directories =
-            [
+            string[] directories = new string[]
+            {
                 "Calibration",
                 "errors",
                 "lib",
@@ -334,7 +334,7 @@ namespace ProjectLighthouse
                 "lib\\pcom",
                 "lib\\renders",
                 "print",
-            ];
+            };
 
             foreach (string directory in directories)
             {
