@@ -241,8 +241,8 @@ namespace ProjectLighthouse.View.Programs
             {
                 materialIds.Add(material.Id);
             }
-            Program.Materials = materialIds.Count == 0 
-                ? null 
+            Program.Materials = materialIds.Count == 0
+                ? null
                 : string.Join(";", materialIds);
 
             List<string> machineKeys = new();

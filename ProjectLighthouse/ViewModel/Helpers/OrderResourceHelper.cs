@@ -92,7 +92,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 {
                     if (!latch)
                     {
-                        newItems.Add(items[i-1]);
+                        newItems.Add(items[i - 1]);
                     }
 
                     latch = true;
@@ -144,7 +144,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             if (a1 < 0 || double.IsNaN(a1))
             {
                 // TODO Handle capped gradient properly
-                return new TimeModel() { Intercept = meanY, Gradient = 0, Floor = min, RecordCount=0, CoefficientOfDetermination=0 };
+                return new TimeModel() { Intercept = meanY, Gradient = 0, Floor = min, RecordCount = 0, CoefficientOfDetermination = 0 };
             }
 
             double b1 = (meanY - a1 * meanX);
@@ -161,7 +161,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 rss += Math.Pow((double)item.Item2 - bestFitVal, 2);
                 tss += Math.Pow((double)item.Item2 - meanY, 2);
             }
-            
+
             r2 = 1 - (rss / tss);
 
             r2 = double.IsNaN(r2) ? 1 : r2;

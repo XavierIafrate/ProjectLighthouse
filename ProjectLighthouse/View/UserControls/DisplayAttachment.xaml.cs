@@ -62,7 +62,7 @@ namespace ProjectLighthouse.View.UserControls
                    { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
         static string SizeSuffix(Int64 value, int decimalPlaces = 1)
         {
-            if (decimalPlaces < 0) { throw new ArgumentOutOfRangeException("decimalPlaces"); }
+            if (decimalPlaces < 0) { throw new ArgumentOutOfRangeException(nameof(decimalPlaces)); }
             if (value < 0) { return "-" + SizeSuffix(-value, decimalPlaces); }
             if (value == 0) { return string.Format("{0:n" + decimalPlaces + "} B", 0); }
 

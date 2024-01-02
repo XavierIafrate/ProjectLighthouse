@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -92,7 +91,7 @@ namespace ProjectLighthouse.View.Administration
         {
             try
             {
-                Lathe.CreatedBy= App.CurrentUser.UserName;
+                Lathe.CreatedBy = App.CurrentUser.UserName;
                 Lathe.CreatedAt = DateTime.Now;
                 DatabaseHelper.Update(Lathe, throwErrs: true);
                 originalLathe = Lathe;

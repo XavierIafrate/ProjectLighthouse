@@ -17,7 +17,6 @@
             <converters:dateToLastModified x:Key="modifiedFormatter" />
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisible" />
             <converters:boolToCollapsedOrVisible x:Key="boolToCollapsed" />
-            <converters:RequestToRequestedLeadTime x:Key="LeadTime" />
             <converters:ObjectIsNull x:Key="NullToBool" />
             <converters:RequestStatusToBrush x:Key="statusBrush" />
         </Grid.Resources>
@@ -275,17 +274,17 @@
                                 Fill="{StaticResource Purple}"
                                 Stretch="Uniform" />
                             <TextBlock
-                                d:Text="RAISED_BY"
+                                d:Text="RAISED_AT"
                                 FontSize="13"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
-                                Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised by {0}', FallbackValue='Raised by Randy Marsh'}" />
+                                Text="{Binding SelectedRequest.RaisedAt, UpdateSourceTrigger=PropertyChanged, StringFormat='{}Raised {0}', Converter={StaticResource modifiedFormatter}}" />
                             <TextBlock
-                                d:Text=" RAISED_AT"
+                                d:Text=" RAISED_BY"
                                 FontSize="13"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
-                                Text="{Binding SelectedRequest.RaisedAt, UpdateSourceTrigger=PropertyChanged, StringFormat='{} {0}', Converter={StaticResource modifiedFormatter}}" />
+                                Text="{Binding SelectedRequest.RaisedBy, UpdateSourceTrigger=PropertyChanged, StringFormat='{} by {0}'}" />
                         </StackPanel>
                         <StackPanel
                             Grid.Row="1"
@@ -302,20 +301,20 @@
 
                             <TextBlock
                                 Grid.Row="1"
-                                d:Text="UPDATED_BY"
-                                FontSize="13"
-                                FontWeight="SemiBold"
-                                Foreground="{StaticResource Blue}"
-                                Text="{Binding SelectedRequest.ModifiedBy, StringFormat='{}Updated by {0}', UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock
-                                Grid.Row="1"
                                 Grid.Column="2"
                                 HorizontalAlignment="Right"
-                                d:Text=" UPDATED_AT"
+                                d:Text="UPDATED_AT"
                                 FontSize="13"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Blue}"
-                                Text="{Binding SelectedRequest.ModifiedAt, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource modifiedFormatter}, StringFormat='{} {0}'}" />
+                                Text="{Binding SelectedRequest.ModifiedAt, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource modifiedFormatter}, StringFormat='{}Updated {0}'}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                d:Text=" UPDATED_BY"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Blue}"
+                                Text="{Binding SelectedRequest.ModifiedBy, StringFormat='{} by {0}', UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
 
                         <StackPanel

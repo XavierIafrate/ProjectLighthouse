@@ -21,12 +21,14 @@ namespace ProjectLighthouse.Model.Administration
         public bool RequireDocumentation { get; set; }
 
         [Ignore]
-        public bool IsDue { 
-            get {
-                return Active && 
-                      (LastCompleted == DateTime.MinValue 
+        public bool IsDue
+        {
+            get
+            {
+                return Active &&
+                      (LastCompleted == DateTime.MinValue
                     || LastCompleted < DateTime.Now.AddMonths(-1 * IntervalMonths));
-            } 
+            }
         }
 
         [Ignore]
@@ -57,7 +59,7 @@ namespace ProjectLighthouse.Model.Administration
             }
 
             DateTime dateTime = StartingDate;
-            while (dateTime < LastCompleted.AddDays(7*paddingWeeks))
+            while (dateTime < LastCompleted.AddDays(7 * paddingWeeks))
             {
                 dateTime.AddMonths(1);
             }

@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -35,7 +34,8 @@ namespace ProjectLighthouse.View.Administration
                 Product = new();
                 UpdateButton.Visibility = Visibility.Collapsed;
             }
-            DataContext= this;
+
+            DataContext = this;
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -148,7 +148,7 @@ namespace ProjectLighthouse.View.Administration
 
                 App.MoveToLocalAppData(path);
 
-                Product.ImageUrl = newSource;   
+                Product.ImageUrl = newSource;
                 DatabaseHelper.Update(Product, throwErrs: true);
             }
             catch (Exception ex)

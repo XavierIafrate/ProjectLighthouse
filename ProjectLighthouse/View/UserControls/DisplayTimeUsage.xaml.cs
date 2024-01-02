@@ -1,20 +1,10 @@
-﻿using ProjectLighthouse.Model.Material;
-using ProjectLighthouse.Model.Orders;
-using ProjectLighthouse.Model.Scheduling;
-using ProjectLighthouse.View.Scheduling;
+﻿using ProjectLighthouse.Model.Orders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -63,12 +53,12 @@ namespace ProjectLighthouse.View.UserControls
             if (OrderItems is null) return;
             if (OrderItems.Count == 0) return;
 
-            if(OrderItems.First().AssignedMO !=Order.Name) return;
-            if(Order.State != OrderState.Complete) return;
+            if (OrderItems.First().AssignedMO != Order.Name) return;
+            if (Order.State != OrderState.Complete) return;
 
             Dictionary<LatheManufactureOrderItem, TimeSpan> spans = new();
 
-            TimeSpan settingSpan = TimeSpan.FromSeconds(6*3600);
+            TimeSpan settingSpan = TimeSpan.FromSeconds(6 * 3600);
             TimeSpan orderSpan = Order.EndsAt() - Order.StartDate;
 
             for (int i = 0; i < OrderItems.Count; i++)
@@ -79,7 +69,7 @@ namespace ProjectLighthouse.View.UserControls
             }
 
             Dictionary<string, int> spanMap = DrawGrid(settingSpan, orderSpan, spans);
-            DrawEvents(settingSpan, orderSpan, spans, spanMap);
+            DrawEvents(orderSpan, spans, spanMap);
         }
 
         private Dictionary<string, int> DrawGrid(TimeSpan setting, TimeSpan order, Dictionary<LatheManufactureOrderItem, TimeSpan> items)
@@ -148,7 +138,7 @@ namespace ProjectLighthouse.View.UserControls
                     spans.Add("order", addedColumns + 1);
                     spans.Add(items.ElementAt(i).Key.ProductName, 2);
                     addedColumns++;
-                    diffStarts = addedColumns+2;
+                    diffStarts = addedColumns + 2;
                 }
             }
 
@@ -158,7 +148,7 @@ namespace ProjectLighthouse.View.UserControls
                 TimeSpan diff = order - itemsTotal;
                 MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(unitsPerHour * diff.TotalHours, GridUnitType.Star) });
                 spans.Add("order", addedColumns + 1);
-                diffStarts = MainGrid.ColumnDefinitions.Count() - 1;
+                diffStarts = MainGrid.ColumnDefinitions.Count - 1;
             }
 
             //MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(unitsPerHour * remainingHours, GridUnitType.Star) });
@@ -181,10 +171,10 @@ namespace ProjectLighthouse.View.UserControls
                         Margin = new(0),
                         CornerRadius = new(0),
                         Opacity = 0.7,
-                        ToolTip= $"{(latch ? "Gained" : "Lost")} performance {remainingHours:0}h",
+                        ToolTip = $"{(latch ? "Gained" : "Lost")} performance {remainingHours:0}h",
                     };
 
-                    s = MainGrid.ColumnDefinitions.Count() - diffStarts;
+                    s = MainGrid.ColumnDefinitions.Count - diffStarts;
                 }
 
                 AddToMainGrid(element, i, MainGrid.RowDefinitions.Count - 1, s);
@@ -193,19 +183,19 @@ namespace ProjectLighthouse.View.UserControls
             return spans;
         }
 
-        private void DrawEvents(TimeSpan setting, TimeSpan order, Dictionary<LatheManufactureOrderItem, TimeSpan> items, Dictionary<string, int> spanMap)
+        private void DrawEvents(TimeSpan order, Dictionary<LatheManufactureOrderItem, TimeSpan> items, Dictionary<string, int> spanMap)
         {
             Border element;
 
             element = new()
             {
-                Background= (Brush)Application.Current.Resources["Orange"],
+                Background = (Brush)Application.Current.Resources["Orange"],
                 Margin = new(0),
                 CornerRadius = new(0),
                 Opacity = 0.7
             };
 
-            AddToMainGrid(control:element, column:1, row:0);
+            AddToMainGrid(control: element, column: 1, row: 0);
 
             element = new()
             {
@@ -234,12 +224,10 @@ namespace ProjectLighthouse.View.UserControls
                 int spanOfItem = spanMap[items.ElementAt(i).Key.ProductName];
                 element.ToolTip = $"[c{col} s{spanOfItem}] {items.ElementAt(i).Value.TotalHours:0.00}";
 
-                AddToMainGrid(control: element, column: col, row: i+1, colSpan:spanOfItem);
-                col+= spanOfItem;
+                AddToMainGrid(control: element, column: col, row: i + 1, colSpan: spanOfItem);
+                col += spanOfItem;
 
             }
-
-
         }
 
         private void AddToMainGrid(UIElement control, int column, int row, int colSpan = 1, int rowSpan = 1)

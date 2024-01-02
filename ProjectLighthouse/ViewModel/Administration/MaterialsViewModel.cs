@@ -21,7 +21,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             GetData();
         }
 
-        private void GetData() 
+        private void GetData()
         {
             Materials = DatabaseHelper.Read<MaterialInfo>();
         }

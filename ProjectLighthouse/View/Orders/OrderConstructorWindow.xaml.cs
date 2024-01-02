@@ -612,14 +612,14 @@ namespace ProjectLighthouse.View.Orders
                     continue;
                 }
 
-                item.CycleTime = 0; 
+                item.CycleTime = 0;
                 item.AssignedMO = NewOrder.Name;
                 item.AddedBy = App.CurrentUser.GetFullName();
                 item.DateAdded = DateTime.Now;
                 DatabaseHelper.Insert(item, throwErrs: true);
             };
 
-           NewOrder.OrderItems = NewOrderItems.ToList();
+            NewOrder.OrderItems = NewOrderItems.ToList();
 
             return true;
 
@@ -669,7 +669,7 @@ namespace ProjectLighthouse.View.Orders
 
             TimeSpan orderTime = TimeSpan.FromSeconds(insights.TimeToComplete);
 
-            insights.CostOfMachineTime = orderTime.TotalSeconds * App.Constants.AbsorptionRate; 
+            insights.CostOfMachineTime = orderTime.TotalSeconds * App.Constants.AbsorptionRate;
 
             insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
 

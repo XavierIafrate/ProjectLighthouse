@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.Model.Drawings;
-using ProjectLighthouse.ViewModel.Helpers;
+﻿using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -14,9 +13,9 @@ namespace ProjectLighthouse.Model.Products
 
         private string name;
         [Unique, NotNull]
-        public string  Name
-        { 
-            get { return name; } 
+        public string Name
+        {
+            get { return name; }
             set
             {
                 name = value;
@@ -30,9 +29,9 @@ namespace ProjectLighthouse.Model.Products
         public string Description
         {
             get { return description; }
-            set 
-            { 
-                description = value; 
+            set
+            {
+                description = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -42,9 +41,9 @@ namespace ProjectLighthouse.Model.Products
         public string WebUrl
         {
             get { return webUrl; }
-            set 
-            { 
-                webUrl = value; 
+            set
+            {
+                webUrl = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -54,9 +53,9 @@ namespace ProjectLighthouse.Model.Products
         public string ImageUrl
         {
             get { return imageUrl; }
-            set 
-            { 
-                imageUrl = value; 
+            set
+            {
+                imageUrl = value;
                 ValidateProperty();
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(LocalRenderPath));
@@ -67,9 +66,9 @@ namespace ProjectLighthouse.Model.Products
         public string WebImageUrl
         {
             get { return webImageUrl; }
-            set 
-            { 
-                webImageUrl = value; 
+            set
+            {
+                webImageUrl = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -79,10 +78,11 @@ namespace ProjectLighthouse.Model.Products
         [Ignore]
         public string LocalRenderPath
         {
-            get { 
-                return (string.IsNullOrEmpty(ImageUrl) || string.IsNullOrEmpty(App.AppDataDirectory)) 
-                    ? null 
-                    : $@"{App.AppDataDirectory}lib\renders\{ImageUrl}"; 
+            get
+            {
+                return (string.IsNullOrEmpty(ImageUrl) || string.IsNullOrEmpty(App.AppDataDirectory))
+                    ? null
+                    : $@"{App.AppDataDirectory}lib\renders\{ImageUrl}";
             }
         }
 
@@ -142,7 +142,7 @@ namespace ProjectLighthouse.Model.Products
                     return;
                 }
 
-                if(!ValidationHelper.IsValidProductName(Name))
+                if (!ValidationHelper.IsValidProductName(Name))
                 {
                     string invalidChars = ValidationHelper.GetInvalidProductNameChars(Name);
                     AddError(propertyName, $"Name must be a valid product code (invalid characters: {invalidChars})");
@@ -155,7 +155,7 @@ namespace ProjectLighthouse.Model.Products
             {
                 ClearErrors(propertyName);
 
-                if (string.IsNullOrWhiteSpace(Description)) 
+                if (string.IsNullOrWhiteSpace(Description))
                 {
                     AddError(propertyName, "Description cannot be empty");
                     return;

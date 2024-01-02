@@ -39,12 +39,12 @@ namespace ProjectLighthouse.View.UserControls
                    && control.LatheManufactureOrder.State == OrderState.Problem
                    && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now;
 
-            control.StaleBadge.Visibility = 
+            control.StaleBadge.Visibility =
                        control.LatheManufactureOrder.ModifiedAt.AddDays(5) < DateTime.Now
                     && control.LatheManufactureOrder.State == OrderState.Problem
-                    && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now 
-                    && control.LatheManufactureOrder.State == OrderState.Problem 
-                            ? Visibility.Visible    
+                    && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now
+                    && control.LatheManufactureOrder.State == OrderState.Problem
+                            ? Visibility.Visible
                             : Visibility.Collapsed;
 
             control.StatusBadgeText.Text = control.LatheManufactureOrder.State.ToString();

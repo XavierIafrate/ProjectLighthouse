@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Programs;
-using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
 using System;
 using System.Windows.Input;

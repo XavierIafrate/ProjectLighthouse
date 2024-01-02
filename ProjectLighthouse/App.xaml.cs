@@ -46,15 +46,24 @@ namespace ProjectLighthouse
                 return;
             }
 
+            //if (!ValidateRootDirectory(App.ROOT_PATH, App.DemoMode))
+            //{
+            //    string message = $"{App.ROOT_PATH} failed validation checks:";
+            //    foreach (string str in GetRootDirectoryErrors(App.ROOT_PATH, App.DemoMode))
+            //    {
+            //        message += $"{Environment.NewLine}{str}";
+            //    }
+
+            //    SetupFailedWindow window = new("Invalid Network Root.", message);
+            //    window.ShowDialog();
+            //    Application.Current.Shutdown();
+            //}
+
             try
             {
-                //Constants constants = new();
-                //string constantsJson = Newtonsoft.Json.JsonConvert.SerializeObject(constants);
-                //File.WriteAllText(App.ROOT_PATH + "config.json", constantsJson);
-
+                
                 string constantsJson = File.ReadAllText(App.ROOT_PATH + "config.json");
                 Constants = Newtonsoft.Json.JsonConvert.DeserializeObject<Constants>(constantsJson);
-
             }
             catch (Exception ex)
             {
@@ -159,7 +168,7 @@ namespace ProjectLighthouse
             MainViewModel = VM;
 
             Window.DataContext = VM;
-            Window.viewModel = VM;
+            Window.ViewModel = VM;
 
             return VM;
         }
@@ -291,7 +300,14 @@ namespace ProjectLighthouse
 
         public static bool ValidateRootDirectory(string rootDirectory, bool demo = false)
         {
+            string[] errors = GetRootDirectoryErrors(rootDirectory, demo);
+            return errors.Length == 0;
+        }
+
+        public static string[] GetRootDirectoryErrors(string rootDirectory, bool demo = false)
+        {
             string dbFile;
+            List<string> errors = new();
 
             if (demo)
             {
@@ -304,11 +320,11 @@ namespace ProjectLighthouse
 
             if (!File.Exists(dbFile))
             {
-                return false;
+                errors.Add($"File '{dbFile}' does not exist.");
             }
 
-            string[] directories = new string[]
-            {
+            string[] directories =
+            [
                 "Calibration",
                 "errors",
                 "lib",
@@ -318,13 +334,13 @@ namespace ProjectLighthouse
                 "lib\\pcom",
                 "lib\\renders",
                 "print",
-            };
+            ];
 
             foreach (string directory in directories)
             {
                 if (!Directory.Exists($"{rootDirectory}{directory}"))
                 {
-                    return false;
+                    errors.Add($"Directory '{rootDirectory}{directory}' does not exist.");
                 }
             }
 
@@ -332,7 +348,7 @@ namespace ProjectLighthouse
             {
                 if (!Directory.Exists($"{rootDirectory}lib\\programs"))
                 {
-                    return false;
+                    errors.Add($"Directory '{rootDirectory}lib\\programs' does not exist.");
                 }
             }
 
@@ -351,11 +367,12 @@ namespace ProjectLighthouse
             {
                 if (!File.Exists($"{rootDirectory}{file}"))
                 {
-                    return false;
+                    errors.Add($"File '{rootDirectory}{file}' does not exist.");
+
                 }
             }
 
-            return true;
+            return errors.ToArray();
         }
     }
 }

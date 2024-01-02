@@ -24,7 +24,7 @@ namespace ProjectLighthouse.View.UserControls
                 return;
             }
 
-            if(control.MaintenanceEvent.LastCompleted == DateTime.MinValue)
+            if (control.MaintenanceEvent.LastCompleted == DateTime.MinValue)
             {
                 control.LastCompletedText.Text = "Has never been done";
                 control.NextDueText.Text = "Due now";

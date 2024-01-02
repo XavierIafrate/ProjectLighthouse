@@ -172,6 +172,10 @@ namespace ProjectLighthouse.ViewModel.Core
             if (MainWindow != null)
             {
                 UpdateViewCommand.Execute(TargetView);
+                if (App.CurrentUser.DefaultMenuWidth != null)
+                {
+                    MainWindow.MainGrid.ColumnDefinitions[0].Width = new((double)App.CurrentUser.DefaultMenuWidth);
+                }
             }
 
             return true;

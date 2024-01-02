@@ -43,7 +43,7 @@ namespace ProjectLighthouse.View.Orders
 
         void LoadData(int orderId)
         {
-            LatheManufactureOrder order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Id == orderId) 
+            LatheManufactureOrder order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Id == orderId)
                 ?? throw new Exception($"Order with ID '{orderId}' not found.");
             parentOrderName = order.Name;
 
@@ -102,7 +102,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            var newItems = ItemsListView.SelectedItems;
+            System.Collections.IList newItems = ItemsListView.SelectedItems;
 
             for (int i = 0; i < newItems.Count; i++)
             {

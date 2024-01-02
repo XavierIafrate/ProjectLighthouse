@@ -84,7 +84,7 @@ namespace ProjectLighthouse.View.Core
 
         void StoreColumns(string targetFilePath)
         {
-            string[] lines =ReadAllLinesSafe(targetFilePath);
+            string[] lines = ReadAllLinesSafe(targetFilePath);
             fileContents = lines;
 
             if (lines.Length == 0)
@@ -222,7 +222,7 @@ namespace ProjectLighthouse.View.Core
 
         void TryImport(List<TmpProductImport> records)
         {
-            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>(throwErrs:true);
+            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>(throwErrs: true);
 
 
             foreach (TmpProductImport record in records)
@@ -232,8 +232,8 @@ namespace ProjectLighthouse.View.Core
                 if (existingRecord is null)
                 {
                     // New record
-                    TurnedProduct newRecord = new() 
-                    { 
+                    TurnedProduct newRecord = new()
+                    {
                         ProductName = record.ProductName,
                         MajorLength = record.MajorLength,
                         MajorDiameter = record.MajorDiameter,

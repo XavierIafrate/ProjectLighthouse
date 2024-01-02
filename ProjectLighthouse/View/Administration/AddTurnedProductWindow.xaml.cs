@@ -52,11 +52,11 @@ namespace ProjectLighthouse.View.Administration
             }
             else
             {
-                Product = new() { AddedBy=App.CurrentUser.UserName, AddedDate=DateTime.Now };
+                Product = new() { AddedBy = App.CurrentUser.UserName, AddedDate = DateTime.Now };
 
                 if (groupId is not null)
                 {
-                    Product.GroupId = groupId;  
+                    Product.GroupId = groupId;
                 }
                 AddButton.Visibility = Visibility.Visible;
                 UpdateButton.Visibility = Visibility.Collapsed;
@@ -103,7 +103,7 @@ namespace ProjectLighthouse.View.Administration
                 {
                     CreateProduct();
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     MessageBox.Show($"An error occurred while updating the database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;

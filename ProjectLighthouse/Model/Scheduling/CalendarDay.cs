@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ProjectLighthouse.Model.Orders;
+using System;
 using System.Collections.Generic;
-using ProjectLighthouse.Model.Orders;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
@@ -17,7 +17,6 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 Orders = orders;
             }
-
         }
 
         public override string ToString()

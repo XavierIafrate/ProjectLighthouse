@@ -157,21 +157,21 @@ namespace ProjectLighthouse.ViewModel.Administration
                     - Math.Max(start.Ticks, maintenanceEvent.StartDate.Ticks)));
             }
 
-            OperatingEfficiencyKpi kpi = new()
-            {
-                AvailableTime = end - start,
-                MaintenanceLoss = maintenanceTime,
-                DevelopmentLoss = developmentTime,
-                ScheduleLoss = scheduleLoss,
-                ChangeoverLoss = settingTime,
-                AvailabilityLoss = availabilityLoss,
-                PerformanceChange = performanceChange,
-                QualityLoss = new(0, 0, 0)
-            };
+            //OperatingEfficiencyKpi kpi = new()
+            //{
+            //    AvailableTime = end - start,
+            //    MaintenanceLoss = maintenanceTime,
+            //    DevelopmentLoss = developmentTime,
+            //    ScheduleLoss = scheduleLoss,
+            //    ChangeoverLoss = settingTime,
+            //    AvailabilityLoss = availabilityLoss,
+            //    PerformanceChange = performanceChange,
+            //    QualityLoss = new(0, 0, 0)
+            //};
 
-            kpi.OperationsTime = kpi.AvailableTime;
+            //kpi.OperationsTime = kpi.AvailableTime;
 
-            OOE = kpi;
+            //OOE = kpi;
         }
 
         private void GetProductAnalytics()
@@ -405,6 +405,11 @@ namespace ProjectLighthouse.ViewModel.Administration
                 .GroupBy(x => x.Date.Date)
                 .ToList();
 
+            if (stockLots.Count == 0)
+            {
+                return;
+            }
+
             List<DateTimePoint> chartData = new();
 
             int total = stockLots
@@ -449,7 +454,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             if (XAxes is null) return;
 
-            var axis = XAxes[0];
+            Axis axis = XAxes[0];
 
             if (filter == "All")
             {

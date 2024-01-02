@@ -24,7 +24,7 @@ namespace ProjectLighthouse
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                if (App.ValidateRootDirectory(dialog.FileName + "\\", demo:true))
+                if (App.ValidateRootDirectory(dialog.FileName + "\\", demo: true))
                 {
                     failed = false;
                     rootDirectory = dialog.FileName + "\\";

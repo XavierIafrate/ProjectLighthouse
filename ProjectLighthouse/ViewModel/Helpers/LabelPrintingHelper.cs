@@ -100,10 +100,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public bool DataIsComplete()
             {
-                return !string.IsNullOrEmpty(BarId) 
-                    && !string.IsNullOrEmpty(BatchId) 
-                    && !string.IsNullOrEmpty(MaterialInfo) 
-                    && !string.IsNullOrEmpty(OrderReference) 
+                return !string.IsNullOrEmpty(BarId)
+                    && !string.IsNullOrEmpty(BatchId)
+                    && !string.IsNullOrEmpty(MaterialInfo)
+                    && !string.IsNullOrEmpty(OrderReference)
                     && !string.IsNullOrEmpty(MaterialInfo)
                     && Quantity > 0;
             }

@@ -185,7 +185,7 @@
                         Grid.Column="3"
                         Width="300"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                        ItemsSource="{Binding views, Mode=OneTime}"
+                        ItemsSource="{Binding Views, Mode=OneTime}"
                         SelectedItem="{Binding SelectedView, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                         Visibility="{Binding EditControlsVis}" />
                 </Grid>
@@ -210,7 +210,7 @@
                         Grid.Column="3"
                         Width="300"
                         IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                        ItemsSource="{Binding roles, Mode=OneTime}"
+                        ItemsSource="{Binding Roles, Mode=OneTime}"
                         SelectedValue="{Binding SelectedRole, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                         Visibility="{Binding EditControlsVis}" />
                 </Grid>

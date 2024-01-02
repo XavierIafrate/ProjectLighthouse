@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model.Analytics;
-using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -53,9 +52,9 @@ namespace ProjectLighthouse.View.UserControls
             }
 
 
-    }
+        }
 
-    public DisplayMachineOperatingBlock()
+        public DisplayMachineOperatingBlock()
         {
             InitializeComponent();
         }

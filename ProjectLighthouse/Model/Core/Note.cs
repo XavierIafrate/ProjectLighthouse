@@ -35,7 +35,7 @@ namespace ProjectLighthouse.Model.Core
         public bool IsDeleted
         {
             get { return isDeleted; }
-            set { isDeleted = value; OnPropertyChanged();  }
+            set { isDeleted = value; OnPropertyChanged(); }
         }
 
 

@@ -176,8 +176,6 @@ namespace ProjectLighthouse.View.Scheduling
             int unitsPerHour = ColumnWidth / 24;
 
             items = items.OrderBy(x => x.StartDate).ToList();
-
-            List<ScheduleItem> latheItems;
             int iRow = 1;
 
             foreach (string row in rows)

@@ -20,7 +20,7 @@ namespace ProjectLighthouse.Model.Drawings
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        public int Revision { get; set; } = 0;
+        public int Revision { get; set; }
         public DateTime Created { get; set; }
         public string CreatedBy { get; set; }
         public bool IsArchetype { get; set; }
@@ -50,7 +50,7 @@ namespace ProjectLighthouse.Model.Drawings
         public string IssueDetails { get; set; }
         public bool WatermarkOnly { get; set; }
 
-        public bool PlatingStatement = false;
+        public bool PlatingStatement;
         public string? CheckSheetReferences { get; set; }
 
         [Ignore]
@@ -293,7 +293,7 @@ namespace ProjectLighthouse.Model.Drawings
 
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
-            XFont font = new("Consolas", 16, XFontStyle.Bold);
+            XFont font = new("Consolas", 16, XFontStyleEx.Bold);
             XBrush brush = new XSolidBrush(XColor.FromArgb((int)(0.25 * 255), colour.R, colour.G, colour.B));
 
             gfx.DrawString("PART SHALL BE PLATED - ALLOW 1-3 MICRONS PER SURFACE", font, brush,
@@ -314,7 +314,7 @@ namespace ProjectLighthouse.Model.Drawings
             if (WatermarkOnly) return;
 
             XGraphics gfx = XGraphics.FromPdfPage(page);
-            XFont font = new("Consolas", 9, XFontStyle.Regular);
+            XFont font = new("Consolas", 9, XFontStyleEx.Regular);
 
             gfx.DrawString($"{Revision}{AmendmentType}", font, XBrushes.Black,
                   new XRect(86, 225, 80, 14),
@@ -345,7 +345,7 @@ namespace ProjectLighthouse.Model.Drawings
         {
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
-            XFont font = new("Consolas", 40, XFontStyle.Bold);
+            XFont font = new("Consolas", 40, XFontStyleEx.Bold);
             XBrush brush = new XSolidBrush(XColor.FromArgb((int)(0.20 * 255), colour.R, colour.G, colour.B));
 
             gfx.DrawString(text, font, brush,

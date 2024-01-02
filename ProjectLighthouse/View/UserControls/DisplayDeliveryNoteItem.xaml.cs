@@ -1,5 +1,4 @@
-﻿using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Deliveries;
+﻿using ProjectLighthouse.Model.Deliveries;
 using ProjectLighthouse.ViewModel.Commands.Deliveries;
 using System.Windows;
 using System.Windows.Controls;

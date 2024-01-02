@@ -14,7 +14,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             {
                 seconds = (double)intSeconds;
             }
-            else if(value is double dblSeconds)
+            else if (value is double dblSeconds)
             {
                 seconds = dblSeconds;
             }
@@ -40,7 +40,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             }
             else
             {
-                message = $"{Math.Floor(seconds / 86400):0}d {(seconds % 86400)/3600:0.0}h";
+                message = $"{Math.Floor(seconds / 86400):0}d {(seconds % 86400) / 3600:0.0}h";
             }
 
             return message;

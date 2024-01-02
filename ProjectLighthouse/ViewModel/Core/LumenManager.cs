@@ -5,7 +5,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Ports;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -399,7 +398,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
             try
             {
-                DatabaseHelper.Insert(commit, throwErrs:true);
+                DatabaseHelper.Insert(commit, throwErrs: true);
             }
             catch
             {

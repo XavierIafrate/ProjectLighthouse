@@ -17,8 +17,8 @@ namespace ProjectLighthouse.Model.Quality
         public string Make
         {
             get { return make; }
-            set 
-            { 
+            set
+            {
                 make = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -29,9 +29,9 @@ namespace ProjectLighthouse.Model.Quality
         public string Model
         {
             get { return model; }
-            set 
-            { 
-                model = value; 
+            set
+            {
+                model = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -41,10 +41,10 @@ namespace ProjectLighthouse.Model.Quality
         public string SerialNumber
         {
             get { return serialNumber; }
-            set 
-            { 
-                serialNumber = value; 
-                ValidateProperty(); 
+            set
+            {
+                serialNumber = value;
+                ValidateProperty();
                 OnPropertyChanged();
             }
         }
@@ -53,9 +53,9 @@ namespace ProjectLighthouse.Model.Quality
         public string Type
         {
             get { return type; }
-            set 
-            { 
-                type = value; 
+            set
+            {
+                type = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -65,9 +65,9 @@ namespace ProjectLighthouse.Model.Quality
         public string Location
         {
             get { return location; }
-            set 
-            { 
-                location = value; 
+            set
+            {
+                location = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -77,11 +77,11 @@ namespace ProjectLighthouse.Model.Quality
         public int CalibrationIntervalMonths
         {
             get { return calibrationIntervalMonths; }
-            set 
-            { 
-                calibrationIntervalMonths = value; 
+            set
+            {
+                calibrationIntervalMonths = value;
                 ValidateProperty();
-                OnPropertyChanged();            
+                OnPropertyChanged();
             }
         }
 
@@ -233,7 +233,7 @@ namespace ProjectLighthouse.Model.Quality
             {
                 ClearErrors(propertyName);
 
-                if(CalibrationIntervalMonths <= 0)
+                if (CalibrationIntervalMonths <= 0)
                 {
                     AddError(propertyName, "Interval must be greater than zero");
                     return;

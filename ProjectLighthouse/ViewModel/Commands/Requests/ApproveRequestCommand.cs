@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ProjectLighthouse.ViewModel.Requests;
+using System;
 using System.Windows.Input;
-using ProjectLighthouse.ViewModel.Requests;
 
 namespace ProjectLighthouse.ViewModel.Commands.Requests
 {

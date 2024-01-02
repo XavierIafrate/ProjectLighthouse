@@ -1,4 +1,4 @@
-﻿using Model.Core;
+﻿using ProjectLighthouse.Model.Core;
 using System.Windows;
 using System.Windows.Controls;
 

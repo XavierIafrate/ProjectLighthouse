@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using ProjectLighthouse.Model.Material;
+﻿using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Core;
 using System;
@@ -44,7 +43,7 @@ namespace ProjectLighthouse.View.Administration
             {
                 Clipboard.SetText(model.Value.ToString());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 NotificationManager.NotifyHandledException(ex);
             }

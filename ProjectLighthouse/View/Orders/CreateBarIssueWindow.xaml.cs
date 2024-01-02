@@ -96,7 +96,7 @@ namespace ProjectLighthouse.View.Orders
                 MaterialBatch = BatchInfoTextBox.Text.Trim().ToUpperInvariant(),
                 OrderId = Order.Name,
                 Quantity = qty,
-                MaterialInfo = $"{Bar.MaterialData.MaterialText.ToUpperInvariant()}, GRADE {Bar.MaterialData.GradeText.ToUpperInvariant()}" 
+                MaterialInfo = $"{Bar.MaterialData.MaterialText.ToUpperInvariant()}, GRADE {Bar.MaterialData.GradeText.ToUpperInvariant()}"
             };
 
             //TODO direct sql

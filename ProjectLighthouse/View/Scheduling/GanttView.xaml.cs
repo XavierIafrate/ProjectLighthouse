@@ -156,7 +156,7 @@ namespace View.Scheduling
         private void DrawDivisions(List<GanttDivision> divs, DateTime startDate)
         {
             int currRow = 1;
-            for(int i = 0; i < divs.Count;i++)
+            for (int i = 0; i < divs.Count; i++)
             {
                 DrawDivision(divs[i], currRow, startDate);
 
@@ -173,23 +173,23 @@ namespace View.Scheduling
             };
             AddToMainGrid(divHeader, 0, startingRow);
 
-            for(int i = 0; i < div.Events.Count;i++)
+            for (int i = 0; i < div.Events.Count; i++)
             {
 
-                ScheduleItem e = div.Events[i]; 
+                ScheduleItem e = div.Events[i];
                 TextBlock eventHeader = new()
                 {
                     Text = e.Name,
                 };
 
-                AddToMainGrid(eventHeader, 0, startingRow+i+1);
+                AddToMainGrid(eventHeader, 0, startingRow + i + 1);
 
                 Border ganttElement = new()
                 {
                     Background = (Brush)Application.Current.Resources["Blue"],
                 };
 
-                int colStart = (int)(e.StartDate.Date - startDate).TotalDays+1; //??
+                int colStart = (int)(e.StartDate.Date - startDate).TotalDays + 1; //??
 
                 TimeSpan eventDuration = TimeSpan.FromSeconds(e.TimeToComplete);
                 AddToMainGrid(ganttElement, 1 + colStart, startingRow + i + 1, (int)Math.Ceiling(eventDuration.TotalDays));

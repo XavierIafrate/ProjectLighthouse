@@ -37,7 +37,7 @@ namespace ProjectLighthouse.View.Drawings
             InitializeComponent();
 
             buildPath = Path.GetTempPath() + "checksheet.pdf";
-            webView.Source =  new Uri($"file:///{buildPath}#toolbar=0");
+            webView.Source = new Uri($"file:///{buildPath}#toolbar=0");
 
             this.order = orderReference;
 
@@ -175,7 +175,7 @@ namespace ProjectLighthouse.View.Drawings
 
         private void PasteButton_Click(object sender, RoutedEventArgs e)
         {
-            string clipboardText= Clipboard.GetText();
+            string clipboardText = Clipboard.GetText();
 
 
             List<string>? references;
@@ -198,7 +198,7 @@ namespace ProjectLighthouse.View.Drawings
 
             List<ToleranceDefinition> newTols = new();
             List<string> notFoundRefs = new();
-            foreach(string reference in references)
+            foreach (string reference in references)
             {
                 ToleranceDefinition? t = Tolerances.Find(x => x.Id == reference);
                 if (t is null)
@@ -243,7 +243,7 @@ namespace ProjectLighthouse.View.Drawings
                 DatabaseHelper.Update(drawing, throwErrs: true);
                 SaveExit = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

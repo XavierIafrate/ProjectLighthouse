@@ -1,6 +1,4 @@
-﻿using ProjectLighthouse.Model.Core;
-
-namespace Model.Core
+﻿namespace ProjectLighthouse.Model.Core
 {
     public class EditablePermission
     {

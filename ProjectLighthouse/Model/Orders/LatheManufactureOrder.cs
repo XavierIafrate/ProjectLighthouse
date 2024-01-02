@@ -328,7 +328,7 @@ namespace ProjectLighthouse.Model.Orders
 
         public bool RequiresBar()
         {
-            return DateTime.Now.AddDays(App.Constants.BarRequisitionDays) > StartDate 
+            return DateTime.Now.AddDays(App.Constants.BarRequisitionDays) > StartDate
                 && StartDate.Year != DateTime.MinValue.Year && NumberOfBars > NumberOfBarsIssued;
         }
 

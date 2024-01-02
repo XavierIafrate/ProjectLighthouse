@@ -4,7 +4,6 @@ using ProjectLighthouse.Model.Scheduling;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace ProjectLighthouse.Model.Orders
@@ -21,7 +20,7 @@ namespace ProjectLighthouse.Model.Orders
         public string POReference { get; set; }
 
 
-        
+
         public OrderState State { get; set; }
         [Ignore]
         public List<LatheManufactureOrderItem> OrderItems { get; set; } = new();

@@ -1,7 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel.Administration;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 
 namespace ViewModel.Commands.Administration
@@ -13,7 +11,7 @@ namespace ViewModel.Commands.Administration
 
         public GetRecordsAsCsvCommand(DatabaseManagerViewModel vm)
         {
-            viewModel = vm; 
+            viewModel = vm;
         }
 
 

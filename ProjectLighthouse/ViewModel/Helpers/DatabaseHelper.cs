@@ -29,8 +29,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             using SQLiteConnection conn = new(DatabasePath);
             return conn.Query<MachineStatistics>(
-                query:$"SELECT * FROM {nameof(MachineStatistics)} WHERE {nameof(MachineStatistics.DataTime)} > ? ORDER BY {nameof(MachineStatistics.DataTime)}", 
-                args:date.Ticks)
+                query: $"SELECT * FROM {nameof(MachineStatistics)} WHERE {nameof(MachineStatistics.DataTime)} > ? ORDER BY {nameof(MachineStatistics.DataTime)}",
+                args: date.Ticks)
                 .ToList();
         }
 
@@ -134,11 +134,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     items = conn.Table<T>().ToList();
                 }
 
-            return items;
+                return items;
             }
             catch
             {
-                if(throwErrs) { throw; }
+                if (throwErrs) { throw; }
 
                 return null;
             }

@@ -188,7 +188,7 @@ namespace ProjectLighthouse.ViewModel.Quality
 
         private void LoadData()
         {
-            Equipment = DatabaseHelper.Read<CalibratedEquipment>(throwErrs:true);
+            Equipment = DatabaseHelper.Read<CalibratedEquipment>(throwErrs: true);
             Certificates = DatabaseHelper.Read<CalibrationCertificate>();
         }
 
@@ -281,7 +281,7 @@ namespace ProjectLighthouse.ViewModel.Quality
 
         public void AddNewEquipment()
         {
-            AddNewCalibratedEquipmentWindow window = new(Equipment) { Owner=App.MainViewModel.MainWindow };
+            AddNewCalibratedEquipmentWindow window = new(Equipment) { Owner = App.MainViewModel.MainWindow };
             window.ShowDialog();
             if (window.SaveExit)
             {

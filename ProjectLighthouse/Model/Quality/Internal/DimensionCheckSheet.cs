@@ -38,7 +38,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
             section.PageSetup.FooterDistance = Size.HeaderFooterMargin;
         }
 
-        public void BuildContent(TechnicalDrawing drawing, List<ToleranceDefinition> dimensions, string? order,  string path)
+        public void BuildContent(TechnicalDrawing drawing, List<ToleranceDefinition> dimensions, string? order, string path)
         {
             if (App.StandardFits == null)
             {
