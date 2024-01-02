@@ -355,17 +355,8 @@ namespace ProjectLighthouse.View.Programs
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            string d1Content;
-            string d2Content;
-
             if (DiffMode)
             {
-                //d1Content = await DollarOne.ExecuteScriptAsync("editor.getValue()");
-                //SelectedProgram.ProgramContent.DollarOneCode = d1Content == "null" ? "" : Regex.Unescape(d1Content)[1..^1];
-
-                //d2Content = await DollarTwo.ExecuteScriptAsync("editor.getValue()");
-                //SelectedProgram.ProgramContent.DollarTwoCode = d2Content == "null" ? "" : Regex.Unescape(d2Content)[1..^1];
-
                 SetToDiffMode(DollarOne);
                 SetToDiffMode(DollarTwo);
 
@@ -376,12 +367,6 @@ namespace ProjectLighthouse.View.Programs
 
                 return;
             }
-
-            //d1Content = await DollarOne.ExecuteScriptAsync("editor.getModifiedEditor().getValue()");
-            //SelectedProgram.ProgramContent.DollarOneCode = d1Content == "null" ? "" : Regex.Unescape(d1Content)[1..^1];
-
-            //d2Content = await DollarTwo.ExecuteScriptAsync("editor.getModifiedEditor().getValue()");
-            //SelectedProgram.ProgramContent.DollarTwoCode = d2Content == "null" ? "" : Regex.Unescape(d2Content)[1..^1];
 
             this.DollarOne.Source =
                 new Uri(Path.Combine(
