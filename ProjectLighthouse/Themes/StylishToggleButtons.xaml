@@ -50,6 +50,7 @@
         <Setter Property="Margin" Value="10,5" />
         <Setter Property="Foreground" Value="#888888" />
         <Setter Property="FontSize" Value="20" />
+        <Setter Property="Height" Value="27" />
         <Setter Property="Background" Value="{StaticResource Surface}" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
 
@@ -68,38 +69,63 @@
         </Style.Triggers>
     </Style>
 
-    <Style
-        x:Key="NewRequest_MenuItem"
-        BasedOn="{StaticResource MenuItem}"
-        TargetType="ToggleButton">
+    <Style x:Key="MenuItem_Mini_Tooltip" TargetType="{x:Type ToolTip}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Placement" Value="Right" />
+        <Setter Property="HorizontalOffset" Value="10" />
+        <Setter Property="VerticalOffset" Value="0" />
+        <Setter Property="PlacementRectangle" Value="20,0,0,0" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="StaysOpen" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
-                    <Grid Margin="30,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Path
-                            Width="18"
-                            Margin="0,6,8,0"
-                            Data="M20,2A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H6L2,22V4C2,2.89 2.9,2 4,2H20M11,6V9H8V11H11V14H13V11H16V9H13V6H11Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
+                <ControlTemplate TargetType="{x:Type ToolTip}">
+                    <Border
+                        Height="27"
+                        Background="Black"
+                        CornerRadius="5">
                         <TextBlock
-                            Grid.Column="1"
-                            FontSize="{TemplateBinding FontSize}"
-                            Text="New Request" />
-                    </Grid>
+                            Margin="10,0,10,2"
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Foreground="White"
+                            Text="{TemplateBinding Tag}" />
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style
+        x:Key="MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem}"
+        TargetType="ToggleButton">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="20,0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Margin" Value="10,5" />
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="#888888" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Height" Value="27" />
+        <Setter Property="MinWidth" Value="27" />
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource TealLight}" />
+                <Setter Property="Background" Value="{StaticResource PurpleLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Cursor" Value="Hand" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Teal}" />
+                <Setter Property="Foreground" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="LightGray" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -141,6 +167,42 @@
     </Style>
 
     <Style
+        x:Key="ViewRequests_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M16.5 11L13 7.5L14.4 6.1L16.5 8.2L20.7 4L22.1 5.4L16.5 11M11 7H2V9H11V7M21 13.4L19.6 12L17 14.6L14.4 12L13 13.4L15.6 16L13 18.6L14.4 20L17 17.4L19.6 20L21 18.6L18.4 16L21 13.4M11 15H2V17H11V15Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Requests" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource TealLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnTeal}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Teal}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
         x:Key="Orders_MenuItem"
         BasedOn="{StaticResource MenuItem}"
         TargetType="ToggleButton">
@@ -164,6 +226,32 @@
                             Text="Orders" />
                     </Grid>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        x:Key="Orders_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M5,9.5L7.5,14H2.5L5,9.5M3,4H7V8H3V4M5,20A2,2 0 0,0 7,18A2,2 0 0,0 5,16A2,2 0 0,0 3,18A2,2 0 0,0 5,20M9,5V7H21V5H9M9,19H21V17H9V19M9,13H21V11H9V13Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Orders" />
             </Setter.Value>
         </Setter>
     </Style>
@@ -197,6 +285,32 @@
     </Style>
 
     <Style
+        x:Key="Schedule_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M2,2H4V20H22V22H2V2M7,10H17V13H7V10M11,15H21V18H11V15M6,4H22V8H20V6H8V8H6V4Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Schedule" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
         x:Key="BarStock_MenuItem"
         BasedOn="{StaticResource MenuItem}"
         TargetType="ToggleButton">
@@ -220,6 +334,32 @@
                             Text="Bar Stock" />
                     </Grid>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        x:Key="BarStock_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M10,12A2,2 0 0,0 8,14A2,2 0 0,0 10,16A2,2 0 0,0 12,14A2,2 0 0,0 10,12M6,8A2,2 0 0,0 4,10A2,2 0 0,0 6,12A2,2 0 0,0 8,10A2,2 0 0,0 6,8M6,16A2,2 0 0,0 4,18A2,2 0 0,0 6,20A2,2 0 0,0 8,18A2,2 0 0,0 6,16M18,8A2,2 0 0,0 20,6A2,2 0 0,0 18,4A2,2 0 0,0 16,6A2,2 0 0,0 18,8M14,16A2,2 0 0,0 12,18A2,2 0 0,0 14,20A2,2 0 0,0 16,18A2,2 0 0,0 14,16M18,12A2,2 0 0,0 16,14A2,2 0 0,0 18,16A2,2 0 0,0 20,14A2,2 0 0,0 18,12M14,8A2,2 0 0,0 12,10A2,2 0 0,0 14,12A2,2 0 0,0 16,10A2,2 0 0,0 14,8M10,4A2,2 0 0,0 8,6A2,2 0 0,0 10,8A2,2 0 0,0 12,6A2,2 0 0,0 10,4Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Bar Stock" />
             </Setter.Value>
         </Setter>
     </Style>
@@ -252,7 +392,31 @@
         </Setter>
     </Style>
 
-
+    <Style
+        x:Key="Drawings_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M20 19.88V22L18.2 20.83L13.41 11.83A4.94 4.94 0 0 0 15.19 10.83M15 7A3 3 0 0 1 12 10A3.27 3.27 0 0 1 11.56 10L5.8 20.83L4 22V19.88L9.79 9A3 3 0 0 1 12 4V2A1 1 0 0 1 13 3V4.18A3 3 0 0 1 15 7M13 7A1 1 0 1 0 12 8A1 1 0 0 0 13 7M4.22 10L6 11.8L4.56 14.56L2.1 12.1M12 17.76L10.5 16.25L9 19L12 22L15 19L13.53 16.23M19.78 10L18 11.8L19.5 14.56L21.9 12.1Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Drawings" />
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
     <Style
@@ -283,73 +447,31 @@
         </Setter>
     </Style>
 
-
     <Style
-        x:Key="Research_MenuItem"
-        BasedOn="{StaticResource MenuItem}"
+        x:Key="Programs_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
         TargetType="ToggleButton">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Grid Margin="30,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
                         <Path
-                            Width="18"
-                            Height="20"
-                            Margin="0,3,8,0"
-                            Data="M7,2V4H8V18A4,4 0 0,0 12,22A4,4 0 0,0 16,18V4H17V2H7M11,16C10.4,16 10,15.6 10,15C10,14.4 10.4,14 11,14C11.6,14 12,14.4 12,15C12,15.6 11.6,16 11,16M13,12C12.4,12 12,11.6 12,11C12,10.4 12.4,10 13,10C13.6,10 14,10.4 14,11C14,11.6 13.6,12 13,12M14,7H10V4H14V7Z"
+                            Width="13"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M6.12,15.5L9.86,19.24L11.28,17.83L8.95,15.5L11.28,13.17L9.86,11.76L6.12,15.5M17.28,15.5L13.54,11.76L12.12,13.17L14.45,15.5L12.12,17.83L13.54,19.24L17.28,15.5Z"
                             Fill="{TemplateBinding Foreground}"
                             Stretch="Uniform" />
-                        <TextBlock
-                            Grid.Column="1"
-                            FontSize="{TemplateBinding FontSize}"
-                            Text="Development" />
-                    </Grid>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-
-
-    <Style
-        x:Key="QualityCheck_MenuItem"
-        BasedOn="{StaticResource MenuItem}"
-        TargetType="ToggleButton">
-        <Setter Property="Template">
+        <Setter Property="ToolTip">
             <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
-                    <Grid Margin="30,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Path
-                            Width="18"
-                            Margin="0,3,8,0"
-                            Data="M17.71 6.15C17.46 5.38 16.79 5.21 16.45 4.77C16.14 4.31 16.18 3.62 15.53 3.15S14.23 2.92 13.7 2.77 12.81 2 12 2 10.82 2.58 10.3 2.77 9.13 2.67 8.47 3.15 7.86 4.31 7.55 4.77C7.21 5.21 6.55 5.38 6.29 6.15S6.5 7.45 6.5 8 6 9.08 6.29 9.85 7.21 10.79 7.55 11.23C7.86 11.69 7.82 12.38 8.47 12.85S9.77 13.08 10.3 13.23 11.19 14 12 14 13.18 13.42 13.7 13.23 14.87 13.33 15.53 12.85 16.14 11.69 16.45 11.23C16.79 10.79 17.45 10.62 17.71 9.85S17.5 8.55 17.5 8 18 6.92 17.71 6.15M12 12A4 4 0 1 1 16 8A4 4 0 0 1 12 12M14 8A2 2 0 1 1 12 6A2 2 0 0 1 14 8M13.71 15.56L13.08 19.16L12.35 23.29L9.74 20.8L6.44 22.25L7.77 14.75A4 4 0 0 0 9.66 15.17A4.15 4.15 0 0 0 11 15.85A3.32 3.32 0 0 0 12 16A3.5 3.5 0 0 0 13.71 15.56M17.92 18.78L15.34 17.86L15.85 14.92A3.2 3.2 0 0 0 16.7 14.47L16.82 14.37Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
-                        <TextBlock
-                            Grid.Column="1"
-                            FontSize="{TemplateBinding FontSize}"
-                            Text="Quality Check" />
-                    </Grid>
-                </ControlTemplate>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Programs" />
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OrangeLight}" />
-            </Trigger>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Orange}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
-
 
 
     <Style
@@ -381,6 +503,42 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource OrangeLight}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Orange}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="Deliveries_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M2,10.96C1.5,10.68 1.35,10.07 1.63,9.59L3.13,7C3.24,6.8 3.41,6.66 3.6,6.58L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.66,6.72 20.82,6.88 20.91,7.08L22.36,9.6C22.64,10.08 22.47,10.69 22,10.96L21,11.54V16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V10.96C2.7,11.13 2.32,11.14 2,10.96M12,4.15V4.15L12,10.85V10.85L17.96,7.5L12,4.15M5,15.91L11,19.29V12.58L5,9.21V15.91M19,15.91V12.69L14,15.59C13.67,15.77 13.3,15.76 13,15.6V19.29L19,15.91M13.85,13.36L20.13,9.73L19.55,8.72L13.27,12.35L13.85,13.36Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Deliveries" />
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource OrangeLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnOrange}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Orange}" />
@@ -424,6 +582,40 @@
         </Style.Triggers>
     </Style>
 
+    <Style
+        x:Key="Calibration_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="13"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Calibration" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource OrangeLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnOrange}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Orange}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
 
     <Style
@@ -463,34 +655,33 @@
     </Style>
 
     <Style
-        x:Key="ManageUsers_MenuItem"
-        BasedOn="{StaticResource MenuItem}"
+        x:Key="Analytics_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
         TargetType="ToggleButton">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Grid Margin="30,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
                         <Path
-                            Width="18"
-                            Margin="0,3,8,0"
-                            Data="M21.7,13.35L20.7,14.35L18.65,12.3L19.65,11.3C19.86,11.09 20.21,11.09 20.42,11.3L21.7,12.58C21.91,12.79 21.91,13.14 21.7,13.35M12,18.94L18.06,12.88L20.11,14.93L14.06,21H12V18.94M12,14C7.58,14 4,15.79 4,18V20H10V18.11L14,14.11C13.34,14.03 12.67,14 12,14M12,4A4,4 0 0,0 8,8A4,4 0 0,0 12,12A4,4 0 0,0 16,8A4,4 0 0,0 12,4Z"
+                            Width="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z"
                             Fill="{TemplateBinding Foreground}"
                             Stretch="Uniform" />
-                        <TextBlock
-                            Grid.Column="1"
-                            FontSize="{TemplateBinding FontSize}"
-                            Text="Manage Users" />
-                    </Grid>
+                    </Border>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Analytics" />
             </Setter.Value>
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource RedLight}" />
+                <Setter Property="Background" Value="{StaticResource RedLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Red}" />
@@ -498,41 +689,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style
-        x:Key="Lathe_MenuItem"
-        BasedOn="{StaticResource MenuItem}"
-        TargetType="ToggleButton">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
-                    <Grid Margin="30,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Path
-                            Width="18"
-                            Margin="0,3,8,0"
-                            Data="M12,2A2,2 0 0,1 14,4C14,4.74 13.6,5.39 13,5.73V7H14A7,7 0 0,1 21,14H22A1,1 0 0,1 23,15V18A1,1 0 0,1 22,19H21V20A2,2 0 0,1 19,22H5A2,2 0 0,1 3,20V19H2A1,1 0 0,1 1,18V15A1,1 0 0,1 2,14H3A7,7 0 0,1 10,7H11V5.73C10.4,5.39 10,4.74 10,4A2,2 0 0,1 12,2M7.5,13A2.5,2.5 0 0,0 5,15.5A2.5,2.5 0 0,0 7.5,18A2.5,2.5 0 0,0 10,15.5A2.5,2.5 0 0,0 7.5,13M16.5,13A2.5,2.5 0 0,0 14,15.5A2.5,2.5 0 0,0 16.5,18A2.5,2.5 0 0,0 19,15.5A2.5,2.5 0 0,0 16.5,13Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
-                        <TextBlock
-                            Grid.Column="1"
-                            FontSize="{TemplateBinding FontSize}"
-                            Text="Lathe Config" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource RedLight}" />
-            </Trigger>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Red}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+
 
 
     <Style
@@ -572,6 +729,41 @@
     </Style>
 
     <Style
+        x:Key="ProductData_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="14"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M2 2V22H22V20H20V18H22V16H20V14H22V12H18V10H16V12H14V10H12V8H8V12H12V16H10V18H12V20H10V18H8V16H6V14H4V12H6V6H4V2H2M6 6H8V2H6V6M8 16H10V14H8V16M18 10H22V8H18V10M18 8V4H16V6H14V8H18M16 4V2H14V4H16M18 4H20V2H18V4M20 4V6H22V4H20M10 2V6H12V2H10M14 14H16V16H18V20H14V14M4 18H6V20H4V18Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Products" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource RedLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Red}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
         x:Key="Database_MenuItem"
         BasedOn="{StaticResource MenuItem}"
         TargetType="ToggleButton">
@@ -603,6 +795,41 @@
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="Database_MenuItem_Mini"
+        BasedOn="{StaticResource MenuItem_Mini}"
+        TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Path
+                            Width="13"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Database" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource RedLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Red}" />
             </Trigger>
         </Style.Triggers>
     </Style>
