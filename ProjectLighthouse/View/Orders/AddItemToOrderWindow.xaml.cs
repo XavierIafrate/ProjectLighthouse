@@ -107,7 +107,7 @@ namespace ProjectLighthouse.View.Orders
             for (int i = 0; i < newItems.Count; i++)
             {
                 LatheManufactureOrderItem newItem = (LatheManufactureOrderItem)newItems[i];
-                newItem.AssignedMO = parentOrderName;
+                newItem!.AssignedMO = parentOrderName;
                 DatabaseHelper.Insert(newItem);
             }
 

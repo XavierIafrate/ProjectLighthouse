@@ -115,13 +115,13 @@ namespace ProjectLighthouse.Model.Quality
             }
         }
 
-        private double GetBasicTolerance(string f)
+        private static double GetBasicTolerance(string f)
         {
             // TODO error handling
             return BasicTolerances[f];
         }
 
-        public string DecimalPlacesToStringFormatter(int numPlaces)
+        public static string DecimalPlacesToStringFormatter(int numPlaces)
         {
             if (numPlaces < 0 || numPlaces > 8)
             {

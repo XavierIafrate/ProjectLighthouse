@@ -113,7 +113,7 @@ namespace ProjectLighthouse.View.Orders
             if (DatabaseHelper.Insert(barIssue) && DatabaseHelper.Update(freshCopyOfOrder) && DatabaseHelper.Update(Bar))
             {
                 Confirmed = true;
-                LabelPrintingHelper.PrintIssue(barIssue, 2);
+                LabelPrintingHelper.PrintIssue(barIssue);
                 Close();
             }
         }

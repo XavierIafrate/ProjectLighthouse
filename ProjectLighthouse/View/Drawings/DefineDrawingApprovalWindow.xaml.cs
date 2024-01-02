@@ -55,7 +55,7 @@ namespace ProjectLighthouse.View.Drawings
 
         private void ApproveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!(bool)amendmentOpt.IsChecked && !(bool)revisionOpt.IsChecked)
+            if (!(amendmentOpt.IsChecked ?? false) && !(revisionOpt.IsChecked ?? false))
             {
                 MessageBox.Show("Choose one");
                 return;
@@ -64,7 +64,7 @@ namespace ProjectLighthouse.View.Drawings
             int MaxRev = DrawingsInGroup.Max(x => x.Revision);
             TechnicalDrawing.Amendment maxAmd = DrawingsInGroup.Where(x => x.Revision == MaxRev).Max(x => x.AmendmentType);
 
-            if ((bool)amendmentOpt.IsChecked)
+            if (amendmentOpt.IsChecked ?? false)
             {
                 DrawingToApprove.Revision = MaxRev;
                 DrawingToApprove.AmendmentType = maxAmd + 1;
