@@ -9,7 +9,10 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            LatheManufactureOrderItem item = value as LatheManufactureOrderItem;
+            if (value is not LatheManufactureOrderItem item)
+            {
+                return null;
+            }
 
             return item.RequiredQuantity > 0
                 ? $"{item.RequiredQuantity:#,##0} pcs -> {item.DateRequired:dd/MM}"
