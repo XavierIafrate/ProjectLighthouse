@@ -1,4 +1,5 @@
 ﻿using LiveChartsCore;
+using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using ProjectLighthouse.Model.Administration;
@@ -10,6 +11,7 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.Model.Reporting;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Commands.Printing;
@@ -18,6 +20,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +32,7 @@ using DateTimePoint = LiveChartsCore.Defaults.DateTimePoint;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
-    public class OrderViewModel : BaseViewModel
+    public class OrderViewModel : BaseViewModel, IDisposable
     {
         #region Variables
 
@@ -70,6 +73,13 @@ namespace ProjectLighthouse.ViewModel.Orders
         public ProductGroup SelectedProductGroup { get; set; }
         public Product SelectedProduct { get; set; }
         public List<NcProgram> ProgramCandidates { get; set; }
+
+        public List<MachineOperatingBlock> MachineOperatingBlocks { get; set; }
+
+        public int TotalTimeSeconds { get; set; }
+        public int RunTimeSeconds { get; set; }
+        public double Availability { get; set; }
+        public double UnknownPct { get; set; }
         #endregion
 
         #region Charting
@@ -110,12 +120,11 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             new Axis
             {
-                Labeler = value => new DateTime((long) Math.Max(0, value)).ToString("MMM yy"),
                 LabelsRotation = 0,
-
             }
         };
-        public List<ISeries> CycleTimeSeries { get; set; }
+
+        public ISeries[] CycleTimeSeries { get; set; }
 
         private string? runBeforeText;
         public string? RunBeforeText
@@ -204,6 +213,10 @@ namespace ProjectLighthouse.ViewModel.Orders
         }
         #endregion
 
+
+        public RectangularSection[] Sections { get; set; }
+
+
         #region Visibility variables
 
 
@@ -240,6 +253,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public EditManufactureOrderCommand EditCommand { get; set; }
         public CreateNewOrderCommand NewOrderCommand { get; set; }
         public GetProgramPlannerCommand GetProgramPlannerCmd { get; set; }
+        public ShowWorkloadWindowCommand ShowWorkloadCmd { get; set; }
         #endregion
 
         #region Icon Brushes
@@ -248,6 +262,8 @@ namespace ProjectLighthouse.ViewModel.Orders
         public Brush BarVerifiedIconBrush { get; set; }
         public Brush BarAllocatedIconBrush { get; set; }
         #endregion
+
+        private WorkloadWindow _workloadWindow;
 
         #endregion Variables
 
@@ -268,15 +284,17 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             var producedValues = new List<DateTimePoint>();
             var scrappedValues = new List<DateTimePoint>();
+            var plannedValues = new List<DateTimePoint>();
 
             int totalProduced = 0;
             int totalScrapped = 0;
+            int totalPlanned = 0;
 
             TimeSpan span = stockLots.Max(x => x.DateProduced) - startingDate;
 
             int daysOfSpan = (int)Math.Ceiling(span.TotalDays);
 
-            if (daysOfSpan > 90)
+            if (daysOfSpan > 90 || daysOfSpan < 1)
             {
                 Series = null;
                 OnPropertyChanged(nameof(Series));
@@ -285,6 +303,8 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             string[] labels = new string[daysOfSpan];
 
+            int totalPerDay = (int)(FilteredOrderItems.Sum(x => x.TargetQuantity) / ((double)SelectedOrder.TimeToComplete / 86400));
+
             for (int i = 0; i < daysOfSpan; i++)
             {
                 DateTime day = startingDate.AddDays(i).Date;
@@ -292,10 +312,11 @@ namespace ProjectLighthouse.ViewModel.Orders
 
                 totalProduced += stockLots.Where(x => x.IsAccepted && x.DateProduced.Date == day).Sum(x => x.Quantity);
                 totalScrapped += stockLots.Where(x => x.IsReject && x.DateProduced.Date == day).Sum(x => x.Quantity);
-
+                totalPlanned += totalPerDay;
 
                 producedValues.Add(new(day, totalProduced));
                 scrappedValues.Add(new(day, totalScrapped));
+                plannedValues.Add(new(day, totalPlanned));
             }
 
             if (totalProduced + totalScrapped == 0)
@@ -307,7 +328,8 @@ namespace ProjectLighthouse.ViewModel.Orders
 
 
             if ((Brush)Application.Current.Resources["Blue"] is not SolidColorBrush blue
-                || (Brush)Application.Current.Resources["Red"] is not SolidColorBrush red) return;
+                || (Brush)Application.Current.Resources["Red"] is not SolidColorBrush red
+                || (Brush)Application.Current.Resources["Purple"] is not SolidColorBrush purple) return;
 
             var produced = new ColumnSeries<DateTimePoint>
             {
@@ -327,11 +349,28 @@ namespace ProjectLighthouse.ViewModel.Orders
                 Fill = new SolidColorPaint(new SKColor(red.Color.R, red.Color.G, red.Color.B))
             };
 
+            var planned = new ColumnSeries<DateTimePoint>
+            {
+                Values = plannedValues,
+                Stroke = null,
+                Padding = 2,
+                Name = "Total Planned",
+                Fill = new SolidColorPaint(new SKColor(purple.Color.R, purple.Color.G, purple.Color.B))
+            };
 
-            Series = new List<ISeries> { scrapped, produced };
+
+            Series = new List<ISeries> { scrapped, produced, planned };
             OnPropertyChanged(nameof(Series));
         }
 
+        public void ShowWorkload()
+        {
+            _workloadWindow = new() { Owner = App.MainViewModel.MainWindow };
+
+            _workloadWindow.SetWorkload(Orders);
+
+            _workloadWindow.Show();
+        }
 
         private void LoadBriefing()
         {
@@ -343,7 +382,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 OnPropertyChanged(nameof(CycleTimeSeries));
                 return;
             }
-         
+
             int MaterialId = SelectedOrder.MaterialId;
             int GroupId = SelectedProductGroup.Id;
 
@@ -381,87 +420,131 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 RunBeforeText = null;
                 OnPropertyChanged(nameof(RunBeforeText));
-                CycleTimeSeries = null;
-                OnPropertyChanged(nameof(CycleTimeSeries));
-                return;
-            }
-
-            LatheManufactureOrder mostRecent = otherOrders.Last();
-            int runBeforeCount = otherOrders.Count;
-            RunInMaterialBefore = otherOrders.Any(x => x.MaterialId == MaterialId);
-
-            DateTime lastMadeDate = mostRecent.StartDate;
-
-
-            if (lastMadeDate.AddMonths(11) > DateTime.Now)
-            {
-                LastMadeText = $"Last made in {lastMadeDate:MMMM}";
             }
             else
             {
-                LastMadeText = $"Last made in {lastMadeDate:MMM yy}";
-            }
+                LatheManufactureOrder mostRecent = otherOrders.Last();
+                int runBeforeCount = otherOrders.Count;
+                RunInMaterialBefore = otherOrders.Any(x => x.MaterialId == MaterialId);
 
-            if (runBeforeCount == 1)
-            {
-                RunBeforeText = $"This archetype has been set once before";
-            }
-            else if (runBeforeCount == 2)
-            {
-                RunBeforeText = $"This archetype has been set twice before";
-            }
-            else
-            {
-                RunBeforeText = $"This archetype has been set {otherOrders.Count:0} times";
-            }
+                DateTime lastMadeDate = mostRecent.StartDate;
 
-            OnPropertyChanged(nameof(RunBeforeText));
 
-            Dictionary<MaterialInfo, List<DateTimePoint>> series = new();
-
-            foreach (LatheManufactureOrder order in otherOrders)
-            {
-                MaterialInfo? material = MaterialInfo.Find(x => x.Id == order.MaterialId);
-
-                if (material is null) continue;
-
-                List<LatheManufactureOrderItem> itemsInvolved = OrderItems.Where(x => order.Name == x.AssignedMO && x.CycleTime > 0).ToList();
-                int[] uniqueTimes = itemsInvolved.Select(x => x.CycleTime).Distinct().ToArray();
-
-                if (!series.ContainsKey(material))
+                if (lastMadeDate.AddMonths(11) > DateTime.Now)
                 {
-                    series.Add(material, new());
+                    LastMadeText = $"Last made in {lastMadeDate:MMMM}";
+                }
+                else
+                {
+                    LastMadeText = $"Last made in {lastMadeDate:MMM yy}";
                 }
 
-                foreach (int time in uniqueTimes)
+                if (runBeforeCount == 1)
                 {
-                    series[material].Add(new(order.StartDate, time));
+                    RunBeforeText = $"This archetype has been set once before";
                 }
+                else if (runBeforeCount == 2)
+                {
+                    RunBeforeText = $"This archetype has been set twice before";
+                }
+                else
+                {
+                    RunBeforeText = $"This archetype has been set {otherOrders.Count:0} times";
+                }
+
+                OnPropertyChanged(nameof(RunBeforeText));
             }
+
             CycleTimeSeries = null;
             OnPropertyChanged(nameof(CycleTimeSeries));
 
-            if (otherOrders.Count > 2)
+            TimeModel model = SelectedOrder.TimeModelPlanned;
+
+            if (model is null) return;
+
+            List<RectangularSection> sections = new();
+            ISeries[] series = Array.Empty<ISeries>();
+
+            ObservableCollection<ObservablePoint> modelledPoints = new();
+            ObservableCollection<ObservablePoint> newReadings = new();
+            ObservableCollection<ObservablePoint> historicalPoints = new();
+
+            if (FilteredOrderItems.Count == 0) return;
+            double maxX = FilteredOrderItems.Max(x => x.MajorLength) + 10;
+            LineSeries<ObservablePoint> newSeries = TimeModel.GetSeries(model, maxX, "Time model");
+            series = series.Append(newSeries).ToArray();
+
+            FilteredOrderItems.ForEach(x =>
             {
-                //SolidColorBrush purple = (Brush)Application.Current.Resources["Purple"] as SolidColorBrush;
-                CycleTimeSeries = new List<ISeries>();
-
-                foreach (KeyValuePair<MaterialInfo, List<DateTimePoint>> s in series)
+                if (x.CycleTime > 0)
                 {
-                    ScatterSeries<DateTimePoint> newSeries = new()
-                    {
-                        Values = s.Value,
-                        Name = s.Key.MaterialCode,
-                        Stroke = null,
-                        TooltipLabelFormatter = (chartPoint) =>
-                        $"[{s.Key.MaterialCode}] {new DateTime((long)chartPoint.SecondaryValue):dd/MM/yy}: {Math.Floor(chartPoint.PrimaryValue / 60):0}m {chartPoint.PrimaryValue % 60}s",
-
-                    };
-
-
-                    CycleTimeSeries.Add(newSeries);
+                    newReadings.Add(new(x.MajorLength, x.CycleTime));
                 }
+
+                if (x.PreviousCycleTime is not null)
+                {
+                    historicalPoints.Add(new(x.MajorLength, x.PreviousCycleTime));
+
+                    if (x.CycleTime > 0 && x.CycleTime != x.PreviousCycleTime)
+                    {
+                        sections.Add(new RectangularSection
+                        {
+                            Yi = x.PreviousCycleTime,
+                            Yj = x.CycleTime,
+                            Xi = x.MajorLength,
+                            Xj = x.MajorLength,
+                            Stroke = new SolidColorPaint
+                            {
+                                Color = x.CycleTime > x.PreviousCycleTime ? SKColors.DarkRed.WithAlpha(50) : SKColors.DarkGreen.WithAlpha(50),
+                                StrokeThickness = 3
+                            }
+                        });
+                    }
+                }
+                else if (x.ModelledCycleTime is not null)
+                {
+                    modelledPoints.Add(new(x.MajorLength, x.ModelledCycleTime));
+                }
+            });
+
+
+            if (newReadings.Count > 0)
+            {
+                series = series.Append(new ScatterSeries<ObservablePoint>
+                {
+                    Values = newReadings,
+                    Name = "New Readings",
+                    GeometrySize = 8,
+                    Fill = new SolidColorPaint(SKColors.DarkRed)
+                }).ToArray();
             }
+
+            if (modelledPoints.Count > 0)
+            {
+                series = series.Append(new ScatterSeries<ObservablePoint>
+                {
+                    Values = modelledPoints,
+                    Name = "Modelled",
+                    GeometrySize = 8,
+                    Fill = new SolidColorPaint(SKColors.MediumPurple)
+                }).ToArray();
+            }
+
+            if (historicalPoints.Count > 0)
+            {
+                series = series.Append(new ScatterSeries<ObservablePoint>
+                {
+                    Values = historicalPoints,
+                    GeometrySize = 8,
+                    Name = "Historical",
+                    Fill = new SolidColorPaint(SKColors.Black)
+                }).ToArray();
+            }
+
+            Sections = sections.ToArray();
+            OnPropertyChanged(nameof(Sections));
+
+            CycleTimeSeries = series;
             OnPropertyChanged(nameof(CycleTimeSeries));
         }
 
@@ -487,6 +570,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             Products = new();
             ProductGroups = new();
             ProgramCandidates = new();
+            MachineOperatingBlocks = new();
 
             ToolingIconBrush = (Brush)Application.Current.Resources["Red"];
             ProgramIconBrush = (Brush)Application.Current.Resources["Red"];
@@ -497,6 +581,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             EditCommand = new(this);
             NewOrderCommand = new(this);
             GetProgramPlannerCmd = new(this);
+            ShowWorkloadCmd = new(this);
         }
 
         #region Data Refreshing
@@ -708,7 +793,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                     continue;
                 }
 
-                if (order.AssignedTo?.ToUpperInvariant() == searchToken)
+                if (order.AssignedTo?.ToUpperInvariant() == searchToken && order.State < OrderState.Complete)
                 {
                     Results.Add(order);
                     FoundOrders.Add(order.Name);
@@ -741,9 +826,12 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
             }
 
-            Results.AddRange(Orders.Where(x => FoundOrdersByItem.Contains(x.Name)));
+            List<string> FoundOrdersByNotes = Notes.Where(x => x.Message.ToUpperInvariant().Contains(searchToken)).Select(x => x.DocumentReference).Distinct().ToList();
 
-            Results = Results.OrderByDescending(x => x.ModifiedAt).ToList();
+            Results.AddRange(Orders.Where(x => FoundOrdersByItem.Contains(x.Name)));
+            Results.AddRange(Orders.Where(x => FoundOrdersByNotes.Contains(x.Name)));
+
+            Results = Results.Distinct().OrderByDescending(x => x.ModifiedAt).ToList();
 
             FilteredOrders = Results;
 
@@ -843,6 +931,12 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
+            if (MachineStatistics is null)
+            {
+                DisplayStats = null;
+                return;
+            }
+
 
             DisplayStats = MachineStatistics.Find(x => x.MachineID == SelectedOrder.AllocatedMachine);
 
@@ -885,6 +979,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             FilteredDrawings = Drawings
                 .Where(d => drawings.Contains(d.Id))
                 .ToList();
+
+            FilteredDrawings.ForEach(x => x.PlatingStatement = SelectedOrder.PartsWillBePlated);
 
             SelectedOrderBar = BarStock.Find(x => x.Id == SelectedOrder.BarID);
             SelectedProductGroup = ProductGroups.Find(x => x.Id == SelectedOrder.GroupId);
@@ -934,8 +1030,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                          x.State < OrderState.Complete));
 
             ExcelHelper.CreateProgrammingPlanner(ordersNeedingProgramming);
-
-            //CSVHelper.WriteListToCSV(Orders, "orders");
         }
 
         public void EditLMO()
@@ -982,6 +1076,12 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
 
             Refresh();
+        }
+
+        public void Dispose()
+        {
+            _workloadWindow?.Close();
+            _workloadWindow = null;
         }
     }
 }
