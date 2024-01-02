@@ -7,8 +7,27 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
     d:DesignWidth="300"
+    DragLeave="UserControl_DragLeave"
+    DragOver="UserControl_DragOver"
     mc:Ignorable="d">
-    <Grid
+    <Grid>
+        <Border VerticalAlignment="Top" Visibility="Hidden" Height="15" x:Name="topBorder" CornerRadius="5,5,0,0">
+            <Border.Background>
+                <LinearGradientBrush Opacity="0.5" StartPoint="0,1" EndPoint="0,0">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Gray" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <Border VerticalAlignment="Bottom" Visibility="Hidden" Height="15" x:Name="bottomBorder" CornerRadius="0,0,5,5">
+            <Border.Background>
+                <LinearGradientBrush Opacity="0.5" StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Gray" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <Grid
         x:Name="MainGrid"
         Margin="5,2"
         TextElement.FontFamily="Consolas">
@@ -22,6 +41,8 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
+
+
 
         <TextBlock
             x:Name="AddressText"
@@ -59,5 +80,7 @@
                 Grid.Row="1"
                 d:Text="-MIN" />
         </Grid>
+        </Grid>
     </Grid>
+    
 </UserControl>

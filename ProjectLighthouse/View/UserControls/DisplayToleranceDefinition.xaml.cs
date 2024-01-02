@@ -1,23 +1,18 @@
 ﻿using ProjectLighthouse.Model.Quality;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Converters;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DisplayToleranceDefinition.xaml
-    /// </summary>
     public partial class DisplayToleranceDefinition : UserControl
     {
-
-
         public ToleranceDefinition Tolerance
         {
             get { return (ToleranceDefinition)GetValue(ToleranceProperty); }
             set { SetValue(ToleranceProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Tolerance.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ToleranceProperty =
             DependencyProperty.Register("Tolerance", typeof(ToleranceDefinition), typeof(DisplayToleranceDefinition), new PropertyMetadata(null, SetValues));
 
@@ -75,6 +70,55 @@ namespace ProjectLighthouse.View.UserControls
         public DisplayToleranceDefinition()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetData(typeof(ToleranceDefinition)) is ToleranceDefinition draggedDef)
+            {
+                if (draggedDef.Id == this.Tolerance.Id)
+                {
+                    return;
+                }
+            }
+
+            Point position = e.GetPosition(this);
+            double height = this.ActualHeight;
+
+            if (position.Y < height / 2)
+            {
+                bottomBorder.Visibility = Visibility.Collapsed;
+                topBorder.Visibility = Visibility.Visible;
+            }
+            else
+            {
+
+                bottomBorder.Visibility = Visibility.Visible;
+                topBorder.Visibility = Visibility.Collapsed;
+            }
+
+
+        }
+
+        private void UserControl_DragLeave(object sender, DragEventArgs e)
+        {
+            bottomBorder.Visibility= Visibility.Collapsed;
+            topBorder.Visibility= Visibility.Collapsed;
+            
+            if(e.Data.GetData(typeof(ToleranceDefinition)) is ToleranceDefinition draggedDef) 
+            { 
+                if (draggedDef.Id == this.Tolerance.Id)
+                {
+                    this.Opacity = 0.5;
+                }
+            }
+        }
+
+        public void RemoveDragFormats()
+        {
+            this.Opacity = 1;
+            bottomBorder.Visibility = Visibility.Collapsed;
+            topBorder.Visibility = Visibility.Collapsed;
         }
     }
 }

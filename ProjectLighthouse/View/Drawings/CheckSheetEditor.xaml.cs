@@ -9,6 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms.VisualStyles;
+using System.Windows.Media;
+using Windows.UI.Popups;
 
 namespace ProjectLighthouse.View.Drawings
 {
@@ -141,17 +144,40 @@ namespace ProjectLighthouse.View.Drawings
         private void ReferencedTolerancesListView_Drop(object sender, DragEventArgs e)
         {
             ToleranceDefinition droppedData = e.Data.GetData(typeof(ToleranceDefinition)) as ToleranceDefinition;
-            ToleranceDefinition target = ((DisplayToleranceDefinition)(sender)).Tolerance;
+
+            if (sender is not DisplayToleranceDefinition droppedOnItem) return;
+
+            ToleranceDefinition target = droppedOnItem.Tolerance;
+
+
+            Point position = e.GetPosition(droppedOnItem);
+            double height = droppedOnItem.ActualHeight;
+
+            int offset = -1;
+            if (position.Y >= height / 2)
+            {
+                offset = 0;
+            }
 
             int removedIdx = ReferencedTolerancesListView.Items.IndexOf(droppedData);
             int targetIdx = ReferencedTolerancesListView.Items.IndexOf(target);
 
             if (removedIdx == targetIdx)
-                return;
-
-            if (removedIdx < targetIdx)
             {
-                ReferencedTolerances.Insert(targetIdx + 1, droppedData);
+                for (int i = 0; i < ReferencedTolerancesListView.Items.Count; i++)
+                {
+                    foreach (DisplayToleranceDefinition control in FindVisualChildren<DisplayToleranceDefinition>(ReferencedTolerancesListView))
+                    {
+                        control.RemoveDragFormats();
+                    }
+                }
+
+                return;
+            }
+
+            if (removedIdx < targetIdx) // TODO fix offset bug causing reload
+            {
+                ReferencedTolerances.Insert(targetIdx + offset, droppedData);
                 ReferencedTolerances.RemoveAt(removedIdx);
             }
             else
@@ -159,7 +185,7 @@ namespace ProjectLighthouse.View.Drawings
                 int remIdx = removedIdx + 1;
                 if (ReferencedTolerances.Count + 1 > remIdx)
                 {
-                    ReferencedTolerances.Insert(targetIdx, droppedData);
+                    ReferencedTolerances.Insert(targetIdx + offset, droppedData);
                     ReferencedTolerances.RemoveAt(remIdx);
                 }
             }
@@ -250,6 +276,27 @@ namespace ProjectLighthouse.View.Drawings
             }
 
             Close();
+        }
+
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null)
+            {
+                yield return null;
+            }
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                if (child is not null and T t)
+                {
+                    yield return t;
+                }
+
+                foreach (T childOfChild in FindVisualChildren<T>(child))
+                {
+                    yield return childOfChild;
+                }
+            }
         }
     }
 }
