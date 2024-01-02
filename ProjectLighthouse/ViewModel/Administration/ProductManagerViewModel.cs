@@ -118,7 +118,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         public ViewWebPageCommand ViewWebPageCmd { get; set; }
         public AddProductCommand AddProductCmd { get; set; }
 
-        public Dictionary<MaterialInfo?, TimeModel> TimeModels { get; set; }
+        public Dictionary<MaterialInfo, TimeModel> TimeModels { get; set; }
 
 
         public ProductManagerViewModel()
