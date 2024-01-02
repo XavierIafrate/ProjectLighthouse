@@ -16,11 +16,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static bool ExecuteCommand(string query)
         {
-            using (SQLiteConnection conn = new(DatabasePath))
-            {
-                int result = conn.Execute(query);
-                Console.WriteLine(result);
-            }
+            using SQLiteConnection conn = new(DatabasePath);
+            int result = conn.Execute(query);
+            Console.WriteLine(result);
 
             return true;
         }
