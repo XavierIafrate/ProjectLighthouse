@@ -12,11 +12,12 @@ namespace ProjectLighthouse.View
 {
     public partial class CreateNewDeliveryWindow : Window
     {
-        private List<DeliveryItem> allUndeliveredItems { get; set; }
-        private List<DeliveryItem> filteredUndeliveredItems { get; set; }
-        private List<DeliveryItem> itemsOnNewNote { get; set; }
-        private List<TurnedProduct> turnedProducts { get; set; }
-        private List<Lot> Lots { get; set; }
+        private List<DeliveryItem> allUndeliveredItems;
+        private List<DeliveryItem> filteredUndeliveredItems;
+        private List<DeliveryItem> itemsOnNewNote;
+        private List<TurnedProduct> turnedProducts;
+        private List<Lot> lots;
+
         public bool SaveExit = false;
 
         public CreateNewDeliveryWindow()
@@ -26,13 +27,13 @@ namespace ProjectLighthouse.View
             filteredUndeliveredItems = new List<DeliveryItem>();
             itemsOnNewNote = new List<DeliveryItem>();
             turnedProducts = DatabaseHelper.Read<TurnedProduct>();
-            Lots = new List<Lot>();
+            lots = new List<Lot>();
             GetUndelivered();
         }
 
         private void GetUndelivered()
         {
-            Lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && n.IsAccepted && n.Quantity > 0 && n.AllowDelivery).ToList();
+            lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && n.IsAccepted && n.Quantity > 0 && n.AllowDelivery).ToList();
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
             //List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
 
@@ -41,7 +42,7 @@ namespace ProjectLighthouse.View
             itemsOnNewNote.Clear();
 
             string _POref = string.Empty;
-            foreach (Lot lot in Lots)
+            foreach (Lot lot in lots)
             {
                 foreach (LatheManufactureOrder order in orders)
                 {
@@ -52,13 +53,16 @@ namespace ProjectLighthouse.View
                 }
 
                 TurnedProduct deliveringProduct = turnedProducts.Find(x => lot.ProductName == x.ProductName);
+
+
+
                 // TODO automate some of this
                 allUndeliveredItems.Add(new DeliveryItem()
                 {
                     ItemManufactureOrderNumber = lot.Order,
                     PurchaseOrderReference = _POref,
                     Product = lot.ProductName,
-                    ExportProductName = string.IsNullOrEmpty(deliveringProduct.ExportProductName) ? lot.ProductName : deliveringProduct.ExportProductName,
+                    ExportProductName = string.IsNullOrEmpty(deliveringProduct!.ExportProductName) ? lot.ProductName : deliveringProduct.ExportProductName,
                     QuantityThisDelivery = lot.Quantity,
                     LotID = lot.ID,
                     FromMachine = lot.FromMachine
@@ -128,11 +132,12 @@ namespace ProjectLighthouse.View
 
                 LatheManufactureOrderItem x = orderItems.Find(i => i.ProductName == item.Product
                                                                         && i.AssignedMO == item.ItemManufactureOrderNumber);
-                x.QuantityDelivered += item.QuantityThisDelivery;
+                
+                x!.QuantityDelivered += item.QuantityThisDelivery;
                 DatabaseHelper.Update<LatheManufactureOrderItem>(x);
 
-                Lot lot = Lots.SingleOrDefault(l => l.ID == item.LotID);
-                lot.IsDelivered = true;
+                Lot lot = lots.Find(l => l.ID == item.LotID);
+                lot!.IsDelivered = true;
                 DatabaseHelper.Update<Lot>(lot);
 
                 DatabaseHelper.Insert(item);
