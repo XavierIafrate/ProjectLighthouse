@@ -10,10 +10,10 @@
     xmlns:model="clr-namespace:ProjectLighthouse.Model.Material"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Edit Order"
-    Width="750"
     Height="950"
+    MinWidth="750"
+    MaxWidth="750"
     MinHeight="600"
-    MaxWidth="1000"
     MaxHeight="1000"
     Background="{StaticResource Background}"
     Closing="Window_Closing"
@@ -23,7 +23,7 @@
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
 
-    <Grid Margin="20,20,0,20">
+    <Grid Margin="10,20">
         <Grid.Resources>
             <converter:boolToVisibleOrCollapsed x:Key="boolToCollapsed" />
             <converter:stringToAssignedLathe x:Key="stringToAssignedLathe" />
@@ -86,7 +86,7 @@
                 Click="SaveButton_Click"
                 Style="{StaticResource HeroSaveButton}" />
         </Grid>
-        <ScrollViewer Grid.Row="1" ScrollChanged="ScrollViewer_ScrollChanged">
+        <ScrollViewer Grid.Row="1" ScrollChanged="ScrollViewer_ScrollChanged" HorizontalScrollBarVisibility="Hidden">
             <Grid>
                 <Grid.Resources>
                     <converter:boolToCollapsedOrVisible x:Key="boolToCollapsedOrVisible" />
@@ -798,7 +798,7 @@
                     <Grid
                         x:Name="composeMessageControls"
                         Grid.Row="2"
-                        Margin="5">
+                        Margin="0,5">
                         <!--<Border Background="{StaticResource Surface}" CornerRadius="10" />-->
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -807,13 +807,14 @@
                             </Grid.ColumnDefinitions>
                             <TextBox
                                 x:Name="Message"
+                                Width="665"
                                 KeyDown="Message_KeyDown"
                                 Style="{StaticResource MessageComposer}"
                                 TextWrapping="Wrap" />
                             <Button
                                 x:Name="SendButton"
                                 Grid.Column="1"
-                                Margin="10,0,0,0"
+                                Margin="5,0,5,0"
                                 Background="Transparent"
                                 Click="SendButton_Click"
                                 Style="{StaticResource SendButton}" />

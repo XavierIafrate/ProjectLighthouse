@@ -565,20 +565,21 @@
                         <Grid x:Name="composeMessageControls" Grid.Row="2">
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="625" />
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <TextBox
+                                
                                 x:Name="MessageTextBox"
                                 KeyDown="TextBox_KeyDown"
                                 Style="{StaticResource MessageComposer}"
                                 Text="{Binding NewMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextChanged="TextBox_TextChanged"
-                                TextWrapping="WrapWithOverflow" />
+                                TextWrapping="Wrap" />
                             <Button
                                 x:Name="SendButton"
                                 Grid.Column="1"
-                                Margin="10,0,0,0"
+                                Margin="5,0,0,0"
                                 Background="Transparent"
                                 Command="{Binding SendMessageCommand}"
                                 IsEnabled="False"

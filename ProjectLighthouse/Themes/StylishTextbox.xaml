@@ -2,6 +2,7 @@
     <Style x:Key="Default" TargetType="TextBox">
         <Setter Property="Margin" Value="5" />
         <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
 
         <Style.Triggers>
             <Trigger Property="Validation.HasError" Value="True">
