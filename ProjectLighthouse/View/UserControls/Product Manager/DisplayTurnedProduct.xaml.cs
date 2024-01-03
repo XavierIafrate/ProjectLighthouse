@@ -29,6 +29,7 @@ namespace ProjectLighthouse.View.UserControls
 
             int recommendedQuantity = control.Product.GetRecommendedQuantity();
 
+
             Geometry g;
             Brush b;
 

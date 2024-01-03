@@ -52,20 +52,6 @@
             Stretch="Uniform" />
 
         <TextBlock
-            x:Name="RecentlyDeclined"
-            Grid.Row="1"
-            FontFamily="Consolas"
-            Foreground="{StaticResource Red}"
-            Text="recently declined"
-            Visibility="Visible" />
-        <TextBlock
-            x:Name="CouldBeAddedFlag"
-            Grid.Row="2"
-            FontFamily="Consolas"
-            Foreground="{StaticResource Green}"
-            Text="append to M12345"
-            Visibility="Visible" />
-        <TextBlock
             x:Name="stock"
             Grid.Row="3"
             FontFamily="Consolas"
