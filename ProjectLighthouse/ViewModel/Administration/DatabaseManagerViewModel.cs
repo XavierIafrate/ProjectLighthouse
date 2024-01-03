@@ -103,7 +103,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             };
         }
 
-        private void ImportTriggers()
+        private static void ImportTriggers()
         {
             string[] data = File.ReadAllLines(@"C:\Users\x.iafrate\Desktop\newTriggers.txt");
             List<TurnedProduct> turnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
@@ -176,7 +176,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
-        private void GetTimeModels()
+        private static void GetTimeModels()
         {
             List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().Where(x => !x.Retired && !x.IsSpecialPart && x.GroupId != null).ToList();
             List<ProductGroup> groups = DatabaseHelper.Read<ProductGroup>().Where(x => x.ProductId != 65 && x.Status == ProductGroup.GroupStatus.Active).ToList();
@@ -194,7 +194,13 @@ namespace ProjectLighthouse.ViewModel.Administration
                     if (id is null) continue;
 
                     BarStock? bar = group.GetRequiredBarStock(barStock, (int)id);
-                    MaterialInfo m = materials.Find(m => m.Id == id);
+                    MaterialInfo? m = materials.Find(m => m.Id == id);
+
+                    if (m is null)
+                    {
+                        continue;
+                    }
+
                     List<TurnedProduct> productsInGroupWithMaterial = productsInGroup.Where(x => x.MaterialId == id).ToList();
                     TimeModel model;
 
@@ -248,7 +254,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         }
 
 
-        private void TestHTMLReport()
+        private static void TestHTMLReport()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -257,7 +263,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             pdfDocument.Save(@"C:\Users\x.iafrate\Dev\test.pdf");
         }
 
-        private void AddTimeCodes()
+        private static void AddTimeCodes()
         {
             List<LatheManufactureOrder> activeOrders = DatabaseHelper.Read<LatheManufactureOrder>().Where(x => x.State < OrderState.Running && string.IsNullOrEmpty(x.TimeCodePlanned)).ToList();
             List<TurnedProduct> turnedProducts = DatabaseHelper.Read<TurnedProduct>().Where(x => !x.Retired).ToList();
@@ -311,7 +317,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             public int Quantity { get; set; }
         }
 
-        private void GetDeliveredItems()
+        private static void GetDeliveredItems()
         {
             List<DeliveryLine> result = new();
 
@@ -386,7 +392,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             CSVHelper.WriteListToCSV(workload, "workloadOrders");
         }
 
-        private double GetPrice(TurnedProduct product, BarStock barStock, MaterialInfo materialInfo, double absorptionRate, TimeModel model)
+        private static double GetPrice(TurnedProduct product, BarStock barStock, MaterialInfo materialInfo, double absorptionRate, TimeModel model)
         {
             if (materialInfo.Cost is null) return 0;
 
@@ -459,7 +465,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             public double AverageTurnaroundTime { get; set; }
         }
 
-        private void GetTurnedProductImportSheet()
+        private static void GetTurnedProductImportSheet()
         {
             PropertyInfo[] properties = typeof(TurnedProduct).GetProperties();
             List<string> propertiesForExport = new();
@@ -488,7 +494,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
-        private void GenerateItemCostingSheet()
+        private static void GenerateItemCostingSheet()
         {
             List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>()
                 .Where(x => x.MaterialId is not null && x.GroupId is not null && !x.IsSpecialPart)

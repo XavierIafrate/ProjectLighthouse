@@ -345,6 +345,12 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 string holidaysJson = File.ReadAllText(App.ROOT_PATH + @"lib\holidays.json");
                 List<DateTime> holidays = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DateTime>>(holidaysJson);
+                
+                if (holidays == null)
+                {
+                    return new();
+                }
+
                 return holidays.OrderBy(x => x).ToList();
             }
             catch

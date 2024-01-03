@@ -739,7 +739,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             string breakReferences = Newtonsoft.Json.JsonConvert.SerializeObject(RequestItems.Where(x => x.RequestId == SelectedRequest.Id).ToList());
             SelectedRequestItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RequestItem>>(breakReferences);
 
-            foreach (RequestItem requestItem in SelectedRequestItems)
+            foreach (RequestItem requestItem in SelectedRequestItems!)
             {
                 requestItem.Item = Items.Find(x => x.Id == requestItem.ItemId);
                 requestItem.Item?.ValidateForOrder(); // TODO check

@@ -201,28 +201,29 @@ namespace ProjectLighthouse.Model.Analytics
 
         public List<Variables> GetListOfStatistics()
         {
-            List<Variables> variables = new();
-
-            variables.Add(new Variables
+            List<Variables> variables = new()
             {
-                Name = "Data Time",
-                TextValue = $"{DataTime:dd/MM/yy HH:mm:ss}"
-            });
-            variables.Add(new Variables
-            {
-                Name = "Availability",
-                TextValue = Availability
-            });
-            variables.Add(new Variables
-            {
-                Name = "Controller Mode",
-                TextValue = ControllerMode
-            });
-            variables.Add(new Variables
-            {
-                Name = "Emergency Stop",
-                TextValue = EmergencyStop
-            });
+                new Variables
+                {
+                    Name = "Data Time",
+                    TextValue = $"{DataTime:dd/MM/yy HH:mm:ss}"
+                },
+                new Variables
+                {
+                    Name = "Availability",
+                    TextValue = Availability
+                },
+                new Variables
+                {
+                    Name = "Controller Mode",
+                    TextValue = ControllerMode
+                },
+                new Variables
+                {
+                    Name = "Emergency Stop",
+                    TextValue = EmergencyStop
+                }
+            };
 
             return variables;
         }
