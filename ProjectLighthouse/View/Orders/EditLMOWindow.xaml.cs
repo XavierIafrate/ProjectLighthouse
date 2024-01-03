@@ -950,7 +950,7 @@ namespace ProjectLighthouse.View.Orders
             DateTime dt = (DateTime)Order.ScheduledEnd;
             int hourCurrent = dt.Hour;
             hourCurrent++;
-            hourCurrent = hourCurrent % 24;
+            hourCurrent %= 24;
             Order.ScheduledEnd = dt.ChangeTime(hourCurrent, 0, 0, 0);
         }
 
