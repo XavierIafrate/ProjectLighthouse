@@ -41,6 +41,7 @@
                 <ResourceDictionary Source="./Themes/StylishProgressBar.xaml" />
                 <ResourceDictionary Source="./Themes/StylishTabControl.xaml" />
                 <ResourceDictionary Source="./Themes/StylishWrapPanel.xaml" />
+                <ResourceDictionary Source="./Themes/StylishTreeView.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--#endregion-->
 

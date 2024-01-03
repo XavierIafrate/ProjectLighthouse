@@ -2,6 +2,7 @@
     <Style x:Key="Default" TargetType="{x:Type ScrollViewer}">
         <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollViewer}">

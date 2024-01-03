@@ -13,6 +13,7 @@
     Height="672"
     MaxWidth="2000"
     MaxHeight="2000"
+    Loaded="Window_Loaded"
     WindowState="Maximized"
     mc:Ignorable="d">
     <Grid>
@@ -37,6 +38,7 @@
             Text="Edit Specification" />
 
         <Button
+            Grid.RowSpan="2"
             Grid.Column="4"
             HorizontalAlignment="Right"
             Click="SaveButton_Click"
@@ -57,7 +59,12 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ListView x:Name="MasterToleranceListView" SelectionChanged="MasterToleranceListView_SelectionChanged">
+            <TreeView x:Name="MasterTolerances" Margin="5">
+                <!--<TreeViewItem Header="NOBODY expects the Spanish Inquisition! Amongst our weaponry are such diverse elements as: fear, surprise, ruthless efficiency, an almost fanatical" IsExpanded="True" Foreground="White">
+                    <TreeViewItem Header="1" Foreground="White" />
+                </TreeViewItem>-->
+            </TreeView>
+            <!--<ListView x:Name="MasterToleranceListView" SelectionChanged="MasterToleranceListView_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayToleranceDefinition Tolerance="{Binding Path=.}" />
@@ -81,9 +88,9 @@
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
-            </ComboBox>
+            </ComboBox>-->
         </Grid>
-        <StackPanel
+        <!--<StackPanel
             Grid.Row="2"
             Grid.Column="2"
             Margin="0,222,0,0"
@@ -101,7 +108,7 @@
                 IsEnabled="False"
                 Style="{StaticResource ListBox_Remove_Button}" />
 
-        </StackPanel>
+        </StackPanel>-->
 
         <TextBlock
             Grid.Row="1"
@@ -153,6 +160,7 @@
             Grid.RowSpan="2"
             Grid.Column="4"
             Margin="0,5,0,0"
+            NavigationCompleted="webView_NavigationCompleted"
             Source="file://" />
     </Grid>
 </Window>

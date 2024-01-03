@@ -20,6 +20,7 @@ namespace ProjectLighthouse.Model.Quality
         public ToleranceType ToleranceType { get; set; }
         public double Min { get; set; }
         public double Max { get; set; }
+        public string? Symbol { get; set; }
         public string? FitId { get; set; }
         public string StringFormatter => DecimalPlacesToStringFormatter(DecimalPlaces);
 
