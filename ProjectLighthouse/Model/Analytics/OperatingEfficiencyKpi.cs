@@ -1,220 +1,107 @@
-﻿using ProjectLighthouse.Model.Orders;
-using ProjectLighthouse.Model.Scheduling;
+﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ProjectLighthouse.Model.Analytics
 {
     public class OperatingEfficiencyKpi
     {
-        public DateTime StartDate;
-        public TimeSpan DaysSpan;
 
         public TimeSpan AvailableTime;
-        public TimeSpan UnscheduledTime;
-        public TimeSpan DevelopmentTime;
-        public TimeSpan PlannedMaintenanceTime;
-        public TimeSpan BudgetedSettingTime;
-        public TimeSpan BreakdownTime;
-        public TimeSpan NonRunningTime;
-        public TimeSpan PerformanceDeltaTime; // Positive or Negative
-        public TimeSpan QualityLossTime;
+        public TimeSpan OperationsTime;
+        public TimeSpan MaintenanceLoss;
+        public TimeSpan DevelopmentLoss;
+        public TimeSpan ScheduleLoss;
+        public TimeSpan ChangeoverLoss;
+        public TimeSpan AvailabilityLoss;
+        public TimeSpan PerformanceChange;
+        public TimeSpan QualityLoss;
 
-        public TimeSpan AccountedFor;
+        //public void Add(OperatingEfficiencyKpi kpi)
+        //{
+        //    AvailableTime += kpi.AvailableTime;
+        //    UnscheduledTime += kpi.UnscheduledTime;
+        //    DevelopmentTime += kpi.DevelopmentTime;
+        //    PlannedMaintenanceTime += kpi.PlannedMaintenanceTime;
+        //    BudgetedSettingTime += kpi.BudgetedSettingTime;
+        //    BreakdownTime += kpi.BreakdownTime;
+        //    NonRunningTime += kpi.NonRunningTime;
+        //    PerformanceDeltaTime += kpi.PerformanceDeltaTime;
+        //    QualityLossTime += kpi.QualityLossTime;
 
-        public TimeSpan PlannedRunTime => AvailableTime - UnscheduledTime - DevelopmentTime - PlannedMaintenanceTime - BudgetedSettingTime;
-
-        public OperatingEfficiencyKpi(DateTime startDate, TimeSpan timeSpan, List<ScheduleItem> itemsWithinSpan)
-        {
-            StartDate = startDate;
-            DaysSpan = timeSpan;
-
-            CalculateScheduledTime(startDate, timeSpan, itemsWithinSpan);
-            //CalculateEquipmentTime()
-        }
-
-        private void CalculateScheduledTime(DateTime startDate, TimeSpan timeSpan, List<ScheduleItem> itemsWithinSpan)
-        {
-            AvailableTime = timeSpan;
-            UnscheduledTime = timeSpan;
-
-            itemsWithinSpan = itemsWithinSpan.OrderByDescending(x => x.StartDate).ToList();
-
-            DateTime currentDate = startDate + timeSpan; // Start at the end and work backwards
-
-            for (int i = 0; i < itemsWithinSpan.Count; i++)
-            {
-                ScheduleItem item = itemsWithinSpan[i];
-
-                // Change currentDate if MachineService?
-                (DateTime itemStartsAt, DateTime itemEndsAt, TimeSpan remainderAfter) = GetStartAndEnd(item, startDate, currentDate);
-
-                TimeSpan timeForItem = itemEndsAt - itemStartsAt;
-                UnscheduledTime -= timeForItem;
-
-                AccountedFor += timeForItem;
-
-                if (item is LatheManufactureOrder order)
-                {
-                    CalculateTimeForOrder(order, startDate, timeSpan, timeForItem, remainderAfter);
-                }
-                else if (item is MachineService service)
-                {
-                    PlannedMaintenanceTime += timeForItem; // TODO override order running and take off time
-                }
-
-                currentDate = itemStartsAt;
-            }
-        }
-
-        private void CalculateTimeForOrder(LatheManufactureOrder order, DateTime startDate, TimeSpan timeSpan, TimeSpan timeForItem, TimeSpan remainderAfter)
-        {
-            TimeSpan settingTime = TimeSpan.FromHours(6);
-
-            if (order.StartDate.Date == startDate.Date)
-            {
-                BudgetedSettingTime += settingTime;
-                //AccountedFor += settingTime; // Check
-                UnscheduledTime -= settingTime;
-            }
-
-            if (order.IsResearch)
-            {
-                DevelopmentTime += timeForItem + remainderAfter + settingTime;
-
-                if (order.StartDate.Date == startDate.Date)
-                {
-                    BudgetedSettingTime -= settingTime;
-                }
-
-                UnscheduledTime -= remainderAfter; // Allow downtime to next order
-                return;
-            }
-
-            double weightedCycleTime = order.CalculateWeightedCycleTime();
-
-            List<Lot> producedInTimeSpan = order.Lots
-                .Where(x =>
-                    x.DateProduced > startDate &&
-                    x.DateProduced < startDate + timeSpan)
-                .ToList();
-
-            int rejects = producedInTimeSpan.Where(x => x.IsReject).Sum(x => x.Quantity);
-            int total = producedInTimeSpan.Sum(x => x.Quantity);
-
-            // TODO use actual cycle times not weighted
-            int theoreticalTotal = (int)timeForItem.TotalSeconds / (int)weightedCycleTime;
-
-            NonRunningTime = TimeSpan.FromSeconds((theoreticalTotal - total) * weightedCycleTime);
-
-            QualityLossTime = TimeSpan.FromSeconds(rejects * weightedCycleTime);
-
-            if (order.TargetCycleTime <= 0 || order.TargetCycleTimeEstimated)
-            {
-                PerformanceDeltaTime = TimeSpan.FromSeconds(0);
-            }
-            else
-            {
-                PerformanceDeltaTime = ((weightedCycleTime - order.TargetCycleTime) / order.TargetCycleTime) * (timeForItem - NonRunningTime);
-            }
-        }
-
-        private (DateTime, DateTime, TimeSpan) GetStartAndEnd(ScheduleItem item, DateTime min, DateTime max)
-        {
-            DateTime start;
-            DateTime stop;
-            TimeSpan remainder;
-
-            if (item is LatheManufactureOrder order)
-            {
-                start = order.StartDate;
-                stop = order.EndsAt();
-            }
-            else if (item is MachineService service)
-            {
-                start = service.StartDate;
-                stop = service.EndsAt();
-            }
-            else
-            {
-                throw new Exception("Invalid type");
-            }
-
-            start = start < min
-                ? min
-                : start;
-
-            stop = stop > max
-                ? max
-                : stop;
-
-            remainder = max - stop;
-
-            return new(start, stop, remainder);
-        }
-
-        public double GetOperationsEfficiency()
-        {
-            TimeSpan availableTime = AvailableTime;
-            TimeSpan losses = UnscheduledTime
-                + DevelopmentTime
-                + PlannedMaintenanceTime
-                + BudgetedSettingTime
-                + BreakdownTime
-                + NonRunningTime
-                + PerformanceDeltaTime
-                + QualityLossTime;
-
-            double effectiveness = (availableTime - losses) / availableTime;
-            return effectiveness;
-        }
-
-        public double GetEquipmentEfficiency()
-        {
-            TimeSpan plannedRunTime = PlannedRunTime;
-            TimeSpan losses = BreakdownTime + NonRunningTime + PerformanceDeltaTime + QualityLossTime;
-
-            double effectiveness = (plannedRunTime - losses) / plannedRunTime;
-
-            return effectiveness;
-        }
-
-        public double GetSchedulingEfficiency()
-        {
-            double effectiveness = (AvailableTime - PlannedMaintenanceTime - DevelopmentTime - UnscheduledTime) / (AvailableTime - PlannedMaintenanceTime - DevelopmentTime);
-            return effectiveness;
-        }
-
-        public void Add(OperatingEfficiencyKpi kpi)
-        {
-            AvailableTime += kpi.AvailableTime;
-            UnscheduledTime += kpi.UnscheduledTime;
-            DevelopmentTime += kpi.DevelopmentTime;
-            PlannedMaintenanceTime += kpi.PlannedMaintenanceTime;
-            BudgetedSettingTime += kpi.BudgetedSettingTime;
-            BreakdownTime += kpi.BreakdownTime;
-            NonRunningTime += kpi.NonRunningTime;
-            PerformanceDeltaTime += kpi.PerformanceDeltaTime;
-            QualityLossTime += kpi.QualityLossTime;
-
-            AccountedFor += kpi.AccountedFor;
-        }
+        //    AccountedFor += kpi.AccountedFor;
+        //}
 
         public void Normalise(int multiplier = 1)
         {
             double coefficient = multiplier / AvailableTime.TotalHours;
 
-            AccountedFor *= coefficient;
-            QualityLossTime *= coefficient;
-            PerformanceDeltaTime *= coefficient;
-            NonRunningTime *= coefficient;
-            BreakdownTime *= coefficient;
-            BudgetedSettingTime *= coefficient;
-            PlannedMaintenanceTime *= coefficient;
-            DevelopmentTime *= coefficient;
-            UnscheduledTime *= coefficient;
+            QualityLoss *= coefficient;
+            PerformanceChange *= coefficient;
+            AvailabilityLoss *= coefficient;
+            ChangeoverLoss *= coefficient;
+            ScheduleLoss *= coefficient;
+            DevelopmentLoss *= coefficient;
+            MaintenanceLoss *= coefficient;
+            OperationsTime *= coefficient;
             AvailableTime *= coefficient;
         }
+
+        public List<(string, double, double, double)> GetWaterfall()
+        {
+            List<(string, double, double, double)> result = new();
+
+            TimeSpan maxTime = OperationsTime > (OperationsTime - MaintenanceLoss - DevelopmentLoss - ScheduleLoss - ChangeoverLoss - AvailabilityLoss - PerformanceChange)
+                ? OperationsTime
+                : (OperationsTime - MaintenanceLoss - DevelopmentLoss - ScheduleLoss - ChangeoverLoss - AvailabilityLoss - PerformanceChange);
+            
+            TimeSpan offset = maxTime - OperationsTime;
+
+            result.Add(new("Total Operations Time", 0, OperationsTime / maxTime, offset / maxTime));
+
+            result.Add(new("Planned Maintenance", 1-(MaintenanceLoss + offset)/maxTime, MaintenanceLoss / maxTime, offset / maxTime));
+            offset += MaintenanceLoss;
+
+            result.Add(new("Development", 1 - (DevelopmentLoss + offset) / maxTime, DevelopmentLoss / maxTime, offset / maxTime));
+            offset += DevelopmentLoss;
+
+            result.Add(new("Schedule Loss", 1 - (ScheduleLoss + offset) / maxTime, ScheduleLoss / maxTime, offset / maxTime));
+            offset += ScheduleLoss;
+            TimeSpan equipmentStart = offset;
+
+            result.Add(new("Changeover Loss", 1 - (ChangeoverLoss + offset) / maxTime, ChangeoverLoss / maxTime, offset / maxTime));
+            offset += ChangeoverLoss;
+
+            result.Add(new("Availability Loss", 1 - (AvailabilityLoss + offset) / maxTime, AvailabilityLoss / maxTime, offset / maxTime));
+            offset += AvailabilityLoss;
+
+            if (PerformanceChange.TotalSeconds > 0)
+            {
+                result.Add(new("Performance Change", 1 - (PerformanceChange + offset) / maxTime, PerformanceChange / maxTime, offset / maxTime));
+            }
+            else
+            {
+                result.Add(new("Performance Change", 1 - Math.Abs(PerformanceChange / maxTime) - (offset + PerformanceChange) / maxTime, Math.Abs(PerformanceChange / maxTime), (offset + PerformanceChange) / maxTime));
+            }
+            offset += PerformanceChange;
+
+            result.Add(new("Quality Loss", 1 - (QualityLoss + offset) / maxTime, QualityLoss / maxTime, offset / maxTime));
+            offset += QualityLoss;
+
+
+            result.Add(new("OOE", 1-offset / maxTime, offset / maxTime, 0));
+
+            if (offset > equipmentStart) // Under 100%
+            {
+                result.Add(new("OEE", 1-offset / maxTime, (offset - equipmentStart) / maxTime, equipmentStart / maxTime));
+            }
+            else
+            {
+                result.Add(new("OEE", 1-offset / maxTime, 0, offset/maxTime));
+            }
+
+            return result;
+        }
+
     }
 }
