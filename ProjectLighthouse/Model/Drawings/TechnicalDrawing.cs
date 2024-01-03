@@ -20,7 +20,7 @@ namespace ProjectLighthouse.Model.Drawings
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        public int Revision { get; set; } = 0;
+        public int Revision { get; set; }
         public DateTime Created { get; set; }
         public string CreatedBy { get; set; }
         public bool IsArchetype { get; set; }
@@ -50,7 +50,7 @@ namespace ProjectLighthouse.Model.Drawings
         public string IssueDetails { get; set; }
         public bool WatermarkOnly { get; set; }
 
-        public bool PlatingStatement = false;
+        public bool PlatingStatement;
         public string? CheckSheetReferences { get; set; }
 
         [Ignore]

@@ -253,7 +253,6 @@ namespace ProjectLighthouse.ViewModel.Orders
         public EditManufactureOrderCommand EditCommand { get; set; }
         public CreateNewOrderCommand NewOrderCommand { get; set; }
         public GetProgramPlannerCommand GetProgramPlannerCmd { get; set; }
-        public ShowWorkloadWindowCommand ShowWorkloadCmd { get; set; }
         #endregion
 
         #region Icon Brushes
@@ -581,7 +580,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             EditCommand = new(this);
             NewOrderCommand = new(this);
             GetProgramPlannerCmd = new(this);
-            ShowWorkloadCmd = new(this);
         }
 
         #region Data Refreshing

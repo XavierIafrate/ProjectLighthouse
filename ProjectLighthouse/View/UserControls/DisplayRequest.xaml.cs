@@ -49,7 +49,7 @@ namespace ProjectLighthouse.View.UserControls
             if (requestControl.Request.Status == Request.RequestStatus.Accepted)
             {
                 requestControl.statusBadge.Background = (Brush)Application.Current.Resources["GreenFaded"];
-                requestControl.statusText.Foreground= (Brush)Application.Current.Resources["Green"];
+                requestControl.statusText.Foreground = (Brush)Application.Current.Resources["Green"];
             }
             else if (requestControl.Request.Status == Request.RequestStatus.Declined)
             {

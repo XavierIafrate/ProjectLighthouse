@@ -37,7 +37,7 @@ namespace ProjectLighthouse.View.Administration
             InitializeComponent();
 
             Statuses = Enum.GetValues(typeof(GroupStatus));
-            
+
             Product = product;
             Products = products;
 

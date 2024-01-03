@@ -15,11 +15,8 @@ namespace ProjectLighthouse.View.UserControls
             set { SetValue(EditItemCommandProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for EditItemCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty EditItemCommandProperty =
             DependencyProperty.Register("EditItemCommand", typeof(ICommand), typeof(DisplayRequestItem), new PropertyMetadata(null));
-
-
 
         public ICommand RemoveCommand
         {
@@ -76,18 +73,22 @@ namespace ProjectLighthouse.View.UserControls
                 control.MissingDataStatement.Visibility = control.RequestItem.Item.HasErrors ? Visibility.Visible : Visibility.Collapsed;
 
                 control.EditButton.Visibility = control.RequestItem.Item.HasErrors && App.CurrentUser.HasPermission(Model.Core.PermissionType.CreateProducts)
-                    ? Visibility.Visible 
-                    : Visibility.Collapsed;   
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+                control.CopyProductNameButton.Visibility = Visibility.Visible;
             }
             else
             {
                 control.ItemNameText.Text = control.RequestItem.ItemId == 0 ? "Unknown Item" : "ID: " + control.RequestItem.ItemId.ToString();
+                control.CopyProductNameButton.Visibility = Visibility.Collapsed;
             }
 
-            control.QuantityTextBox.Text = control.RequestItem.QuantityRequired == 0 ? "" : control.RequestItem.QuantityRequired.ToString();
+                control.QuantityTextBox.Text = control.RequestItem.QuantityRequired == 0 ? "" : control.RequestItem.QuantityRequired.ToString();
             control.RequiredDatePicker.SelectedDate = control.RequestItem.DateRequired;
             control.RequiredDatePicker.DisplayDateStart = DateTime.Today.AddDays(1);
             control.RequiredDatePicker.DisplayDateEnd = DateTime.Today.AddYears(1);
+
+
         }
 
         public DisplayRequestItem()
@@ -114,8 +115,8 @@ namespace ProjectLighthouse.View.UserControls
             QuantityTextBox.BorderBrush = (Brush)App.Current.Resources["Surface"];
             if (int.TryParse(QuantityTextBox.Text, out int value))
             {
-                if(RequestItem.QuantityRequired != value) 
-                { 
+                if (RequestItem.QuantityRequired != value)
+                {
                     RequestItem.QuantityRequired = value;
                     RequestItem.NotifyRequirementChanged();
                 }
@@ -135,6 +136,11 @@ namespace ProjectLighthouse.View.UserControls
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             EditItemCommand?.Execute(RequestItem);
+        }
+
+        private void CopyProductName_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(RequestItem.Item!.ExportProductName ?? RequestItem.Item.ProductName);
         }
     }
 }

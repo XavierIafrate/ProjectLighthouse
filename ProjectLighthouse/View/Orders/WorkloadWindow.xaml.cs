@@ -40,7 +40,7 @@ namespace ProjectLighthouse.View.Orders
             for (int i = 0; i < assignedUsers.Length; i++)
             {
                 List<LatheManufactureOrder> ordersForUser = orders.Where(x => x.AssignedTo == assignedUsers[i]).ToList();
-                workload.Add(assignedUsers[i]??"Unassigned", ordersForUser);
+                workload.Add(assignedUsers[i] ?? "Unassigned", ordersForUser);
             }
 
             OnPropertyChanged(nameof(Workload));

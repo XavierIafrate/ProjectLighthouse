@@ -1,5 +1,4 @@
-﻿using Model.Core;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Reporting;
 using ProjectLighthouse.View.Administration;
@@ -19,8 +18,8 @@ namespace ProjectLighthouse.ViewModel.Administration
     public class ManageUsersViewModel : BaseViewModel
     {
         #region Vars
-        public Array roles { get; set; }
-        public List<string> views { get; set; }
+        public Array Roles { get; set; }
+        public List<string> Views { get; set; }
         public List<Login> Logins { get; set; }
         public List<Login> UserLogins { get; set; }
 
@@ -106,7 +105,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 editControlsVis = value;
                 editMode = value == Visibility.Visible;
                 OnPropertyChanged();
-                OnPropertyChanged("editMode");
+                OnPropertyChanged(nameof(editMode));
             }
         }
 
@@ -133,8 +132,8 @@ namespace ProjectLighthouse.ViewModel.Administration
         #endregion
         public ManageUsersViewModel()
         {
-            roles = Enum.GetValues(typeof(UserRole));
-            views = new() { "Requests", "Orders", "Schedule" };
+            Roles = Enum.GetValues(typeof(UserRole));
+            Views = new() { "Requests", "Orders", "Schedule" };
 
             SelectedUserPermissions = new();
             Logins = new();
@@ -146,12 +145,12 @@ namespace ProjectLighthouse.ViewModel.Administration
             ReadControlsVis = Visibility.Visible;
 
             EditCmd = new(this);
-            SaveCmd= new(this);
-            DeleteUserCmd= new(this);
-            ResetPasswordCmd= new(this);
-            AddPermissionCmd= new(this);
-            RemovePermissionCmd= new(this);
-            AddUserCmd= new(this);
+            SaveCmd = new(this);
+            DeleteUserCmd = new(this);
+            ResetPasswordCmd = new(this);
+            AddPermissionCmd = new(this);
+            RemovePermissionCmd = new(this);
+            AddUserCmd = new(this);
 
             LoadData();
 
@@ -258,7 +257,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             SelectedUserPermissions = newPermissions;
 
             SelectedRole = SelectedUser.Role;
-            SelectedView = views.Find(n => n == (string.IsNullOrEmpty(SelectedUser.DefaultView) ? "Orders" : SelectedUser.DefaultView));
+            SelectedView = Views.Find(n => n == (string.IsNullOrEmpty(SelectedUser.DefaultView) ? "Orders" : SelectedUser.DefaultView));
 
             UserLogins = Logins.Where(x => x.User == SelectedUser.UserName && x.Time.AddDays(14) > DateTime.Now).ToList() ?? new();
             OnPropertyChanged(nameof(UserLogins));

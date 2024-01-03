@@ -20,14 +20,14 @@ namespace ProjectLighthouse.Model.Products
         public string Name
         {
             get { return name; }
-            set 
-            { 
+            set
+            {
                 name = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
         }
-        
+
         public int? ProductId { get; set; }
         public double? MinBarSize { get; set; }
 
@@ -35,10 +35,10 @@ namespace ProjectLighthouse.Model.Products
         public double MajorDiameter
         {
             get { return majorDiameter; }
-            set 
-            { 
+            set
+            {
                 if (majorDiameter == value) return;
-                
+
                 majorDiameter = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -50,10 +50,10 @@ namespace ProjectLighthouse.Model.Products
         public bool UsesHexagonBar
         {
             get { return usesHexagonBar; }
-            set 
-            { 
+            set
+            {
                 usesHexagonBar = value;
-                OnPropertyChanged(); 
+                OnPropertyChanged();
             }
         }
 
@@ -62,11 +62,11 @@ namespace ProjectLighthouse.Model.Products
         public string? DefaultTimeCode
         {
             get { return defaultTimeCode; }
-            set 
-            { 
-                defaultTimeCode = value; 
+            set
+            {
+                defaultTimeCode = value;
                 ValidateProperty();
-                OnPropertyChanged(); 
+                OnPropertyChanged();
             }
         }
 
@@ -156,7 +156,7 @@ namespace ProjectLighthouse.Model.Products
 
                 return;
             }
-            else if (propertyName == nameof(MajorDiameter)) 
+            else if (propertyName == nameof(MajorDiameter))
             {
                 ClearErrors(propertyName);
                 if (MajorDiameter <= 0)

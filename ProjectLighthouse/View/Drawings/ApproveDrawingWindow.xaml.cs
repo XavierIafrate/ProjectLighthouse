@@ -13,7 +13,7 @@ namespace ProjectLighthouse.View.Drawings
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        
+
 
         public TechnicalDrawing SelectedDrawing { get; set; }
         public bool CanApproveSelected { get; set; }
@@ -60,7 +60,7 @@ namespace ProjectLighthouse.View.Drawings
             {
                 d.CopyToAppData();
             }
-            catch(FileNotFoundException ex) 
+            catch (FileNotFoundException ex)
             {
                 MessageBox.Show(ex.Message);
                 return;

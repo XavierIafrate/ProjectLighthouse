@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using SQLite;
+﻿using SQLite;
 using System;
 using System.Collections.Generic;
 
@@ -126,7 +125,7 @@ namespace ProjectLighthouse.Model.Quality
         {
             if (numPlaces < 0 || numPlaces > 8)
             {
-                throw new ArgumentOutOfRangeException("numPlaces is weird, plz fix");
+                throw new ArgumentOutOfRangeException(nameof(numPlaces));
             }
 
             if (numPlaces == 0)

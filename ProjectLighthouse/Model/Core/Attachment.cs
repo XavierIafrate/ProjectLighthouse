@@ -1,8 +1,6 @@
-﻿using ProjectLighthouse.View.UserControls;
-using SQLite;
+﻿using SQLite;
 using System;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 
 namespace ProjectLighthouse.Model.Core
@@ -42,7 +40,7 @@ namespace ProjectLighthouse.Model.Core
                 File.Copy(FilePath, $"{App.ROOT_PATH}{AttachmentStore}");
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message);
                 return false;

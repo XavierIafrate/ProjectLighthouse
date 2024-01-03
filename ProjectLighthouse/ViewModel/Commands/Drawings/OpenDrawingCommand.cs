@@ -1,5 +1,5 @@
-﻿using System;
-using ProjectLighthouse.ViewModel.Drawings;
+﻿using ProjectLighthouse.ViewModel.Drawings;
+using System;
 
 namespace ProjectLighthouse.ViewModel.Commands.Drawings
 {

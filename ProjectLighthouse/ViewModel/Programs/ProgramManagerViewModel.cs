@@ -16,9 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
-using ViewModel.Commands.Programs;
 
 namespace ProjectLighthouse.ViewModel.Programs
 {

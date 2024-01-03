@@ -332,7 +332,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                     SaveHolidays(window.Holidays);
                     Holidays = new(window.Holidays);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     NotificationManager.NotifyHandledException(ex);
                 }

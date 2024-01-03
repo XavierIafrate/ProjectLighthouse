@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace ProjectLighthouse.Model.Administration
         public bool ReceivesNotifications { get; set; }
         public bool HasQualityNotifications { get; set; }
         public string Locale { get; set; }
+        public double? DefaultMenuWidth { get; set; }
 
         [Ignore]
         public List<Permission> UserPermissions { get; set; } = new();
@@ -63,5 +65,11 @@ namespace ProjectLighthouse.Model.Administration
         }
 
         public override string ToString() => GetFullName();
+
+        public static void PostDefaultMenuWidth(string username, double width)
+        {
+            string command = $"UPDATE {nameof(User)} SET DefaultMenuWidth={width} WHERE UserName='{username}'";
+            DatabaseHelper.ExecuteCommand(command);
+        }
     }
 }

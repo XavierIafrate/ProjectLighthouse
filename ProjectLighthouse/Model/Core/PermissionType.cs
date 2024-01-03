@@ -26,7 +26,7 @@
         CreateDelivery = 204,
         EditDelivery = 205,
         ApproveDrawings = 301,
-        ConfigurePrograms=302,
+        ConfigurePrograms = 302,
         ModifyCalibration = 401,
         UpdateCalibration = 402,
         ConfigureMaintenance = 501,

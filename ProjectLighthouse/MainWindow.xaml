@@ -21,7 +21,7 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <Grid>
+    <Grid x:Name="MainGrid">
         <!--#region Layout setup and resources-->
         <Grid.Resources>
             <converters:boolToCollapsedOrVisible x:Key="hideIfTrue" />
@@ -31,9 +31,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition
                 Width="*"
-                MinWidth="200"
+                MinWidth="80"
                 MaxWidth="350" />
-            <ColumnDefinition Width="4*" MinWidth="800" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="3*" MinWidth="800" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -62,7 +63,11 @@
             Fill="{StaticResource Surface}" />
 
         <!--#region Main Menu-->
-        <Grid Grid.Row="1" Grid.RowSpan="2">
+        <Grid
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            x:Name="MenuGrid"
+            SizeChanged="Grid_SizeChanged">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
@@ -70,9 +75,47 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
             <!--#region Logo area-->
-            <StackPanel Margin="20" VerticalAlignment="Center">
+
+            <Viewbox
+                x:Name="logo_mini"
+                Height="80"
+                MaxWidth="35"
+                Margin="10,20">
+
+                <Grid>
+                    <Image
+                        x:Name="LogoMono_mini"
+                        Width="27"
+                        VerticalAlignment="Center"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        Source="/Resources/LighthouseLogo_Mono_Mini.png" />
+                    <Image
+                        x:Name="LogoColour_mini"
+                        Width="27"
+                        VerticalAlignment="Center"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        Source="/Resources/LighthouseLogo_Mini.png"
+                        Visibility="Hidden" />
+
+                    <Rectangle
+                        Cursor="Hand"
+                        Fill="Transparent"
+                        MouseDown="Rectangle_MouseDown"
+                        MouseEnter="Rectangle_MouseEnter"
+                        MouseLeave="Rectangle_MouseLeave" />
+                </Grid>
+            </Viewbox>
+            <StackPanel
+                x:Name="logo_full"
+                Grid.Column="1"
+                Margin="20"
+                VerticalAlignment="Center">
                 <Viewbox MaxWidth="200" MaxHeight="80">
                     <Grid>
                         <Image
@@ -98,24 +141,106 @@
                     </Grid>
                 </Viewbox>
             </StackPanel>
+
+
             <!--#endregion-->
-            <ScrollViewer Grid.Row="1">
+            <ScrollViewer
+                x:Name="main_menu_mini"
+                Grid.Row="1"
+                Grid.Column="0">
+
+                <StackPanel>
+                    <StackPanel Margin="0,15">
+                        <ToggleButton
+                            x:Name="requests_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Requests"
+                            Content="Requests"
+                            Style="{StaticResource ViewRequests_MenuItem_Mini}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,15">
+                        <ToggleButton
+                            x:Name="orders_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Orders"
+                            Content="Orders"
+                            Style="{StaticResource Orders_MenuItem_Mini}" />
+
+                        <ToggleButton
+                            x:Name="schedule_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Schedule"
+                            Content="Schedule"
+                            Style="{StaticResource Schedule_MenuItem_Mini}" />
+
+                        <ToggleButton
+                            x:Name="barstock_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Bar Stock"
+                            Content="Bar Stock"
+                            Style="{StaticResource BarStock_MenuItem_Mini}" />
+
+                        <ToggleButton
+                            x:Name="drawings_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Drawings"
+                            Content="Drawings"
+                            Style="{StaticResource Drawings_MenuItem_Mini}" />
+
+                        <ToggleButton
+                            x:Name="programs_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Programs"
+                            Content="Programs"
+                            Style="{StaticResource Programs_MenuItem_Mini}" />
+
+                    </StackPanel>
+
+                    <StackPanel Margin="0,15">
+                        <ToggleButton
+                            x:Name="calibration_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Calibration"
+                            Content="Calibration"
+                            Style="{StaticResource Calibration_MenuItem_Mini}" />
+                        <ToggleButton
+                            x:Name="deliveries_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Deliveries"
+                            Content="Deliveries"
+                            Style="{StaticResource Deliveries_MenuItem_Mini}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,15,0,0">
+                        <ToggleButton
+                            x:Name="analytics_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Analytics"
+                            Content="Analytics"
+                            Style="{StaticResource Analytics_MenuItem_Mini}" />
+                        <ToggleButton
+                            x:Name="manage_products_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="Product Data"
+                            Content="Product Data"
+                            Style="{StaticResource ProductData_MenuItem_Mini}" />
+                        <ToggleButton
+                            x:Name="manage_database_button_mini"
+                            Command="{Binding UpdateViewCommand}"
+                            CommandParameter="DB Management"
+                            Content="DB Management"
+                            Style="{StaticResource Database_MenuItem_Mini}" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <ScrollViewer
+                x:Name="main_menu_full"
+                Grid.Row="1"
+                Grid.Column="1">
 
                 <StackPanel x:Name="main_menu">
-                    <Grid
-                        x:Name="DebugTile"
-                        Margin="10"
-                        Background="{StaticResource RedFaded}"
-                        Visibility="Collapsed">
-                        <TextBlock
-                            Margin="0,5"
-                            HorizontalAlignment="Center"
-                            FontFamily="Consolas"
-                            FontSize="20"
-                            FontWeight="Bold"
-                            Foreground="{StaticResource Red}"
-                            Text="DEV BUILD" />
-                    </Grid>
                     <StackPanel x:Name="PurchasingModule" Margin="0,15">
                         <ToggleButton
                             x:Name="requests_button"
@@ -161,14 +286,6 @@
                             Content="Programs"
                             Style="{StaticResource Programs_MenuItem}" />
 
-                        <!--<ToggleButton
-                            x:Name="research_button"
-                            Command="{Binding UpdateViewCommand}"
-                            CommandParameter="Research"
-                            Content="R&amp;D"
-                            Style="{StaticResource Research_MenuItem}"
-                            Visibility="Visible" />-->
-
                     </StackPanel>
 
                     <StackPanel Margin="0,15">
@@ -213,6 +330,24 @@
             <!--#region User controls-->
             <Button
                 Grid.Row="2"
+                Grid.Column="0"
+                d:Visibility="Collapsed"
+                Command="{Binding ToggleShowNotsCommand}"
+                Style="{StaticResource NotificationsMainButton_Mini}"
+                Tag="{Binding NotCount, Converter={StaticResource notificationCounter}, NotifyOnSourceUpdated=True}"
+                Visibility="{Binding NoNewNotifications, Converter={StaticResource hideIfTrue}}" />
+
+            <Button
+                Grid.Row="3"
+                Grid.Column="0"
+                d:Visibility="Visible"
+                Command="{Binding ToggleShowNotsCommand}"
+                Style="{StaticResource NoNotificationsMainButton_Mini}"
+                Tag="View Notifications"
+                Visibility="{Binding NoNewNotifications, Converter={StaticResource showIfTrue}}" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="1"
                 d:Visibility="Collapsed"
                 Command="{Binding ToggleShowNotsCommand}"
                 Style="{StaticResource NotificationsMainButton}"
@@ -232,6 +367,7 @@
             </Button>
             <Button
                 Grid.Row="3"
+                Grid.Column="1"
                 Command="{Binding ToggleShowNotsCommand}"
                 Style="{StaticResource NoNotificationsMainButton}"
                 Visibility="{Binding NoNewNotifications, Converter={StaticResource showIfTrue}}">
@@ -249,7 +385,12 @@
                 </StackPanel>
             </Button>
 
-            <Grid Grid.Row="4">
+            <Button
+                Grid.Row="4"
+                Command="{Binding EditCommand}"
+                Style="{StaticResource SettingsButton_Mini}" />
+
+            <Grid Grid.Row="4" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
@@ -280,10 +421,19 @@
         </Grid>
         <!--#endregion-->
 
+        <GridSplitter
+            DragCompleted="GridSplitter_DragCompleted"
+            Grid.RowSpan="3"
+            Grid.Column="1"
+            Width="5"
+            Margin="0"
+            HorizontalAlignment="Stretch"
+            Background="{StaticResource Surface}" />
+
         <!--#region Window adorners-->
         <Grid
             Grid.Row="1"
-            Grid.Column="1"
+            Grid.Column="2"
             Visibility="Visible">
 
             <Grid
@@ -350,14 +500,14 @@
         <ContentControl
             x:Name="viewPort"
             Grid.Row="2"
-            Grid.Column="1"
+            Grid.Column="2"
             Content="{Binding SelectedViewModel}" />
         <!--#endregion-->
 
         <!--#region Notifications Bar-->
         <Grid
             Grid.Row="2"
-            Grid.Column="2"
+            Grid.Column="3"
             Width="420"
             HorizontalAlignment="Right"
             Visibility="{Binding NotificationsBarVis}">

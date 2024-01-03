@@ -21,33 +21,48 @@
             </Grid.ColumnDefinitions>
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        x:Name="ItemNameText"
+                        Margin="0,0,0,1"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="ITEM" />
+                    <Button Style="{StaticResource ClipboardButton}" x:Name="CopyProductNameButton" Click="CopyProductName_Click" ToolTip="Copy Export Code"/>
+                </StackPanel>
                 <TextBlock
-                x:Name="ItemNameText"
-                VerticalAlignment="Center"
-                FontSize="16"
-                    Margin="0,0,0,1"
-                FontWeight="SemiBold"
-                Text="ITEM" />
-                <TextBlock Text="Missing required data" Grid.Row="1" Foreground="{StaticResource Orange}" x:Name="MissingDataStatement"/>
-                <Button Grid.Column="1" Grid.RowSpan="2" Style="{StaticResource Action_Edit_Button_Small}" Tag="Edit" Margin="5,0,0,0" HorizontalAlignment="Left" x:Name="EditButton" Click="EditButton_Click"/>
+                    x:Name="MissingDataStatement"
+                    Grid.Row="1"
+                    Foreground="{StaticResource Orange}"
+                    Text="Missing required data" />
+                <Button
+                    x:Name="EditButton"
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    Click="EditButton_Click"
+                    Style="{StaticResource Action_Edit_Button_Small}"
+                    Tag="Edit" />
             </Grid>
 
 
             <DatePicker
                 x:Name="RequiredDatePicker"
                 Grid.Column="1"
-                d:IsEnabled="True"
                 Width="100"
-                SelectedDateChanged="RequiredDatePicker_SelectedDateChanged"
                 Margin="0"
+                d:IsEnabled="True"
                 IsEnabled="False"
+                SelectedDateChanged="RequiredDatePicker_SelectedDateChanged"
                 Style="{StaticResource DatePicker_Small}" />
 
             <TextBox
@@ -55,19 +70,19 @@
                 Grid.Column="2"
                 Width="100"
                 Margin="5,0,0,0"
-                TextChanged="QuantityTextBox_TextChanged"
                 HorizontalAlignment="Right"
-                IsEnabled="False"
                 d:IsEnabled="True"
+                IsEnabled="False"
                 Style="{StaticResource RevealTextBox_Small}"
-                Tag="enter quantity" />
+                Tag="enter quantity"
+                TextChanged="QuantityTextBox_TextChanged" />
             <Button
                 x:Name="RemoveButton"
                 Grid.Column="3"
                 Margin="5,0,0,0"
                 VerticalAlignment="Center"
-                Click="Button_Click"
                 d:Visibility="Visible"
+                Click="Button_Click"
                 Style="{StaticResource Action_Remove_Button_Small}"
                 Tag="Remove"
                 Visibility="Collapsed" />

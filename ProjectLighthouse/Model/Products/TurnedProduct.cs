@@ -1,7 +1,6 @@
 ﻿using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
-using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using ProjectLighthouse.ViewModel.Requests;
@@ -419,7 +418,7 @@ namespace ProjectLighthouse.Model.Products
                 if (this.Material is null) return;
                 BarStock.MaterialData = this.Material;
                 if (this.Material.Cost is null) return;
-                MaterialCost = BarStock.GetUnitMassOfBar() / BarStock.Length * this.MaterialBudget * ((double)this.Material.Cost/100);
+                MaterialCost = BarStock.GetUnitMassOfBar() / BarStock.Length * this.MaterialBudget * ((double)this.Material.Cost / 100);
 
                 TimeCost = App.Constants.AbsorptionRate * TimeModel.At(Length);
 

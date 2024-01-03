@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ProjectLighthouse.ViewModel.Core;
+using System;
 using System.Windows.Input;
-using ProjectLighthouse.ViewModel.Core;
 
 namespace ProjectLighthouse.ViewModel.Commands.Administration
 {

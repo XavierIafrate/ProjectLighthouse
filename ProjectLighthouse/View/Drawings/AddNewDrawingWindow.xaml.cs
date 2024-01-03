@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
@@ -8,11 +7,9 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Drawings
 {
@@ -23,8 +20,8 @@ namespace ProjectLighthouse.View.Drawings
         public TechnicalDrawing NewDrawing
         {
             get { return newDrawing; }
-            set 
-            { 
+            set
+            {
                 newDrawing = value;
                 OnPropertyChanged();
             }
@@ -41,13 +38,13 @@ namespace ProjectLighthouse.View.Drawings
         public bool ArchetypeMode
         {
             get { return archetypeMode; }
-            set 
+            set
             {
                 archetypeMode = value;
 
-                if(archetypeMode)
+                if (archetypeMode)
                 {
-                    CustomerIssueMode= false;
+                    CustomerIssueMode = false;
                 }
 
                 SetArchetypeMode();
@@ -61,12 +58,12 @@ namespace ProjectLighthouse.View.Drawings
         public bool CustomerIssueMode
         {
             get { return customerIssueMode; }
-            set 
-            { 
+            set
+            {
                 customerIssueMode = value;
                 if (customerIssueMode)
                 {
-                    ArchetypeMode = false;  
+                    ArchetypeMode = false;
                 }
                 OnPropertyChanged();
 
@@ -80,10 +77,10 @@ namespace ProjectLighthouse.View.Drawings
         public List<ProductGroup> FilteredGroups
         {
             get { return filteredGroups; }
-            set 
-            { 
-                filteredGroups = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                filteredGroups = value;
+                OnPropertyChanged();
             }
         }
 
@@ -103,8 +100,8 @@ namespace ProjectLighthouse.View.Drawings
         public ProductGroup? SelectedGroup
         {
             get { return selectedGroup; }
-            set 
-            { 
+            set
+            {
                 selectedGroup = value;
                 NewDrawing.GroupId = SelectedGroup?.Id;
 
@@ -118,8 +115,8 @@ namespace ProjectLighthouse.View.Drawings
         public MaterialInfo? SelectedMaterial
         {
             get { return selectedMaterial; }
-            set 
-            { 
+            set
+            {
                 selectedMaterial = value;
                 NewDrawing.MaterialId = SelectedMaterial?.Id;
 
@@ -133,8 +130,8 @@ namespace ProjectLighthouse.View.Drawings
         public TurnedProduct? SelectedTurnedProduct
         {
             get { return selectedTurnedProduct; }
-            set 
-            { 
+            set
+            {
                 selectedTurnedProduct = value;
                 NewDrawing.TurnedProductId = SelectedTurnedProduct?.Id;
 
@@ -148,8 +145,8 @@ namespace ProjectLighthouse.View.Drawings
         public List<MaterialInfo> FilteredMaterials
         {
             get { return filteredMaterials; }
-            set 
-            { 
+            set
+            {
                 filteredMaterials = value;
                 OnPropertyChanged();
             }
@@ -160,8 +157,8 @@ namespace ProjectLighthouse.View.Drawings
         public List<TurnedProduct> FilteredTurnedProducts
         {
             get { return filteredTurnedProducts; }
-            set 
-            { 
+            set
+            {
                 filteredTurnedProducts = value;
                 OnPropertyChanged();
             }
@@ -172,10 +169,10 @@ namespace ProjectLighthouse.View.Drawings
         public string TargetFilePath
         {
             get { return targetFilePath; }
-            set 
-            { 
+            set
+            {
                 targetFilePath = value;
-                OnPropertyChanged();    
+                OnPropertyChanged();
             }
         }
 
@@ -183,8 +180,8 @@ namespace ProjectLighthouse.View.Drawings
         public string SearchText
         {
             get { return searchText; }
-            set 
-            { 
+            set
+            {
                 searchText = value;
                 FilterProducts();
                 OnPropertyChanged();
@@ -271,7 +268,7 @@ namespace ProjectLighthouse.View.Drawings
             {
                 if (SelectedGroup is null)
                 {
-                    FilteredTurnedProducts= new();
+                    FilteredTurnedProducts = new();
                     return;
                 }
 
@@ -310,7 +307,7 @@ namespace ProjectLighthouse.View.Drawings
             if (string.IsNullOrWhiteSpace(TargetFilePath))
             {
                 MessageBox.Show("Choose a file", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;   
+                return false;
             }
 
             if (ArchetypeMode)
@@ -425,7 +422,7 @@ namespace ProjectLighthouse.View.Drawings
                 return;
             }
 
-            NewDrawing.DrawingName = SelectedTurnedProduct!.ProductName;    
+            NewDrawing.DrawingName = SelectedTurnedProduct!.ProductName;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

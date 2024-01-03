@@ -98,9 +98,106 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource RedLight}" />
+                <Setter Property="Cursor" Value="Hand" />
+
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="LightGray" />
+                <Setter Property="Foreground" Value="Gray" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Notifications_Mini_Tooltip" TargetType="{x:Type ToolTip}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Placement" Value="Right" />
+        <Setter Property="HorizontalOffset" Value="20" />
+        <Setter Property="VerticalOffset" Value="0" />
+        <Setter Property="PlacementRectangle" Value="20,0,0,0" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="StaysOpen" Value="True" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToolTip}">
+                    <Border
+                        Height="35"
+                        Background="Black"
+                        CornerRadius="5">
+                        <TextBlock
+                            Margin="10,0,10,2"
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Foreground="White"
+                            Text="{TemplateBinding Tag}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NotificationsMainButton_Mini" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="35"
+                        Height="35"
+                        HorizontalAlignment="Center"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="5"
+                        ToolTipService.InitialShowDelay="0">
+                        <Border.ToolTip>
+                            <ToolTip Style="{StaticResource Notifications_Mini_Tooltip}" Tag="{TemplateBinding Tag}" />
+                        </Border.ToolTip>
+                        <Path
+                            Height="20"
+                            Data="M21 6.5C21 8.43 19.43 10 17.5 10S14 8.43 14 6.5 15.57 3 17.5 3 21 4.57 21 6.5M19 11.79C18.5 11.92 18 12 17.5 12C14.47 12 12 9.53 12 6.5C12 5.03 12.58 3.7 13.5 2.71C13.15 2.28 12.61 2 12 2C10.9 2 10 2.9 10 4V4.29C7.03 5.17 5 7.9 5 11V17L3 19V20H21V19L19 17V11.79M12 23C13.11 23 14 22.11 14 21H10C10 22.11 10.9 23 12 23Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard RepeatBehavior="Forever">
+                        <DoubleAnimation
+                            AutoReverse="True"
+                            BeginTime="0:0:0"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0.5"
+                            To="1"
+                            Duration="0:0:01" />
+                        <DoubleAnimation
+                            AutoReverse="True"
+                            BeginTime="0:0:02"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0.5"
+                            To="0.5"
+                            Duration="0:0:01" />
+                    </Storyboard>
+                </BeginStoryboard>
+
+            </EventTrigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource RedLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Cursor" Value="Hand" />
+
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="LightGray" />
@@ -139,6 +236,8 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource GreenLight}" />
+                <Setter Property="Cursor" Value="Hand" />
+
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="LightGray" />
@@ -146,6 +245,49 @@
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="{StaticResource GreenDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="NoNotificationsMainButton_Mini" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#888888" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                    x:Name="border"
+                    Width="35"
+                    Height="35"
+                    HorizontalAlignment="Center"
+                    Background="{TemplateBinding Background}"
+                    BorderThickness="0"
+                    CornerRadius="5"
+                    ToolTipService.InitialShowDelay="0">
+                        <Border.ToolTip>
+                            <ToolTip Style="{StaticResource Notifications_Mini_Tooltip}" Tag="{TemplateBinding Tag}" />
+                        </Border.ToolTip>
+                        <Path
+                        Height="20"
+                        Data="M21 6.5C21 8.43 19.43 10 17.5 10S14 8.43 14 6.5 15.57 3 17.5 3 21 4.57 21 6.5M19 11.79C18.5 11.92 18 12 17.5 12C14.47 12 12 9.53 12 6.5C12 5.03 12.58 3.7 13.5 2.71C13.15 2.28 12.61 2 12 2C10.9 2 10 2.9 10 4V4.29C7.03 5.17 5 7.9 5 11V17L3 19V20H21V19L19 17V11.79M12 23C13.11 23 14 22.11 14 21H10C10 22.11 10.9 23 12 23Z"
+                        Fill="{TemplateBinding Foreground}"
+                        Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource PurpleLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="LightGray" />
+                <Setter Property="Foreground" Value="Gray" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -1602,9 +1744,9 @@
     </Style>
 
     <Style
-    x:Key="Action_Pdf_Button"
-    BasedOn="{StaticResource Default}"
-    TargetType="Button">
+        x:Key="Action_Pdf_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Tag" Value="" />
         <Setter Property="Margin" Value="5,0,5,5" />
         <Setter Property="Template">
@@ -1612,30 +1754,30 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border
-                        x:Name="bg"
-                        Height="30"
-                        MinWidth="40"
-                        Background="{TemplateBinding Background}"
-                        BorderThickness="0"
-                        CornerRadius="3" />
+                            x:Name="bg"
+                            Height="30"
+                            MinWidth="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
                         <StackPanel
-                        Margin="5,0"
-                        HorizontalAlignment="Center"
-                        Orientation="Horizontal">
-                            <Path
-                            Width="12"
-                            Height="16"
-                            Margin="5,0,4,0"
+                            Margin="5,0"
                             HorizontalAlignment="Center"
-                            Data="M17,18C17.56,18 18,18.44 18,19C18,19.56 17.56,20 17,20C16.44,20 16,19.56 16,19C16,18.44 16.44,18 17,18M17,15C14.27,15 11.94,16.66 11,19C11.94,21.34 14.27,23 17,23C19.73,23 22.06,21.34 23,19C22.06,16.66 19.73,15 17,15M17,21.5A2.5,2.5 0 0,1 14.5,19A2.5,2.5 0 0,1 17,16.5A2.5,2.5 0 0,1 19.5,19A2.5,2.5 0 0,1 17,21.5M9.14,19.75L8.85,19L9.14,18.26C10.43,15.06 13.5,13 17,13C18.05,13 19.06,13.21 20,13.56V8L14,2H6C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H10.5C9.95,21.34 9.5,20.58 9.14,19.75M13,3.5L18.5,9H13V3.5Z"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="Uniform" />
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="16"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M17,18C17.56,18 18,18.44 18,19C18,19.56 17.56,20 17,20C16.44,20 16,19.56 16,19C16,18.44 16.44,18 17,18M17,15C14.27,15 11.94,16.66 11,19C11.94,21.34 14.27,23 17,23C19.73,23 22.06,21.34 23,19C22.06,16.66 19.73,15 17,15M17,21.5A2.5,2.5 0 0,1 14.5,19A2.5,2.5 0 0,1 17,16.5A2.5,2.5 0 0,1 19.5,19A2.5,2.5 0 0,1 17,21.5M9.14,19.75L8.85,19L9.14,18.26C10.43,15.06 13.5,13 17,13C18.05,13 19.06,13.21 20,13.56V8L14,2H6C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H10.5C9.95,21.34 9.5,20.58 9.14,19.75M13,3.5L18.5,9H13V3.5Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
                             <TextBlock
-                            x:Name="textBlock"
-                            Padding="0,0,7,1"
-                            VerticalAlignment="Center"
-                            FontWeight="SemiBold"
-                            Text="{TemplateBinding Tag}">
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -1666,9 +1808,9 @@
     </Style>
 
     <Style
-x:Key="Action_Open_CheckSheet_Button"
-BasedOn="{StaticResource Default}"
-TargetType="Button">
+        x:Key="Action_Open_CheckSheet_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
         <Setter Property="Tag" Value="" />
         <Setter Property="Margin" Value="5,0,5,5" />
         <Setter Property="Template">
@@ -1676,30 +1818,30 @@ TargetType="Button">
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border
-                    x:Name="bg"
-                    Height="30"
-                    MinWidth="40"
-                    Background="{TemplateBinding Background}"
-                    BorderThickness="0"
-                    CornerRadius="3" />
+                            x:Name="bg"
+                            Height="30"
+                            MinWidth="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
                         <StackPanel
-                    Margin="5,0"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
                             <Path
-                        Width="12"
-                        Height="16"
-                        Margin="5,0,4,0"
-                        HorizontalAlignment="Center"
-                        Data="M4 3H18C19.11 3 20 3.9 20 5V12.08C18.45 11.82 16.92 12.18 15.68 13H12V17H13.08C12.97 17.68 12.97 18.35 13.08 19H4C2.9 19 2 18.11 2 17V5C2 3.9 2.9 3 4 3M4 7V11H10V7H4M12 7V11H18V7H12M4 13V17H10V13H4M17.75 21L15 18L16.16 16.84L17.75 18.43L21.34 14.84L22.5 16.25L17.75 21"
-                        Fill="{TemplateBinding Foreground}"
-                        Stretch="Uniform" />
+                                Width="12"
+                                Height="16"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M4 3H18C19.11 3 20 3.9 20 5V12.08C18.45 11.82 16.92 12.18 15.68 13H12V17H13.08C12.97 17.68 12.97 18.35 13.08 19H4C2.9 19 2 18.11 2 17V5C2 3.9 2.9 3 4 3M4 7V11H10V7H4M12 7V11H18V7H12M4 13V17H10V13H4M17.75 21L15 18L16.16 16.84L17.75 18.43L21.34 14.84L22.5 16.25L17.75 21"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
                             <TextBlock
-                        x:Name="textBlock"
-                        Padding="0,0,7,1"
-                        VerticalAlignment="Center"
-                        FontWeight="SemiBold"
-                        Text="{TemplateBinding Tag}">
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -2553,6 +2695,46 @@ TargetType="Button">
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource BlueLight}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="SettingsButton_Mini"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="#888888" />
+        <Setter Property="Tag" Value="Settings" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Width="35"
+                        Height="35"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="5"
+                        ToolTipService.InitialShowDelay="0">
+                        <Border.ToolTip>
+                            <ToolTip Style="{StaticResource Notifications_Mini_Tooltip}" Tag="{TemplateBinding Tag}" />
+                        </Border.ToolTip>
+                        <Path
+                            Width="20"
+                            Height="20"
+                            Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource BlueLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource BlueDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>

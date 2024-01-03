@@ -1,15 +1,12 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Orders;
-using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Helpers;
-using ProjectLighthouse.ViewModel.Quality;
 using ProjectLighthouse.ViewModel.Requests;
 using System;
 using System.Collections.Generic;
@@ -71,10 +68,10 @@ namespace ProjectLighthouse.ViewModel.Core
 
             DateTime cutoff = DateTime.Now.AddDays(-30);
 
-            for(int i = 0; i < MyNotifications.Count; i++)
+            for (int i = 0; i < MyNotifications.Count; i++)
             {
                 Notification n = MyNotifications[i];
-                if(n.TimeStamp < cutoff)
+                if (n.TimeStamp < cutoff)
                 {
                     DatabaseHelper.Delete<Notification>(n);
                 }
@@ -115,7 +112,7 @@ namespace ProjectLighthouse.ViewModel.Core
                 .OrderByDescending(x => x.TimeStamp)
                 .ToList();
 
-            
+
             List<Notification> deduplicatedNots = new();
 
             for (int i = 0; i < result.Count; i++)
@@ -310,7 +307,7 @@ namespace ProjectLighthouse.ViewModel.Core
                 {
                     TechnicalDrawingGroup? targetGroup = drawingBrowserVM.FilteredDrawingGroups.Find(x => x.Drawings.Any(y => y.Id.ToString("0") == targetDrawing));
 
-                    if(targetGroup is null)
+                    if (targetGroup is null)
                     {
                         drawingBrowserVM.ShowOldGroups = true;
                         drawingBrowserVM.ShowRejected = true;
@@ -398,7 +395,7 @@ namespace ProjectLighthouse.ViewModel.Core
         public void NotifyRequestRaised(Request request)
         {
             List<User> usersToNotify = users.Where(x => x.HasPermission(PermissionType.ApproveRequest) && x.GetFullName() != request.RaisedBy).ToList();
-            foreach(User user in usersToNotify)
+            foreach (User user in usersToNotify)
             {
                 Notification newNotification = new(
                     to: user.UserName,

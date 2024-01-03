@@ -1,6 +1,5 @@
 ﻿
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -12,7 +11,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             string strKey = e.Key.ToString();
 
-            if ((strKey.Contains("D") && strKey.Length == 2) || strKey.Contains("NumPad"))
+            if ((strKey.Contains('D') && strKey.Length == 2) || strKey.Contains("NumPad"))
                 if ("0123456789".Contains(strKey.Substring(strKey.Length - 1, 1)))
                     return false;
 
@@ -45,7 +44,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             string strKey = e.Key.ToString();
 
-            if ((strKey.Contains("D") && strKey.Length == 2) || strKey.Contains("NumPad"))
+            if ((strKey.Contains('D') && strKey.Length == 2) || strKey.Contains("NumPad"))
                 if ("0123456789".Contains(strKey.Substring(strKey.Length - 1, 1)))
                     return false;
 
@@ -69,7 +68,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             string strKey = e.Key.ToString();
 
-            if ((strKey.Contains("D") && strKey.Length == 2) || strKey.Contains("NumPad"))
+            if ((strKey.Contains('D') && strKey.Length == 2) || strKey.Contains("NumPad"))
                 if ("0123456789".Contains(strKey.Substring(strKey.Length - 1, 1)))
                     return false;
 
@@ -88,7 +87,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             if (strKey is "Decimal" or "OemPeriod")
             {
-                if (!existingText.Contains("."))
+                if (!existingText.Contains('.'))
                 {
                     return false;
                 }
@@ -97,11 +96,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return true;
         }
 
-        public static bool ValidateAlphanumeric(KeyEventArgs e, bool allowSpace=false)
+        public static bool ValidateAlphanumeric(KeyEventArgs e, bool allowSpace = false)
         {
             string strKey = e.Key.ToString();
 
-            if ((strKey.Contains("D") && strKey.Length == 2) || strKey.Contains("NumPad"))
+            if ((strKey.Contains('D') && strKey.Length == 2) || strKey.Contains("NumPad"))
                 if ("0123456789".Contains(strKey.Substring(strKey.Length - 1, 1)))
                     return false;
 

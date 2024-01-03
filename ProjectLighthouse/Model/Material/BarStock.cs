@@ -13,8 +13,8 @@ namespace ProjectLighthouse.Model.Material
         public string Id
         {
             get { return id; }
-            set 
-            { 
+            set
+            {
                 id = value.ToUpperInvariant();
                 ValidateProperty();
                 OnPropertyChanged();
@@ -25,9 +25,9 @@ namespace ProjectLighthouse.Model.Material
         public int Length
         {
             get { return length; }
-            set 
-            { 
-                length = value; 
+            set
+            {
+                length = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -37,10 +37,10 @@ namespace ProjectLighthouse.Model.Material
         public double Size
         {
             get { return size; }
-            set 
-            { 
-                if(value == size) return;
-                size = value; 
+            set
+            {
+                if (value == size) return;
+                size = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -62,10 +62,10 @@ namespace ProjectLighthouse.Model.Material
         public bool IsHexagon
         {
             get { return isHexagon; }
-            set 
-            { 
-                isHexagon = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                isHexagon = value;
+                OnPropertyChanged();
             }
         }
 
@@ -74,9 +74,9 @@ namespace ProjectLighthouse.Model.Material
         public bool IsDormant
         {
             get { return isDormant; }
-            set 
-            { 
-                isDormant = value; 
+            set
+            {
+                isDormant = value;
                 OnPropertyChanged();
             }
         }
@@ -86,12 +86,12 @@ namespace ProjectLighthouse.Model.Material
         public MaterialInfo MaterialData { get; set; }
         public int MaterialId { get; set; }
 
-        
+
         public double? ExpectedCost
         {
-            get 
-            { 
-                if( MaterialData is null ) return null;
+            get
+            {
+                if (MaterialData is null) return null;
                 if (MaterialData.Cost is null) return null;
 
                 return MaterialData.Cost * GetUnitMassOfBar();
@@ -102,7 +102,7 @@ namespace ProjectLighthouse.Model.Material
 
         public double MajorDiameter
         {
-            get { return IsHexagon ? AcrossFlatsToAcrossCorners(Size)  : Size; }
+            get { return IsHexagon ? AcrossFlatsToAcrossCorners(Size) : Size; }
         }
 
         private static double AcrossFlatsToAcrossCorners(double af)
@@ -116,7 +116,7 @@ namespace ProjectLighthouse.Model.Material
             double size_m = Size / 1000;
 
 
-            if(IsHexagon)
+            if (IsHexagon)
             {
                 area = 0.5 * Math.Sqrt(3) * Math.Pow(size_m, 2);
             }
@@ -146,7 +146,7 @@ namespace ProjectLighthouse.Model.Material
 
         public void ValidateProperty([CallerMemberName] string propertyName = "")
         {
-            if(propertyName== nameof(Id))
+            if (propertyName == nameof(Id))
             {
                 ClearErrors(propertyName);
 
@@ -186,7 +186,7 @@ namespace ProjectLighthouse.Model.Material
 
                 return;
             }
-            else if (propertyName== nameof(Size))
+            else if (propertyName == nameof(Size))
             {
                 ClearErrors(propertyName);
 

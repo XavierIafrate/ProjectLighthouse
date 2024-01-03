@@ -15,7 +15,7 @@ namespace ProjectLighthouse.View.Scheduling
                 return null;
             }
 
-            var key = item.GetType().Name;
+            string key = item.GetType().Name;
             return (DataTemplate)element.FindResource(key);
         }
     }

@@ -77,8 +77,8 @@ namespace ProjectLighthouse.View.Administration
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             passwordValid = password.Password.Length > 4;
-            password.BorderBrush = passwordValid 
-                ? Brushes.Transparent 
+            password.BorderBrush = passwordValid
+                ? Brushes.Transparent
                 : (Brush)Application.Current.Resources["Red"];
         }
 

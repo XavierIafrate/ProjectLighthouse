@@ -19,11 +19,11 @@ namespace ProjectLighthouse.Model.Programs
         public string CommitMessage
         {
             get { return commitMessage; }
-            set 
-            { 
-                commitMessage = value; 
-                ValidateProperty(); 
-                OnPropertyChanged(); 
+            set
+            {
+                commitMessage = value;
+                ValidateProperty();
+                OnPropertyChanged();
             }
         }
 
@@ -46,7 +46,7 @@ namespace ProjectLighthouse.Model.Programs
             {
                 ClearErrors(propertyName);
 
-                if(string.IsNullOrWhiteSpace(CommitMessage))
+                if (string.IsNullOrWhiteSpace(CommitMessage))
                 {
                     AddError(propertyName, "Commit Message is required");
                 }

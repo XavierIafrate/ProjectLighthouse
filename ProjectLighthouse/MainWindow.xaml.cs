@@ -5,6 +5,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
@@ -12,7 +13,7 @@ namespace ProjectLighthouse
 {
     public partial class MainWindow : Window
     {
-        public MainViewModel viewModel;
+        public MainViewModel ViewModel { get; set; }
 
         public MainWindow()
         {
@@ -45,7 +46,6 @@ namespace ProjectLighthouse
             Title += $" - {DatabaseHelper.DatabasePath}";
 #endif
 
-            DebugTile.Visibility = App.DevMode ? Visibility.Visible : Visibility.Collapsed;
             DemoBanner.Visibility = App.DemoMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -77,11 +77,16 @@ namespace ProjectLighthouse
             {
                 button.IsChecked = (string)button.CommandParameter == buttonName;
             }
+
+            foreach (ToggleButton button in FindVisualChildren<ToggleButton>(main_menu_mini))
+            {
+                button.IsChecked = (string)button.CommandParameter == buttonName;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            manage_database_button.Visibility = 
+            manage_database_button.Visibility =
                 (App.CurrentUser.HasPermission(Model.Core.PermissionType.ViewReports) ||
                 App.CurrentUser.HasPermission(Model.Core.PermissionType.ManageLathes) ||
                 App.CurrentUser.HasPermission(Model.Core.PermissionType.EditMaterials) ||
@@ -101,19 +106,64 @@ namespace ProjectLighthouse
         private void Rectangle_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             LogoColour.Visibility = Visibility.Visible;
+            LogoColour_mini.Visibility = Visibility.Visible;
             LogoMono.Visibility = Visibility.Hidden;
+            LogoMono_mini.Visibility = Visibility.Hidden;
         }
 
         private void Rectangle_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             LogoColour.Visibility = Visibility.Hidden;
+            LogoColour_mini.Visibility = Visibility.Hidden;
             LogoMono.Visibility = Visibility.Visible;
+            LogoMono_mini.Visibility = Visibility.Visible;
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (sender is not Grid) return;
+
+            double threshold = 220;
+            if (e.PreviousSize.Width == 0)
+            {
+                SetMenuType(full:e.NewSize.Width > threshold);
+            }
+            else if (e.PreviousSize.Width > threshold && e.NewSize.Width <= threshold) // from full to mini
+            {
+                SetMenuType(full: false);
+            }
+            else if (e.PreviousSize.Width < threshold && e.NewSize.Width >= threshold)
+            {
+                SetMenuType(full: true);
+            }
+
+        }
+
+        void SetMenuType(bool full)
+        {
+            if (!full)
+            {
+                MenuGrid.ColumnDefinitions[0].Width = new(1, GridUnitType.Star);
+                MenuGrid.ColumnDefinitions[1].Width = new(0, GridUnitType.Star);
+                MenuGrid.MaxWidth = 220;
+            }
+            else
+            {
+                MenuGrid.ColumnDefinitions[0].Width = new(0, GridUnitType.Star);
+                MenuGrid.ColumnDefinitions[1].Width = new(1, GridUnitType.Star);
+                MenuGrid.MaxWidth = 350;
+            }
+        }
+
+        private void GridSplitter_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            User.PostDefaultMenuWidth(App.CurrentUser.UserName, MenuGrid.ActualWidth);
         }
     }
 }

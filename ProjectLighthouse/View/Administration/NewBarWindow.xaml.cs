@@ -39,7 +39,7 @@ namespace ProjectLighthouse.View.Administration
         private void AddBarButton_Click(object sender, RoutedEventArgs e)
         {
             NewBar.ValidateAll();
-            if(NewBar.HasErrors)
+            if (NewBar.HasErrors)
             {
                 return;
             }

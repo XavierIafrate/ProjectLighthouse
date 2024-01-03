@@ -2,12 +2,9 @@
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Programs;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
-using Windows.UI.Notifications;
 
-namespace ViewModel.Commands.Programs
+namespace ProjectLighthouse.ViewModel.Commands.Programs
 {
     public class OpenCommitCommand : ICommand
     {

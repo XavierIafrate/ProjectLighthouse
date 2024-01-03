@@ -1,5 +1,4 @@
-﻿using Model.Core;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;

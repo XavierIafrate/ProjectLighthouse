@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using ProjectLighthouse.Model.Material;
+﻿using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
@@ -22,8 +21,8 @@ namespace ProjectLighthouse.View.HelperWindows
         public ProductGroup SelectedGroup
         {
             get { return selectedGroup; }
-            set 
-            { 
+            set
+            {
                 selectedGroup = value;
                 Product.GroupId = SelectedGroup?.Id;
                 OnPropertyChanged();
@@ -33,7 +32,7 @@ namespace ProjectLighthouse.View.HelperWindows
 
         public bool SaveExit = false;
 
-        
+
 
         public EditProductWindow(TurnedProduct product)
         {

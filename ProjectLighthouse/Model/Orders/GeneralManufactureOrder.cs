@@ -21,7 +21,7 @@ namespace ProjectLighthouse.Model.Orders
         public string POReference { get; set; }
 
 
-        
+
         public OrderState State { get; set; }
         [Ignore]
         public List<LatheManufactureOrderItem> OrderItems { get; set; } = new();

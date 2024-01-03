@@ -8,11 +8,9 @@ using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
-using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Windows.ApplicationModel.Store;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -44,10 +42,10 @@ namespace ProjectLighthouse.ViewModel.Orders
         public string SearchText
         {
             get { return searchText; }
-            set 
-            { 
+            set
+            {
                 searchText = value;
-                OnPropertyChanged(); 
+                OnPropertyChanged();
                 FilterDeliveries();
             }
         }
@@ -84,10 +82,10 @@ namespace ProjectLighthouse.ViewModel.Orders
         public bool ShowingDelivery
         {
             get { return showingDelivery; }
-            set 
-            { 
-                showingDelivery = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                showingDelivery = value;
+                OnPropertyChanged();
             }
         }
 
@@ -196,7 +194,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             if (FilteredDeliveryNotes.Count > 0)
             {
-                SelectedDeliveryNote = FilteredDeliveryNotes.First(); 
+                SelectedDeliveryNote = FilteredDeliveryNotes.First();
             }
             else
             {

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ProjectLighthouse.ViewModel.Drawings;
+using System;
 using System.Windows.Input;
-using ProjectLighthouse.ViewModel.Drawings;
 
 namespace ProjectLighthouse.ViewModel.Commands.Drawings
 {

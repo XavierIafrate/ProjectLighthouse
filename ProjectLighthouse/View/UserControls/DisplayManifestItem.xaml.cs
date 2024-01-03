@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using ProjectLighthouse.Model.Orders;
+using System.Windows;
 using System.Windows.Controls;
-using ProjectLighthouse.Model.Orders;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -11,8 +11,8 @@ namespace ProjectLighthouse.View.UserControls
             get { return (LatheManufactureOrderItem)GetValue(ItemProperty); }
             set { SetValue(ItemProperty, value); }
         }
-public static readonly DependencyProperty ItemProperty =
-            DependencyProperty.Register("Item", typeof(LatheManufactureOrderItem), typeof(DisplayManifestItem), new PropertyMetadata(null, SetValues));
+        public static readonly DependencyProperty ItemProperty =
+                    DependencyProperty.Register("Item", typeof(LatheManufactureOrderItem), typeof(DisplayManifestItem), new PropertyMetadata(null, SetValues));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

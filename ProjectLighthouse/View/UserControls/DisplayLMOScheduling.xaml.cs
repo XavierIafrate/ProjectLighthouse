@@ -76,6 +76,10 @@ namespace ProjectLighthouse.View.UserControls
                 int secondsBudgeted = 0;
 
                 DateTime startDate = control.orderObject.StartDate;
+                if (startDate == DateTime.MinValue)
+                {
+                    return;
+                }
                 List<LatheManufactureOrderItem> orderedItems = control.orderObject.OrderItems.OrderBy(x => x.DateRequired).ToList();
 
                 for (int i = 0; i < orderedItems.Count; i++)

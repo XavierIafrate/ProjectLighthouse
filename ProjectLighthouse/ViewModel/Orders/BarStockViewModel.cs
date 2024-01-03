@@ -9,7 +9,6 @@ using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows;
@@ -73,8 +72,8 @@ namespace ProjectLighthouse.ViewModel.Orders
         public string? SuggestedOrderText
         {
             get { return suggestedOrderText; }
-            set 
-            { 
+            set
+            {
                 suggestedOrderText = value;
                 OnPropertyChanged();
             }

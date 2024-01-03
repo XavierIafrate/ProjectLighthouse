@@ -8,7 +8,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is not int cycleTime) throw new InvalidCastException();
+            if (value is not int cycleTime) throw new InvalidCastException();
 
             if (cycleTime == 0)
             {

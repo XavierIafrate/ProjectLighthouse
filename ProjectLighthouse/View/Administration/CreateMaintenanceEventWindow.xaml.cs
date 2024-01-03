@@ -38,7 +38,7 @@ namespace View.Administration
                 editing = true;
                 this.existingEvent = existingEvent;
                 titleText.Text = $"Editing '{existingEvent.Description}'";
-                this.Title= "Editing Maintenance Event";
+                this.Title = "Editing Maintenance Event";
                 descriptionTextBox.IsEnabled = App.CurrentUser.Role == UserRole.Administrator;
                 descriptionTextBox.Text = existingEvent.Description;
                 intervalText.Text = existingEvent.IntervalMonths.ToString("0");
@@ -55,7 +55,7 @@ namespace View.Administration
                 AddServiceRecordControls.Visibility = Visibility.Visible;
 
                 RecordIssueDate.DisplayDateStart = existingEvent.LastCompleted;
-                RecordIssueDate.SelectedDate= DateTime.Today;
+                RecordIssueDate.SelectedDate = DateTime.Today;
 
                 LastCompleteText.Text = existingEvent.LastCompleted == DateTime.MinValue ? "This event has never been completed." : $"Last completed {existingEvent.LastCompleted:dd/MM/yyyy}.";
             }
@@ -142,7 +142,7 @@ namespace View.Administration
 
         private void UploadServiceRecordButton_Click(object sender, RoutedEventArgs e)
         {
-            if(existingEvent.RequireDocumentation)
+            if (existingEvent.RequireDocumentation)
             {
                 if (string.IsNullOrWhiteSpace(FilePicker.FilePath))
                 {

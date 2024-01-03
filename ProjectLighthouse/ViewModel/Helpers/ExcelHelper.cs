@@ -92,13 +92,13 @@ namespace ViewModel.Helpers
                     doc.SetCellValue(row, 5, productInfo.Description);
                     //SLPicture pic = new(productInfo.LocalRenderPath);
                     float newResolution;
-                    using (var imageStream = File.OpenRead(productInfo.LocalRenderPath))
+                    using (FileStream imageStream = File.OpenRead(productInfo.LocalRenderPath))
                     {
                         const double targetHeight = 60;
-                        var decoder = BitmapDecoder.Create(imageStream, BitmapCreateOptions.IgnoreColorProfile,
+                        BitmapDecoder decoder = BitmapDecoder.Create(imageStream, BitmapCreateOptions.IgnoreColorProfile,
                             BitmapCacheOption.Default);
-                        var height = decoder.Frames[0].PixelHeight;
-                        var res = decoder.Frames[0].DpiY;
+                        int height = decoder.Frames[0].PixelHeight;
+                        double res = decoder.Frames[0].DpiY;
                         newResolution = Convert.ToSingle(targetHeight / height * res);
 
                     }

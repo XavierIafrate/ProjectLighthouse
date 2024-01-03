@@ -21,8 +21,8 @@ namespace ProjectLighthouse.Model.Orders
         public int RequiredQuantity
         {
             get { return requiredQuantity; }
-            set 
-            { 
+            set
+            {
                 requiredQuantity = value;
                 ValidateProperty(nameof(TargetQuantity));
                 OnPropertyChanged();
@@ -35,11 +35,11 @@ namespace ProjectLighthouse.Model.Orders
         public int TargetQuantity
         {
             get { return targetQuantity; }
-            set 
-            { 
+            set
+            {
                 targetQuantity = value;
                 ValidateProperty();
-                OnPropertyChanged(); 
+                OnPropertyChanged();
             }
         }
 
@@ -61,7 +61,7 @@ namespace ProjectLighthouse.Model.Orders
         public double MajorLength
         {
             get { return majorLength; }
-            set 
+            set
             {
                 if (value == majorLength) return;
                 majorLength = value;
@@ -74,9 +74,9 @@ namespace ProjectLighthouse.Model.Orders
         public double PartOffLength
         {
             get { return partOffLength; }
-            set 
-            { 
-                partOffLength = value; 
+            set
+            {
+                partOffLength = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }
@@ -257,7 +257,7 @@ namespace ProjectLighthouse.Model.Orders
 
                 return;
             }
-            
+
             throw new NotImplementedException();
         }
     }

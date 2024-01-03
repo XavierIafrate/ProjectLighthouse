@@ -25,7 +25,7 @@ namespace ProjectLighthouse.View.Orders
         public bool SaveExit;
         private bool LotAdded;
 
-        public EditLMOItemWindow(int ItemId, bool canEdit, bool allowDelivery = true, string producedOnMachine = "")
+        public EditLMOItemWindow(int ItemId, bool canEdit, bool allowDelivery = true)
         {
             InitializeComponent();
             SaveExit = false;
@@ -331,7 +331,7 @@ namespace ProjectLighthouse.View.Orders
                 MessageBox.Show("no edit");
                 return;
             }
-            
+
             EditLotWindow editWindow;
 
             try
@@ -375,7 +375,7 @@ namespace ProjectLighthouse.View.Orders
             public RelayCommand(Action<object> execute, Predicate<object> canExecute)
             {
                 if (execute == null)
-                    throw new ArgumentNullException("execute");
+                    throw new ArgumentNullException(nameof(execute));
 
                 _execute = execute;
                 _canExecute = canExecute;

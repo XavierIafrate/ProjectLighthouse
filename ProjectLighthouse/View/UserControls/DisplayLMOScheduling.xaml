@@ -17,25 +17,70 @@
         <converters:StartDateToEndDate x:Key="startToFinish" />
         <converters:OrderItemToRequirementVis x:Key="requirementVis" />
     </UserControl.Resources>
-    <Grid x:Name="mainGrid" Margin="7" Background="Transparent">
+    <Grid
+        x:Name="mainGrid"
+        Margin="0"
+        Background="Transparent">
         <Grid.ToolTip>
             <local:OrderStatusTooltip
-                Style="{x:Null}"
                 Margin="0"
+                Padding="0"
+                BorderBrush="Transparent"
+                Background="Transparent"
                 Order="{Binding}"
                 ToolTipService.ShowDuration="60" />
         </Grid.ToolTip>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="12" />
+            <ColumnDefinition Width="18" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid
+            x:Name="WarningBanner"
+            Grid.ColumnSpan="2"
+            Margin="0,0,5,0">
+            <Border
+                Background="{StaticResource Red}"
+                CornerRadius="0,3,3,0"
+                Opacity="0.15" />
+
+            <StackPanel
+                Margin="20,3"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Path
+                    Width="15"
+                    Height="15"
+                    Margin="0,0,5,0"
+                    Data="M6,6.9L3.87,4.78L5.28,3.37L7.4,5.5L6,6.9M13,1V4H11V1H13M20.13,4.78L18,6.9L16.6,5.5L18.72,3.37L20.13,4.78M4.5,10.5V12.5H1.5V10.5H4.5M19.5,10.5H22.5V12.5H19.5V10.5M6,20H18A2,2 0 0,1 20,22H4A2,2 0 0,1 6,20M12,5A6,6 0 0,1 18,11V19H6V11A6,6 0 0,1 12,5Z"
+                    Fill="{StaticResource Red}"
+                    Stretch="UniformToFill" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Red}"
+                    Text="Warning" />
+                <TextBlock
+                    x:Name="WarningText"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Bottom"
+                    Foreground="{StaticResource Red}"
+                    Text="At risk of missing delivery target." />
+            </StackPanel>
+        </Grid>
         <Border
+            Margin="3"
+            Grid.Row="1"
             x:Name="bg"
             Background="{StaticResource Red}"
             CornerRadius="3,0,0,3" />
 
 
-        <Grid x:Name="MainCanvas" Grid.Column="1">
+        <Grid x:Name="MainCanvas" Grid.Column="1" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" MinWidth="130" />
                 <ColumnDefinition Width="auto" />
@@ -47,43 +92,9 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Grid
-                x:Name="WarningBanner"
-                Grid.ColumnSpan="3"
-                Margin="0,0,5,0">
-                <Border
-                    Background="{StaticResource Red}"
-                    CornerRadius="0,3,3,0"
-                    Opacity="0.15" />
 
-                <StackPanel
-                    Margin="20,3"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
-                    <Path
-                        Width="15"
-                        Height="15"
-                        Margin="0,0,5,0"
-                        Data="M6,6.9L3.87,4.78L5.28,3.37L7.4,5.5L6,6.9M13,1V4H11V1H13M20.13,4.78L18,6.9L16.6,5.5L18.72,3.37L20.13,4.78M4.5,10.5V12.5H1.5V10.5H4.5M19.5,10.5H22.5V12.5H19.5V10.5M6,20H18A2,2 0 0,1 20,22H4A2,2 0 0,1 6,20M12,5A6,6 0 0,1 18,11V19H6V11A6,6 0 0,1 12,5Z"
-                        Fill="{StaticResource Red}"
-                        Stretch="UniformToFill" />
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource Red}"
-                        Text="Warning" />
-                    <TextBlock
-                        x:Name="WarningText"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Bottom"
-                        FontStyle="Italic"
-                        Foreground="{StaticResource Red}"
-                        Text="At risk of missing delivery target." />
-                </StackPanel>
-            </Grid>
 
-            <StackPanel Grid.Row="1" Margin="20,10">
+            <StackPanel Grid.Row="1" Margin="15,10">
                 <TextBlock
                     d:Text="M00000"
                     FontSize="25"
@@ -147,7 +158,7 @@
                         Click="EditButton_Click"
                         Content="edit"
                         Style="{StaticResource EditButton}" />
-                        <Button
+                    <Button
                         x:Name="CopyButton"
                         Click="CopyButton_Click"
                         Style="{StaticResource ClipboardButton}"
@@ -317,7 +328,6 @@
                                 <TextBlock
                                     Grid.Column="6"
                                     HorizontalAlignment="Right"
-                                    FontStyle="Italic"
                                     Text="{Binding Path=QuantityMade, StringFormat='{}{0:#,##0} pcs made'}" />
                             </Grid>
                         </DataTemplate>

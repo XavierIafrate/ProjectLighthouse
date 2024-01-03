@@ -710,7 +710,7 @@ namespace ProjectLighthouse.View.Orders
 
             try
             {
-                editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch, Order.AllocatedMachine ?? "");
+                editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch);
             }
             catch (Exception ex)
             {

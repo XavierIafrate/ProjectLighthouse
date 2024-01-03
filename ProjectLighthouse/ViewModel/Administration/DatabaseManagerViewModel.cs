@@ -1,5 +1,4 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using PdfSharp.Pdf;
 using ProjectLighthouse.Model.Deliveries;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
@@ -15,9 +14,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows;
-using TheArtOfDev.HtmlRenderer.PdfSharp;
 using ViewModel.Commands.Administration;
 using static ProjectLighthouse.Model.BaseObject;
 
@@ -155,7 +152,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 }
 
             }
-            
+
         }
 
         private void UpdateTotalManufactured()
@@ -256,11 +253,11 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         private static void TestHTMLReport()
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            string htmlString = "<h1>Costing Analysis</h1> <p>This is an HTML document which is converted to a pdf file.</p>";
-            PdfDocument pdfDocument = PdfGenerator.GeneratePdf(htmlString, PdfSharp.PageSize.A4);
-            pdfDocument.Save(@"C:\Users\x.iafrate\Dev\test.pdf");
+            //string htmlString = "<h1>Costing Analysis</h1> <p>This is an HTML document which is converted to a pdf file.</p>";
+            //PdfDocument pdfDocument = PdfGenerator.GeneratePdf(htmlString, PdfSharp.PageSize.A4);
+            //pdfDocument.Save(@"C:\Users\x.iafrate\Dev\test.pdf");
         }
 
         private static void AddTimeCodes()

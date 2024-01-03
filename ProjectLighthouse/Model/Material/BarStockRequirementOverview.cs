@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using ProjectLighthouse.Model.Orders;
+using System.Collections.Generic;
 using System.Linq;
-using ProjectLighthouse.Model.Orders;
 
 namespace ProjectLighthouse.Model.Material
 {

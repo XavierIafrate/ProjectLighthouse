@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2016.Excel;
-using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.Model.Scheduling;
@@ -28,8 +27,8 @@ namespace ProjectLighthouse.ViewModel.Requests
                 ?? throw new Exception("Requests Engine: Requirement not found in product list");
                 recommendation.Add(new(requirement, item.QuantityRequired, item.DateRequired ?? DateTime.Today));
 
-                groupId = requirement.GroupId??-1;
-                materialId = requirement.MaterialId??-1;
+                groupId = requirement.GroupId ?? -1;
+                materialId = requirement.MaterialId ?? -1;
                 majorDiameter = requirement.MajorDiameter;
             }
 
@@ -37,7 +36,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 throw new Exception("Requests Engine: no materialId or groupId");
             }
-            
+
 
             TimeModel? timeModel = null;
             try

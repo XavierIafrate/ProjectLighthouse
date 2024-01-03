@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using ProjectLighthouse.Model.Drawings;
+﻿using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.Model.Quality.Internal;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -56,9 +55,9 @@ namespace ProjectLighthouse.View.UserControls
                 control.rev.Text = control.Drawing.DrawingType == TechnicalDrawing.Type.Production
                     ? $"Revision {control.Drawing.Revision}{control.Drawing.AmendmentType}"
                     : $"Development v.{control.Drawing.Revision}{control.Drawing.AmendmentType}";
-                control.issueDate.Text = control.Drawing.ApprovedDate == System.DateTime.MinValue ? "Issued [missing date]" :  $"Issued {control.Drawing.ApprovedDate:dd/MM/yyyy}";
-                control.newBadge.Visibility = control.Drawing.ApprovedDate.AddDays(7) > System.DateTime.Now 
-                    ? Visibility.Visible 
+                control.issueDate.Text = control.Drawing.ApprovedDate == System.DateTime.MinValue ? "Issued [missing date]" : $"Issued {control.Drawing.ApprovedDate:dd/MM/yyyy}";
+                control.newBadge.Visibility = control.Drawing.ApprovedDate.AddDays(7) > System.DateTime.Now
+                    ? Visibility.Visible
                     : Visibility.Collapsed;
 
                 control.inspectionLogButton.Visibility = control.Drawing.Specification.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -89,7 +88,7 @@ namespace ProjectLighthouse.View.UserControls
 
             if (Drawing.PlatingStatement)
             {
-                File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath, overwrite:true);
+                File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath, overwrite: true);
                 TechnicalDrawing.AddPlatingStatement(tmpPath);
             }
 
@@ -111,7 +110,7 @@ namespace ProjectLighthouse.View.UserControls
             List<ToleranceDefinition> orderedReferences = new();
             foreach (string spec in Drawing.Specification)
             {
-                ToleranceDefinition? t = referencedTolerances.Find(x  => x.Id == spec);
+                ToleranceDefinition? t = referencedTolerances.Find(x => x.Id == spec);
                 if (t is not null)
                 {
                     orderedReferences.Add(t);

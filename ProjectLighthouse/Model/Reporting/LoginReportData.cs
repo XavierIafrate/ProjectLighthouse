@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Core;
 
 namespace ProjectLighthouse.Model.Reporting
 {
