@@ -267,7 +267,8 @@ namespace ProjectLighthouse.View.Orders
                 AllowDelivery = AllowDelivery,
                 DateProduced = DateTime.Now.Hour >= 10
                     ? DateTime.Now.Date.AddHours(12)
-                    : DateTime.Now.Date.AddHours(-12)
+                    : DateTime.Now.Date.AddHours(-12),
+                CycleTime = Item.CycleTime
             };
 
 
