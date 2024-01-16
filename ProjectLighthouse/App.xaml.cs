@@ -32,6 +32,8 @@ namespace ProjectLighthouse
         public static NotificationManager NotificationsManager { get; set; }
         public static string AppDataDirectory { get; set; }
         public static List<StandardFit> StandardFits { get; set; }
+        
+        static HelpWindow? HelpWindow;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -46,18 +48,18 @@ namespace ProjectLighthouse
                 return;
             }
 
-            //if (!ValidateRootDirectory(App.ROOT_PATH, App.DemoMode))
-            //{
-            //    string message = $"{App.ROOT_PATH} failed validation checks:";
-            //    foreach (string str in GetRootDirectoryErrors(App.ROOT_PATH, App.DemoMode))
-            //    {
-            //        message += $"{Environment.NewLine}{str}";
-            //    }
+            if (!ValidateRootDirectory(App.ROOT_PATH, App.DemoMode))
+            {
+                string message = $"{App.ROOT_PATH} failed validation checks:";
+                foreach (string str in GetRootDirectoryErrors(App.ROOT_PATH, App.DemoMode))
+                {
+                    message += $"{Environment.NewLine}{str}";
+                }
 
-            //    SetupFailedWindow window = new("Invalid Network Root.", message);
-            //    window.ShowDialog();
-            //    Application.Current.Shutdown();
-            //}
+                SetupFailedWindow window = new("Invalid Network Root.", message);
+                window.ShowDialog();
+                Application.Current.Shutdown();
+            }
 
             try
             {
@@ -179,6 +181,21 @@ namespace ProjectLighthouse
             NotificationsManager.Initialise();
             NotificationsManager.DataRefreshTimer.Start();
             NotificationsManager.CheckForNotifications(true);
+        }
+
+        public static void ShowHelp(string? targetUrl)
+        {
+            if (HelpWindow != null)
+            {
+                if (!HelpWindow.IsLoaded)
+                {
+                    HelpWindow = null;
+                }
+            }
+
+            HelpWindow ??= new(targetUrl);
+
+            HelpWindow.Show();
         }
 
         private static void EnsureAppData()
