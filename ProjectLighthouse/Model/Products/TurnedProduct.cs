@@ -393,13 +393,11 @@ namespace ProjectLighthouse.Model.Products
             }
 
             private double totalCost;
-
             public double TotalCost
             {
                 get { return totalCost; }
                 set { totalCost = value; OnPropertyChanged(); }
             }
-
 
 
             public Cost(MaterialInfo materialInfo, BarStock bar, TimeModel model, double length, double materialBudget)
