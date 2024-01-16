@@ -11,8 +11,8 @@ namespace ProjectLighthouse.Model.Orders
         public string Order { get; set; }
         public string AddedBy { get; set; }
         public int Quantity { get; set; }
-        private DateTime date;
 
+        private DateTime date;
         public DateTime Date
         {
             get { return date; }
@@ -34,6 +34,7 @@ namespace ProjectLighthouse.Model.Orders
         public string FromMachine { get; set; }
         public string Remarks { get; set; }
         public bool AllowDelivery { get; set; }
+        public int CycleTime { get; set; }
 
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public Action<Lot> RequestToEdit { get; set; }
@@ -63,7 +64,8 @@ namespace ProjectLighthouse.Model.Orders
                 ModifiedBy = ModifiedBy,
                 ModifiedAt = ModifiedAt,
                 FromMachine = FromMachine,
-                Remarks = Remarks
+                Remarks = Remarks,
+                CycleTime = CycleTime,
             };
         }
     }
