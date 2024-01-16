@@ -999,9 +999,7 @@
                                     IsEnabled="{Binding Series, Converter={StaticResource NotNullToBoolean}}"
                                     IsEnabledChanged="TabItem_IsEnabledChanged">
                                     <StackPanel>
-                                        <Border
-                                            Margin="5"
-                                            CornerRadius="5">
+                                        <Border Margin="5" CornerRadius="5">
                                             <lvc2:CartesianChart
                                                 Height="300"
                                                 Margin="0"
@@ -1130,6 +1128,29 @@
                             </StackPanel>
                             <!--#endregion-->
 
+                            <!--#region Breakdowns-->
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="0,15,0,5"
+                                    Style="{StaticResource section}"
+                                    Text="Breakdowns" />
+                                <ItemsControl ItemsSource="{Binding SelectedOrderBreakdowns}" Visibility="{Binding SelectedOrderBreakdowns, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding BreakdownCode}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="18"
+                                    FontStyle="Italic"
+                                    Foreground="{StaticResource DisabledElement}"
+                                    Text="None found"
+                                    Visibility="{Binding SelectedOrderBreakdowns, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+                            </StackPanel>
+                            <!--#endregion-->
+
                             <!--#region Notes-->
                             <TextBlock
                                 Margin="0,15,0,5"
@@ -1189,7 +1210,7 @@
             </StackPanel>
         </ScrollViewer>
         <!--#endregion-->
-        
+
         <!--#region Scroll Grad-->
 
         <Border
@@ -1206,7 +1227,7 @@
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
-        
+
         <!--#endregion-->
 
     </Grid>
