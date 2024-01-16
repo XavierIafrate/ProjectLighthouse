@@ -6,10 +6,15 @@ namespace ProjectLighthouse.Model.Drawings
     {
         public string Symbol { get; set; }
         public List<ToleranceZone> ToleranceZones { get; set; }
-        
+
         public ToleranceZone At(double nominal)
         {
             return ToleranceZones.Find(x => nominal > x.Over && nominal <= x.To);
+        }
+
+        public override string ToString()
+        {
+            return Symbol;
         }
     }
 
