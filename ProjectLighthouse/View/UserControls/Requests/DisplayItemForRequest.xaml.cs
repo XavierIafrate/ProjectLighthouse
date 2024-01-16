@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Products;
+﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using ProjectLighthouse.Model.Products;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -39,13 +40,12 @@ namespace ProjectLighthouse.View.UserControls
         {
             if (d is not DisplayItemForRequest control) return;
 
-            control.AddButton.IsEnabled = control.AddCommand is not null;
-
             if (control.Item is null)
             {
                 return;
             }
 
+            control.AddButton.IsEnabled = control.AddCommand is not null && !control.Item.Retired;
             control.ItemNameText.Text = control.Item.ProductName;
 
             if (control.Item.AppendableOrder != null)
@@ -58,31 +58,42 @@ namespace ProjectLighthouse.View.UserControls
                 }
                 else
                 {
-                    control.ActionText.Text = $"{control.Item.LighthouseGuaranteedQuantity:#,##0}pcs on {control.Item.AppendableOrder.Name}";
+                    // TODO What is this for?
+                    control.ActionText.Text = $"{control.Item.LighthouseGuaranteedQuantity:#,##0}pcs on {control.Item.AppendableOrder.Name} [none needed]";
                 }
 
                 control.ActionText.Foreground = (Brush)App.Current.Resources["Green"];
+                control.ActionBackground.Background = (Brush)App.Current.Resources["GreenFaded"];
             }
             else if (control.Item.ZeroSetOrder != null)
             {
-                control.ActionText.Text = $"compatible with {control.Item.ZeroSetOrder.Name}";
+                control.ActionText.Text = $"Compatible with {control.Item.ZeroSetOrder.Name}";
                 control.ActionText.Foreground = (Brush)App.Current.Resources["Blue"];
+                control.ActionBackground.Background = (Brush)App.Current.Resources["BlueFaded"];
             }
             else if (control.Item.FreeStock() < 0)
             {
                 control.ActionText.Text = $"{-control.Item.FreeStock():#,##0} Required";
                 control.ActionText.Foreground = (Brush)App.Current.Resources["Orange"];
+                control.ActionBackground.Background = (Brush)App.Current.Resources["OrangeFaded"];
             }
             else if (control.Item.QuantitySold > 0 && (double)control.Item.FreeStock() / control.Item.QuantitySold < 0.1)
             {
-                control.ActionText.Text = $"Running Low {control.Item.QuantityInStock:#,##0} / {control.Item.QuantitySold:#,##0}";
+                control.ActionText.Text = $"Low Stock {control.Item.QuantityInStock:#,##0} / {control.Item.QuantitySold:#,##0}";
                 control.ActionText.Foreground = (Brush)App.Current.Resources["Orange"];
+                control.ActionBackground.Background = (Brush)App.Current.Resources["OrangeFaded"];
             }
             else
             {
-                control.ActionText.Text = $"{control.Item.QuantityInStock:#,##0} In Stock";
-                control.ActionText.Foreground = (Brush)App.Current.Resources["Blue"];
+                control.ActionText.Visibility = Visibility.Collapsed;
             }
+
+            if (control.Item.Retired)
+            {
+                control.ActionText.Visibility = Visibility.Collapsed;
+            }
+
+            control.StockText.Text = $"{control.Item.QuantityInStock:#,##0} In Stock";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -15,11 +15,21 @@
                     VerticalAlignment="Center"
                     FontWeight="SemiBold"
                     Text="ITEM_NAME" />
+                <StackPanel Orientation="Horizontal">
                 <TextBlock
-                    x:Name="ActionText"
+                    x:Name="StockText"
                     FontSize="13"
                     Foreground="{StaticResource Blue}"
-                    Text="ACTION" />
+                    Text="QTY_IN_STOCK" />
+                    <Border CornerRadius="3" Background="{StaticResource BlueFaded}" Margin="5,0,0,0" x:Name="ActionBackground">
+                        <TextBlock
+                            x:Name="ActionText"
+                            FontSize="13"
+                            Margin="5,0"
+                            Foreground="{StaticResource Blue}"
+                            Text="ACTION_TEXT" />
+                    </Border>
+                </StackPanel>
             </StackPanel>
             <Button
                 x:Name="AddButton"
