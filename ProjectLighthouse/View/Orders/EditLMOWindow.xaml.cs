@@ -616,6 +616,19 @@ namespace ProjectLighthouse.View.Orders
         private void RemoveItemButton_Click(object sender, RoutedEventArgs e)
         {
             LatheManufactureOrderItem item = (LatheManufactureOrderItem)ItemsListBox.SelectedValue;
+
+            if (item.RequiredQuantity > 0)
+            {
+                MessageBox.Show("Item has a customer requirement and cannot be deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (Items.Count == 1)
+            {
+                MessageBox.Show("Order requires at least one item listed. Alternatively you can cancel the order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             MessageBoxResult userChoice = MessageBox.Show($"Are you sure you want to delete {item.ProductName} from {Order.Name}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (userChoice != MessageBoxResult.Yes)
