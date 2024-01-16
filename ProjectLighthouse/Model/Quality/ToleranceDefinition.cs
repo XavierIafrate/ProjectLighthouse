@@ -22,7 +22,8 @@ namespace ProjectLighthouse.Model.Quality
         public double Max { get; set; }
         public string? Symbol { get; set; }
         public string? FitId { get; set; }
-        public string StringFormatter => DecimalPlacesToStringFormatter(DecimalPlaces);
+        public string StringFormatter => DecimalPlacesToStringFormatter(DecimalPlaces, relative:false);
+        public string RelativeStringFormatter => DecimalPlacesToStringFormatter(DecimalPlaces, relative: true);
 
         public string? DerivesFrom { get; set; }
 
@@ -53,10 +54,10 @@ namespace ProjectLighthouse.Model.Quality
                     return ToleranceType switch
                     {
                         ToleranceType.None => "-",
-                        ToleranceType.Min => Min.ToString(StringFormatter),
+                        ToleranceType.Min => Min.ToString(RelativeStringFormatter),
                         ToleranceType.Max => "-",
-                        ToleranceType.Symmetric => $"-{(Max).ToString(StringFormatter)}",
-                        ToleranceType.Bilateral => $"-{(Min).ToString(StringFormatter)}",
+                        ToleranceType.Symmetric => $"{(Max*-1).ToString(RelativeStringFormatter)}",
+                        ToleranceType.Bilateral => $"{(Min*-1).ToString(RelativeStringFormatter)}",
                         _ => "-",
                     };
                 }
@@ -90,9 +91,9 @@ namespace ProjectLighthouse.Model.Quality
                     {
                         ToleranceType.None => "-",
                         ToleranceType.Min => "-",
-                        ToleranceType.Max => $"+{(Max).ToString(StringFormatter)}",
-                        ToleranceType.Symmetric => $"+{(Max).ToString(StringFormatter)}",
-                        ToleranceType.Bilateral => $"+{(Max).ToString(StringFormatter)}",
+                        ToleranceType.Max => $"{(Max).ToString(RelativeStringFormatter)}",
+                        ToleranceType.Symmetric => $"{(Max).ToString(RelativeStringFormatter)}",
+                        ToleranceType.Bilateral => $"{(Max).ToString(RelativeStringFormatter)}",
                         _ => "-",
                     };
                 }
@@ -122,7 +123,7 @@ namespace ProjectLighthouse.Model.Quality
             return BasicTolerances[f];
         }
 
-        public static string DecimalPlacesToStringFormatter(int numPlaces)
+        public static string DecimalPlacesToStringFormatter(int numPlaces, bool relative)
         {
             if (numPlaces < 0 || numPlaces > 8)
             {
@@ -139,6 +140,11 @@ namespace ProjectLighthouse.Model.Quality
             for (int i = 0; i < numPlaces; i++)
             {
                 x += "0";
+            }
+
+            if (relative)
+            {
+                x = $"+{x};-{x}; {x}";
             }
 
             return x;
@@ -163,12 +169,21 @@ namespace ProjectLighthouse.Model.Quality
                 ToleranceType.Min => $"{NumericValue.ToString(StringFormatter)} MIN",
                 ToleranceType.Max => $"{NumericValue.ToString(StringFormatter)} MAX",
                 ToleranceType.Symmetric => $"{NumericValue.ToString(StringFormatter)} ± {Max.ToString(StringFormatter)}",
-                ToleranceType.Bilateral => $"{NumericValue.ToString(StringFormatter)} {Max.ToString($" +{StringFormatter}; -{StringFormatter}; +{StringFormatter}")} / {(Min * -1).ToString($" +{StringFormatter}; -{StringFormatter}; -{StringFormatter}")}",
+                ToleranceType.Bilateral => $"{NumericValue.ToString(StringFormatter)} {Max.ToString(StringFormatter)} / {(Min * -1).ToString(StringFormatter)}",
                 ToleranceType.Fit => $"{Nominal} {FitId ?? "(FIT NOT SET)"}",
                 _ => "ERROR Unknown Tolerance Type",
             };
         }
     }
 
-    public enum ToleranceType { None = 0, Basic = 1, Min = 2, Max = 3, Symmetric = 4, Bilateral = 5, Fit = 6 }
+    public enum ToleranceType 
+    { 
+        None = 0, 
+        Basic = 1, 
+        Min = 2, 
+        Max = 3, 
+        Symmetric = 4, 
+        Bilateral = 5, 
+        Fit = 6 
+    }
 }
