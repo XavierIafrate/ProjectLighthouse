@@ -231,9 +231,7 @@
                             Style="{StaticResource title}"
                             Text="{Binding SelectedRequest.Description}" />
 
-                        <Grid
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Border
                                 d:Background="{StaticResource Blue}"
                                 Background="{Binding SelectedRequest.Status, Converter={StaticResource statusBrush}}"
@@ -438,6 +436,16 @@
                                     FontSize="18"
                                     FontWeight="SemiBold"
                                     Text="{Binding SelectedRequestArchetype.Name}" />
+                                <TextBlock
+                                    d:Text="GROUP_DIAMETER"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding SelectedRequestArchetype.MajorDiameter, StringFormat='{}⌀ {0:0.0}mm'}"
+                                    Visibility="{Binding SelectedRequestArchetype.UsesHexagonBar, Converter={StaticResource boolToCollapsedOrVisible}}" />
+                                <TextBlock
+                                    d:Text="GROUP_DIAMETER"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding SelectedRequestArchetype.MajorDiameter, StringFormat='{}{0:0.0}mm A/F'}"
+                                    Visibility="{Binding SelectedRequestArchetype.UsesHexagonBar, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                             </StackPanel>
 
 
@@ -458,19 +466,19 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <StackPanel >
+                        <StackPanel>
                             <Button
-                                Visibility="{Binding ChangesMade, Converter={StaticResource boolToVisibleOrCollapsed}}"
-                                Command="{Binding UpdateRequestCmd}"
                                 HorizontalAlignment="Right"
+                                Command="{Binding UpdateRequestCmd}"
                                 Style="{StaticResource Action_Update_Button}"
-                                Tag="Save Changes" />
+                                Tag="Save Changes"
+                                Visibility="{Binding ChangesMade, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                             <Button
-                                Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}"
                                 HorizontalAlignment="Right"
                                 Command="{Binding SubmitRequestCmd}"
                                 Style="{StaticResource Action_Button}"
-                                Tag="Submit" />
+                                Tag="Submit"
+                                Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                         </StackPanel>
 
                         <StackPanel Margin="0,10" Visibility="{Binding SelectedRequest.OrderId, Converter={StaticResource NotNullToVisibility}}">
@@ -568,7 +576,6 @@
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <TextBox
-                                
                                 x:Name="MessageTextBox"
                                 KeyDown="TextBox_KeyDown"
                                 Style="{StaticResource MessageComposer}"
