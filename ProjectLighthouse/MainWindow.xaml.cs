@@ -1,7 +1,6 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.View;
 using ProjectLighthouse.ViewModel.Core;
-using ProjectLighthouse.ViewModel.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
@@ -55,6 +54,7 @@ namespace ProjectLighthouse
             {
                 yield return null;
             }
+
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
@@ -78,7 +78,7 @@ namespace ProjectLighthouse
                 button.IsChecked = (string)button.CommandParameter == buttonName;
             }
 
-            foreach (ToggleButton button in FindVisualChildren<ToggleButton>(main_menu_mini))
+            foreach (ToggleButton button in FindVisualChildren<ToggleButton>(mini_button_container))
             {
                 button.IsChecked = (string)button.CommandParameter == buttonName;
             }
@@ -132,7 +132,7 @@ namespace ProjectLighthouse
             double threshold = 220;
             if (e.PreviousSize.Width == 0)
             {
-                SetMenuType(full:e.NewSize.Width > threshold);
+                SetMenuType(full: e.NewSize.Width > threshold);
             }
             else if (e.PreviousSize.Width > threshold && e.NewSize.Width <= threshold) // from full to mini
             {
@@ -164,6 +164,11 @@ namespace ProjectLighthouse
         private void GridSplitter_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             User.PostDefaultMenuWidth(App.CurrentUser.UserName, MenuGrid.ActualWidth);
+        }
+
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.ShowHelp(null);
         }
     }
 }
