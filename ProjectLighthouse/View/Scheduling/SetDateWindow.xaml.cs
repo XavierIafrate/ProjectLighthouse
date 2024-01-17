@@ -36,11 +36,17 @@ namespace ProjectLighthouse.View.Scheduling
 
             Item = item;
             OrderText.Text = $"Item: '{Item.Name}'";
-            TimeText.Text = $"{Item.StartDate:HH}:00";
 
-            calendar.SelectedDate = Item.StartDate == DateTime.MinValue
-                ? DateTime.Today.AddDays(1)
-                : Item.StartDate;
+            if (Item.StartDate == DateTime.MinValue)
+            {
+                calendar.SelectedDate = DateTime.Today.AddDays(1);
+                TimeText.Text = "12:00";
+            }
+            else
+            {
+                calendar.SelectedDate = Item.StartDate;
+                TimeText.Text = $"{Item.StartDate:HH}:00";
+            }
 
             SelectedDate = (DateTime)calendar.SelectedDate;
 
