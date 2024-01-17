@@ -1,6 +1,5 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using ProjectLighthouse.Model.Deliveries;
-using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
@@ -10,13 +9,9 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Windows;
 using ViewModel.Commands.Administration;
-using static ProjectLighthouse.Model.BaseObject;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
@@ -59,39 +54,19 @@ namespace ProjectLighthouse.ViewModel.Administration
                 case "Orders":
                     CSVHelper.WriteListToCSV(Orders, "orders");
                     break;
-                case "WorkloadOrders":
-                    GetWorkload();
-                    break;
                 case "ItemCosting":
                     GenerateItemCostingSheet();
                     break;
                 case "BarStockEstimate":
                     GetBarInventory();
                     break;
-                case "ProductImport":
-                    GetTurnedProductImportSheet();
-                    break;
-                case "Wizard":
-                    TestHTMLReport();
-                    //AddTimeCodes();
-                    //ImportWizard window = new() { Owner = App.MainViewModel.MainWindow };
-                    //window.ShowDialog();
-                    break;
+
                 case "Delivered":
                     GetDeliveredItems();
-                    break;
-                case "TimeModels":
-                    GetTimeModels();
-                    break;
-                case "Drawings":
-
-                    List<TechnicalDrawing> drawings = DatabaseHelper.Read<TechnicalDrawing>();
-                    CSVHelper.WriteListToCSV(drawings, "drawings");
                     break;
                 case "TotalManufactured":
                     UpdateTotalManufactured();
                     break;
-
                 case "ImportTriggers":
                     ImportTriggers();
                     break;
@@ -142,6 +117,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 }
 
                 p.QuantitySold = trigger.Value;
+
                 try
                 {
                     DatabaseHelper.Update(p, throwErrs: true);
@@ -150,9 +126,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 {
                     Debug.WriteLine(ex.Message);
                 }
-
             }
-
         }
 
         private void UpdateTotalManufactured()
@@ -170,139 +144,6 @@ namespace ProjectLighthouse.ViewModel.Administration
                 if (totalDelivered == product.QuantityManufactured) continue;
 
                 DatabaseHelper.ExecuteCommand($"UPDATE {nameof(TurnedProduct)} SET QuantityManufactured = {totalDelivered} WHERE Id={product.Id}");
-            }
-        }
-
-        private static void GetTimeModels()
-        {
-            List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>().Where(x => !x.Retired && !x.IsSpecialPart && x.GroupId != null).ToList();
-            List<ProductGroup> groups = DatabaseHelper.Read<ProductGroup>().Where(x => x.ProductId != 65 && x.Status == ProductGroup.GroupStatus.Active).ToList();
-            List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>();
-            List<BarStock> barStock = DatabaseHelper.Read<BarStock>().Where(x => !x.IsDormant).ToList();
-
-            List<Output> result = new();
-
-            foreach (ProductGroup group in groups)
-            {
-                List<TurnedProduct> productsInGroup = products.Where(x => x.GroupId == group.Id && x.MaterialId is not null).ToList();
-                List<int?> materialIds = productsInGroup.Select(x => x.MaterialId).OrderBy(x => x).Distinct().ToList();
-                foreach (int? id in materialIds)
-                {
-                    if (id is null) continue;
-
-                    BarStock? bar = group.GetRequiredBarStock(barStock, (int)id);
-                    MaterialInfo? m = materials.Find(m => m.Id == id);
-
-                    if (m is null)
-                    {
-                        continue;
-                    }
-
-                    List<TurnedProduct> productsInGroupWithMaterial = productsInGroup.Where(x => x.MaterialId == id).ToList();
-                    TimeModel model;
-
-                    try
-                    {
-                        model = OrderResourceHelper.GetCycleResponse(productsInGroupWithMaterial);
-                    }
-                    catch
-                    {
-                        result.Add(new() { Group = group.Name, Material = m.MaterialCode, BaseRecordCount = productsInGroupWithMaterial.Count }); ;
-                        continue;
-                    }
-
-                    if (group.Name == "P0154.060" && id == 1)
-                    {
-                        List<Price> prices = new();
-                        foreach (TurnedProduct p in productsInGroupWithMaterial)
-                        {
-                            double price = GetPrice(p, bar, m, 0.00505, model);
-                            prices.Add(new() { SKU = p.ProductName, SKUPrice = $"£{price:0.000}" });
-                        }
-                        CSVHelper.WriteListToCSV(prices, "prices");
-                    }
-
-                    result.Add(new() { Group = group.Name, Material = m.MaterialCode, BaseRecordCount = productsInGroupWithMaterial.Count, TimeModel = model.ToString(), Gradient = model.Gradient, Intercept = model.Intercept, Confidence = model.CoefficientOfDetermination, Floor = model.Floor, NumRecords = model.RecordCount });
-
-
-                }
-            }
-            CSVHelper.WriteListToCSV(result, "timeModels");
-
-        }
-
-        public class Price
-        {
-            public string SKU { get; set; }
-            public string SKUPrice { get; set; }
-        }
-
-        public class Output
-        {
-            public string Group { get; set; }
-            public string Material { get; set; }
-            public int BaseRecordCount { get; set; }
-            public string TimeModel { get; set; }
-            public double? Gradient { get; set; }
-            public double? Intercept { get; set; }
-            public int? Floor { get; set; }
-            public int? NumRecords { get; set; }
-            public double? Confidence { get; set; }
-        }
-
-
-        private static void TestHTMLReport()
-        {
-            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            //string htmlString = "<h1>Costing Analysis</h1> <p>This is an HTML document which is converted to a pdf file.</p>";
-            //PdfDocument pdfDocument = PdfGenerator.GeneratePdf(htmlString, PdfSharp.PageSize.A4);
-            //pdfDocument.Save(@"C:\Users\x.iafrate\Dev\test.pdf");
-        }
-
-        private static void AddTimeCodes()
-        {
-            List<LatheManufactureOrder> activeOrders = DatabaseHelper.Read<LatheManufactureOrder>().Where(x => x.State < OrderState.Running && string.IsNullOrEmpty(x.TimeCodePlanned)).ToList();
-            List<TurnedProduct> turnedProducts = DatabaseHelper.Read<TurnedProduct>().Where(x => !x.Retired).ToList();
-            List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>();
-
-            foreach (LatheManufactureOrder order in activeOrders)
-            {
-                List<TurnedProduct> dataPool = turnedProducts.Where(x => x.GroupId == order.GroupId && x.MaterialId == order.MaterialId).ToList();
-
-                TimeModel timeModel;
-
-                try
-                {
-                    timeModel = OrderResourceHelper.GetCycleResponse(dataPool);
-                }
-                catch
-                {
-                    timeModel = TimeModel.Default(order.MajorDiameter);
-                }
-                order.TimeCodeIsEstimate = timeModel.CoefficientOfDetermination < 0.5;
-                order.TimeModelPlanned = timeModel;
-
-                List<LatheManufactureOrderItem> orderItems = items.Where(x => x.AssignedMO == order.Name).ToList();
-                foreach (LatheManufactureOrderItem item in orderItems)
-                {
-                    TurnedProduct product = turnedProducts.Find(x => x.ProductName == item.ProductName);
-                    if (item.PreviousCycleTime is not null) continue;
-
-                    if (product!.CycleTime == 0 && item.PreviousCycleTime is null)
-                    {
-                        item.ModelledCycleTime = timeModel.At(item.MajorLength);
-                    }
-                    else
-                    {
-                        item.PreviousCycleTime = product.CycleTime;
-                    }
-
-                    DatabaseHelper.Update(item);
-                }
-
-                order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(order, orderItems);
-                DatabaseHelper.Update(order);
             }
         }
 
@@ -341,68 +182,8 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
 
             CSVHelper.WriteListToCSV(result, "delivered", "dd/MM/yyyy");
-
         }
 
-        private void GetWorkload()
-        {
-            List<WorkloadDay> workload = new();
-
-            List<LatheManufactureOrder> orders = Orders
-                                                    .Where(x =>
-                                                        x.State < OrderState.Cancelled
-                                                        && x.StartDate.Date.AddMonths(18) > DateTime.Now
-                                                        && !string.IsNullOrEmpty(x.AllocatedMachine))
-                                                    .OrderBy(x => x.StartDate)
-                                                    .ToList();
-
-            for (int i = 0; i < 365; i++)
-            {
-                DateTime date = DateTime.Today.AddDays(i * -1);
-
-                WorkloadDay data = new()
-                {
-                    Day = date,
-                    WeekId = $"W{ISOWeek.GetWeekOfYear(date):00}-{date:yyyy}"
-                };
-
-                List<LatheManufactureOrder> ordersAtTime = orders.Where(x => x.CreatedAt <= date && x.EndsAt() >= date).ToList();
-
-                data.CountOfOrders = ordersAtTime.Count;
-                data.CountOfProductionOrders = ordersAtTime.Where(x => !x.IsResearch).Count();
-                data.CountOfDevelopmentOrders = ordersAtTime.Where(x => x.IsResearch).Count();
-
-                TimeSpan totalWorkTime = new();
-                ordersAtTime
-                    .Where(x => !x.IsResearch)
-                    .ToList()
-                    .ForEach(x => totalWorkTime += x.EndsAt() - x.CreatedAt);
-
-                data.AverageTurnaroundTime = totalWorkTime.TotalDays / 7;
-                data.AverageTurnaroundTime /= ordersAtTime.Where(x => !x.IsResearch).Count();
-
-                workload.Add(data);
-            }
-
-            workload.Reverse();
-
-            CSVHelper.WriteListToCSV(workload, "workloadOrders");
-        }
-
-        private static double GetPrice(TurnedProduct product, BarStock barStock, MaterialInfo materialInfo, double absorptionRate, TimeModel model)
-        {
-            if (materialInfo.Cost is null) return 0;
-
-            barStock.MaterialData = materialInfo;
-            double unitMass = barStock.GetUnitMassOfBar();
-            double massForProduct = unitMass * (product.MajorLength + product.PartOffLength + 2) / 2700;
-            double costOfMaterial = ((double)materialInfo.Cost / 100) * massForProduct;
-
-
-            double costOfTime = absorptionRate * model.At(product.MajorLength);
-
-            return costOfMaterial + costOfTime;
-        }
 
         public class BarStockInventory
         {
@@ -452,44 +233,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             CSVHelper.WriteListToCSV(result, "BarInventory");
         }
 
-        class WorkloadDay
-        {
-            public DateTime Day { get; set; }
-            public string WeekId { get; set; }
-            public int CountOfOrders { get; set; }
-            public int CountOfProductionOrders { get; set; }
-            public int CountOfDevelopmentOrders { get; set; }
-            public double AverageTurnaroundTime { get; set; }
-        }
-
-        private static void GetTurnedProductImportSheet()
-        {
-            PropertyInfo[] properties = typeof(TurnedProduct).GetProperties();
-            List<string> propertiesForExport = new();
-
-
-            foreach (PropertyInfo property in properties)
-            {
-                Import? importAttribute = property.GetCustomAttribute<Import>();
-                if (importAttribute is null)
-                {
-                    continue;
-                }
-
-                propertiesForExport.Add(importAttribute.Name);
-            }
-
-            string headerLine = string.Join(',', propertiesForExport);
-
-            try
-            {
-                File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\template.csv", headerLine);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
 
         private static void GenerateItemCostingSheet()
         {
@@ -531,72 +274,6 @@ namespace ProjectLighthouse.ViewModel.Administration
 
                 ItemCost newItem = new(product, bar, material, App.Constants.AbsorptionRate, TimeModel.Default(product.MajorDiameter), 2);
 
-                //if (newItem.Product.EndsWith("2X"))
-                //{
-                //    ItemCost tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("2X", "A2");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("2X", "VI");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("2X", "TX");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("2X", "2S");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("2X", "2V");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("2X", "2E");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("2X", "2N");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("2X", "2F");
-                //    itemCosts.Add(tmpItem);
-
-
-                //}
-                //else if (newItem.Product.EndsWith("4X"))
-                //{
-                //    ItemCost tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("4X", "A4");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("4X", "4S");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("4X", "4V");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("4X", "4E");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("4X", "4N");
-                //    itemCosts.Add(tmpItem);
-
-                //    tmpItem = (ItemCost)newItem.Clone();
-                //    tmpItem.Product = newItem.Product.Replace("4X", "4F");
-                //    itemCosts.Add(tmpItem);
-                //}
-                //else
-                //{
-                //    itemCosts.Add(newItem);
-                //}
                 itemCosts.Add(newItem);
             }
 
@@ -617,7 +294,6 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             //PdfDocument pdfDocument = PdfGenerator.GeneratePdf(htmlString, PdfSharp.PageSize.A4);
             //pdfDocument.Save(@"C:\Users\x.iafrate\Dev\test.pdf");
-
         }
 
         public class ItemCost
