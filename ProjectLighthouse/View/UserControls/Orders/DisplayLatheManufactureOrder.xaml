@@ -72,12 +72,16 @@
             VerticalAlignment="Center">
             <Border
                 x:Name="ClosedBadge"
-                Height="22" Width="90"
+                Width="90"
+                Height="22"
                 Background="{StaticResource OnBackgroundFaded}"
                 CornerRadius="3"
                 ToolTip="This order has been completed and all lots delivered/scrapped.">
 
-                <StackPanel Margin="8,2" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel
+                    Margin="8,2"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
                     <Path
                         Width="10"
                         Height="10"
@@ -87,9 +91,9 @@
                         Fill="{StaticResource OnBackground}"
                         Stretch="Uniform" />
                     <TextBlock
-                    Margin="0,0,0,1"
-                        FontWeight="SemiBold"
+                        Margin="0,0,0,1"
                         VerticalAlignment="Center"
+                        FontWeight="SemiBold"
                         Foreground="{StaticResource OnBackground}"
                         Text="Closed" />
                 </StackPanel>
@@ -97,12 +101,16 @@
 
             <Border
                 x:Name="StaleBadge"
-                Height="22" Width="90"
+                Width="90"
+                Height="22"
                 Background="{StaticResource RedFaded}"
                 CornerRadius="3"
                 ToolTip="Last update on problem was over 3 days ago">
 
-                <StackPanel Margin="8,2" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel
+                    Margin="8,2"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
                     <Path
                         Width="10"
                         Height="10"
