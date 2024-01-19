@@ -9,7 +9,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class OrderResourceHelper
     {
-        public static int CalculateOrderRuntime(LatheManufactureOrder order, List<LatheManufactureOrderItem> items)
+        public static int CalculateOrderRuntime(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<MachineBreakdown> breakdowns)
         {
             int totalTime = 0;
 
@@ -26,6 +26,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
 
             totalTime += (int)order.NumberOfBars * 30;
+
+            totalTime += breakdowns.Sum(x => x.TimeElapsed);
 
             return totalTime;
         }
