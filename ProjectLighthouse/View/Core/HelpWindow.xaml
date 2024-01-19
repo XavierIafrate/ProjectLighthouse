@@ -1,0 +1,18 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Core.HelpWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:webView2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+    Title="Lighthouse Documentation"
+    Loaded="Window_Loaded"
+    MinWidth="800"
+    MinHeight="450"
+    WindowState="Maximized"
+    mc:Ignorable="d">
+    <Grid>
+        <webView2:WebView2 x:Name="Browser" />
+    </Grid>
+</Window>

@@ -7,6 +7,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.IO;
+
+#if DEBUG
+using ProjectLighthouse.ViewModel.Helpers;
+#endif
 
 namespace ProjectLighthouse
 {
@@ -44,6 +49,12 @@ namespace ProjectLighthouse
 #if DEBUG
             Title += $" - {DatabaseHelper.DatabasePath}";
 #endif
+
+            if (!File.Exists($"{App.ROOT_PATH}docs\\index.html"))
+            {
+                HelpButton.Visibility = Visibility.Collapsed;
+                HelpButton_Mini.Visibility = Visibility.Collapsed;
+            }
 
             DemoBanner.Visibility = App.DemoMode ? Visibility.Visible : Visibility.Collapsed;
         }

@@ -328,9 +328,18 @@
             <!--#endregion-->
 
             <Button
+                x:Name="HelpButton_Mini"
+                Grid.Row="1"
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Click="HelpButton_Click"
+                Style="{StaticResource HelpButton_Mini}" />
+
+            <Button
                 x:Name="HelpButton"
                 Grid.Row="1"
-                Grid.ColumnSpan="2"
+                Grid.Column="1"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 Click="HelpButton_Click"
