@@ -51,6 +51,8 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<Product> Products { get; set; }
         public List<ProductGroup> ProductGroups { get; set; }
         public List<NcProgram> Programs;
+        public List<BreakdownCode> BreakdownCodes;
+        public List<MachineBreakdown> MachineBreakdowns;
         #endregion
 
         #region Observable
@@ -73,6 +75,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public ProductGroup SelectedProductGroup { get; set; }
         public Product SelectedProduct { get; set; }
         public List<NcProgram> ProgramCandidates { get; set; }
+        public List<MachineBreakdown> SelectedOrderBreakdowns { get; set; }
 
         public List<MachineOperatingBlock> MachineOperatingBlocks { get; set; }
 
@@ -695,6 +698,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             ProductGroups = DatabaseHelper.Read<ProductGroup>().ToList();
 
             Programs = DatabaseHelper.Read<NcProgram>().Where(x => !x.Inactive).ToList();
+            BreakdownCodes = DatabaseHelper.Read<BreakdownCode>();
+            MachineBreakdowns = DatabaseHelper.Read<MachineBreakdown>();
 
             BarStock = DatabaseHelper.Read<BarStock>().ToList();
             MaterialInfo = DatabaseHelper.Read<MaterialInfo>().ToList();
@@ -852,6 +857,25 @@ namespace ProjectLighthouse.ViewModel.Orders
             Task.Run(() => LoadProductionChart(orderLots, SelectedOrder.StartDate.Date));
             Task.Run(() => LoadBriefing());
             Task.Run(() => GetProgramCandidates());
+            Task.Run(() => GetOrderBreakdowns());
+        }
+
+        private void GetOrderBreakdowns()
+        {
+            if (SelectedOrder is null)
+            {
+                SelectedOrderBreakdowns = new();
+                OnPropertyChanged(nameof(SelectedOrderBreakdowns));
+                return;
+            }
+
+            SelectedOrderBreakdowns = MachineBreakdowns
+                .Where(x => x.OrderName == SelectedOrder.Name)
+                .OrderBy(x => x.BreakdownStarted)
+                .ToList();
+            SelectedOrderBreakdowns
+                .ForEach(x => x.BreakdownMeta = BreakdownCodes.Find(b => b.Id == x.BreakdownCode));
+            OnPropertyChanged(nameof(SelectedOrderBreakdowns));
         }
 
         void GetProgramCandidates()
