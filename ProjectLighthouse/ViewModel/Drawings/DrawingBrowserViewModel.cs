@@ -402,12 +402,11 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 return;
             }
 
-            Specification = new();
-
             if (!ShowRejected)
             {
                 FilteredDrawings = selectedGroup.Drawings
                     .Where(x => !x.IsRejected)
+                    .Where(x => !(x.IsWithdrawn && !x.IsApproved))
                     .ToList();
 
                 if (FilteredDrawings.Count == 0)
@@ -424,14 +423,6 @@ namespace ProjectLighthouse.ViewModel.Drawings
             if (FilteredDrawings.Count > 0)
             {
                 SelectedDrawing = FilteredDrawings.Last();
-                List<string> baseSpec = SelectedDrawing.Specification;
-
-                foreach (string address in baseSpec)
-                {
-                    Specification.Add(Tolerances.Find(x => x.Id == address));
-                }
-
-                OnPropertyChanged(nameof(Specification));
             }
             else
             {
@@ -490,6 +481,15 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 : Visibility.Collapsed;
 
             OnPropertyChanged(nameof(ApprovalControlsVis));
+
+            Specification = new();
+            List<string> baseSpec = selectedDrawing.Specification;
+            foreach (string address in baseSpec)
+            {
+                Specification.Add(Tolerances.Find(x => x.Id == address));
+            }
+
+            OnPropertyChanged(nameof(Specification));
         }
 
         public void AddCommentToDrawing()
