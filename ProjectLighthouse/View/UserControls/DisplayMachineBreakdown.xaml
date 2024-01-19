@@ -1,0 +1,55 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.DisplayMachineBreakdown"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="White"
+    d:DesignWidth="500"
+    mc:Ignorable="d">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock
+            x:Name="BreakdownCodeText"
+            VerticalAlignment="Center"
+            d:Text="BREAKDOWN_CODE"
+            FontFamily="Consolas"
+            FontSize="16"
+            FontWeight="SemiBold" />
+        <StackPanel
+            Grid.Column="1"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <TextBlock
+                x:Name="BreakdownStartedText"
+                d:Text="STARTED"
+                FontWeight="SemiBold" />
+            <TextBlock
+                x:Name="BreakdownEndedText"
+                d:Text=" To ENDED"
+                FontWeight="SemiBold" />
+        </StackPanel>
+        <TextBlock
+            x:Name="TimeElapsedText"
+            Grid.Row="1"
+            Grid.Column="1"
+            HorizontalAlignment="Right"
+            d:Text="TIME_ELAPSED"
+            FontWeight="SemiBold"
+            Foreground="{StaticResource Red}" />
+        <TextBlock
+            x:Name="MetaNameText"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            d:Text="META_NAME"
+            FontStyle="Italic" />
+    </Grid>
+</UserControl>
