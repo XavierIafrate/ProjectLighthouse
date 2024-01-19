@@ -11,10 +11,11 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Edit Order"
     Height="950"
-    MinWidth="750"
-    MaxWidth="750"
+    MinWidth="800"
     MinHeight="600"
+    MaxWidth="800"
     MaxHeight="1000"
+    d:Height="Auto"
     Background="{StaticResource Background}"
     Closing="Window_Closing"
     ResizeMode="CanResize"
@@ -23,13 +24,14 @@
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
 
-    <Grid Margin="10,20">
+    <Grid Margin="10,20,0,0">
         <Grid.Resources>
             <converter:boolToVisibleOrCollapsed x:Key="boolToCollapsed" />
             <converter:stringToAssignedLathe x:Key="stringToAssignedLathe" />
             <converter:dateTimeToStartDate x:Key="dateToStartDate" />
             <converter:intToDays x:Key="intToDays" />
             <converter:stringToAssignedTo x:Key="assignedFormatter" />
+            <converter:intToTimespanString x:Key="intToTimespanString" />
         </Grid.Resources>
 
         <Grid.RowDefinitions>
@@ -86,8 +88,11 @@
                 Click="SaveButton_Click"
                 Style="{StaticResource HeroSaveButton}" />
         </Grid>
-        <ScrollViewer Grid.Row="1" ScrollChanged="ScrollViewer_ScrollChanged" HorizontalScrollBarVisibility="Hidden">
-            <Grid>
+        <ScrollViewer
+            Grid.Row="1"
+            HorizontalScrollBarVisibility="Hidden"
+            ScrollChanged="ScrollViewer_ScrollChanged">
+            <Grid Margin="0,0,5,0">
                 <Grid.Resources>
                     <converter:boolToCollapsedOrVisible x:Key="boolToCollapsedOrVisible" />
                 </Grid.Resources>
@@ -101,7 +106,7 @@
                 <!--#region  Checkboxes-->
                 <StackPanel>
                     <Border
-                        Margin="0,0,0,5"
+                        Margin="0,0,10,5"
                         Background="{StaticResource BlueFaded}"
                         BorderBrush="{StaticResource Blue}"
                         BorderThickness="3,0,0,0"
@@ -151,7 +156,7 @@
                         <Viewbox Grid.Row="1" MaxHeight="22">
                             <TextBlock
                                 HorizontalAlignment="Center"
-                                d:Text="01/01/1970"
+                                d:Text="START_DATE"
                                 FontSize="20"
                                 FontWeight="SemiBold"
                                 Text="{Binding Order.StartDate, Converter={StaticResource dateToStartDate}}" />
@@ -181,7 +186,7 @@
                             MaxHeight="22">
                             <TextBlock
                                 HorizontalAlignment="Center"
-                                d:Text="10.5 days"
+                                d:Text="DURATION"
                                 FontWeight="SemiBold"
                                 Text="{Binding Order.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
 
@@ -211,7 +216,7 @@
 
                             <TextBlock
                                 HorizontalAlignment="Center"
-                                d:Text="C00"
+                                d:Text="MACHINE_ID"
                                 FontSize="20"
                                 FontWeight="SemiBold"
                                 Text="{Binding Order.AllocatedMachine, Converter={StaticResource stringToAssignedLathe}}" />
@@ -240,7 +245,7 @@
 
                             <TextBlock
                                 HorizontalAlignment="Center"
-                                d:Text="randy"
+                                d:Text="USERNAME"
                                 FontSize="20"
                                 FontWeight="SemiBold"
                                 Text="{Binding Order.AssignedTo, Converter={StaticResource assignedFormatter}, TargetNullValue='unassigned'}" />
@@ -670,10 +675,7 @@
                                 </ListView>
                             </StackPanel>
                         </TabItem>
-                        <TabItem
-                            x:Name="TimeTab"
-                            d:IsSelected="True"
-                            Header="Time">
+                        <TabItem x:Name="TimeTab" Header="Time">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -730,6 +732,143 @@
                                     Series="{Binding TimeModelSeries}"
                                     XAxes="{Binding XAxes}"
                                     YAxes="{Binding YAxes}" />
+                            </Grid>
+                        </TabItem>
+                        <TabItem x:Name="BreakdownTab" Header="Breakdowns">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ItemsControl Margin="5" ItemsSource="{Binding Breakdowns}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock
+                                                    Grid.RowSpan="2"
+                                                    Margin="0,0,10,0"
+                                                    VerticalAlignment="Center"
+                                                    FontFamily="Consolas"
+                                                    FontSize="16"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding BreakdownCode}" />
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    FontFamily="Consolas"
+                                                    FontWeight="SemiBold"
+                                                    Text="Started" />
+                                                <TextBlock
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    FontFamily="Consolas"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding BreakdownStarted, StringFormat='{}{0:dd/MM HH:mm}'}" />
+                                                <TextBlock
+                                                    Grid.Column="2"
+                                                    FontFamily="Consolas"
+                                                    FontWeight="SemiBold"
+                                                    Text="Ended" />
+                                                <TextBlock
+                                                    Grid.Row="1"
+                                                    Grid.Column="2"
+                                                    FontFamily="Consolas"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding BreakdownEnded, StringFormat='{}{0:dd/MM HH:mm}'}" />
+                                                <TextBlock
+                                                    Grid.Column="3"
+                                                    FontFamily="Consolas"
+                                                    FontWeight="SemiBold"
+                                                    Text="Elapsed" />
+                                                <TextBlock
+                                                    Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    FontFamily="Consolas"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding TimeElapsed, Converter={StaticResource intToTimespanString}}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Grid Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Style="{StaticResource section}"
+                                        Text="Add New" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Margin="0,2,0,0"
+                                        Style="{StaticResource InputLabel}"
+                                        Text="Breakdown Code" />
+                                    <ComboBox
+                                        Grid.Row="2"
+                                        MaxWidth="230"
+                                        Margin="0,0,5,5"
+                                        ItemsSource="{Binding BreakdownCodes}"
+                                        SelectedValue="{Binding NewBreakdown.BreakdownCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        SelectedValuePath="Id">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock
+                                                        FontFamily="Consolas"
+                                                        FontWeight="SemiBold"
+                                                        Text="{Binding Id}" />
+                                                    <TextBlock
+                                                        MaxWidth="200"
+                                                        FontSize="12"
+                                                        Text="{Binding Name}"
+                                                        TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Margin="0,2,0,0"
+                                        Style="{StaticResource InputLabel}"
+                                        Text="Started" />
+                                    <uc:DateTimePicker
+                                        Grid.Row="4"
+                                        Margin="0,0,5,5"
+                                        DateTime="{Binding NewBreakdown.BreakdownStarted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+                                    <TextBlock
+                                        Grid.Row="5"
+                                        Margin="0,2,0,0"
+                                        Style="{StaticResource InputLabel}"
+                                        Text="Ended" />
+                                    <uc:DateTimePicker
+                                        Grid.Row="6"
+                                        Margin="0,0,5,5"
+                                        DateTime="{Binding NewBreakdown.BreakdownEnded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+                                    <Button
+                                        x:Name="AddBreakdownButton"
+                                        Grid.Row="7"
+                                        HorizontalAlignment="Right"
+                                        Click="AddBreakdownButton_Click"
+                                        Style="{StaticResource Action_New_Button_Small}"
+                                        Tag="Add" />
+                                </Grid>
                             </Grid>
                         </TabItem>
                     </TabControl>

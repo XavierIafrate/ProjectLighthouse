@@ -1056,7 +1056,8 @@
                                     <uc:DisplayTimeUsage
                                         MinHeight="50"
                                         Order="{Binding SelectedOrder}"
-                                        OrderItems="{Binding FilteredOrderItems}" />
+                                        OrderItems="{Binding FilteredOrderItems}"
+                                        Breakdowns="{Binding SelectedOrderBreakdowns}"/>
                                 </TabItem>
                             </TabControl>
 
@@ -1137,7 +1138,7 @@
                                 <ItemsControl ItemsSource="{Binding SelectedOrderBreakdowns}" Visibility="{Binding SelectedOrderBreakdowns, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding BreakdownCode}" />
+                                            <uc:DisplayMachineBreakdown Breakdown="{Binding}"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

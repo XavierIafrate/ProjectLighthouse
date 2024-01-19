@@ -74,8 +74,22 @@ namespace ProjectLighthouse.View.Orders
         public OrderSaveEditNoteCommand SaveEditNoteCmd { get; set; }
         public OrderDeleteNoteCommand DeleteNoteCmd { get; set; }
 
-        private TimeModel? tmpTimeModel;
+        public List<BreakdownCode> BreakdownCodes { get; set; }
+        public List<MachineBreakdown> Breakdowns { get; set; }
 
+        private MachineBreakdown newBreakdown;
+        public MachineBreakdown NewBreakdown
+        {
+            get { return newBreakdown; }
+            set 
+            { 
+                newBreakdown = value; 
+                OnPropertyChanged(); 
+            }
+        }
+
+
+        private TimeModel? tmpTimeModel;
         public TimeModel? TmpTimeModel
         {
             get { return tmpTimeModel; }
@@ -192,6 +206,19 @@ namespace ProjectLighthouse.View.Orders
             OnPropertyChanged(nameof(Drawings));
 
             Task.Run(() => ChartTimeModel());
+
+            BreakdownCodes = DatabaseHelper.Read<BreakdownCode>();
+            Breakdowns = DatabaseHelper.Read<MachineBreakdown>()
+                .Where(x => x.OrderName == Order.Name)
+                .OrderBy(x => x.BreakdownStarted)
+                .ToList();
+
+            NewBreakdown = new()
+            {
+                BreakdownStarted = DateTime.Now.AddHours(-1),
+                BreakdownEnded = DateTime.Now,
+                OrderName = Order.Name,
+            };
         }
 
         private void ChartTimeModel()
@@ -674,7 +701,7 @@ namespace ProjectLighthouse.View.Orders
 
         private void CalculateTimeAndBar()
         {
-            Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Items);
+            Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Items, Breakdowns);
 
             double? partOff = null;
             if (!string.IsNullOrEmpty(Order.AllocatedMachine))
@@ -984,6 +1011,45 @@ namespace ProjectLighthouse.View.Orders
         private void clearButton_Click(object sender, RoutedEventArgs e)
         {
             Order.ScheduledEnd = null;
+        }
+
+        private void AddBreakdownButton_Click(object sender, RoutedEventArgs e)
+        {
+            NewBreakdown.ValidateAll();
+            if (NewBreakdown.HasErrors)
+            {
+                MessageBox.Show("New record has errors", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            NewBreakdown.CreatedAt = DateTime.Now;
+            NewBreakdown.CreatedBy = App.CurrentUser.UserName;
+
+            try
+            {
+                DatabaseHelper.Insert(NewBreakdown, throwErrs: true);
+            }
+            catch
+            {
+                MessageBox.Show("Failed to insert to database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            NewBreakdown.BreakdownMeta = BreakdownCodes.Find(x => x.Id == NewBreakdown.BreakdownCode);
+            Breakdowns = null;
+            Breakdowns = DatabaseHelper.Read<MachineBreakdown>()
+                .Where(x => x.OrderName == Order.Name)
+                .OrderBy(x => x.BreakdownStarted)
+                .ToList();
+            OnPropertyChanged(nameof(Breakdowns));
+            NewBreakdown = new()
+            {
+                BreakdownStarted = DateTime.Now.AddHours(-1),
+                BreakdownEnded = DateTime.Now,
+                OrderName = Order.Name
+            };
+
+            SaveExit = true;
         }
     }
 }
