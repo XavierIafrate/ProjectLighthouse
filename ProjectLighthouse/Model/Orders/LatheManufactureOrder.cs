@@ -4,9 +4,11 @@ using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -167,6 +169,11 @@ namespace ProjectLighthouse.Model.Orders
 
         public DateTime GetSettingStartDateTime()
         {
+            if (DateTime.MinValue.AddHours(TimeToSet) > StartDate)
+            {
+                return DateTime.MinValue;
+            }
+
             return StartDate.AddHours(TimeToSet * -1);
         }
 
@@ -188,6 +195,43 @@ namespace ProjectLighthouse.Model.Orders
         public int MaterialId { get; set; }
         [UpdateWatch]
         public bool IsResearch { get; set; }
+
+
+        private string requiredFeatures;
+        [UpdateWatch]
+        public string RequiredFeatures
+        {
+            get { return requiredFeatures; }
+            set 
+            { 
+                requiredFeatures = value; 
+                OnPropertyChanged(); 
+            }
+        }
+
+        [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public List<string> RequiredFeaturesList
+        {
+            get
+            {
+                if (RequiredFeatures is null) return new();
+                return RequiredFeatures.Split(";").ToList();
+            }
+            set
+            {
+                if (value.Count > 0)
+                {
+                    RequiredFeatures = string.Join(";", value);
+                    OnPropertyChanged();
+                    return;
+                }
+                RequiredFeatures = null;
+                OnPropertyChanged();
+            }
+        }
+
+
 
         [UpdateWatch]
         public string TimeCodePlanned { get; set; }
@@ -352,14 +396,6 @@ namespace ProjectLighthouse.Model.Orders
         }
 
         #endregion
-
-        public void UpdateStartDate(DateTime date, string machine)
-        {
-            StartDate = date == DateTime.MinValue ? DateTime.MinValue : date;
-            AllocatedMachine = string.IsNullOrEmpty(machine) ? null : machine;
-            string dbMachineEntry = string.IsNullOrEmpty(AllocatedMachine) ? "NULL" : $"'{AllocatedMachine}'";
-            DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
-        }
 
         public void MarkAsClosed()
         {

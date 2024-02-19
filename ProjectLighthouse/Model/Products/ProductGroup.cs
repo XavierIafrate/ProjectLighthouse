@@ -70,8 +70,37 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
+        private string? requiresFeatures;
+        public string? RequiresFeatures
+        {
+            get { return requiresFeatures; }
+            set
+            {
+                requiresFeatures = value;
+                OnPropertyChanged();
+            }
+        }
 
-
+        [Ignore]
+        public List<string> RequiresFeaturesList
+        {
+            get
+            {
+                if (RequiresFeatures is null) return new();
+                return RequiresFeatures.Split(";").OrderBy(x => x).ToList();
+            }
+            set
+            {
+                if (value.Count > 0)
+                {
+                    RequiresFeatures = string.Join(";", value);
+                    OnPropertyChanged();
+                    return;
+                }
+                RequiresFeatures = null;
+                OnPropertyChanged();
+            }
+        }
 
         private GroupStatus status;
         public GroupStatus Status

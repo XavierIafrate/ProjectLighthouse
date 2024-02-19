@@ -1,6 +1,8 @@
 ﻿using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Material
@@ -70,13 +72,44 @@ namespace ProjectLighthouse.Model.Material
         }
 
         private bool isDormant;
-
         public bool IsDormant
         {
             get { return isDormant; }
             set
             {
                 isDormant = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string? requiresFeatures;
+        public string? RequiresFeatures
+        {
+            get { return requiresFeatures; }
+            set
+            {
+                requiresFeatures = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [Ignore]
+        public List<string> RequiresFeaturesList
+        {
+            get
+            {
+                if (RequiresFeatures is null) return new();
+                return RequiresFeatures.Split(";").OrderBy(x => x).ToList();
+            }
+            set
+            {
+                if (value.Count > 0)
+                {
+                    RequiresFeatures = string.Join(";", value);
+                    OnPropertyChanged();
+                    return;
+                }
+                RequiresFeatures = null;
                 OnPropertyChanged();
             }
         }
