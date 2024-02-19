@@ -24,7 +24,6 @@ namespace ProjectLighthouse.Model.Administration
         public bool IsBlocked { get; set; }
         public string DefaultView { get; set; }
         public bool ReceivesNotifications { get; set; }
-        public bool HasQualityNotifications { get; set; }
         public string Locale { get; set; }
         public double? DefaultMenuWidth { get; set; }
 
