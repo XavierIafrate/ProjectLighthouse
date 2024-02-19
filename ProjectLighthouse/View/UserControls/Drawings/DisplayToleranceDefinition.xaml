@@ -11,7 +11,12 @@
     DragOver="UserControl_DragOver"
     mc:Ignorable="d">
     <Grid>
-        <Border VerticalAlignment="Top" Visibility="Hidden" Height="15" x:Name="topBorder" CornerRadius="5,5,0,0">
+        <Border
+            x:Name="topBorder"
+            Height="15"
+            VerticalAlignment="Top"
+            CornerRadius="5,5,0,0"
+            Visibility="Hidden">
             <Border.Background>
                 <LinearGradientBrush Opacity="0.5" StartPoint="0,1" EndPoint="0,0">
                     <GradientStop Offset="0" Color="Transparent" />
@@ -19,7 +24,12 @@
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
-        <Border VerticalAlignment="Bottom" Visibility="Hidden" Height="15" x:Name="bottomBorder" CornerRadius="0,0,5,5">
+        <Border
+            x:Name="bottomBorder"
+            Height="15"
+            VerticalAlignment="Bottom"
+            CornerRadius="0,0,5,5"
+            Visibility="Hidden">
             <Border.Background>
                 <LinearGradientBrush Opacity="0.5" StartPoint="0,0" EndPoint="0,1">
                     <GradientStop Offset="0" Color="Transparent" />
@@ -28,59 +38,59 @@
             </Border.Background>
         </Border>
         <Grid
-        x:Name="MainGrid"
-        Margin="5,2"
-        TextElement.FontFamily="Consolas">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+            x:Name="MainGrid"
+            Margin="5,2"
+            TextElement.FontFamily="Consolas">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-
-
-
-        <TextBlock
-            x:Name="AddressText"
-            Grid.Row="0"
-            VerticalAlignment="Center"
-            d:Text="ADDRESS"
-            FontSize="14"
-            FontWeight="SemiBold" />
-        <TextBlock
-            x:Name="DescriptionText"
-            Grid.Row="1"
-            VerticalAlignment="Center"
-            d:Text="Description"
-            FontFamily="Segoe UI"
-            FontSize="11"
-            FontWeight="SemiBold"
-            Opacity="0.6" />
-        <TextBlock
-            x:Name="NominalText"
-            Grid.RowSpan="2"
-            Grid.Column="1"
-            VerticalAlignment="Center"
-            d:Text="NOM" />
-        <Grid
-            Grid.RowSpan="2"
-            Grid.Column="2"
-            VerticalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <TextBlock x:Name="MaxText" d:Text="+MAX" />
+
+
+
             <TextBlock
-                x:Name="MinText"
+                x:Name="AddressText"
+                Grid.Row="0"
+                VerticalAlignment="Center"
+                d:Text="ADDRESS"
+                FontSize="14"
+                FontWeight="SemiBold" />
+            <TextBlock
+                x:Name="DescriptionText"
                 Grid.Row="1"
-                d:Text="-MIN" />
-        </Grid>
+                VerticalAlignment="Center"
+                d:Text="Description"
+                FontFamily="Segoe UI"
+                FontSize="11"
+                FontWeight="SemiBold"
+                Opacity="0.6" />
+            <TextBlock
+                x:Name="NominalText"
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                d:Text="NOM" />
+            <Grid
+                Grid.RowSpan="2"
+                Grid.Column="2"
+                VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="MaxText" d:Text="+MAX" />
+                <TextBlock
+                    x:Name="MinText"
+                    Grid.Row="1"
+                    d:Text="-MIN" />
+            </Grid>
         </Grid>
     </Grid>
-    
+
 </UserControl>
