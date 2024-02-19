@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.Packaging;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -39,7 +40,7 @@ namespace ProjectLighthouse.View.Scheduling
 
             if (Item.StartDate == DateTime.MinValue)
             {
-                calendar.SelectedDate = DateTime.Today.AddDays(1);
+                calendar.SelectedDate = DateTime.Today.AddDays(1).ChangeTime(12, 0, 0, 0);
                 TimeText.Text = "12:00";
             }
             else
