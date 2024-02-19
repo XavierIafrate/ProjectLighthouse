@@ -18,7 +18,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             using SQLiteConnection conn = new(DatabasePath);
             int result = conn.Execute(query);
-            Console.WriteLine(result);
 
             return true;
         }
