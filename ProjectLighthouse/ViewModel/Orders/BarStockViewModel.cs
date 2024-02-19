@@ -228,7 +228,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 FilteredBarOverviews = FilteredBarOverviews.Where(x => x.Orders.Any(o => o.RequiresBar())).ToList();
             }
 
-            FilteredBarOverviews = FilteredBarOverviews.OrderBy(x => x.Priority).ThenBy(x => x.BarStock.MaterialId).ThenBy(x => x.BarStock.Size).ToList();
+            FilteredBarOverviews = FilteredBarOverviews.OrderBy(x => x.Status).ThenBy(x => x.BarStock.MaterialId).ThenBy(x => x.BarStock.Size).ToList();
 
             if (FilteredBarOverviews.Count > 0)
             {
@@ -242,19 +242,13 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         void RecommendPurchaseOrder()
         {
-            if (SelectedBarStock is null)
-            {
-                SuggestedOrderText = null;
-                return;
-            }
+            SuggestedOrderText = null;
+            if (SelectedBarStock is null) return;
 
-            if (SelectedBarStock.FreeBar > 0)
-            {
-                SuggestedOrderText = null;
-                return;
-            }
+            bool requiresSuggestion = SelectedBarStock.FreeBar < 0 || SelectedBarStock.FreeBar < (int)Math.Floor(SelectedBarStock.BarStock.SuggestedStock * 0.1);
+            if (!requiresSuggestion) return;
 
-            int numBarsToBuy = SelectedBarStock.BarStock.SuggestedStock + (int)Math.Abs(SelectedBarStock.FreeBar);
+            int numBarsToBuy = SelectedBarStock.BarStock.SuggestedStock - (int)SelectedBarStock.FreeBar;
             if (numBarsToBuy == 0)
             {
                 SuggestedOrderText = null;
