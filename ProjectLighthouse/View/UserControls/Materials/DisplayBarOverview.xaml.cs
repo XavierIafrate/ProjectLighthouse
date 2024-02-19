@@ -24,9 +24,10 @@ namespace ProjectLighthouse.View.UserControls
 
             control.BarID.Text = control.Bar.BarStock.Id;
 
-            control.WarningFlag.Visibility = control.Bar.Priority == 0 ? Visibility.Visible : Visibility.Collapsed;
-            control.WaitingFlag.Visibility = control.Bar.Priority == 1 ? Visibility.Visible : Visibility.Collapsed;
-            control.OKFlag.Visibility = control.Bar.Priority >= 2 ? Visibility.Visible : Visibility.Collapsed;
+            control.WarningFlag.Visibility = control.Bar.Status == BarStockRequirementOverview.StockStatus.OrderNow ? Visibility.Visible : Visibility.Collapsed;
+            control.LowStockFlag.Visibility = control.Bar.Status == BarStockRequirementOverview.StockStatus.LowStock ? Visibility.Visible : Visibility.Collapsed;
+            control.WaitingFlag.Visibility = control.Bar.Status == BarStockRequirementOverview.StockStatus.OnOrder ? Visibility.Visible : Visibility.Collapsed;
+            control.OKFlag.Visibility = control.Bar.Status == BarStockRequirementOverview.StockStatus.StockOk ? Visibility.Visible : Visibility.Collapsed;
 
             control.AlarmFlag.Visibility = control.Bar.UrgentProblem ? Visibility.Visible : Visibility.Collapsed;
         }

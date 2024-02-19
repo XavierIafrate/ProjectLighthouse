@@ -19,9 +19,9 @@
         </Grid.ColumnDefinitions>
         <TextBlock
             x:Name="BarID"
+            VerticalAlignment="Center"
             FontFamily="Consolas"
             FontSize="16"
-            VerticalAlignment="Center"
             FontWeight="SemiBold"
             Opacity="0.8"
             Text="PRB000-0000-000" />
@@ -53,6 +53,24 @@
                         FontWeight="SemiBold"
                         Foreground="{StaticResource Red}"
                         Text="Order Required"
+                        TextAlignment="Center" />
+                </Border>
+            </Grid>
+            <Grid x:Name="LowStockFlag" VerticalAlignment="Center">
+                <Border
+                    Height="22"
+                    MinWidth="22"
+                    Background="{StaticResource OrangeFaded}"
+                    CornerRadius="5">
+                    <TextBlock
+                        Width="120"
+                        Margin="0,0,0,1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource Orange}"
+                        Text="Low Stock"
                         TextAlignment="Center" />
                 </Border>
             </Grid>
