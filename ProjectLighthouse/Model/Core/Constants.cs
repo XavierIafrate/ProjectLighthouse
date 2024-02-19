@@ -20,6 +20,9 @@ namespace ProjectLighthouse.Model.Core
         public double MaxPartDiameter { get; set; }
 
 
+        public OpeningHours OpeningHours { get; set; }
+
+
         public Constants()
         {
             // Automated inputs
