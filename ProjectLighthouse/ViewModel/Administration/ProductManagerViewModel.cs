@@ -267,8 +267,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             OnPropertyChanged(nameof(TimeModels));
 
             Task.Run(() => CostFilteredTurnedProducts());
-
-
         }
 
         void CostFilteredTurnedProducts()
