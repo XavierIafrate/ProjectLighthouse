@@ -1,0 +1,130 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Scheduling.Components.ScheduleItemInspector"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Scheduling.Components"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="clr-namespace:ProjectLighthouse.Model.Orders"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
+    d:Background="White"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <ScrollViewer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="18"
+                FontWeight="SemiBold"
+                Text="Inspector" />
+
+            <TextBlock
+                x:Name="NothingSelectedTextBlock"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{StaticResource annotation}"
+                Text="Nothing Selected" />
+            <Grid
+                x:Name="metaGrid"
+                Grid.Row="2"
+                d:Visibility="Visible"
+                Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    x:Name="ItemNameTextBlock"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="ITEM_NAME" />
+            </Grid>
+            <StackPanel
+                x:Name="orderGrid"
+                Grid.Row="3"
+                d:Visibility="Visible"
+                Visibility="Collapsed">
+
+                <TextBlock x:Name="SettingStartTextBlock" Text="SETTING_START" />
+
+                <TextBlock x:Name="SettingTimeTextBlock" Text="SETTING_ALLOWANCE" />
+                <TextBlock x:Name="StartDateTextBlock" Text="RUNNING_START" />
+                <TextBlock Style="{StaticResource InputLabel}" Text="Material" />
+                <Grid Margin="10,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        x:Name="BarIdTextBlock"
+                        FontFamily="Consolas"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="BAR_ID" />
+                    <TextBlock
+                        x:Name="MaterialInfoTextBlock"
+                        Grid.Row="1"
+                        FontWeight="SemiBold"
+                        Text="MATERIAL_TEXT GRADE_TEXT" />
+
+                    <StackPanel
+                        Grid.RowSpan="2"
+                        Grid.Column="1"
+                        Margin="10,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Path
+                            x:Name="HexagonProfileSymbol"
+                            Width="15"
+                            Height="16"
+                            Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"
+                            Fill="Black"
+                            Stretch="Uniform" />
+                        <Path
+                            x:Name="RoundProfileSymbol"
+                            Width="15"
+                            Height="16"
+                            Data="M4.15,21.46L5.47,19.58C3.35,17.74 2,15.03 2,12A10,10 0 0,1 12,2C13.78,2 15.44,2.46 16.89,3.27L18.21,1.39L19.85,2.54L18.53,4.42C20.65,6.26 22,8.97 22,12A10,10 0 0,1 12,22C10.22,22 8.56,21.54 7.11,20.73L5.79,22.61L4.15,21.46M12,4A8,8 0 0,0 4,12C4,14.35 5,16.46 6.63,17.93L15.73,4.92C14.62,4.33 13.35,4 12,4M12,20A8,8 0 0,0 20,12C20,9.65 19,7.54 17.37,6.07L8.27,19.08C9.38,19.67 10.65,20 12,20Z"
+                            Fill="Black"
+                            Stretch="Uniform" />
+                        <TextBlock
+                            x:Name="BarSizeTextBlock"
+                            Margin="5,0,0,0"
+                            FontWeight="SemiBold"
+                            Text="BAR_SIZE_TEXT" />
+                    </StackPanel>
+
+                </Grid>
+                <TextBlock Text="Items" />
+                <ItemsControl x:Name="OrderItemsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ProductName}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Breakdowns" />
+                <ItemsControl d:ItemsSource="{d:SampleData ItemCount=3}" />
+            </StackPanel>
+            <Grid
+                x:Name="maintenanceGrid"
+                d:Visibility="Visible"
+                Visibility="Collapsed" />
+        </Grid>
+    </ScrollViewer>
+
+</UserControl>

@@ -1,11 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="Default" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource Purple}" />
+        <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Margin" Value="5" />
-        <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+        <Setter Property="Foreground" Value="{StaticResource Purple}" />
+        <Setter Property="TextElement.FontWeight" Value="SemiBold" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -15,9 +16,9 @@
                         Padding="20,0"
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
-                        CornerRadius="12">
+                        CornerRadius="5">
                         <ContentPresenter
-                            Margin="0,0,0,2"
+                            Margin="0,0,0,1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center" />
                     </Border>
@@ -26,7 +27,8 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
                 <Setter Property="Cursor" Value="Hand" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
@@ -41,7 +43,8 @@
                 <Setter Property="Cursor" Value="No" />
             </MultiTrigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource PurpleLight}" />
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -136,6 +139,34 @@
                             Margin="10,0,10,2"
                             VerticalAlignment="Center"
                             FontSize="16"
+                            Foreground="White"
+                            Text="{TemplateBinding Tag}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Clean_ToolTip_Left" TargetType="{x:Type ToolTip}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Placement" Value="Left" />
+        <Setter Property="HorizontalOffset" Value="-22" />
+        <Setter Property="VerticalOffset" Value="0" />
+        <Setter Property="PlacementRectangle" Value="20,0,0,0" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="StaysOpen" Value="True" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToolTip}">
+                    <Border
+                        Height="25"
+                        Background="Black"
+                        CornerRadius="5">
+                        <TextBlock
+                            Margin="10,0,10,2"
+                            VerticalAlignment="Center"
                             Foreground="White"
                             Text="{TemplateBinding Tag}" />
                     </Border>
@@ -256,22 +287,22 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
-                    x:Name="border"
-                    Width="35"
-                    Height="35"
-                    HorizontalAlignment="Center"
-                    Background="{TemplateBinding Background}"
-                    BorderThickness="0"
-                    CornerRadius="5"
-                    ToolTipService.InitialShowDelay="0">
+                        x:Name="border"
+                        Width="35"
+                        Height="35"
+                        HorizontalAlignment="Center"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="5"
+                        ToolTipService.InitialShowDelay="0">
                         <Border.ToolTip>
                             <ToolTip Style="{StaticResource Notifications_Mini_Tooltip}" Tag="{TemplateBinding Tag}" />
                         </Border.ToolTip>
                         <Path
-                        Height="20"
-                        Data="M21 6.5C21 8.43 19.43 10 17.5 10S14 8.43 14 6.5 15.57 3 17.5 3 21 4.57 21 6.5M19 11.79C18.5 11.92 18 12 17.5 12C14.47 12 12 9.53 12 6.5C12 5.03 12.58 3.7 13.5 2.71C13.15 2.28 12.61 2 12 2C10.9 2 10 2.9 10 4V4.29C7.03 5.17 5 7.9 5 11V17L3 19V20H21V19L19 17V11.79M12 23C13.11 23 14 22.11 14 21H10C10 22.11 10.9 23 12 23Z"
-                        Fill="{TemplateBinding Foreground}"
-                        Stretch="Uniform" />
+                            Height="20"
+                            Data="M21 6.5C21 8.43 19.43 10 17.5 10S14 8.43 14 6.5 15.57 3 17.5 3 21 4.57 21 6.5M19 11.79C18.5 11.92 18 12 17.5 12C14.47 12 12 9.53 12 6.5C12 5.03 12.58 3.7 13.5 2.71C13.15 2.28 12.61 2 12 2C10.9 2 10 2.9 10 4V4.29C7.03 5.17 5 7.9 5 11V17L3 19V20H21V19L19 17V11.79M12 23C13.11 23 14 22.11 14 21H10C10 22.11 10.9 23 12 23Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -1484,6 +1515,70 @@
     </Style>
 
     <Style
+        x:Key="Action_Reset_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border
+                            x:Name="bg"
+                            Height="30"
+                            MinWidth="40"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="16"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2M18 11H13L14.81 9.19A3.94 3.94 0 0 0 12 8A4 4 0 1 0 15.86 13H17.91A6 6 0 1 1 12 6A5.91 5.91 0 0 1 16.22 7.78L18 6Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Red}" />
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
         x:Key="Action_New_Request_Button"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
@@ -1675,6 +1770,72 @@
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
                 <Setter Property="Background" Value="{StaticResource BlueDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="Action_Find_Button_Small"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Margin" Value="5,0,5,3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <Border
+                            x:Name="bg"
+                            Height="20"
+                            MinWidth="30"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                            CornerRadius="3" />
+                        <StackPanel
+                            Margin="5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Margin="5,0,4,0"
+                                HorizontalAlignment="Center"
+                                Data="M11.5 9C10.12 9 9 10.12 9 11.5S10.12 14 11.5 14 14 12.88 14 11.5 12.88 9 11.5 9M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4M16.79 18.21L13.88 15.3C13.19 15.74 12.37 16 11.5 16C9 16 7 14 7 11.5S9 7 11.5 7 16 9 16 11.5C16 12.38 15.74 13.19 15.3 13.89L18.21 16.79L16.79 18.21Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                x:Name="textBlock"
+                                Padding="0,0,7,1"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Text="{TemplateBinding Tag}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=textBlock}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Purple}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -2740,6 +2901,136 @@
     </Style>
 
     <Style
+        x:Key="HelpButton"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Foreground" Value="#cccccc" />
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Padding="8,3"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Path
+                                Width="15"
+                                Height="15"
+                                Data="M15.07,11.25L14.17,12.17C13.45,12.89 13,13.5 13,15H11V14.5C11,13.39 11.45,12.39 12.17,11.67L13.41,10.41C13.78,10.05 14,9.55 14,9C14,7.89 13.1,7 12,7A2,2 0 0,0 10,9H8A4,4 0 0,1 12,5A4,4 0 0,1 16,9C16,9.88 15.64,10.67 15.07,11.25M13,19H11V17H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="3,0,0,1"
+                                VerticalAlignment="Center"
+                                Foreground="{TemplateBinding Foreground}"
+                                Text="Documentation" />
+                        </Grid>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Purple}" />
+                <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="HelpButton_Mini"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="#888888" />
+        <Setter Property="Tag" Value="Documentation" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Width="35"
+                        Height="35"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="5"
+                        ToolTipService.InitialShowDelay="0">
+                        <Border.ToolTip>
+                            <ToolTip Style="{StaticResource Notifications_Mini_Tooltip}" Tag="{TemplateBinding Tag}" />
+                        </Border.ToolTip>
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Data="M15.07,11.25L14.17,12.17C13.45,12.89 13,13.5 13,15H11V14.5C11,13.39 11.45,12.39 12.17,11.67L13.41,10.41C13.78,10.05 14,9.55 14,9C14,7.89 13.1,7 12,7A2,2 0 0,0 10,9H8A4,4 0 0,1 12,5A4,4 0 0,1 16,9C16,9.88 15.64,10.67 15.07,11.25M13,19H11V17H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource BlueLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource BlueDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="Notification_Mark_Read_Button"
+        BasedOn="{StaticResource Default}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="#888888" />
+        <Setter Property="Tag" Value="Settings" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Width="25"
+                        Height="25"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="5"
+                        ToolTipService.InitialShowDelay="0">
+                        <Border.ToolTip>
+                            <ToolTip Style="{StaticResource Clean_ToolTip_Left}" Tag="{TemplateBinding Tag}" />
+                        </Border.ToolTip>
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Data="M5,13H19V11H5M3,17H17V15H3M7,7V9H21V7"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource BlueLight}" />
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource BlueDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+
+    <Style
         x:Key="ClipboardButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
@@ -3313,6 +3604,131 @@
                                 Width="8"
                                 Height="8"
                                 Data="M11,4H13V16L18.5,10.5L19.92,11.92L12,19.84L4.08,11.92L5.5,10.5L11,16V4Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnPurple}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LargeIncrementButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="15"
+                        Height="15"
+                        Background="#01ffffff"
+                        CornerRadius="5">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                x:Name="path"
+                                Width="8"
+                                Height="8"
+                                Data="M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnPurple}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="SmallIncrementButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="15"
+                        Height="15"
+                        Background="#01ffffff"
+                        CornerRadius="5">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                x:Name="path"
+                                Width="8"
+                                Height="8"
+                                Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnPurple}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="LargeDecrementButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="15"
+                        Height="15"
+                        Background="#01ffffff"
+                        CornerRadius="5">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                x:Name="path"
+                                Width="8"
+                                Height="8"
+                                Data="M18.41,7.41L17,6L11,12L17,18L18.41,16.59L13.83,12L18.41,7.41M12.41,7.41L11,6L5,12L11,18L12.41,16.59L7.83,12L12.41,7.41Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnPurple}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="SmallDecrementButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="15"
+                        Height="15"
+                        Background="#01ffffff"
+                        CornerRadius="5">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                x:Name="path"
+                                Width="8"
+                                Height="8"
+                                Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
                         </Grid>

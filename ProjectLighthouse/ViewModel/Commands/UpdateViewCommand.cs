@@ -32,6 +32,21 @@ namespace ProjectLighthouse.ViewModel.Commands
 
             App.ActiveViewModel = targetView;
 
+#if DEBUG
+            if (targetView == "Schedule")
+            {
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.SelectedViewModel = new NewScheduleViewModel();
+                viewModel.NavText = App.CurrentUser.Locale switch
+                {
+                    "Polish" => "Harmonogram",
+                    "Persian" => "برنامه",
+                    "Welsh" => "Amserlen",
+                    "Latvian" => "Grafiks",
+                    _ => "Schedule (preview)"
+                };
+            }
+#else
             if (targetView == "Schedule")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
@@ -45,6 +60,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     _ => "Schedule"
                 };
             }
+#endif
             else if (targetView == "Requests")
             {
                 viewModel.BetaWarningVis = Visibility.Visible;

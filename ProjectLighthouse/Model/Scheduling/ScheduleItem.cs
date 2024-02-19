@@ -1,5 +1,9 @@
-﻿using SQLite;
+﻿using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.ViewModel.Helpers;
+using SQLite;
 using System;
+using System.Collections.Generic;
+using static ProjectLighthouse.Model.Scheduling.ProductionSchedule;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
@@ -28,6 +32,72 @@ namespace ProjectLighthouse.Model.Scheduling
         [Ignore]
         public bool IsZeroSet { get; set; }
 
+
+        [UpdateWatch]
+        public string? ScheduleLock { get; set; }
+
+        [Ignore]
+        public ScheduleLock? ScheduleLockData
+        {
+            get 
+            { 
+                if(string.IsNullOrEmpty(ScheduleLock)) return null;
+                try
+                {
+                    return ProductionSchedule.ScheduleLock.Parse(ScheduleLock);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (value == null)
+                {
+                    ScheduleLock = null;
+                    return;
+                }
+
+                ScheduleLock = value.Serialise();
+                OnPropertyChanged();
+            }
+        }
+
+        public event EventHandler OnScheduleLockChanged;
+
+        private List<Warning> warnings = new();
+        [Ignore]
+        public List<Warning> Warnings
+        {
+            get { return warnings; }
+            set { warnings = value; }
+        }
+
+        private List<Advisory> advisories = new();
+        [Ignore]
+        public List<Advisory> Advisories
+        {
+            get { return advisories; }
+            set { advisories = value; }
+        }
+
+        public event EventHandler OnAdvisoriesChanged;
+        public event EventHandler OnWarningsChanged;
+
+        internal void SetAdvisories(List<Advisory> orderAdvisories)
+        {
+            this.Advisories = orderAdvisories;
+            OnAdvisoriesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal void SetWarnings(List<Warning> orderWarnings)
+        {
+            this.Warnings = orderWarnings;
+            OnWarningsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+
         public event Action EditMade;
         public void NotifyEditMade()
         {
@@ -43,6 +113,14 @@ namespace ProjectLighthouse.Model.Scheduling
         public DateTime EndsAt()
         {
             return StartDate.AddSeconds(TimeToComplete);
+        }
+
+        public void UpdateStartDate(DateTime date, string machine)
+        {
+            StartDate = date == DateTime.MinValue ? DateTime.MinValue : date;
+            AllocatedMachine = string.IsNullOrEmpty(machine) ? null : machine;
+            string dbMachineEntry = string.IsNullOrEmpty(AllocatedMachine) ? "NULL" : $"'{AllocatedMachine}'";
+            DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
         }
     }
 }
