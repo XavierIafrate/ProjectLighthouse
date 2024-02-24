@@ -1,7 +1,10 @@
 ﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Scheduling;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -27,6 +30,31 @@ namespace ProjectLighthouse.Model.Administration
                 OnPropertyChanged();
             }
         }
+
+        private double softMinDiameter;
+        [UpdateWatch]
+        public double SoftMinDiameter
+        {
+            get { return softMinDiameter; }
+            set 
+            { 
+                softMinDiameter = value;
+                OnPropertyChanged(); 
+            }
+        }
+
+        private double softMaxDiameter;
+        [UpdateWatch]
+        public double SoftMaxDiameter
+        {
+            get { return softMaxDiameter; }
+            set
+            {
+                softMaxDiameter = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private double maxLength;
         [UpdateWatch]
@@ -65,6 +93,40 @@ namespace ProjectLighthouse.Model.Administration
         [Ignore]
         public List<Attachment> ServiceRecords { get; set; }
 
+        private string? features;
+        [UpdateWatch]
+        public string? Features
+        {
+            get { return features; }
+            set
+            {
+                features = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        [Ignore]
+        public List<string> FeatureList
+        {
+            get
+            {
+                if (Features is null) return new();
+                return Features.Split(";").ToList();
+            }
+            set
+            {
+                if (value.Count > 0)
+                {
+                    Features = string.Join(";", value);
+                    OnPropertyChanged();
+                    return;
+                }
+                Features = null;
+                OnPropertyChanged();
+            }
+        }
+
 
         public string MachineKey
         {
@@ -101,13 +163,57 @@ namespace ProjectLighthouse.Model.Administration
 
                 if (MaxDiameter <= 0)
                 {
-                    AddError(propertyName, "Max Diameter must be greater than or equal to zero");
+                    AddError(propertyName, "Max Diameter must be greater than zero");
                     return;
                 }
 
                 if (MaxDiameter > 1000)
                 {
                     AddError(propertyName, "Max Diameter must be less than or equal to 1,000mm");
+                    return;
+                }
+
+
+                return;
+            }
+            else if (propertyName == nameof(SoftMaxDiameter))
+            {
+                ClearErrors(propertyName);
+
+                if (SoftMaxDiameter <= 0)
+                {
+                    AddError(propertyName, "Soft Max Diameter must be greater than zero");
+                    return;
+                }
+
+                if (SoftMaxDiameter > MaxDiameter)
+                {
+                    AddError(propertyName, "Soft Max Diameter must be less than or equal to Max Diameter");
+                    return;
+                }
+
+
+                return;
+            }
+            else if (propertyName == nameof(SoftMinDiameter))
+            {
+                ClearErrors(propertyName);
+
+                if (SoftMinDiameter < 0)
+                {
+                    AddError(propertyName, "Soft Max Diameter must be greater than or equal to zero");
+                    return;
+                }
+
+                if (SoftMinDiameter >= MaxDiameter)
+                {
+                    AddError(propertyName, "Soft Min Diameter must be less than Max Diameter");
+                    return;
+                }
+
+                if (SoftMinDiameter >= SoftMaxDiameter)
+                {
+                    AddError(propertyName, "Soft Min Diameter must be less than Soft Max Diameter");
                     return;
                 }
 
@@ -189,6 +295,35 @@ namespace ProjectLighthouse.Model.Administration
             List<string> changes = GetChanges(otherLathe);
 
             return changes.Count > 0;
+        }
+
+        internal bool CanRun(ScheduleItem item)
+        {
+            if (item is MachineService)
+            {
+                return true;
+            }
+            else if (item is LatheManufactureOrder order)
+            {
+                if (order.Bar.MajorDiameter > this.MaxDiameter)
+                {
+                    return false;
+                }
+
+                if (order.OrderItems.Any(x => x.MajorLength > this.MaxLength))
+                {
+                    return false;
+                }
+
+                if(order.RequiredFeaturesList.Any(x => !FeatureList.Contains(x)))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }
