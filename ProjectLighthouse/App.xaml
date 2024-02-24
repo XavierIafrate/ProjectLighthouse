@@ -43,6 +43,7 @@
                 <ResourceDictionary Source="./Themes/StylishWrapPanel.xaml" />
                 <ResourceDictionary Source="./Themes/StylishTreeView.xaml" />
                 <ResourceDictionary Source="./Themes/StylishCalendar.xaml" />
+                <ResourceDictionary Source="./Themes/StylishListBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--#endregion-->
 

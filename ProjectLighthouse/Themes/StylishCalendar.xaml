@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style x:Key="CalendarDayButtonStyle" TargetType="CalendarDayButton">
+    <Style x:Key="CalendarDayButtonStyle" TargetType="{x:Type CalendarDayButton}">
         <Setter Property="MinWidth" Value="5" />
         <Setter Property="MinHeight" Value="5" />
         <Setter Property="FontSize" Value="10" />
@@ -17,7 +17,7 @@
                             RadiusY="1" />
                         <Rectangle
                             x:Name="SelectedBackground"
-                            Fill="{StaticResource Purple}"
+                            Fill="{StaticResource PurpleFaded}"
                             Opacity="0"
                             RadiusX="1"
                             RadiusY="1" />
@@ -27,7 +27,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}" />
                         <Rectangle
                             x:Name="HighlightBackground"
-                            Fill="Red"
+                            Fill="{StaticResource BlueLight}"
                             Opacity="0"
                             RadiusX="1"
                             RadiusY="1" />
@@ -55,7 +55,7 @@
                             IsHitTestVisible="false"
                             RadiusX="1"
                             RadiusY="1"
-                            Stroke="DodgerBlue"
+                            Stroke="{StaticResource Purple}"
                             Visibility="Collapsed" />
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup Name="CommonStates">
@@ -202,7 +202,7 @@
     </Style>
 
     <!--  Style for the months of a year and years of a decade.  -->
-    <Style x:Key="CalendarButtonStyle" TargetType="CalendarButton">
+    <Style x:Key="CalendarButtonStyle" TargetType="{x:Type CalendarButton}">
         <Setter Property="MinWidth" Value="40" />
         <Setter Property="MinHeight" Value="42" />
         <Setter Property="FontSize" Value="10" />
