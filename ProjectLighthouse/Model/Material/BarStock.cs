@@ -259,5 +259,4 @@ namespace ProjectLighthouse.Model.Material
             throw new Exception($"Validation for {propertyName} has not been configured.");
         }
     }
-
 }
