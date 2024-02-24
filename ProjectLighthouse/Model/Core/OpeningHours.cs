@@ -15,13 +15,13 @@ namespace ProjectLighthouse.Model.Core
             if (!day.OpensOnDay) return true;
 
             DateTime openingTime = new(date.Ticks);
-            openingTime.ChangeTime(day.OpeningHour, day.OpeningMinute, 0, 0);
+            openingTime = openingTime.ChangeTime(day.OpeningHour, day.OpeningMinute, 0, 0);
 
             if(date < openingTime) return true;
 
             // you don't have to go home but you can't stay here
             DateTime closingTime = new(date.Ticks);
-            closingTime.ChangeTime(day.ClosingHour, day.ClosingMinute, 0, 0);
+            closingTime = closingTime.ChangeTime(day.ClosingHour, day.ClosingMinute, 0, 0);
 
             if (date > closingTime) return true;
 
