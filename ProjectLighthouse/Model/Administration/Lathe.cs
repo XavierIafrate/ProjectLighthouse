@@ -39,7 +39,8 @@ namespace ProjectLighthouse.Model.Administration
             set 
             { 
                 softMinDiameter = value;
-                OnPropertyChanged(); 
+                ValidateProperty();
+                OnPropertyChanged();
             }
         }
 
@@ -51,6 +52,7 @@ namespace ProjectLighthouse.Model.Administration
             set
             {
                 softMaxDiameter = value;
+                ValidateProperty();
                 OnPropertyChanged();
             }
         }
@@ -150,6 +152,8 @@ namespace ProjectLighthouse.Model.Administration
         public new void ValidateAll()
         {
             base.ValidateAll();
+            ValidateProperty(nameof(SoftMinDiameter));
+            ValidateProperty(nameof(SoftMaxDiameter));
             ValidateProperty(nameof(MaxDiameter));
             ValidateProperty(nameof(MaxLength));
             ValidateProperty(nameof(PartOff));
