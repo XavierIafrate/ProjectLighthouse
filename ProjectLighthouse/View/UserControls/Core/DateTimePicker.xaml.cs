@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -32,6 +24,8 @@ namespace ProjectLighthouse.View.UserControls
             control.timeText.Text = control.DateTime.ToString("HH:mm");
         }
 
+        public event EventHandler DateChanged;
+
         public DateTimePicker()
         {
             InitializeComponent();
@@ -39,8 +33,22 @@ namespace ProjectLighthouse.View.UserControls
 
         private void datePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(!this.IsLoaded) return;
-            this.DateTime = this.datePicker.SelectedDate ?? DateTime.MinValue;
+            if (!this.IsLoaded) return;
+
+            DateTime newDateTime;
+            if (this.datePicker.SelectedDate == null)
+            {
+                newDateTime = DateTime.MinValue;
+            }
+            else
+            {
+                newDateTime = (DateTime)this.datePicker.SelectedDate;
+                newDateTime = newDateTime.ChangeTime(this.DateTime.Hour, this.DateTime.Minute, 0, 0);
+            }
+            
+            this.DateTime = newDateTime;
+
+            DateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void largeDecrementButton_Click(object sender, RoutedEventArgs e)
@@ -48,6 +56,8 @@ namespace ProjectLighthouse.View.UserControls
             if (this.DateTime < DateTime.MinValue.AddHours(1)) return;
             this.DateTime = this.DateTime.AddHours(-1);
             timeText.Text = DateTime.ToString("HH:mm");
+        
+            DateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void smallDecrementButton_Click(object sender, RoutedEventArgs e)
@@ -55,6 +65,8 @@ namespace ProjectLighthouse.View.UserControls
             if (this.DateTime < DateTime.MinValue.AddMinutes(1)) return;
             this.DateTime = this.DateTime.AddMinutes(-1);
             timeText.Text = DateTime.ToString("HH:mm");
+         
+            DateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void largeIncrementButton_Click(object sender, RoutedEventArgs e)
@@ -62,6 +74,8 @@ namespace ProjectLighthouse.View.UserControls
             if (this.DateTime > DateTime.MaxValue.AddHours(-1)) return;
             this.DateTime = this.DateTime.AddHours(1);
             timeText.Text = DateTime.ToString("HH:mm");
+
+            DateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void smallIncrementButton_Click(object sender, RoutedEventArgs e)
@@ -69,6 +83,8 @@ namespace ProjectLighthouse.View.UserControls
             if (this.DateTime > DateTime.MaxValue.AddMinutes(-1)) return;
             this.DateTime = this.DateTime.AddMinutes(1);
             timeText.Text = DateTime.ToString("HH:mm");
+
+            DateChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }
