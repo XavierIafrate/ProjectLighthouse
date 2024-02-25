@@ -276,6 +276,21 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         internal void Reschedule(RescheduleInformation info)
         {
+            if (info.createRecord)
+            {
+                try
+                {
+                    AddNewItem(info.item);
+                }
+                catch(Exception ex)
+                {
+                    NotificationManager.NotifyHandledException(ex);
+                    return;
+                }
+
+                Schedule.UnallocatedItems.Add(info.item);
+            }
+
             try
             {
                 Schedule.RescheduleItem(info);
@@ -287,6 +302,24 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             SelectedItem = null;
             SelectedItem = info.item;
+        }
+
+        private void AddNewItem(ScheduleItem item)
+        {
+            if (item is MachineService service)
+            {
+                try
+                {
+                    DatabaseHelper.Insert<MachineService>(service, throwErrs: true);
+                }
+                catch
+                {
+                    throw;
+                }
+                return;
+            }
+
+            throw new NotImplementedException();
         }
 
         internal void ResetDates()
