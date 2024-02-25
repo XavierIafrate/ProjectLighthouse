@@ -137,6 +137,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             }
         }
 
+        private bool onHolidaysChangedSubscribed;
         private static void SetSchedule(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not ScheduleTimeline control) return;
@@ -145,9 +146,20 @@ namespace ProjectLighthouse.View.Scheduling.Components
             if (control.SelectItemCommand == null) return;
             if (control.RescheduleCommand == null) return;
 
+            if (!control.onHolidaysChangedSubscribed)
+            {
+                control.Schedule.OnHolidaysChanged += control.RedrawHolidays;
+                control.onHolidaysChangedSubscribed = true;
+            }
+
             control.DrawColumnHeaders();
             control.DrawRowHeaders();
             control.DrawSwimLanes();
+        }
+
+        private void RedrawHolidays(object sender, EventArgs e)
+        {
+            DrawColumnHeaders();
         }
 
         public int RowHeight
@@ -595,7 +607,6 @@ namespace ProjectLighthouse.View.Scheduling.Components
         }
 
         DateTime lastScroll = DateTime.MinValue;
-
         private void TimelineScroller_DragOver(object sender, DragEventArgs e)
         {
             if (DateTime.Now < lastScroll.AddMilliseconds(200))
