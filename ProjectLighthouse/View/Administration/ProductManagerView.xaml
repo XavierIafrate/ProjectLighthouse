@@ -331,7 +331,7 @@
                                                     VerticalAlignment="Center"
                                                     Background="{StaticResource TealFaded}"
                                                     CornerRadius="3"
-                                                    Visibility="{Binding CycleTime, Converter={StaticResource IntGreaterThanZero}}">
+                                                    Visibility="{Binding ItemCost, Converter={StaticResource NotNullToVisibility}}">
                                                     <TextBlock
                                                         Margin="8,0,8,1"
                                                         VerticalAlignment="Center"
