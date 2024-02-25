@@ -81,8 +81,7 @@
                         Margin="30,10"
                         HorizontalAlignment="Right"
                         SelectionChanged="defaultViewComboBox_SelectionChanged">
-                        <ComboBoxItem Content="New Request" />
-                        <ComboBoxItem Content="View Requests" />
+                        <ComboBoxItem Content="Requests" />
                         <ComboBoxItem Content="Orders" />
                         <ComboBoxItem Content="Schedule" />
                     </ComboBox>
