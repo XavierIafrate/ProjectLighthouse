@@ -167,6 +167,9 @@ namespace ProjectLighthouse.Model.Orders
             set { timeToSet = value; OnPropertyChanged(); }
         }
 
+         // MaintenanceTime :(
+
+
         public DateTime GetSettingStartDateTime()
         {
             if (DateTime.MinValue.AddHours(TimeToSet) > StartDate)
@@ -311,6 +314,10 @@ namespace ProjectLighthouse.Model.Orders
         [CsvHelper.Configuration.Attributes.Ignore]
         public List<Lot> Lots { get; set; } = new();
 
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public List<MachineBreakdown> Breakdowns { get; set; } = new();
+
         #region Helpers
         public DateTime Deadline;
         public bool SameBar;
@@ -378,21 +385,32 @@ namespace ProjectLighthouse.Model.Orders
 
         public DateTime GetStartDeadline()
         {
-            DateTime dateTime = DateTime.MaxValue;
 
-            for (int i = 0; i < OrderItems.Count; i++)
+            List<LatheManufactureOrderItem> items = OrderItems
+                .Where(x => x.RequiredQuantity > 0)
+                .OrderByDescending(x => x.DateRequired)
+                .ToList();
+
+            if (items.Count == 0)
             {
-                if (OrderItems[i].RequiredQuantity == 0)
-                {
-                    continue;
-                }
-                DateTime deadline = OrderItems[i].DateRequired.AddSeconds(OrderItems[i].GetTimeToMakeRequired());
-                dateTime = dateTime > deadline
-                    ? deadline
-                    : dateTime;
+                return DateTime.MaxValue;
             }
 
-            return dateTime;
+            DateTime cursor = DateTime.MaxValue;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                int secondsToMake = items[i].GetTimeToMakeRequired();
+
+                if (cursor > items[i].DateRequired.ChangeTime(12, 0, 0, 0))
+                {
+                    cursor = items[i].DateRequired.ChangeTime(12, 0, 0, 0);
+                }
+
+                cursor = cursor.AddSeconds(secondsToMake * -1);
+            }
+
+            return cursor;
         }
 
         #endregion
