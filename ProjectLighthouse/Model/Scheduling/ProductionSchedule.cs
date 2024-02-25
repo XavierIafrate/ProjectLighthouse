@@ -140,6 +140,10 @@ namespace ProjectLighthouse.Model.Scheduling
                         unscheduled.Add(item);
                     }
                 }
+                else if (item.StartDate == DateTime.MinValue)
+                {
+                    unscheduled.Add(item);
+                }
             }
 
             this.UnallocatedItems = unscheduled;
@@ -471,6 +475,7 @@ namespace ProjectLighthouse.Model.Scheduling
             public string? desiredMachineId;
             public DateTime? desiredDate;
 
+            public bool createRecord = false;
 
             public RescheduleInformation(ScheduleItem item, string? destinationMachineId, DateTime? desiredDate)
             {
@@ -478,6 +483,14 @@ namespace ProjectLighthouse.Model.Scheduling
 
                 this.originMachineId = item.AllocatedMachine;
                 this.originDate = item.StartDate;
+
+                if (item is MachineService service)
+                {
+                    if (service.Id == 0 && string.IsNullOrEmpty(service.AllocatedMachine))
+                    {
+                        this.createRecord = true;
+                    }
+                }
 
                 if (string.IsNullOrWhiteSpace(destinationMachineId))
                 {
