@@ -2,11 +2,9 @@
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
-using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
@@ -51,127 +49,13 @@ namespace ProjectLighthouse.ViewModel.Administration
         public int TotalPartsMade { get; set; }
         public int TotalPartsMadeThisYear { get; set; }
 
-        private OperatingEfficiencyKpi ooe;
-        public OperatingEfficiencyKpi OOE
-        {
-            get { return ooe; }
-            set
-            {
-                ooe = value;
-                OnPropertyChanged();
-            }
-        }
-
-
         #endregion
 
         public AnalyticsViewModel()
         {
             GetAnalytics();
             GetWorkload();
-            //GetOEE(
-            //    start: DateTime.Today.AddDays((int)DateTime.Today.DayOfWeek * -1).AddDays(-7),
-            //    end: DateTime.Today.AddDays((int)DateTime.Today.DayOfWeek * -1));
-
             GetProductAnalytics();
-        }
-
-        private void GetOEE(DateTime start, DateTime end)
-        {
-            //return;
-            string lathe = "C03";
-            List<MachineOperatingBlock> blocks = DatabaseHelper.Read<MachineOperatingBlock>()
-                .Where(x => x.StateLeft >= start && x.StateEntered <= end && x.MachineID == lathe)
-                .ToList();
-
-            blocks = blocks.Denoise(start, end, 30 * 60);
-            blocks = blocks.Slice(start);
-            blocks = blocks.Slice(end);
-            blocks = blocks.Where(x => x.StateEntered >= start && x.StateLeft <= end).ToList();
-
-
-
-            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>()
-                .Where(x => x.State < OrderState.Cancelled && x.AllocatedMachine == lathe && x.StartDate <= end && x.EndsAt() >= start)
-                .OrderBy(x => x.StartDate)
-                .ToList();
-
-            //orders.ForEach(x => scheduleItems.Add(x));
-
-            //Schedule s = new(scheduleItems);
-
-
-            TimeSpan performanceChange = new();
-
-            TimeSpan availabilityLoss = new();
-
-
-            foreach (LatheManufactureOrder order in orders)
-            {
-                List<MachineOperatingBlock> orderBlocks = blocks.Slice(order.StartDate);
-                orderBlocks = blocks.Slice((order.CompletedAt == DateTime.MinValue ? order.EndsAt() : order.CompletedAt.Date.AddHours(6)));
-
-                orderBlocks = orderBlocks.Where(x => x.StateEntered >= order.StartDate && x.StateLeft <= (order.CompletedAt == DateTime.MinValue ? order.EndsAt() : order.CompletedAt.Date.AddHours(6))).ToList();
-
-                availabilityLoss = availabilityLoss.Add(new(0, 0, orderBlocks.Where(x => x.State != "Running").Sum(x => (int)x.SecondsElapsed)));
-                // TODO: THIS IS BROKEN DUE TO TIME CHANGE!!!! FIX IT XAV!
-                performanceChange = performanceChange.Add(new(0, 0, orderBlocks.Where(x => x.State == "Running").Sum(x => (int)x.SecondsElapsed / (x.CycleTime - 0))));
-            }
-
-            TimeSpan developmentTime = new();
-            TimeSpan settingTime = new();
-            TimeSpan maintenanceTime = new();
-
-            List<ScheduleItem> scheduleItems = new();
-
-            foreach (LatheManufactureOrder order in orders)
-            {
-
-                if (order.IsResearch)
-                {
-                    developmentTime = developmentTime.Add(new(
-                        Math.Min(end.Ticks, order.StartDate.AddSeconds(Math.Max(order.TimeToComplete, 86400 * 2)).Ticks)
-                        - Math.Max(start.Ticks, order.StartDate.Ticks)));
-                }
-                else
-                {
-                    if (order.StartDate >= start)
-                    {
-                        settingTime = settingTime.Add(new(6, 0, 0));
-                    }
-                    maintenanceTime = maintenanceTime.Add(new(0, 15, 0));
-                }
-
-                scheduleItems.Add(order);
-            }
-
-            TimeSpan scheduleLoss = Schedule.GetScheduleLoss(scheduleItems, start, end);
-
-            List<MaintenanceEvent> maintenance = DatabaseHelper.Read<MaintenanceEvent>()
-                .Where(x => x.AllocatedMachine == lathe && x.EndsAt() > start && x.StartDate < end)
-                .ToList();
-            foreach (MaintenanceEvent maintenanceEvent in maintenance)
-            {
-                maintenanceTime = maintenanceTime.Add(new(
-                    Math.Min(end.Ticks, maintenanceEvent.EndsAt().Ticks)
-                    - Math.Max(start.Ticks, maintenanceEvent.StartDate.Ticks)));
-            }
-
-            //OperatingEfficiencyKpi kpi = new()
-            //{
-            //    AvailableTime = end - start,
-            //    MaintenanceLoss = maintenanceTime,
-            //    DevelopmentLoss = developmentTime,
-            //    ScheduleLoss = scheduleLoss,
-            //    ChangeoverLoss = settingTime,
-            //    AvailabilityLoss = availabilityLoss,
-            //    PerformanceChange = performanceChange,
-            //    QualityLoss = new(0, 0, 0)
-            //};
-
-            //kpi.OperationsTime = kpi.AvailableTime;
-
-            //OOE = kpi;
         }
 
         private void GetProductAnalytics()
@@ -382,17 +266,6 @@ namespace ProjectLighthouse.ViewModel.Administration
                     TooltipLabelFormatter = (chartPoint) =>
                     $"Development: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
                 },
-                //new StepLineSeries<DateTimePoint>
-                //{
-                //    Values = depletion,
-                //    Name = "Depletion",
-                //    Fill=null,
-                //    GeometryStroke=new SolidColorPaint(SKColors.Red) {StrokeThickness=2},
-                //    Stroke=new SolidColorPaint(SKColors.Red) {StrokeThickness=2 },
-                //    GeometrySize=0,
-                //    TooltipLabelFormatter = (chartPoint) =>
-                //    $"Forecast: {new DateTime((long) chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
-                //}
             };
         }
 
