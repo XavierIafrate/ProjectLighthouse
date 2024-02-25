@@ -29,7 +29,10 @@
                 Foreground="{StaticResource Blue}"
                 Text="Granted by role" />
         </StackPanel>
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="1">
+        <StackPanel
+            Margin="1"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
             <Path
                 x:Name="HasPermissionBadge"
                 Width="15"
