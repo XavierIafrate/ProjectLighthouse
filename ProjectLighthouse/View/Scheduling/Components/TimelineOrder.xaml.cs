@@ -328,6 +328,13 @@ namespace ProjectLighthouse.View.Scheduling.Components
         private void UserControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!this.ItemButton.IsChecked ?? false) return;
+
+            if (App.CurrentUser.Role < UserRole.Scheduling)
+            {
+                return;
+            }
+
+
             if (this.Item is LatheManufactureOrder order)
             {
                 if (order.State >= OrderState.Running)

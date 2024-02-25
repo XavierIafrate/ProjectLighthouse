@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Scheduling;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Windows;
@@ -27,6 +28,11 @@ namespace ProjectLighthouse.View.Scheduling.Components
         public HolidayManager()
         {
             InitializeComponent();
+            if (App.CurrentUser.Role < UserRole.Scheduling)
+            {
+                AddButton.IsEnabled = false;
+                HolidaySelectionCalendar.IsEnabled = false;
+            }
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
@@ -60,7 +66,13 @@ namespace ProjectLighthouse.View.Scheduling.Components
             if (sender is not Button button) return;
             if (button.CommandParameter is not DateTime date) return;
 
-            if(Schedule.RemoveHoliday(date))
+            if (App.CurrentUser.Role < UserRole.Scheduling)
+            {
+                MessageBox.Show("Insufficient Permissions", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (Schedule.RemoveHoliday(date))
             {
                 DefinedHolidaysListBox.ItemsSource = null;
                 DefinedHolidaysListBox.ItemsSource = Schedule.Holidays;

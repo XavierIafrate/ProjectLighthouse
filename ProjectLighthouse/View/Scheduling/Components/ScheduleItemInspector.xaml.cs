@@ -40,7 +40,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
         private void SetRescheduleVis()
         {
-            RescheduleGrid.Visibility = RescheduleCommand != null  && Item != null 
+            RescheduleGrid.Visibility = RescheduleCommand != null  && Item != null  && App.CurrentUser.Role >= Model.Administration.UserRole.Scheduling
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
         }

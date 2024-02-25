@@ -38,9 +38,15 @@
                 CornerRadius="5">
                 <StackPanel>
                     <TextBlock
+                        Margin="0,0,0,-3"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource PurpleLight}"
+                        Text="ORDER" />
+                    <TextBlock
                         x:Name="OrderText"
-                        FontSize="18"
                         Margin="0,0,0,3"
+                        FontSize="18"
                         FontWeight="SemiBold"
                         Text="ORDER_NAME" />
                     <Grid>

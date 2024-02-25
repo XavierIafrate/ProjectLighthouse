@@ -20,7 +20,7 @@
                 MaxWidth="600" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"  MinHeight="50"/>
+            <RowDefinition Height="*" MinHeight="50" />
             <RowDefinition Height="10*" MinHeight="300" />
             <RowDefinition Height="40" />
             <RowDefinition Height="4*" />
@@ -34,7 +34,7 @@
             </Grid.ColumnDefinitions>
             <TextBox
                 Height="40"
-                Margin="5, 0"
+                Margin="5,0"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="search"
                 Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -66,8 +66,8 @@
             </Grid>
             <Button
                 Grid.Column="3"
-                Margin="5,0,0,0"
                 Height="40"
+                Margin="5,0,0,0"
                 HorizontalAlignment="Right"
                 Command="{Binding ResetDatesCmd}"
                 Style="{StaticResource Action_Reset_Button}"
@@ -173,23 +173,23 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel
-    Grid.Row="1"
-    Grid.Column="0"
-    HorizontalAlignment="Center"
-    VerticalAlignment="Center"
-    Visibility="{Binding Schedule.Optimisations, Converter={StaticResource EmptyListToVisibleOrCollapsed}}">
+                Grid.Row="1"
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="{Binding Schedule.Optimisations, Converter={StaticResource EmptyListToVisibleOrCollapsed}}">
                 <Path
-        Width="20"
-        Height="20"
-        Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,9.5C7,8.7 7.7,8 8.5,8C9.3,8 10,8.7 10,9.5C10,10.3 9.3,11 8.5,11C7.7,11 7,10.3 7,9.5M14.77,17.23C14.32,16.5 13.25,16 12,16C10.75,16 9.68,16.5 9.23,17.23L7.81,15.81C8.71,14.72 10.25,14 12,14C13.75,14 15.29,14.72 16.19,15.81L14.77,17.23M15.5,11C14.7,11 14,10.3 14,9.5C14,8.7 14.7,8 15.5,8C16.3,8 17,8.7 17,9.5C17,10.3 16.3,11 15.5,11Z"
-        Fill="{StaticResource PurpleFaded}"
-        Stretch="Uniform" />
+                    Width="20"
+                    Height="20"
+                    Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,9.5C7,8.7 7.7,8 8.5,8C9.3,8 10,8.7 10,9.5C10,10.3 9.3,11 8.5,11C7.7,11 7,10.3 7,9.5M14.77,17.23C14.32,16.5 13.25,16 12,16C10.75,16 9.68,16.5 9.23,17.23L7.81,15.81C8.71,14.72 10.25,14 12,14C13.75,14 15.29,14.72 16.19,15.81L14.77,17.23M15.5,11C14.7,11 14,10.3 14,9.5C14,8.7 14.7,8 15.5,8C16.3,8 17,8.7 17,9.5C17,10.3 16.3,11 15.5,11Z"
+                    Fill="{StaticResource PurpleFaded}"
+                    Stretch="Uniform" />
                 <TextBlock
-        Margin="5"
-        FontSize="18"
-        FontWeight="SemiBold"
-        Foreground="{StaticResource PurpleFaded}"
-        Text="No optimisations" />
+                    Margin="5"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource PurpleFaded}"
+                    Text="No optimisations" />
             </StackPanel>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal">
@@ -303,8 +303,8 @@
                         <scheduleComponents:ScheduleItemInspector
                             Margin="10,0"
                             VerticalAlignment="Stretch"
-                            RescheduleCommand="{Binding RescheduleCmd}"
-                            Item="{Binding SelectedItem}" />
+                            Item="{Binding SelectedItem}"
+                            RescheduleCommand="{Binding RescheduleCmd}" />
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Unallocated">
@@ -314,11 +314,20 @@
                         SelectedItem="{Binding SelectedItem}"
                         UnallocatedItems="{Binding Schedule.UnallocatedItems}" />
                 </TabItem>
-                <TabItem Header="Bookings" IsEnabled="False" />
+                <TabItem Header="Bookings">
+                    <StackPanel Margin="10">
+                        <TextBlock Style="{StaticResource section}" Text="Holidays" />
+                        <scheduleComponents:HolidayManager Margin="10,0" Schedule="{Binding Schedule}" />
+                        <Separator
+                            Height="2"
+                            Margin="5"
+                            Background="{StaticResource Surface}"
+                            BorderThickness="0" />
+                        <TextBlock Style="{StaticResource section}" Text="New Service" />
+                        <scheduleComponents:DraggableNewService Margin="5" />
+                    </StackPanel>
+                </TabItem>
             </TabControl>
-
         </Grid>
-
-
     </Grid>
 </UserControl>

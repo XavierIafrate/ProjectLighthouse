@@ -57,6 +57,17 @@ namespace ProjectLighthouse.View.Scheduling.Components
                 }
                 itemControl.MainButton.IsChecked = itemControl.Order.Name == control.SelectedItem.Name;
             }
+
+            foreach (DisplayUnallocatedService itemControl in FindVisualChildren<DisplayUnallocatedService>(control.MainItemsControl))
+            {
+                if (control.SelectedItem == null)
+                {
+                    itemControl.MainButton.IsChecked = false;
+                    continue;
+                }
+
+                itemControl.MainButton.IsChecked = itemControl.Service.Name == control.SelectedItem.Name;
+            }
         }
 
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject

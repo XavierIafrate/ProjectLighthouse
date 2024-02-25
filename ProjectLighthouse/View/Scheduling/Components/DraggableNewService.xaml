@@ -1,0 +1,109 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Scheduling.Components.DraggableNewService"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Scheduling.Components"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignWidth="500"
+    MouseDown="UserControl_MouseDown"
+    mc:Ignorable="d">
+    <Grid>
+        <Border
+            x:Name="BackgroundBorder"
+            Background="{StaticResource Surface}"
+            BorderBrush="{StaticResource OnBackground}"
+            BorderThickness="2"
+            CornerRadius="5">
+            <Grid Margin="15,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBox
+                    Grid.Row="1"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource OnSurface}"
+                    Style="{StaticResource GhostTextBox}"
+                    Tag="Service Name..."
+                    x:Name="ServiceNameTextbox"
+                    TextChanged="ServiceNameTextbox_TextChanged"
+                    Text="" />
+
+                <Grid Grid.Row="2" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.ColumnSpan="3" Style="{StaticResource InputLabel}" x:Name="RequiredNameLabel" Text="Required Time" Margin="0" />
+                    <Button
+                        x:Name="DecrementDaysButton"
+                        Click="DecrementDaysButton_Click"
+                        IsEnabled="False"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource LargeDecrementButton}" />
+                    <TextBlock
+                        x:Name="DaysIndicatorTextBlock"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        FontFamily="Consolas"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="0d" />
+                    <Button
+                        x:Name="IncrementDaysButton"
+                        Click="IncrementDaysButton_Click"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource LargeIncrementButton}" />
+
+                    <Button
+                        x:Name="DecrementHoursButton"
+                        Click="DecrementHoursButton_Click"
+                        IsEnabled="False"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource SmallDecrementButton}" />
+                    <TextBlock
+                        x:Name="HoursIndicatorTextBlock"
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        FontFamily="Consolas"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="0h" />
+                    <Button
+                        x:Name="IncrementHoursButton"
+                        Click="IncrementHoursButton_Click"
+                        Grid.Row="1"
+                        Grid.Column="4"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource SmallIncrementButton}" />
+
+                </Grid>
+
+                <TextBlock
+                    Grid.Row="3"
+                    HorizontalAlignment="Center"
+                    FontStyle="Italic"
+                    Opacity="0.5"
+                    Text="enter data to enable drag" 
+                    x:Name="TipText"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
