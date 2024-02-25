@@ -13,13 +13,13 @@
     <ScrollViewer>
         <Grid>
             <TextBlock
- x:Name="NothingSelectedTextBlock"
- HorizontalAlignment="Center"
- VerticalAlignment="Center"
- Style="{StaticResource annotation}"
- Text="Nothing Selected"
- FontWeight="SemiBold"
- FontSize="20"/>
+                x:Name="NothingSelectedTextBlock"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="20"
+                FontWeight="SemiBold"
+                Style="{StaticResource annotation}"
+                Text="Nothing Selected" />
             <Grid VerticalAlignment="Top">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -29,28 +29,27 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-               
+
                 <Grid
-                x:Name="metaGrid"
-                Grid.Row="1"
-                d:Visibility="Visible"
-                Visibility="Collapsed">
+                    x:Name="metaGrid"
+                    Grid.Row="1"
+                    d:Visibility="Visible"
+                    Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock
-                    
-                Margin="0,10,0,0"
-                    x:Name="ItemNameTextBlock"
-                    FontSize="20"
-                    FontWeight="SemiBold"
-                    Text="ITEM_NAME" />
+                        x:Name="ItemNameTextBlock"
+                        Margin="0,10,0,0"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="ITEM_NAME" />
                 </Grid>
                 <StackPanel
-                x:Name="orderGrid"
-                Grid.Row="2"
-                d:Visibility="Visible"
-                Visibility="Collapsed">
+                    x:Name="orderGrid"
+                    Grid.Row="2"
+                    d:Visibility="Visible"
+                    Visibility="Collapsed">
 
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
@@ -67,131 +66,131 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <Path
-                        Grid.Row="0"
-                        Width="12"
-                        Height="12"
-                        Margin="3,0"
-                        Data="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z"
-                        Fill="{StaticResource OnBackground}"
-                        Opacity="0.8"
-                        Stretch="Uniform" />
+                            Grid.Row="0"
+                            Width="12"
+                            Height="12"
+                            Margin="3,0"
+                            Data="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z"
+                            Fill="{StaticResource OnBackground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
                         <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="0,0,0,1"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="Setting Starts" />
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,0,1"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="Setting Starts" />
                         <TextBlock
-                        x:Name="SettingStartTextBlock"
-                        Grid.Row="0"
-                        Grid.Column="3"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="SETTING_START" />
+                            x:Name="SettingStartTextBlock"
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="SETTING_START" />
 
                         <Path
-                        Grid.Row="1"
-                        Width="12"
-                        Height="12"
-                        Margin="3,0"
-                        Data="M6,2H18V8H18V8L14,12L18,16V16H18V22H6V16H6V16L10,12L6,8V8H6V2M16,16.5L12,12.5L8,16.5V20H16V16.5M12,11.5L16,7.5V4H8V7.5L12,11.5M10,6H14V6.75L12,8.75L10,6.75V6Z"
-                        Fill="{StaticResource OnBackground}"
-                        Opacity="0.8"
-                        Stretch="Uniform" />
+                            Grid.Row="1"
+                            Width="12"
+                            Height="12"
+                            Margin="3,0"
+                            Data="M6,2H18V8H18V8L14,12L18,16V16H18V22H6V16H6V16L10,12L6,8V8H6V2M16,16.5L12,12.5L8,16.5V20H16V16.5M12,11.5L16,7.5V4H8V7.5L12,11.5M10,6H14V6.75L12,8.75L10,6.75V6Z"
+                            Fill="{StaticResource OnBackground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
                         <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="0,0,0,1"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="Setting Allowance" />
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,0,0,1"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="Setting Allowance" />
                         <TextBlock
-                        x:Name="SettingTimeTextBlock"
-                        Grid.Row="1"
-                        Grid.Column="3"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="SETTING_H" />
+                            x:Name="SettingTimeTextBlock"
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="SETTING_H" />
 
                         <Path
-                        Grid.Row="2"
-                        Width="12"
-                        Height="12"
-                        Margin="3,0"
-                        Data="M7,10H12V15H7M19,19H5V8H19M19,3H18V1H16V3H8V1H6V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z"
-                        Fill="{StaticResource OnBackground}"
-                        Opacity="0.8"
-                        Stretch="Uniform" />
+                            Grid.Row="2"
+                            Width="12"
+                            Height="12"
+                            Margin="3,0"
+                            Data="M7,10H12V15H7M19,19H5V8H19M19,3H18V1H16V3H8V1H6V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z"
+                            Fill="{StaticResource OnBackground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
                         <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Margin="0,0,0,1"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="Start Date" />
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="0,0,0,1"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="Start Date" />
                         <TextBlock
-                        x:Name="StartDateTextBlock"
-                        Grid.Row="2"
-                        Grid.Column="3"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="START_DATE" />
+                            x:Name="StartDateTextBlock"
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="START_DATE" />
 
                         <Path
-                        Grid.Row="3"
-                        Width="12"
-                        Height="12"
-                        Margin="3,0"
-                        Data="M12,1C8.14,1 5,4.14 5,8A7,7 0 0,0 12,15C15.86,15 19,11.87 19,8C19,4.14 15.86,1 12,1M12,3.15C14.67,3.15 16.85,5.32 16.85,8C16.85,10.68 14.67,12.85 12,12.85A4.85,4.85 0 0,1 7.15,8A4.85,4.85 0 0,1 12,3.15M11,5V8.69L14.19,10.53L14.94,9.23L12.5,7.82V5M4,16V24H6V21H18V24L22,20L18,16V19H6V16"
-                        Fill="{StaticResource OnBackground}"
-                        Opacity="0.8"
-                        Stretch="Uniform" />
+                            Grid.Row="3"
+                            Width="12"
+                            Height="12"
+                            Margin="3,0"
+                            Data="M12,1C8.14,1 5,4.14 5,8A7,7 0 0,0 12,15C15.86,15 19,11.87 19,8C19,4.14 15.86,1 12,1M12,3.15C14.67,3.15 16.85,5.32 16.85,8C16.85,10.68 14.67,12.85 12,12.85A4.85,4.85 0 0,1 7.15,8A4.85,4.85 0 0,1 12,3.15M11,5V8.69L14.19,10.53L14.94,9.23L12.5,7.82V5M4,16V24H6V21H18V24L22,20L18,16V19H6V16"
+                            Fill="{StaticResource OnBackground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
                         <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Margin="0,0,0,1"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="Runtime" />
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Margin="0,0,0,1"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="Runtime" />
                         <TextBlock
-                        x:Name="EstimatedRuntimeTextBlock"
-                        Grid.Row="3"
-                        Grid.Column="3"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="RUNTIME" />
+                            x:Name="EstimatedRuntimeTextBlock"
+                            Grid.Row="3"
+                            Grid.Column="3"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="RUNTIME" />
 
                         <Path
-                        Grid.Row="4"
-                        Width="12"
-                        Height="12"
-                        Margin="3,0"
-                        Data="M21.7 20.26L20.29 21.67L17.06 18.5L16 20.97L14 14L21 16L18.47 17.03L21.7 20.26M19 8H5V19H13.41L13.97 21H5C3.89 21 3 20.1 3 19L3 5C3 3.9 3.89 3 5 3H6V1H8V3H16V1H18V3H19C20.1 3 21 3.9 21 5V13.95L19 13.35V8M12 10V15H7V10H12Z"
-                        Fill="{StaticResource OnBackground}"
-                        Opacity="0.8"
-                        Stretch="Uniform" />
+                            Grid.Row="4"
+                            Width="12"
+                            Height="12"
+                            Margin="3,0"
+                            Data="M21.7 20.26L20.29 21.67L17.06 18.5L16 20.97L14 14L21 16L18.47 17.03L21.7 20.26M19 8H5V19H13.41L13.97 21H5C3.89 21 3 20.1 3 19L3 5C3 3.9 3.89 3 5 3H6V1H8V3H16V1H18V3H19C20.1 3 21 3.9 21 5V13.95L19 13.35V8M12 10V15H7V10H12Z"
+                            Fill="{StaticResource OnBackground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
                         <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="1"
-                        Margin="0,0,0,1"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="Deadline" />
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Margin="0,0,0,1"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="Deadline" />
                         <TextBlock
-                        x:Name="DeadlineTextBlock"
-                        Grid.Row="4"
-                        Grid.Column="3"
-                        FontWeight="SemiBold"
-                        Opacity="0.8"
-                        Text="DEADLINE" />
+                            x:Name="DeadlineTextBlock"
+                            Grid.Row="4"
+                            Grid.Column="3"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="DEADLINE" />
                     </Grid>
 
 
 
 
                     <TextBlock Style="{StaticResource InputLabel}" Text="Material" />
-                    <userControls:DisplayBarStock x:Name="BarStockDisplay"/>
+                    <userControls:DisplayBarStock x:Name="BarStockDisplay" />
                     <TextBlock Style="{StaticResource InputLabel}" Text="Items" />
                     <ItemsControl x:Name="OrderItemsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}">
                         <ItemsControl.ItemTemplate>
@@ -211,20 +210,27 @@
                     </ItemsControl>
                 </StackPanel>
                 <Grid
-                x:Name="maintenanceGrid"
-                Grid.Row="3"
-                d:Visibility="Visible"
-                Visibility="Collapsed">
+                    x:Name="maintenanceGrid"
+                    Grid.Row="3"
+                    d:Visibility="Visible"
+                    Visibility="Collapsed">
                     <TextBlock Text="Unable to display maintenance" />
                 </Grid>
 
-                <Grid Visibility="Collapsed" d:Visibility="Visible" x:Name="RescheduleGrid" Grid.Row="4">
+                <Grid
+                    x:Name="RescheduleGrid"
+                    Grid.Row="4"
+                    d:Visibility="Visible"
+                    Visibility="Collapsed">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Update Start Date" Style="{StaticResource InputLabel}"/>
-                    <userControls:DateTimePicker x:Name="DateTimePicker" Grid.Row="1" Margin="10"/>
+                    <TextBlock Style="{StaticResource InputLabel}" Text="Update Start Date" />
+                    <userControls:DateTimePicker
+                        x:Name="DateTimePicker"
+                        Grid.Row="1"
+                        Margin="10" />
                 </Grid>
             </Grid>
 
