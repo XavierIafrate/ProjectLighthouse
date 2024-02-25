@@ -16,11 +16,11 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition
                 Width="*"
-                MinWidth="300"
+                MinWidth="350"
                 MaxWidth="600" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*"  MinHeight="50"/>
             <RowDefinition Height="10*" MinHeight="300" />
             <RowDefinition Height="40" />
             <RowDefinition Height="4*" />
@@ -33,31 +33,41 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBox
-                Margin="5"
+                Height="40"
+                Margin="5, 0"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="search"
                 Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Grid Grid.Column="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Min" Style="{StaticResource InputLabel}" VerticalAlignment="Center" Margin="2"/>
+                <TextBlock
+                    Margin="2"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputLabel}"
+                    Text="Min" />
                 <DatePicker Grid.Column="1" SelectedDate="{Binding MinDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
 
             <Grid Grid.Column="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Max" Style="{StaticResource InputLabel}" VerticalAlignment="Center" Margin="2"/>
+                <TextBlock
+                    Margin="2"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputLabel}"
+                    Text="Max" />
                 <DatePicker Grid.Column="1" SelectedDate="{Binding MaxDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
             <Button
                 Grid.Column="3"
-                Margin="5"
+                Margin="5,0,0,0"
+                Height="40"
                 HorizontalAlignment="Right"
                 Command="{Binding ResetDatesCmd}"
                 Style="{StaticResource Action_Reset_Button}"
@@ -151,8 +161,7 @@
                 HorizontalContentAlignment="Stretch"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
                 ItemsSource="{Binding Schedule.Optimisations}"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                Style="{x:Null}">
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <scheduleComponents:DisplayOptimisation
@@ -163,12 +172,31 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <StackPanel
+    Grid.Row="1"
+    Grid.Column="0"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center"
+    Visibility="{Binding Schedule.Optimisations, Converter={StaticResource EmptyListToVisibleOrCollapsed}}">
                 <Path
-                    Margin="0,2,0,0"
+        Width="20"
+        Height="20"
+        Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,9.5C7,8.7 7.7,8 8.5,8C9.3,8 10,8.7 10,9.5C10,10.3 9.3,11 8.5,11C7.7,11 7,10.3 7,9.5M14.77,17.23C14.32,16.5 13.25,16 12,16C10.75,16 9.68,16.5 9.23,17.23L7.81,15.81C8.71,14.72 10.25,14 12,14C13.75,14 15.29,14.72 16.19,15.81L14.77,17.23M15.5,11C14.7,11 14,10.3 14,9.5C14,8.7 14.7,8 15.5,8C16.3,8 17,8.7 17,9.5C17,10.3 16.3,11 15.5,11Z"
+        Fill="{StaticResource PurpleFaded}"
+        Stretch="Uniform" />
+                <TextBlock
+        Margin="5"
+        FontSize="18"
+        FontWeight="SemiBold"
+        Foreground="{StaticResource PurpleFaded}"
+        Text="No optimisations" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Path
                     Width="20"
                     Height="15"
+                    Margin="0,2,0,0"
                     Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
                     Fill="{StaticResource Blue}"
                     Stretch="Uniform" />
@@ -181,7 +209,7 @@
             </StackPanel>
             <ListBox
                 Grid.Row="1"
-                Grid.Column="1"
+                Grid.Column="2"
                 HorizontalContentAlignment="Stretch"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
                 ItemsSource="{Binding Schedule.Advisories}">
@@ -191,8 +219,27 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <StackPanel
+                Grid.Row="1"
+                Grid.Column="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="{Binding Schedule.Advisories, Converter={StaticResource EmptyListToVisibleOrCollapsed}}">
+                <Path
+                    Width="20"
+                    Height="20"
+                    Data="M18.75 22.16L16 19.16L17.16 18L18.75 19.59L22.34 16L23.5 17.41L18.75 22.16M13 13V7H11V13H13M13 17V15H11V17H13M12 2C17.5 2 22 6.5 22 12L21.91 13.31C21.31 13.11 20.67 13 20 13C16.69 13 14 15.69 14 19C14 19.95 14.22 20.85 14.62 21.65C13.78 21.88 12.91 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2Z"
+                    Fill="{StaticResource BlueFaded}"
+                    Stretch="Uniform" />
+                <TextBlock
+                    Margin="5"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource BlueFaded}"
+                    Text="No surprises" />
+            </StackPanel>
 
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <Path
                     Width="20"
                     Height="15"
@@ -206,9 +253,11 @@
                     FontWeight="SemiBold"
                     Text="{Binding Schedule.Warnings.Count, StringFormat='{}Warnings ({0})'}" />
             </StackPanel>
+
+
             <ListBox
                 Grid.Row="1"
-                Grid.Column="2"
+                Grid.Column="1"
                 HorizontalContentAlignment="Stretch"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
                 ItemsSource="{Binding Schedule.Warnings}">
@@ -219,6 +268,25 @@
                 </ListBox.ItemTemplate>
 
             </ListBox>
+            <StackPanel
+                Grid.Row="1"
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="{Binding Schedule.Warnings, Converter={StaticResource EmptyListToVisibleOrCollapsed}}">
+                <Path
+                    Width="20"
+                    Height="20"
+                    Data="M14.53 1.45L13.45 2.53L15.05 4.13C15.27 4.38 15.38 4.67 15.38 5S15.27 5.64 15.05 5.86L11.5 9.47L12.5 10.55L16.13 6.94C16.66 6.35 16.92 5.7 16.92 5C16.92 4.3 16.66 3.64 16.13 3.05L14.53 1.45M10.55 3.47L9.47 4.55L10.08 5.11C10.3 5.33 10.41 5.63 10.41 6S10.3 6.67 10.08 6.89L9.47 7.45L10.55 8.53L11.11 7.92C11.64 7.33 11.91 6.69 11.91 6C11.91 5.28 11.64 4.63 11.11 4.03L10.55 3.47M21 5.06C20.31 5.06 19.67 5.33 19.08 5.86L13.45 11.5L14.53 12.5L20.11 6.94C20.36 6.69 20.66 6.56 21 6.56S21.64 6.69 21.89 6.94L22.5 7.55L23.53 6.47L22.97 5.86C22.38 5.33 21.72 5.06 21 5.06M7 8L2 22L16 17L7 8M19 11.06C18.3 11.06 17.66 11.33 17.06 11.86L15.47 13.45L16.55 14.53L18.14 12.94C18.39 12.69 18.67 12.56 19 12.56C19.33 12.56 19.63 12.69 19.88 12.94L21.5 14.53L22.55 13.5L20.95 11.86C20.36 11.33 19.7 11.06 19 11.06Z"
+                    Fill="{StaticResource RedFaded}"
+                    Stretch="Uniform" />
+                <TextBlock
+                    Margin="5"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource RedFaded}"
+                    Text="No alarms" />
+            </StackPanel>
 
         </Grid>
 
@@ -229,22 +297,24 @@
             Margin="0"
             HorizontalAlignment="Stretch" />
         <Grid Grid.RowSpan="4" Grid.Column="2">
-            <TabControl DragEnter="TabControl_DragEnter" AllowDrop="True">
+            <TabControl AllowDrop="True" DragEnter="TabControl_DragEnter">
                 <TabItem Header="Inspector">
                     <ScrollViewer>
                         <scheduleComponents:ScheduleItemInspector
                             Margin="10,0"
-                            VerticalAlignment="Top"
+                            VerticalAlignment="Stretch"
+                            RescheduleCommand="{Binding RescheduleCmd}"
                             Item="{Binding SelectedItem}" />
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Unallocated">
                     <scheduleComponents:DisplayUnallocatedItems
+                        RescheduleCommand="{Binding RescheduleCmd}"
                         SelectItemCommand="{Binding SelectItemCmd}"
                         SelectedItem="{Binding SelectedItem}"
-                        UnallocatedItems="{Binding Schedule.UnallocatedItems}" RescheduleCommand="{Binding RescheduleCmd}"/>
+                        UnallocatedItems="{Binding Schedule.UnallocatedItems}" />
                 </TabItem>
-
+                <TabItem Header="Bookings" IsEnabled="False" />
             </TabControl>
 
         </Grid>

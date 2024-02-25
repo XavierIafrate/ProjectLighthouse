@@ -1,7 +1,9 @@
 ﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
+using ProjectLighthouse.ViewModel.ValueConverters;
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -42,8 +44,18 @@ namespace ProjectLighthouse.View.Scheduling.Components
             if (control.Order is null) return;
 
             control.OrderText.Text = control.Order.Name;
-
             control.SettingAllowanceTextBlock.Text = $"{control.Order.TimeToSet:0}h";
+            control.BarIdTextBlock.Text = control.Order.BarID;
+            control.EstimatedRuntimeTextBlock.Text = $"{new intToTimespanString().Convert( control.Order.TimeToComplete, typeof(string), null,  new CultureInfo("en-GB")) ?? "N/A"}";
+
+            if (control.Order.GetStartDeadline() == DateTime.MaxValue)
+            {
+                control.DeadlineTextBlock.Text = "None";
+            }
+            else
+            {
+                control.DeadlineTextBlock.Text = $"{control.Order.GetStartDeadline():dd/MM/yy}";
+            }
         }
 
         public DisplayUnallocatedOrder()

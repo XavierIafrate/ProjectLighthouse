@@ -1,18 +1,12 @@
 ﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.ViewModel.Commands.Scheduling;
+using ProjectLighthouse.ViewModel.ValueConverters;
 using System;
-using System.Collections.Generic;
-using System.Drawing.Drawing2D;
-using System.Text;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using static ProjectLighthouse.Model.Scheduling.ProductionSchedule;
 
 namespace ProjectLighthouse.View.Scheduling.Components
 {
@@ -24,19 +18,45 @@ namespace ProjectLighthouse.View.Scheduling.Components
             set { SetValue(ItemProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemProperty =
             DependencyProperty.Register("Item", typeof(ScheduleItem), typeof(ScheduleItemInspector), new PropertyMetadata(null, SetValues));
+
+        public RescheduleItemCommand RescheduleCommand
+        {
+            get { return (RescheduleItemCommand)GetValue(RescheduleCommandProperty); }
+            set { SetValue(RescheduleCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty RescheduleCommandProperty =
+            DependencyProperty.Register("RescheduleCommand", typeof(RescheduleItemCommand), typeof(ScheduleItemInspector), new PropertyMetadata(null, SetRescheduleCommand));
+
+        private static void SetRescheduleCommand(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not ScheduleItemInspector control) return;
+            if (control.Item is null) return;
+
+            control.SetRescheduleVis();
+        }
+
+        private void SetRescheduleVis()
+        {
+            RescheduleGrid.Visibility = RescheduleCommand != null  && Item != null 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
+        }
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not ScheduleItemInspector control) return;
+            control.SetRescheduleVis();
 
-            if(control.Item is null)
+            if (control.Item is null)
             {
                 control.SetNothingSelected();
                 return;
             }
+
+            control.DateTimePicker.DateTime = control.Item.StartDate;
 
             if (control.Item is LatheManufactureOrder order)
             {
@@ -47,6 +67,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             if (control.Item is MachineService service)
             {
                 control.ShowService(service);
+
                 return;
             }
 
@@ -59,7 +80,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             this.orderGrid.Visibility = Visibility.Collapsed;
             this.maintenanceGrid.Visibility = Visibility.Visible;
 
-            this.ItemNameTextBlock.Text  = service.Name;
+            this.ItemNameTextBlock.Text = service.Name;
         }
 
         private void ShowOrder(LatheManufactureOrder order)
@@ -71,27 +92,42 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
             this.ItemNameTextBlock.Text = order.Name;
 
-            this.SettingStartTextBlock.Text = $"Setting Starts @ {order.GetSettingStartDateTime():dd/MM HH:mm}";
-            this.SettingTimeTextBlock.Text = $"Setting Allowance: {order.TimeToSet}h";
-            this.StartDateTextBlock.Text = $"Running Starts @ {order.StartDate:dd/MM HH:mm}";
+            this.SettingStartTextBlock.Text = $"{order.GetSettingStartDateTime():dd/MM/yy HH:mm}";
+            this.SettingTimeTextBlock.Text = $"{order.TimeToSet}h";
+            this.StartDateTextBlock.Text = $"{order.StartDate:dd/MM/yy HH:mm}";
 
-            if(order.Bar.IsHexagon)
+            this.BarStockDisplay.Bar = order.Bar;
+
+            //if (order.Bar.IsHexagon)
+            //{
+            //    this.RoundProfileSymbol.Visibility = Visibility.Collapsed;
+            //    this.HexagonProfileSymbol.Visibility = Visibility.Visible;
+            //    this.BarSizeTextBlock.Text = $"{order.Bar.Size}mm A/F";
+            //}
+            //else
+            //{
+            //    this.RoundProfileSymbol.Visibility = Visibility.Visible;
+            //    this.HexagonProfileSymbol.Visibility = Visibility.Collapsed;
+            //    this.BarSizeTextBlock.Text = $"{order.Bar.Size}mm";
+            //}
+
+            //this.BarIdTextBlock.Text = order.Bar.Id;
+            //this.MaterialInfoTextBlock.Text = order.Bar.MaterialData.ToString();
+
+            this.OrderItemsItemsControl.ItemsSource = order.OrderItems;
+            this.OrderBreakdownsItemsControl.ItemsSource = order.Breakdowns;
+
+            this.EstimatedRuntimeTextBlock.Text = $"{new intToTimespanString().Convert(order.TimeToComplete, typeof(string), null, new CultureInfo("en-GB")) ?? "N/A"}";
+
+            if (order.GetStartDeadline() == DateTime.MaxValue)
             {
-                this.RoundProfileSymbol.Visibility = Visibility.Collapsed;
-                this.HexagonProfileSymbol.Visibility = Visibility.Visible;
-                this.BarSizeTextBlock.Text = $"{order.Bar.Size}mm A/F";
+                this.DeadlineTextBlock.Text = "None";
             }
             else
             {
-                this.RoundProfileSymbol.Visibility = Visibility.Visible;
-                this.HexagonProfileSymbol.Visibility = Visibility.Collapsed;
-                this.BarSizeTextBlock.Text = $"{order.Bar.Size}mm";
+                this.DeadlineTextBlock.Text = $"{order.GetStartDeadline():dd/MM/yy}";
             }
 
-            this.BarIdTextBlock.Text = order.Bar.Id;
-            this.MaterialInfoTextBlock.Text = order.Bar.MaterialData.ToString();
-
-            this.OrderItemsItemsControl.ItemsSource = order.OrderItems;
         }
 
         private void SetNothingSelected()
@@ -105,6 +141,20 @@ namespace ProjectLighthouse.View.Scheduling.Components
         public ScheduleItemInspector()
         {
             InitializeComponent();
+
+            this.DateTimePicker.DateChanged += RescheduleItem;
+        }
+
+        private void RescheduleItem(object sender, EventArgs e)
+        {
+            if (this.Item is null) return;
+            if (this.RescheduleCommand is null) return;
+            DateTime desiredDate = this.DateTimePicker.DateTime;
+            if (desiredDate == this.Item.StartDate) return;
+
+            RescheduleInformation data = new(this.Item, this.Item.AllocatedMachine, desiredDate);
+
+            RescheduleCommand?.Execute(data);
         }
     }
 }

@@ -172,6 +172,13 @@ namespace ProjectLighthouse.Model.Scheduling
         public void RescheduleItem(RescheduleInformation changeData)
         {
             MachineSchedule? sourceSchedule = MachineSchedules.Find(x => x.Lathe.Id == changeData.originMachineId);
+            MachineSchedule? destinationSchedule = MachineSchedules.Find(x => x.Lathe.Id == changeData.desiredMachineId);
+
+            if (!string.IsNullOrEmpty(changeData.desiredMachineId) && destinationSchedule == null)
+            {
+                throw new Exception($"Could not find destination Machine Schedule");
+            }
+
             ScheduleItem? foundItem = null;
 
             if(sourceSchedule != null)
@@ -193,16 +200,10 @@ namespace ProjectLighthouse.Model.Scheduling
                 }
             }
 
-            if (sourceSchedule != null && changeData.destinationSchedule != null) // On machine to new slot
+            if (sourceSchedule != null && destinationSchedule != null) // On machine to new slot
             {
-                if (sourceSchedule != changeData.destinationSchedule)
+                if (sourceSchedule != destinationSchedule)
                 {
-                    MachineSchedule? destinationSchedule = MachineSchedules.Find(x => x.Lathe.Id == changeData.desiredMachineId);
-                    if (destinationSchedule is null)
-                    {
-                        throw new Exception($"Could not find destination Machine Schedule");
-                    }
-
                     foundItem.StartDate = (DateTime)changeData.desiredDate!;
                     foundItem.AllocatedMachine = changeData.desiredMachineId;
                     
@@ -223,7 +224,7 @@ namespace ProjectLighthouse.Model.Scheduling
                     sourceSchedule.Refresh();
                 }
             }
-            else if (changeData.destinationSchedule == null) // from machine to unallocated
+            else if (destinationSchedule == null) // from machine to unallocated
             {
                 sourceSchedule!.Remove(foundItem);
                 sourceSchedule.Refresh();
@@ -240,12 +241,6 @@ namespace ProjectLighthouse.Model.Scheduling
             }
             else // from unallocated to machine
             {
-                MachineSchedule? destinationSchedule = MachineSchedules.Find(x => x.Lathe.Id == changeData.desiredMachineId);
-                if (destinationSchedule is null)
-                {
-                    throw new Exception($"Could not find destination Machine Schedule");
-                }
-
                 List<ScheduleItem> unallocated = this.UnallocatedItems;
                 unallocated.Remove(foundItem);
                 UnallocatedItems = null;
@@ -402,23 +397,23 @@ namespace ProjectLighthouse.Model.Scheduling
             public string originMachineId;
             public DateTime originDate;
 
-            public MachineSchedule? destinationSchedule;
             public string? desiredMachineId;
             public DateTime? desiredDate;
 
 
-            public RescheduleInformation(ScheduleItem item, MachineSchedule destination, DateTime? desiredDate)
+            public RescheduleInformation(ScheduleItem item, string? destinationMachineId, DateTime? desiredDate)
             {
                 this.item = item;
 
                 this.originMachineId = item.AllocatedMachine;
                 this.originDate = item.StartDate;
 
-                this.destinationSchedule = destination;
-                if (destination != null)
+                if (string.IsNullOrWhiteSpace(destinationMachineId))
                 {
-                    this.desiredMachineId = destination.Lathe.Id;
+                    destinationMachineId = null;
                 }
+             
+                this.desiredMachineId = destinationMachineId;
                 this.desiredDate = desiredDate;
             }
         }

@@ -17,35 +17,6 @@ namespace ProjectLighthouse.ViewModel.Orders
 {
     public class NewScheduleViewModel : BaseViewModel
     {
-        /*
-         * 
-         * TODO 
-         * 
-         * [DONE] Fix setting display when clipped
-         * [DONE] advisories
-         * [DONE] warnings
-         * [DONE] highlight optimisation orders
-         * [DONE] highlight event horizon
-         * [DONE] Load items
-         * [DONE] Show holidays
-         * 
-         * [WIP] Item inspector view
-         * [WIP] unallocated
-         * [WIP] Display Maintenance
-         * [WIP] Lathe Constraints
-         * 
-         * schedule lock
-         * Manual controls for re-schedule & time & lock
-         * Load breakdowns
-         * Add Holidays
-         * Fix Calendar formatting
-         * Lathe constraint adding through UI
-         * Bar constraint adding
-         * Group & Product constraint adding
-         * Order constraint computation
-         * Add/Edit Materials
-         * 
-         */
 
         private string searchString;
         public string SearchString
@@ -277,15 +248,18 @@ namespace ProjectLighthouse.ViewModel.Orders
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>(throwErrs: true).Where(x => x.State != OrderState.Cancelled).ToList();
             List<LatheManufactureOrderItem> orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>(throwErrs: true);
             List<MachineBreakdown> orderBreakdowns = DatabaseHelper.Read<MachineBreakdown>(throwErrs: true);
+            List<BreakdownCode> codes = DatabaseHelper.Read<BreakdownCode>(throwErrs: true);
             List<MachineService> machineServices = DatabaseHelper.Read<MachineService>(throwErrs: true);
             List<BarStock> bars = DatabaseHelper.Read<BarStock>(throwErrs:true);
             List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>(throwErrs:true);
 
             bars.ForEach(b => b.MaterialData = materials.Find(m => m.Id == b.MaterialId));
+            orderBreakdowns.ForEach(b => b.BreakdownMeta = codes.Find(c => c.Id == b.BreakdownCode));
 
             List<ScheduleItem> allItems = new();
             orders.ForEach(x => {
                 x.OrderItems = orderItems.Where(i => i.AssignedMO == x.Name).ToList();
+                x.Breakdowns = orderBreakdowns.Where(b => b.OrderName == x.Name).OrderBy(b => b.BreakdownStarted).ToList();
                 x.Bar = bars.Find(b => b.Id == x.BarID);
                 allItems.Add(x);
                 }
@@ -319,6 +293,9 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             this.minDate = DateTime.Today.AddDays(-3);
             this.maxDate = ScheduleItems.Max(x => x.EndsAt()).Date.AddDays(3);
+
+            this.searchString = string.Empty;
+            OnPropertyChanged(nameof(SearchString));
 
             OnPropertyChanged(nameof(MinDate));
             OnPropertyChanged(nameof(MaxDate));

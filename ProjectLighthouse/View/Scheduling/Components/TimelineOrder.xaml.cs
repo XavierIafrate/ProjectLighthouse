@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -198,7 +199,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
                 runningVisible = visibleRuntime != TimeSpan.Zero;
                 absoluteSetting = ColumnWidth * visibleSetting.TotalHours / 24;
-
+                relativeBreakdown = (double)order.Breakdowns.Sum(x => x.TimeElapsed) / order.TimeToComplete;
 
                 this.SetBrushes(order.State);
                 if (order.IsResearch)
@@ -229,7 +230,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             }
 
             this.OrderGrid.ColumnDefinitions[0].Width = new(absoluteSetting, GridUnitType.Pixel);
-            this.OrderGrid.ColumnDefinitions[1].Width = new(relativeBreakdown, GridUnitType.Star);
+            this.OrderGrid.ColumnDefinitions[1].Width = new(runningVisible ? relativeBreakdown : 0, GridUnitType.Star);
             this.OrderGrid.ColumnDefinitions[2].Width = new(runningVisible ? 1 : 0, GridUnitType.Star);
 
             this.SequenceLockToggleButton.IsChecked = this.Item.ScheduleLockData is not null;
@@ -280,9 +281,6 @@ namespace ProjectLighthouse.View.Scheduling.Components
                     CheckedForegroundBrush = (Brush)Application.Current.Resources["OnOrange"];
                     break;
             };
-
-
-
         }
 
         public TimelineOrder()
@@ -350,7 +348,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
         private void OrderGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (OrderGrid.ActualWidth - OrderGrid.ColumnDefinitions[0].ActualWidth < 60)
+            if (OrderGrid.ActualWidth - OrderGrid.ColumnDefinitions[0].ActualWidth < 100)
             {
                 MetadataStackPanel.Visibility = Visibility.Collapsed;
             }

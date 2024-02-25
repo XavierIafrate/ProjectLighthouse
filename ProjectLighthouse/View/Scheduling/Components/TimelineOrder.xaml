@@ -106,35 +106,35 @@
                 <Border
                     x:Name="breakdown_border"
                     Grid.Column="1"
-                    Height="1"
+                    Height="3"
                     VerticalAlignment="Bottom"
                     Background="{StaticResource Red}"
                     BorderThickness="0"
                     SnapsToDevicePixels="True" />
-                <!--MaxWidth="60"-->
 
                 <StackPanel
                     x:Name="MetadataStackPanel"
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
-                    Margin="3,3,0,1"
+                    MaxWidth="100"
+                    Margin="3,3,0,3"
                     HorizontalAlignment="Left">
                     <TextBlock
                         x:Name="OrderNameTextBlock"
                         Grid.Column="1"
                         Grid.ColumnSpan="2"
-                        Margin="2,0"
-                        d:Text="ORDER_NAME"
+                        Margin="0"
+                        d:Text="M00000"
                         FontWeight="SemiBold" />
 
                     <TextBlock
                         x:Name="StatusTextBlock"
                         Grid.Column="1"
                         Grid.ColumnSpan="2"
-                        Margin="2,0"
-                        d:Text="STATUS_TEXT"
+                        Margin="0"
+                        d:Text="PRB000-0000-000"
                         d:Visibility="Visible"
-                        FontSize="12"
+                        FontSize="11"
                         FontWeight="SemiBold"
                         Visibility="Collapsed" />
                     <StackPanel Orientation="Horizontal">

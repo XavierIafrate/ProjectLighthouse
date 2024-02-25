@@ -92,6 +92,8 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
         private static void EnsureVisible(ScheduleTimeline control, ScheduleItem item)
         {
+            if (item.StartDate == DateTime.MinValue) return;
+
             DateTime start = item.StartDate;
             DateTime end = item.EndsAt();
 

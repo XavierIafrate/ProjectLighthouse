@@ -330,7 +330,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             if (targetDate != orderControl.Item.StartDate || Schedule.Lathe.Id != orderControl.Item.AllocatedMachine)
             {
                 ScheduleItem item = orderControl.Item;
-                RescheduleInformation rescheduleParams = new(item, this.Schedule, targetDate);
+                RescheduleInformation rescheduleParams = new(item, this.Schedule.Lathe.Id, targetDate);
 
                 RescheduleCommand?.Execute(rescheduleParams);
             }
