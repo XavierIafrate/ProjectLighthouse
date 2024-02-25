@@ -166,9 +166,9 @@
                             </Border>
                             <TextBlock
                                 Grid.Column="1"
+                                VerticalAlignment="Center"
                                 d:Text="MACHINE_FULL_NAME"
                                 FontSize="30"
-                                VerticalAlignment="Center"
                                 Style="{StaticResource title}"
                                 Text="{Binding SelectedLathe.FullName}" />
                             <Button
@@ -179,19 +179,17 @@
 
                         <Grid Margin="10,20,10,0" Visibility="{Binding SelectedLathe.OutOfService, Converter={StaticResource ShowIfTrue}}">
                             <Border
-                                BorderBrush="{StaticResource Red}"
                                 Background="{StaticResource RedFaded}"
+                                BorderBrush="{StaticResource Red}"
                                 BorderThickness="3,0,0,0"
                                 CornerRadius="3">
                                 <StackPanel Margin="10,5">
                                     <TextBlock
-                                        FontWeight="SemiBold"
                                         FontSize="18"
+                                        FontWeight="SemiBold"
                                         Foreground="{StaticResource Red}"
                                         Text="Out of Service" />
-                                    <TextBlock
-                                        Foreground="{StaticResource Red}"
-                                        Text="This machine is no longer in service, it will not be available for scheduling." />
+                                    <TextBlock Foreground="{StaticResource Red}" Text="This machine is no longer in service, it will not be available for scheduling." />
 
                                 </StackPanel>
                             </Border>
@@ -275,6 +273,43 @@
                                     TextAlignment="Right" />
                             </Grid>
 
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock VerticalAlignment="Center" Text="Soft Max Diameter" />
+                                <TextBlock
+                                    Width="250"
+                                    HorizontalAlignment="Right"
+                                    d:Text="SOFT_MAX_PART_DIAMETER"
+                                    Foreground="{StaticResource Blue}"
+                                    Tag="Soft Max Diameter"
+                                    Text="{Binding SelectedLathe.SoftMaxDiameter, StringFormat='{}{0:0.0} mm'}"
+                                    TextAlignment="Right" />
+                            </Grid>
+
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock VerticalAlignment="Center" Text="Soft Min Diameter" />
+                                <TextBlock
+                                    Width="250"
+                                    HorizontalAlignment="Right"
+                                    d:Text="SOFT_MIN_PART_DIAMETER"
+                                    Foreground="{StaticResource Blue}"
+                                    Tag="Soft Min Diameter"
+                                    Text="{Binding SelectedLathe.SoftMinDiameter, StringFormat='{}{0:0.0} mm'}"
+                                    TextAlignment="Right" />
+                            </Grid>
+
+                            <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+                                <TextBlock VerticalAlignment="Center" Text="Features" />
+                                <TextBlock
+                                    Width="250"
+                                    HorizontalAlignment="Right"
+                                    d:Text="FEATURE_LIST"
+                                    Foreground="{StaticResource Blue}"
+                                    Tag="Features"
+                                    Text="{Binding SelectedLathe.Features, TargetNullValue='-'}"
+                                    TextWrapping="Wrap"
+                                    TextAlignment="Right" />
+                            </Grid>
+
                             <TextBlock
                                 Margin="0,15,0,0"
                                 Style="{StaticResource section}"
@@ -343,6 +378,7 @@
                                 </StackPanel>
                             </Grid>
                             <ListView
+                                MinHeight="50"
                                 d:ItemsSource="{d:SampleData ItemCount=2}"
                                 ItemsSource="{Binding SelectedLathe.Attachments}"
                                 SelectedValue="{Binding SelectedAttachment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
