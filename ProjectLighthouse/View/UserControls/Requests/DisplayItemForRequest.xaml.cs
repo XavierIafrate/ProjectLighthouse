@@ -59,7 +59,7 @@ namespace ProjectLighthouse.View.UserControls
                 else
                 {
                     // TODO What is this for?
-                    control.ActionText.Text = $"{control.Item.LighthouseGuaranteedQuantity:#,##0}pcs on {control.Item.AppendableOrder.Name} [none needed]";
+                    control.ActionText.Text = $"{control.Item.LighthouseGuaranteedQuantity:#,##0}pcs on {control.Item.AppendableOrder.Name} [{numberNeeded} needed]";
                 }
 
                 control.ActionText.Foreground = (Brush)App.Current.Resources["Green"];

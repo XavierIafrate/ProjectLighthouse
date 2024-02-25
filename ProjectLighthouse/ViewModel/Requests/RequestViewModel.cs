@@ -340,6 +340,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
+            // TODO review if this can be removed
             for (int i = 0; i < requests.Count; i++)
             {
                 if (requests[i].OrderId != null)
@@ -377,9 +378,16 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            NewRequest = new() { RaisedAt = DateTime.Now, RaisedBy = App.CurrentUser.GetFullName(), Id = 0, Description = "New Request", Status = Request.RequestStatus.Draft };
-            NewRequestItems = new();
+            NewRequest = new() 
+            { 
+                Id = 0, 
+                RaisedAt = DateTime.Now, 
+                RaisedBy = App.CurrentUser.GetFullName(), 
+                Description = "New Request", 
+                Status = Request.RequestStatus.Draft 
+            };
 
+            NewRequestItems = new();
 
             FilteredRequests = FilteredRequests.Prepend(NewRequest).ToList();
             SelectedRequest = FilteredRequests.First();
@@ -420,6 +428,12 @@ namespace ProjectLighthouse.ViewModel.Requests
                     .OrderBy(n => n.ProductName)
                     .ToList();
 
+                AddActiveOrderInformation(activeReqs);
+
+                activeReqs = activeReqs
+                    .Where(x => x.FreeStock() < 0)
+                    .ToList();
+
                 List<TurnedProduct> urgent = Items
                     .Where(x => x.QuantityInStock - x.QuantitySold < -500 && (double)x.QuantityInStock / x.QuantitySold < 0.1 && activeOrders.Find(o => o.GroupId == x.GroupId && o.MaterialId == x.MaterialId) == null)
                     .OrderBy(n => n.ProductName)
@@ -437,14 +451,21 @@ namespace ProjectLighthouse.ViewModel.Requests
                 List<TurnedProduct> results = Items.Where(x => x.ProductName.ToUpper().Contains(searchTerm) && !requestedIds.Contains(x.Id)).Take(50).ToList();
                 NewRequestSearchResults = results;
             }
+
             PopulateInsightsFields();
         }
 
         private void PopulateInsightsFields()
         {
-            foreach (TurnedProduct item in NewRequestSearchResults)
+            AddActiveOrderInformation(NewRequestSearchResults);
+        }
+
+        private void AddActiveOrderInformation(List<TurnedProduct> items)
+        {
+            foreach (TurnedProduct item in items)
             {
                 item.AppendableOrder = activeOrders.Find(x => x.GroupId == item.GroupId && x.MaterialId == item.MaterialId);
+                item.LighthouseGuaranteedQuantity = 0;
 
                 if (item.AppendableOrder is not null)
                 {
@@ -746,6 +767,13 @@ namespace ProjectLighthouse.ViewModel.Requests
                 requestItem.RequirementChanged += EvaluateCanSaveChanges;
             }
 
+            if (SelectedRequestArchetype == null && SelectedRequestItems[0].Item?.GroupId != null)
+            {
+                SelectedRequest.ArchetypeId = SelectedRequestItems[0].Item?.GroupId;
+                DatabaseHelper.Update(SelectedRequest);
+                SelectedRequestArchetype = Archetypes.Find(x => x.Id == SelectedRequest.ArchetypeId);
+            }
+
             FilteredNotes = null;
             OnPropertyChanged(nameof(FilteredNotes));
             FilteredNotes = Notes.Where(x => x.DocumentReference == $"r{SelectedRequest.Id:0}").ToList();
@@ -799,7 +827,14 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(Items, SelectedRequestItems, TimeSpan.FromDays(TargetRuntime));
+            try
+            {
+                RecommendedManifest = RequestsEngine.GetRecommendedOrderItems(Items, SelectedRequestItems, TimeSpan.FromDays(TargetRuntime));
+            }
+            catch
+            {
+                RecommendedManifest = new();
+            }
             OnPropertyChanged(nameof(RecommendedManifest));
             if (RecommendedManifest.Count == 0)
             {
