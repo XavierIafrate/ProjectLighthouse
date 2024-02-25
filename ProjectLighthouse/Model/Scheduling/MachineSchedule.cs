@@ -74,8 +74,6 @@ namespace ProjectLighthouse.Model.Scheduling
 
             public List<DateTime> Holidays = new();
 
-
-
             public MachineSchedule(Lathe lathe)
             {
                 this.Lathe = lathe;
@@ -98,8 +96,27 @@ namespace ProjectLighthouse.Model.Scheduling
                     if (item is LatheManufactureOrder order)
                     {
                         if (order.State == OrderState.Cancelled) continue;
-                    }
 
+                        //if (i < itemsToAdd.Count - 1)
+                        //{
+                        //    ScheduleItem nextItem = itemsToAdd[i + 1];
+                        //    DateTime nextItemStarts;
+                        //    if (nextItem is LatheManufactureOrder nextOrder)
+                        //    {
+                        //        nextItemStarts = nextOrder.GetSettingStartDateTime();
+                        //    }
+                        //    else
+                        //    {
+                        //        nextItemStarts = nextItem.StartDate;
+                        //    }
+
+                        //    if (order.EndsAt() < nextItemStarts)
+                        //    {
+                        //        order.ScheduledEnd = nextItemStarts;
+                        //    }
+                        //}
+                    }
+                    
                     nonCancelledItemsOnMachine.Add(item);
                 }
 
@@ -115,7 +132,6 @@ namespace ProjectLighthouse.Model.Scheduling
                 List<Warning> warnings = new();
 
                 LatheManufactureOrder? previousOrder = null;
-
                 for (int i = 0; i < ScheduleItems.Count; i++)
                 {
                     ScheduleItem item = ScheduleItems[i];
@@ -228,6 +244,7 @@ namespace ProjectLighthouse.Model.Scheduling
             public void SetHolidays(List<DateTime> holidays)
             {
                 this.Holidays = holidays;
+                ProcessMessages();
                 OnHolidaysUpdated?.Invoke(this, EventArgs.Empty);
             }
 
@@ -266,7 +283,8 @@ namespace ProjectLighthouse.Model.Scheduling
 
                     optimisations.Add(o);
                 }
-                else if (order.Bar.Size == previousOrder.Bar.Size && order.Bar.IsHexagon == previousOrder.Bar.IsHexagon)
+                
+                if (order.Bar.Size == previousOrder.Bar.Size && order.Bar.IsHexagon == previousOrder.Bar.IsHexagon)
                 {
                     Optimisation o = new()
                     {
@@ -308,7 +326,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 return advisories;
             }
 
-            private static List<Warning> GetOrderWarnings(LatheManufactureOrder order, LatheManufactureOrder previousOrder)
+            private List<Warning> GetOrderWarnings(LatheManufactureOrder order, LatheManufactureOrder previousOrder)
             {
                 List<Warning> warnings = new();
                 DateTime deadline = order.GetStartDeadline();
@@ -330,6 +348,19 @@ namespace ProjectLighthouse.Model.Scheduling
                 else if (App.Constants.OpeningHours.IsOutOfHours(order.StartDate))
                 {
                     Warning newWarning = new() { Item = order, Type = Warning.WarningType.StartsOutOfHours };
+
+                    warnings.Add(newWarning);
+                }
+
+                if (Holidays.Contains(order.GetSettingStartDateTime().Date))
+                {
+                    Warning newWarning = new() { Item = order, Type = Warning.WarningType.StartsOnHoliday };
+
+                    warnings.Add(newWarning);
+                }
+                else if (Holidays.Contains(order.StartDate))
+                {
+                    Warning newWarning = new() { Item = order, Type = Warning.WarningType.StartsOnHoliday };
 
                     warnings.Add(newWarning);
                 }

@@ -1,10 +1,12 @@
-﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.ViewModel.Core;
+using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using static ProjectLighthouse.Model.Scheduling.ProductionSchedule.Warning;
+using System.Windows.Forms;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
@@ -23,7 +25,9 @@ namespace ProjectLighthouse.Model.Scheduling
 
 
         private List<ScheduleItem> scheduleItems = new();
-        public List<DateTime> Holidays = new(); 
+
+        public event EventHandler OnHolidaysChanged;
+        public List<DateTime> Holidays { get; set; } = new();
 
 
         private List<ScheduleItem> unallocatedItems = new();
@@ -54,8 +58,8 @@ namespace ProjectLighthouse.Model.Scheduling
         public List<Optimisation> Optimisations
         {
             get { return optimisations; }
-            set 
-            { 
+            set
+            {
                 optimisations = value;
                 OnPropertyChanged();
             }
@@ -181,7 +185,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
             ScheduleItem? foundItem = null;
 
-            if(sourceSchedule != null)
+            if (sourceSchedule != null)
             {
                 foundItem = sourceSchedule.ScheduleItems.Find(x => x == changeData.item);
 
@@ -206,9 +210,9 @@ namespace ProjectLighthouse.Model.Scheduling
                 {
                     foundItem.StartDate = (DateTime)changeData.desiredDate!;
                     foundItem.AllocatedMachine = changeData.desiredMachineId;
-                    
+
                     foundItem.UpdateStartDate((DateTime)changeData.desiredDate!, changeData.desiredMachineId);
-                    
+
 
                     sourceSchedule.Remove(foundItem);
                     sourceSchedule.Refresh();
@@ -260,6 +264,73 @@ namespace ProjectLighthouse.Model.Scheduling
             GetWarnings();
         }
 
+        internal bool AddHoliday(DateTime selection)
+        {
+            List<DateTime> holidays = Holidays.Append(selection.ChangeTime(0, 0, 0, 0)).OrderBy(x => x).Distinct().ToList();
+
+            try
+            {
+                SaveHolidays(holidays);
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return false;
+            }
+
+            Holidays = holidays;
+            OnHolidaysChanged?.Invoke(this, EventArgs.Empty);
+            foreach (MachineSchedule machineSchedule in MachineSchedules)
+            {
+                machineSchedule.SetHolidays(Holidays);
+            }
+            GetWarnings();
+            return true;
+        }
+
+        internal bool RemoveHoliday(DateTime selection)
+        {
+            List<DateTime> holidays = Holidays.ToList();
+            if (!holidays.Remove(selection.ChangeTime(0,0,0,0)))
+            {
+                MessageBox.Show("Could not find date in list of holidays");
+                return false;
+            }
+
+            try
+            {
+                SaveHolidays(holidays);
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return false;
+            }
+
+            Holidays = holidays;
+            OnHolidaysChanged?.Invoke(this, EventArgs.Empty);
+            foreach(MachineSchedule machineSchedule in MachineSchedules) 
+            {
+                machineSchedule.SetHolidays(Holidays);
+            }
+            GetWarnings();
+            return true;
+        }
+
+
+        private static void SaveHolidays(List<DateTime> holidays)
+        {
+            try
+            {
+                string data = Newtonsoft.Json.JsonConvert.SerializeObject(holidays);
+                File.WriteAllText(App.ROOT_PATH + @"lib\holidays.json", data);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         private void GetOptimisations()
         {
             List<Optimisation> optimisations = new();
@@ -293,15 +364,15 @@ namespace ProjectLighthouse.Model.Scheduling
             List<Optimisation> results = implemented;
 
             // Mark implemented
-            foreach(Optimisation optimisation in optimisations)
+            foreach (Optimisation optimisation in optimisations)
             {
                 Optimisation? implementation = implemented
-                    .Find(o => 
-                        o.Type == optimisation.Type && 
+                    .Find(o =>
+                        o.Type == optimisation.Type &&
                         optimisation.AffectedItems
                             .All(i => o.AffectedItems.Any(x => x.Name == i.Name))
                             );
-                
+
                 if (implementation == null)
                 {
                     results.Add(optimisation);
@@ -351,12 +422,12 @@ namespace ProjectLighthouse.Model.Scheduling
                             order,
                             comparingTo,
                         },
-                        Type=Optimisation.OptimisationType.SameBarId,
+                        Type = Optimisation.OptimisationType.SameBarId,
                         Implemented = false
                     };
                     results.Add(o);
                 }
-                else if(order.Bar.Size == comparingTo.Bar.Size && order.Bar.IsHexagon == comparingTo.Bar.IsHexagon)
+                else if (order.Bar.Size == comparingTo.Bar.Size && order.Bar.IsHexagon == comparingTo.Bar.IsHexagon)
                 {
                     Optimisation o = new()
                     {
@@ -412,7 +483,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 {
                     destinationMachineId = null;
                 }
-             
+
                 this.desiredMachineId = destinationMachineId;
                 this.desiredDate = desiredDate;
             }
@@ -476,6 +547,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 {
                     WarningType.WillNotStartOnTime => "Will not start on time",
                     WarningType.StartsOutOfHours => "Starting out of hours",
+                    WarningType.StartsOnHoliday => "Starting during holiday",
                     WarningType.DoubleBooking => "Machine Double booked on day",
                     WarningType.NotRunningOnTime => "Is not marked as running",
                     _ => "Unknown"
@@ -486,6 +558,7 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 WillNotStartOnTime,
                 StartsOutOfHours,
+                StartsOnHoliday,
                 DoubleBooking,
                 NotRunningOnTime,
             }
