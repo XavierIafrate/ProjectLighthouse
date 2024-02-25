@@ -1519,6 +1519,7 @@
         BasedOn="{StaticResource Default}"
         TargetType="Button">
         <Setter Property="Tag" Value="" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="Margin" Value="5,0,5,5" />
         <Setter Property="Template">
             <Setter.Value>
@@ -1526,7 +1527,7 @@
                     <Grid>
                         <Border
                             x:Name="bg"
-                            Height="30"
+                            Height="{TemplateBinding Height}"
                             MinWidth="40"
                             Background="{TemplateBinding Background}"
                             BorderThickness="0"
@@ -1836,6 +1837,43 @@
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
                 <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style
+        x:Key="Action_Find_Button_Small_Red"
+        BasedOn="{StaticResource Action_Find_Button_Small}"
+        TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource RedFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Red}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource Red}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnRed}" />
+                <Setter Property="Background" Value="{StaticResource RedDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style
+        x:Key="Action_Find_Button_Small_Blue"
+        BasedOn="{StaticResource Action_Find_Button_Small}"
+        TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource BlueFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Blue}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+                <Setter Property="Background" Value="{StaticResource Blue}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+                <Setter Property="Background" Value="{StaticResource BlueDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -2834,6 +2872,7 @@
         x:Key="SettingsButton"
         BasedOn="{StaticResource Default}"
         TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -2855,7 +2894,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource BlueLight}" />
+                <Setter Property="Opacity" Value="0.6" />
             </Trigger>
         </Style.Triggers>
     </Style>
