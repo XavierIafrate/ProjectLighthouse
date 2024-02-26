@@ -387,7 +387,7 @@ namespace ProjectLighthouse.Model.Orders
         {
 
             List<LatheManufactureOrderItem> items = OrderItems
-                .Where(x => x.RequiredQuantity > 0)
+                .Where(x => x.RequiredQuantity > 0 && x.DateRequired > DateTime.MinValue)
                 .OrderByDescending(x => x.DateRequired)
                 .ToList();
 
