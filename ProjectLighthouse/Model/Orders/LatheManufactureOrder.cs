@@ -413,6 +413,18 @@ namespace ProjectLighthouse.Model.Orders
             return cursor;
         }
 
+        internal TimeSpan GetTimeToMakeRequired()
+        {
+            TimeSpan result = TimeSpan.Zero;
+
+            for (int i = 0; i < OrderItems.Count; i++)
+            {
+                result = result.Add(TimeSpan.FromSeconds(OrderItems[i].GetTimeToMakeRequired()));
+            }
+
+            return result;
+        }
+
         #endregion
 
         public void MarkAsClosed()
