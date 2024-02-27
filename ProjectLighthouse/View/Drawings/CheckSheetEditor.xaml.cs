@@ -61,17 +61,9 @@ namespace ProjectLighthouse.View.Drawings
                 ReferencedTolerances.Add(Tolerances.Find(x => x.Id == reference));
             }
 
-
-            //AvailableTolerances = Tolerances.Where(x => !drawing.Specification.Contains(x.Id)).ToList();
-
-            //MasterToleranceListView.ItemsSource = AvailableTolerances;
             ReferencedTolerancesListView.ItemsSource = ReferencedTolerances;
 
             SetMasterTolerances();
-
-
-            //StandardsFilter.ItemsSource = Standards;
-            //StandardsFilter.SelectedIndex = 0;
 
             DimensionCheckSheet checkSheet = new();
             checkSheet.BuildContent(drawing, ReferencedTolerances, order, buildPath);
@@ -89,23 +81,57 @@ namespace ProjectLighthouse.View.Drawings
                 Standard? standard = Standards.Find(x => x.Id == group.Key);
                 TextBlock t = new() 
                 { 
-                    MaxWidth = 300, 
                     Text = (standard == null ? "No Standard" : $"{standard.Name} ({standard.Description})"),
-                    TextTrimming=TextTrimming.CharacterEllipsis
+                    TextTrimming=TextTrimming.CharacterEllipsis,
+                    FontWeight=FontWeights.SemiBold,
+                    FontSize=14
                 };
 
                 TreeViewItem standardItem = new() { Header = t };
                 List<TreeViewItem> nameGroups = new();
 
                 IEnumerable<IGrouping<string, ToleranceDefinition>> tolerancesByName = group.GroupBy(x => x.Name);
+                
+
                 for (int j = 0; j < tolerancesByName.Count(); j++)
                 {
                     IGrouping<string, ToleranceDefinition> nameGroup = tolerancesByName.ElementAt(j);
-                    TreeViewItem nameItem = new() { Header = nameGroup.Key };
+                    TextBlock featureHeader = new()
+                    {
+                        Text = nameGroup.Key,
+                        TextTrimming = TextTrimming.CharacterEllipsis,
+                        FontStyle = FontStyles.Italic,
+                        FontSize = 13
+                    };
+                    TreeViewItem nameItem = new() { Header =  featureHeader };
                     List<TreeViewItem> nameItems = new();
                     nameGroup.ToList().ForEach(x =>
                     {
-                        nameItems.Add(new() { Header = x.Id });
+                        Grid contentGrid = new();
+                        contentGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                        contentGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
+
+                        Button addButton = new()
+                        {
+                            Style = (Style)Application.Current.Resources["Action_New_Button_Small"],
+                            CommandParameter = x,
+                        };
+
+                        DisplayToleranceDefinition displayToleranceDefinition = new() { Tolerance = x };
+
+                        contentGrid.Children.Add(displayToleranceDefinition);
+                        contentGrid.Children.Add(addButton);
+
+                        Grid.SetColumn(addButton, 1);
+
+
+                        addButton.Click += new RoutedEventHandler(AddToSheetButton_Click);
+
+                        nameItems.Add(new() 
+                        {
+                            Header = contentGrid,
+                            HorizontalContentAlignment =HorizontalAlignment.Stretch,
+                        });
                     });
                     nameItem.ItemsSource = nameItems;
                     nameGroups.Add(nameItem);
@@ -115,6 +141,27 @@ namespace ProjectLighthouse.View.Drawings
             }
 
             MasterTolerances.ItemsSource = mainToleranceList;
+        }
+
+        private void AddToSheetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button) return;
+            if (button.CommandParameter is not ToleranceDefinition tolerance) return;
+
+            MessageBox.Show("Adding " + tolerance.Id);
+
+            //if (MasterToleranceListView.SelectedValue is not ToleranceDefinition tol) return;
+            List<string> tols = drawing.Specification;
+            tols.Add(tolerance.Id);
+            drawing.Specification = tols;
+            ReferencedTolerances.Add(tolerance);
+
+            ReferencedTolerancesListView.Items.Refresh();
+            //FilterAvailable();
+
+            RebuildCheckSheet();
+
+            button.IsEnabled = false;
         }
 
         void FilterAvailable()
@@ -146,16 +193,6 @@ namespace ProjectLighthouse.View.Drawings
             webView.Reload();
         }
 
-        private void MasterToleranceListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //AddButton.IsEnabled = MasterToleranceListView.SelectedValue is not null;
-        }
-
-        private void ReferencedTolerancesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //RemoveButton.IsEnabled = ReferencedTolerancesListView.SelectedValue is not null;
-        }
-
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
             if (ReferencedTolerancesListView.SelectedValue is not ToleranceDefinition tol) return;
@@ -170,19 +207,7 @@ namespace ProjectLighthouse.View.Drawings
             RebuildCheckSheet();
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            //if (MasterToleranceListView.SelectedValue is not ToleranceDefinition tol) return;
-            //List<string> tols = drawing.Specification;
-            //tols.Add(tol.Id);
-            //drawing.Specification = tols;
-            //ReferencedTolerances.Add(tol);
-
-            //ReferencedTolerancesListView.Items.Refresh();
-            //FilterAvailable();
-
-            //RebuildCheckSheet();
-        }
+    
 
         private void ReferencedTolerancesListView_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -381,6 +406,12 @@ namespace ProjectLighthouse.View.Drawings
                 webviewNavCompleted = false;
                 webView.Reload();
             }
+        }
+
+        private void AddToleranceButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn) return;
+            MessageBox.Show(btn.Tag.ToString());
         }
     }
 }
