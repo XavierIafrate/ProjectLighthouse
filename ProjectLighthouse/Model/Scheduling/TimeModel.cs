@@ -59,19 +59,19 @@ namespace ProjectLighthouse.Model.Scheduling
         {
             try
             {
-                string targetText = code[(code.IndexOf("M") + 1)..code.IndexOf("C")];
+                string targetText = code[(code.IndexOf('M') + 1)..code.IndexOf('C')];
                 Gradient = double.Parse(targetText);
 
-                targetText = code[(code.IndexOf("C") + 1)..code.IndexOf("F")];
+                targetText = code[(code.IndexOf('C') + 1)..code.IndexOf('F')];
                 Intercept = double.Parse(targetText);
 
-                targetText = code[(code.IndexOf("F") + 1)..code.IndexOf("N")];
+                targetText = code[(code.IndexOf('F') + 1)..code.IndexOf('N')];
                 Floor = int.Parse(targetText);
 
-                targetText = code[(code.IndexOf("N") + 1)..code.IndexOf("R")];
+                targetText = code[(code.IndexOf('N') + 1)..code.IndexOf('R')];
                 RecordCount = int.Parse(targetText);
 
-                targetText = code[(code.IndexOf("R") + 1)..code.IndexOf("X")];
+                targetText = code[(code.IndexOf('R') + 1)..code.IndexOf('X')];
                 CoefficientOfDetermination = double.Parse(targetText);
             }
             catch

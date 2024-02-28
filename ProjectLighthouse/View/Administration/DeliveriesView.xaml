@@ -65,7 +65,7 @@
                     Command="{Binding CreateDeliveryCommand}"
                     IsEnabled="{Binding DisableControls}"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="New Delivery" />
+                    Content="New Delivery" />
                 <TextBlock
                     Margin="5"
                     HorizontalAlignment="Right"
@@ -200,13 +200,13 @@
                                         Command="{Binding VerifyCommand}"
                                         IsEnabled="{Binding NoteIsNotVerified}"
                                         Style="{StaticResource Action_Orange_Button}"
-                                        Tag="Verify" />
+                                        Content="Verify" />
                                     <Button
                                         HorizontalAlignment="Right"
                                         Command="{Binding GenerateDeliveryNotePDFCommand}"
                                         IsEnabled="{Binding PdfEnabled}"
                                         Style="{StaticResource Action_Pdf_Button}"
-                                        Tag="View PDF" />
+                                        Content="View PDF" />
 
 
                                 </StackPanel>
@@ -237,7 +237,6 @@
                                     <DataTemplate>
                                         <uc:DisplayDeliveryNoteItem
                                             Margin="0,5"
-                                            EditCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.EditDeliveryNoteItemCmd}"
                                             Item="{Binding}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

@@ -136,12 +136,12 @@
             <Button
                 x:Name="CancelButton"
                 Click="CancelButton_Click"
-                Tag="Cancel"
+                Content="Cancel"
                 Style="{StaticResource Action_Cancel_Button}" />
             <Button
                 x:Name="CreateButton"
                 Click="CreateButton_Click"
-                Tag="Create Delivery"
+                Content="Create Delivery"
                 Style="{StaticResource Action_New_Button}" />
         </StackPanel>
 

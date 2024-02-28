@@ -134,12 +134,12 @@
                     HorizontalAlignment="Right"
                     Click="ConfirmButton_Click"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="Add" />
+                    Content="Add" />
                 <Button
                     x:Name="UpdateButton"
                     Click="ConfirmButton_Click"
                     Style="{StaticResource Action_Update_Button}"
-                    Tag="Update" />
+                    Content="Update" />
 
             </StackPanel>
         </Grid>

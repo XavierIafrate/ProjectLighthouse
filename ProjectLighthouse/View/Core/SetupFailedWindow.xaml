@@ -65,7 +65,12 @@
                 FontStyle="Italic"
                 Foreground="{StaticResource Background}"
                 Text="If the error persists, please contact an administrator." />
-            <Button Grid.Row="5" Style="{StaticResource Action_Error_Close_Button}" x:Name="CloseButton" Click="CloseButton_Click" />
+            <Button
+                x:Name="CloseButton"
+                Grid.Row="5"
+                Click="CloseButton_Click"
+                Content="Close Application"
+                Style="{StaticResource Action_Cancel_Button}" />
         </Grid>
 
 

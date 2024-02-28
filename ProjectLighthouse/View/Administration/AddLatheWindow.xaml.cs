@@ -64,7 +64,7 @@ namespace ProjectLighthouse.View.Administration
 
            List<string> featureList = new();
 
-            foreach (Lathe l in existingLathes)
+            foreach (Lathe l in ExistingLathes)
             {
                 if (lathe is not null)
                 {

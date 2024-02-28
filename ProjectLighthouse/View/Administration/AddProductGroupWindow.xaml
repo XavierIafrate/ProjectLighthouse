@@ -66,12 +66,12 @@
             HorizontalAlignment="Right"
             Click="CreateButton_Click"
             Style="{StaticResource Action_New_Button}"
-            Tag="Create" />
+            Content="Create" />
         <Button
             x:Name="UpdateButton"
             HorizontalAlignment="Right"
             Click="CreateButton_Click"
             Style="{StaticResource Action_Update_Button}"
-            Tag="Update" />
+            Content="Update" />
     </StackPanel>
 </Window>

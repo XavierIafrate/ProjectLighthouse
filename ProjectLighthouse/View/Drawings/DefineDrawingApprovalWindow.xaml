@@ -6,18 +6,19 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.HelperWindows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Choose Publish Options"
-    SizeToContent="Height"
+    Width="931"
     ResizeMode="NoResize"
+    SizeToContent="Height"
     WindowStartupLocation="CenterOwner"
-    mc:Ignorable="d" Width="931">
+    mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Border
             x:Name="amdBox"
@@ -32,11 +33,11 @@
                     Style="{StaticResource title}"
                     Text="Amendment" />
                 <TextBlock
+                    Height="65"
                     Margin="20"
                     HorizontalAlignment="Center"
                     FontSize="16"
                     FontStyle="Italic"
-                     Height="65"
                     Text="If the change is minor and doesn't represent a change to the design intent, approve the drawing as an amendment."
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
@@ -53,16 +54,16 @@
                     Margin="0,40,0,0"
                     HorizontalAlignment="Center"
                     Checked="amendmentOpt_Checked"
-                    Unchecked="amendmentOpt_Unchecked"
-                    Content="Approve as Amendment" />
+                    Content="Approve as Amendment"
+                    Unchecked="amendmentOpt_Unchecked" />
             </StackPanel>
         </Border>
 
         <Border
+            x:Name="revBox"
             Grid.Column="1"
             Margin="20"
             Padding="40"
-            x:Name="revBox"
             BorderBrush="{StaticResource Blue}"
             BorderThickness="4"
             CornerRadius="10">
@@ -72,16 +73,17 @@
                     Style="{StaticResource title}"
                     Text="Revision" />
                 <TextBlock
+                    Height="65"
                     Margin="20"
                     HorizontalAlignment="Center"
                     FontSize="16"
                     FontStyle="Italic"
                     Text="If the change is significant, publish the drawing as a revision."
                     TextAlignment="Center"
-                    TextWrapping="Wrap" Height="65" />
+                    TextWrapping="Wrap" />
                 <TextBlock
-                    Margin="20"
                     x:Name="revPreview"
+                    Margin="20"
                     HorizontalAlignment="Center"
                     FontSize="60"
                     FontWeight="Bold"
@@ -91,14 +93,29 @@
                     x:Name="revisionOpt"
                     Margin="0,40,0,0"
                     HorizontalAlignment="Center"
-                    Unchecked="revisionOpt_Unchecked"
                     Checked="revisionOpt_Checked"
-                    Content="Approve as Revision" />
+                    Content="Approve as Revision"
+                    Unchecked="revisionOpt_Unchecked" />
             </StackPanel>
         </Border>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,0,20,20">
-            <Button Tag="Cancel" x:Name="CancelButton" Click="CancelButton_Click" Style="{StaticResource Action_Cancel_Button}" VerticalAlignment="Center" Margin="5"/>
-            <Button Style="{StaticResource ApproveButton}" x:Name="ApproveButton" Click="ApproveButton_Click" Margin="0"/>
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="0,0,20,20"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                x:Name="CancelButton"
+                Margin="5"
+                VerticalAlignment="Center"
+                Click="CancelButton_Click"
+                Style="{StaticResource Action_Cancel_Button}"
+                Content="Cancel" />
+            <Button
+                x:Name="ApproveButton"
+                Margin="0"
+                Click="ApproveButton_Click"
+                Style="{StaticResource ApproveButton}" />
         </StackPanel>
     </Grid>
 </Window>

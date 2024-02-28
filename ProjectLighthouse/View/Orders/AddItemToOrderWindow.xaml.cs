@@ -92,7 +92,7 @@ namespace ProjectLighthouse.View.Orders
                 return;
             }
 
-            AddButton.Tag = $"Add Items [{list.SelectedItems.Count:0}]";
+            AddButton.Content = $"Add Items [{list.SelectedItems.Count:0}]";
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

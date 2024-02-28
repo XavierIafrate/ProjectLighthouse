@@ -70,7 +70,7 @@
                     HorizontalAlignment="Left"
                     Command="{Binding AddNewCmd}"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="New Drawing"
+                    Content="New Drawing"
                     Visibility="{Binding EditControlsVis}" />
                 <CheckBox
                     Margin="0,8"
@@ -306,7 +306,7 @@
                                 Command="{Binding OpenDrawingCmd}"
                                 IsEnabled="{Binding OpenFileButtonEnabled}"
                                 Style="{StaticResource Action_Pdf_Button}"
-                                Tag="{Binding OpenFileButtonText, FallbackValue='Open PDF'}" />
+                                Content="{Binding OpenFileButtonText, FallbackValue='Open PDF'}" />
                         </Grid>
 
                         <Border
@@ -635,7 +635,7 @@
                                 <Button
                                     HorizontalAlignment="Right"
                                     Style="{StaticResource Action_Edit_Button}"
-                                    Tag="Configure"
+                                    Content="Configure"
                                     Command="{Binding EditSpecificationCmd}"/>
                             </Grid>
                             <ListView
@@ -693,11 +693,12 @@
                 <Button
                     HorizontalAlignment="Center"
                     Command="{Binding WithdrawCmd}"
-                    Style="{StaticResource WithdrawButton}" />
+                    Style="{StaticResource Action_Remove_Button}" 
+                    Content="Withdraw"/>
                 <Button
                     Command="{Binding ConvertToDevelopmentCmd}"
                     Style="{StaticResource Action_Button}"
-                    Tag="Convert to Development"
+                    Content="Convert to Development"
                     Visibility="{Binding AdminVis}" />
             </StackPanel>
         </ScrollViewer>

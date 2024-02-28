@@ -413,9 +413,9 @@
                         x:Name="AddFeatureButton"
                         Margin="5,0"
                         Click="AddFeatureButton_Click"
+                        Content="Add"
                         IsEnabled="False"
-                        Style="{StaticResource Action_New_Button}"
-                        Tag="Add" />
+                        Style="{StaticResource Action_New_Button}" />
 
                 </StackPanel>
             </Grid>
@@ -477,14 +477,14 @@
                 x:Name="AddButton"
                 HorizontalAlignment="Right"
                 Click="SubmitButton_Click"
-                Style="{StaticResource Action_New_Button}"
-                Tag="Add Lathe" />
+                Content="Add Lathe"
+                Style="{StaticResource Action_New_Button}" />
             <Button
                 x:Name="UpdateButton"
                 HorizontalAlignment="Right"
                 Click="SubmitButton_Click"
-                Style="{StaticResource Action_Update_Button}"
-                Tag="Update" />
+                Content="Update"
+                Style="{StaticResource Action_Update_Button}" />
         </StackPanel>
     </ScrollViewer>
 </Window>

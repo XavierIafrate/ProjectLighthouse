@@ -113,7 +113,7 @@
                 </Grid>
                 <Grid>
                     <CheckBox IsChecked="True" Content="Update Event Start Date" x:Name="UpdateStartDateCheckBox"/>
-                    <Button Tag="Register Service" Style="{StaticResource Action_New_Button}" HorizontalAlignment="Right" x:Name="UploadServiceRecordButton" Click="UploadServiceRecordButton_Click"/>
+                    <Button Content="Register Service" Style="{StaticResource Action_New_Button}" HorizontalAlignment="Right" x:Name="UploadServiceRecordButton" Click="UploadServiceRecordButton_Click"/>
                 </Grid>
             </StackPanel>
         </Border>
@@ -132,6 +132,6 @@
             Grid.Column="2"
             HorizontalAlignment="Right"
             Click="AddButton_Click"
-            Tag="Add To Register" />
+            Content="Add To Register" />
     </Grid>
 </Window>

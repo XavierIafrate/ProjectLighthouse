@@ -30,14 +30,14 @@
                             Command="{Binding GetRecordsAsCsvCmd}"
                             CommandParameter="Orders"
                             Style="{StaticResource Action_Button}"
-                            Tag="Get CSV of orders" />
+                            Content="Get CSV of orders" />
                         <Button
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Command="{Binding GetRecordsAsCsvCmd}"
                             CommandParameter="ItemCosting"
                             Style="{StaticResource Action_Button}"
-                            Tag="Get Item Costing" />
+                            Content="Get Item Costing" />
 
  
                         <Button
@@ -46,14 +46,14 @@
                             Command="{Binding GetRecordsAsCsvCmd}"
                             CommandParameter="BarStockEstimate"
                             Style="{StaticResource Action_Button}"
-                            Tag="Estimate Bar Stock Inventory" />
+                            Content="Estimate Bar Stock Inventory" />
                         <Button
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Command="{Binding GetRecordsAsCsvCmd}"
                             CommandParameter="Delivered"
                             Style="{StaticResource Action_Button}"
-                            Tag="Get Delivered Items" />
+                            Content="Get Delivered Items" />
                         <Button
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
@@ -61,7 +61,7 @@
                             CommandParameter="TotalManufactured"
                             IsEnabled="False"
                             Style="{StaticResource Action_Button}"
-                            Tag="Total Manufactured" />
+                            Content="Total Manufactured" />
                         <Button
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
@@ -69,7 +69,7 @@
                             CommandParameter="ImportTriggers"
                             IsEnabled="False"
                             Style="{StaticResource Action_Button}"
-                            Tag="Import Triggers" />
+                            Content="Import Triggers" />
                     </StackPanel>
                 </Grid>
             </TabItem>

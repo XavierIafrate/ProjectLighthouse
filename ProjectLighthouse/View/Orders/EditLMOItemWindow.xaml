@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel
-            Width="500"
+            Width="550"
             Margin="30,20"
             VerticalAlignment="Center">
             <Grid>
@@ -117,14 +117,14 @@
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
                     <TextBox
                         x:Name="CycleTime_Min"
-                        Width="60"
+                        Width="70"
                         HorizontalContentAlignment="Center"
                         GotFocus="CycleTime_GotFocus"
                         LostFocus="CycleTime_LostFocus"
                         MaxLength="2"
                         PreviewKeyDown="Allow_Nums_Only_And_TabAcross"
                         Style="{StaticResource UsernameTextBox}"
-                        Text="60"
+                        d:Text="00"
                         TextChanged="CycleTime_Min_TextChanged" />
                     <TextBlock
                         Margin="2,0,8,5"
@@ -133,13 +133,14 @@
                         Text="min" />
                     <TextBox
                         x:Name="CycleTime_Sec"
-                        Width="60"
+                        Width="70"
                         HorizontalContentAlignment="Center"
                         GotFocus="CycleTime_GotFocus"
                         LostFocus="CycleTime_LostFocus"
                         MaxLength="2"
                         PreviewKeyDown="Allow_Nums_Only"
                         Style="{StaticResource UsernameTextBox}"
+                        d:Text="00"
                         TextChanged="CycleTime_Sec_TextChanged" />
                     <TextBlock
                         Margin="2,0,8,5"
@@ -301,7 +302,7 @@
                     Grid.Column="2"
                     Click="AddLotButton_Click"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="Add Lot" />
+                    Content="Add Lot" />
             </Grid>
 
         </StackPanel>

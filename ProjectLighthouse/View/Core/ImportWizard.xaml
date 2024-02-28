@@ -28,7 +28,7 @@
             x:Name="PickButton"
             Click="PickButton_Click"
             Style="{StaticResource Action_Button}"
-            Tag="Choose File" />
+            Content="Choose File" />
         <TextBlock
             d:Text="[filename]"
             Style="{StaticResource statement}"
@@ -74,6 +74,6 @@
             Style="{StaticResource Action_Button}"
             x:Name="ImportButton"
             Click="ImportButton_Click"
-            Tag="Import" />
+            Content="Import" />
     </StackPanel>
 </Window>

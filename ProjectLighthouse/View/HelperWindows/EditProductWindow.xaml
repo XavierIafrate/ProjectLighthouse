@@ -72,7 +72,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
                         Style="{StaticResource Action_New_Button_Small}"
-                        Tag="Add" />
+                        Content="Add" />
                 </Grid>
                 <ListView
                     Grid.Row="1"
@@ -108,6 +108,6 @@
             HorizontalAlignment="Right"
             Click="SaveButton_Click"
             Style="{StaticResource Action_Update_Button}"
-            Tag="Update" />
+            Content="Update" />
     </StackPanel>
 </Window>

@@ -57,7 +57,7 @@
                     HorizontalAlignment="Left"
                     Command="{Binding AddBarCmd}"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="New Bar" />
+                    Content="New Bar" />
                 <CheckBox
                     Grid.Row="2"
                     HorizontalAlignment="Right"
@@ -255,7 +255,7 @@
                         Command="{Binding IssueBarCmd}"
                         IsEnabled="false"
                         Style="{StaticResource Action_New_Button}"
-                        Tag="New Issue" />
+                        Content="New Issue" />
                 </Grid>
                 <ListView
                     x:Name="OrderListView"

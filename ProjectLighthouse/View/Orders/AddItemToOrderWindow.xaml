@@ -39,12 +39,12 @@
                 x:Name="CancelButton"
                 Click="CancelButton_Click"
                 Style="{StaticResource Action_Cancel_Button}"
-                Tag="Cancel" />
+                Content="Cancel" />
             <Button
                 x:Name="AddButton"
                 Click="AddButton_Click"
                 Style="{StaticResource Action_New_Button}"
-                Tag="Add Items [0]" />
+                Content="Add Items [0]" />
         </StackPanel>
     </Grid>
 </Window>

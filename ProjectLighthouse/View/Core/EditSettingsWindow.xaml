@@ -224,7 +224,7 @@
                         HorizontalAlignment="Right"
                         Click="ChangePasswordButton_Click"
                         Style="{StaticResource Action_Button}"
-                        Tag="Change Password" />
+                        Content="Change Password" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

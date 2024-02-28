@@ -22,27 +22,56 @@
                 x:Name="BarIdText"
                 Style="{StaticResource subtitle}"
                 Text="Bar ID: PRB000-0000-000" />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                <TextBlock x:Name="BarInStockText" Text="99 in stock" Margin="10" Foreground="{StaticResource Green}" FontWeight="SemiBold"  FontSize="20"/>
-                <TextBlock x:Name="OrderRequirementText" Text="Order requires 55" Margin="10" FontWeight="SemiBold" Foreground="{StaticResource Purple}" FontSize="20"/>
+            <StackPanel
+                Margin="10"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock
+                    x:Name="BarInStockText"
+                    Margin="10"
+                    FontSize="20"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Green}"
+                    Text="99 in stock" />
+                <TextBlock
+                    x:Name="OrderRequirementText"
+                    Margin="10"
+                    FontSize="20"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Purple}"
+                    Text="Order requires 55" />
             </StackPanel>
             <TextBlock Style="{StaticResource section}" Text="How many bars would you like to issue?" />
             <TextBox
                 x:Name="QtyTextBox"
+                Width="100"
+                HorizontalAlignment="Left"
+                MaxLength="3"
                 PreviewKeyDown="QtyTextBox_PreviewKeyDown"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="quantity" Width="100" 
-                MaxLength="3"
-                HorizontalAlignment="Left"/>
+                Tag="quantity" />
             <TextBlock Style="{StaticResource section}" Text="Please record the batch reference of the material being issued" />
             <TextBox
                 x:Name="BatchInfoTextBox"
+                Width="350"
+                HorizontalAlignment="Left"
                 MaxLength="16"
                 Style="{StaticResource DefaultTextBox}"
-                Tag="material batch" Width="350" HorizontalAlignment="Left" />
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,20,0,0">
-                <Button Tag="Cancel" Style="{StaticResource Action_Cancel_Button}" x:Name="CancelButton" Click="CancelButton_Click" />
-                <Button Tag="Create Issue" Style="{StaticResource Action_New_Button}" x:Name="ConfirmButton" Click="ConfirmButton_Click" />
+                Tag="material batch" />
+            <StackPanel
+                Margin="0,20,0,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="CancelButton"
+                    Click="CancelButton_Click"
+                    Content="Cancel"
+                    Style="{StaticResource Action_Cancel_Button}" />
+                <Button
+                    x:Name="ConfirmButton"
+                    Click="ConfirmButton_Click"
+                    Content="Create Issue"
+                    Style="{StaticResource Action_New_Button}" />
             </StackPanel>
         </StackPanel>
 

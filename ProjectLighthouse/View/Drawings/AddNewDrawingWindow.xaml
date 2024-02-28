@@ -156,7 +156,7 @@
                     HorizontalAlignment="Right"
                     Click="AddButton_Click"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="Add Drawing" />
+                    Content="Add Drawing" />
 
             </Grid>
         </StackPanel>

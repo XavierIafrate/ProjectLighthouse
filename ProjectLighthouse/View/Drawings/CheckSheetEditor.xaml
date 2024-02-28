@@ -47,7 +47,7 @@
             HorizontalAlignment="Right"
             Click="SaveButton_Click"
             Style="{StaticResource Action_Update_Button}"
-            Tag="Save" />
+            Content="Save" />
 
         <TextBlock
             Grid.Row="1"
@@ -98,12 +98,12 @@
                     x:Name="CopyButton"
                     Click="CopyButton_Click"
                     Style="{StaticResource Action_Button}"
-                    Tag="Copy" />
+                    Content="Copy" />
                 <Button
                     x:Name="PasteButton"
                     Click="PasteButton_Click"
                     Style="{StaticResource Action_Button}"
-                    Tag="Paste" />
+                    Content="Paste" />
             </StackPanel>
         </Grid>
         <TextBlock

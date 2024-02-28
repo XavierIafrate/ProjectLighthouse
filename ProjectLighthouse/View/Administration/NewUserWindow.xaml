@@ -51,6 +51,6 @@
             HorizontalAlignment="Right"
             Click="createButton_Click"
             Style="{StaticResource Action_New_Button}"
-            Tag="Add User" />
+            Content="Add User" />
     </StackPanel>
 </Window>

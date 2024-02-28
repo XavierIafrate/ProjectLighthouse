@@ -99,6 +99,6 @@
             Click="AddBarButton_Click"
             IsEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.NoErrors, Mode=OneWay}"
             Style="{StaticResource Action_New_Button}"
-            Tag="Add Bar" />
+            Content="Add Bar" />
     </StackPanel>
 </Window>

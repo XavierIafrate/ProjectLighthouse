@@ -87,13 +87,13 @@
                 HorizontalAlignment="Right"
                 Click="PrintButton_Click"
                 Style="{StaticResource Action_Button}"
-                Tag="Print Label" />
+                Content="Print Label" />
             <Button
                 x:Name="SaveButton"
                 HorizontalAlignment="Right"
                 Click="SaveButton_Click"
                 Style="{StaticResource Action_Update_Button}"
-                Tag="Save Changes" />
+                Content="Save Changes" />
 
         </StackPanel>
     </StackPanel>
