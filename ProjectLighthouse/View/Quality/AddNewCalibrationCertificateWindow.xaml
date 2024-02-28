@@ -80,7 +80,7 @@
                     Grid.Column="1"
                     Click="ChoosePDFButton_Click"
                     Style="{StaticResource Action_Button}"
-                    Tag="Choose PDF" />
+                    Content="Choose PDF" />
             </Grid>
 
         </StackPanel>
@@ -88,6 +88,6 @@
             HorizontalAlignment="Right"
             Click="AddButton_Click"
             Style="{StaticResource Action_New_Button}"
-            Tag="Add Certificate" />
+            Content="Add Certificate" />
     </StackPanel>
 </Window>

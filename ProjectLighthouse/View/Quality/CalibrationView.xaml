@@ -65,13 +65,13 @@
                     Margin="5,0"
                     Command="{Binding AddNewEquipmentCmd}"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="New"
+                    Content="New"
                     Visibility="{Binding CanModify, Converter={StaticResource visibleConverter}}" />
                 <Button
                     Grid.Column="1"
                     Margin="5,0"
                     Command="{Binding GenerateReportCmd}"
-                    Style="{StaticResource CSVButton}"
+                    Style="{StaticResource Action_Download_Button}"
                     ToolTip="Get CSV of items requiring calibration."
                     Visibility="{Binding CanModify, Converter={StaticResource visibleConverter}}" />
                 <TextBlock
@@ -318,7 +318,7 @@
                                 Command="{Binding EditEquipmentCmd}"
                                 CommandParameter="{Binding SelectedEquipment.Id}"
                                 Style="{StaticResource Action_Edit_Button}"
-                                Tag="Edit" />
+                                Content="Edit" />
                         </Grid>
                         <Grid Margin="20,5">
                             <Grid.ColumnDefinitions>
@@ -466,7 +466,7 @@
                                 VerticalAlignment="Bottom"
                                 Command="{Binding AddCertificateCmd}"
                                 Style="{StaticResource Action_New_Button}"
-                                Tag="Add Certificate" />
+                                Content="Add Certificate" />
                         </Grid>
                         <ItemsControl
                             Margin="5,0,5,5"

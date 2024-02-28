@@ -142,13 +142,13 @@
                 HorizontalAlignment="Right"
                 Click="AddButton_Click"
                 Style="{StaticResource Action_New_Button}"
-                Tag="Add to Registry" />
+                Content="Add to Registry" />
             <Button
                 x:Name="SaveButton"
                 HorizontalAlignment="Right"
                 Click="SaveButton_Click"
                 Style="{StaticResource Action_Update_Button}"
-                Tag="Save Changes" />
+                Content="Save Changes" />
         </StackPanel>
 
     </StackPanel>

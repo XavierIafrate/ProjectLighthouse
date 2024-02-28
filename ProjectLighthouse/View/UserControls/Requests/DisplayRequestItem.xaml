@@ -51,7 +51,7 @@
                     HorizontalAlignment="Left"
                     Click="EditButton_Click"
                     Style="{StaticResource Action_Edit_Button_Small}"
-                    Tag="Edit" />
+                    Content="Edit" />
             </Grid>
 
 
@@ -84,7 +84,7 @@
                 d:Visibility="Visible"
                 Click="Button_Click"
                 Style="{StaticResource Action_Remove_Button_Small}"
-                Tag="Remove"
+                Content="Remove"
                 Visibility="Collapsed" />
         </Grid>
 

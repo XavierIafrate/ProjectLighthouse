@@ -1,25 +1,55 @@
-﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayAttachment"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" d:Background="White" d:DesignWidth="300">
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.DisplayAttachment"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="White"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
     <Grid Margin="15,8">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel>
-        <TextBlock FontWeight="SemiBold" Text="DOCUMENT_NAME" x:Name="FileName" VerticalAlignment="Center" MaxWidth="400" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
+            <TextBlock
+                x:Name="FileName"
+                MaxWidth="400"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontWeight="SemiBold"
+                Text="DOCUMENT_NAME"
+                TextTrimming="CharacterEllipsis" />
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="N/A" x:Name="FileSize" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="{StaticResource Purple}"/>
-                <TextBlock Text=" N/A" x:Name="Date" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="Gray" Margin="5,0"/>
-                
+                <TextBlock
+                    x:Name="FileSize"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource Purple}"
+                    Text="N/A" />
+                <TextBlock
+                    x:Name="Date"
+                    Margin="5,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Foreground="Gray"
+                    Text=" N/A" />
+
             </StackPanel>
-            
+
         </StackPanel>
-        <Button x:Name="OpenButton" Click="OpenButton_Click" Style="{StaticResource Action_Open_Button}" HorizontalAlignment="Right" Margin="3" VerticalAlignment="Center" Tag="Open"/>
+        <Button
+            x:Name="OpenButton"
+            Margin="3"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Click="OpenButton_Click"
+            Style="{StaticResource Action_Open_Button}"
+            Content="Open" />
         <!--<Image x:Name="imgPreview"/>-->
     </Grid>
 </UserControl>

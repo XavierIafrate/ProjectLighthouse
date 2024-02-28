@@ -10,19 +10,14 @@ namespace ProjectLighthouse.View.UserControls
 {
     public partial class FilePicker : UserControl, INotifyPropertyChanged
     {
-
-
-
         public string AllowedFileTypes
         {
             get { return (string)GetValue(AllowedFileTypesProperty); }
             set { SetValue(AllowedFileTypesProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for AllowedFileTypes.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AllowedFileTypesProperty =
             DependencyProperty.Register("AllowedFileTypes", typeof(string), typeof(FilePicker), new PropertyMetadata("PDF Files(*.pdf) | *.pdf"));
-
 
         public string FilePath
         {
@@ -30,7 +25,6 @@ namespace ProjectLighthouse.View.UserControls
             set { SetValue(FilePathProperty, value); OnPropertyChanged(); }
         }
 
-        // Using a DependencyProperty as the backing store for FilePath.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FilePathProperty =
             DependencyProperty.Register("FilePath", typeof(string), typeof(FilePicker), new PropertyMetadata("", SetValues));
 

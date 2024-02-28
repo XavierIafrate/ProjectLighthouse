@@ -20,13 +20,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Button
-            x:Name="EditButton"
-            Grid.RowSpan="2"
-            Margin="0,0,10,0"
-            Click="Button_Click"
-            Style="{StaticResource IconEditButton}"
-            Visibility="Visible" />
         <TextBlock
             Grid.Column="1"
             FontSize="16"

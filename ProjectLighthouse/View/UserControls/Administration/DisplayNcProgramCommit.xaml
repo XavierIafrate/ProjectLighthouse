@@ -40,7 +40,7 @@
                 d:Tag="View Commit aaaaaa"
                 CommandParameter="{Binding}"
                 Style="{StaticResource Action_Compare_File_Button}"
-                Tag="{Binding FileName, StringFormat='{}View Commit {0}'}" />
+                Content="{Binding FileName, StringFormat='{}View Commit {0}'}" />
 
             <TextBlock
                 Grid.Row="1"

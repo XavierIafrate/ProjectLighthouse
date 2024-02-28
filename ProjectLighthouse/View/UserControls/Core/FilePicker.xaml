@@ -33,7 +33,8 @@
                 x:Name="SelectFileButton"
                 Grid.Column="1"
                 Click="SelectFileButton_Click"
-                Style="{StaticResource Choose_File_Button}" />
+                Content="Pick File"
+                Style="{StaticResource Action_Pick_File_Button}" />
 
         </Grid>
     </Border>

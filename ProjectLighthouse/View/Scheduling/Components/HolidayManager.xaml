@@ -27,7 +27,7 @@
                             Click="RemoveButton_Click"
                             CommandParameter="{Binding}"
                             Style="{StaticResource Action_Remove_Button_Small}"
-                            Tag="Remove" />
+                            Content="Remove" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -48,7 +48,7 @@
                 Click="AddButton_Click"
                 IsEnabled="False"
                 Style="{StaticResource Action_New_Button}"
-                Tag="Add" />
+                Content="Add" />
         </Grid>
     </StackPanel>
 </UserControl>

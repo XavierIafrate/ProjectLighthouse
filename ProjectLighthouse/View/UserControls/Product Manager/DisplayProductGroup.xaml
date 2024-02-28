@@ -10,8 +10,8 @@
     mc:Ignorable="d">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
             <TextBlock
@@ -67,6 +67,6 @@
             Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=2}, Path=DataContext.AddProductGroupCmd}"
             CommandParameter="{Binding Path=.}"
             Style="{StaticResource Action_Edit_Button_Small}"
-            Tag="Edit" />
+            Content="Edit" />
     </Grid>
 </UserControl>

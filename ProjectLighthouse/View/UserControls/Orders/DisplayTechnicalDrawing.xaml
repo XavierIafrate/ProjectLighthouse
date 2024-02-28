@@ -8,9 +8,7 @@
     d:DesignWidth="550.625"
     mc:Ignorable="d">
     <Grid>
-        <Border
-            Background="{StaticResource Surface}"
-            CornerRadius="3" />
+        <Border Background="{StaticResource Surface}" CornerRadius="3" />
         <Grid Margin="15,5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -22,14 +20,24 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
-            <TextBlock
-                x:Name="filename"
-                VerticalAlignment="Center"
-                FontSize="16"
-                FontWeight="SemiBold"
-                Text="DRAWING_NAME" />
-                <Border x:Name="newBadge" Margin="5,2,0,0" Background="{StaticResource TealFaded}" Padding="5,2" CornerRadius="2" VerticalAlignment="Center">
-                    <TextBlock Text="NEW" Foreground="{StaticResource Teal}" FontSize="10" FontWeight="SemiBold"/>
+                <TextBlock
+                    x:Name="filename"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="DRAWING_NAME" />
+                <Border
+                    x:Name="newBadge"
+                    Margin="5,2,0,0"
+                    Padding="5,2"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource TealFaded}"
+                    CornerRadius="2">
+                    <TextBlock
+                        FontSize="10"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource Teal}"
+                        Text="NEW" />
                 </Border>
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -60,18 +68,18 @@
                 Margin="0,0,5,0"
                 VerticalAlignment="Center"
                 Click="InspectionLogButton_Click"
-                Tag="Inspection Log"
-                Style="{StaticResource Action_Open_CheckSheet_Button}" />
+                Style="{StaticResource Action_Open_CheckSheet_Button}"
+                Content="Inspection Log" />
 
             <Button
                 x:Name="openButton"
                 Grid.RowSpan="2"
-                Margin="0"
                 Grid.Column="2"
+                Margin="0"
                 VerticalAlignment="Center"
                 Click="OpenButton_Click"
-                Tag="Drawing"
-                Style="{StaticResource Action_Open_Drawing_Button}" />
+                Style="{StaticResource Action_Open_Drawing_Button}"
+                Content="Drawing" />
 
         </Grid>
     </Grid>

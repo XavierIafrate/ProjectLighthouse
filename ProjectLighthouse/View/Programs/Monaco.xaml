@@ -305,7 +305,7 @@
                         Click="CommitButton_Click"
                         HorizontalAlignment="Right"
                         Style="{StaticResource Action_Button}"
-                        Tag="Commit" />
+                        Content="Commit" />
                 </Grid>
             </StackPanel>
         </Grid>

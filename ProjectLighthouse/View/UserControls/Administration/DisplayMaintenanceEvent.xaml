@@ -2,56 +2,86 @@
     x:Class="ProjectLighthouse.View.UserControls.DisplayMaintenanceEvent"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-    xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:Background="White"
-    mc:Ignorable="d" d:DesignWidth="550">
+    d:DesignWidth="550"
+    mc:Ignorable="d">
     <Grid Margin="20,10">
         <Grid.Resources>
-            <converters:boolToVisibleOrCollapsed x:Key="showIfTrue"/>
+            <converters:boolToVisibleOrCollapsed x:Key="showIfTrue" />
         </Grid.Resources>
         <StackPanel>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+            <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
                 <TextBlock
+                    VerticalAlignment="Center"
+                    d:Text="EVENT_DESCRIPTION"
                     FontSize="16"
                     FontWeight="SemiBold"
+                    Text="{Binding MaintenanceEvent, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                <Border
+                    Margin="7,0"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Text="{Binding MaintenanceEvent, RelativeSource={RelativeSource AncestorType=UserControl}}" d:Text="EVENT_DESCRIPTION" />
-                <Border BorderBrush="{StaticResource Red}" BorderThickness="3,0,0,0" CornerRadius="3" HorizontalAlignment="Left" Margin="7,0" VerticalAlignment="Center" Visibility="{Binding MaintenanceEvent.IsDue, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource showIfTrue}}">
+                    BorderBrush="{StaticResource Red}"
+                    BorderThickness="3,0,0,0"
+                    CornerRadius="3"
+                    Visibility="{Binding MaintenanceEvent.IsDue, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource showIfTrue}}">
                     <Grid>
-                        <Border Background="{StaticResource Red}" Opacity="0.15" CornerRadius="3"/>
-                        <TextBlock Text="Due Now" Foreground="{StaticResource Red}" FontWeight="SemiBold" FontSize="11" Margin="5,2"/>
+                        <Border
+                            Background="{StaticResource Red}"
+                            CornerRadius="3"
+                            Opacity="0.15" />
+                        <TextBlock
+                            Margin="5,2"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Red}"
+                            Text="Due Now" />
                     </Grid>
                 </Border>
             </StackPanel>
-            
+
             <StackPanel Orientation="Horizontal">
-                <Path Data="M18,11V12.5C21.19,12.5 23.09,16.05 21.33,18.71L20.24,17.62C21.06,15.96 19.85,14 18,14V15.5L15.75,13.25L18,11M18,22V20.5C14.81,20.5 12.91,16.95 14.67,14.29L15.76,15.38C14.94,17.04 16.15,19 18,19V17.5L20.25,19.75L18,22M19,3H18V1H16V3H8V1H6V3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H14C13.36,20.45 12.86,19.77 12.5,19H5V8H19V10.59C19.71,10.7 20.39,10.94 21,11.31V5A2,2 0 0,0 19,3Z"
-                      Width="13" Stretch="Uniform" Fill="{StaticResource Blue}" Margin="0,0,5,0"/>
-                <TextBlock VerticalAlignment="Center" d:Text="Repeats every 12 months" FontStyle="Italic" Foreground="{StaticResource Blue}" HorizontalAlignment="Right" Margin="0,0,0,1" Text="{Binding MaintenanceEvent.IntervalMonths, StringFormat='{}Repeats every {0} months', RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                <Path
+                    Width="13"
+                    Margin="0,0,5,0"
+                    Data="M18,11V12.5C21.19,12.5 23.09,16.05 21.33,18.71L20.24,17.62C21.06,15.96 19.85,14 18,14V15.5L15.75,13.25L18,11M18,22V20.5C14.81,20.5 12.91,16.95 14.67,14.29L15.76,15.38C14.94,17.04 16.15,19 18,19V17.5L20.25,19.75L18,22M19,3H18V1H16V3H8V1H6V3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H14C13.36,20.45 12.86,19.77 12.5,19H5V8H19V10.59C19.71,10.7 20.39,10.94 21,11.31V5A2,2 0 0,0 19,3Z"
+                    Fill="{StaticResource Blue}"
+                    Stretch="Uniform" />
+                <TextBlock
+                    Margin="0,0,0,1"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    d:Text="Repeats every 12 months"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource Blue}"
+                    Text="{Binding MaintenanceEvent.IntervalMonths, StringFormat='{}Repeats every {0} months', RelativeSource={RelativeSource AncestorType=UserControl}}" />
             </StackPanel>
-            
+
         </StackPanel>
         <Grid HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock
+                x:Name="LastCompletedText"
                 HorizontalAlignment="Right"
-                Opacity="0.8"
-                d:Text="LAST_COMPLETED_TEXT" x:Name="LastCompletedText"/>
+                d:Text="LAST_COMPLETED_TEXT"
+                Opacity="0.8" />
             <TextBlock
+                x:Name="NextDueText"
                 Grid.Row="1"
-                FontWeight="SemiBold"
                 HorizontalAlignment="Right"
-                Text="NEXT_DUE_TEXT" x:Name="NextDueText" />
+                FontWeight="SemiBold"
+                Text="NEXT_DUE_TEXT" />
         </Grid>
     </Grid>
 </UserControl>

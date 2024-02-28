@@ -38,7 +38,7 @@
                 VerticalAlignment="Center"
                 Click="Button_Click"
                 Style="{StaticResource Action_New_Button_Small}"
-                Tag="Add" />
+                Content="Add" />
         </Grid>
     </Border>
 </UserControl>

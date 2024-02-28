@@ -52,8 +52,10 @@
                 Grid.Row="1"
                 Command="{Binding NewRequestCmd}"
                 IsEnabled="{Binding NewRequest, Converter={StaticResource NullToBool}}"
-                Style="{StaticResource Action_New_Request_Button}"
-                Tag="New Request" />
+                Style="{StaticResource Action_New_Button}"
+                Margin="5,0"
+                HorizontalAlignment="Stretch"
+                Content="New Request" />
 
             <ListView
                 x:Name="requests_ListView"
@@ -381,7 +383,7 @@
                                     VerticalAlignment="Center"
                                     Command="{Binding AddSpecialCmd}"
                                     Style="{StaticResource Action_New_Button_Small}"
-                                    Tag="Add Bespoke Item" />
+                                    Content="Add Bespoke Item" />
                             </StackPanel>
                         </StackPanel>
 
@@ -471,13 +473,13 @@
                                 HorizontalAlignment="Right"
                                 Command="{Binding UpdateRequestCmd}"
                                 Style="{StaticResource Action_Update_Button}"
-                                Tag="Save Changes"
+                                Content="Save Changes"
                                 Visibility="{Binding ChangesMade, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                             <Button
                                 HorizontalAlignment="Right"
                                 Command="{Binding SubmitRequestCmd}"
                                 Style="{StaticResource Action_Button}"
-                                Tag="Submit"
+                                Content="Submit"
                                 Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                         </StackPanel>
 
@@ -515,7 +517,7 @@
                                     HorizontalAlignment="Left"
                                     Command="{Binding ViewMakeOrBuyCommand}"
                                     Style="{StaticResource Action_Button}"
-                                    Tag="Order Builder" />
+                                    Content="Order Builder" />
                                 <Border HorizontalAlignment="Right">
                                     <StackPanel Orientation="Horizontal">
                                         <Path

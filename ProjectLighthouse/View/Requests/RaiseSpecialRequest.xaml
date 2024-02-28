@@ -53,7 +53,7 @@
             x:Name="SubmitButton"
             HorizontalAlignment="Right"
             Click="SubmitButton_Click"
-            Tag="Add Product"
+            Content="Add Product"
             Style="{StaticResource Action_New_Button}" />
     </StackPanel>
 </Window>

@@ -8,7 +8,7 @@
     d:Background="White"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <Grid Height="20">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
@@ -22,16 +22,18 @@
             Margin="5,0,0,0"
             HorizontalAlignment="Left"
             d:Text="ITEM_NAME"
+            VerticalAlignment="Center"
             FontWeight="SemiBold" />
         <TextBlock
             x:Name="MessageTextBlock"
             Grid.Column="2"
             HorizontalAlignment="Left"
             d:Text="MESSAGE"
+            VerticalAlignment="Center"
             FontWeight="SemiBold" />
         <Button
             Grid.Column="3"
-            Margin="0"
+            Margin="1"
             Click="Button_Click"
             Style="{StaticResource Action_Find_Button_Small_Red}" />
     </Grid>

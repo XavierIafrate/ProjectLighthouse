@@ -71,7 +71,7 @@
                 HorizontalAlignment="Right"
                 Command="{Binding ResetDatesCmd}"
                 Style="{StaticResource Action_Reset_Button}"
-                Tag="Reset Dates" />
+                Content="Reset Dates" />
 
         </Grid>
 
@@ -106,7 +106,7 @@
                     Stretch="Uniform" />
                 <Slider
                     Grid.Column="1"
-                    Maximum="100"
+                    Maximum="200"
                     Minimum="25"
                     Value="{Binding ColumnWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>

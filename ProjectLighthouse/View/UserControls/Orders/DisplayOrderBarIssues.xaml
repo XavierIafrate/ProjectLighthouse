@@ -57,7 +57,10 @@
                     FontWeight="SemiBold"
                     Text="99 Bars Required" />
             </Grid>
-            <ItemsControl x:Name="IssuesListBox" Margin="10" d:ItemsSource="{d:SampleData ItemCount=5}">
+            <ItemsControl
+                x:Name="IssuesListBox"
+                Margin="10"
+                d:ItemsSource="{d:SampleData ItemCount=5}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -66,8 +69,8 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock
-                                Foreground="{StaticResource Blue}"
                                 FontWeight="Bold"
+                                Foreground="{StaticResource Blue}"
                                 Text="{Binding Date, StringFormat='{}{0:s}'}" />
                             <!--<TextBlock
                                 Grid.Column="1"

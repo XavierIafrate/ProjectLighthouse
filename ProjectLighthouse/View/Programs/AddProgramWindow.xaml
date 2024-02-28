@@ -70,7 +70,7 @@
                                             Margin="0"
                                             Click="DeleteTagButton_Click"
                                             CommandParameter="{Binding}"
-                                            Style="{StaticResource Action_Delete_Button_Small}" />
+                                            Style="{StaticResource Action_Remove_Button_Small}" />
                                         <TextBlock
                                             Margin="5,0"
                                             VerticalAlignment="Center"
@@ -96,7 +96,7 @@
                                 VerticalAlignment="Center"
                                 Click="AddTagButton_Click"
                                 Style="{StaticResource Action_New_Button}"
-                                Tag="Add Tag" />
+                                Content="Tag" />
                         </Grid>
                     </Grid>
 
@@ -346,12 +346,12 @@
             HorizontalAlignment="Right"
             Click="AddButton_Click"
             Style="{StaticResource Action_New_Button}"
-            Tag="Add Program" />
+            Content="Add Program" />
         <Button
             x:Name="UpdateButton"
             HorizontalAlignment="Right"
             Click="AddButton_Click"
             Style="{StaticResource Action_Update_Button}"
-            Tag="Update" />
+            Content="Update" />
     </StackPanel>
 </Window>

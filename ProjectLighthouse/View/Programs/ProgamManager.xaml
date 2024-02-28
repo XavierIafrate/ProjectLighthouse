@@ -208,7 +208,7 @@
                 <Button
                     Command="{Binding EditProgramCmd}"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="Add Program" />
+                    Content="Add Program" />
                 <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
@@ -403,7 +403,6 @@
                                             Background="{StaticResource BlueFaded}"
                                             Click="TagButton_Click"
                                             Foreground="{StaticResource Blue}"
-                                            Style="{StaticResource TagButton}"
                                             Tag="{Binding Path=.}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
