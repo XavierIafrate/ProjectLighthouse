@@ -496,6 +496,12 @@ namespace ProjectLighthouse.ViewModel.Requests
                 CreatedBy = App.CurrentUser.UserName
             };
 
+            if (newItem.Item is null)
+            {
+                MessageBox.Show("Could not find item to add", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (item.FreeStock() < 0)
             {
                 newItem.QuantityRequired = item.FreeStock() * -1;
