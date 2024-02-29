@@ -241,9 +241,9 @@ namespace ProjectLighthouse.ViewModel.Core
                 ExecuteToastArgs(args.ToList()[i]);
             }
 
-            if (args.ContainsKey("id"))
+            if (args.TryGetValue("id", out string value))
             {
-                return int.Parse(args["id"]);
+                return int.Parse(value);
             }
             else
             {
