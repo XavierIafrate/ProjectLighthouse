@@ -80,8 +80,8 @@
                     HorizontalAlignment="Left"
                     Command="{Binding AddProductCmd}"
                     CommandParameter="{x:Null}"
-                    Style="{StaticResource Action_New_Button}"
-                    Tag="New Product" />
+                    Content="New Product"
+                    Style="{StaticResource Action_New_Button}" />
             </Grid>
         </Grid>
 
@@ -158,23 +158,23 @@
                             Margin="0,10,10,0"
                             Command="{Binding AddProductCmd}"
                             CommandParameter="{Binding SelectedProduct}"
-                            Style="{StaticResource Action_Update_Button}"
-                            Tag="Edit Product" />
+                            Content="Edit Product"
+                            Style="{StaticResource Action_Update_Button}" />
                         <Button
                             Margin="0,10,10,0"
                             HorizontalAlignment="Left"
                             Command="{Binding ViewWebPageCmd}"
+                            Content="View Web Page"
                             Style="{StaticResource Action_Button}"
-                            Tag="View Web Page"
                             Visibility="{Binding SelectedProduct.WebUrl, Converter={StaticResource NotNullToVisibility}}" />
                         <Button
                             Margin="0,10,0,0"
                             Command="{Binding AddProductGroupCmd}"
                             CommandParameter="{x:Null}"
-                            Style="{StaticResource Action_New_Button}"
-                            Tag="New Archetype" />
+                            Content="New Archetype"
+                            Style="{StaticResource Action_New_Button}" />
                     </StackPanel>
-                    
+
                 </StackPanel>
 
                 <Border
@@ -207,10 +207,10 @@
 
             <ListView
                 Grid.Row="1"
-                Style="{StaticResource HorizontalListView}"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
                 ItemsSource="{Binding FilteredProductGroups}"
-                SelectedValue="{Binding SelectedProductGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                SelectedValue="{Binding SelectedProductGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource HorizontalListView}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <usercontrols:DisplayProductGroup ProductGroup="{Binding}" />
@@ -221,8 +221,8 @@
 
 
             <ScrollViewer
-                Margin="0,10,0,0"
                 Grid.Row="2"
+                Margin="0,10,0,0"
                 ScrollChanged="ScrollViewer_ScrollChanged"
                 Visibility="{Binding SelectedProduct, Converter={StaticResource NotNullToVisibility}}">
                 <StackPanel Margin="20,0">
@@ -246,7 +246,7 @@
                                 d:Text="Archetypes [0]"
                                 Style="{StaticResource section}"
                                 Text="{Binding FilteredProductGroups.Count, StringFormat='{}Archetypes [{0}]'}" />
-                            
+
                         </Grid>-->
 
                         <Grid Grid.Column="0" VerticalAlignment="Top">
@@ -255,18 +255,18 @@
                                 Style="{StaticResource section}"
                                 Text="{Binding FilteredTurnedProducts.Count, StringFormat='{}Items in Group [{0}]'}" />
                             <Button
-                                HorizontalAlignment="Right"
-                                Command="{Binding AddTurnedProductCmd}"
-                                VerticalAlignment="Center"
                                 Margin="5"
-                                Style="{StaticResource Action_New_Button_Small}"
-                                Tag="New" />
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Command="{Binding AddTurnedProductCmd}"
+                                Content="New"
+                                Style="{StaticResource Action_New_Button_Small}" />
                         </Grid>
 
                         <ListView
-                            MaxHeight="700"
                             Grid.Row="1"
                             Grid.Column="0"
+                            MaxHeight="700"
                             VerticalAlignment="Top"
                             d:ItemsSource="{d:SampleData ItemCount=10}"
                             ItemsSource="{Binding FilteredTurnedProducts}"
@@ -293,8 +293,8 @@
                                                     Margin="0"
                                                     Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.EditTurnedProductCmd}"
                                                     CommandParameter="{Binding Id}"
-                                                    Style="{StaticResource Action_Edit_Button_Small}"
-                                                    Tag="Edit" />
+                                                    Content="Edit"
+                                                    Style="{StaticResource Action_Edit_Button_Small}" />
                                                 <Border
                                                     Height="20"
                                                     Margin="5,0,0,0"
@@ -364,15 +364,15 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <StackPanel Grid.Column="1" Grid.RowSpan="2">
+                        <StackPanel Grid.RowSpan="2" Grid.Column="1">
                             <TextBlock Style="{StaticResource section}" Text="Time Models" />
                             <lvc2:CartesianChart
-                                    Height="400"
-                                    VerticalAlignment="Top"
-                                    EasingFunction="{x:Null}"
-                                    Series="{Binding CycleResponseSeries}"
-                                    XAxes="{Binding XStartAtZero}"
-                                    YAxes="{Binding YStartAtZero}" />
+                                Height="400"
+                                VerticalAlignment="Top"
+                                EasingFunction="{x:Null}"
+                                Series="{Binding CycleResponseSeries}"
+                                XAxes="{Binding XStartAtZero}"
+                                YAxes="{Binding YStartAtZero}" />
                             <ItemsControl ItemsSource="{Binding TimeModels}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -380,15 +380,15 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock VerticalAlignment="Center" Text="{Binding Key, StringFormat='{}[{0}]'}" />
                                                 <TextBlock
-                                                        Margin="5,0,0,0"
-                                                        VerticalAlignment="Center"
-                                                        Text="{Binding Value}" />
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Value}" />
                                             </StackPanel>
                                             <Button
-                                                    HorizontalAlignment="Right"
-                                                    Click="Button_Click"
-                                                    Content="{Binding}"
-                                                    Style="{StaticResource ClipboardButton}" />
+                                                HorizontalAlignment="Right"
+                                                Click="Button_Click"
+                                                Content="{Binding}"
+                                                Style="{StaticResource ClipboardButton}" />
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -402,21 +402,20 @@
                     <Grid Height="200" />
                 </StackPanel>
             </ScrollViewer>
-        <Border
-            
-            x:Name="grad"
-            Grid.Row="2"
-            Height="20"
-            VerticalAlignment="Top"
-            CornerRadius="20,0,0,0"
-            IsHitTestVisible="False">
-            <Border.Background>
-                <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
-                    <GradientStop Offset="0" Color="Transparent" />
-                    <GradientStop Offset="1" Color="Gray" />
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
+            <Border
+                x:Name="grad"
+                Grid.Row="2"
+                Height="20"
+                VerticalAlignment="Top"
+                CornerRadius="20,0,0,0"
+                IsHitTestVisible="False">
+                <Border.Background>
+                    <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
+                        <GradientStop Offset="0" Color="Transparent" />
+                        <GradientStop Offset="1" Color="Gray" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>
