@@ -94,7 +94,6 @@ namespace ProjectLighthouse.ViewModel.Orders
         public PrintDeliveryNoteCommand GenerateDeliveryNotePDFCommand { get; set; }
 
         public VerifyDeliveryNoteCommand VerifyCommand { get; set; }
-        public EditDeliveryNoteItemCommand EditDeliveryNoteItemCmd { get; set; }
 
 
         private bool noteIsNotVerified;
@@ -167,7 +166,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             GenerateDeliveryNotePDFCommand = new(this);
             VerifyCommand = new(this);
             DisableControls = false;
-            EditDeliveryNoteItemCmd = new(this);
 
             CheckingOperaVis = Visibility.Collapsed;
         }
@@ -239,14 +237,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                 MessageBox.Show(message, "Mismatch detected", MessageBoxButton.OK, MessageBoxImage.Hand);
             }
 
-        }
-
-        public void EditItem(int id)
-        {
-            DeliveryItem targetItem = (DeliveryItem)DeliveryItems.Find(x => x.Id == id)?.Clone();
-            EditDeliveryNoteWindow window = new(targetItem);
-            window.ShowDialog();
-            return;
         }
 
         private void LoadDeliveryNotes()
