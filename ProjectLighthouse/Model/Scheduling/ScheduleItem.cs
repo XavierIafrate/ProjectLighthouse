@@ -119,8 +119,24 @@ namespace ProjectLighthouse.Model.Scheduling
         {
             StartDate = date == DateTime.MinValue ? DateTime.MinValue : date;
             AllocatedMachine = string.IsNullOrEmpty(machine) ? null : machine;
+
+            string table;
+            if (this is LatheManufactureOrder)
+            {
+                table = nameof(LatheManufactureOrder);
+            }
+            else if (this is MachineService)
+            {
+                table = nameof(MachineService);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
             string dbMachineEntry = string.IsNullOrEmpty(AllocatedMachine) ? "NULL" : $"'{AllocatedMachine}'";
-            DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
+            
+            DatabaseHelper.ExecuteCommand($"UPDATE {table} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
         }
     }
 }
