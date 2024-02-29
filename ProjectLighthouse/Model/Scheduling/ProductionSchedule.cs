@@ -538,6 +538,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 {
                     AdvisoryType.BelowSoftMinDiameter => "Bar diameter below machine soft limit",
                     AdvisoryType.AboveSoftMaxDiameter => "Bar diameter above machine soft limit",
+                    AdvisoryType.SignificantOverlap => "Next item in schedule has significant overlap",
                     _ => "Unknown"
                 };
             }
@@ -546,6 +547,7 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 BelowSoftMinDiameter,
                 AboveSoftMaxDiameter,
+                SignificantOverlap
             }
         }
 
@@ -563,6 +565,7 @@ namespace ProjectLighthouse.Model.Scheduling
                     WarningType.StartsOnHoliday => "Starting during holiday",
                     WarningType.DoubleBooking => "Machine Double booked on day",
                     WarningType.NotRunningOnTime => "Is not marked as running",
+                    WarningType.BlockingOverlap => "Next item in schedule prevents requirement",
                     _ => "Unknown"
                 };
             }
@@ -574,6 +577,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 StartsOnHoliday,
                 DoubleBooking,
                 NotRunningOnTime,
+                BlockingOverlap,
             }
         }
 
