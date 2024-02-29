@@ -7,20 +7,18 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TreeView">
-                    <Grid MaxWidth="{TemplateBinding ActualWidth}">
-                        <Border
-                            Name="Border"
-                            Background="{StaticResource Surface}"
-                            CornerRadius="5" />
+                    <Border
+                        Name="Border"
+                        Background="{StaticResource Surface}"
+                        CornerRadius="5">
                         <ScrollViewer
-                            Padding="4"
-                            HorizontalContentAlignment="Stretch"
+                            Padding="5"
                             CanContentScroll="False"
                             Focusable="False"
                             HorizontalScrollBarVisibility="Disabled">
                             <ItemsPresenter />
                         </ScrollViewer>
-                    </Grid>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -40,22 +38,18 @@
                             Margin="1,1,1,1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Data="M 4 0 L 8 4 L 4 8 Z">
-                            <Path.Fill>
-                                <SolidColorBrush Color="Black" />
-                            </Path.Fill>
-                        </Path>
+                            Data="M 4 0 L 8 4 L 4 8 Z"
+                            Fill="Black" />
+
                         <Path
                             x:Name="Expanded"
                             Margin="1,1,1,1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Data="M 0 4 L 8 4 L 4 8 Z"
-                            Visibility="Hidden">
-                            <Path.Fill>
-                                <SolidColorBrush Color="Black" />
-                            </Path.Fill>
-                        </Path>
+                            Fill="Black"
+                            Visibility="Hidden" />
+
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CheckStates">
                                 <VisualState x:Name="Checked">
@@ -77,6 +71,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
     <Style x:Key="TreeViewItemFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -94,19 +89,20 @@
         </Setter>
     </Style>
 
-
     <Style x:Key="{x:Type TreeViewItem}" TargetType="{x:Type TreeViewItem}">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="Padding" Value="1,0,0,0" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                    <Grid MaxWidth="{TemplateBinding MaxWidth}">
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="15" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" MinWidth="19" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -121,19 +117,15 @@
                             x:Name="Bd"
                             Grid.Column="1"
                             Padding="{TemplateBinding Padding}"
-                            Background="Red"
+                            Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="5" />
+                            CornerRadius="2" />
                         <ContentPresenter
                             x:Name="PART_Header"
                             Grid.Column="1"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            ContentSource="Header">
-                            <!--<ContentPresenter.Resources>
-                                <Style BasedOn="{StaticResource TrimmingStyle}" TargetType="{x:Type TextBlock}" />
-                            </ContentPresenter.Resources>-->
-                        </ContentPresenter>
+                            ContentSource="Header" />
                         <ItemsPresenter
                             x:Name="ItemsHost"
                             Grid.Row="1"
@@ -145,8 +137,7 @@
                                 <VisualState x:Name="Selected">
                                     <Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                            <EasingColorKeyFrame KeyTime="0" Value="#001565C0" />
-                                            <EasingColorKeyFrame KeyTime="0:0:0.1" Value="#FF1565C0" />
+                                            <EasingColorKeyFrame KeyTime="0:0:0.1" Value="#ffe3f2fd" />
                                         </ColorAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -154,8 +145,7 @@
                                 <VisualState x:Name="SelectedInactive">
                                     <Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                            <EasingColorKeyFrame KeyTime="0" Value="#005e92f3" />
-                                            <EasingColorKeyFrame KeyTime="0:0:0.1" Value="#FF5e92f3" />
+                                            <EasingColorKeyFrame KeyTime="0" Value="#ffBDBDBD" />
                                         </ColorAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -195,5 +185,6 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 
 </ResourceDictionary>
