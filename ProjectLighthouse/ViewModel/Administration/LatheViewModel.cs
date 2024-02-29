@@ -117,6 +117,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
                 lathe.Attachments = Attachments.Where(x => x.DocumentReference == $"l{lathe.Id}").ToList();
                 lathe.ServiceRecords = Attachments.Where(x => lathe.Maintenance.Any(y => $"s{y.Id}" == x.DocumentReference)).ToList();
+                lathe.ValidateAll();
             }
         }
 
