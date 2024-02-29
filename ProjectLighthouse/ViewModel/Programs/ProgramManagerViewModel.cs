@@ -231,7 +231,7 @@ namespace ProjectLighthouse.ViewModel.Programs
             ProgramCommits = DatabaseHelper.Read<NcProgramCommit>();
 
             Notes = DatabaseHelper.Read<Note>()
-                .Where(x => x.DocumentReference.StartsWith("p"))
+                .Where(x => x.DocumentReference.StartsWith('p'))
                 .ToList();
 
             Archetypes = DatabaseHelper.Read<ProductGroup>()
