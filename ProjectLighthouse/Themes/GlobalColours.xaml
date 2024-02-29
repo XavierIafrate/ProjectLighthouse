@@ -1,56 +1,107 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="Background" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="OnBackground" Color="#000000" />
-    <SolidColorBrush x:Key="OnBackgroundFaded" Color="#bfbfbf" />
+    <Color x:Key="Background_Colour">#FFFFFF</Color>
+    <Color x:Key="OnBackground_Colour">#000000</Color>
+    <Color x:Key="OnBackgroundFaded_Colour">#bfbfbf</Color>
 
-    <SolidColorBrush x:Key="Surface" Color="#ECEFF1" />
-    <SolidColorBrush x:Key="OnSurface" Color="#000000" />
+    <SolidColorBrush x:Key="Background" Color="{StaticResource Background_Colour}" />
+    <SolidColorBrush x:Key="OnBackground" Color="{StaticResource OnBackground_Colour}" />
+    <SolidColorBrush x:Key="OnBackgroundFaded" Color="{StaticResource OnBackgroundFaded_Colour}" />
 
-    <SolidColorBrush x:Key="Purple" Color="#512DA8" />
-    <SolidColorBrush x:Key="PurpleFaded" Color="#d4cbe9" />
-    <SolidColorBrush x:Key="PurpleLight" Color="#8559da" />
-    <SolidColorBrush x:Key="PurpleDark" Color="#140078" />
-    <SolidColorBrush x:Key="OnPurple" Color="#FFFFFF" />
+    <Color x:Key="Surface_Colour">#ECEFF1</Color>
+    <Color x:Key="OnSurface_Colour">#000000</Color>
 
-    <SolidColorBrush x:Key="Red" Color="#b71c1c" />
-    <SolidColorBrush x:Key="RedFaded" Color="#edc6c6" />
-    <SolidColorBrush x:Key="RedLight" Color="#f05545" />
-    <SolidColorBrush x:Key="RedDark" Color="#7f0000" />
-    <SolidColorBrush x:Key="OnRed" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Surface" Color="{StaticResource Surface_Colour}" />
+    <SolidColorBrush x:Key="OnSurface" Color="{StaticResource OnSurface_Colour}" />
 
-    <SolidColorBrush x:Key="Green" Color="#009688" />
-    <SolidColorBrush x:Key="GreenFaded" Color="#bfe5e1" />
-    <SolidColorBrush x:Key="GreenLight" Color="#00b5a4" />
-    <SolidColorBrush x:Key="GreenDark" Color="#006b61" />
-    <SolidColorBrush x:Key="OnGreen" Color="#FFFFFF" />
+    <Color x:Key="Purple_Colour">#512DA8</Color>
+    <Color x:Key="PurpleFaded_Colour">#d4cbe9</Color>
+    <Color x:Key="PurpleLight_Colour">#8559da</Color>
+    <Color x:Key="PurpleDark_Colour">#140078</Color>
+    <Color x:Key="OnPurple_Colour">#FFFFFF</Color>
 
-    <SolidColorBrush x:Key="Teal" Color="#00695c" />
-    <SolidColorBrush x:Key="TealFaded" Color="#bfdad6" />
-    <SolidColorBrush x:Key="TealLight" Color="#439889" />
-    <SolidColorBrush x:Key="TealDark" Color="#003d33" />
-    <SolidColorBrush x:Key="OnTeal" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Purple" Color="{StaticResource Purple_Colour}" />
+    <SolidColorBrush x:Key="PurpleFaded" Color="{StaticResource PurpleFaded_Colour}" />
+    <SolidColorBrush x:Key="PurpleLight" Color="{StaticResource PurpleLight_Colour}" />
+    <SolidColorBrush x:Key="PurpleDark" Color="{StaticResource PurpleDark_Colour}" />
+    <SolidColorBrush x:Key="OnPurple" Color="{StaticResource OnPurple_Colour}" />
 
-    <SolidColorBrush x:Key="Blue" Color="#1565C0" />
-    <SolidColorBrush x:Key="BlueFaded" Color="#c5d9ef" />
-    <SolidColorBrush x:Key="BlueLight" Color="#5e92f3" />
-    <SolidColorBrush x:Key="BlueDark" Color="#003c8f" />
-    <SolidColorBrush x:Key="OnBlue" Color="#FFFFFF" />
+    <Color x:Key="Red_Colour">#b71c1c</Color>
+    <Color x:Key="RedFaded_Colour">#edc6c6</Color>
+    <Color x:Key="RedLight_Colour">#f05545</Color>
+    <Color x:Key="RedDark_Colour">#7f0000</Color>
+    <Color x:Key="OnRed_Colour">#FFFFFF</Color>
 
-    <SolidColorBrush x:Key="Yellow" Color="#ffee58" />
-    <SolidColorBrush x:Key="YellowFaded" Color="#fffbd5" />
-    <SolidColorBrush x:Key="YellowLight" Color="#ffff8b" />
-    <SolidColorBrush x:Key="YellowDark" Color="#c9bc1f" />
-    <SolidColorBrush x:Key="OnYellow" Color="#000000" />
+    <SolidColorBrush x:Key="Red" Color="{StaticResource Red_Colour}" />
+    <SolidColorBrush x:Key="RedFaded" Color="{StaticResource RedFaded_Colour}" />
+    <SolidColorBrush x:Key="RedLight" Color="{StaticResource RedLight_Colour}" />
+    <SolidColorBrush x:Key="RedDark" Color="{StaticResource RedDark_Colour}" />
+    <SolidColorBrush x:Key="OnRed" Color="{StaticResource OnRed_Colour}" />
 
-    <SolidColorBrush x:Key="Orange" Color="#F57C00" />
-    <SolidColorBrush x:Key="OrangeFaded" Color="#fddebf" />
-    <SolidColorBrush x:Key="OrangeLight" Color="#ffad42" />
-    <SolidColorBrush x:Key="OrangeDark" Color="#bb4d00" />
-    <SolidColorBrush x:Key="OnOrange" Color="#000000" />
+    <Color x:Key="Green_Colour">#009688</Color>
+    <Color x:Key="GreenFaded_Colour">#bfe5e1</Color>
+    <Color x:Key="GreenLight_Colour">#00b5a4</Color>
+    <Color x:Key="GreenDark_Colour">#006b61</Color>
+    <Color x:Key="OnGreen_Colour">#FFFFFF</Color>
 
-    <SolidColorBrush x:Key="DisabledElement" Color="#BDBDBD" />
-    <SolidColorBrush x:Key="SelectedElement" Color="#e3f2fd" />
+    <SolidColorBrush x:Key="Green" Color="{StaticResource Green_Colour}" />
+    <SolidColorBrush x:Key="GreenFaded" Color="{StaticResource GreenFaded_Colour}" />
+    <SolidColorBrush x:Key="GreenLight" Color="{StaticResource GreenLight_Colour}" />
+    <SolidColorBrush x:Key="GreenDark" Color="{StaticResource GreenDark_Colour}" />
+    <SolidColorBrush x:Key="OnGreen" Color="{StaticResource OnGreen_Colour}" />
 
+    <Color x:Key="Teal_Colour">#00695c</Color>
+    <Color x:Key="TealFaded_Colour">#bfdad6</Color>
+    <Color x:Key="TealLight_Colour">#439889</Color>
+    <Color x:Key="TealDark_Colour">#003d33</Color>
+    <Color x:Key="OnTeal_Colour">#FFFFFF</Color>
+
+    <SolidColorBrush x:Key="Teal" Color="{StaticResource Teal_Colour}" />
+    <SolidColorBrush x:Key="TealFaded" Color="{StaticResource TealFaded_Colour}" />
+    <SolidColorBrush x:Key="TealLight" Color="{StaticResource TealLight_Colour}" />
+    <SolidColorBrush x:Key="TealDark" Color="{StaticResource TealDark_Colour}" />
+    <SolidColorBrush x:Key="OnTeal" Color="{StaticResource OnTeal_Colour}" />
+
+    <Color x:Key="Blue_Colour">#1565C0</Color>
+    <Color x:Key="BlueFaded_Colour">#c5d9ef</Color>
+    <Color x:Key="BlueLight_Colour">#5e92f3</Color>
+    <Color x:Key="BlueDark_Colour">#003c8f</Color>
+    <Color x:Key="OnBlue_Colour">#FFFFFF</Color>
+
+    <SolidColorBrush x:Key="Blue" Color="{StaticResource Blue_Colour}" />
+    <SolidColorBrush x:Key="BlueFaded" Color="{StaticResource BlueFaded_Colour}" />
+    <SolidColorBrush x:Key="BlueLight" Color="{StaticResource BlueLight_Colour}" />
+    <SolidColorBrush x:Key="BlueDark" Color="{StaticResource BlueDark_Colour}" />
+    <SolidColorBrush x:Key="OnBlue" Color="{StaticResource OnBlue_Colour}" />
+
+    <Color x:Key="Yellow_Colour">#ffee58</Color>
+    <Color x:Key="YellowFaded_Colour">#fffbd5</Color>
+    <Color x:Key="YellowLight_Colour">#ffff8b</Color>
+    <Color x:Key="YellowDark_Colour">#c9bc1f</Color>
+    <Color x:Key="OnYellow_Colour">#000000</Color>
+
+    <SolidColorBrush x:Key="Yellow" Color="{StaticResource Yellow_Colour}" />
+    <SolidColorBrush x:Key="YellowFaded" Color="{StaticResource YellowFaded_Colour}" />
+    <SolidColorBrush x:Key="YellowLight" Color="{StaticResource YellowLight_Colour}" />
+    <SolidColorBrush x:Key="YellowDark" Color="{StaticResource YellowDark_Colour}" />
+    <SolidColorBrush x:Key="OnYellow" Color="{StaticResource OnYellow_Colour}" />
+
+    <Color x:Key="Orange_Colour">#F57C00</Color>
+    <Color x:Key="OrangeFaded_Colour">#fddebf</Color>
+    <Color x:Key="OrangeLight_Colour">#ffad42</Color>
+    <Color x:Key="OrangeDark_Colour">#bb4d00</Color>
+    <Color x:Key="OnOrange_Colour">#000000</Color>
+
+    <SolidColorBrush x:Key="Orange" Color="{StaticResource Orange_Colour}" />
+    <SolidColorBrush x:Key="OrangeFaded" Color="{StaticResource OrangeFaded_Colour}" />
+    <SolidColorBrush x:Key="OrangeLight" Color="{StaticResource OrangeLight_Colour}" />
+    <SolidColorBrush x:Key="OrangeDark" Color="{StaticResource OrangeDark_Colour}" />
+    <SolidColorBrush x:Key="OnOrange" Color="{StaticResource OnOrange_Colour}" />
+
+    <Color x:Key="DisabledElement_Colour">#BDBDBD</Color>
+    <Color x:Key="SelectedElement_Colour">#e3f2fd</Color>
+
+    <SolidColorBrush x:Key="DisabledElement" Color="{StaticResource DisabledElement_Colour}" />
+    <SolidColorBrush x:Key="SelectedElement" Color="{StaticResource SelectedElement_Colour}" />
 
 </ResourceDictionary>
