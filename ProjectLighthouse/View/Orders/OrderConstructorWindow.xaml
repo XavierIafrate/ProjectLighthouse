@@ -295,12 +295,12 @@
                 <Button
                     Click="CancelButton_Click"
                     Style="{StaticResource Action_Cancel_Button}"
-                    Tag="Cancel" />
+                    Content="Cancel" />
                 <Button
                     x:Name="CreateButton"
                     Click="CreateButton_Click"
                     Style="{StaticResource Action_New_Button}"
-                    Tag="Create Order" />
+                    Content="Create Order" />
             </StackPanel>
         </Grid>
         <!--#endregion-->
