@@ -498,9 +498,9 @@ namespace ProjectLighthouse.ViewModel.Core
 
         static string LoadThemeData(string name)
         {
-            if (builtInThemes.ContainsKey(name))
+            if (builtInThemes.TryGetValue(name, out string value))
             {
-                return builtInThemes[name];
+                return value;
             }
 
             string path = LumenManager.Themes.Find(x => Path.GetFileNameWithoutExtension(x) == name)
