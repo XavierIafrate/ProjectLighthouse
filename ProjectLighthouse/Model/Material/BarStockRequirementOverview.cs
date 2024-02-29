@@ -34,7 +34,7 @@ namespace ProjectLighthouse.Model.Material
                 {
                     Status = StockStatus.OnOrder;
                 }
-                else if(BarStock.InStock < (int)Math.Floor(BarStock.SuggestedStock * 0.1))
+                else if(BarStock.InStock < (int)Math.Floor(BarStock.SuggestedStock * 0.2))
                 {
                     Status = StockStatus.LowStock;
                 }
