@@ -7,13 +7,14 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Margin" Value="10,5" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
         <!--<Setter Property="FocusVisualStyle" Value="{x:Null}"/>-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Border
-                        Height="24"
+                        Height="{TemplateBinding Height}"
                         Padding="20,0"
                         Background="{TemplateBinding Background}"
                         BorderThickness="0"
@@ -198,6 +199,7 @@
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Teal}" />
+                <Setter Property="Background" Value="{StaticResource TealFaded}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -254,6 +256,11 @@
                 <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Orders" />
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style
@@ -308,6 +315,11 @@
                 <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Schedule" />
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style
@@ -362,6 +374,11 @@
                 <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Bar Stock" />
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style
@@ -416,6 +433,11 @@
                 <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Drawings" />
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 
@@ -471,6 +493,11 @@
                 <ToolTip Style="{StaticResource MenuItem_Mini_Tooltip}" Tag="Programs" />
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 
@@ -542,6 +569,7 @@
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Orange}" />
+                <Setter Property="Background" Value="{StaticResource OrangeFaded}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -613,6 +641,7 @@
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Orange}" />
+                <Setter Property="Background" Value="{StaticResource OrangeFaded}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -685,6 +714,7 @@
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Red}" />
+                <Setter Property="Background" Value="{StaticResource RedFaded}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -759,6 +789,7 @@
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Red}" />
+                <Setter Property="Background" Value="{StaticResource RedFaded}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -791,10 +822,10 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Red}" />
+                <Setter Property="Foreground" Value="{StaticResource RedLight}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
+                <Setter Property="Foreground" Value="{StaticResource Red}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -830,6 +861,7 @@
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Red}" />
+                <Setter Property="Background" Value="{StaticResource RedFaded}" />
             </Trigger>
         </Style.Triggers>
     </Style>
