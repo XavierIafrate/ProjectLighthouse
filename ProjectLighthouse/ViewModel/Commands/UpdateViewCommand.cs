@@ -42,7 +42,7 @@ namespace ProjectLighthouse.ViewModel.Commands
                     "Persian" => "برنامه",
                     "Welsh" => "Amserlen",
                     "Latvian" => "Grafiks",
-                    _ => "Schedule (preview)"
+                    _ => "Schedule"
                 };
             }
             else if (targetView == "Requests")
