@@ -29,6 +29,7 @@
     <Title>Lighthouse</Title>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <Nullable>warnings</Nullable>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -238,6 +239,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="View\Scheduling\Components\DisplayUnallocatedService.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
