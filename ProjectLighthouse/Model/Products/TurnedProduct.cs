@@ -10,11 +10,9 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Products
 {
-    public class TurnedProduct : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation, ICloneable
+    public class TurnedProduct : Item, IObjectWithValidation, ICloneable
     {
-        [AutoIncrement, PrimaryKey]
-        public int Id { get; set; }
-
+        
         #region Full Members
         private string productName;
         [Indexed]
@@ -266,24 +264,17 @@ namespace ProjectLighthouse.Model.Products
         public bool IsSpecialPart { get; set; }
 
 
-        public string AddedBy { get; set; }
-        public DateTime? AddedDate { get; set; }
-
-        public DateTime? LastManufactured { get; set; }
 
         [Import("Target Stock")]
         public int QuantitySold { get; set; }
         public int NumberOfOrders { get; set; }
         public int SellPrice { get; set; }
-        public int QuantityInStock { get; set; }
-        public int QuantityOnPO { get; set; }
-        public int QuantityOnSO { get; set; }
+
         public int QuantityManufactured { get; set; }
 
         public string SpecificationDocument { get; set; }
         public string SpecificationDetails { get; set; }
 
-        public bool Retired { get; set; }
 
         private Cost itemCost;
         [Ignore]

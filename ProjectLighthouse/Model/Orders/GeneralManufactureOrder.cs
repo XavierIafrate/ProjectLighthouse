@@ -1,10 +1,9 @@
 ﻿using ProjectLighthouse.Model.Core;
-using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace ProjectLighthouse.Model.Orders
@@ -21,16 +20,25 @@ namespace ProjectLighthouse.Model.Orders
         public string POReference { get; set; }
 
 
+        [UpdateWatch]
+        public OrderState State { get; set; } = OrderState.Problem;
 
-        public OrderState State { get; set; }
+        public int NonTurnedItemId { get; set; }
+
+        [UpdateWatch]
+        public int RequiredQuantity { get; set; }
+        [UpdateWatch]
+        public int FinishedQuantity { get; set; }
+        [UpdateWatch]
+        public int DeliveredQuantity { get; set; }
+        [UpdateWatch]
+        public DateTime? RequiredDate { get; set; }
+
         [Ignore]
-        public List<LatheManufactureOrderItem> OrderItems { get; set; } = new();
+        public NonTurnedItem Item { get; set; }
+
         [Ignore]
         public List<Note> Notes { get; set; } = new();
-        [Ignore]
-        public List<TechnicalDrawing> Drawings { get; set; } = new();
-        [Ignore]
-        public List<OrderDrawing> DrawingsReferences { get; set; } = new();
 
         public bool IsUpdated(GeneralManufactureOrder OtherOrder)
         {
