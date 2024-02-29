@@ -24,7 +24,7 @@ namespace ProjectLighthouse.Model
         [CsvHelper.Configuration.Attributes.Ignore]
         public Dictionary<string, List<string>> Errors { get; set; } = new();
         [CsvHelper.Configuration.Attributes.Ignore]
-        public bool HasErrors => Errors.Any();
+        public bool HasErrors => Errors.Count != 0;
 
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
@@ -34,12 +34,12 @@ namespace ProjectLighthouse.Model
             // TODO verify this isn't causing problems
             if (propertyName is null) return null;
 
-            if (!Errors.ContainsKey(propertyName))
+            if (!Errors.TryGetValue(propertyName, out List<string> value))
             {
                 return null;
             }
 
-            return Errors[propertyName];
+            return value;
         }
         public bool NoErrors => !HasErrors;
 
@@ -52,11 +52,8 @@ namespace ProjectLighthouse.Model
 
         protected void ClearErrors(string propertyName)
         {
-            if (Errors.ContainsKey(propertyName))
-            {
-                Errors.Remove(propertyName);
-                OnErrorsChanged(propertyName);
-            }
+            Errors.Remove(propertyName);
+            OnErrorsChanged(propertyName);
         }
 
         protected void AddError(string propertyName, string error)
