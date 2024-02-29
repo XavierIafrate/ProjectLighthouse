@@ -36,7 +36,7 @@
                         x:Name="EditButton"
                         Margin="0,0,5,0"
                         Click="EditButton_Click"
-                        Style="{StaticResource EditButton}" />
+                        Style="{StaticResource Action_Edit_Button_Small}" />
                     <Border
                         x:Name="specialFlag"
                         Grid.Column="2"

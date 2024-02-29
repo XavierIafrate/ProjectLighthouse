@@ -66,12 +66,11 @@
             </Grid>
             <Button
                 Grid.Column="3"
-                Height="40"
                 Margin="5,0,0,0"
                 HorizontalAlignment="Right"
                 Command="{Binding ResetDatesCmd}"
-                Style="{StaticResource Action_Reset_Button}"
-                Content="Reset Dates" />
+                Content="Reset Dates"
+                Style="{StaticResource Action_Reset_Button}" />
 
         </Grid>
 

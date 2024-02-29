@@ -126,8 +126,8 @@
                     Margin="0,0,5,0"
                     HorizontalAlignment="Left"
                     Command="{Binding NewOrderCommand}"
-                    Style="{StaticResource Action_New_Button}"
-                    Tag="New" />
+                    Content="New"
+                    Style="{StaticResource Action_New_Button}" />
                 <ComboBox
                     Grid.Column="2"
                     Margin="0"
@@ -1055,9 +1055,9 @@
                                 <TabItem Header="Performance">
                                     <uc:DisplayTimeUsage
                                         MinHeight="50"
+                                        Breakdowns="{Binding SelectedOrderBreakdowns}"
                                         Order="{Binding SelectedOrder}"
-                                        OrderItems="{Binding FilteredOrderItems}"
-                                        Breakdowns="{Binding SelectedOrderBreakdowns}"/>
+                                        OrderItems="{Binding FilteredOrderItems}" />
                                 </TabItem>
                             </TabControl>
 
@@ -1138,7 +1138,7 @@
                                 <ItemsControl ItemsSource="{Binding SelectedOrderBreakdowns}" Visibility="{Binding SelectedOrderBreakdowns, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <uc:DisplayMachineBreakdown Breakdown="{Binding}"/>
+                                            <uc:DisplayMachineBreakdown Breakdown="{Binding}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

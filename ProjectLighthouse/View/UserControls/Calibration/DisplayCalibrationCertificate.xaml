@@ -108,7 +108,7 @@
                 Grid.RowSpan="2"
                 Grid.Column="2"
                 Click="OpenButton_Click"
-                Style="{StaticResource OpenPdfButton}"
+                Style="{StaticResource Action_Pdf_Button}"
                 Content="Open" />
         </Grid>
     </Grid>
