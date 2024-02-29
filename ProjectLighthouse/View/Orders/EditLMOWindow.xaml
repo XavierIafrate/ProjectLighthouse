@@ -597,9 +597,9 @@
                                     x:Name="GetDrawingUpdatesButton"
                                     HorizontalAlignment="Right"
                                     Click="GetDrawingUpdatesButton_Click"
+                                    Content="Refresh List"
                                     IsEnabled="False"
                                     Style="{StaticResource Action_Update_Button}"
-                                    Tag="Refresh List"
                                     Visibility="{Binding Order.IsClosed, Converter={StaticResource boolToCollapsedOrVisible}}" />
                                 <ListView
                                     MinHeight="50"
@@ -629,9 +629,9 @@
                                         x:Name="PrintIssueLabelButton"
                                         HorizontalAlignment="Right"
                                         Click="PrintIssueLabelButton_Click"
+                                        Content="Print Label"
                                         IsEnabled="False"
-                                        Style="{StaticResource Action_Button}"
-                                        Tag="Print Label" />
+                                        Style="{StaticResource Action_Button}" />
                                 </Grid>
                                 <ListView
                                     x:Name="BarIssuesListBox"
@@ -715,13 +715,13 @@
                                     <Button
                                         x:Name="CancelModelChanges"
                                         Click="CancelModelChanges_Click"
-                                        Style="{StaticResource Action_Cancel_Button}"
-                                        Tag="Cancel" />
+                                        Content="Cancel"
+                                        Style="{StaticResource Action_Cancel_Button}" />
                                     <Button
                                         x:Name="UpdateModelChanges"
                                         Click="UpdateModelChanges_Click"
-                                        Style="{StaticResource Action_Update_Button}"
-                                        Tag="Update" />
+                                        Content="Update"
+                                        Style="{StaticResource Action_Update_Button}" />
                                 </StackPanel>
                                 <lvc2:CartesianChart
                                     Grid.Row="1"
@@ -795,6 +795,15 @@
                                                     FontFamily="Consolas"
                                                     FontWeight="SemiBold"
                                                     Text="{Binding TimeElapsed, Converter={StaticResource intToTimespanString}}" />
+                                                <Button
+                                                    x:Name="removeBreakdownButton"
+                                                    Grid.RowSpan="2"
+                                                    Grid.Column="4"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    Click="removeBreakdownButton_Click"
+                                                    Style="{StaticResource Action_Remove_Button_Small}"
+                                                    Tag="{Binding Id}" />
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -866,8 +875,8 @@
                                         Grid.Row="7"
                                         HorizontalAlignment="Right"
                                         Click="AddBreakdownButton_Click"
-                                        Style="{StaticResource Action_New_Button_Small}"
-                                        Tag="Add" />
+                                        Content="Add"
+                                        Style="{StaticResource Action_New_Button_Small}" />
                                 </Grid>
                             </Grid>
                         </TabItem>
@@ -883,15 +892,15 @@
                             <Button
                                 x:Name="RemoveItemButton"
                                 Click="RemoveItemButton_Click"
+                                Content="Remove"
                                 IsEnabled="False"
-                                Style="{StaticResource Action_Remove_Button}"
-                                Tag="Remove" />
+                                Style="{StaticResource Action_Remove_Button}" />
 
                             <Button
                                 x:Name="AddItemButton"
                                 Click="AddItemButton_Click"
-                                Style="{StaticResource Action_New_Button}"
-                                Tag="Add" />
+                                Content="Add"
+                                Style="{StaticResource Action_New_Button}" />
                         </StackPanel>
                     </Grid>
                     <ListView
