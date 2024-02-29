@@ -235,6 +235,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 ObservableCollection<ObservablePoint> cyclePoints = new();
                 withCycleTimesInMaterial.ForEach(x => cyclePoints.Add(new(x.MajorLength, x.CycleTime)));
                 MaterialInfo? m = Materials.Find(x => x.Id == material);
+                if (m is null) continue;
 
                 TimeModel timeModel;
 
