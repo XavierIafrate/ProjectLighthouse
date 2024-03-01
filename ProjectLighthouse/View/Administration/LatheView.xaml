@@ -74,7 +74,7 @@
                 HorizontalAlignment="Right"
                 Command="{Binding AddLatheCmd}"
                 Style="{StaticResource Action_New_Button}"
-                Tag="New Lathe" />
+                Content="New Lathe" />
         </Grid>
 
         <StackPanel
@@ -367,14 +367,14 @@
                                         Command="{Binding RemoveAttachmentCmd}"
                                         IsEnabled="False"
                                         Style="{StaticResource Action_Remove_Button}"
-                                        Tag="Remove" />
+                                        Content="Remove" />
                                     <Button
                                         Margin="5,0"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         Command="{Binding AddAttachmentCmd}"
                                         Style="{StaticResource Action_New_Button}"
-                                        Tag="Upload" />
+                                        Content="Upload" />
                                 </StackPanel>
                             </Grid>
                             <ListView
@@ -406,14 +406,14 @@
                                     Command="{Binding EditMaintenanceEventCmd}"
                                     IsEnabled="False"
                                     Style="{StaticResource Action_Update_Button}"
-                                    Tag="Update" />
+                                    Content="Update" />
                                 <Button
                                     Margin="5,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
                                     Command="{Binding AddMaintenanceEventCmd}"
                                     Style="{StaticResource Action_New_Button}"
-                                    Tag="New" />
+                                    Content="New" />
                             </StackPanel>
                         </Grid>
                         <ListView
