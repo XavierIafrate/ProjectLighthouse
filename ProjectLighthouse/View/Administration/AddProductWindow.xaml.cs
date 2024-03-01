@@ -1,23 +1,51 @@
-﻿using Microsoft.Win32;
+﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using Microsoft.Win32;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Administration
 {
-    public partial class AddProductWindow : Window
+    public partial class AddProductWindow : Window, INotifyPropertyChanged
     {
         public Product Product { get; set; }
+
+        private List<string> existingFeatures;
+        public List<string> ExistingFeatures
+        {
+            get { return existingFeatures; }
+            set 
+            { 
+                existingFeatures = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private List<string> baseExistingFeaturesList;
+
         public Product? originalProduct;
 
         public bool SaveExit = false;
 
 
-        public AddProductWindow(Product? product = null)
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public AddProductWindow(List<string> existingMachineFeatures, Product? product = null)
         {
             InitializeComponent();
+
+            baseExistingFeaturesList = existingMachineFeatures;
 
             if (product is not null)
             {
@@ -25,6 +53,7 @@ namespace ProjectLighthouse.View.Administration
                 Product = (Product)product.Clone();
                 Product.ValidateAll();
 
+                ExistingFeatures = baseExistingFeaturesList.Where(x => !Product.RequiresFeaturesList.Contains(x)).ToList();
 
                 CreateButton.Visibility = Visibility.Collapsed;
                 Title = "Edit Product";
@@ -32,6 +61,7 @@ namespace ProjectLighthouse.View.Administration
             else
             {
                 Product = new();
+                ExistingFeatures = baseExistingFeaturesList.ToList();
                 UpdateButton.Visibility = Visibility.Collapsed;
             }
 
@@ -156,6 +186,22 @@ namespace ProjectLighthouse.View.Administration
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+        }
+
+        private void RemoveFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button) return;
+            if (button.Tag is not string feature) return;
+            Product.RequiresFeaturesList = Product.RequiresFeaturesList.Where(x => x != feature).ToList();
+            ExistingFeatures = baseExistingFeaturesList.Where(x => !Product.RequiresFeaturesList.Contains(x)).ToList();
+        }
+
+        private void AddFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button) return;
+            if (button.Tag is not string feature) return;
+            Product.RequiresFeaturesList = Product.RequiresFeaturesList.Append(feature).ToList();
+            ExistingFeatures = baseExistingFeaturesList.Where(x => !Product.RequiresFeaturesList.Contains(x)).ToList();
         }
     }
 }

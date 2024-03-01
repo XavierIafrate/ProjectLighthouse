@@ -7,89 +7,268 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="New Product"
-    Width="500"
+    Width="800"
     SizeToContent="Height"
+    ResizeMode="NoResize"
+    x:Name="parentWindow"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
-    <StackPanel Margin="20">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <TextBlock
             d:Text="Add/Edit Product"
             Style="{StaticResource title}"
             Text="{Binding Title}" />
+        <StackPanel Grid.Row="1">
+            <TextBlock Style="{StaticResource SectionLabel}" Text="Metadata" />
 
-        <TextBlock Style="{StaticResource InputLabel}" Text="Product Name" />
-        <TextBox
-            Style="{StaticResource DefaultTextBox}"
-            Tag="name"
-            Text="{Binding Product.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Product Name" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="name"
+                Text="{Binding Product.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-        <TextBlock Style="{StaticResource InputLabel}" Text="Product Description" />
-        <TextBox
-            Style="{StaticResource DefaultTextBox}"
-            Tag="description"
-            Text="{Binding Product.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Product Description" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="description"
+                Text="{Binding Product.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-        <TextBlock Style="{StaticResource InputLabel}" Text="Web URL" />
-        <TextBox
-            Style="{StaticResource DefaultTextBox}"
-            Tag="url"
-            Text="{Binding Product.WebUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Web URL" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="url"
+                Text="{Binding Product.WebUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-        <TextBlock Style="{StaticResource InputLabel}" Text="Web Image URL (for live displays)" />
-        <TextBox
-            Style="{StaticResource DefaultTextBox}"
-            Tag="image url"
-            Text="{Binding Product.WebImageUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Web Image URL (for live displays)" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="image url"
+                Text="{Binding Product.WebImageUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-        <TextBlock Style="{StaticResource InputLabel}" Text="Image" />
-        <StackPanel HorizontalAlignment="Center">
+            <TextBlock Style="{StaticResource InputLabel}" Text="Image" />
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
-            <Border
-                Width="130"
-                Height="130"
-                Margin="5"
-                Background="{StaticResource Surface}"
-                CornerRadius="5">
-                <Grid>
-                    <Path
-                        Height="50"
-                        Margin="0,0,2,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
-                        Fill="{StaticResource OnSurface}"
-                        Opacity="0.3"
-                        Stretch="Uniform" />
-                    <Image
-                        Margin="10"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        RenderOptions.BitmapScalingMode="Fant"
-                        Source="{Binding Product.LocalRenderPath, TargetNullValue={x:Null}}" />
+                <Border
+                    Width="130"
+                    Height="130"
+                    Margin="5"
+                    Background="{StaticResource Surface}"
+                    CornerRadius="5">
+                    <Grid>
+                        <Path
+                            Height="50"
+                            Margin="0,0,2,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="M1,10V2L10,5V7L1,10M8,10V8H13V4H8V3L12,1L16,3V4H15V8H16V10H14.74L8.44,13.64L9,10H8M7,23L7.04,22.76L16.15,17.5L16.67,20.88L13,23H7M8.05,16.17L15.31,12L15.83,15.37L7.43,20.22L8.05,16.17Z"
+                            Fill="{StaticResource OnSurface}"
+                            Opacity="0.3"
+                            Stretch="Uniform" />
+                        <Image
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            Source="{Binding Product.LocalRenderPath, TargetNullValue={x:Null}}" />
 
-                </Grid>
-            </Border>
-            <Button
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                x:Name="ChangeImageButton"
-                Click="ChangeImageButton_Click" 
-                Style="{StaticResource Action_Button}"
-                Content="Change Image" />
+                    </Grid>
+                </Border>
+                <Button
+                    x:Name="ChangeImageButton"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Click="ChangeImageButton_Click"
+                    Content="Change Image"
+                    Style="{StaticResource Action_Button}" />
+            </StackPanel>
         </StackPanel>
 
-        <Grid Height="10" />
-        <Button
-            x:Name="CreateButton"
-            HorizontalAlignment="Right"
-            Click="CreateButton_Click"
-            Style="{StaticResource Action_New_Button}"
-            Content="Create" />
-        <Button
-            x:Name="UpdateButton"
-            HorizontalAlignment="Right"
-            Click="CreateButton_Click"
-            Style="{StaticResource Action_Update_Button}"
-            Content="Update" />
-    </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.Resources>
+                <ControlTemplate x:Key="SmallCrossButton" TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <Path
+                            x:Name="path"
+                            Width="10"
+                            Height="10"
+                            Margin="0"
+                            Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="path" Property="Opacity" Value="0.6" />
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="path" Property="Opacity" Value="1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+                <ControlTemplate x:Key="SmallAddButton" TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <Path
+                            x:Name="path"
+                            Width="10"
+                            Height="10"
+                            Margin="0"
+                            Data="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="path" Property="Opacity" Value="0.6" />
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="path" Property="Opacity" Value="1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource SectionLabel}" Text="Machine Requirements" />
+            <TextBlock
+                Grid.Row="1"
+                Style="{StaticResource InputLabel}"
+                Text="Existing Machine Features" />
+
+            <ItemsControl
+                Grid.Row="2"
+                d:ItemsSource="{d:SampleData ItemCount=4}"
+                ItemsSource="{Binding ExistingFeatures}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="3"
+                            Background="{StaticResource BlueFaded}"
+                            CornerRadius="5">
+                            <Grid Margin="5,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    MaxWidth="150"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Blue}"
+                                    Text="{Binding}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <Button
+                                    Grid.Column="1"
+                                    Width="20"
+                                    Height="20"
+                                    Padding="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="AddFeatureButton_Click"
+                                    Foreground="{StaticResource Blue}"
+                                    Style="{x:Null}"
+                                    Tag="{Binding}"
+                                    Template="{StaticResource SmallAddButton}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MaxWidth="350" HorizontalAlignment="Left" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <TextBlock
+                Grid.Row="3"
+                Style="{StaticResource InputLabel}"
+                Text="Required by this product" />
+            <ItemsControl
+                Grid.Row="4"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
+                ItemsSource="{Binding Product.RequiresFeaturesList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="3"
+                            Background="{StaticResource PurpleFaded}"
+                            CornerRadius="5">
+                            <Grid Margin="5,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    MaxWidth="150"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Purple}"
+                                    Text="{Binding}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <Button
+                                    Grid.Column="1"
+                                    Width="20"
+                                    Height="20"
+                                    Padding="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="RemoveFeatureButton_Click"
+                                    Foreground="{StaticResource Purple}"
+                                    Style="{x:Null}"
+                                    Tag="{Binding}"
+                                    Template="{StaticResource SmallCrossButton}" />
+                            </Grid>
+
+                        </Border>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MaxWidth="350" HorizontalAlignment="Left" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="0,10,0,0">
+            <Button
+                x:Name="CreateButton"
+                HorizontalAlignment="Right"
+                Click="CreateButton_Click"
+                Content="Create"
+                Style="{StaticResource Action_New_Button}" />
+            <Button
+                x:Name="UpdateButton"
+                HorizontalAlignment="Right"
+                Click="CreateButton_Click"
+                Content="Update"
+                Style="{StaticResource Action_Update_Button}" />
+        </StackPanel>
+
+    </Grid>
 </Window>
