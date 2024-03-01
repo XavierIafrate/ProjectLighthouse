@@ -1,4 +1,5 @@
 ﻿using DbfDataReader;
+using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Deliveries;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -247,6 +248,21 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 }
             }
 
+            WriteTimeStamp();
+        }
+
+        private static void WriteTimeStamp()
+        {
+            ApplicationVariable timeStamp = new() { Id = "SYNC_LAST_RUN", Data = DateTime.Now };
+
+            try
+            {
+                DatabaseHelper.Insert(timeStamp, throwErrs: true);
+            }
+            catch
+            {
+                DatabaseHelper.Update(timeStamp, throwErrs: false);
+            }
         }
 
         private static List<OperaFields> GetLiveData(string[] lighthouseProducts, string[] barstock, List<BomComponent> boms)
