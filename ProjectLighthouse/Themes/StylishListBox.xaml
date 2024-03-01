@@ -12,9 +12,9 @@
                 <ControlTemplate TargetType="ListBox">
                     <Border
                         Name="Border"
-                        BorderThickness="1"
                         Background="{StaticResource Background}"
                         BorderBrush="{StaticResource Surface}"
+                        BorderThickness="1"
                         CornerRadius="2">
                         <ScrollViewer Margin="0" Focusable="false">
                             <StackPanel Margin="2" IsItemsHost="True" />
@@ -22,8 +22,8 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="Border" Property="Background" Value="LightGray"/>
-                            <Setter TargetName="Border" Property="BorderBrush" Value="Gray"/>
+                            <Setter TargetName="Border" Property="Background" Value="LightGray" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="Gray" />
                         </Trigger>
                         <Trigger Property="IsGrouping" Value="true">
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false" />

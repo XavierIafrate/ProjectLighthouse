@@ -274,9 +274,9 @@
     <!--#region Large-->
 
     <Style
-    x:Key="Button_Default_Large"
-    BasedOn="{StaticResource Button_Default}"
-    TargetType="Button">
+        x:Key="Button_Default_Large"
+        BasedOn="{StaticResource Button_Default}"
+        TargetType="Button">
         <Setter Property="Background" Value="{StaticResource Surface}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="10" />
@@ -289,19 +289,19 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
-                    x:Name="border"
-                    Height="{TemplateBinding Height}"
-                    Padding="20,0"
-                    Background="{TemplateBinding Background}"
-                    BorderThickness="0"
-                    CornerRadius="3">
+                        x:Name="border"
+                        Height="{TemplateBinding Height}"
+                        Padding="20,0"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        CornerRadius="3">
                         <ContentPresenter
-                        Margin="0,0,0,1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Style="{x:Null}"
-                        TextBlock.FontSize="10"
-                        TextElement.FontSize="10" />
+                            Margin="0,0,0,1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Style="{x:Null}"
+                            TextBlock.FontSize="10"
+                            TextElement.FontSize="10" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -331,9 +331,9 @@
     </Style>
 
     <Style
-    x:Key="Button_Green_Large"
-    BasedOn="{StaticResource Button_Default_Large}"
-    TargetType="Button">
+        x:Key="Button_Green_Large"
+        BasedOn="{StaticResource Button_Default_Large}"
+        TargetType="Button">
         <Setter Property="Background" Value="{StaticResource GreenFaded}" />
         <Setter Property="Foreground" Value="{StaticResource Green}" />
         <Style.Triggers>
@@ -348,9 +348,9 @@
     </Style>
 
     <Style
-    x:Key="Button_Purple_Large"
-    BasedOn="{StaticResource Button_Default_Large}"
-    TargetType="Button">
+        x:Key="Button_Purple_Large"
+        BasedOn="{StaticResource Button_Default_Large}"
+        TargetType="Button">
         <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
         <Setter Property="Foreground" Value="{StaticResource Purple}" />
         <Style.Triggers>
@@ -365,9 +365,9 @@
     </Style>
 
     <Style
-    x:Key="Button_Blue_Large"
-    BasedOn="{StaticResource Button_Default_Large}"
-    TargetType="Button">
+        x:Key="Button_Blue_Large"
+        BasedOn="{StaticResource Button_Default_Large}"
+        TargetType="Button">
         <Setter Property="Background" Value="{StaticResource BlueFaded}" />
         <Setter Property="Foreground" Value="{StaticResource Blue}" />
         <Style.Triggers>
@@ -382,9 +382,9 @@
     </Style>
 
     <Style
-    x:Key="Button_Red_Large"
-    BasedOn="{StaticResource Button_Default_Large}"
-    TargetType="Button">
+        x:Key="Button_Red_Large"
+        BasedOn="{StaticResource Button_Default_Large}"
+        TargetType="Button">
         <Setter Property="Background" Value="{StaticResource RedFaded}" />
         <Setter Property="Foreground" Value="{StaticResource Red}" />
         <Style.Triggers>
