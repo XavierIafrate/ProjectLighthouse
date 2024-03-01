@@ -56,6 +56,7 @@
             MaxHeight="200"
             MaxLength="512"
             Style="{StaticResource DefaultTextBox}"
+            VerticalContentAlignment="Top"
             Tag="Remarks"
             TextChanged="BatchTextBox_TextChanged"
             TextWrapping="Wrap" />
