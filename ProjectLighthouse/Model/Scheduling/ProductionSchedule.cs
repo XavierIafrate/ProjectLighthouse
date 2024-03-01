@@ -566,6 +566,7 @@ namespace ProjectLighthouse.Model.Scheduling
                     WarningType.DoubleBooking => "Machine Double booked on day",
                     WarningType.NotRunningOnTime => "Is not marked as running",
                     WarningType.BlockingOverlap => "Next item in schedule prevents requirement",
+                    WarningType.NotCompatibleWithMachine => "Not compatible with the assigned machine",
                     _ => "Unknown"
                 };
             }
@@ -578,6 +579,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 DoubleBooking,
                 NotRunningOnTime,
                 BlockingOverlap,
+                NotCompatibleWithMachine,
             }
         }
 

@@ -97,7 +97,7 @@ namespace ProjectLighthouse.Model.Scheduling
                     {
                         if (order.State == OrderState.Cancelled) continue;
 
-                        //if (i < itemsToAdd.Count - 1)
+                        //if (i < itemsToAdd.Count - 1 && order.State == OrderState.Complete)
                         //{
                         //    ScheduleItem nextItem = itemsToAdd[i + 1];
                         //    DateTime nextItemStarts;
@@ -110,7 +110,7 @@ namespace ProjectLighthouse.Model.Scheduling
                         //        nextItemStarts = nextItem.StartDate;
                         //    }
 
-                        //    if (order.EndsAt() < nextItemStarts)
+                        //    if (order.EndsAt() > nextItemStarts)
                         //    {
                         //        order.ScheduledEnd = nextItemStarts;
                         //    }
@@ -132,21 +132,30 @@ namespace ProjectLighthouse.Model.Scheduling
                 List<Warning> warnings = new();
 
                 LatheManufactureOrder? previousOrder = null;
+                ScheduleItem? nextItem;
                 for (int i = 0; i < ScheduleItems.Count; i++)
                 {
                     ScheduleItem item = ScheduleItems[i];
+                    if (i < ScheduleItems.Count - 1)
+                    {
+                        nextItem = ScheduleItems[i + 1];
+                    }
+                    else
+                    {
+                        nextItem = null;
+                    }
 
                     if (item is LatheManufactureOrder order)
                     {
-                        if (order.State < OrderState.Complete && previousOrder != null)
+                        if (order.State < OrderState.Complete && previousOrder != null) // TODO check this previousOrder null check
                         {
                             optimisations.AddRange(GetOrderOptimisations(order, previousOrder));
 
-                            List<Advisory> orderAdvisories = GetOrderAdvisories(order);
+                            List<Advisory> orderAdvisories = GetOrderAdvisories(order, nextItem);
                             advisories.AddRange(orderAdvisories);
                             order.SetAdvisories(orderAdvisories);
 
-                            List<Warning> orderWarnings = GetOrderWarnings(order, previousOrder);
+                            List<Warning> orderWarnings = GetOrderWarnings(order, previousOrder, nextItem);
                             warnings.AddRange(orderWarnings);
                             order.SetWarnings(orderWarnings);
 
@@ -304,7 +313,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 return optimisations;
             }
 
-            private List<Advisory> GetOrderAdvisories(LatheManufactureOrder order)
+            private List<Advisory> GetOrderAdvisories(LatheManufactureOrder order, ScheduleItem? nextItem)
             {
                 List<Advisory> advisories = new();
 
@@ -322,11 +331,33 @@ namespace ProjectLighthouse.Model.Scheduling
                     advisories.Add(advisory);
                 }
 
+                if (nextItem is not null)
+                {
+                    DateTime nextStart;
+                    if (nextItem is LatheManufactureOrder nextOrder)
+                    {
+                        nextStart = nextOrder.GetSettingStartDateTime();
+                    }
+                    else
+                    {
+                        nextStart = nextItem.StartDate;
+                    }
+
+                    double hoursOverlap = (order.EndsAt() - nextStart).TotalHours;
+
+                    if (hoursOverlap > 12)
+                    {
+                        Advisory advisory = new() { Item = order, Type = Advisory.AdvisoryType.SignificantOverlap };
+
+                        advisories.Add(advisory);
+                    }
+                }
+                
 
                 return advisories;
             }
 
-            private List<Warning> GetOrderWarnings(LatheManufactureOrder order, LatheManufactureOrder previousOrder)
+            private List<Warning> GetOrderWarnings(LatheManufactureOrder order, LatheManufactureOrder previousOrder, ScheduleItem? nextItem)
             {
                 List<Warning> warnings = new();
                 DateTime deadline = order.GetStartDeadline();
@@ -379,6 +410,36 @@ namespace ProjectLighthouse.Model.Scheduling
                     warnings.Add(newWarning);
                 }
 
+                if (!Lathe.CanRun(order))
+                {
+                    Warning newWarning = new() { Item = order, Type = Warning.WarningType.NotCompatibleWithMachine };
+
+                    warnings.Add(newWarning);
+                }
+
+
+                TimeSpan timeToMakeRequired = order.GetTimeToMakeRequired();
+                if (timeToMakeRequired != TimeSpan.Zero && nextItem is not null)
+                {
+                    DateTime nextStart;
+                    if (nextItem is LatheManufactureOrder nextOrder)
+                    {
+                        nextStart = nextOrder.GetSettingStartDateTime();
+                    }
+                    else
+                    {
+                        nextStart = nextItem.StartDate;
+                    }
+
+                    DateTime requirementMadeAt = order.StartDate + timeToMakeRequired;
+
+                    if (nextStart < requirementMadeAt)
+                    {
+                        Warning warning = new() { Item = order, Type =Warning.WarningType.BlockingOverlap };
+
+                        warnings.Add(warning);
+                    }
+                }
 
                 return warnings;
             }
