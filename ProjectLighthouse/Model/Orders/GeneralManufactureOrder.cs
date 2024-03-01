@@ -5,6 +5,9 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 namespace ProjectLighthouse.Model.Orders
 {
