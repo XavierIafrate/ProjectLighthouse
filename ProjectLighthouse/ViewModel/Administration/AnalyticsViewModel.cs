@@ -2,7 +2,6 @@
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Core;
@@ -37,6 +36,9 @@ namespace ProjectLighthouse.ViewModel.Administration
         public ISeries[] TurnaroundTime { get; set; }
         public ISeries[] ActiveOrders { get; set; }
         public ISeries[] ProductSeries { get; set; }
+        public ISeries[] BreakdownFrequency { get; set; }
+        public ISeries[] BreakdownTime { get; set; }
+        public Axis[] BreakdownTimeXAxes { get; set; }
 
         public Axis[] YAxisStartAtZero { get; set; } =
         {
@@ -56,6 +58,51 @@ namespace ProjectLighthouse.ViewModel.Administration
             GetAnalytics();
             GetWorkload();
             GetProductAnalytics();
+            GetBreakdownAnalytics();
+        }
+
+
+        private void GetBreakdownAnalytics()
+        {
+            return;
+            List<MachineBreakdown> breakdowns = DatabaseHelper.Read<MachineBreakdown>().Where(x => x.BreakdownStarted > DateTime.Today.AddDays(-90)).ToList();
+            List<BreakdownCode> codes = DatabaseHelper.Read<BreakdownCode>();
+            breakdowns.ForEach(b => b.BreakdownMeta = codes.Find(c => c.Id == b.BreakdownCode));
+
+            //List<double> hours = new();
+            List<string> codeLabels = new();
+
+            List<ISeries> newSeries = new();
+            foreach (BreakdownCode code in codes)
+            {
+                double timeAttributed = TimeSpan.FromSeconds(breakdowns.Where(x => x.BreakdownCode == code.Id).Sum(x => x.TimeElapsed)).Days;
+                if (timeAttributed == 0) continue;
+
+                List<double> newValue = new() { timeAttributed };
+                codeLabels.Add(code.Id);
+                newSeries.Add(new ColumnSeries<double>
+                {
+                    Values = newValue,
+                    Name = code.Id,
+                    TooltipLabelFormatter = (chartPoint) =>
+                    $"[{code.Id}] {code.Name}: {chartPoint.PrimaryValue:#,##0} days",
+                });
+            }
+
+            
+
+
+            BreakdownTime = newSeries.ToArray();
+
+            BreakdownTimeXAxes = new Axis[1];
+            BreakdownTimeXAxes[0] = new()
+            {
+                Labels = codeLabels,
+            };
+
+
+            OnPropertyChanged(nameof(BreakdownTime));
+            OnPropertyChanged(nameof(BreakdownTimeXAxes));
         }
 
         private void GetProductAnalytics()
@@ -85,11 +132,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 Product? product = products.Find(x => x.Id == group.ProductId);
                 if (product is null) continue;
 
-                if (!productionRecords.ContainsKey(product.Name))
-                {
-                    productionRecords.Add(product.Name, totalProduced);
-                }
-                else
+                if (!productionRecords.TryAdd(product.Name, totalProduced))
                 {
                     productionRecords[product.Name] += totalProduced;
                 }
