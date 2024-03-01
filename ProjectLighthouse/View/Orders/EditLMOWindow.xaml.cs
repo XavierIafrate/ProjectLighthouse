@@ -7,6 +7,7 @@ using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.View.UserControls;
 using ProjectLighthouse.ViewModel.Commands.Orders;
@@ -15,6 +16,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -73,6 +75,10 @@ namespace ProjectLighthouse.View.Orders
 
         public OrderSaveEditNoteCommand SaveEditNoteCmd { get; set; }
         public OrderDeleteNoteCommand DeleteNoteCmd { get; set; }
+
+        private ProductGroup archetype;
+        private Product? product;
+        public BarStock OrderBar { get; set; }
 
         public List<BreakdownCode> BreakdownCodes { get; set; }
         public List<MachineBreakdown> Breakdowns { get; set; }
@@ -157,12 +163,18 @@ namespace ProjectLighthouse.View.Orders
             {
                 // TODO handle bad inputs
                 BarStock = DatabaseHelper.Read<BarStock>().Where(x => !x.IsDormant).ToList();
-                BarStock currentBar = BarStock.Find(x => x.Id == Order.BarID)
-                    ?? throw new Exception($"Cannot find bar {Order.BarID}");
-
-                BarStock = BarStock.Where(x => x.MaterialId == currentBar.MaterialId).ToList();
-                OnPropertyChanged(nameof(BarStock));
             }
+
+            BarStock currentBar = BarStock.Find(x => x.Id == Order.BarID)
+                ?? throw new Exception($"Cannot find bar {Order.BarID}");
+
+            MaterialInfo material = DatabaseHelper.Read<MaterialInfo>().Find(m => m.Id == currentBar.MaterialId);
+            currentBar.MaterialData = material;
+            BarStock = BarStock.Where(x => x.MaterialId == currentBar.MaterialId).ToList();
+            BarStock.ForEach(b => b.MaterialData = material);
+
+            Order.Bar = currentBar;
+            OnPropertyChanged(nameof(BarStock));
 
             savedOrder = (LatheManufactureOrder)Order.Clone();
 
@@ -219,6 +231,11 @@ namespace ProjectLighthouse.View.Orders
                 BreakdownEnded = DateTime.Now,
                 OrderName = Order.Name,
             };
+
+            archetype = DatabaseHelper.Read<ProductGroup>().Find(x => x.Id == Order.GroupId)
+                ?? throw new Exception($"Cannot find archetype {Order.GroupId}");
+
+            product = DatabaseHelper.Read<Product>().Find(x => x.Id == archetype.ProductId);
         }
 
         private void ChartTimeModel()
@@ -566,6 +583,19 @@ namespace ProjectLighthouse.View.Orders
 
             CalculateTimeAndBar();
 
+            List<string> features = Order.Bar.MaterialData.RequiresFeaturesList;
+            features.AddRange(Order.Bar.RequiresFeaturesList);
+            features.AddRange(Order.Bar.MaterialData.RequiresFeaturesList);
+            features.AddRange(archetype.RequiresFeaturesList);
+            if (product is not null)
+            {
+                features.AddRange(product.RequiresFeaturesList);
+            }
+
+            features = features.OrderBy(x => x).Distinct().ToList();
+
+            Order.RequiredFeaturesList = features;
+
             if (savedOrder.IsUpdated(Order))
             {
                 SaveExit = true;
@@ -875,6 +905,7 @@ namespace ProjectLighthouse.View.Orders
             }
 
             MessageBox.Show("Updated drawings were found and the order records amended.", "Now up to date", MessageBoxButton.OK, MessageBoxImage.Information);
+            SaveExit = true;
             Drawings = new(Drawings);
             OnPropertyChanged(nameof(Drawings));
         }
@@ -1015,12 +1046,32 @@ namespace ProjectLighthouse.View.Orders
 
         private void AddBreakdownButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!App.CurrentUser.HasPermission(PermissionType.EditOrder))
+            {
+                MessageBox.Show("You do not have permissions to Edit Order", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             NewBreakdown.ValidateAll();
             if (NewBreakdown.HasErrors)
             {
                 MessageBox.Show("New record has errors", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            if (NewBreakdown.BreakdownEnded > (Order.ScheduledEnd ?? Order.EndsAt()))
+            {
+                MessageBox.Show("Breakdown cannot end after order has finished", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (NewBreakdown.BreakdownStarted < Order.StartDate)
+            {
+                MessageBox.Show("Breakdown cannot begin before order has started", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
 
             NewBreakdown.CreatedAt = DateTime.Now;
             NewBreakdown.CreatedBy = App.CurrentUser.UserName;
@@ -1050,6 +1101,40 @@ namespace ProjectLighthouse.View.Orders
             };
 
             SaveExit = true;
+        }
+
+        private void removeBreakdownButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button) return;
+            if (button.Tag is not int breakdownId) return;
+
+            if (!App.CurrentUser.HasPermission(PermissionType.EditOrder))
+            {
+                MessageBox.Show("You do not have permissions to Edit Order", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            MachineBreakdown? breakdown = Breakdowns.Find(x => x.Id == breakdownId);
+            if (breakdown == null)
+            {
+                MessageBox.Show($"Cannot find breakdown with ID {breakdownId}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (MessageBox.Show("Are you sure you want to delete this breakdown record?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            if (!DatabaseHelper.Delete(breakdown))
+            {
+                MessageBox.Show($"Failed to delete breakdown record", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Breakdowns = Breakdowns.Where(x => x.Id != breakdown.Id).ToList();
+            OnPropertyChanged(nameof(Breakdowns));
+            MessageBox.Show($"Deleted successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

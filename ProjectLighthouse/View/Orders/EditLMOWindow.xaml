@@ -11,20 +11,20 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Edit Order"
     Height="950"
-    MinWidth="800"
+    Width="700"
     MinHeight="600"
-    MaxWidth="800"
     MaxHeight="1000"
     d:Height="Auto"
     Background="{StaticResource Background}"
     Closing="Window_Closing"
-    ResizeMode="CanResize"
+    ResizeMode="NoResize"
     SizeToContent="Height"
+    x:Name="parentWindow"
     TextElement.Foreground="{StaticResource OnBackground}"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
 
-    <Grid Margin="10,20,0,0">
+    <Grid MaxWidth="{Binding Path=Width, ElementName=parentWindow}">
         <Grid.Resources>
             <converter:boolToVisibleOrCollapsed x:Key="boolToCollapsed" />
             <converter:stringToAssignedLathe x:Key="stringToAssignedLathe" />
@@ -39,7 +39,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid>
+        <Grid Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
@@ -92,7 +92,7 @@
             Grid.Row="1"
             HorizontalScrollBarVisibility="Hidden"
             ScrollChanged="ScrollViewer_ScrollChanged">
-            <Grid Margin="0,0,5,0">
+            <Grid Margin="10" MaxWidth="660">
                 <Grid.Resources>
                     <converter:boolToCollapsedOrVisible x:Key="boolToCollapsedOrVisible" />
                 </Grid.Resources>
@@ -737,8 +737,8 @@
                         <TabItem x:Name="BreakdownTab" Header="Breakdowns">
                             <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*" />
                                     <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <ItemsControl Margin="5" ItemsSource="{Binding Breakdowns}">
                                     <ItemsControl.ItemTemplate>
@@ -831,8 +831,7 @@
                                         Text="Breakdown Code" />
                                     <ComboBox
                                         Grid.Row="2"
-                                        MaxWidth="230"
-                                        Margin="0,0,5,5"
+                                        Margin="0"
                                         ItemsSource="{Binding BreakdownCodes}"
                                         SelectedValue="{Binding NewBreakdown.BreakdownCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         SelectedValuePath="Id">
@@ -922,7 +921,7 @@
                 </StackPanel>
                 <!--#endregion-->
 
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="2" MaxWidth="{Binding Path=Width, ElementName=parentWindow}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
@@ -948,14 +947,14 @@
                         Grid.Row="2"
                         Margin="0,5">
                         <!--<Border Background="{StaticResource Surface}" CornerRadius="10" />-->
-                        <Grid>
+                        <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <TextBox
                                 x:Name="Message"
-                                Width="665"
+                                HorizontalAlignment="Stretch"
                                 KeyDown="Message_KeyDown"
                                 Style="{StaticResource MessageComposer}"
                                 TextWrapping="Wrap" />
