@@ -1,6 +1,7 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -30,6 +31,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         public List<NcProgram> Programs { get; set; }
         public List<MaterialInfo> Materials { get; set; }
         public List<BarStock> Bars { get; set; }
+        private List<string> latheFeatures;
 
         public List<Product> FilteredProducts { get; set; }
         public List<ProductGroup> FilteredProductGroups { get; set; }
@@ -135,6 +137,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         private void LoadData()
         {
+            Products = null;
             Products = DatabaseHelper.Read<Product>()
                 .OrderBy(x => x.Name)
                 .Prepend(new() { Id = -1, Name = "Unassigned", Description = "Incomplete products/groups" })
@@ -156,6 +159,16 @@ namespace ProjectLighthouse.ViewModel.Administration
             Programs = DatabaseHelper.Read<NcProgram>();
 
             SelectedProduct = Products.First();
+
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>().ToList();
+            List<string> features = new();
+            foreach (Lathe lathe in lathes)
+            {
+                features.AddRange(lathe.FeatureList);
+            }
+
+            features = features.OrderBy(x => x).Distinct().ToList();
+            latheFeatures = features;
         }
 
         private void LoadProduct()
@@ -360,11 +373,11 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             if (g is null)
             {
-                window = new(SelectedProduct, Products) { Owner = App.MainViewModel.MainWindow };
+                window = new(SelectedProduct, Products, latheFeatures) { Owner = App.MainViewModel.MainWindow };
             }
             else
             {
-                window = new(SelectedProduct, g, Products) { Owner = App.MainViewModel.MainWindow };
+                window = new(SelectedProduct, g, Products, latheFeatures) { Owner = App.MainViewModel.MainWindow };
             }
 
 
@@ -453,7 +466,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 }
             }
 
-            AddProductWindow window = new(p) { Owner = App.MainViewModel.MainWindow };
+            AddProductWindow window = new(latheFeatures, p) { Owner = App.MainViewModel.MainWindow };
 
             window.ShowDialog();
 
@@ -467,6 +480,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             int id = window.Product.Id;
 
             LoadData();
+            Search();
 
             SelectedProduct = FilteredProducts.Find(x => x.Id == id);
             if (SelectedProduct is null && FilteredProducts.Count > 0)
