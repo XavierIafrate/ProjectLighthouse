@@ -30,6 +30,16 @@ namespace ProjectLighthouse.View.UserControls
             DependencyProperty.Register("Order", typeof(LatheManufactureOrder), typeof(DisplayTimeUsage), new PropertyMetadata(null, SetValues));
 
 
+        public List<MachineBreakdown> Breakdowns
+        {
+            get { return (List<MachineBreakdown>)GetValue(BreakdownsProperty); }
+            set { SetValue(BreakdownsProperty, value); }
+        }
+
+        public static readonly DependencyProperty BreakdownsProperty =
+            DependencyProperty.Register("Breakdowns", typeof(List<MachineBreakdown>), typeof(DisplayTimeUsage), new PropertyMetadata(null, SetValues));
+
+
         public DisplayTimeUsage()
         {
             InitializeComponent();
@@ -52,6 +62,8 @@ namespace ProjectLighthouse.View.UserControls
             if (Order is null) return;
             if (OrderItems is null) return;
             if (OrderItems.Count == 0) return;
+            if (Breakdowns is null) return;
+
 
             if (OrderItems.First().AssignedMO != Order.Name) return;
             if (Order.State != OrderState.Complete) return;
@@ -59,6 +71,7 @@ namespace ProjectLighthouse.View.UserControls
             Dictionary<LatheManufactureOrderItem, TimeSpan> spans = new();
 
             TimeSpan settingSpan = TimeSpan.FromSeconds(6 * 3600);
+            TimeSpan breakdownSpan = TimeSpan.FromSeconds(Breakdowns.Sum(x => x.TimeElapsed));
             TimeSpan orderSpan = Order.EndsAt() - Order.StartDate;
 
             for (int i = 0; i < OrderItems.Count; i++)
@@ -68,46 +81,32 @@ namespace ProjectLighthouse.View.UserControls
                 spans.Add(item, TimeSpan.FromSeconds((item.QuantityMade + item.QuantityReject) * item.CycleTime));
             }
 
-            Dictionary<string, int> spanMap = DrawGrid(settingSpan, orderSpan, spans);
+            Dictionary<string, int> spanMap = DrawGrid(settingSpan, orderSpan, spans, breakdownSpan);
             DrawEvents(orderSpan, spans, spanMap);
         }
 
-        private Dictionary<string, int> DrawGrid(TimeSpan setting, TimeSpan order, Dictionary<LatheManufactureOrderItem, TimeSpan> items)
+        private Dictionary<string, int> DrawGrid(TimeSpan settingTime, TimeSpan plannedOrderTime, Dictionary<LatheManufactureOrderItem, TimeSpan> items, TimeSpan breakdownTime)
         {
+            DrawRows(items);
 
-            // Rows
-            MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) });
-
-            TimeSpan totalItems = TimeSpan.Zero;
-            for (int i = 0; i < items.Count; i++)
+            // Columns *****************************************************************
+            TimeSpan timeToMakeItems = TimeSpan.Zero;
+            for(int i = 0; i < items.Keys.Count; i++)
             {
-                MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) });
-
-                TextBlock rowHeader = new()
-                {
-                    Text = items.ElementAt(i).Key.ProductName,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    FontWeight = FontWeights.SemiBold,
-                    Margin = new(5, 0, 5, 0),
-                };
-
-                totalItems += items.ElementAt(i).Value;
-
-                AddToMainGrid(rowHeader, 0, i + 1);
+                timeToMakeItems += items.ElementAt(i).Value;
             }
 
-            MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) });
+            bool productivityGain = settingTime + plannedOrderTime < timeToMakeItems;
 
-            bool overdelivered = totalItems > order;
-            TimeSpan prevailing = overdelivered ? totalItems : order;
+            TimeSpan totalTime = productivityGain
+                ? settingTime + timeToMakeItems
+                : settingTime + plannedOrderTime;
 
-            double unitsPerHour = 100 / (setting + prevailing).TotalHours;
+            double unitsPerHour = 100 / totalTime.TotalHours;
+            double diffHours = Math.Abs((plannedOrderTime - timeToMakeItems).TotalHours);
 
-            double remainingHours = Math.Abs((order - totalItems).TotalHours);
-
-            // Columns
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
-            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(unitsPerHour * setting.TotalHours, GridUnitType.Star) });
+            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(unitsPerHour * settingTime.TotalHours, GridUnitType.Star) });
 
             TimeSpan itemsTotal = TimeSpan.Zero;
             Dictionary<string, int> spans = new();
@@ -118,7 +117,7 @@ namespace ProjectLighthouse.View.UserControls
             for (int i = 0; i < items.Count; i++)
             {
                 itemsTotal += items.ElementAt(i).Value;
-                if (itemsTotal < order || latch)
+                if (itemsTotal < plannedOrderTime || latch)
                 {
                     if (items.ElementAt(i).Value.TotalHours == 0)
                     {
@@ -131,7 +130,7 @@ namespace ProjectLighthouse.View.UserControls
                 }
                 else
                 {
-                    TimeSpan diff = itemsTotal - order;
+                    TimeSpan diff = itemsTotal - plannedOrderTime;
                     MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(unitsPerHour * (items.ElementAt(i).Value - diff).TotalHours, GridUnitType.Star) });
                     MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(unitsPerHour * diff.TotalHours, GridUnitType.Star) });
                     latch = true;
@@ -145,13 +144,11 @@ namespace ProjectLighthouse.View.UserControls
             if (!latch)
             {
                 // under-performance
-                TimeSpan diff = order - itemsTotal;
+                TimeSpan diff = plannedOrderTime - itemsTotal;
                 MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(unitsPerHour * diff.TotalHours, GridUnitType.Star) });
                 spans.Add("order", addedColumns + 1);
                 diffStarts = MainGrid.ColumnDefinitions.Count - 1;
             }
-
-            //MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(unitsPerHour * remainingHours, GridUnitType.Star) });
 
             for (int i = 0; i < MainGrid.ColumnDefinitions.Count; i++)
             {
@@ -160,7 +157,6 @@ namespace ProjectLighthouse.View.UserControls
                     BorderBrush = Brushes.Black,
                     BorderThickness = new(1),
                 };
-
 
                 int s = 1;
                 if (i == diffStarts)
@@ -171,7 +167,7 @@ namespace ProjectLighthouse.View.UserControls
                         Margin = new(0),
                         CornerRadius = new(0),
                         Opacity = 0.7,
-                        ToolTip = $"{(latch ? "Gained" : "Lost")} performance {remainingHours:0}h",
+                        ToolTip = $"{(latch ? "Gained" : "Lost")} performance {diffHours:0}h",
                     };
 
                     s = MainGrid.ColumnDefinitions.Count - diffStarts;
@@ -181,6 +177,51 @@ namespace ProjectLighthouse.View.UserControls
             }
 
             return spans;
+        }
+
+        void DrawRows(Dictionary<LatheManufactureOrderItem, TimeSpan> items)
+        {
+            MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) });
+
+            TimeSpan itemsTime = TimeSpan.Zero;
+            TextBlock rowHeader;
+            for (int i = 0; i < items.Count; i++)
+            {
+                MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) });
+
+                rowHeader = new()
+                {
+                    Text = items.ElementAt(i).Key.ProductName,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    FontWeight = FontWeights.SemiBold,
+                    Margin = new(5, 0, 5, 0),
+                };
+
+                itemsTime += items.ElementAt(i).Value;
+
+                AddToMainGrid(rowHeader, 0, i + 1);
+            }
+
+            MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) }); // Breakdown
+            MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) }); // Diff
+
+            rowHeader = new()
+            {
+                Text = "Breakdown",
+                VerticalAlignment = VerticalAlignment.Center,
+                FontWeight = FontWeights.SemiBold,
+                Margin = new(5, 0, 5, 0),
+            };
+            AddToMainGrid(rowHeader, 0, items.Count + 1);
+
+            rowHeader = new()
+            {
+                Text = "Diff",
+                VerticalAlignment = VerticalAlignment.Center,
+                FontWeight = FontWeights.SemiBold,
+                Margin = new(5, 0, 5, 0),
+            };
+            AddToMainGrid(rowHeader, 0, items.Count + 2);
         }
 
         private void DrawEvents(TimeSpan order, Dictionary<LatheManufactureOrderItem, TimeSpan> items, Dictionary<string, int> spanMap)
@@ -203,7 +244,7 @@ namespace ProjectLighthouse.View.UserControls
                 Margin = new(0),
                 CornerRadius = new(0),
                 Opacity = 0.7
-            };
+            }; 
             element.ToolTip = $"[c{2} s{spanMap["order"]}] {order.TotalHours:0.00}";
 
 
