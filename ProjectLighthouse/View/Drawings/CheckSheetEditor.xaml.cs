@@ -148,8 +148,6 @@ namespace ProjectLighthouse.View.Drawings
             if (sender is not Button button) return;
             if (button.CommandParameter is not ToleranceDefinition tolerance) return;
 
-            MessageBox.Show("Adding " + tolerance.Id);
-
             //if (MasterToleranceListView.SelectedValue is not ToleranceDefinition tol) return;
             List<string> tols = drawing.Specification;
             tols.Add(tolerance.Id);
