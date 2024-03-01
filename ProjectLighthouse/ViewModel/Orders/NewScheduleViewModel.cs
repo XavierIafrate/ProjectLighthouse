@@ -335,25 +335,6 @@ namespace ProjectLighthouse.ViewModel.Orders
         }
 
         #region Holiday Management
-        public void EditHolidays()
-        {
-            ManageHolidaysWindow window = new(Holidays) { Owner = App.MainViewModel.MainWindow };
-            window.ShowDialog();
-
-            if (window.SaveExit)
-            {
-                try
-                {
-                    SaveHolidays(window.Holidays);
-                    Holidays = new(window.Holidays);
-                }
-                catch (Exception ex)
-                {
-                    NotificationManager.NotifyHandledException(ex);
-                }
-            }
-        }
-
         private static List<DateTime> LoadHolidays()
         {
             try
@@ -367,19 +348,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
 
                 return holidays.OrderBy(x => x).ToList();
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        private static void SaveHolidays(List<DateTime> holidays)
-        {
-            try
-            {
-                string data = Newtonsoft.Json.JsonConvert.SerializeObject(holidays);
-                File.WriteAllText(App.ROOT_PATH + @"lib\holidays.json", data);
             }
             catch
             {
