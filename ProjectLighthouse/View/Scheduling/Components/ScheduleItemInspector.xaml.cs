@@ -116,6 +116,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
             this.OrderItemsItemsControl.ItemsSource = order.OrderItems;
             this.OrderBreakdownsItemsControl.ItemsSource = order.Breakdowns;
+            this.MachineRequirementsItemsControl.ItemsSource = order.RequiredFeaturesList;
 
             this.EstimatedRuntimeTextBlock.Text = $"{new intToTimespanString().Convert(order.TimeToComplete, typeof(string), null, new CultureInfo("en-GB")) ?? "N/A"}";
 

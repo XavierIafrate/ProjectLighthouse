@@ -208,6 +208,10 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
+                    
+                    <TextBlock Style="{StaticResource InputLabel}" Text="Required Machine Features" />
+                    <ItemsControl x:Name="MachineRequirementsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}"/>
                 </StackPanel>
                 <Grid
                     x:Name="maintenanceGrid"
