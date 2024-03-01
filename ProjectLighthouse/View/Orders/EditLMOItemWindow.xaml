@@ -123,8 +123,10 @@
                         LostFocus="CycleTime_LostFocus"
                         MaxLength="2"
                         PreviewKeyDown="Allow_Nums_Only_And_TabAcross"
-                        Style="{StaticResource UsernameTextBox}"
+                        Style="{StaticResource DefaultTextBox}"
                         d:Text="00"
+                        FontSize="18"
+                        Height="Auto"
                         TextChanged="CycleTime_Min_TextChanged" />
                     <TextBlock
                         Margin="2,0,8,5"
@@ -138,6 +140,8 @@
                         GotFocus="CycleTime_GotFocus"
                         LostFocus="CycleTime_LostFocus"
                         MaxLength="2"
+                        FontSize="18"
+                        Height="Auto"
                         PreviewKeyDown="Allow_Nums_Only"
                         Style="{StaticResource UsernameTextBox}"
                         d:Text="00"
@@ -171,6 +175,8 @@
                         HorizontalContentAlignment="Center"
                         d:Text="500"
                         MaxLength="5"
+                        FontSize="18"
+                        Height="Auto"
                         PreviewKeyDown="Allow_Nums_Only"
                         Style="{StaticResource UsernameTextBox}"
                         Text="{Binding Item.PreviousCycleTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
