@@ -32,7 +32,7 @@ namespace ProjectLighthouse
         public static NotificationManager NotificationsManager { get; set; }
         public static string AppDataDirectory { get; set; }
         public static List<StandardFit> StandardFits { get; set; }
-        
+
         static HelpWindow? HelpWindow;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -63,9 +63,13 @@ namespace ProjectLighthouse
 
             try
             {
-                
                 string constantsJson = File.ReadAllText(App.ROOT_PATH + "config.json");
                 Constants = Newtonsoft.Json.JsonConvert.DeserializeObject<Constants>(constantsJson);
+
+                if (Constants is null)
+                {
+                    throw new Exception("Deserialisation of config.json to Constants returned null");
+                }
             }
             catch (Exception ex)
             {
