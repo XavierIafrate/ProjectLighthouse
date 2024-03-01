@@ -589,7 +589,15 @@ namespace ProjectLighthouse.View.Orders
                 NewOrder.TimeCodeIsEstimate = true;
             }
 
-            NewOrder.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList());
+            NewOrder.RequiredFeaturesList = orderBar.RequiresFeaturesList;
+            NewOrder.RequiredFeaturesList.AddRange(orderBar.MaterialData.RequiresFeaturesList);
+            NewOrder.RequiredFeaturesList.AddRange(SelectedGroup.RequiresFeaturesList);
+            if (SelectedProduct is not null)
+            {
+                NewOrder.RequiredFeaturesList.AddRange(SelectedProduct.RequiresFeaturesList);
+            }
+
+            NewOrder.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new());
             NewOrder.TimeModelPlanned = timeModel;
 
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>()
@@ -662,7 +670,7 @@ namespace ProjectLighthouse.View.Orders
             insights.NumberOfBarsRequired = NewOrderItems.CalculateNumberOfBars(bar, 0);
             insights.TotalBarCost = (bar.ExpectedCost ?? 0) * insights.NumberOfBarsRequired;
 
-            int totalTime = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList());
+            int totalTime = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new());
 
             insights.TimeIsEstimate = true; // TODO fix
             insights.TimeToComplete = totalTime;
