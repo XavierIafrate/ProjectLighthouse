@@ -109,7 +109,7 @@
 
         <!--#region Not found gif-->
         <StackPanel
-            Grid.Column="2"
+            Grid.Column="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Visibility="{Binding SelectedRequest, Converter={StaticResource NullToVisibility}}">
