@@ -615,13 +615,13 @@ namespace ProjectLighthouse.View.Orders
             }
 
             Order.ModifiedBy = App.CurrentUser.GetFullName();
-            Order.ModifiedAt = DateTime.Now;
 
-            Order.Status = Order.State.ToString();
+            DateTime modificationDate = DateTime.Now;
+            Order.ModifiedAt = modificationDate;
 
             if (savedOrder.State < OrderState.Complete && Order.State >= OrderState.Complete)
             {
-                Order.CompletedAt = Order.ModifiedAt;
+                Order.CompletedAt = modificationDate;
             }
 
             if (!DatabaseHelper.Update(Order))

@@ -15,13 +15,13 @@ namespace ProjectLighthouse.Model.Scheduling
             public event EventHandler OnHolidaysUpdated;
 
 
-            private Lathe lathe;
-            public Lathe Lathe
+            private Machine machine;
+            public Machine Machine
             {
-                get { return lathe; }
+                get { return machine; }
                 set
                 {
-                    lathe = value;
+                    machine = value;
                     OnPropertyChanged();
                 }
             }
@@ -74,15 +74,15 @@ namespace ProjectLighthouse.Model.Scheduling
 
             public List<DateTime> Holidays = new();
 
-            public MachineSchedule(Lathe lathe)
+            public MachineSchedule(Machine machine)
             {
-                this.Lathe = lathe;
+                this.Machine = machine;
             }
 
             public void SetScheduleItems(List<ScheduleItem> items)
             {
                 List<ScheduleItem> itemsToAdd = items
-                        .Where(x => x.AllocatedMachine == Lathe.Id && x.StartDate > DateTime.MinValue)
+                        .Where(x => x.AllocatedMachine == Machine.Id && x.StartDate > DateTime.MinValue)
                         .OrderBy(x => x.StartDate)
                         .ToList();
 
@@ -317,14 +317,16 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 List<Advisory> advisories = new();
 
-                if (order.Bar.MajorDiameter < Lathe.SoftMinDiameter)
+                Lathe lathe = Machine as Lathe;
+
+                if (order.Bar.MajorDiameter < lathe.SoftMinDiameter)
                 {
                     Advisory advisory = new() { Item = order, Type = Advisory.AdvisoryType.BelowSoftMinDiameter };
 
                     advisories.Add(advisory);
                 }
 
-                if (order.Bar.MajorDiameter > Lathe.SoftMaxDiameter && order.Bar.MajorDiameter <= Lathe.MaxDiameter)
+                if (order.Bar.MajorDiameter > lathe.SoftMaxDiameter && order.Bar.MajorDiameter <= lathe.MaxDiameter)
                 {
                     Advisory advisory = new() { Item = order, Type = Advisory.AdvisoryType.AboveSoftMaxDiameter };
 
@@ -361,6 +363,8 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 List<Warning> warnings = new();
                 DateTime deadline = order.GetStartDeadline();
+
+                Lathe lathe = Machine as Lathe;
 
                 if (order.StartDate > deadline)
                 {
@@ -410,7 +414,7 @@ namespace ProjectLighthouse.Model.Scheduling
                     warnings.Add(newWarning);
                 }
 
-                if (!Lathe.CanRun(order))
+                if (!lathe.CanRun(order))
                 {
                     Warning newWarning = new() { Item = order, Type = Warning.WarningType.NotCompatibleWithMachine };
 

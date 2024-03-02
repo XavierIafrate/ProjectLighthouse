@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel.Helpers;
+using RestSharp.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -37,6 +38,17 @@ namespace ProjectLighthouse.Model.Core
 
             public int ClosingHour = 23;
             public int ClosingMinute = 59;
+
+            public TimeSpan GetOpeningHoursTimeSpan()
+            {
+                DateTime open = DateTime.MinValue;
+                open = open.ChangeTime(this.OpeningHour, this.OpeningMinute, 0, 0);
+
+                DateTime close = DateTime.MinValue;
+                close = close.ChangeTime(this.ClosingHour, this.ClosingMinute, 0, 0);
+
+                return close - open;
+            }
         }
     }
 }

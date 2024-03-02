@@ -435,7 +435,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
                 TextBlock headerText = new()
                 {
-                    Text = schedule.Lathe.FullName,
+                    Text = schedule.Machine.FullName,
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
                     FontWeight = FontWeights.SemiBold,
@@ -443,7 +443,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
                 TextBlock subHeaderText = new()
                 {
-                    Text = $"{schedule.Lathe.Make} {schedule.Lathe.Model}",
+                    Text = $"{schedule.Machine.Make} {schedule.Machine.Model}",
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
                 };
@@ -452,7 +452,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
                 sp.Children.Add(subHeaderText);
                 rowDiv.Child = sp;
 
-                rowHeaders.Add(schedule.Lathe.Id, rowDiv);
+                rowHeaders.Add(schedule.Machine.Id, rowDiv);
 
                 AddToGrid(this.RowHeaderGrid, rowDiv, 0, i);
             }
@@ -545,14 +545,14 @@ namespace ProjectLighthouse.View.Scheduling.Components
             
             foreach (MachineSchedule machineSchedule in Schedule.MachineSchedules)
             {
-                if (machineSchedule.Lathe.CanRun(SelectedItem))
+                if (machineSchedule.Machine.CanRun(SelectedItem))
                 {
-                    Border rowHeader = rowHeaders[machineSchedule.Lathe.Id];
+                    Border rowHeader = rowHeaders[machineSchedule.Machine.Id];
                     rowHeader.Background = Brushes.Transparent;
                 }
                 else
                 {
-                    Border rowHeader = rowHeaders[machineSchedule.Lathe.Id];
+                    Border rowHeader = rowHeaders[machineSchedule.Machine.Id];
                     rowHeader.Background = (Brush)Application.Current.Resources["RedFaded"];
                 }
             }
@@ -562,7 +562,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
         {
             foreach (MachineSchedule machineSchedule in Schedule.MachineSchedules)
             {
-                Border rowHeader = rowHeaders[machineSchedule.Lathe.Id];
+                Border rowHeader = rowHeaders[machineSchedule.Machine.Id];
                 rowHeader.Background = Brushes.Transparent;
             }
         }

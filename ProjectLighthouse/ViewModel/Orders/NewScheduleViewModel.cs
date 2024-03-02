@@ -2,7 +2,6 @@
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
-using ProjectLighthouse.View.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -10,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+using System.Windows;
 using static ProjectLighthouse.Model.Scheduling.ProductionSchedule;
 
 namespace ProjectLighthouse.ViewModel.Orders
@@ -120,13 +119,13 @@ namespace ProjectLighthouse.ViewModel.Orders
         }
 
 
-        private List<Lathe> lathes;
-        public List<Lathe> Lathes
+        private List<Machine> machines;
+        public List<Machine> Machines
         {
-            get { return lathes; }
+            get { return machines; }
             set
             {
-                lathes = value;
+                machines = value;
                 OnPropertyChanged();
             }
         }
@@ -227,7 +226,12 @@ namespace ProjectLighthouse.ViewModel.Orders
         
         private void LoadData()
         {
-            Lathes = DatabaseHelper.Read<Lathe>(throwErrs: true);
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>(throwErrs: true);
+            List<Machine> machines = DatabaseHelper.Read<Machine>(throwErrs: true);
+            machines.AddRange(lathes);
+
+            this.Machines = machines;
+            
             ScheduleItems = GetScheduleItems();
 
             try
@@ -240,13 +244,14 @@ namespace ProjectLighthouse.ViewModel.Orders
                 NotificationManager.NotifyHandledException(ex);
             }
 
-            Schedule = new(Lathes, ScheduleItems, Holidays);
+            Schedule = new(Machines, ScheduleItems, Holidays);
         }
 
         private static List<ScheduleItem> GetScheduleItems()
         {
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>(throwErrs: true).Where(x => x.State != OrderState.Cancelled).ToList();
             List<LatheManufactureOrderItem> orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>(throwErrs: true);
+            List<GeneralManufactureOrder> generalOrders = DatabaseHelper.Read<GeneralManufactureOrder>(throwErrs: true);
             List<MachineBreakdown> orderBreakdowns = DatabaseHelper.Read<MachineBreakdown>(throwErrs: true);
             List<BreakdownCode> codes = DatabaseHelper.Read<BreakdownCode>(throwErrs: true);
             List<MachineService> machineServices = DatabaseHelper.Read<MachineService>(throwErrs: true);
@@ -265,6 +270,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
             );
             machineServices.ForEach(x => allItems.Add(x));
+            allItems.AddRange(generalOrders);
 
             return allItems;
         }
@@ -326,6 +332,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             this.minDate = DateTime.Today.AddDays(-3);
             this.maxDate = ScheduleItems.Max(x => x.EndsAt()).Date.AddDays(3);
+            this.maxDate = this.maxDate > DateTime.Today.AddDays(42) ? DateTime.Today.AddDays(42) : this.maxDate;
 
             this.searchString = string.Empty;
             OnPropertyChanged(nameof(SearchString));

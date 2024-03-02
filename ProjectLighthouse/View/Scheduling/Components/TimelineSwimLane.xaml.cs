@@ -263,7 +263,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             
             MainTimeline.AddDragHighlights();
 
-            if (!this.Schedule.Lathe.CanRun(orderControl.Item))
+            if (!this.Schedule.Machine.CanRun(orderControl.Item))
             {
                 return;
             }
@@ -306,7 +306,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             this.dropPreview.Visibility = Visibility.Collapsed;
             MainTimeline.RemoveDragHighlights();
 
-            if (!this.Schedule.Lathe.CanRun(orderControl.Item))
+            if (!this.Schedule.Machine.CanRun(orderControl.Item))
             {
                 return;
             }
@@ -327,10 +327,10 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
             if (targetDate.Date < DateTime.Today) return;
 
-            if (targetDate != orderControl.Item.StartDate || Schedule.Lathe.Id != orderControl.Item.AllocatedMachine)
+            if (targetDate != orderControl.Item.StartDate || Schedule.Machine.Id != orderControl.Item.AllocatedMachine)
             {
                 ScheduleItem item = orderControl.Item;
-                RescheduleInformation rescheduleParams = new(item, this.Schedule.Lathe.Id, targetDate);
+                RescheduleInformation rescheduleParams = new(item, this.Schedule.Machine.Id, targetDate);
 
                 RescheduleCommand?.Execute(rescheduleParams);
             }

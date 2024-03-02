@@ -76,20 +76,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
                         Order = csv.GetField("Order"),
                         AddedBy = csv.GetField("AddedBy"),
                         Quantity = csv.GetField<int>("Quantity"),
-                        ExcelDate = csv.GetField("ExcelDate"),
                         IsReject = csv.GetField<bool>("IsReject"),
                         IsDelivered = csv.GetField<bool>("IsDelivered"),
                         MaterialBatch = csv.GetField("MaterialBatch"),
                     };
 
-                    if (DateTime.TryParse(record.ExcelDate, out DateTime _date))
-                    {
-                        record.Date = _date;
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"Could not parse datetime: {record.ExcelDate}");
-                    }
+   
 
                     Lots.Add(record);
                 }

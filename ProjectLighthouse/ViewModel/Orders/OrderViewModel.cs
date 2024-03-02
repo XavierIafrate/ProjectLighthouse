@@ -1,4 +1,5 @@
-﻿using LiveChartsCore;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -265,7 +266,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public Brush BarAllocatedIconBrush { get; set; }
         #endregion
 
-        private WorkloadWindow _workloadWindow;
+        //private WorkloadWindow _workloadWindow;
 
         #endregion Variables
 
@@ -365,14 +366,14 @@ namespace ProjectLighthouse.ViewModel.Orders
             OnPropertyChanged(nameof(Series));
         }
 
-        public void ShowWorkload()
-        {
-            _workloadWindow = new() { Owner = App.MainViewModel.MainWindow };
+        //public void ShowWorkload()
+        //{
+        //    _workloadWindow = new() { Owner = App.MainViewModel.MainWindow };
 
-            _workloadWindow.SetWorkload(Orders);
+        //    _workloadWindow.SetWorkload(Orders);
 
-            _workloadWindow.Show();
-        }
+        //    _workloadWindow.Show();
+        //}
 
         private void LoadBriefing()
         {
@@ -656,7 +657,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         static bool OrderCanBeClosed(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<Lot> lots)
         {
-            if (order.ModifiedAt.AddDays(1) > DateTime.Now)
+            if ((order.ModifiedAt ?? DateTime.MinValue).AddDays(1) > DateTime.Now)
             {
                 return false;
             }
@@ -714,7 +715,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 case "All Active":
                     FilteredOrders = Orders.Where(n => n.State < OrderState.Complete
-                            || n.ModifiedAt.AddDays(1) > DateTime.Now
+                            //|| n.ModifiedAt.AddDays(1) > DateTime.Now // TODO fix
                             || !n.IsClosed)
                         .OrderBy(x => x.State != OrderState.Running)
                         .ThenBy(x => x.State == OrderState.Running ? x.AllocatedMachine : "")
@@ -1064,7 +1065,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             bool editable = true;
 
             // TODO optimise for R&D
-            if (SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)
+            if ((SelectedOrder.ModifiedAt ?? DateTime.MinValue).AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)
             {
                 editable = false;
             }
@@ -1102,8 +1103,8 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void Dispose()
         {
-            _workloadWindow?.Close();
-            _workloadWindow = null;
+            //_workloadWindow?.Close();
+            //_workloadWindow = null;
         }
     }
 }

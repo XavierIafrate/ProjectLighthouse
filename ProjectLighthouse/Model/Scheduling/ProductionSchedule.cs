@@ -12,13 +12,13 @@ namespace ProjectLighthouse.Model.Scheduling
 {
     public partial class ProductionSchedule : BaseObject
     {
-        private List<Lathe> lathes;
-        public List<Lathe> Lathes
+        private List<Machine> machines;
+        public List<Machine> Machines
         {
-            get { return lathes; }
+            get { return machines; }
             set
             {
-                lathes = value;
+                machines = value;
                 OnPropertyChanged();
             }
         }
@@ -88,11 +88,11 @@ namespace ProjectLighthouse.Model.Scheduling
         }
 
 
-        public ProductionSchedule(List<Lathe> lathes, List<ScheduleItem> scheduleItems, List<DateTime> holidays)
+        public ProductionSchedule(List<Machine> machines, List<ScheduleItem> scheduleItems, List<DateTime> holidays)
         {
             this.Holidays = holidays;
 
-            this.Lathes = lathes.OrderBy(x => x.Id).ToList();
+            this.Machines = machines.OrderBy(x => x.Id).ToList();
             List<ScheduleItem> itemsNotCancelled = new();
             foreach (ScheduleItem item in scheduleItems)
             {
@@ -112,9 +112,9 @@ namespace ProjectLighthouse.Model.Scheduling
         private void BuildSchedule()
         {
             List<MachineSchedule> mcSchedules = new();
-            for (int i = 0; i < this.Lathes.Count; i++)
+            for (int i = 0; i < this.Machines.Count; i++)
             {
-                MachineSchedule newSchedule = new(this.Lathes[i])
+                MachineSchedule newSchedule = new(this.Machines[i])
                 {
                     Holidays = this.Holidays
                 };
@@ -122,7 +122,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 newSchedule.SetScheduleItems(this.scheduleItems);
 
                 // Hide decomissioned lathes
-                if (newSchedule.Lathe.OutOfService && newSchedule.ScheduleItems.Last().EndsAt() < DateTime.Today) continue;
+                if (newSchedule.Machine.OutOfService && newSchedule.ScheduleItems.Last().EndsAt() < DateTime.Today) continue;
 
                 mcSchedules.Add(newSchedule);
             }
@@ -179,8 +179,8 @@ namespace ProjectLighthouse.Model.Scheduling
 
         public void RescheduleItem(RescheduleInformation changeData)
         {
-            MachineSchedule? sourceSchedule = MachineSchedules.Find(x => x.Lathe.Id == changeData.originMachineId);
-            MachineSchedule? destinationSchedule = MachineSchedules.Find(x => x.Lathe.Id == changeData.desiredMachineId);
+            MachineSchedule? sourceSchedule = MachineSchedules.Find(x => x.Machine.Id == changeData.originMachineId);
+            MachineSchedule? destinationSchedule = MachineSchedules.Find(x => x.Machine.Id == changeData.desiredMachineId);
 
             if (!string.IsNullOrEmpty(changeData.desiredMachineId) && destinationSchedule == null)
             {
@@ -195,7 +195,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
                 if (foundItem == null)
                 {
-                    throw new ArgumentException($"Could not find {changeData.item.Name} on schedule for {sourceSchedule.Lathe.Id}.");
+                    throw new ArgumentException($"Could not find {changeData.item.Name} on schedule for {sourceSchedule.Machine.Id}.");
                 }
             }
             else

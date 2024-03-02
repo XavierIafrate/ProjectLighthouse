@@ -60,8 +60,8 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (targetView == "Orders")
             {
-                viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new OrderViewModel();
+                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.SelectedViewModel = new NewOrderViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
                     "Polish" => "Zamówienia Produkcje",

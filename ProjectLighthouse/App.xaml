@@ -75,6 +75,10 @@
                 <ordersView:OrderView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type ordersVm:NewOrderViewModel}">
+                <ordersView:OrderView />
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type ordersVm:NewScheduleViewModel}">
                 <scheduleView:ScheduleView />
             </DataTemplate>

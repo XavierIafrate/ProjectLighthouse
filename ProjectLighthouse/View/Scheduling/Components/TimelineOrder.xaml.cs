@@ -208,11 +208,22 @@ namespace ProjectLighthouse.View.Scheduling.Components
                     {
                         this.BackgroundBrush = (Brush)Application.Current.Resources["PurpleFaded"];
                         this.ForegroundBrush = (Brush)Application.Current.Resources["Purple"];
+
+                        CheckedBackgroundBrush = (Brush)Application.Current.Resources["Purple"];
+                        CheckedForegroundBrush = (Brush)Application.Current.Resources["OnPurple"];
                     }
                     this.setting_border.Visibility = Visibility.Collapsed;
                     absoluteSetting = 0;
                     relativeBreakdown = 0;
                 }
+            }
+            else if (this.Item is GeneralManufactureOrder)
+            {
+                this.BackgroundBrush = (Brush)Application.Current.Resources["PurpleFaded"];
+                this.ForegroundBrush = (Brush)Application.Current.Resources["Purple"];
+
+                CheckedBackgroundBrush = (Brush)Application.Current.Resources["Purple"];
+                CheckedForegroundBrush = (Brush)Application.Current.Resources["OnPurple"];
             }
 
             this.ItemButton.Background = this.BackgroundBrush;

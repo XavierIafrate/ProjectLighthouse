@@ -13,9 +13,9 @@
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <StackPanel Margin="20,10">
-        <StackPanel.Resources>
+        <!--<StackPanel.Resources>
             <local:BindingProxy x:Key="proxy" Data="{Binding}" />
-        </StackPanel.Resources>
+        </StackPanel.Resources>-->
 
 
         <TextBlock
@@ -59,11 +59,11 @@
                     IsReadOnly="True"
                     Binding="{Binding Attribute.Name}"
                     Header="Object Property" />
-                <DataGridComboBoxColumn
+                <!--<DataGridComboBoxColumn
                     Width="*"
                     Header="CSV Header"
                     ItemsSource="{Binding Data.AvailableHeaders, Source={StaticResource proxy}}" 
-                    SelectedValueBinding="{Binding From}"/>
+                    SelectedValueBinding="{Binding From}"/>-->
             </DataGrid.Columns>
         </DataGrid>
 

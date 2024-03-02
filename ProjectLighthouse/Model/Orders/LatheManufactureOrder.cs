@@ -16,15 +16,7 @@ namespace ProjectLighthouse.Model.Orders
 {
     public partial class LatheManufactureOrder : ScheduleItem, ICloneable
     {
-        [UpdateWatch]
-        public string POReference { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime ModifiedAt { get; set; }
-        public string ModifiedBy { get; set; }
-
-        public string Status { get; set; } // Legacy
-        public OrderState State
+        public override OrderState State
         {
             get
             {
@@ -68,8 +60,7 @@ namespace ProjectLighthouse.Model.Orders
             }
         }
 
-        [UpdateWatch]
-        public string? AssignedTo { get; set; }
+
 
 
         #region Identification Phase
@@ -132,14 +123,7 @@ namespace ProjectLighthouse.Model.Orders
 
         #endregion
 
-        #region Completed Order
-        [UpdateWatch]
-        public bool IsComplete { get; set; }
-        [UpdateWatch]
-        public bool IsCancelled { get; set; }
-        [UpdateWatch]
-        public bool IsClosed { get; set; }
-        #endregion
+ 
 
         public DateTime CompletedAt { get; set; }
 
@@ -286,9 +270,17 @@ namespace ProjectLighthouse.Model.Orders
         [CsvHelper.Configuration.Attributes.Ignore]
         public BarStock Bar { get; set; }
 
+
+        private List<LatheManufactureOrderItem> orderItems;
+
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public List<LatheManufactureOrderItem> OrderItems { get; set; } = new();
+        public List<LatheManufactureOrderItem> OrderItems
+        {
+            get { return orderItems; }
+            set { orderItems = value; OnPropertyChanged(); }
+        }
+
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
@@ -322,7 +314,7 @@ namespace ProjectLighthouse.Model.Orders
         public DateTime Deadline;
         public bool SameBar;
 
-        public object Clone()
+        public override object Clone()
         {
             string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<LatheManufactureOrder>(serialised);
@@ -437,7 +429,7 @@ namespace ProjectLighthouse.Model.Orders
             DatabaseHelper.ExecuteCommand($"UPDATE {nameof(LatheManufactureOrder)} SET IsClosed = {false} WHERE Id={Id}");
         }
 
-        public new DateTime EndsAt()
+        public override DateTime EndsAt()
         {
             if (ScheduledEnd is not null)
             {

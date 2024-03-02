@@ -30,25 +30,25 @@ namespace ProjectLighthouse.View.UserControls
             control.PoTextBlock.Text = control.LatheManufactureOrder.POReference;
             control.AssignmentTextBlock.Text = control.LatheManufactureOrder.AssignedTo;
 
-            control.RecentUpdateFlag.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddHours(5) > DateTime.Now)
-                && control.LatheManufactureOrder.State < OrderState.Running
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            //control.RecentUpdateFlag.Visibility = (control.LatheManufactureOrder.ModifiedAt.AddHours(5) > DateTime.Now)
+            //    && control.LatheManufactureOrder.State < OrderState.Running
+            //    ? Visibility.Visible
+            //    : Visibility.Collapsed;
 
-            bool needsUpdate = control.LatheManufactureOrder.ModifiedAt.AddDays(5) < DateTime.Now
-                   && control.LatheManufactureOrder.State == OrderState.Problem
-                   && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now;
+            //bool needsUpdate = control.LatheManufactureOrder.ModifiedAt.AddDays(5) < DateTime.Now
+            //       && control.LatheManufactureOrder.State == OrderState.Problem
+            //       && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now;
 
-            control.StaleBadge.Visibility =
-                       control.LatheManufactureOrder.ModifiedAt.AddDays(5) < DateTime.Now
-                    && control.LatheManufactureOrder.State == OrderState.Problem
-                    && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now
-                    && control.LatheManufactureOrder.State == OrderState.Problem
-                            ? Visibility.Visible
-                            : Visibility.Collapsed;
+            //control.StaleBadge.Visibility =
+            //           control.LatheManufactureOrder.ModifiedAt.AddDays(5) < DateTime.Now
+            //        && control.LatheManufactureOrder.State == OrderState.Problem
+            //        && control.LatheManufactureOrder.CreatedAt.AddDays(5) < DateTime.Now
+            //        && control.LatheManufactureOrder.State == OrderState.Problem
+            //                ? Visibility.Visible
+            //                : Visibility.Collapsed;
 
             control.StatusBadgeText.Text = control.LatheManufactureOrder.State.ToString();
-            control.StatusBadge.Visibility = control.LatheManufactureOrder.IsClosed || needsUpdate ? Visibility.Collapsed : Visibility.Visible;
+            //control.StatusBadge.Visibility = control.LatheManufactureOrder.IsClosed || needsUpdate ? Visibility.Collapsed : Visibility.Visible;
             OrderStateToBrush converter = new();
             control.StatusBadge.Background = converter.Convert(control.LatheManufactureOrder.State, null, "faded", null) as Brush;
             control.StatusBadgeText.Foreground = converter.Convert(control.LatheManufactureOrder.State, null, null, null) as Brush;

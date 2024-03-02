@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.ViewModel.Helpers;
+﻿using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Runtime.CompilerServices;
@@ -122,6 +124,11 @@ namespace ProjectLighthouse.Model.Administration
 
 
             throw new Exception($"Validation for {propertyName} has not been configured.");
+        }
+
+        public virtual bool CanRun(ScheduleItem item)
+        {
+            return item is not LatheManufactureOrder;
         }
     }
 }

@@ -301,7 +301,7 @@ namespace ProjectLighthouse.Model.Administration
             return changes.Count > 0;
         }
 
-        internal bool CanRun(ScheduleItem item)
+        public override bool CanRun(ScheduleItem item)
         {
             if (item is MachineService)
             {

@@ -24,6 +24,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             }
 
             seconds = Math.Abs(seconds);
+            TimeSpan timespan = TimeSpan.FromSeconds(seconds);
             string message;
 
             if (seconds < 120)
@@ -32,15 +33,19 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             }
             else if (seconds < 3600)
             {
-                message = $"{Math.Floor(seconds / 60):0}m {seconds % 60:0}s";
+                message = $"{timespan.Minutes:0}m {timespan.Seconds:0}s";
             }
             else if (seconds < 86400)
             {
-                message = $"{Math.Floor(seconds / 3600):0}h {(seconds % 3600) / 60:0}m";
+                message = $"{timespan.Hours:0}h {timespan.Minutes:0}m";
+            }
+            else if (seconds < 86400 * 14)
+            {
+                message = $"{timespan.Days:0}d {timespan.Hours:0.0}h";
             }
             else
             {
-                message = $"{Math.Floor(seconds / 86400):0}d {(seconds % 86400) / 3600:0.0}h";
+                message = $"{Math.Floor((double)timespan.Days / 7):0}w {timespan.Days%7:0}d";
             }
 
             return message;

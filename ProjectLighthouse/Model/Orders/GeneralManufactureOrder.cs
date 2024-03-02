@@ -13,19 +13,6 @@ namespace ProjectLighthouse.Model.Orders
 {
     public class GeneralManufactureOrder : ScheduleItem
     {
-        public DateTime CreatedAt { get; set; }
-        public string CreatedBy { get; set; }
-
-        public DateTime? ModifiedAt { get; set; }
-        public string? ModifiedBy { get; set; }
-
-        [UpdateWatch]
-        public string POReference { get; set; }
-
-
-        [UpdateWatch]
-        public OrderState State { get; set; } = OrderState.Problem;
-
         public int NonTurnedItemId { get; set; }
 
         [UpdateWatch]
@@ -36,6 +23,7 @@ namespace ProjectLighthouse.Model.Orders
         public int DeliveredQuantity { get; set; }
         [UpdateWatch]
         public DateTime? RequiredDate { get; set; }
+
 
         [Ignore]
         public NonTurnedItem Item { get; set; }
@@ -72,6 +60,12 @@ namespace ProjectLighthouse.Model.Orders
             }
 
             return false;
+        }
+
+        public override object Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<LatheManufactureOrder>(serialised);
         }
     }
 }
