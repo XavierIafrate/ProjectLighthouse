@@ -26,6 +26,10 @@ namespace ProjectLighthouse.Model.Administration
         public bool ReceivesNotifications { get; set; }
         public string Locale { get; set; }
         public double? DefaultMenuWidth { get; set; }
+        public string? Emoji { get; set; }
+
+
+        private string[] emojis = new string[] { "👾", "👹", "💩", "🤖", "👽", "😎", "🥳", "😇", "🦕", "🦎", "🐶", "🐭", "🐷", "🐸", "🐢", "🦞", "🦥", "🦔", "🌝", "🌞", "🤹" };
 
         [Ignore]
         public List<Permission> UserPermissions { get; set; } = new();
