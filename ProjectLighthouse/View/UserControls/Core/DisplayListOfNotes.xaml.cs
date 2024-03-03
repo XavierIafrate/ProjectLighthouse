@@ -1,15 +1,19 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using RestSharp.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    public partial class DisplayListOfNotes : UserControl
+    public partial class DisplayListOfNotes : UserControl, INotifyPropertyChanged
     {
         public bool ShowingEditControls
         {
@@ -29,8 +33,13 @@ namespace ProjectLighthouse.View.UserControls
         public static readonly DependencyProperty NotesProperty =
             DependencyProperty.Register("Notes", typeof(List<Note>), typeof(DisplayListOfNotes), new PropertyMetadata(null, SetValues));
 
+        private List<object> displayData;
+        public List<object> DisplayData
+        {
+            get { return displayData; }
+            set { displayData = value; OnPropertyChanged(); }
+        }
 
-        public List<Note> displayNotes { get; set; }
 
 
         public ICommand DeleteCommand
@@ -51,20 +60,29 @@ namespace ProjectLighthouse.View.UserControls
         public static readonly DependencyProperty SaveEditCommandProperty =
             DependencyProperty.Register("SaveEditCommand", typeof(ICommand), typeof(DisplayListOfNotes), new PropertyMetadata(null));
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not DisplayListOfNotes control) return;
-
-            control.displayNotes = FormatListOfNotes(control.Notes, control.ShowingEditControls);
-            control.NotesList.ItemsSource = control.displayNotes;
-
-            control.noneText.Visibility = control.NotesList.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            control.Compute();
         }
 
-        public static List<Note> FormatListOfNotes(List<Note> notes, bool edit = false)
+        private void Compute()
+        {
+            DisplayData = FormatListOfNotes(Notes, false);
+        }
+
+        public static List<object> FormatListOfNotes(List<Note> notes, bool edit = false)
         {
             if (notes == null) return null;
-            if (notes.Count == 0) return notes;
+            if (notes.Count == 0) return new();
+
+            List<object> results = new();
 
             string name = "";
             DateTime lastTimeStamp = DateTime.MinValue;
@@ -72,23 +90,46 @@ namespace ProjectLighthouse.View.UserControls
 
             for (int i = 0; i < notes.Count; i++)
             {
-                notes[i].ShowEdit = notes[i].SentBy == App.CurrentUser.UserName;
-                notes[i].ShowHeader = notes[i].SentBy != name
-                    || DateTime.Parse(notes[i].DateSent) > lastTimeStamp.AddHours(6);
+                bool dateHeaderAdded = false;
+                Note note = notes[i];
+                DateTime noteSent = DateTime.Parse(note.DateSent);
+                if (noteSent.Date != lastTimeStamp.Date)
+                {
+                    results.Add(noteSent);
+                    dateHeaderAdded = true;
+                }
 
-                notes[i].ShowDateHeader = DateTime.Parse(notes[i].DateSent).Date != lastTimeStamp.Date;
+                if (i == 0)
+                {
+                    note.ShowHeader = true;
+                }
+                else
+                {
+                    if (notes[i - 1].SentBy != note.SentBy || dateHeaderAdded)
+                    {
+                        note.ShowHeader = true;
+                    }
+                }
 
+                
                 if (i < notes.Count - 1)
                 {
-                    notes[i].SpaceUnder = notes[i].SentBy != notes[i + 1].SentBy || DateTime.Parse(notes[i].DateSent).AddHours(6) < DateTime.Parse(notes[i + 1].DateSent);
+                    Note nextNote = notes[i + 1];
+                    notes[i].SpaceUnder = note.SentBy != nextNote.SentBy || DateTime.Parse(note.DateSent).AddHours(6) < DateTime.Parse(nextNote.DateSent);
                 }
-                lastTimeStamp = DateTime.Parse(notes[i].DateSent);
-                name = notes[i].SentBy;
-                notes[i].UserDetails = users.Find(x => x.UserName == notes[i].SentBy);
-                notes[i].ShowEdit = edit;
+
+                lastTimeStamp = DateTime.Parse(note.DateSent);
+                name = note.SentBy;
+                note.UserDetails = users.Find(x => x.UserName == name);
+
+                if (i == notes.Count - 1)
+                {
+                    note.SpaceUnder = true;
+                }
+                results.Add(note);
             }
 
-            return notes;
+            return results;
         }
 
         public DisplayListOfNotes()

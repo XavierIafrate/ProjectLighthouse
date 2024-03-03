@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    public partial class DisplayNote : UserControl
+    public partial class DisplayMyNote : UserControl
     {
         public Note Note
         {
@@ -17,7 +17,7 @@ namespace ProjectLighthouse.View.UserControls
         }
 
         public static readonly DependencyProperty NoteProperty =
-            DependencyProperty.Register("Note", typeof(Note), typeof(DisplayNote), new PropertyMetadata(null, SetValues));
+            DependencyProperty.Register("Note", typeof(Note), typeof(DisplayMyNote), new PropertyMetadata(null, SetValues));
 
 
         public ICommand DeleteCommand
@@ -27,11 +27,11 @@ namespace ProjectLighthouse.View.UserControls
         }
 
         public static readonly DependencyProperty DeleteCommandProperty =
-            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(DisplayNote), new PropertyMetadata(null, SetDelete));
+            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(DisplayMyNote), new PropertyMetadata(null, SetDelete));
 
         private static void SetDelete(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not DisplayNote control) return;
+            if (d is not DisplayMyNote control) return;
             control.DeleteButton.IsEnabled = control.DeleteCommand is not null;
         }
 
@@ -43,47 +43,29 @@ namespace ProjectLighthouse.View.UserControls
         }
 
         public static readonly DependencyProperty SaveEditCommandProperty =
-            DependencyProperty.Register("SaveEditCommand", typeof(ICommand), typeof(DisplayNote), new PropertyMetadata(null, SetSave));
+            DependencyProperty.Register("SaveEditCommand", typeof(ICommand), typeof(DisplayMyNote), new PropertyMetadata(null, SetSave));
 
         private static void SetSave(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not DisplayNote control) return;
+            if (d is not DisplayMyNote control) return;
             control.SaveButton.IsEnabled = control.SaveEditCommand is not null;
         }
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not DisplayNote control) return;
+            if (d is not DisplayMyNote control) return;
             if (control.Note == null) return;
-
-            control.DataContext = control.Note;
 
 
             DateTime SentAt = DateTime.Parse(control.Note.DateSent);
-            control.SentDateTextBlock.Text = GetDateString(SentAt);
             control.SentAtTextBlock.Text = SentAt.ToString("HH:mm");
 
-            control.EditedTextBoxOne.Visibility = control.Note.IsEdited && !control.Note.IsDeleted
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
-            control.EditedTextBoxTwo.Visibility = control.Note.IsEdited && !control.Note.IsDeleted
-               ? Visibility.Visible
-               : Visibility.Collapsed;
-
-            control.JustifyMessage(right: control.Note.SentBy == App.CurrentUser.UserName, !control.Note.ShowHeader, control.Note.IsDeleted);
 
             control.DevBadge.Visibility = control.Note.SentBy == "xav"
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            control.MetadataStackPanel.Visibility = control.Note.ShowHeader
-                ? Visibility.Visible
-                : Visibility.Collapsed;
 
-            control.SentDateTextBlock.Visibility = control.Note.ShowDateHeader
-                ? Visibility.Visible
-                : Visibility.Collapsed;
 
             control.ControlGrid.Margin = control.Note.ShowHeader
                 ? new Thickness(5, 5, 5, 5)
@@ -96,79 +78,54 @@ namespace ProjectLighthouse.View.UserControls
             control.SetOriginalMessageVis();
         }
 
-        private void JustifyMessage(bool right = false, bool stacked = false, bool deleted = false)
-        {
-            ControlGrid.ColumnDefinitions[0].Width = right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
-            ControlGrid.ColumnDefinitions[2].Width = !right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
-            MetadataStackPanel.HorizontalAlignment = right ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+        //private void JustifyMessage(bool right = false, bool stacked = false, bool deleted = false)
+        //{
+        //    ControlGrid.ColumnDefinitions[0].Width = right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
+        //    ControlGrid.ColumnDefinitions[2].Width = !right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
+        //    MetadataStackPanel.HorizontalAlignment = right ? HorizontalAlignment.Right : HorizontalAlignment.Left;
 
-            int topLeft;
-            int topRight;
-            int bottomLeft;
-            int bottomRight;
+        //    int topLeft;
+        //    int topRight;
+        //    int bottomLeft;
+        //    int bottomRight;
 
-            if (right)
-            {
-                topLeft = 5;
-                bottomLeft = 5;
-                bottomRight = 0;
-                topRight = stacked ? 0 : 5;
-            }
-            else
-            {
-                topLeft = stacked ? 0 : 5;
-                bottomLeft = 0;
-                bottomRight = 5;
-                topRight = 5;
-            }
+        //    if (right)
+        //    {
+        //        topLeft = 5;
+        //        bottomLeft = 5;
+        //        bottomRight = 0;
+        //        topRight = stacked ? 0 : 5;
+        //    }
+        //    else
+        //    {
+        //        topLeft = stacked ? 0 : 5;
+        //        bottomLeft = 0;
+        //        bottomRight = 5;
+        //        topRight = 5;
+        //    }
 
-            bg.CornerRadius = new(topLeft, topRight, bottomRight, bottomLeft);
+        //    bg.CornerRadius = new(topLeft, topRight, bottomRight, bottomLeft);
 
-            Brush brush = (Brush)Application.Current.Resources[right ? "Blue" : "Green"];
-            Brush bgBrush = (Brush)Application.Current.Resources[right ? "BlueFaded" : "GreenFaded"];
+        //    Brush brush = (Brush)Application.Current.Resources[right ? "Blue" : "Green"];
+        //    Brush bgBrush = (Brush)Application.Current.Resources[right ? "BlueFaded" : "GreenFaded"];
 
-            if (deleted)
-            {
-                brush = (Brush)Application.Current.Resources["Red"];
-                bgBrush = (Brush)Application.Current.Resources["RedFaded"];
-            }
+        //    if (deleted)
+        //    {
+        //        brush = (Brush)Application.Current.Resources["Red"];
+        //        bgBrush = (Brush)Application.Current.Resources["RedFaded"];
+        //    }
 
-            bg.Background = bgBrush;
-            bg.BorderBrush = brush;
-            SentByTextBlock.Foreground = brush;
-            SentAtTextBlock.Foreground = brush;
-        }
+        //    bg.Background = bgBrush;
+        //    bg.BorderBrush = brush;
+        //    SentByTextBlock.Foreground = brush;
+        //    SentAtTextBlock.Foreground = brush;
+        //}
 
-        public DisplayNote()
+        public DisplayMyNote()
         {
             InitializeComponent();
         }
 
-        private static string GetDateString(DateTime date)
-        {
-            if (date.Date == DateTime.Today)
-            {
-                return "Today";
-            }
-            else if (date.Date == DateTime.Today.AddDays(-1))
-            {
-                return "Yesterday";
-            }
-
-            string suffix = GetDaySuffix(date.Day);
-            return $"{date:dddd}, {date.Day}{suffix} {date:MMMM yyyy}";
-        }
-
-        private static string GetDaySuffix(int day)
-        {
-            return day switch
-            {
-                1 or 21 or 31 => "st",
-                2 or 22 => "nd",
-                3 or 23 => "rd",
-                _ => "th",
-            };
-        }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
@@ -240,7 +197,7 @@ namespace ProjectLighthouse.View.UserControls
         private void UserControl_MouseEnter(object sender, MouseEventArgs e)
         {
             if (Note is null) return;
-            if (Note.SentBy == App.CurrentUser.UserName && Note.ShowEdit && SaveEditCommand is not null && !Note.IsDeleted)
+            if (Note.SentBy == App.CurrentUser.UserName && SaveEditCommand is not null && !Note.IsDeleted)
             {
                 EditControls.Visibility = Visibility.Visible;
             }

@@ -12,8 +12,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="280" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" MinWidth="250" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
 
         <!--#region SideBar-->
@@ -111,20 +111,27 @@
             </Grid>
         </Grid>
         <!--#endregion-->
-        <notFound:Zoolander Grid.Column="1" Visibility="{Binding SelectedItem, Converter={StaticResource NullToVisibility}}" />
+
+        <notFound:Zoolander
+            Grid.Column="1"
+            SearchString="{Binding SearchString}"
+            Visibility="{Binding SelectedItem, Converter={StaticResource NullToVisibility}}" />
         <orderComponents:ScheduleItemInspector
             Grid.Column="1"
+            EditMode="{Binding EditMode}"
             Item="{Binding SelectedItem}"
+            OrderAssignmentCounts="{Binding AssignmentCounts}"
+            RelayCommand="{Binding RelayCmd}"
             Visibility="{Binding SelectedItem, Converter={StaticResource NotNullToVisibility}}" />
-        <!--<ContentControl Content="{Binding SelectedItem}" MinHeight="50" Grid.Column="1" Margin="20,0,0,0">
-            <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type orderModel:LatheManufactureOrder}">
-                    <orderComponents:LatheOrderInspector Order="{Binding}"/>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type orderModel:GeneralManufactureOrder}">
-                    <orderComponents:GeneralOrderInspector Order="{Binding}"/>
-                </DataTemplate>
-            </ContentControl.Resources>
-        </ContentControl>-->
+
+
+        <!--    -->
+
+        <!--<CheckBox
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Edit Mode"
+            IsChecked="{Binding EditMode}" />-->
     </Grid>
 </UserControl>

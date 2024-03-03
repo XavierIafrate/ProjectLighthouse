@@ -1,16 +1,7 @@
 ﻿using ProjectLighthouse.Model.Orders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.Orders.Components
 {
@@ -29,58 +20,49 @@ namespace ProjectLighthouse.View.Orders.Components
         {
             if (d is not DisplayOrderStateProgress control) return;
             OrderState state = control.OrderState;
+            Brush surfaceBrush = (Brush)Application.Current.Resources["Surface"];
+            Brush redBrush = (Brush)Application.Current.Resources["RedFaded"];
+            Brush greenBrush = (Brush)Application.Current.Resources["GreenFaded"];
+            Brush tealBrush = (Brush)Application.Current.Resources["TealFaded"];
+            Brush blueBrush = (Brush)Application.Current.Resources["BlueFaded"];
+            Brush blackBrush = (Brush)Application.Current.Resources["BlackFaded"];
 
-            Grid.SetColumnSpan(control.track, 2);
-            control.track.Background = (Brush)Application.Current.Resources["Red"];
-            control.ProblemMark.Background = (Brush)Application.Current.Resources["Red"];
+            control.ProblemCheck.Visibility = Visibility.Hidden;
+            control.ReadyCheck.Visibility = Visibility.Hidden;
+            control.PreparedCheck.Visibility = Visibility.Hidden;
+            control.RunningCheck.Visibility = Visibility.Hidden;
+            control.CompleteCheck.Visibility = Visibility.Hidden;
 
-            control.ReadyCheckMark.Visibility = Visibility.Hidden;
-            control.PreparedCheckMark.Visibility = Visibility.Hidden;
-            control.RunningCheckMark.Visibility = Visibility.Hidden;
-            control.CompleteCheckMark.Visibility = Visibility.Hidden;
+            control.readyBorder.Background = surfaceBrush;
+            control.preparedBorder.Background = surfaceBrush;
+            control.runningBorder.Background = surfaceBrush;
+            control.completeBorder.Background = surfaceBrush;
 
-            if (state == OrderState.Ready)
+
+
+            if (state > OrderState.Problem)
             {
-                Grid.SetColumnSpan(control.track, 4);
-                control.track.Background = (Brush)Application.Current.Resources["Green"];
-                control.ProblemMark.Background = (Brush)Application.Current.Resources["Green"];
-
-                control.ReadyCheckMark.Visibility = Visibility.Visible;
-            }
-            
-            if (state == OrderState.Prepared)
-            {
-                Grid.SetColumnSpan(control.track, 6);
-                control.track.Background = (Brush)Application.Current.Resources["Teal"];
-                control.ProblemMark.Background = (Brush)Application.Current.Resources["Teal"];
-
-                control.ReadyCheckMark.Visibility = Visibility.Visible;
-                control.PreparedCheckMark.Visibility = Visibility.Visible;
+                control.ProblemCheck.Visibility = Visibility.Visible;
+                control.readyBorder.Background = greenBrush;
             }
 
-            if(state == OrderState.Running)
+            if (state > OrderState.Ready)
             {
-                Grid.SetColumnSpan(control.track, 8);
-                control.track.Background = (Brush)Application.Current.Resources["Blue"];
-                control.ProblemMark.Background = (Brush)Application.Current.Resources["Blue"];
-
-                control.ReadyCheckMark.Visibility = Visibility.Visible;
-                control.PreparedCheckMark.Visibility = Visibility.Visible;
-                control.RunningCheckMark.Visibility = Visibility.Visible;
-            }
-            
-            if (state == OrderState.Running)
-            {
-                Grid.SetColumnSpan(control.track, 11);
-                control.track.Background = (Brush)Application.Current.Resources["OnBackground"];
-                control.ProblemMark.Background = (Brush)Application.Current.Resources["OnBackground"];
-
-                control.ReadyCheckMark.Visibility = Visibility.Visible;
-                control.PreparedCheckMark.Visibility = Visibility.Visible;
-                control.RunningCheckMark.Visibility = Visibility.Visible;
-                control.CompleteCheckMark.Visibility = Visibility.Visible;
+                control.ReadyCheck.Visibility = Visibility.Visible;
+                control.preparedBorder.Background = tealBrush;
             }
 
+            if (state > OrderState.Prepared)
+            {
+                control.PreparedCheck.Visibility = Visibility.Visible;
+                control.runningBorder.Background = blueBrush;
+            }
+
+            if (state > OrderState.Running)
+            {
+                control.RunningCheck.Visibility = Visibility.Visible;
+                control.completeBorder.Background = blackBrush;
+            }
 
         }
 

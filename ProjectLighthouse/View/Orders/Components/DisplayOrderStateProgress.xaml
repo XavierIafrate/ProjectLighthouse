@@ -6,117 +6,34 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.Orders.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="parentControl"
-    d:DesignWidth="800"
+    Width="40"
     mc:Ignorable="d">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-
-        <Border Margin="0,5" Grid.Row="1" Background="{StaticResource RedFaded}" CornerRadius="5" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
-            <TextBlock Text="Problem" Margin="5,3" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{StaticResource Red}"/>
+        <Border CornerRadius="5,0,0,5" Background="{StaticResource RedFaded}" Grid.Row="0" >
+            <Path Style="{StaticResource  Icon_Check}" Fill="{StaticResource Background}" Margin="10,5" x:Name="ProblemCheck" HorizontalAlignment="Left"/>
         </Border>
+        <Border CornerRadius="5,0,0,5" Background="{StaticResource Surface}" Grid.Row="1" x:Name="readyBorder">
 
-        <Border
-            Grid.Column="1"
-            Grid.ColumnSpan="9"
-            Height="10"
-            Margin="25,0"
-            Background="{StaticResource Surface}"
-            CornerRadius="0" />
-        <Border
-            Grid.Column="1"
-            Grid.ColumnSpan="1"
-            Width="30"
-            Height="30"
-            Background="{StaticResource RedFaded}"
-            CornerRadius="25">
-            <Border
-                x:Name="ProblemMark"
-                Width="15"
-                Height="15"
-                Background="{StaticResource Red}"
-                CornerRadius="7.5" />
+            <Path Style="{StaticResource  Icon_Check}" Fill="{StaticResource Background}" Margin="10,5" HorizontalAlignment="Left" x:Name="ReadyCheck"/>
         </Border>
-        <Border
-            x:Name="track"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Height="8"
-            Margin="15,0"
-            d:Background="{StaticResource Red}"
-            Background="{Binding OrderState, ElementName=parentControl}"
-            CornerRadius="4" />
-        <Border
-            Grid.Column="3"
-            Width="30"
-            Height="30"
-            Background="{StaticResource GreenFaded}"
-            CornerRadius="15">
-            <Path
-                x:Name="ReadyCheckMark"
-                Width="15"
-                Height="15"
-                Fill="{StaticResource Green}"
-                Style="{StaticResource Icon_Check}" />
-
+        <Border CornerRadius="5,0,0,5" Background="{StaticResource Surface}" Grid.Row="2" x:Name="preparedBorder">
+            <Path Style="{StaticResource  Icon_Check}" Fill="{StaticResource Background}" Margin="10,5" HorizontalAlignment="Left" x:Name="PreparedCheck"/>
+            
         </Border>
-        <Border
-            Grid.Column="5"
-            Width="30"
-            Height="30"
-            Background="{StaticResource TealFaded}"
-            CornerRadius="15">
-            <Path
-                x:Name="PreparedCheckMark"
-                Width="15"
-                Height="15"
-                Fill="{StaticResource Teal}"
-                Style="{StaticResource Icon_Check}" />
-
+        <Border CornerRadius="5,0,0,5" Background="{StaticResource Surface}" Grid.Row="3" x:Name="runningBorder">
+            <Path Style="{StaticResource  Icon_Check}" Fill="{StaticResource Background}" Margin="10,5" HorizontalAlignment="Left" x:Name="RunningCheck"/>
+            
         </Border>
-        <Border
-            Grid.Column="7"
-            Width="30"
-            Height="30"
-            Background="{StaticResource BlueFaded}"
-            CornerRadius="15">
-            <Path
-                x:Name="RunningCheckMark"
-                Width="15"
-                Height="15"
-                Fill="{StaticResource Blue}"
-                Style="{StaticResource Icon_Check}" />
-
-        </Border>
-        <Border
-            Grid.Column="9"
-            Width="30"
-            Height="30"
-            Background="{StaticResource OnBackgroundFaded}"
-            CornerRadius="15">
-            <Path
-                x:Name="CompleteCheckMark"
-                Width="15"
-                Height="15"
-                Fill="{StaticResource OnBackground}"
-                Style="{StaticResource Icon_Check}" />
-
+        <Border CornerRadius="5,0,0,5"  Background="{StaticResource Surface}" Grid.Row="4" x:Name="completeBorder">
+            <Path Style="{StaticResource  Icon_Check}" Fill="{StaticResource Background}" Margin="10,5" HorizontalAlignment="Left" x:Name="CompleteCheck"/>
+            
         </Border>
     </Grid>
 </UserControl>

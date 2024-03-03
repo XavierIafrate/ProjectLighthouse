@@ -34,7 +34,7 @@ namespace ProjectLighthouse.Model.Orders
                 {
                     result = OrderState.Running;
                 }
-                else if (BarIsAllocated && HasProgram && AllToolingReady)
+                else if (BarIsAllocated && HasProgram && AllToolingReady && BarIsVerified) // TODO check logic here
                 {
                     result = OrderState.Prepared;
                 }
@@ -61,20 +61,87 @@ namespace ProjectLighthouse.Model.Orders
         }
 
 
-
-
         #region Identification Phase
 
+        private bool toolingOrdered;
         [UpdateWatch]
-        public bool ToolingOrdered { get; set; }
+        public bool ToolingOrdered
+        {
+            get
+            {
+                return toolingOrdered;
+            }
+            set
+            {
+                toolingOrdered = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        private bool barToolingOrdered;
         [UpdateWatch]
-        public bool BarToolingOrdered { get; set; }
+        public bool BarToolingOrdered
+        {
+            get
+            {
+                return barToolingOrdered;
+            }
+            set
+            {
+                barToolingOrdered = value; 
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        private bool gaugingOrdered;
         [UpdateWatch]
-        public bool GaugingOrdered { get; set; }
+        public bool GaugingOrdered
+        {
+            get
+            {
+                return gaugingOrdered;
+            }
+            set
+            {
+                gaugingOrdered = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        private bool baseProgramExists;
         [UpdateWatch]
-        public bool BaseProgramExists { get; set; }
+        public bool BaseProgramExists
+        {
+            get
+            {
+                return baseProgramExists;
+            }
+            set
+            {
+                baseProgramExists = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        private bool barIsVerified;
         [UpdateWatch]
-        public bool BarIsVerified { get; set; }
+        public bool BarIsVerified
+        {
+            get
+            {
+                return barIsVerified;
+            }
+            set
+            {
+                barIsVerified = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
 
         #endregion
 
@@ -87,13 +154,54 @@ namespace ProjectLighthouse.Model.Orders
                 return ToolingReady && GaugingReady && BarToolingReady;
             }
         }
-        [UpdateWatch]
-        public bool ToolingReady { get; set; }
-        [UpdateWatch]
-        public bool BarToolingReady { get; set; }
-        [UpdateWatch]
-        public bool GaugingReady { get; set; }
 
+        private bool toolingReady;
+        [UpdateWatch]
+        public bool ToolingReady
+        {
+            get
+            {
+                return toolingReady;
+            }
+            set
+            {
+                toolingReady = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        private bool barToolingReady;
+        [UpdateWatch]
+        public bool BarToolingReady
+        {
+            get
+            {
+                return barToolingReady;
+            }
+            set
+            {
+                barToolingReady = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        private bool gaugingReady;
+        [UpdateWatch]
+        public bool GaugingReady
+        {
+            get
+            {
+                return gaugingReady;
+            }
+            set
+            {
+                gaugingReady = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
 
         private bool partsWillBePlated;
         [UpdateWatch]
@@ -110,20 +218,26 @@ namespace ProjectLighthouse.Model.Orders
             get { return NumberOfBarsIssued >= NumberOfBars; }
         }
 
-
+        private bool hasProgram;
         [UpdateWatch]
-        public bool HasProgram { get; set; }
+        public bool HasProgram
+        {
+            get 
+            { 
+                return hasProgram; 
+            }
+            set
+            {
+                hasProgram = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
 
         #endregion
 
-        #region Running
 
-        [UpdateWatch]
-        public bool HasStarted { get; set; }
 
-        #endregion
-
- 
 
         public DateTime CompletedAt { get; set; }
 
@@ -168,10 +282,38 @@ namespace ProjectLighthouse.Model.Orders
         #region Bar Configuration
         [UpdateWatch]
         public string BarID { get; set; }
+
+        private double numberOfBars;
         [UpdateWatch]
-        public double NumberOfBars { get; set; }
+        public double NumberOfBars
+        {
+            get 
+            { 
+                return numberOfBars;
+            }
+            set
+            {
+                numberOfBars = value; 
+                OnPropertyChanged(); 
+            }
+        }
+
+        private int spareBars;
         [UpdateWatch]
-        public int SpareBars { get; set; }
+        public int SpareBars
+        {
+            get
+            {
+                return spareBars;
+            }
+            set
+            {
+                spareBars = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         [UpdateWatch]
         public int NumberOfBarsIssued { get; set; }
         public double BarsInStockAtCreation { get; set; }
@@ -180,8 +322,21 @@ namespace ProjectLighthouse.Model.Orders
         public double MajorDiameter { get; set; }
         public int GroupId { get; set; }
         public int MaterialId { get; set; }
+
+        private bool isResearch;
         [UpdateWatch]
-        public bool IsResearch { get; set; }
+        public bool IsResearch {
+
+            get 
+            { 
+                return isResearch; 
+            }
+            set
+            {
+                isResearch = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         private string requiredFeatures;
@@ -265,11 +420,21 @@ namespace ProjectLighthouse.Model.Orders
             }
         }
 
-
+        private BarStock bar;
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public BarStock Bar { get; set; }
-
+        public BarStock Bar
+        {
+            get
+            {
+                return bar;
+            }
+            set
+            {
+                bar = value;
+                OnPropertyChanged();
+            }
+        }
 
         private List<LatheManufactureOrderItem> orderItems;
 
@@ -281,10 +446,6 @@ namespace ProjectLighthouse.Model.Orders
             set { orderItems = value; OnPropertyChanged(); }
         }
 
-
-        [SQLite.Ignore]
-        [CsvHelper.Configuration.Attributes.Ignore]
-        public List<Note> Notes { get; set; } = new();
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
@@ -302,17 +463,11 @@ namespace ProjectLighthouse.Model.Orders
         [CsvHelper.Configuration.Attributes.Ignore]
         public List<BarIssue> BarIssues { get; set; } = new();
 
-        [SQLite.Ignore]
-        [CsvHelper.Configuration.Attributes.Ignore]
-        public List<Lot> Lots { get; set; } = new();
+        
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
         public List<MachineBreakdown> Breakdowns { get; set; } = new();
-
-        #region Helpers
-        public DateTime Deadline;
-        public bool SameBar;
 
         public override object Clone()
         {
@@ -325,49 +480,49 @@ namespace ProjectLighthouse.Model.Orders
             return Name;
         }
 
-        public bool IsUpdated(LatheManufactureOrder OtherOrder)
-        {
-            if (OtherOrder.Name != Name)
-            {
-                throw new InvalidOperationException($"Cannot compare order {Name} with record {OtherOrder.Name}");
-            }
+        //public override bool IsUpdated(LatheManufactureOrder OtherOrder)
+        //{
+        //    if (OtherOrder.Name != Name)
+        //    {
+        //        throw new InvalidOperationException($"Cannot compare order {Name} with record {OtherOrder.Name}");
+        //    }
 
-            PropertyInfo[] properties = typeof(LatheManufactureOrder).GetProperties();
-            bool mod = false;
-            StringBuilder sb = new();
+        //    PropertyInfo[] properties = typeof(LatheManufactureOrder).GetProperties();
+        //    bool mod = false;
+        //    StringBuilder sb = new();
 
-            foreach (PropertyInfo property in properties)
-            {
-                bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
-                if (!watchPropForChanges)
-                {
-                    continue;
-                }
+        //    foreach (PropertyInfo property in properties)
+        //    {
+        //        bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
+        //        if (!watchPropForChanges)
+        //        {
+        //            continue;
+        //        }
 
-                if (!Equals(property.GetValue(this), property.GetValue(OtherOrder)))
-                {
-                    if (!mod)
-                    {
-                        sb.AppendLine($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
-                    }
-                    sb.AppendLine($"\t{property.Name} modified");
-                    sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
-                    sb.AppendLine($"\t\tto  : '{property.GetValue(OtherOrder) ?? "null"}'");
+        //        if (!Equals(property.GetValue(this), property.GetValue(OtherOrder)))
+        //        {
+        //            if (!mod)
+        //            {
+        //                sb.AppendLine($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
+        //            }
+        //            sb.AppendLine($"\t{property.Name} modified");
+        //            sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
+        //            sb.AppendLine($"\t\tto  : '{property.GetValue(OtherOrder) ?? "null"}'");
 
-                    mod = true;
-                }
+        //            mod = true;
+        //        }
 
-            }
+        //    }
 
-            if (mod)
-            {
-                string path = App.ROOT_PATH + @"lib\logs\" + Name + ".log";
+        //    if (mod)
+        //    {
+        //        string path = App.ROOT_PATH + @"lib\logs\" + Name + ".log";
 
-                File.AppendAllText(path, sb.ToString());
-            }
+        //        File.AppendAllText(path, sb.ToString());
+        //    }
 
-            return mod;
-        }
+        //    return mod;
+        //}
 
         public bool RequiresBar()
         {
@@ -417,7 +572,6 @@ namespace ProjectLighthouse.Model.Orders
             return result;
         }
 
-        #endregion
 
         public void MarkAsClosed()
         {

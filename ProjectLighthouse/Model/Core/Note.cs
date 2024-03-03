@@ -42,20 +42,9 @@ namespace ProjectLighthouse.Model.Core
         [Ignore]
         public bool ShowHeader { get; set; }
         [Ignore]
-        public bool ShowDateHeader { get; set; }
-        [Ignore]
         public bool SpaceUnder { get; set; }
-        [Ignore]
-        public bool ShowEdit { get; set; }
         [Ignore]
         public User UserDetails { get; set; }
 
-        public event Action Edited;
-
-
-        public void NotifyEdited()
-        {
-            Edited?.Invoke();
-        }
     }
 }

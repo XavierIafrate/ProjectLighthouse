@@ -32,7 +32,7 @@ namespace ProjectLighthouse.Model.Administration
         private string[] emojis = new string[] { "👾", "👹", "💩", "🤖", "👽", "😎", "🥳", "😇", "🦕", "🦎", "🐶", "🐭", "🐷", "🐸", "🐢", "🦞", "🦥", "🦔", "🌝", "🌞", "🤹" };
 
         [Ignore]
-        public List<Permission> UserPermissions { get; set; } = new();
+        public List<Permission> UserPermissions { get; set; } = new(); 
 
         public string GetFullName()
         {

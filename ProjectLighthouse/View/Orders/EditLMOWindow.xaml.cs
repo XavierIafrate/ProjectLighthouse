@@ -73,8 +73,8 @@ namespace ProjectLighthouse.View.Orders
 
         public List<BarIssue> BarIssues { get; set; }
 
-        public OrderSaveEditNoteCommand SaveEditNoteCmd { get; set; }
-        public OrderDeleteNoteCommand DeleteNoteCmd { get; set; }
+        //public OrderSaveEditNoteCommand SaveEditNoteCmd { get; set; }
+        //public OrderDeleteNoteCommand DeleteNoteCmd { get; set; }
 
         private ProductGroup archetype;
         private Product? product;
@@ -398,8 +398,8 @@ namespace ProjectLighthouse.View.Orders
 
             if (canEdit)
             {
-                SaveEditNoteCmd = new(this);
-                DeleteNoteCmd = new(this);
+                //SaveEditNoteCmd = new(this);
+                //DeleteNoteCmd = new(this);
             }
         }
 
@@ -924,7 +924,6 @@ namespace ProjectLighthouse.View.Orders
                 return;
             }
             PrintIssueLabelButton.IsEnabled = true;
-
         }
 
         private void PrintIssueLabelButton_Click(object sender, RoutedEventArgs e)

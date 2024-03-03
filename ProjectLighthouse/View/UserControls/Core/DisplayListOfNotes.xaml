@@ -5,26 +5,45 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:valueConverters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    x:Name="parentControl"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <local:NotesTemplateSelector x:Key="notesTemplateSelector" />
+        <valueConverters:dateToLastModified x:Key="dateFormatter" />
+    </UserControl.Resources>
     <Grid>
-        <ItemsControl x:Name="NotesList">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <local:DisplayNote
+        <ItemsControl ItemTemplateSelector="{StaticResource notesTemplateSelector}" ItemsSource="{Binding DisplayData, ElementName=parentControl}">
+            <ItemsControl.Resources>
+                <DataTemplate x:Key="DateTime">
+                    <TextBlock
+                        Margin="8"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontStyle="Italic"
+                        Foreground="Gray"
+                        Text="{Binding Path=., Converter={StaticResource dateFormatter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="rightNote">
+                    <local:DisplayMyNote
                         DeleteCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DeleteCommand}"
                         Note="{Binding}"
                         SaveEditCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=SaveEditCommand}" />
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
+
+                <DataTemplate x:Key="leftNote">
+                    <local:DisplayUserNote Note="{Binding}"/>
+                </DataTemplate>
+            </ItemsControl.Resources>
         </ItemsControl>
         <TextBlock
-            x:Name="noneText"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontStyle="Normal"
             Style="{StaticResource GhostText}"
-            Text="None" />
+            Text="None"
+            Visibility="{Binding DisplayData, ElementName=parentControl, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
     </Grid>
 </UserControl>

@@ -17,9 +17,14 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             }
 
             bool faded = false;
+            bool dark = false;
+            bool light = false;
+
             if (parameter is string str)
             {
                 faded = str == "faded";
+                dark = str == "dark";
+                light = str == "light";
             }
 
             string colour;
@@ -39,16 +44,23 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             }
             else
             {
-                colour = "OnBackground";
+                colour = "Black";
             }
 
             if (faded)
             {
                 colour += "Faded";
             }
+            else if (dark)
+            {
+                colour += "Dark";
+            }
+            else if (light)
+            {
+                colour += "Light";
+            }
 
-
-            return (Brush)Application.Current.Resources[colour];
+            return (Brush)Application.Current.Resources[colour];            
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

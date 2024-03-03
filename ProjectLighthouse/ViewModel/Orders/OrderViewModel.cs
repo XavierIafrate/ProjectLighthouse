@@ -27,7 +27,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using ViewModel.Commands.Orders;
 using ViewModel.Helpers;
 using DateTimePoint = LiveChartsCore.Defaults.DateTimePoint;
 
@@ -254,9 +253,9 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         #region Commands
         public PrintOrderCommand PrintOrderCommand { get; set; }
-        public EditManufactureOrderCommand EditCommand { get; set; }
+        //public EditManufactureOrderCommand EditCommand { get; set; }
         public CreateNewOrderCommand NewOrderCommand { get; set; }
-        public GetProgramPlannerCommand GetProgramPlannerCmd { get; set; }
+        //public GetProgramPlannerCommand GetProgramPlannerCmd { get; set; }
         #endregion
 
         #region Icon Brushes
@@ -581,9 +580,9 @@ namespace ProjectLighthouse.ViewModel.Orders
             BarAllocatedIconBrush = (Brush)Application.Current.Resources["Red"];
 
             PrintOrderCommand = new(this);
-            EditCommand = new(this);
+            //EditCommand = new(this);
             NewOrderCommand = new(this);
-            GetProgramPlannerCmd = new(this);
+            //GetProgramPlannerCmd = new(this);
         }
 
         #region Data Refreshing

@@ -1,9 +1,13 @@
-﻿using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using static ProjectLighthouse.Model.Scheduling.ProductionSchedule;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Windows.Input;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
@@ -22,9 +26,20 @@ namespace ProjectLighthouse.Model.Scheduling
         [UpdateWatch]
         public string POReference { get; set; }
 
-
+        private OrderState orderState = OrderState.Problem;
         [UpdateWatch]
-        public virtual OrderState State { get; set; } = OrderState.Problem;
+        public virtual OrderState State
+        {
+            get
+            {
+                return orderState;
+            }
+            set
+            {
+                orderState = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         private int timeToComplete;
@@ -44,13 +59,71 @@ namespace ProjectLighthouse.Model.Scheduling
 
         public string AllocatedMachine { get; set; }
 
+        private string? assignedTo;
         [UpdateWatch]
-        public string? AssignedTo { get; set; }
+        public string? AssignedTo
+        {
+            get
+            {
+                return assignedTo;
+            }
+            set
+            {
+                assignedTo = value; 
+                OnPropertyChanged();
+            }
+        }
 
+
+        private bool hasStarted;
         [UpdateWatch]
-        public bool IsComplete { get; set; }
+        public bool HasStarted
+        {
+            get
+            {
+                return hasStarted;
+            }
+            set
+            {
+                hasStarted = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        private bool isComplete;
         [UpdateWatch]
-        public bool IsCancelled { get; set; }
+        public bool IsComplete
+        {
+            get
+            {
+                return isComplete;
+            }
+            set
+            {
+                isComplete = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        private bool isCancelled;
+        [UpdateWatch]
+        public bool IsCancelled
+        {
+            get
+            {
+                return isCancelled;
+            }
+            set
+            {
+                isCancelled = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+
         [UpdateWatch]
         public bool IsClosed { get; set; }
 
@@ -59,7 +132,7 @@ namespace ProjectLighthouse.Model.Scheduling
         public string? ScheduleLock { get; set; }
 
         [Ignore]
-        public ScheduleLock? ScheduleLockData
+        public ProductionSchedule.ScheduleLock? ScheduleLockData
         {
             get 
             { 
@@ -88,17 +161,17 @@ namespace ProjectLighthouse.Model.Scheduling
 
         public event EventHandler OnScheduleLockChanged;
 
-        private List<Warning> warnings = new();
+        private List<ProductionSchedule.Warning> warnings = new();
         [Ignore]
-        public List<Warning> Warnings
+        public List<ProductionSchedule.Warning> Warnings
         {
             get { return warnings; }
             set { warnings = value; }
         }
 
-        private List<Advisory> advisories = new();
+        private List<ProductionSchedule.Advisory> advisories = new();
         [Ignore]
-        public List<Advisory> Advisories
+        public List<ProductionSchedule.Advisory> Advisories
         {
             get { return advisories; }
             set { advisories = value; }
@@ -107,17 +180,30 @@ namespace ProjectLighthouse.Model.Scheduling
         public event EventHandler OnAdvisoriesChanged;
         public event EventHandler OnWarningsChanged;
 
-        internal void SetAdvisories(List<Advisory> orderAdvisories)
+
+        internal void SetAdvisories(List<ProductionSchedule.Advisory> orderAdvisories)
         {
             this.Advisories = orderAdvisories;
             OnAdvisoriesChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        internal void SetWarnings(List<Warning> orderWarnings)
+        internal void SetWarnings(List<ProductionSchedule.Warning> orderWarnings)
         {
             this.Warnings = orderWarnings;
             OnWarningsChanged?.Invoke(this, EventArgs.Empty);
         }
+
+
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public List<Lot> Lots { get; set; }
+
+
+        [SQLite.Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public List<Note> Notes { get; set; }
+
 
 
         public event Action EditMade;
@@ -169,6 +255,77 @@ namespace ProjectLighthouse.Model.Scheduling
         {
             string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<ScheduleItem>(serialised);
+        }
+
+        public virtual bool IsUpdated(ScheduleItem otherItem)
+        {
+            if (otherItem.Name != Name)
+            {
+                    throw new InvalidOperationException($"Items being compared must have the same name");
+            }
+
+
+
+
+            PropertyInfo[] properties;
+            if (this is LatheManufactureOrder)
+            {
+                if (otherItem is not LatheManufactureOrder)
+                {
+                    throw new InvalidOperationException($"Lathe order must be compared to Lathe order");
+
+                }
+                properties = typeof(LatheManufactureOrder).GetProperties();
+            }
+            else if (this is GeneralManufactureOrder)
+            {
+                if (otherItem is not GeneralManufactureOrder)
+                {
+                    throw new InvalidOperationException($"General order must be compared to General order");
+
+                }
+                properties = typeof(GeneralManufactureOrder).GetProperties();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            bool mod = false;
+            
+            StringBuilder sb = new();
+
+            foreach (PropertyInfo property in properties)
+            {
+                bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
+                if (!watchPropForChanges)
+                {
+                    continue;
+                }
+
+                if (!Equals(property.GetValue(this), property.GetValue(otherItem)))
+                {
+                    if (!mod)
+                    {
+                        sb.AppendLine($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
+                    }
+                    sb.AppendLine($"\t{property.Name} modified");
+                    sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
+                    sb.AppendLine($"\t\tto  : '{property.GetValue(otherItem) ?? "null"}'");
+
+                    mod = true;
+                }
+
+            }
+
+            if (mod)
+            {
+                string path = App.ROOT_PATH + @"lib\logs\" + Name + ".log";
+
+                File.AppendAllText(path, sb.ToString());
+            }
+
+            return mod;
         }
     }
 }

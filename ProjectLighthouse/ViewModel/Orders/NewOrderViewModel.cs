@@ -1,25 +1,35 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
     public class NewOrderViewModel : BaseViewModel
     {
+        private bool editMode;
+        public bool EditMode
+        {
+            get { return editMode; }
+            set { editMode = value; OnPropertyChanged(); }
+        }
+
         private string selectedFilter;
         public string SelectedFilter
         {
             get { return selectedFilter; }
             set { selectedFilter = value; Filter(); OnPropertyChanged(); }
         }
-
 
         private string searchString;
 
@@ -34,14 +44,36 @@ namespace ProjectLighthouse.ViewModel.Orders
         public ScheduleItem? SelectedItem
         {
             get { return selectedItem; }
-            set { selectedItem = value; OnPropertyChanged(); }
+            set 
+            { 
+                selectedItem = value; 
+                OnPropertyChanged();
+                SetSelectedItem();
+            }
+        }
+
+        private void SetSelectedItem()
+        {
+            if(SelectedItem == null)
+            {
+                EditMode = false;
+                return;
+            }
+
+            EditMode = editCopies.ContainsKey(SelectedItem.Name);
         }
 
         private List<ScheduleItem> items;
 
 
-        private List<ScheduleItem> filteredItems;
+        private Dictionary<User, int> assignmentCounts;
+        public Dictionary<User, int> AssignmentCounts
+        {
+            get { return assignmentCounts; }
+            set { assignmentCounts = value; OnPropertyChanged(); }
+        }
 
+        private List<ScheduleItem> filteredItems;
         public List<ScheduleItem> FilteredItems
         {
             get { return filteredItems; }
@@ -53,11 +85,33 @@ namespace ProjectLighthouse.ViewModel.Orders
         private List<BarStock> barStock;
         private List<MaterialInfo> materials;
         private List<NonTurnedItem> nonTurnedItems;
+        private List<User> users;
+        private List<Lot> lots;
+        private List<Note> notes;
 
         Dictionary<string, ScheduleItem> editCopies = new();
 
+        public OrderViewModelRelayCommand RelayCmd { get; set; }
+
 
         public NewOrderViewModel()
+        {
+            LoadData();
+
+            SelectedFilter = "All Active";
+            SelectedItem = FilteredItems.First();
+
+            SetAssignmentData();
+
+            LoadCommands();
+        }
+
+        private void LoadCommands()
+        {
+            RelayCmd = new(this);
+        }
+
+        private void LoadData()
         {
             machines = DatabaseHelper.Read<Machine>();
             machines.AddRange(DatabaseHelper.Read<Lathe>());
@@ -73,19 +127,51 @@ namespace ProjectLighthouse.ViewModel.Orders
             this.materials = DatabaseHelper.Read<MaterialInfo>();
             this.barStock = DatabaseHelper.Read<BarStock>();
             this.barStock.ForEach(x => x.MaterialData = materials.Find(m => m.Id == x.MaterialId));
+            this.users = DatabaseHelper.Read<User>();
+            this.lots = DatabaseHelper.Read<Lot>();
+            this.notes = DatabaseHelper.Read<Note>();
 
             this.nonTurnedItems = DatabaseHelper.Read<NonTurnedItem>();
-
-            SelectedFilter = "All Active";
-
-            SelectedItem = FilteredItems.First();
-            //EditItem();
         }
 
+        private void SetAssignmentData()
+        {
+            Dictionary<User, int> counts = new();
+            List<ScheduleItem> notComplete = items.Where(x => x.State < OrderState.Complete).ToList();
+            string[] uniqueUsers = notComplete.Where(x => !string.IsNullOrEmpty(x.AssignedTo)).Select(x => x.AssignedTo).Distinct().ToArray();
+            foreach (string uniqueUser in uniqueUsers)
+            {
+                User? user = users.Find(x => x.UserName == uniqueUser);
+                user ??= new()
+                    {
+                        FirstName = "Unknown",
+                        LastName = "User",
+                        UserName = uniqueUser,
+                };
+
+                counts.Add(user, notComplete.Where(x  => x.AssignedTo == uniqueUser).Count());
+            }
+
+
+            User? unassigned = new()
+            {
+                FirstName = "Unassigned",
+                UserName = "unassigned",
+                Emoji = "👻",
+            };
+
+            int unassignedCount = notComplete.Where(x => string.IsNullOrWhiteSpace(x.AssignedTo)).Count();
+            if (unassignedCount > 0)
+            {
+                counts.Add(unassigned, unassignedCount);
+            }
+
+            AssignmentCounts = counts;
+        }
 
         void Filter()
         {
-            List<ScheduleItem> result = new();
+            List<ScheduleItem> results = new();
 
 
             foreach (ScheduleItem item in items)
@@ -95,21 +181,21 @@ namespace ProjectLighthouse.ViewModel.Orders
                     case "All Active":
                         if(item.State < OrderState.Complete || (item.ModifiedAt ?? DateTime.MinValue).AddDays(1) > DateTime.Now || !item.IsClosed )
                         {
-                            result.Add(item);
+                            results.Add(item);
                         }
                         break;
 
                     case "Assigned To Me":
                         if (item.AssignedTo == App.CurrentUser.UserName)
                         {
-                            result.Add(item);
+                            results.Add(item);
                         }
                         break;
 
                     case "Not Ready":
                         if (item.State == OrderState.Problem)
                         {
-                            result.Add(item);
+                            results.Add(item);
                         }
                         break;
 
@@ -122,14 +208,14 @@ namespace ProjectLighthouse.ViewModel.Orders
                     case "Ready":
                         if (item.State == OrderState.Ready || item.State == OrderState.Prepared)
                         {
-                            result.Add(item);
+                            results.Add(item);
                         }
                         break;
 
                     case "Complete":
                         if (item.State > OrderState.Running)
                         {
-                            result.Add(item);
+                            results.Add(item);
                         }
                         break;
 
@@ -142,34 +228,37 @@ namespace ProjectLighthouse.ViewModel.Orders
                         break;
 
                     case "All":
-                        result.Add(item);
+                        results.Add(item);
                         break;
                 }
 
-                result = result.TakeLast(100).ToList();
+                results = results.TakeLast(100).ToList();
+                results = results.OrderBy(x => x.State == OrderState.Running? 0 : 1).ThenBy(x =>  x.State).ToList();
 
-                if (item is LatheManufactureOrder latheOrder)
+                if (!string.IsNullOrWhiteSpace(SearchString))
                 {
-                    if (latheOrder.OrderItems == null)
+                    List<ScheduleItem> filteredResults = new();
+                    string sanitised = SearchString.Trim().ToUpperInvariant();
+                    foreach (ScheduleItem result in results)
                     {
-                        latheOrder.OrderItems = orderItems.Where(x => x.AssignedMO == latheOrder.Name).ToList();
+                        if (result.Name.Contains(sanitised) || (result.POReference ?? string.Empty).ToUpperInvariant().Contains(sanitised) || (result.AssignedTo?? string.Empty).ToUpperInvariant() == sanitised)
+                        {
+                            filteredResults.Add(result);
+                            continue;
+                        }
+
                     }
 
-                    if (latheOrder.Bar == null)
-                    {
-                        latheOrder.Bar = barStock.Find(x => x.Id == latheOrder.BarID);
-                    }
-
-                }
-                else if (item is GeneralManufactureOrder generalOrder)
-                {
-                    generalOrder.Item = nonTurnedItems.Find(x => x.Id == generalOrder.NonTurnedItemId);
+                    results = filteredResults;
                 }
             }
 
 
-            foreach(ScheduleItem item in result)
+            foreach(ScheduleItem item in results)
             {
+                item.Lots??=lots.Where(x => x.Order == item.Name).ToList();
+                item.Notes ??= notes.Where(x => x.DocumentReference == item.Name).ToList();
+
                 if (item is LatheManufactureOrder latheOrder)
                 {
                     if (latheOrder.OrderItems == null)
@@ -189,7 +278,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
             }
 
-            FilteredItems = result;
+            FilteredItems = results;
         }
 
         void EditItem()
@@ -199,6 +288,40 @@ namespace ProjectLighthouse.ViewModel.Orders
             ScheduleItem copy = (ScheduleItem)SelectedItem.Clone();
 
             editCopies.TryAdd(SelectedItem.Name, copy);
+        }
+
+        internal void EnterEditMode()
+        {
+            EditMode = true;
+            EditItem();
+        }
+
+        internal void ExitEditMode(bool save)
+        {
+            EditMode = false;
+
+            ScheduleItem copy = editCopies[SelectedItem.Name];
+            bool updated = SelectedItem.IsUpdated(copy);
+
+            if (updated && save)
+            {
+                DatabaseHelper.Update(SelectedItem);
+
+                ScheduleItem masterVersion = items.Find(x => x.Name == copy.Name);
+                masterVersion = SelectedItem;
+
+            }
+            else if (updated)
+            {
+                ScheduleItem masterVersion = items.Find(x => x.Name == copy.Name);
+                masterVersion = copy;
+                SelectedItem = copy;
+            }
+
+            editCopies.Remove(copy.Name);
+
+
+            //MessageBox.Show(updated ? "updated" : "not updated");
         }
     }
 }

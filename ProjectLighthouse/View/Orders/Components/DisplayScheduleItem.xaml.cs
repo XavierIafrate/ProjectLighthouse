@@ -19,6 +19,19 @@ namespace ProjectLighthouse.View.Orders.Components
         public DisplayScheduleItem()
         {
             InitializeComponent();
+
+            if (App.CurrentUser.Role == Model.Administration.UserRole.Purchasing)
+            {
+                PoTextBlock.Visibility = Visibility.Visible;
+                clippy.Visibility = Visibility.Collapsed;
+                AssignmentTextBlock.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                PoTextBlock.Visibility = Visibility.Collapsed;
+                clippy.Visibility = Visibility.Visible;
+                AssignmentTextBlock.Visibility = Visibility.Visible;
+            }
         }
     }
 }
