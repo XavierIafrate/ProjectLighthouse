@@ -1064,7 +1064,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             bool editable = true;
 
             // TODO optimise for R&D
-            if (SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)
+            if (SelectedOrder.IsClosed && SelectedOrder.ModifiedAt.AddDays(14) < DateTime.Now)
             {
                 editable = false;
             }
