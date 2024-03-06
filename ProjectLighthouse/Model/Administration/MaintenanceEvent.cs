@@ -10,8 +10,6 @@ namespace ProjectLighthouse.Model.Administration
         [NotNull]
         public string Lathe { get; set; }
         public string Description { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
         [NotNull]
         public DateTime StartingDate { get; set; }
         public DateTime LastCompleted { get; set; }
