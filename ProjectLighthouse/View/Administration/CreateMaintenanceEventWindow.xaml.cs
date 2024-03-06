@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace View.Administration
+namespace ProjectLighthouse.View.Administration
 {
     public partial class CreateMaintenanceEventWindow : Window
     {

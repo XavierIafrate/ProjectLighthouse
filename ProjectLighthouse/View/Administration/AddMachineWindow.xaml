@@ -1,0 +1,80 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Administration.AddMachineWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="parentControl"
+    Title="Add Machine"
+    WindowStartupLocation="CenterOwner"
+    Width="500"
+    SizeToContent="Height"
+    mc:Ignorable="d">
+    <StackPanel Margin="20">
+        <TextBlock
+            d:Text="New Machine"
+            Style="{StaticResource title}"
+            Text="{Binding ElementName=parentControl, Path=Title}" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="Machine ID" />
+        <TextBox
+            x:Name="idTextBox"
+            MaxLength="3"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="id"
+            Text="{Binding ElementName=parentControl, Path=Machine.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="Machine Name" />
+        <TextBox
+            MaxLength="100"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="full name"
+            Text="{Binding ElementName=parentControl, Path=Machine.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged ,NotifyOnValidationError=True}" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="Make" />
+        <TextBox
+            MaxLength="50"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="model"
+            Text="{Binding ElementName=parentControl, Path=Machine.Make, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="Model" />
+        <TextBox
+    MaxLength="50"
+    Style="{StaticResource DefaultTextBox}"
+    Tag="model"
+    Text="{Binding ElementName=parentControl, Path=Machine.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="Serial Number" />
+        <TextBox
+            MaxLength="50"
+            Style="{StaticResource DefaultTextBox}"
+            Tag="serial number"
+            Text="{Binding ElementName=parentControl, Path=Machine.SerialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" />
+        <TextBlock Style="{StaticResource InputLabel}" Text="Out of Service" />
+        <CheckBox
+            Margin="5,0"
+            Content="Machine is out of service"
+            IsChecked="{Binding ElementName=parentControl, Path=Machine.OutOfService}" />
+        <StackPanel
+            Margin="0,10,0,0"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                x:Name="CancelButton"
+                Click="CancelButton_Click"
+                Content="Cancel"
+                Style="{StaticResource Action_Cancel_Button}" />
+            <Button
+                x:Name="UpdateButton"
+                HorizontalAlignment="Right"
+                Click="UpdateButton_Click"
+                Content="Update"
+                Style="{StaticResource Action_Update_Button}"
+                Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToVisibleOrCollapsed}}" />
+            <Button
+                x:Name="AddButton"
+                HorizontalAlignment="Right"
+                Click="AddButton_Click"
+                Content="Add"
+                Style="{StaticResource Action_New_Button}"
+                Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToCollapsedOrVisible}}" />
+        </StackPanel>
+    </StackPanel>
+</Window>

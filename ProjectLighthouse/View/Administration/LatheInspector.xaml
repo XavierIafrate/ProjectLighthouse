@@ -1,0 +1,223 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Administration.LatheInspector"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    x:Name="parentControl"
+    d:Background="White"
+    d:Width="500"
+    mc:Ignorable="d">
+    <StackPanel>
+        <TextBlock
+            Margin="0,15,0,0"
+            Style="{StaticResource section}"
+            Text="Resource Parameters" />
+
+        <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+            <TextBlock VerticalAlignment="Center" Text="Part-off Budget" />
+            <TextBlock
+                Width="250"
+                HorizontalAlignment="Right"
+                d:Text="PART_OFF"
+                Foreground="{StaticResource Blue}"
+                Text="{Binding Lathe.PartOff, ElementName=parentControl, StringFormat='{}{0:0.0} mm'}"
+                TextAlignment="Right" />
+
+        </Grid>
+
+        <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+            <TextBlock VerticalAlignment="Center" Text="Max Length" />
+            <TextBlock
+                Width="250"
+                HorizontalAlignment="Right"
+                d:Text="MAX_PART_LENGTH"
+                Foreground="{StaticResource Blue}"
+                Tag="Max Length"
+                Text="{Binding Lathe.MaxLength, ElementName=parentControl, StringFormat='{}{0:0.0} mm'}"
+                TextAlignment="Right" />
+
+        </Grid>
+
+        <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+            <TextBlock VerticalAlignment="Center" Text="Max Diameter" />
+            <TextBlock
+                Width="250"
+                HorizontalAlignment="Right"
+                d:Text="MAX_PART_DIAMETER"
+                Foreground="{StaticResource Blue}"
+                Tag="Max Diameter"
+                Text="{Binding Lathe.MaxDiameter, ElementName=parentControl, StringFormat='{}{0:0.0} mm'}"
+                TextAlignment="Right" />
+        </Grid>
+
+        <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+            <TextBlock VerticalAlignment="Center" Text="Soft Max Diameter" />
+            <TextBlock
+                Width="250"
+                HorizontalAlignment="Right"
+                d:Text="SOFT_MAX_PART_DIAMETER"
+                Foreground="{StaticResource Blue}"
+                Tag="Soft Max Diameter"
+                Text="{Binding Lathe.SoftMaxDiameter, ElementName=parentControl, StringFormat='{}{0:0.0} mm'}"
+                TextAlignment="Right" />
+        </Grid>
+
+        <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+            <TextBlock VerticalAlignment="Center" Text="Soft Min Diameter" />
+            <TextBlock
+                Width="250"
+                HorizontalAlignment="Right"
+                d:Text="SOFT_MIN_PART_DIAMETER"
+                Foreground="{StaticResource Blue}"
+                Tag="Soft Min Diameter"
+                Text="{Binding Lathe.SoftMinDiameter, ElementName=parentControl, StringFormat='{}{0:0.0} mm'}"
+                TextAlignment="Right" />
+        </Grid>
+
+        <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+            <TextBlock VerticalAlignment="Center" Text="Features" />
+            <TextBlock
+                Width="250"
+                HorizontalAlignment="Right"
+                d:Text="FEATURE_LIST"
+                Foreground="{StaticResource Blue}"
+                Tag="Features"
+                Text="{Binding Lathe.Features, ElementName=parentControl, TargetNullValue='-'}"
+                TextAlignment="Right"
+                TextWrapping="Wrap" />
+        </Grid>
+
+        <TextBlock
+            Margin="0,15,0,0"
+            Style="{StaticResource section}"
+            Text="Comms" />
+
+        <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+            <TextBlock VerticalAlignment="Center" Text="IP Address" />
+            <TextBlock
+                HorizontalAlignment="Right"
+                d:Text="IP_ADDRESS"
+                Foreground="{StaticResource Blue}"
+                Text="{Binding Lathe.IPAddress, ElementName=parentControl}"
+                TextAlignment="Right" />
+        </Grid>
+
+        <Grid Margin="20,0" TextElement.FontFamily="Consolas">
+            <TextBlock VerticalAlignment="Center" Text="Controller Reference" />
+            <TextBlock
+                HorizontalAlignment="Right"
+                d:Text="CONTROLLER_REF"
+                Foreground="{StaticResource Blue}"
+                Text="{Binding Lathe.ControllerReference, ElementName=parentControl}"
+                TextAlignment="Right" />
+        </Grid>
+
+        <Grid>
+            <TextBlock
+                Margin="0,15,0,0"
+                Style="{StaticResource section}"
+                Text="Remarks" />
+        </Grid>
+        <Border
+            MinHeight="50"
+            Margin="5"
+            Background="{StaticResource Surface}"
+            CornerRadius="5">
+            <TextBlock
+                Margin="15,10"
+                d:Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                Text="{Binding Lathe.Remarks, ElementName=parentControl, TargetNullValue='None.'}"
+                TextWrapping="Wrap" />
+        </Border>
+
+        <Grid>
+            <TextBlock
+                Margin="0,15,0,0"
+                Style="{StaticResource section}"
+                Text="Attached Documents" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    x:Name="RemoveAttachmentButton"
+                    Margin="5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding ElementName=parentControl, Path=RemoveAttachmentCommand}"
+                    CommandParameter="{Binding ElementName=parentControl, Path=SelectedAttachment}"
+                    Content="Remove"
+                    IsEnabled="False"
+                    Style="{StaticResource Action_Remove_Button}" />
+                <Button
+                    Margin="5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding AddAttachmentCommand, ElementName=parentControl}"
+                    Content="Upload"
+                    Style="{StaticResource Action_New_Button}" />
+            </StackPanel>
+        </Grid>
+        <ListView
+            MinHeight="50"
+            d:ItemsSource="{d:SampleData ItemCount=2}"
+            ItemsSource="{Binding Lathe.Attachments, ElementName=parentControl}"
+            SelectedValue="{Binding SelectedAttachment, ElementName=parentControl}"
+            SelectionChanged="AttachmentListView_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <uc:DisplayAttachment Attachment="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+
+        <Grid>
+            <TextBlock
+                Margin="0,15,0,0"
+                Style="{StaticResource section}"
+                Text="Schedule of Maintenance" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    x:Name="EditMaintenanceButton"
+                    Margin="5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding ElementName=parentControl, Path=EditMaintenanceCommand}"
+                    CommandParameter="{Binding ElementName=parentControl, Path=SelectedMaintenanceEvent}"
+                    Content="Update"
+                    IsEnabled="False"
+                    Style="{StaticResource Action_Update_Button}" />
+                <Button
+                    Margin="5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding ElementName=parentControl, Path=AddMaintenanceCommand}"
+                    Content="New"
+                    Style="{StaticResource Action_New_Button}" />
+            </StackPanel>
+        </Grid>
+        <ListView
+            d:ItemsSource="{d:SampleData ItemCount=2}"
+            ItemsSource="{Binding Lathe.Maintenance, ElementName=parentControl}"
+            SelectedValue="{Binding SelectedMaintenanceEvent, ElementName=parentControl}"
+            SelectionChanged="MaintenanceListView_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <uc:DisplayMaintenanceEvent MaintenanceEvent="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <TextBlock
+            Margin="0,15,0,0"
+            Style="{StaticResource section}"
+            Text="Service Records" />
+        <ItemsControl d:ItemsSource="{d:SampleData ItemCount=2}" ItemsSource="{Binding Lathe.ServiceRecords, ElementName=parentControl}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <uc:DisplayAttachment Attachment="{Binding}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

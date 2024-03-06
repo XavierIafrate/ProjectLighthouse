@@ -4,6 +4,7 @@ using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -11,14 +12,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using ViewModel.Commands.Administration;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
     public class DatabaseManagerViewModel : BaseViewModel
     {
         public ManageUsersViewModel ManageUsersViewModel { get; set; }
-        public LatheViewModel LatheViewModel { get; set; }
+        public MachineViewModel LatheViewModel { get; set; }
         public MaterialsViewModel MaterialsViewModel { get; set; }
 
         public List<LatheManufactureOrder> Orders { get; set; }

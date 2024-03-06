@@ -1,9 +1,9 @@
 ﻿<Window
-    x:Class="View.Administration.CreateMaintenanceEventWindow"
+    x:Class="ProjectLighthouse.View.Administration.CreateMaintenanceEventWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:View.Administration"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="New Maintanance Event"

@@ -3,7 +3,9 @@ using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace ProjectLighthouse.Model.Administration
 {
@@ -52,10 +54,13 @@ namespace ProjectLighthouse.Model.Administration
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
 
+
+
         public void ValidateAll()
         {
             ValidateProperty(nameof(Id));
             ValidateProperty(nameof(FullName));
+            ValidateProperty(nameof(SerialNumber));
         }
 
         public void ValidateProperty([CallerMemberName] string propertyName = "")
@@ -123,12 +128,62 @@ namespace ProjectLighthouse.Model.Administration
             }
 
 
-            throw new Exception($"Validation for {propertyName} has not been configured.");
+            throw new ArgumentException($"Validation for {propertyName} has not been configured.");
         }
 
         public virtual bool CanRun(ScheduleItem item)
         {
             return item is not LatheManufactureOrder;
+        }
+
+        public Machine Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Machine>(serialised);
+        }
+
+        public bool IsUpdated(Machine otherMachine)
+        {
+            if (otherMachine.Id != Id)
+            {
+                throw new InvalidOperationException($"Cannot compare Machine {Id} with record {otherMachine.Id}");
+            }
+
+            PropertyInfo[] properties = typeof(Machine).GetProperties();
+            bool mod = false;
+            StringBuilder sb = new();
+
+            foreach (PropertyInfo property in properties)
+            {
+                bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
+                if (!watchPropForChanges)
+                {
+                    continue;
+                }
+
+                if (!Equals(property.GetValue(this), property.GetValue(otherMachine)))
+                {
+                    if (!mod)
+                    {
+                        sb.AppendLine($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
+                    }
+                    sb.AppendLine($"\t{property.Name} modified");
+                    sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
+                    sb.AppendLine($"\t\tto  : '{property.GetValue(otherMachine) ?? "null"}'");
+
+                    mod = true;
+                }
+
+            }
+
+            //if (mod)
+            //{
+            //    string path = App.ROOT_PATH + @"lib\logs\machine_" + Id + ".log";
+
+            //    File.AppendAllText(path, sb.ToString());
+            //}
+
+            return mod;
         }
     }
 }

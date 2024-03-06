@@ -36,8 +36,8 @@ namespace ProjectLighthouse.Model.Administration
         public double SoftMinDiameter
         {
             get { return softMinDiameter; }
-            set 
-            { 
+            set
+            {
                 softMinDiameter = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -319,7 +319,7 @@ namespace ProjectLighthouse.Model.Administration
                     return false;
                 }
 
-                if(order.RequiredFeaturesList.Any(x => !FeatureList.Contains(x)))
+                if (order.RequiredFeaturesList.Any(x => !FeatureList.Contains(x)))
                 {
                     return false;
                 }
