@@ -1,5 +1,7 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Commands.Orders;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,14 +22,14 @@ namespace ProjectLighthouse.View.UserControls
             DependencyProperty.Register("Note", typeof(Note), typeof(DisplayMyNote), new PropertyMetadata(null, SetValues));
 
 
-        public ICommand DeleteCommand
+        public DeleteNoteCommand DeleteCommand
         {
-            get { return (ICommand)GetValue(DeleteCommandProperty); }
+            get { return (DeleteNoteCommand)GetValue(DeleteCommandProperty); }
             set { SetValue(DeleteCommandProperty, value); }
         }
 
         public static readonly DependencyProperty DeleteCommandProperty =
-            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(DisplayMyNote), new PropertyMetadata(null, SetDelete));
+            DependencyProperty.Register("DeleteCommand", typeof(DeleteNoteCommand), typeof(DisplayMyNote), new PropertyMetadata(null, SetDelete));
 
         private static void SetDelete(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -36,20 +38,23 @@ namespace ProjectLighthouse.View.UserControls
         }
 
 
-        public ICommand SaveEditCommand
+        public SaveNoteCommand SaveEditCommand
         {
-            get { return (ICommand)GetValue(SaveEditCommandProperty); }
+            get { return (SaveNoteCommand)GetValue(SaveEditCommandProperty); }
             set { SetValue(SaveEditCommandProperty, value); }
         }
 
         public static readonly DependencyProperty SaveEditCommandProperty =
-            DependencyProperty.Register("SaveEditCommand", typeof(ICommand), typeof(DisplayMyNote), new PropertyMetadata(null, SetSave));
+            DependencyProperty.Register("SaveEditCommand", typeof(SaveNoteCommand), typeof(DisplayMyNote), new PropertyMetadata(null, SetSave));
 
         private static void SetSave(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not DisplayMyNote control) return;
             control.SaveButton.IsEnabled = control.SaveEditCommand is not null;
         }
+
+
+        private bool editing;
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -78,49 +83,6 @@ namespace ProjectLighthouse.View.UserControls
             control.SetOriginalMessageVis();
         }
 
-        //private void JustifyMessage(bool right = false, bool stacked = false, bool deleted = false)
-        //{
-        //    ControlGrid.ColumnDefinitions[0].Width = right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
-        //    ControlGrid.ColumnDefinitions[2].Width = !right ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
-        //    MetadataStackPanel.HorizontalAlignment = right ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-
-        //    int topLeft;
-        //    int topRight;
-        //    int bottomLeft;
-        //    int bottomRight;
-
-        //    if (right)
-        //    {
-        //        topLeft = 5;
-        //        bottomLeft = 5;
-        //        bottomRight = 0;
-        //        topRight = stacked ? 0 : 5;
-        //    }
-        //    else
-        //    {
-        //        topLeft = stacked ? 0 : 5;
-        //        bottomLeft = 0;
-        //        bottomRight = 5;
-        //        topRight = 5;
-        //    }
-
-        //    bg.CornerRadius = new(topLeft, topRight, bottomRight, bottomLeft);
-
-        //    Brush brush = (Brush)Application.Current.Resources[right ? "Blue" : "Green"];
-        //    Brush bgBrush = (Brush)Application.Current.Resources[right ? "BlueFaded" : "GreenFaded"];
-
-        //    if (deleted)
-        //    {
-        //        brush = (Brush)Application.Current.Resources["Red"];
-        //        bgBrush = (Brush)Application.Current.Resources["RedFaded"];
-        //    }
-
-        //    bg.Background = bgBrush;
-        //    bg.BorderBrush = brush;
-        //    SentByTextBlock.Foreground = brush;
-        //    SentAtTextBlock.Foreground = brush;
-        //}
-
         public DisplayMyNote()
         {
             InitializeComponent();
@@ -129,6 +91,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
+            editing = true;
             MessageTextBlock.Visibility = Visibility.Hidden;
 
             EditBox.Visibility = Visibility.Visible;
@@ -146,17 +109,27 @@ namespace ProjectLighthouse.View.UserControls
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            editing = false;
+
             MessageTextBlock.Visibility = Visibility.Visible;
 
             EditBox.Visibility = Visibility.Collapsed;
             EditBox.IsEnabled = false;
 
-            SaveEditCommand?.Execute(Note);
-
             EditButton.Visibility = Visibility.Visible;
             SaveButton.Visibility = Visibility.Collapsed;
             CancelButton.Visibility = Visibility.Collapsed;
             DeleteButton.Visibility = Visibility.Collapsed;
+
+            if (string.IsNullOrWhiteSpace(EditBox.Text))
+            {
+                return;
+            }
+
+
+            Note.Message = EditBox.Text.Trim();
+
+            SaveEditCommand?.Execute(Note);
         }
 
         private void SetOriginalMessageVis()
@@ -170,22 +143,34 @@ namespace ProjectLighthouse.View.UserControls
                     OriginalMessage.Visibility = Visibility.Visible;
                 }
             }
-            else
+            
+            if (Note.IsDeleted)
             {
-                if (Note.IsDeleted)
+                if(App.CurrentUser.Role != UserRole.Administrator)
                 {
                     MessageTextBlock.Text = "deleted message";
-                    MessageTextBlock.FontStyle = FontStyles.Italic;
                 }
+                MessageTextBlock.FontStyle = FontStyles.Italic;
+
+
+                Brush brush = (Brush)Application.Current.Resources["Red"];
+                Brush bgBrush = (Brush)Application.Current.Resources["RedFaded"];
+
+                bg.Background = bgBrush;
+                bg.BorderBrush = brush;
+                SentByTextBlock.Foreground = brush;
+                SentAtTextBlock.Foreground = brush;
             }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            editing = false;
+
             MessageTextBlock.Visibility = Visibility.Visible;
+            EditBox.Visibility = Visibility.Collapsed;
 
             EditBox.Text = Note.Message;
-            EditBox.Visibility = Visibility.Collapsed;
             EditBox.IsEnabled = false;
 
             EditButton.Visibility = Visibility.Visible;
@@ -205,33 +190,22 @@ namespace ProjectLighthouse.View.UserControls
 
         private void UserControl_MouseLeave(object sender, MouseEventArgs e)
         {
-            EditControls.Visibility = Visibility.Hidden;
+            if (!editing)
+            {
+                EditControls.Visibility = Visibility.Hidden;
+            }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageTextBlock.Visibility = Visibility.Visible;
-
-            EditBox.Text = Note.Message;
-            EditBox.Visibility = Visibility.Collapsed;
-            EditBox.IsEnabled = false;
+            editing = false;
 
             EditButton.Visibility = Visibility.Visible;
             SaveButton.Visibility = Visibility.Collapsed;
             CancelButton.Visibility = Visibility.Collapsed;
             DeleteButton.Visibility = Visibility.Collapsed;
 
-            DeleteCommand.Execute(Note);
-
-            Brush brush = (Brush)Application.Current.Resources["Red"];
-            Brush bgBrush = (Brush)Application.Current.Resources["RedFaded"];
-
-            bg.Background = bgBrush;
-            bg.BorderBrush = brush;
-            SentByTextBlock.Foreground = brush;
-            SentAtTextBlock.Foreground = brush;
-
-            SetOriginalMessageVis();
+            DeleteCommand?.Execute(Note);
         }
     }
 }

@@ -1,18 +1,9 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
-using ProjectLighthouse.View.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -31,12 +22,45 @@ namespace ProjectLighthouse.View.UserControls
             if (d is not DisplayUserNote control) return;
             if (control.Note == null) return;
 
-            DateTime SentAt = DateTime.Parse(control.Note.DateSent);
-            control.SentAtTextBlock.Text = SentAt.ToString("HH:mm");
+            DateTime sentAt = DateTime.Parse(control.Note.DateSent);
+            control.SentAtTextBlock.Text = sentAt.ToString("HH:mm");
 
-            control.DevBadge.Visibility =  control.Note.SentBy == "xav"
+            control.DevBadge.Visibility = control.Note.SentBy == "xav"
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+
+            control.OriginalMessage.Visibility = Visibility.Collapsed;
+
+            if (App.CurrentUser.Role == UserRole.Administrator)
+            {
+                if (control.Note.IsEdited)
+                {
+                    control.OriginalMessage.Visibility = Visibility.Visible;
+                }
+            }
+
+            if (control.Note.IsDeleted)
+            {
+                if (App.CurrentUser.Role != UserRole.Administrator)
+                {
+                    control.MessageTextBlock.Text = "deleted message";
+                }
+                control.MessageTextBlock.FontStyle = FontStyles.Italic;
+
+
+                Brush brush = (Brush)Application.Current.Resources["Red"];
+                Brush bgBrush = (Brush)Application.Current.Resources["RedFaded"];
+
+                control.bg.Background = bgBrush;
+                control.bg.BorderBrush = brush;
+                control.SentByTextBlock.Foreground = brush;
+                control.SentAtTextBlock.Foreground = brush;
+                control.MessageTextBlock.Foreground = brush;
+            }
+            else if (control.Note.IsEdited)
+            {
+                control.EditedTextBox.Visibility = Visibility.Visible;
+            }
         }
 
         public DisplayUserNote()

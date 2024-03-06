@@ -1,7 +1,8 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
-using RestSharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Windows.ApplicationModel.DataTransfer;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -40,25 +40,46 @@ namespace ProjectLighthouse.View.UserControls
             set { displayData = value; OnPropertyChanged(); }
         }
 
-
-
-        public ICommand DeleteCommand
+        public DeleteNoteCommand DeleteCommand
         {
-            get { return (ICommand)GetValue(DeleteCommandProperty); }
+            get { return (DeleteNoteCommand)GetValue(DeleteCommandProperty); }
             set { SetValue(DeleteCommandProperty, value); }
         }
 
         public static readonly DependencyProperty DeleteCommandProperty =
-            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(DisplayListOfNotes), new PropertyMetadata(null));
+            DependencyProperty.Register("DeleteCommand", typeof(DeleteNoteCommand), typeof(DisplayListOfNotes), new PropertyMetadata(null, SetDelete));
 
-        public ICommand SaveEditCommand
+        private static void SetDelete(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get { return (ICommand)GetValue(SaveEditCommandProperty); }
-            set { SetValue(SaveEditCommandProperty, value); }
+            
         }
 
-        public static readonly DependencyProperty SaveEditCommandProperty =
-            DependencyProperty.Register("SaveEditCommand", typeof(ICommand), typeof(DisplayListOfNotes), new PropertyMetadata(null));
+        public ICommand SaveCommand
+        {
+            get { return (ICommand)GetValue(SaveCommandProperty); }
+            set { SetValue(SaveCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty SaveCommandProperty =
+            DependencyProperty.Register("SaveCommand", typeof(ICommand), typeof(DisplayListOfNotes), new PropertyMetadata(null));
+
+        public ICommand AddNoteCommand
+        {
+            get { return (ICommand)GetValue(AddNoteCommandProperty); }
+            set { SetValue(AddNoteCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty AddNoteCommandProperty =
+            DependencyProperty.Register("AddNoteCommand", typeof(ICommand), typeof(DisplayListOfNotes), new PropertyMetadata(null));
+
+        private bool enterToSend = true;
+
+        public bool EnterToSend
+        {
+            get { return enterToSend; }
+            set { enterToSend = value; OnPropertyChanged(); }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -72,12 +93,22 @@ namespace ProjectLighthouse.View.UserControls
             control.Compute();
         }
 
-        private void Compute()
+        private Note newNote;
+
+        public Note NewNote
         {
-            DisplayData = FormatListOfNotes(Notes, false);
+            get { return newNote; }
+            set { newNote = value; OnPropertyChanged(); }
         }
 
-        public static List<object> FormatListOfNotes(List<Note> notes, bool edit = false)
+
+
+        private void Compute()
+        {
+            DisplayData = FormatListOfNotes(Notes);
+        }
+
+        public static List<object> FormatListOfNotes(List<Note> notes)
         {
             if (notes == null) return null;
             if (notes.Count == 0) return new();
@@ -111,7 +142,7 @@ namespace ProjectLighthouse.View.UserControls
                     }
                 }
 
-                
+
                 if (i < notes.Count - 1)
                 {
                     Note nextNote = notes[i + 1];
@@ -135,6 +166,50 @@ namespace ProjectLighthouse.View.UserControls
         public DisplayListOfNotes()
         {
             InitializeComponent();
+            NewNote = new()
+            {
+                SentBy = App.CurrentUser.UserName,
+            };
+        }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            NewNote.ValidateAll();
+            if (NewNote.HasErrors)
+            {
+                return;
+            }
+
+            NewNote.DateSent = DateTime.Now.ToString("s");
+            AddNoteCommand?.Execute(NewNote);
+            NewNote = new()
+            {
+                SentBy = App.CurrentUser.UserName,
+            };
+        }
+
+        private void MessageComposer_KeyDown(object sender, KeyEventArgs e)
+        {
+            NewNote.DateSent = DateTime.Now.ToString("s");
+            if (e.Key == Key.Enter && EnterToSend)
+            {
+                NewNote.ValidateAll();
+                if (NewNote.HasErrors)
+                {
+                    return;
+                }
+
+                AddNoteCommand?.Execute(NewNote);
+            }
+            else
+            {
+                return;
+            }
+
+            NewNote = new()
+            {
+                SentBy = App.CurrentUser.UserName,
+            };
         }
     }
 }

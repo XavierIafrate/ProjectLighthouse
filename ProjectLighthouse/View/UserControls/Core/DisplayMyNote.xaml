@@ -26,7 +26,7 @@
                 <ColumnDefinition Width="45" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel VerticalAlignment="Center">
+            <Grid VerticalAlignment="Center">
                 <TextBlock
                     x:Name="EditedTextBox"
                     Margin="5"
@@ -40,6 +40,7 @@
                 <StackPanel
                     x:Name="EditControls"
                     Margin="0"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     d:Visibility="Visible"
                     Orientation="Horizontal"
@@ -47,7 +48,8 @@
                     <Button
                         x:Name="EditButton"
                         Click="EditButton_Click"
-                        Style="{StaticResource Note_Edit_Button}" />
+                        Content="Edit"
+                        Style="{StaticResource Action_Edit_Button_Small}" />
                     <Button
                         x:Name="CancelButton"
                         d:Visibility="Visible"
@@ -58,18 +60,16 @@
                         x:Name="SaveButton"
                         d:Visibility="Visible"
                         Click="SaveButton_Click"
-                        IsEnabled="False"
                         Style="{StaticResource Note_Save_Button}"
                         Visibility="Collapsed" />
                     <Button
                         x:Name="DeleteButton"
                         d:Visibility="Visible"
                         Click="DeleteButton_Click"
-                        IsEnabled="False"
                         Style="{StaticResource Note_Delete_Button}"
                         Visibility="Collapsed" />
                 </StackPanel>
-            </StackPanel>
+            </Grid>
 
             <Border
                 x:Name="bg"
@@ -135,12 +135,13 @@
                                     d:Text="MESSAGE_TEXT"
                                     FontSize="14"
                                     Foreground="#2a2a2a"
-                                    Text="{Binding Path=Message}"
+                                    Text="{Binding ElementName=parentControl, Path=Note.Message}"
                                     TextWrapping="Wrap" />
                                 <TextBox
                                     x:Name="EditBox"
                                     MaxWidth="500"
                                     Margin="0"
+                                    Height="Auto"
                                     d:IsEnabled="True"
                                     d:Text="EDIT_TEXT"
                                     d:Visibility="Visible"
@@ -149,7 +150,7 @@
                                     BorderThickness="0"
                                     FontSize="14"
                                     IsEnabled="False"
-                                    Text="{Binding Path=Message}"
+                                    Text="{Binding ElementName=parentControl, Path=Note.Message, Mode=OneWay}"
                                     TextWrapping="Wrap"
                                     Visibility="Collapsed" />
                             </Grid>
@@ -165,7 +166,7 @@
                         d:Text="ORIGINAL_MESSAGE_TEXT"
                         FontSize="12"
                         Foreground="{StaticResource Red}"
-                        Text="{Binding Path=OriginalMessage}"
+                        Text="{Binding ElementName=parentControl, Path=Note.OriginalMessage}"
                         TextWrapping="Wrap" />
 
                 </StackPanel>
