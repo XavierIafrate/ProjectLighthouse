@@ -387,6 +387,7 @@ namespace ProjectLighthouse.ViewModel.Core
                 to: userToNotify.UserName,
                 from: App.CurrentUser.UserName,
                 header: "Request Approved",
+                toastAction: $"viewRequest:{request.Id}",
                 body: $"Your request for {request.Description} has been approved. Please update Lighthouse with the Purchase Reference.");
 
             _ = DatabaseHelper.Insert(newNotification);
