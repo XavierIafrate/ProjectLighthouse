@@ -447,8 +447,8 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
             else
             {
-                string searchTerm = NewRequestSearchText.ToUpper();
-                List<TurnedProduct> results = Items.Where(x => x.ProductName.ToUpper().Contains(searchTerm) && !requestedIds.Contains(x.Id)).Take(50).ToList();
+                string searchTerm = NewRequestSearchText.ToUpperInvariant();
+                List<TurnedProduct> results = Items.Where(x => x.ProductName.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) && !requestedIds.Contains(x.Id)).Take(50).ToList();
                 NewRequestSearchResults = results;
             }
 
@@ -788,7 +788,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 LoadRecommendedOrder();
             }
-
         }
 
         private void EvaluateCanSaveChanges()
@@ -1148,9 +1147,9 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
 
             List<string> otherUsers = FilteredNotes.Select(x => x.SentBy).ToList();
-            otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveRequest)).Select(x => x.UserName));
+            otherUsers.AddRange(App.NotificationsManager.Users.Where(x => x.HasPermission(PermissionType.ApproveRequest)).Select(x => x.UserName));
 
-            User? userWhoRaisedRequest = App.NotificationsManager.users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
+            User? userWhoRaisedRequest = App.NotificationsManager.Users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
             if (userWhoRaisedRequest is not null)
             {
                 otherUsers.Add(userWhoRaisedRequest.UserName);

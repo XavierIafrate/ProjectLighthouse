@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Input;
 
-namespace ViewModel.Commands.UserManagement
+namespace ProjectLighthouse.ViewModel.Commands.UserManagement
 {
     public class RevokePermissionCommand : ICommand
     {

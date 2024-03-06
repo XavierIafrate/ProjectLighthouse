@@ -1,16 +1,15 @@
-﻿using ProjectLighthouse;
-using ProjectLighthouse.ViewModel.Administration;
+﻿using ProjectLighthouse.ViewModel.Administration;
 using System;
 using System.Windows.Input;
 
-namespace ViewModel.Commands.Administration
+namespace ProjectLighthouse.ViewModel.Commands.Administration
 {
     public class AddMaintenanceEventCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
-        private LatheViewModel viewModel;
-        public AddMaintenanceEventCommand(LatheViewModel vm)
+        private MachineViewModel viewModel;
+        public AddMaintenanceEventCommand(MachineViewModel vm)
         {
             viewModel = vm;
         }
