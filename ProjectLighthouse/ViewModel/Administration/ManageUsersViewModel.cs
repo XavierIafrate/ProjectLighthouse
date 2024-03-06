@@ -11,7 +11,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
-using ViewModel.Commands.UserManagement;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {

@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using ViewModel.Commands.Administration;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
