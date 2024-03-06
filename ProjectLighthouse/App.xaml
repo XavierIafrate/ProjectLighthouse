@@ -111,8 +111,8 @@
                 <adminView:ManageUsersView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type adminVm:LatheViewModel}">
-                <adminView:LatheView />
+            <DataTemplate DataType="{x:Type adminVm:MachineViewModel}">
+                <adminView:MachineView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type adminVm:ProductManagerViewModel}">
