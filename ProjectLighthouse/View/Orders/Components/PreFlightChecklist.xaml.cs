@@ -31,7 +31,6 @@ namespace ProjectLighthouse.View.Orders.Components
             set { SetValue(EditModeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for EditMode.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty EditModeProperty =
             DependencyProperty.Register("EditMode", typeof(bool), typeof(PreFlightChecklist), new PropertyMetadata(false, SetEditMode));
 

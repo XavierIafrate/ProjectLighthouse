@@ -72,7 +72,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 }
             }
 
-            public List<DateTime> Holidays = new();
+            public List<DateTime> Holidays { get; set; } = new();
 
             public MachineSchedule(Machine machine)
             {
@@ -93,28 +93,9 @@ namespace ProjectLighthouse.Model.Scheduling
                 {
                     ScheduleItem item = itemsToAdd[i];
 
-                    if (item is LatheManufactureOrder order)
+                    if (item.State == OrderState.Cancelled)
                     {
-                        if (order.State == OrderState.Cancelled) continue;
-
-                        //if (i < itemsToAdd.Count - 1 && order.State == OrderState.Complete)
-                        //{
-                        //    ScheduleItem nextItem = itemsToAdd[i + 1];
-                        //    DateTime nextItemStarts;
-                        //    if (nextItem is LatheManufactureOrder nextOrder)
-                        //    {
-                        //        nextItemStarts = nextOrder.GetSettingStartDateTime();
-                        //    }
-                        //    else
-                        //    {
-                        //        nextItemStarts = nextItem.StartDate;
-                        //    }
-
-                        //    if (order.EndsAt() > nextItemStarts)
-                        //    {
-                        //        order.ScheduledEnd = nextItemStarts;
-                        //    }
-                        //}
+                        continue;
                     }
                     
                     nonCancelledItemsOnMachine.Add(item);
@@ -176,7 +157,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 this.ActiveWarnings = warnings;
             }
 
-            private List<Optimisation> BuildOptimisedSequences(List<Optimisation> optimisations)
+            private static List<Optimisation> BuildOptimisedSequences(List<Optimisation> optimisations)
             {
                 if (optimisations.Count == 0) return optimisations;
 
@@ -195,7 +176,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 return denoisedSequences;
             }
 
-            private List<Optimisation> DenoiseType(List<Optimisation> foundOptimisationsOfType)
+            private static List<Optimisation> DenoiseType(List<Optimisation> foundOptimisationsOfType)
             {
                 List<Optimisation> results = new();
 
@@ -237,7 +218,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 return false;
             }
 
-            private Optimisation MergeSequence(Optimisation main, Optimisation optimisation)
+            private static Optimisation MergeSequence(Optimisation main, Optimisation optimisation)
             {
                 foreach (ScheduleItem item in optimisation.AffectedItems)
                 {
@@ -455,7 +436,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 foreach (ScheduleItem item in ScheduleItems)
                 {
                     DateTime absoluteStart = item.StartDate.Date;
-                    DateTime absoluteEnd = item.StartDate.Date;
+                    DateTime absoluteEnd = item.EndsAt().Date;
                     if (item is LatheManufactureOrder order)
                     {
                         absoluteStart = order.GetSettingStartDateTime().Date;

@@ -475,7 +475,7 @@ namespace ProjectLighthouse.Model.Scheduling
             public string? desiredMachineId;
             public DateTime? desiredDate;
 
-            public bool createRecord = false;
+            public bool createRecord;
 
             public RescheduleInformation(ScheduleItem item, string? destinationMachineId, DateTime? desiredDate)
             {

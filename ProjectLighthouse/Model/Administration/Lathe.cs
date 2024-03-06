@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Administration
 {
-    public class Lathe : Machine, IObjectWithValidation, ICloneable
+    public class Lathe : Machine, IObjectWithValidation
     {
         [UpdateWatch]
         public string IPAddress { get; set; }
@@ -138,11 +138,11 @@ namespace ProjectLighthouse.Model.Administration
             }
         }
 
-        public object Clone()
-        {
-            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Lathe>(serialised);
-        }
+        //public object Clone()
+        //{
+        //    string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        //    return Newtonsoft.Json.JsonConvert.DeserializeObject<Lathe>(serialised);
+        //}
 
         public override string ToString()
         {
@@ -286,7 +286,7 @@ namespace ProjectLighthouse.Model.Administration
 
             if (mod)
             {
-                string path = App.ROOT_PATH + @"lib\logs\" + Id + ".log";
+                //string path = App.ROOT_PATH + @"lib\logs\" + Id + ".log";
 
                 //File.AppendAllText(path, sb.ToString());
             }

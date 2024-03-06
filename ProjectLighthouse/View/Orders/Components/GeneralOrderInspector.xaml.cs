@@ -13,25 +13,24 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using Windows.UI.WebUI;
 
 namespace ProjectLighthouse.View.Orders.Components
 {
     public partial class GeneralOrderInspector : UserControl, INotifyPropertyChanged
     {
         public Axis[] XAxes { get; set; } = new[]
-        {
-            new Axis()
             {
-                Labeler = value => new DateTime((long)value).ToString("dd/MM"),
-                CrosshairLabelsBackground = SKColors.Black.AsLvcColor(),
-                CrosshairLabelsPaint = new SolidColorPaint(SKColors.White, 1),
-                CrosshairPaint = new SolidColorPaint(SKColors.Black, 1),
-            }
-        };
+                new Axis()
+                {
+                    Labeler = value => new DateTime((long)value).ToString("dd/MM"),
+                            CrosshairLabelsBackground = SKColors.Black.AsLvcColor(),
+                            CrosshairLabelsPaint = new SolidColorPaint(SKColors.White, 1),
+                            CrosshairPaint = new SolidColorPaint(SKColors.Black, 1),
+                        }
+                };
 
         public Axis[] YAxes { get; set; } =
-        {
+            {
             new Axis
             {
                     Labeler = value => $"{(int)value:0}",
@@ -102,17 +101,35 @@ namespace ProjectLighthouse.View.Orders.Components
             if (d is not GeneralOrderInspector control) return;
 
             control.CalculateProductionData();
-            if(control.Order is null) return;
+            if (control.Order is null) return;
 
-            control.NewLot.AddedBy = App.CurrentUser.UserName;
-            control.NewLot.Order = control.Order.Name;
-            control.NewLot.FromMachine = control.Order.AllocatedMachine;
-            control.NewLot.CycleTime = control.Order.Item.CycleTime;
-            control.NewLot.AllowDelivery = true;
-            control.NewLot.ProductName = control.Order.Item.Name;
-            if (control.Order.Lots.Count > 0)
+            control.SetNewLot();
+        }
+
+        private void SetNewLot()
+        {
+            if (Order is null)
             {
-                control.NewLot.MaterialBatch = control.Order.Lots.Last().MaterialBatch;
+                NewLot = new();
+                return;
+            }
+
+            NewLot = new()
+            {
+                AddedBy = App.CurrentUser.UserName,
+                Order = Order.Name,
+                FromMachine = Order.AllocatedMachine,
+                CycleTime = Order.Item.CycleTime,
+                AllowDelivery = true,
+                ProductName = Order.Item.Name,
+                DateProduced = DateTime.Now.Hour >= 12
+                    ? DateTime.Today.AddHours(-12)
+                    : DateTime.Today.AddHours(12),
+        };
+
+            if (Order.Lots.Count > 0)
+            {
+                NewLot.MaterialBatch = Order.Lots.Last().MaterialBatch;
             }
         }
 
@@ -124,7 +141,8 @@ namespace ProjectLighthouse.View.Orders.Components
                 return;
             }
 
-            DateTime start = DateTime.Today.AddDays(1);
+
+            DateTime start = Order.StartDate == DateTime.MinValue ? DateTime.Today.AddDays(1) : Order.StartDate;
 
 
             List<DateTimePoint> theoreticalDataPoints = new();
@@ -152,14 +170,6 @@ namespace ProjectLighthouse.View.Orders.Components
                 theoreticalDataPoints.Add(new(cursor, totalDone));
             }
 
-            List<DateTime> datesWithDeliveries = Order.Lots.Select(x => x.DateProduced.Date).Distinct().ToList();
-            actualProductionDataPoints.Add(new(datesWithDeliveries.Min(), 0));
-            foreach (DateTime date in datesWithDeliveries)
-            {
-                int totalOnDay = Order.Lots.Where(x => x.DateProduced.Date == date && x.IsAccepted).Sum(x => x.Quantity);
-                actualProductionDataPoints.Add(new(date, totalOnDay));
-            }
-
             StepLineSeries<DateTimePoint> theoreticalProduction = new()
             {
                 Values = theoreticalDataPoints,
@@ -172,26 +182,47 @@ namespace ProjectLighthouse.View.Orders.Components
                 $"Theoretical: {new DateTime((long)chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
             };
 
-            StepLineSeries<DateTimePoint> actualProduction = new()
-            {
-                Values = actualProductionDataPoints,
-                Name = "Actual Production",
-                Fill = null,
-                GeometrySize = 0,
-                GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 3 },
-                Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 3 },
-                TooltipLabelFormatter = (chartPoint) =>
-                $"Actual" +
-                $": {new DateTime((long)chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
-            };
-
             List<ISeries> series = new()
             {
                 theoreticalProduction,
-                actualProduction,
             };
 
+            if (Order.Lots.Where(x => x.IsAccepted).Any())
+            {
+                List<DateTime> datesWithDeliveries = Order.Lots.Where(x => x.IsAccepted)
+                    .Select(x => x.DateProduced.Date)
+                    .Distinct()
+                    .ToList();
+
+                actualProductionDataPoints.Add(new(datesWithDeliveries.Min(), 0));
+                int cumulative = 0;
+                foreach (DateTime date in datesWithDeliveries)
+                {
+                    int totalOnDay = Order.Lots.Where(x => x.DateProduced.Date == date && x.IsAccepted).Sum(x => x.Quantity);
+                    cumulative += totalOnDay;
+                    actualProductionDataPoints.Add(new(date, cumulative));
+                }
+
+                StepLineSeries<DateTimePoint> actualProduction = new()
+                {
+                    Values = actualProductionDataPoints,
+                    Name = "Actual Production",
+                    Fill = null,
+                    GeometrySize = 0,
+                    GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 3 },
+                    Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 3 },
+                    TooltipLabelFormatter = (chartPoint) =>
+                    $"Actual" +
+                    $": {new DateTime((long)chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
+                };
+
+                series.Add(actualProduction);
+            }
+
+
             ProductionData = series.ToArray();
+
+
         }
 
         public GeneralOrderInspector()
@@ -199,6 +230,23 @@ namespace ProjectLighthouse.View.Orders.Components
             InitializeComponent();
 
             NewLot = new();
+        }
+
+        private void AddLotButton_Click(object sender, RoutedEventArgs e)
+        {
+            NewLot.Date = DateTime.Now;
+            
+
+            NewLot.ValidateAll();
+            if (NewLot.HasErrors)
+            {
+                return;
+            }
+
+            Order.Lots = Order.Lots.Append(NewLot).ToList();
+            SetNewLot();
+            CalculateProductionData();
+            Order.TimeToComplete = Order.CalculateTimeToComplete();
         }
     }
 }

@@ -20,11 +20,7 @@
     <Grid>
         <StackPanel>
             <local:DisplayOrderScheduleInformation Margin="10" Item="{Binding ElementName=parentControl, Path=Order}" />
-            <CheckBox
-                Grid.Row="1"
-                Content="Running"
-                IsChecked="{Binding Order.HasStarted, ElementName=parentControl}"
-                Style="{StaticResource PreflightCheckbox}" />
+
 
 
             <TextBlock Style="{StaticResource section}" Text="Requirement" />
@@ -38,7 +34,7 @@
                             FontWeight="SemiBold"
                             Text="🚀 Pre-flight" />
                     </TabItem.Header>
-                    <StackPanel>
+                    <StackPanel IsEnabled="{Binding ElementName=parentControl, Path=Order.HasStarted, Converter={StaticResource invertBool}}">
                         <Grid Margin="10" IsEnabled="{Binding EditMode, ElementName=parentControl}">
                             <Grid.RowDefinitions>
                                 <RowDefinition />
@@ -130,10 +126,25 @@
                             FontWeight="SemiBold"
                             Text="⚙️ Configuration" />
                     </TabItem.Header>
-                    <StackPanel >
-                        <TextBlock Text="Assigned To"/>
-                        <ComboBox IsEnabled="{Binding Path=EditMode, ElementName=parentControl}" ItemsSource="{Binding ProductionStaff, ElementName=parentControl}" SelectedValue="{Binding Order.AssignedTo, ElementName=parentControl }" SelectedValuePath="UserName"/>
-
+                    <StackPanel IsEnabled="{Binding Path=EditMode, ElementName=parentControl}">
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Assigned To" />
+                        <ComboBox
+                            IsEnabled="{Binding Path=EditMode, ElementName=parentControl}"
+                            ItemsSource="{Binding ProductionStaff, ElementName=parentControl}"
+                            SelectedValue="{Binding Order.AssignedTo, ElementName=parentControl}"
+                            SelectedValuePath="UserName" />
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Purchase Order" />
+                        <TextBox
+                            Style="{StaticResource DefaultTextBox}"
+                            Tag="purchase order"
+                            Text="{Binding Order.POReference, ElementName=parentControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Required Quantity" />
+                        <TextBox
+                            Style="{StaticResource DefaultTextBox}"
+                            Tag="required quantity"
+                            Text="{Binding Order.RequiredQuantity, ElementName=parentControl}" />
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Required Date" />
+                        <DatePicker SelectedDate="{Binding ElementName=parentControl, Path=Order.RequiredDate}" />
                     </StackPanel>
                 </TabItem>
                 <TabItem>
@@ -143,22 +154,135 @@
                             FontWeight="SemiBold"
                             Text="🌶️ Production" />
                     </TabItem.Header>
-                    <StackPanel IsEnabled="{Binding Path=EditMode, ElementName=parentControl}">
-                        <TextBlock Text="New Lot" Style="{StaticResource section}"/>
-                        <TextBlock Text="Quantity" Style="{StaticResource InputLabel}"/>
-                        <TextBox Style="{StaticResource DefaultTextBox}" Text="{Binding ElementName=parentControl, Path=NewLot.Quantity}" d:Text="0000" Width="100" HorizontalAlignment="Left"/>
-                        <TextBlock Text="Batch" Style="{StaticResource InputLabel}"/>
-                        <TextBox Style="{StaticResource DefaultTextBox}" Text="{Binding ElementName=parentControl, Path=NewLot.MaterialBatch}" d:Text="0000" Width="200" HorizontalAlignment="Left"/>
+                    <StackPanel>
+                        <StackPanel IsEnabled="{Binding Order.ReadyToRun, ElementName=parentControl}" >
 
-                        <CheckBox Content="Accepted" IsChecked="{Binding ElementName=parentControl, Path=NewLot.IsAccepted}"/>
-                        <CheckBox Content="Rejected" IsChecked="{Binding ElementName=parentControl, Path=NewLot.IsReject}"/>
+                            <TextBlock Style="{StaticResource section}" Text="Order Status" />
+                            <StackPanel IsEnabled="{Binding EditMode, ElementName=parentControl}">
+                                
+                            <CheckBox
+                                Margin="10,8"
+                                HorizontalAlignment="Left"
+                                Content="Job is running"
+                                IsChecked="{Binding Order.HasStarted, ElementName=parentControl}"
+                                IsEnabled="{Binding Order.IsComplete, ElementName=parentControl, Converter={StaticResource invertBool}}"
+                                Style="{StaticResource PreflightCheckbox}" />
+                            <CheckBox
+                                Margin="10,8"
+                                HorizontalAlignment="Left"
+                                Content="Job is complete"
+                                IsChecked="{Binding Order.IsComplete, ElementName=parentControl}"
+                                IsEnabled="{Binding Order.IsClosed, ElementName=parentControl, Converter={StaticResource invertBool}}"
+                                Style="{StaticResource PreflightCheckbox}" />
+                            </StackPanel>
 
-                        <Button Content="Add Lot" Style="{StaticResource Action_New_Button_Small}" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource section}" Text="Production Log" />
+                        <Grid IsEnabled="{Binding Order.HasStarted, ElementName=parentControl}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <ListBox ItemsSource="{Binding ElementName=parentControl, Path=Order.Lots}" d:ItemsSource="{d:SampleData ItemCount=5}">
-                            
-                        </ListBox>
+                            <Grid IsEnabled="{Binding Path=EditMode, ElementName=parentControl}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Style="{StaticResource InputLabel}"
+                                    Text="Quantity" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Margin="0"
+                                    d:Text="0000"
+                                    Style="{StaticResource DefaultTextBox}"
+                                    Text="{Binding ElementName=parentControl, Path=NewLot.Quantity}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Style="{StaticResource InputLabel}"
+                                    Text="Batch" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    d:Text="0000"
+                                    Style="{StaticResource DefaultTextBox}"
+                                    Text="{Binding ElementName=parentControl, Path=NewLot.MaterialBatch}" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Style="{StaticResource InputLabel}"
+                                    Text="Production Date" />
+                                <DatePicker
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Width="Auto"
+                                    SelectedDate="{Binding ElementName=parentControl, Path=NewLot.DateProduced}" />
+
+
+
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Style="{StaticResource InputLabel}"
+                                    Text="Remarks" />
+                                <TextBox
+                                    Grid.Row="4"
+                                    Grid.ColumnSpan="3"
+                                    Height="Auto"
+                                    Padding="0,5"
+                                    d:Text="REMARKS"
+                                    Style="{StaticResource DefaultTextBox}"
+                                    Tag="remarks"
+                                    MaxLength="512"
+                                    Text="{Binding ElementName=parentControl, Path=NewLot.Remarks}" />
+                                <StackPanel
+                                    Grid.Row="5"
+                                    Grid.ColumnSpan="3"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Horizontal">
+
+                                    <CheckBox
+                                        Content="Accepted"
+                                        IsChecked="{Binding ElementName=parentControl, Path=NewLot.IsAccepted}"
+                                        IsEnabled="{Binding ElementName=parentControl, Path=NewLot.IsDelivered, Converter={StaticResource invertBool}}" />
+                                    <CheckBox
+                                        Content="Rejected"
+                                        IsChecked="{Binding ElementName=parentControl, Path=NewLot.IsReject}"
+                                        IsEnabled="{Binding ElementName=parentControl, Path=NewLot.IsDelivered, Converter={StaticResource invertBool}}" />
+                                    <Button
+                                        x:Name="AddLotButton"
+                                        HorizontalAlignment="Left"
+                                        Click="AddLotButton_Click"
+                                        Content="Add Lot"
+                                        Style="{StaticResource Action_New_Button_Small}" />
+                                </StackPanel>
+
+                            </Grid>
+                            <ListBox
+                                Grid.Row="1"
+                                MaxHeight="350"
+                                Margin="5"
+                                d:ItemsSource="{d:SampleData ItemCount=5}"
+                                ItemsSource="{Binding ElementName=parentControl, Path=Order.Lots}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:DisplayLot Lot="{Binding}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+
                     </StackPanel>
+
                 </TabItem>
             </TabControl>
 
@@ -176,18 +300,6 @@
                 Series="{Binding ProductionData, ElementName=parentControl}"
                 XAxes="{Binding XAxes, ElementName=parentControl}"
                 YAxes="{Binding YAxes, ElementName=parentControl}" />
-            <TextBlock Style="{StaticResource section}" Text="Production" />
-            <TextBlock Style="{StaticResource InputLabel}" Text="Stock Lots" />
-            <ItemsControl ItemsSource="{Binding Order.Lots, ElementName=parentControl}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <userControls:DisplayLot Lot="{Binding}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-            <userControls:DisplayListOfNotes Notes="{Binding Order.Notes, ElementName=parentControl}" />
-
         </StackPanel>
     </Grid>
 </UserControl>

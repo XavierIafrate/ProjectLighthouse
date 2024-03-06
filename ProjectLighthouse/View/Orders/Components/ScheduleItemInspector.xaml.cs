@@ -1,8 +1,8 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -54,12 +54,10 @@ namespace ProjectLighthouse.View.Orders.Components
 
             if (control.EditMode)
             {
-                control.OverlayGrid.ColumnDefinitions[0].Width = new(100);
                 control.ContentGrid.ColumnDefinitions[0].Width = new(100);
             }
             else
             {
-                control.OverlayGrid.ColumnDefinitions[0].Width = new(1, GridUnitType.Star);
                 control.ContentGrid.ColumnDefinitions[0].Width = new(1, GridUnitType.Star);
             }
         }
@@ -72,6 +70,38 @@ namespace ProjectLighthouse.View.Orders.Components
 
         public static readonly DependencyProperty RelayCommandProperty =
             DependencyProperty.Register("RelayCommand", typeof(OrderViewModelRelayCommand), typeof(ScheduleItemInspector), new PropertyMetadata(null));
+
+
+        public SendMessageCommand SendMessageCommand
+        {
+            get { return (SendMessageCommand)GetValue(SendMessageCommandProperty); }
+            set { SetValue(SendMessageCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty SendMessageCommandProperty =
+            DependencyProperty.Register("SendMessageCommand", typeof(SendMessageCommand), typeof(ScheduleItemInspector), new PropertyMetadata(null));
+
+
+
+        public DeleteNoteCommand DeleteMessageCommand
+        {
+            get { return (DeleteNoteCommand)GetValue(DeleteMessageCommandProperty); }
+            set { SetValue(DeleteMessageCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty DeleteMessageCommandProperty =
+            DependencyProperty.Register("DeleteMessageCommand", typeof(DeleteNoteCommand), typeof(ScheduleItemInspector), new PropertyMetadata(null));
+
+        public SaveNoteCommand SaveMessageCommand
+        {
+            get { return (SaveNoteCommand)GetValue(SaveMessageCommandProperty); }
+            set { SetValue(SaveMessageCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty SaveMessageCommandProperty =
+            DependencyProperty.Register("SaveMessageCommand", typeof(SaveNoteCommand), typeof(ScheduleItemInspector), new PropertyMetadata(null));
+
+
 
         private List<User> productionStaff;
 
@@ -91,7 +121,7 @@ namespace ProjectLighthouse.View.Orders.Components
         {
             InitializeComponent();
             List<User> users = DatabaseHelper.Read<User>();
-            ProductionStaff = users.Where(x => x.Role == UserRole.Production).OrderBy(x => x.UserName).Append(new() { FirstName="Unassigned", UserName=null}).ToList();
+            ProductionStaff = users.Where(x => x.Role == UserRole.Production).OrderBy(x => x.UserName).Append(new() { FirstName = "Unassigned", UserName = null }).ToList();
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)

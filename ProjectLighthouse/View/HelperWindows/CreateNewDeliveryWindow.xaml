@@ -84,12 +84,12 @@
             Grid.Column="1"
             VerticalAlignment="Center">
             <Button
-                x:Name="addButton"
-                Click="addButton_Click"
+                x:Name="AddButton"
+                Click="AddButton_Click"
                 Style="{StaticResource ListBox_Add_Button}"/>
             <Button
-                x:Name="remButton"
-                Click="remButton_Click"
+                x:Name="RemoveButton"
+                Click="RemoveButton_Click"
                 Style="{StaticResource ListBox_Remove_Button}"/>
         </StackPanel>
 

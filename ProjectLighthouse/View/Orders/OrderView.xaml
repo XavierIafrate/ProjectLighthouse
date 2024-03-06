@@ -31,11 +31,14 @@
                 <TextBox
                     x:Name="SearchBox"
                     Style="{StaticResource SearchBox}"
+                    TextChanged="SearchBox_TextChanged"
                     Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Button
                     x:Name="ClearButton"
                     Grid.Column="1"
+                    IsEnabled="False"
+                    Click="ClearButton_Click"
                     Style="{StaticResource ClearButton}" />
             </Grid>
 
@@ -50,17 +53,6 @@
                         <orderComponents:DisplayScheduleItem Margin="10,2" Order="{Binding}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                <!--<ListView.Resources>
-                    <DataTemplate DataType="{x:Type orderModel:LatheManufactureOrder}">
-                        <uc:DisplayLatheManufactureOrder Margin="10,2" LatheManufactureOrder="{Binding}" />
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type orderModel:GeneralManufactureOrder}">
-                        <StackPanel Margin="10,5">
-                            <TextBlock FontWeight="Bold" FontSize="20" Text="{Binding Name}" />
-                            <TextBlock FontWeight="SemiBold" Text="{Binding AllocatedMachine}" Opacity="0.6" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.Resources>-->
             </ListView>
 
             <Grid
@@ -120,9 +112,12 @@
             Grid.Column="1"
             EditMode="{Binding EditMode}"
             Item="{Binding SelectedItem}"
+            SendMessageCommand="{Binding SendMessageCmd}"
             OrderAssignmentCounts="{Binding AssignmentCounts}"
             RelayCommand="{Binding RelayCmd}"
-            Visibility="{Binding SelectedItem, Converter={StaticResource NotNullToVisibility}}" />
+            Visibility="{Binding SelectedItem, Converter={StaticResource NotNullToVisibility}}"
+            SaveMessageCommand="{Binding SaveMessageCmd}"
+            DeleteMessageCommand="{Binding DeleteMessageCmd}"/>
 
 
         <!--    -->

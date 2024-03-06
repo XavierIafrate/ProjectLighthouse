@@ -3,6 +3,12 @@ using ProjectLighthouse.Model.Scheduling;
 using SQLite;
 using System;
 using System.Reflection;
+using System.Linq;
+using ProjectLighthouse.Model.Core;
+
+
+
+
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -13,14 +19,56 @@ namespace ProjectLighthouse.Model.Orders
     {
         public int NonTurnedItemId { get; set; }
 
+        private int requiredQuantity;
         [UpdateWatch]
-        public int RequiredQuantity { get; set; }
+        public int RequiredQuantity
+        {
+            get { return requiredQuantity; }
+            set
+            {
+                requiredQuantity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int finishedQuantity;
         [UpdateWatch]
-        public int FinishedQuantity { get; set; }
+        public int FinishedQuantity
+        {
+            get { return finishedQuantity; }
+            set
+            {
+                finishedQuantity = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private int deliveredQuantity;
         [UpdateWatch]
-        public int DeliveredQuantity { get; set; }
+        public int DeliveredQuantity
+        {
+            get { return deliveredQuantity; }
+            set
+            {
+                deliveredQuantity = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private DateTime? requiredDate;
         [UpdateWatch]
-        public DateTime? RequiredDate { get; set; } // Convert to full
+        public DateTime? RequiredDate
+        {
+            get { return requiredDate; }
+            set
+            {
+                requiredDate = value;
+                OnPropertyChanged();
+            }
+        }
+
 
 
         [Ignore]
@@ -44,7 +92,7 @@ namespace ProjectLighthouse.Model.Orders
                 {
                     result = OrderState.Running;
                 }
-                else if (MaterialReady && ToolingReady && ProgramReady && GaugingReady) 
+                else if (ReadyToRun)
                 {
                     result = OrderState.Prepared;
                 }
@@ -65,8 +113,15 @@ namespace ProjectLighthouse.Model.Orders
                 {
                     result = OrderState.Problem;
                 }
+                OnPropertyChanged(nameof(ReadyToRun));
                 return result;
             }
+        }
+
+        [Ignore]
+        public bool ReadyToRun
+        {
+            get { return MaterialReady && ToolingReady && ProgramReady && GaugingReady; }
         }
 
 
@@ -75,10 +130,10 @@ namespace ProjectLighthouse.Model.Orders
         public bool ToolingOrdered
         {
             get { return toolingOrdered; }
-            set 
-            { 
-                toolingOrdered = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                toolingOrdered = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
             }
         }
@@ -88,11 +143,12 @@ namespace ProjectLighthouse.Model.Orders
         public bool ToolingReady
         {
             get { return toolingReady; }
-            set 
-            { 
-                toolingReady = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                toolingReady = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
+                OnPropertyChanged(nameof(ReadyToRun));
             }
         }
 
@@ -102,11 +158,12 @@ namespace ProjectLighthouse.Model.Orders
         public bool ProgramReady
         {
             get { return programReady; }
-            set 
-            { 
-                programReady = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                programReady = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
+                OnPropertyChanged(nameof(ReadyToRun));
             }
         }
 
@@ -116,10 +173,10 @@ namespace ProjectLighthouse.Model.Orders
         public bool GaugingOrdered
         {
             get { return gaugingOrdered; }
-            set 
-            { 
-                gaugingOrdered = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                gaugingOrdered = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
             }
         }
@@ -129,11 +186,12 @@ namespace ProjectLighthouse.Model.Orders
         public bool GaugingReady
         {
             get { return gaugingReady; }
-            set 
-            { 
-                gaugingReady = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                gaugingReady = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
+                OnPropertyChanged(nameof(ReadyToRun));
             }
         }
 
@@ -142,10 +200,10 @@ namespace ProjectLighthouse.Model.Orders
         public bool MaterialOrdered
         {
             get { return materialOrdered; }
-            set 
-            { 
-                materialOrdered = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                materialOrdered = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
             }
         }
@@ -155,11 +213,12 @@ namespace ProjectLighthouse.Model.Orders
         public bool MaterialReady
         {
             get { return materialReady; }
-            set 
-            { 
+            set
+            {
                 materialReady = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
+                OnPropertyChanged(nameof(ReadyToRun));
             }
         }
 
@@ -200,6 +259,45 @@ namespace ProjectLighthouse.Model.Orders
         {
             string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<GeneralManufactureOrder>(serialised);
+        }
+
+        public int CalculateTimeToComplete()
+        {
+            DateTime start = StartDate == DateTime.MinValue ? DateTime.Today.AddDays(1) : StartDate;
+            DateTime cursor = start;
+
+            int remaining = RequiredQuantity;
+
+            if (Lots != null)
+            {
+                if (Lots.Count > 0)
+                {
+                    remaining -= Lots.Where(x => x.IsAccepted).Sum(x => x.Quantity);
+                    cursor = Lots.Where(x => x.IsAccepted).Max(x => x.DateProduced);
+                }
+            }
+
+
+            while (remaining > 0)
+            {
+                OpeningHours.Day cursorOpeningHours = App.Constants.OpeningHours.Data[cursor.DayOfWeek];
+                if (!cursorOpeningHours.OpensOnDay)
+                {
+                    cursor = cursor.AddDays(1);
+                    continue;
+                }
+
+
+                TimeSpan availableTime = cursorOpeningHours.GetOpeningHoursTimeSpan();
+                int totalOnDay = (int)Math.Floor(availableTime.TotalSeconds / Item.CycleTime);
+
+                remaining -= totalOnDay;
+                remaining = Math.Max(remaining, 0);
+
+                cursor = cursor.AddDays(1);
+            }
+
+            return (int)Math.Round((cursor - StartDate).TotalSeconds);
         }
     }
 }

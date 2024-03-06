@@ -5,9 +5,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Orders.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:valueConverters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     x:Name="parentControl"
     d:Background="White"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <valueConverters:StringIsNotEmpty x:Key="notEmptyStringConverter"/>
+        <valueConverters:DateTimeIsRecent x:Key="DateTimeIsRecent"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -22,15 +27,16 @@
                     FontSize="20"
                     FontWeight="Bold"
                     Foreground="{StaticResource OnBackground}" />
-                <!--<Border
+                <Border
                     x:Name="RecentUpdateFlag"
                     Width="10"
+                    Visibility="{Binding ElementName=parentControl, Path=Order.ModifiedAt, Converter={StaticResource DateTimeIsRecent}}"
                     Height="10"
                     Margin="5,0,0,0"
                     HorizontalAlignment="Left"
                     Background="{StaticResource Blue}"
                     CornerRadius="5"
-                    Opacity="0.7" />-->
+                    Opacity="0.7" />
             </StackPanel>
 
             <StackPanel Opacity="0.7" Orientation="Horizontal">
@@ -50,6 +56,8 @@
                     FontWeight="SemiBold"
                     Foreground="{StaticResource Blue}" />
 
+                <StackPanel Orientation="Horizontal" x:Name="assignmentWrapper">
+                    
                 <Path
                     Visibility="{Binding Order.AssignedTo, ElementName=parentControl, Converter={StaticResource NotNullToVisibility}}"
                     x:Name="clippy"
@@ -66,77 +74,21 @@
                     FontSize="14"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource Purple}" />
+                </StackPanel>
             </StackPanel>
 
         </StackPanel>
-        <!--<StackPanel
-            Grid.Column="1"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center">
-            <Border
-                x:Name="ClosedBadge"
-                Width="90"
-                Height="22"
-                Background="{StaticResource OnBackgroundFaded}"
-                CornerRadius="3"
-                ToolTip="This order has been completed and all lots delivered/scrapped.">
 
-                <StackPanel
-                    Margin="8,2"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-                    <Path
-                        Width="10"
-                        Height="10"
-                        Margin="0,0,5,0"
-                        VerticalAlignment="Center"
-                        Data="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"
-                        Fill="{StaticResource OnBackground}"
-                        Stretch="Uniform" />
-                    <TextBlock
-                        Margin="0,0,0,1"
-                        VerticalAlignment="Center"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource OnBackground}"
-                        Text="Closed" />
-                </StackPanel>
-            </Border>
-
-            <Border
-                x:Name="StaleBadge"
-                Width="90"
-                Height="22"
-                Background="{StaticResource RedFaded}"
-                CornerRadius="3"
-                ToolTip="Last update on problem was over 3 days ago">
-
-                <StackPanel
-                    Margin="8,2"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-                    <Path
-                        Width="10"
-                        Height="10"
-                        Margin="0,0,5,0"
-                        HorizontalAlignment="Right"
-                        Data="M12,2C16.46,2 20.26,4.95 21.54,9H18V20C16.33,21.25 14.25,22 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M16.2,16.2L17,14.9L12.5,12.2V7H11V13L16.2,16.2M20,11H22V18H20V11M20,20H22V22H20V20Z"
-                        Fill="{StaticResource Red}"
-                        Stretch="Uniform" />
-                    <TextBlock
-                        Margin="0,0,0,1"
-                        VerticalAlignment="Center"
-                        FontWeight="SemiBold"
-                        Foreground="{StaticResource Red}"
-                        Text="Update" />
-                </StackPanel>
-            </Border>
-
-
-
-        </StackPanel>-->
         <local:DisplayOrderStateBadge
             Grid.Column="2"
             VerticalAlignment="Center"
             OrderState="{Binding Order.State, ElementName=parentControl}" />
+
+        <Border Grid.Column="2"  Background="{StaticResource OrangeFaded}" CornerRadius="5" VerticalAlignment="Center" Visibility="{Binding ElementName=parentControl, Path=Order.Editing, Converter={StaticResource boolToVisibleOrCollapsed}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5">
+                <Path Style="{StaticResource Icon_Edit}" Fill="{StaticResource Orange}" Height="10" Width="10" Margin="0,0,3,0"/>
+                <TextBlock Text="Editing" Foreground="{StaticResource Orange}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

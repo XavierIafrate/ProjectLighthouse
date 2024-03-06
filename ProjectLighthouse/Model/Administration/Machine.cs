@@ -9,7 +9,7 @@ using System.Text;
 
 namespace ProjectLighthouse.Model.Administration
 {
-    public class Machine : BaseObject, IObjectWithValidation
+    public class Machine : BaseObject, IObjectWithValidation, ICloneable
     {
         private string id;
         [PrimaryKey]
@@ -184,6 +184,12 @@ namespace ProjectLighthouse.Model.Administration
             //}
 
             return mod;
+        }
+
+        object ICloneable.Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Machine>(serialised);
         }
     }
 }

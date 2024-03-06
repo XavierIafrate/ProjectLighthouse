@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Windows.Input;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
@@ -20,11 +19,39 @@ namespace ProjectLighthouse.Model.Scheduling
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
 
-        public DateTime? ModifiedAt { get; set; }
-        public string? ModifiedBy { get; set; }
+        private DateTime? modifiedAt;
+        public DateTime? ModifiedAt
+        {
+            get { return modifiedAt; }
+            set
+            {
+                modifiedAt = value;
+                OnPropertyChanged();
+            }
+        }
 
+        private string? modifiedBy;
+        public string? ModifiedBy
+        {
+            get { return modifiedBy; }
+            set
+            {
+                modifiedBy = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string poReference;
         [UpdateWatch]
-        public string POReference { get; set; }
+        public string POReference
+        {
+            get { return poReference; }
+            set
+            {
+                poReference = value;
+                OnPropertyChanged();
+            }
+        }
 
         private OrderState orderState = OrderState.Problem;
         [UpdateWatch]
@@ -69,7 +96,7 @@ namespace ProjectLighthouse.Model.Scheduling
             }
             set
             {
-                assignedTo = value; 
+                assignedTo = value;
                 OnPropertyChanged();
             }
         }
@@ -134,9 +161,9 @@ namespace ProjectLighthouse.Model.Scheduling
         [Ignore]
         public ProductionSchedule.ScheduleLock? ScheduleLockData
         {
-            get 
-            { 
-                if(string.IsNullOrEmpty(ScheduleLock)) return null;
+            get
+            {
+                if (string.IsNullOrEmpty(ScheduleLock)) return null;
                 try
                 {
                     return ProductionSchedule.ScheduleLock.Parse(ScheduleLock);
@@ -158,6 +185,15 @@ namespace ProjectLighthouse.Model.Scheduling
                 OnPropertyChanged();
             }
         }
+
+        private bool editing;
+        [Ignore]
+        public bool Editing
+        {
+            get { return editing; }
+            set { editing = value; OnPropertyChanged(); }
+        }
+
 
         public event EventHandler OnScheduleLockChanged;
 
@@ -194,17 +230,34 @@ namespace ProjectLighthouse.Model.Scheduling
         }
 
 
-
+        private List<Lot> lots;
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public List<Lot> Lots { get; set; }
+        public List<Lot> Lots
+        {
+            get { return lots; }
+            set
+            {
+                lots = value;
+                OnPropertyChanged();
+            }
+        }
 
-
+        private List<Note> notes;
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public List<Note> Notes { get; set; }
-
-
+        public List<Note> Notes
+        {
+            get
+            {
+                return notes;
+            }
+            set
+            {
+                notes = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event Action EditMade;
         public void NotifyEditMade()
@@ -247,7 +300,7 @@ namespace ProjectLighthouse.Model.Scheduling
             }
 
             string dbMachineEntry = string.IsNullOrEmpty(AllocatedMachine) ? "NULL" : $"'{AllocatedMachine}'";
-            
+
             DatabaseHelper.ExecuteCommand($"UPDATE {table} SET StartDate = {StartDate.Ticks}, AllocatedMachine={dbMachineEntry} WHERE Id={Id}");
         }
 
@@ -261,7 +314,7 @@ namespace ProjectLighthouse.Model.Scheduling
         {
             if (otherItem.Name != Name)
             {
-                    throw new InvalidOperationException($"Items being compared must have the same name");
+                throw new InvalidOperationException($"Items being compared must have the same name");
             }
 
 
@@ -292,7 +345,7 @@ namespace ProjectLighthouse.Model.Scheduling
             }
 
             bool mod = false;
-            
+
             StringBuilder sb = new();
 
             foreach (PropertyInfo property in properties)

@@ -2,6 +2,7 @@
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
@@ -449,21 +450,38 @@ namespace ProjectLighthouse.Model.Orders
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public List<TechnicalDrawing> Drawings { get; set; } = new();
+        public List<TechnicalDrawing> Drawings { get; set; }
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public List<OrderDrawing> DrawingsReferences { get; set; } = new();
+        public List<OrderDrawing> DrawingsReferences { get; set; }
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public Lathe AssignedLathe { get; set; } = new();
+        public Lathe AssignedLathe { get; set; }
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public List<BarIssue> BarIssues { get; set; } = new();
+        public List<BarIssue> BarIssues { get; set; }
 
-        
+        private Product product;
+        [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public Product Product
+        {
+            get { return product; }
+            set { product = value; OnPropertyChanged(); }
+        }
+
+        private ProductGroup productGroup;
+        [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public ProductGroup ProductGroup
+        {
+            get { return productGroup; }
+            set { productGroup = value; OnPropertyChanged(); }
+        }
+
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
@@ -479,50 +497,6 @@ namespace ProjectLighthouse.Model.Orders
         {
             return Name;
         }
-
-        //public override bool IsUpdated(LatheManufactureOrder OtherOrder)
-        //{
-        //    if (OtherOrder.Name != Name)
-        //    {
-        //        throw new InvalidOperationException($"Cannot compare order {Name} with record {OtherOrder.Name}");
-        //    }
-
-        //    PropertyInfo[] properties = typeof(LatheManufactureOrder).GetProperties();
-        //    bool mod = false;
-        //    StringBuilder sb = new();
-
-        //    foreach (PropertyInfo property in properties)
-        //    {
-        //        bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
-        //        if (!watchPropForChanges)
-        //        {
-        //            continue;
-        //        }
-
-        //        if (!Equals(property.GetValue(this), property.GetValue(OtherOrder)))
-        //        {
-        //            if (!mod)
-        //            {
-        //                sb.AppendLine($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
-        //            }
-        //            sb.AppendLine($"\t{property.Name} modified");
-        //            sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
-        //            sb.AppendLine($"\t\tto  : '{property.GetValue(OtherOrder) ?? "null"}'");
-
-        //            mod = true;
-        //        }
-
-        //    }
-
-        //    if (mod)
-        //    {
-        //        string path = App.ROOT_PATH + @"lib\logs\" + Name + ".log";
-
-        //        File.AppendAllText(path, sb.ToString());
-        //    }
-
-        //    return mod;
-        //}
 
         public bool RequiresBar()
         {

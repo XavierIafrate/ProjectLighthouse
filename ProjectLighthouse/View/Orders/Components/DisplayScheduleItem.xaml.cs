@@ -15,7 +15,6 @@ namespace ProjectLighthouse.View.Orders.Components
         public static readonly DependencyProperty OrderProperty =
             DependencyProperty.Register("Order", typeof(ScheduleItem), typeof(DisplayScheduleItem), new PropertyMetadata(null));
 
-
         public DisplayScheduleItem()
         {
             InitializeComponent();
@@ -23,14 +22,12 @@ namespace ProjectLighthouse.View.Orders.Components
             if (App.CurrentUser.Role == Model.Administration.UserRole.Purchasing)
             {
                 PoTextBlock.Visibility = Visibility.Visible;
-                clippy.Visibility = Visibility.Collapsed;
-                AssignmentTextBlock.Visibility = Visibility.Collapsed;
+                assignmentWrapper.Visibility = Visibility.Collapsed;
             }
             else
             {
                 PoTextBlock.Visibility = Visibility.Collapsed;
-                clippy.Visibility = Visibility.Visible;
-                AssignmentTextBlock.Visibility = Visibility.Visible;
+                assignmentWrapper.Visibility = Visibility.Visible;
             }
         }
     }

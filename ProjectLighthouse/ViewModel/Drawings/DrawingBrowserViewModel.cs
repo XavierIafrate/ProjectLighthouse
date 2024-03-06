@@ -515,7 +515,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
                 return;
             }
 
-            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.GetFullName() != App.CurrentUser.GetFullName()).ToList();
+            List<User> ToNotify = App.NotificationsManager.Users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.GetFullName() != App.CurrentUser.GetFullName()).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
                 DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Comment: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} added a comment to this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
@@ -550,7 +550,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
             SelectedDrawing.PrepareMarkedPdf();
 
-            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.GetFullName() == SelectedDrawing.CreatedBy).ToList();
+            List<User> ToNotify = App.NotificationsManager.Users.Where(x => x.GetFullName() == SelectedDrawing.CreatedBy).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
                 DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Rejected: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has rejected this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
@@ -637,7 +637,7 @@ namespace ProjectLighthouse.ViewModel.Drawings
 
             SelectedDrawing.PrepareMarkedPdf();
 
-            List<User> ToNotify = App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.GetFullName() != App.CurrentUser.GetFullName()).ToList();
+            List<User> ToNotify = App.NotificationsManager.Users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.GetFullName() != App.CurrentUser.GetFullName()).ToList();
             for (int i = 0; i < ToNotify.Count; i++)
             {
                 DatabaseHelper.Insert<Notification>(new(to: ToNotify[i].UserName, from: App.CurrentUser.UserName, header: $"Approved: {SelectedDrawing.DrawingName}", body: $"{App.CurrentUser.FirstName} has approved this drawing.", toastAction: $"viewDrawing:{SelectedDrawing.Id}"));
