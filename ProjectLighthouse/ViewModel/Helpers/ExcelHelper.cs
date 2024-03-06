@@ -1,7 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
-using ProjectLighthouse.ViewModel.Helpers;
 using SpreadsheetLight;
 using SpreadsheetLight.Drawing;
 using System;
@@ -9,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace ViewModel.Helpers
+namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class ExcelHelper
     {
