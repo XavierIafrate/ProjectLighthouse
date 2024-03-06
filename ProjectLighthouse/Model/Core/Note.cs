@@ -1,19 +1,24 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using SQLite;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Core
 {
-    public class Note : BaseObject
+    public class Note : BaseObject, IObjectWithValidation
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        private string message;
 
+        private string message = string.Empty;
         public string Message
         {
             get { return message; }
-            set { message = value; OnPropertyChanged(); }
+            set 
+            { 
+                message = value;
+                OnPropertyChanged(); 
+            }
         }
 
         public string OriginalMessage { get; set; }
@@ -26,10 +31,10 @@ namespace ProjectLighthouse.Model.Core
         }
 
 
-        public string SentBy { get; set; }
-        public string DateSent { get; set; }
-        public string DateEdited { get; set; }
-        public string DocumentReference { get; set; }
+        public string SentBy { get; set; } = string.Empty;
+        public string DateSent { get; set; } = string.Empty;
+        public string DateEdited { get; set; } = string.Empty;
+        public string DocumentReference { get; set; } = string.Empty;
 
         private bool isDeleted;
         public bool IsDeleted
@@ -46,5 +51,25 @@ namespace ProjectLighthouse.Model.Core
         [Ignore]
         public User UserDetails { get; set; }
 
+        public void ValidateAll()
+        {
+            ValidateProperty(nameof(Message));
+        }
+
+        public void ValidateProperty([CallerMemberName] string propertyName = "")
+        {
+            if (propertyName == nameof(Message))
+            {
+                ClearErrors(propertyName);
+
+                if (string.IsNullOrWhiteSpace(Message))
+                {
+                    AddError(propertyName, "Message must not be empty");
+                }
+
+                return;
+            }
+            throw new NotImplementedException();
+        }
     }
 }
