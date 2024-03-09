@@ -73,7 +73,7 @@ namespace ProjectLighthouse.View.Administration
                 return;
             }
 
-            if (machine.IsUpdated(originalMachine))
+            if (originalMachine.IsUpdated(machine))
             {
                 SaveExit = true;
             }
