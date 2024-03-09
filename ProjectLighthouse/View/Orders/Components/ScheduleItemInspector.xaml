@@ -169,14 +169,14 @@
                                             FontSize="13"
                                             FontWeight="SemiBold"
                                             Foreground="{Binding Item.State, ElementName=parentControl, Converter={StaticResource StateBrush}}"
-                                            Text="{Binding Item.ModifiedAt, ElementName=parentControl, Converter={StaticResource ModifiedFormatter}, StringFormat='{}Updated {0}'}" />
+                                            Text="{Binding Item.ModifiedAt, ElementName=parentControl, Converter={StaticResource ModifiedFormatter}, StringFormat='{}Updated {0}', TargetNullValue='This order has not been updated'}" />
                                         <TextBlock
                                             d:Foreground="{StaticResource Blue}"
                                             d:Text=" by USERNAME"
                                             FontSize="13"
                                             FontWeight="SemiBold"
                                             Foreground="{Binding Item.State, ElementName=parentControl, Converter={StaticResource StateBrush}}"
-                                            Text="{Binding Item.ModifiedBy, ElementName=parentControl, StringFormat='{} by {0}'}" />
+                                            Text="{Binding Item.ModifiedBy, ElementName=parentControl, StringFormat='{} by {0}', TargetNullValue=''}" />
 
 
                                     </StackPanel>

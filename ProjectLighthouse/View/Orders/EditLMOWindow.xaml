@@ -910,11 +910,11 @@
                         SelectionChanged="Items_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <uc:DisplayLMOItems
+                                <!--<uc:DisplayLMOItems
                                     Margin="10,2"
                                     EditCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=SaveCommand}"
                                     LatheManufactureOrderItem="{Binding}"
-                                    MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" />
+                                    MouseDoubleClick="DisplayLMOItems_MouseDoubleClick" />-->
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -934,12 +934,12 @@
                         MinHeight="120"
                         MaxHeight="400"
                         VerticalScrollBarVisibility="Auto">
-                        <uc:DisplayListOfNotes
+                        <!--<uc:DisplayListOfNotes
                             x:Name="NotesDisplay"
                             DeleteCommand="{Binding DeleteNoteCmd}"
                             Notes="{Binding Notes}"
                             SaveEditCommand="{Binding SaveEditNoteCmd}"
-                            ShowingEditControls="True" />
+                            ShowingEditControls="True" />-->
                     </ScrollViewer>
 
                     <Grid

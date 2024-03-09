@@ -26,7 +26,7 @@
             <TextBlock Style="{StaticResource section}" Text="Requirement" />
             <local:DisplayGeneralOrderRequirement Margin="10" Order="{Binding Order, ElementName=parentControl}" />
 
-            <TabControl>
+            <TabControl x:Name="OrderTabControl">
                 <TabItem>
                     <TabItem.Header>
                         <emoji:TextBlock
@@ -126,26 +126,42 @@
                             FontWeight="SemiBold"
                             Text="⚙️ Configuration" />
                     </TabItem.Header>
-                    <StackPanel IsEnabled="{Binding Path=EditMode, ElementName=parentControl}">
-                        <TextBlock Style="{StaticResource InputLabel}" Text="Assigned To" />
-                        <ComboBox
-                            IsEnabled="{Binding Path=EditMode, ElementName=parentControl}"
-                            ItemsSource="{Binding ProductionStaff, ElementName=parentControl}"
-                            SelectedValue="{Binding Order.AssignedTo, ElementName=parentControl}"
-                            SelectedValuePath="UserName" />
-                        <TextBlock Style="{StaticResource InputLabel}" Text="Purchase Order" />
-                        <TextBox
-                            Style="{StaticResource DefaultTextBox}"
-                            Tag="purchase order"
-                            Text="{Binding Order.POReference, ElementName=parentControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock Style="{StaticResource InputLabel}" Text="Required Quantity" />
-                        <TextBox
-                            Style="{StaticResource DefaultTextBox}"
-                            Tag="required quantity"
-                            Text="{Binding Order.RequiredQuantity, ElementName=parentControl}" />
-                        <TextBlock Style="{StaticResource InputLabel}" Text="Required Date" />
-                        <DatePicker SelectedDate="{Binding ElementName=parentControl, Path=Order.RequiredDate}" />
-                    </StackPanel>
+                    <Grid Margin="10,5" IsEnabled="{Binding Path=EditMode, ElementName=parentControl}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource InputLabel}" Text="Assigned To" />
+                            <ComboBox
+                                IsEnabled="{Binding Path=EditMode, ElementName=parentControl}"
+                                ItemsSource="{Binding ProductionStaff, ElementName=parentControl}"
+                                SelectedValue="{Binding Order.AssignedTo, ElementName=parentControl}"
+                                SelectedValuePath="UserName" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Style="{StaticResource InputLabel}" Text="Purchase Order" />
+                            <TextBox
+                                Style="{StaticResource DefaultTextBox}"
+                                Tag="purchase order"
+                                Text="{Binding Order.POReference, ElementName=parentControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1">
+                            <TextBlock Style="{StaticResource InputLabel}" Text="Required Quantity" />
+                            <TextBox
+                                Style="{StaticResource DefaultTextBox}"
+                                Tag="required quantity"
+                                Text="{Binding Order.RequiredQuantity, ElementName=parentControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <TextBlock Style="{StaticResource InputLabel}" Text="Required Date" />
+                            <DatePicker SelectedDate="{Binding ElementName=parentControl, Path=Order.RequiredDate}" />
+                        </StackPanel>
+                    </Grid>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>
@@ -154,37 +170,43 @@
                             FontWeight="SemiBold"
                             Text="🌶️ Production" />
                     </TabItem.Header>
-                    <StackPanel>
-                        <StackPanel IsEnabled="{Binding Order.ReadyToRun, ElementName=parentControl}" >
+                    <StackPanel Margin="10,5">
+                        <StackPanel IsEnabled="{Binding Order.ReadyToRun, ElementName=parentControl}">
 
                             <TextBlock Style="{StaticResource section}" Text="Order Status" />
-                            <StackPanel IsEnabled="{Binding EditMode, ElementName=parentControl}">
-                                
-                            <CheckBox
-                                Margin="10,8"
-                                HorizontalAlignment="Left"
-                                Content="Job is running"
-                                IsChecked="{Binding Order.HasStarted, ElementName=parentControl}"
-                                IsEnabled="{Binding Order.IsComplete, ElementName=parentControl, Converter={StaticResource invertBool}}"
-                                Style="{StaticResource PreflightCheckbox}" />
-                            <CheckBox
-                                Margin="10,8"
-                                HorizontalAlignment="Left"
-                                Content="Job is complete"
-                                IsChecked="{Binding Order.IsComplete, ElementName=parentControl}"
-                                IsEnabled="{Binding Order.IsClosed, ElementName=parentControl, Converter={StaticResource invertBool}}"
-                                Style="{StaticResource PreflightCheckbox}" />
+                            <StackPanel IsEnabled="{Binding EditMode, ElementName=parentControl}" Orientation="Horizontal">
+
+                                <CheckBox
+                                    Margin="10,8"
+                                    HorizontalAlignment="Left"
+                                    Content="Job is running"
+                                    IsChecked="{Binding Order.HasStarted, ElementName=parentControl}"
+                                    IsEnabled="{Binding Order.IsComplete, ElementName=parentControl, Converter={StaticResource invertBool}}"
+                                    Style="{StaticResource PreflightCheckbox}" />
+                                <CheckBox
+                                    Margin="10,8"
+                                    HorizontalAlignment="Left"
+                                    Content="Job is complete"
+                                    IsChecked="{Binding Order.IsComplete, ElementName=parentControl}"
+                                    IsEnabled="{Binding Order.HasStarted, ElementName=parentControl}"
+                                    Style="{StaticResource PreflightCheckbox}" />
+                                <CheckBox
+                                    Margin="10,8"
+                                    HorizontalAlignment="Left"
+                                    Content="Job is cancelled"
+                                    IsChecked="{Binding Order.IsCancelled, ElementName=parentControl}"
+                                    Style="{StaticResource PreflightCheckbox}" />
                             </StackPanel>
 
                         </StackPanel>
                         <TextBlock Style="{StaticResource section}" Text="Production Log" />
                         <Grid IsEnabled="{Binding Order.HasStarted, ElementName=parentControl}">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <Grid IsEnabled="{Binding Path=EditMode, ElementName=parentControl}">
+                            <Grid IsEnabled="{Binding Path=EditMode, ElementName=parentControl}" Visibility="{Binding Path=EditMode, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="2*" />
@@ -240,9 +262,9 @@
                                     Height="Auto"
                                     Padding="0,5"
                                     d:Text="REMARKS"
+                                    MaxLength="512"
                                     Style="{StaticResource DefaultTextBox}"
                                     Tag="remarks"
-                                    MaxLength="512"
                                     Text="{Binding ElementName=parentControl, Path=NewLot.Remarks}" />
                                 <StackPanel
                                     Grid.Row="5"

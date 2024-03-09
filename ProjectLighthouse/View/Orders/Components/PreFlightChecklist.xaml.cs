@@ -59,8 +59,9 @@ namespace ProjectLighthouse.View.Orders.Components
                 return;
             }
 
-            control.BarStock = control.baseBarStock.Where(x => x.MaterialId == control.Order.MaterialId).ToList();
+            control.BarStock = control.baseBarStock.Where(x => x.MaterialId == control.Order.MaterialId && x.Size >= control.Order.MajorDiameter && x.IsHexagon == control.Order.ProductGroup.UsesHexagonBar).ToList();
             control.barComboBox.SelectedValue = control.BarStock.Find(x => x.Id == control.Order.BarID);
+            control.BarSelection.IsEnabled = control.Order.NumberOfBarsIssued == 0;
 
             control.SetEnabled();
         }

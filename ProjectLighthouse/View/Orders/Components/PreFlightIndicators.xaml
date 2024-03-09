@@ -52,8 +52,8 @@
         <Path
             Grid.Column="1"
             Width="Auto"
-            Margin="5"
             Height="Auto"
+            Margin="5"
             d:Fill="Black"
             Fill="{Binding Path=ToolingBrush, ElementName=parentControl}"
             Style="{StaticResource Icon_Tooling}" />
@@ -79,8 +79,8 @@
         <Path
             Grid.Column="2"
             Width="Auto"
-            Margin="5"
             Height="Auto"
+            Margin="5"
             d:Fill="Black"
             Fill="{Binding Path=BarVerifiedBrush, ElementName=parentControl}"
             Style="{StaticResource Icon_Verified}" />
@@ -106,8 +106,8 @@
         <Path
             Grid.Column="3"
             Width="Auto"
-            Margin="5"
             Height="Auto"
+            Margin="5"
             d:Fill="Black"
             Fill="{Binding Path=BarPreparedBrush, ElementName=parentControl}"
             Style="{StaticResource Icon_BarStock}" />

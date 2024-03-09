@@ -50,8 +50,12 @@
             Opacity="0.6"
             Text="This bar will be used for this order - if it doesn't look right to you, change it using the dropdown."
             TextWrapping="Wrap" />
+        <TextBlock 
+            FontSize="14"
+            Opacity="0.6"
+            Text="{Binding ElementName=parentControl, Path=Order.NumberOfBars, StringFormat='{}{0} bars will be required.'}"/>
         <userControls:DisplayBarStock Bar="{Binding Order.Bar, ElementName=parentControl}" />
-        <Grid>
+        <Grid x:Name="BarSelection">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -61,7 +65,10 @@
                 Width="Auto"
                 Height="Auto"
                 HorizontalAlignment="Stretch"
+                IsEnabled="{Binding ElementName=parentControl, Path=Order.BarIsVerified, Converter={StaticResource invertBool}}"
                 FontWeight="SemiBold"
+                SelectedValue="{Binding Order.BarID, ElementName=parentControl}"
+                SelectedValuePath="Id"
                 ItemsSource="{Binding BarStock, ElementName=parentControl}" />
 
             <CheckBox
@@ -71,6 +78,8 @@
                 IsChecked="{Binding ElementName=parentControl, Path=Order.BarIsVerified}"
                 Style="{StaticResource PreflightCheckbox}" />
         </Grid>
+
+
         <Separator Background="{StaticResource Surface}" Margin="0,10" Width="300" HorizontalAlignment="Left">
             <Separator.RenderTransform>
                 <ScaleTransform ScaleY="2"/>

@@ -8,10 +8,15 @@
     xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:valueConverters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     x:Name="parentControl"
     d:Background="White"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <valueConverters:DateTimeToRelativeTime x:Key="dateConverter" />
+    </UserControl.Resources>
+
     <StackPanel>
         <Border
             Background="{StaticResource BlueFaded}"
@@ -122,7 +127,7 @@
                                 Margin="0,5"
                                 Background="{StaticResource BlueFaded}"
                                 CornerRadius="5"
-                                Visibility="{Binding RunBeforeText, Converter={StaticResource NullToVisibility}}">
+                                Visibility="{Binding ElementName=parentControl, Path=Order.Briefing.ArchetypeRunBefore, Converter={StaticResource boolToCollapsedOrVisible}}">
                                 <StackPanel
                                     Margin="5"
                                     HorizontalAlignment="Center"
@@ -145,7 +150,7 @@
                                 Margin="0,5"
                                 Background="{StaticResource GreenFaded}"
                                 CornerRadius="5"
-                                Visibility="{Binding RunBeforeText, Converter={StaticResource NotNullToVisibility}}">
+                                Visibility="{Binding ElementName=parentControl, Path=Order.Briefing.ArchetypeRunBefore, Converter={StaticResource boolToVisibleOrCollapsed}}">
                                 <StackPanel
                                     Margin="5"
                                     HorizontalAlignment="Center"
@@ -161,11 +166,11 @@
                                         d:Text="This archetype has been set X times"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource Green}"
-                                        Text="{Binding RunBeforeText}" />
+                                        Text="{Binding ElementName=parentControl, Path=Order.Briefing.NumberOfTimesRun, StringFormat='{}This archetype has been set {0} times'}" />
                                 </StackPanel>
                             </Border>
 
-                            <Grid Visibility="{Binding RunBeforeText, Converter={StaticResource NotNullToVisibility}}">
+                            <Grid Visibility="{Binding ElementName=parentControl, Path=Order.Briefing.ArchetypeRunBefore, Converter={StaticResource boolToVisibleOrCollapsed}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -175,7 +180,7 @@
                                         Margin="0,0,2.5,5"
                                         Background="{StaticResource GreenFaded}"
                                         CornerRadius="5"
-                                        Visibility="{Binding RunInMaterialBefore, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                                        Visibility="{Binding ElementName=parentControl, Path=Order.Briefing.RunInMaterialBefore, Converter={StaticResource boolToVisibleOrCollapsed}}">
                                         <StackPanel
                                             Margin="5"
                                             HorizontalAlignment="Center"
@@ -197,7 +202,7 @@
                                         Margin="0,0,2.5,5"
                                         Background="{StaticResource OrangeFaded}"
                                         CornerRadius="5"
-                                        Visibility="{Binding RunInMaterialBefore, Converter={StaticResource boolToCollapsedOrVisible}}">
+                                        Visibility="{Binding ElementName=parentControl, Path=Order.Briefing.RunInMaterialBefore, Converter={StaticResource boolToCollapsedOrVisible}}">
                                         <StackPanel
                                             Margin="5"
                                             HorizontalAlignment="Center"
@@ -236,7 +241,7 @@
                                             d:Text="Last made in MONTH"
                                             FontWeight="SemiBold"
                                             Foreground="{StaticResource Purple}"
-                                            Text="{Binding LastMadeText}" />
+                                            Text="{Binding ElementName=parentControl, Path=Order.Briefing.LastRun, Converter={StaticResource dateConverter}, StringFormat='{}Last run {0}'}" />
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -329,107 +334,7 @@
                         FontWeight="SemiBold"
                         Text="⏱️ Time" />
                 </TabItem.Header>
-                <StackPanel>
-
-                    <TextBlock
-                        Margin="10,5,0,10"
-                        Style="{StaticResource section}"
-                        Text="Time Model" />
-                    <Border
-                        Margin="5"
-                        CornerRadius="5"
-                        Visibility="{Binding CycleTimeSeries, Converter={StaticResource NotNullToVisibility}}">
-
-                        <lvc2:CartesianChart
-                            Height="300"
-                            Margin="0"
-                            AnimationsSpeed="0"
-                            Sections="{Binding Sections}"
-                            Series="{Binding CycleTimeSeries}"
-                            XAxes="{Binding CycleTimeXAxes}"
-                            YAxes="{Binding CycleTimeYAxes}" />
-
-                    </Border>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            HorizontalAlignment="Center"
-                            Text="Response" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            HorizontalAlignment="Center"
-                            d:Text="99.99 s/mm"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding ElementName=parentControl, Path=Order.TimeModelPlanned.Gradient, StringFormat='{}{0:0.00} s/mm'}" />
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            HorizontalAlignment="Center"
-                            FontWeight="SemiBold"
-                            Text="Response Intercept" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            HorizontalAlignment="Center"
-                            d:Text="-5s"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding ElementName=parentControl, Path=Order.TimeModelPlanned.Intercept, StringFormat='{}{0}s'}" />
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="2"
-                            HorizontalAlignment="Center"
-                            Text="Time Floor" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            HorizontalAlignment="Center"
-                            d:Text="60s"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding ElementName=parentControl, Path=Order.TimeModelPlanned.Floor, StringFormat='{}{0}s'}" />
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="3"
-                            HorizontalAlignment="Center"
-                            Text="Record Count" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            HorizontalAlignment="Center"
-                            d:Text="10"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding ElementName=parentControl, Path=Order.TimeModelPlanned.RecordCount, StringFormat='{}{0:0}'}" />
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="4"
-                            HorizontalAlignment="Center"
-                            Text="Confidence" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="4"
-                            HorizontalAlignment="Center"
-                            d:Text="100.0%"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding ElementName=parentControl, Path=Order.TimeModelPlanned.CoefficientOfDetermination, StringFormat='{}{0:P1}'}" />
-                    </Grid>
-                </StackPanel>
+                <local:TimeModelEditor MinHeight="100" Order="{Binding ElementName=parentControl, Path=Order}" />
             </TabItem>
             <TabItem x:Name="productionTab">
                 <TabItem.Header>
@@ -438,25 +343,60 @@
                         FontWeight="SemiBold"
                         Text="🌶️ Production" />
                 </TabItem.Header>
-                <StackPanel />
+                <StackPanel Margin="10">
+                    <TextBlock Style="{StaticResource section}" Text="Items" />
+                    <ItemsControl
+                        Margin="5"
+                        d:ItemsSource="{d:SampleData ItemCount=2}"
+                        ClipToBounds="True"
+                        ItemsSource="{Binding ElementName=parentControl, Path=Order.OrderItems}"
+                        Style="{x:Null}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <local:LatheOrderItemInspector
+                                    EditMode="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:LatheOrderInspector}, Mode=FindAncestor}, Path=EditMode}"
+                                    Item="{Binding}"
+                                    SchedulingPermissions="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:LatheOrderInspector}, Mode=FindAncestor}, Path=HasConfigPermission}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </TabItem>
         </TabControl>
 
         <!--#region Order Items-->
         <StackPanel>
-            <TextBlock
-                Margin="0,10,0,5"
-                Style="{StaticResource section}"
-                Text="{Binding Order.OrderItems.Count, ElementName=parentControl, StringFormat='{}Items ({0})', FallbackValue='Items (0)'}" />
             <Grid>
-                <ItemsControl ItemsSource="{Binding Order.OrderItems, ElementName=parentControl}">
-                    <ItemsControl.ItemTemplate>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="0,10,0,5"
+                    Style="{StaticResource section}"
+                    Text="{Binding Order.OrderItems.Count, ElementName=parentControl, StringFormat='{}Items ({0})', FallbackValue='Items (0)'}" />
+                <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    IsEnabled="{Binding Path=HasConfigPermission, ElementName=parentControl}"
+                    Orientation="Horizontal"
+                    Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                    <Button Content="Remove" Style="{StaticResource Action_Remove_Button}" x:Name="RemoveItemButton" Click="RemoveItemButton_Click" />
+                    <Button Content="Add" Style="{StaticResource Action_New_Button}" x:Name="AddItemButton" Click="AddItemButton_Click" />
+                </StackPanel>
+            </Grid>
+            <Grid>
+                <ListView
+                    d:ItemsSource="{d:SampleData ItemCount=3}"
+                    ItemsSource="{Binding Order.OrderItems, ElementName=parentControl}"
+                    SelectedItem="{Binding ElementName=parentControl, Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ListView.ItemTemplate>
                         <DataTemplate>
                             <userControls:DisplayLMOItems Margin="10,2" LatheManufactureOrderItem="{Binding}" />
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <Rectangle Fill="#01ffffff" />
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Rectangle Fill="#01ffffff" Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToCollapsedOrVisible}}" />
             </Grid>
 
             <Border
@@ -494,22 +434,22 @@
                     Style="{StaticResource section}"
                     Text="Drawings" />
                 <Button
+                    x:Name="UpdateDrawingsButton"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Content="Check for updates"
-                    x:Name="UpdateDrawingsButton"
                     Click="UpdateDrawingsButton_Click"
-                    Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToVisibleOrCollapsed}}"
-                    Style="{StaticResource Action_Reset_Button}" />
+                    Content="Check for updates"
+                    Style="{StaticResource Action_Reset_Button}"
+                    Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToVisibleOrCollapsed}}" />
             </Grid>
             <ItemsControl ItemsSource="{Binding Order.Drawings, ElementName=parentControl}" Visibility="{Binding Order.Drawings, ElementName=parentControl, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <userControls:DisplayTechnicalDrawing
                             Margin="0"
-                            PlatingStatement="{Binding ElementName=parentControl, Path=Order.PartsWillBePlated}"
                             Drawing="{Binding}"
-                            OrderReference="{Binding Order.Name, ElementName=parentControl}" />
+                            OrderReference="{Binding Order.Name, ElementName=parentControl}"
+                            PlatingStatement="{Binding ElementName=parentControl, Path=Order.PartsWillBePlated}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

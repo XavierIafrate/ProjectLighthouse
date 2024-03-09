@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -528,7 +529,7 @@ namespace ProjectLighthouse.View.Orders
 
             if (failedValidation > 0)
             {
-                throw new Exception($"{failedValidation:0} item(s) have failed validation, cannot proceed.");
+                throw new InvalidDataException($"{failedValidation:0} item(s) have failed validation, cannot proceed.");
             }
 
             NewOrder.Name = GetNewOrderId();
@@ -538,7 +539,7 @@ namespace ProjectLighthouse.View.Orders
 
             if (SelectedGroup is null)
             {
-                throw new Exception("Selected group is null, cannot proceed.");
+                throw new InvalidDataException("Selected group is null, cannot proceed.");
             }
 
             ProductGroup group = SelectedGroup;
@@ -550,7 +551,7 @@ namespace ProjectLighthouse.View.Orders
             NewOrder.MajorDiameter = group.MajorDiameter;
 
             BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId)
-                ?? throw new Exception("No bar records available that meet the size or material requirements for the product.");
+                ?? throw new InvalidDataException("No bar records available that meet the size or material requirements for the product.");
 
             NewOrder.BarsInStockAtCreation = orderBar.InStock;
             NewOrder.MaterialId = MaterialId;
@@ -679,7 +680,8 @@ namespace ProjectLighthouse.View.Orders
 
             insights.CostOfMachineTime = orderTime.TotalSeconds * App.Constants.AbsorptionRate;
 
-            insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
+            // TODO fix
+            //insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
 
             insights.CostOfOrder = insights.CostOfMachineTime + (insights.TotalBarCost / 100);
             insights.NetProfit = insights.ValueProduced - insights.CostOfOrder;

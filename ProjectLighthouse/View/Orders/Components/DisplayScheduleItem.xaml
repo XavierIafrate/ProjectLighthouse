@@ -30,7 +30,7 @@
                 <Border
                     x:Name="RecentUpdateFlag"
                     Width="10"
-                    Visibility="{Binding ElementName=parentControl, Path=Order.ModifiedAt, Converter={StaticResource DateTimeIsRecent}}"
+                    Visibility="{Binding ElementName=parentControl, Path=Order.ModifiedAt, Converter={StaticResource DateTimeIsRecent}, TargetNullValue='Collapsed'}"
                     Height="10"
                     Margin="5,0,0,0"
                     HorizontalAlignment="Left"
@@ -59,7 +59,7 @@
                 <StackPanel Orientation="Horizontal" x:Name="assignmentWrapper">
                     
                 <Path
-                    Visibility="{Binding Order.AssignedTo, ElementName=parentControl, Converter={StaticResource NotNullToVisibility}}"
+                    Visibility="{Binding Order.AssignedTo, ElementName=parentControl, Converter={StaticResource ObjectIsNotNull}}"
                     x:Name="clippy"
                     Width="12"
                     Height="12"
@@ -68,7 +68,7 @@
                     Stretch="Uniform" />
                 <TextBlock
                     x:Name="AssignmentTextBlock"
-                    Visibility="{Binding Order.AssignedTo, ElementName=parentControl, Converter={StaticResource NotNullToVisibility}}"
+                    Visibility="{Binding Order.AssignedTo, ElementName=parentControl, Converter={StaticResource ObjectIsNotNull}}"
                     d:Text="randy"
                     Text="{Binding Order.AssignedTo, ElementName=parentControl}"
                     FontSize="14"

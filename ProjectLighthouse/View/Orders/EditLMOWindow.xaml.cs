@@ -10,7 +10,6 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.View.UserControls;
-using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
@@ -29,106 +28,9 @@ using System.Windows.Input;
 
 namespace ProjectLighthouse.View.Orders
 {
-    public partial class EditLMOWindow : Window, INotifyPropertyChanged
+    public partial class EditLMOWindow : Window
     {
-        #region Variables
 
-        private LatheManufactureOrder _order;
-        public LatheManufactureOrder Order
-        {
-            get { return _order; }
-            set
-            {
-                _order = value;
-                SetCheckboxEnabling(CanEdit);
-                OnPropertyChanged();
-            }
-        }
-
-        public LatheManufactureOrder savedOrder;
-
-        public bool CanEdit { get; set; }
-
-        public List<LatheManufactureOrderItem> Items { get; set; }
-        public List<Lot> Lots;
-
-        private bool saveExit;
-        public bool SaveExit
-        {
-            get { return saveExit; }
-            set { saveExit = value; OnPropertyChanged(); }
-        }
-
-        public List<Note> Notes { get; set; }
-        public List<TechnicalDrawing> Drawings { get; set; }
-        private List<Lathe> Lathes;
-
-        List<OrderDrawing> DrawingReferences { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public List<BarStock> BarStock { get; set; }
-
-        public List<User> ProductionStaff { get; set; }
-
-        public List<BarIssue> BarIssues { get; set; }
-
-        //public OrderSaveEditNoteCommand SaveEditNoteCmd { get; set; }
-        //public OrderDeleteNoteCommand DeleteNoteCmd { get; set; }
-
-        private ProductGroup archetype;
-        private Product? product;
-        public BarStock OrderBar { get; set; }
-
-        public List<BreakdownCode> BreakdownCodes { get; set; }
-        public List<MachineBreakdown> Breakdowns { get; set; }
-
-        private MachineBreakdown newBreakdown;
-        public MachineBreakdown NewBreakdown
-        {
-            get { return newBreakdown; }
-            set 
-            { 
-                newBreakdown = value; 
-                OnPropertyChanged(); 
-            }
-        }
-
-
-        private TimeModel? tmpTimeModel;
-        public TimeModel? TmpTimeModel
-        {
-            get { return tmpTimeModel; }
-            set { tmpTimeModel = value; }
-        }
-
-
-        public ISeries[] TimeModelSeries { get; set; }
-        public Axis[] YAxes { get; set; } =
-        {
-            new Axis
-            {
-                MinLimit = 0,
-                Name="Time",
-                NameTextSize=14,
-                TextSize=12
-            }
-        };
-
-        public RectangularSection[] Sections { get; set; }
-
-        public Axis[] XAxes { get; set; } =
-        {
-            new Axis
-            {
-                MinLimit = 0,
-                Name="Major Length",
-                NameTextSize=14,
-                TextSize=12
-            }
-        };
-
-        #endregion
 
         public EditLMOWindow(string id, bool canEdit)
         {
@@ -195,29 +97,16 @@ namespace ProjectLighthouse.View.Orders
                 .ThenBy(n => n.ProductName)
                 .ToList();
 
-            for (int i = 0; i < Items.Count; i++)
-            {
-                Items[i].ShowEdit = App.CurrentUser.HasPermission(PermissionType.UpdateOrder);
-            }
+            //for (int i = 0; i < Items.Count; i++)
+            //{
+            //    Items[i].ShowEdit = App.CurrentUser.HasPermission(PermissionType.UpdateOrder);
+            //}
             OnPropertyChanged(nameof(Items));
 
 
             Lots = DatabaseHelper.Read<Lot>().Where(x => x.Order == id).ToList();
-            Notes = DatabaseHelper.Read<Note>().Where(x => x.DocumentReference == id).ToList();
-            OnPropertyChanged(nameof(Notes));
 
-            DrawingReferences = DatabaseHelper.Read<OrderDrawing>().Where(x => x.OrderId == Order.Name).ToList();
-            List<TechnicalDrawing> drawings = DatabaseHelper.Read<TechnicalDrawing>();
 
-            Drawings = new();
-            for (int i = 0; i < DrawingReferences.Count; i++)
-            {
-                Drawings.Add(drawings.Find(x => x.Id == DrawingReferences[i].DrawingId));
-            }
-
-            OnPropertyChanged(nameof(Drawings));
-
-            Task.Run(() => ChartTimeModel());
 
             BreakdownCodes = DatabaseHelper.Read<BreakdownCode>();
             Breakdowns = DatabaseHelper.Read<MachineBreakdown>()
@@ -238,332 +127,8 @@ namespace ProjectLighthouse.View.Orders
             product = DatabaseHelper.Read<Product>().Find(x => x.Id == archetype.ProductId);
         }
 
-        private void ChartTimeModel()
-        {
-            if (TmpTimeModel is null) return;
-
-            TimeModelSeries = null;
-            OnPropertyChanged(nameof(TimeModelSeries));
-
-            Sections = null;
-            OnPropertyChanged(nameof(Sections));
-
-            ISeries[] series = Array.Empty<ISeries>();
-            List<RectangularSection> sections = new();
-
-            ObservableCollection<ObservablePoint> historicalPoints = new();
-            ObservableCollection<ObservablePoint> modelledPoints = new();
-            ObservableCollection<ObservablePoint> newReadings = new();
-
-            double maxLength = Items.Max(x => x.MajorLength) * 1.1;
 
 
-            Items.ForEach(x =>
-            {
-                if (x.CycleTime > 0)
-                {
-                    newReadings.Add(new(x.MajorLength, x.CycleTime));
-                }
-
-                if (x.PreviousCycleTime is not null)
-                {
-                    historicalPoints.Add(new(x.MajorLength, x.PreviousCycleTime));
-
-                    if (x.CycleTime > 0 && x.CycleTime != x.PreviousCycleTime)
-                    {
-                        sections.Add(new RectangularSection
-                        {
-                            Yi = x.PreviousCycleTime,
-                            Yj = x.CycleTime,
-                            Xi = x.MajorLength,
-                            Xj = x.MajorLength,
-                            Stroke = new SolidColorPaint
-                            {
-                                Color = x.CycleTime > x.PreviousCycleTime ? SKColors.DarkRed.WithAlpha(50) : SKColors.DarkGreen.WithAlpha(50),
-                                StrokeThickness = 3
-                            }
-                        });
-                    }
-                }
-                else if (x.ModelledCycleTime is not null)
-                {
-                    modelledPoints.Add(new(x.MajorLength, x.ModelledCycleTime));
-                }
-            });
-
-            LineSeries<ObservablePoint> modelSeries = TimeModel.GetSeries(TmpTimeModel, maxLength, "Model");
-            modelSeries.Stroke = new SolidColorPaint(SKColors.Gray);
-            series = series.Append(modelSeries).ToArray();
-
-            if (newReadings.Count > 0)
-            {
-                series = series.Append(new ScatterSeries<ObservablePoint>
-                {
-                    Values = newReadings,
-                    Name = "New Readings",
-                    GeometrySize = 8,
-                    Fill = new SolidColorPaint(SKColors.DarkRed)
-                }).ToArray();
-            }
-
-            if (modelledPoints.Count > 0)
-            {
-                series = series.Append(new ScatterSeries<ObservablePoint>
-                {
-                    Values = modelledPoints,
-                    Name = "Modelled",
-                    GeometrySize = 8,
-                    Fill = new SolidColorPaint(SKColors.MediumPurple)
-                }).ToArray();
-            }
-
-            if (historicalPoints.Count > 0)
-            {
-                series = series.Append(new ScatterSeries<ObservablePoint>
-                {
-                    Values = historicalPoints,
-                    GeometrySize = 8,
-                    Name = "Historical",
-                    Fill = new SolidColorPaint(SKColors.Black)
-                }).ToArray();
-            }
-
-            Sections = sections.ToArray();
-            OnPropertyChanged(nameof(Sections));
-
-            TimeModelSeries = series;
-            OnPropertyChanged(nameof(TimeModelSeries));
-        }
-
-        public void SaveNoteEdit(Note note)
-        {
-            try
-            {
-                note.IsEdited = true;
-                note.DateEdited = DateTime.Now.ToString("s");
-                DatabaseHelper.Update(note, throwErrs: true);
-                SaveExit = true;
-            }
-            catch
-            {
-                MessageBox.Show("Failed to update database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            Notes = DatabaseHelper.Read<Note>().Where(x => x.DocumentReference == Order.Name).ToList();
-            OnPropertyChanged(nameof(Notes));
-        }
-
-        public void DeleteNote(Note note)
-        {
-            try
-            {
-                note.IsDeleted = true;
-                DatabaseHelper.Update(note, throwErrs: true);
-                SaveExit = true;
-            }
-            catch
-            {
-                MessageBox.Show("Failed to update database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            Notes = DatabaseHelper.Read<Note>().Where(x => x.DocumentReference == Order.Name).ToList();
-            OnPropertyChanged(nameof(Notes));
-        }
-
-        private void UpdateControls(bool canEdit)
-        {
-            NotesScroller.ScrollToBottom();
-
-            PurchaseOrderTextBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.UpdateOrder) && canEdit;
-            BarStockComboBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && !Order.BarIsVerified && canEdit;
-            SpareBarsTextBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            researchCheckBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            platingCheckBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            AssignedComboBox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            incrementButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            decrementButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            EndDatePicker.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            clearButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            SettingTimeHrs.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-            composeMessageControls.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
-
-            AddItemButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && Order.State < OrderState.Complete && canEdit;
-            GetDrawingUpdatesButton.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit && Order.State < OrderState.Complete;
-
-            SaveButton.IsEnabled = canEdit;
-
-            SetCheckboxEnabling(canEdit);
-
-            TimeTab.IsEnabled = App.CurrentUser.Role >= UserRole.Scheduling && canEdit && TmpTimeModel is not null;
-
-            if (canEdit)
-            {
-                //SaveEditNoteCmd = new(this);
-                //DeleteNoteCmd = new(this);
-            }
-        }
-
-        private void SetCheckboxEnabling(bool canEdit)
-        {
-            bool tier1;
-            bool tier2;
-            bool tier3;
-            bool tier4;
-
-            switch (Order.State)
-            {
-                case >= OrderState.Complete:
-                    tier1 = false;
-                    tier2 = false;
-                    tier3 = false;
-                    tier4 = true;
-                    break;
-                case OrderState.Running:
-                    tier1 = false;
-                    tier2 = false;
-                    tier3 = true;
-                    tier4 = true;
-                    break;
-                case OrderState.Prepared:
-                    tier1 = false;
-                    tier2 = true;
-                    tier3 = Order.StartDate.Date <= DateTime.Today;
-                    tier4 = false;
-                    break;
-                case OrderState.Problem or OrderState.Ready:
-                    tier1 = true;
-                    tier2 = true;
-                    tier3 = false;
-                    tier4 = false;
-                    break;
-                default:
-                    tier1 = false;
-                    tier2 = false;
-                    tier3 = false;
-                    tier4 = false;
-                    break;
-            }
-
-            if (!App.CurrentUser.HasPermission(PermissionType.UpdateOrder) || !canEdit)
-            {
-                tier1 = false;
-                tier2 = false;
-                tier3 = false;
-                tier4 = false;
-            }
-
-            if (Order.AllToolingReady && Order.HasProgram && Order.NumberOfBarsIssued > 0 && Order.State == OrderState.Problem)
-            {
-                // Not all bar arrived
-                tier1 = false;
-                tier2 = true;
-                tier3 = Order.StartDate.Date <= DateTime.Today; ;
-                tier4 = false;
-            }
-
-            ToolingOrdered_Checkbox.IsEnabled = tier1;
-            BarToolingOrdered_Checkbox.IsEnabled = tier1;
-            GaugesOrdered_Checkbox.IsEnabled = tier1;
-            BaseProgram_Checkbox.IsEnabled = tier1;
-            BarVerified_Checkbox.IsEnabled = tier1;
-
-            ToolingArrived_Checkbox.IsEnabled = tier2;
-            BarToolingArrived_Checkbox.IsEnabled = tier2;
-            GaugesArrived_Checkbox.IsEnabled = tier2;
-            Program_Checkbox.IsEnabled = tier2;
-
-            Running_Checkbox.IsEnabled = tier3;
-
-            Complete_Checkbox.IsEnabled = tier4 && !Order.IsCancelled;
-            Cancelled_Checkbox.IsEnabled = App.CurrentUser.HasPermission(PermissionType.EditOrder) && canEdit;
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void DisplayLMOItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is not DisplayLMOItems control) return;
-
-            if (App.CurrentUser.HasPermission(PermissionType.UpdateOrder))
-            {
-                SaveCommand.Execute(control.LatheManufactureOrderItem.Id);
-            }
-        }
-
-        private void SendButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(Message.Text.Trim()))
-            {
-                AddNewNote(Message.Text.Trim());
-            }
-        }
-
-        public void AddNewNote(string note)
-        {
-            Note newNote = new()
-            {
-                Message = note,
-                OriginalMessage = note,
-                IsEdited = false,
-                IsDeleted = false,
-                SentBy = App.CurrentUser.UserName,
-                DateSent = DateTime.Now.ToString("s"),
-                DateEdited = DateTime.MinValue.ToString("s"),
-                DocumentReference = Order.Name
-            };
-
-            // people who have already commented
-            List<string> toUpdate = Notes.Select(x => x.SentBy).Distinct().ToList();
-
-            List<string> otherUsers = App.NotificationsManager.users
-                .Where(x => x.Role >= UserRole.Production && x.ReceivesNotifications)
-                .Select(x => x.UserName)
-                .ToList();
-
-            toUpdate.AddRange(otherUsers);
-            toUpdate = toUpdate.Distinct().Where(x => x != App.CurrentUser.UserName).ToList();
-
-            for (int i = 0; i < toUpdate.Count; i++)
-            {
-                DatabaseHelper.Insert<Notification>(new(to: toUpdate[i], from: App.CurrentUser.UserName, header: $"Comment - {Order.Name}", body: note[..Math.Min(note.Length, 150)], toastAction: $"viewManufactureOrder:{Order.Name}"));
-            }
-
-            DatabaseHelper.Insert(newNote);
-            Notes.Add(newNote);
-            NotesDisplay.Notes = new List<Note>();
-            NotesDisplay.Notes = Notes;
-            Message.Text = "";
-            SaveExit = true;
-        }
-
-        private void Message_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(Message.Text) && e.Key == Key.Enter)
-            {
-                AddNewNote(Message.Text.Trim());
-            }
-        }
-
-        private void Checkbox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (sender is not CheckBox checkBox) return;
-            if (checkBox.Name == "Complete_Checkbox" && (checkBox.IsChecked ?? false))
-            {
-                if (Items.Any(x => x.QuantityDelivered < x.RequiredQuantity))
-                {
-                    MessageBox.Show(
-                        "The customer requirement has not been delivered - please ensure we have enough to cover.",
-                        "Warning",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Hand);
-                }
-            }
-
-            SetCheckboxEnabling(CanEdit);
-        }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
@@ -636,19 +201,15 @@ namespace ProjectLighthouse.View.Orders
         {
             if (from is not null)
             {
-                App.NotificationsManager.NotifyOrderAssignment(Order, from, unassigned: true);
+                NotificationManager.NotifyOrderAssignment(Order, from, unassigned: true);
             }
 
             if (to is not null)
             {
-                App.NotificationsManager.NotifyOrderAssignment(Order, to, unassigned: false);
+                NotificationManager.NotifyOrderAssignment(Order, to, unassigned: false);
             }
         }
 
-        private void SpareBarsTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = TextBoxHelper.ValidateKeyPressNumbersOnly(e);
-        }
 
         private void Items_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -729,191 +290,8 @@ namespace ProjectLighthouse.View.Orders
             Show();
         }
 
-        private void CalculateTimeAndBar()
-        {
-            Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Items, Breakdowns);
+       
 
-            double? partOff = null;
-            if (!string.IsNullOrEmpty(Order.AllocatedMachine))
-            {
-                Lathe? runningOnLathe = Lathes.Find(l => l.Id == Order.AllocatedMachine);
-                if (runningOnLathe is not null)
-                {
-                    partOff = runningOnLathe.PartOff;
-                }
-            }
-
-            if (partOff is not null)
-            {
-                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars, (double)partOff);
-            }
-            else
-            {
-                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
-            }
-        }
-
-
-        private ICommand _saveCommand;
-        public static int? _toEdit = null;
-        public ICommand SaveCommand
-        {
-            get
-            {
-                _saveCommand ??= new RelayCommand(
-                        param => this.SaveObject(),
-                        param => this.CanSave()
-                    );
-                return _saveCommand;
-            }
-        }
-
-        private bool CanSave()
-        {
-            return true;// Verify command can be executed here
-        }
-
-        private void SaveObject()
-        {
-            if (_toEdit is not int) return;
-            EditLMOItemWindow editWindow;
-
-            try
-            {
-                editWindow = new((int)_toEdit, CanEdit, allowDelivery: !Order.IsResearch);
-            }
-            catch (Exception ex)
-            {
-                NotificationManager.NotifyHandledException(ex);
-                return;
-            }
-
-            Hide();
-            editWindow.ShowDialog();
-
-            if (editWindow.SaveExit)
-            {
-                SaveExit = true;
-                LoadData(Order.Name);
-            }
-            ShowDialog();
-        }
-
-        public class RelayCommand : ICommand
-        {
-            #region Fields
-
-            readonly Action<object> _execute;
-            readonly Predicate<object> _canExecute;
-
-            #endregion
-
-            #region Constructors
-
-            public RelayCommand(Action<object> execute)
-                : this(execute, null)
-            {
-            }
-
-            public RelayCommand(Action<object> execute, Predicate<object> canExecute)
-            {
-                _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-                _canExecute = canExecute;
-            }
-
-            #endregion
-
-            #region ICommand Members
-
-            [DebuggerStepThrough]
-            public bool CanExecute(object parameters)
-            {
-                return _canExecute == null || _canExecute(parameters);
-            }
-
-            public event EventHandler CanExecuteChanged
-            {
-                add { CommandManager.RequerySuggested += value; }
-                remove { CommandManager.RequerySuggested -= value; }
-            }
-
-            public void Execute(object parameters)
-            {
-                if (parameters is not int id)
-                {
-                    return;
-                }
-                _toEdit = id;
-                _execute(parameters);
-            }
-
-            #endregion
-        }
-
-        private void GetDrawingUpdatesButton_Click(object sender, RoutedEventArgs e)
-        {
-            List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>().Where(x => x.DrawingType == (Order.IsResearch ? TechnicalDrawing.Type.Research : TechnicalDrawing.Type.Production)).ToList();
-            List<TechnicalDrawing> drawings = TechnicalDrawing.FindDrawings(allDrawings, Items, Order.GroupId, Order.MaterialId);
-
-            int[] currentDrawingIds = DrawingReferences.Select(x => x.DrawingId).OrderBy(x => x).ToArray();
-            int[] upToDateDrawingIds = drawings.Select(x => x.Id).OrderBy(x => x).ToArray();
-
-            if (currentDrawingIds.Length == upToDateDrawingIds.Length)
-            {
-                bool diff = false;
-                for (int i = 0; i < currentDrawingIds.Length; i++)
-                {
-                    if (currentDrawingIds[i] != upToDateDrawingIds[i])
-                    {
-                        diff = true;
-                        break;
-                    }
-                }
-
-                if (!diff)
-                {
-                    MessageBox.Show("No drawing updates have been found.", "Up to date", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
-            }
-            else if (currentDrawingIds.Length == 0 && upToDateDrawingIds.Length == 0)
-            {
-                MessageBox.Show("No drawing updates have been found.", "Up to date", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            for (int i = 0; i < currentDrawingIds.Length; i++)
-            {
-                if (!upToDateDrawingIds.Contains(currentDrawingIds[i]))
-                {
-                    DatabaseHelper.Delete(DrawingReferences.Find(x => x.DrawingId == currentDrawingIds[i]));
-                    Drawings.Remove(Drawings.Find(x => x.Id == currentDrawingIds[i]));
-                    DrawingReferences.Remove(DrawingReferences.Find(x => x.DrawingId == currentDrawingIds[i]));
-                }
-            }
-
-
-            for (int i = 0; i < upToDateDrawingIds.Length; i++)
-            {
-                if (!currentDrawingIds.Contains(upToDateDrawingIds[i]))
-                {
-                    OrderDrawing newRecord = new() { DrawingId = upToDateDrawingIds[i], OrderId = Order.Name };
-                    DatabaseHelper.Insert<OrderDrawing>(newRecord);
-                    DrawingReferences.Add(newRecord);
-                    Drawings.Add(drawings.Find(x => x.Id == upToDateDrawingIds[i]));
-                }
-            }
-
-            MessageBox.Show("Updated drawings were found and the order records amended.", "Now up to date", MessageBoxButton.OK, MessageBoxImage.Information);
-            SaveExit = true;
-            Drawings = new(Drawings);
-            OnPropertyChanged(nameof(Drawings));
-        }
-
-        private void PurchaseOrderTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = TextBoxHelper.ValidateAlphanumeric(e);
-        }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -933,47 +311,6 @@ namespace ProjectLighthouse.View.Orders
             LabelPrintingHelper.PrintIssue((BarIssue)BarIssuesListBox.SelectedValue, copies: 2);
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            if (sender is not ScrollViewer scrollViewer) return;
-
-            gradTop.Visibility = scrollViewer.VerticalOffset == 0
-                ? Visibility.Hidden
-                : Visibility.Visible;
-
-            gradBottom.Visibility = scrollViewer.VerticalOffset + 1 > scrollViewer.ScrollableHeight
-                ? Visibility.Hidden
-                : Visibility.Visible;
-        }
-
-        private void platingCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            Drawings.ForEach(x => x.PlatingStatement = true);
-        }
-
-        private void platingCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            Drawings.ForEach(x => x.PlatingStatement = false);
-        }
-
-        private void TimeModel_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ChartTimeModel();
-        }
-
-        private void CancelModelChanges_Click(object sender, RoutedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(Order.TimeCodePlanned))
-            {
-                TmpTimeModel = new(Order.TimeCodePlanned);
-                ChartTimeModel();
-            }
-        }
 
         private void UpdateModelChanges_Click(object sender, RoutedEventArgs e)
         {

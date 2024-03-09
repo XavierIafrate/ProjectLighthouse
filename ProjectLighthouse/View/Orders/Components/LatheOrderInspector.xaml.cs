@@ -1,17 +1,21 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Spreadsheet;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Drawings;
+using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Orders.Components
 {
-    public partial class LatheOrderInspector : UserControl
+    public partial class LatheOrderInspector : UserControl, INotifyPropertyChanged
     {
         public LatheManufactureOrder Order
         {
@@ -32,7 +36,7 @@ namespace ProjectLighthouse.View.Orders.Components
             }
             else
             {
-                control.OrderTabControl.SelectedIndex = 2;
+                control.OrderTabControl.SelectedIndex = 3;
             }
         }
 
@@ -43,7 +47,24 @@ namespace ProjectLighthouse.View.Orders.Components
         }
 
         public static readonly DependencyProperty EditModeProperty =
-            DependencyProperty.Register("EditMode", typeof(bool), typeof(LatheOrderInspector), new PropertyMetadata(false));
+            DependencyProperty.Register("EditMode", typeof(bool), typeof(LatheOrderInspector), new PropertyMetadata(false, SetEditMode));
+
+        private static void SetEditMode(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not LatheOrderInspector control) return;
+            if (control.EditMode is false)
+            {
+                control.SelectedItem = null;
+            }
+        }
+
+
+        private LatheManufactureOrderItem? selectedItem;
+        public LatheManufactureOrderItem? SelectedItem
+        {
+            get { return selectedItem; }
+            set { selectedItem = value; OnPropertyChanged(); }
+        }
 
 
         public List<User> ProductionStaff
@@ -55,6 +76,11 @@ namespace ProjectLighthouse.View.Orders.Components
         public static readonly DependencyProperty ProductionStaffProperty =
             DependencyProperty.Register("ProductionStaff", typeof(List<User>), typeof(LatheOrderInspector), new PropertyMetadata(null));
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         public bool HasConfigPermission { get; set; } = App.CurrentUser.HasPermission(Model.Core.PermissionType.EditOrder);
 
         public LatheOrderInspector()
@@ -118,5 +144,58 @@ namespace ProjectLighthouse.View.Orders.Components
 
             MessageBox.Show("Updated drawings were found and the order records amended.", "Now up to date", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+        private void RemoveItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedItem is null) return;
+            Order.OrderItems.Remove(SelectedItem);
+            Order.OrderItems = Order.OrderItems.ToList();
+        }
+
+        private void AddItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddItemToOrderWindow window = new(Order.Id);
+            if (window.PossibleItems.Count == 0)
+            {
+                MessageBox.Show("No further items are available to run on this order.", "Unavailable", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            window.ShowDialog();
+
+            //if (window.ItemsWereAdded)
+            //{
+            //    SaveExit = true;
+            //    CalculateTimeAndBar();
+            //    SaveOrder();
+            //    LoadData(Order.Name);
+            //}
+        }
+
+        private void CalculateTimeAndBar()
+        {
+            Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Items, Breakdowns);
+
+            double? partOff = null;
+            if (!string.IsNullOrEmpty(Order.AllocatedMachine))
+            {
+                Lathe? runningOnLathe = Lathes.Find(l => l.Id == Order.AllocatedMachine);
+                if (runningOnLathe is not null)
+                {
+                    partOff = runningOnLathe.PartOff;
+                }
+            }
+
+            if (partOff is not null)
+            {
+                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars, (double)partOff);
+            }
+            else
+            {
+                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
+            }
+        }
+
+
     }
 }

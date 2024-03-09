@@ -22,7 +22,7 @@ namespace ProjectLighthouse.View.Orders.Components
             {
                 new Axis()
                 {
-                    Labeler = value => new DateTime((long)value).ToString("dd/MM"),
+                    Labeler = value => value == -1 ? "" : new DateTime((long)value).ToString("dd/MM"),
                             CrosshairLabelsBackground = SKColors.Black.AsLvcColor(),
                             CrosshairLabelsPaint = new SolidColorPaint(SKColors.White, 1),
                             CrosshairPaint = new SolidColorPaint(SKColors.Black, 1),
@@ -103,7 +103,29 @@ namespace ProjectLighthouse.View.Orders.Components
             control.CalculateProductionData();
             if (control.Order is null) return;
 
+            if (control.Order.State < OrderState.Running)
+            {
+                control.OrderTabControl.SelectedIndex = 0;
+            }
+            else
+            {
+                control.OrderTabControl.SelectedIndex = 2;
+            }
             control.SetNewLot();
+
+            control.Order.PropertyChanged += control.Order_PropertyChanged;
+            if (e.OldValue is GeneralManufactureOrder prevOrder)
+            {
+                prevOrder.PropertyChanged -= control.Order_PropertyChanged;
+            }
+        }
+
+        private void Order_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(GeneralManufactureOrder.RequiredQuantity))
+            {
+                CalculateProductionData();
+            }
         }
 
         private void SetNewLot()
@@ -149,6 +171,10 @@ namespace ProjectLighthouse.View.Orders.Components
             List<DateTimePoint> actualProductionDataPoints = new();
             int totalDone = 0;
             int daysElapsed = 0;
+
+            theoreticalDataPoints.Add(new(start, 0));
+
+
             while (totalDone < Order.RequiredQuantity)
             {
                 DateTime cursor = start.AddDays(daysElapsed);
@@ -169,6 +195,8 @@ namespace ProjectLighthouse.View.Orders.Components
 
                 theoreticalDataPoints.Add(new(cursor, totalDone));
             }
+
+            Order.TimeToComplete = daysElapsed * 86400;
 
             StepLineSeries<DateTimePoint> theoreticalProduction = new()
             {

@@ -57,7 +57,7 @@
 
             <Grid
                 Grid.Row="2"
-                Margin="5,5"
+                Margin="5,0,5,5"
                 Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -65,13 +65,13 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <!--<Button
+                <Button
                     Grid.Column="0"
                     Margin="0,0,5,0"
                     HorizontalAlignment="Left"
-                    Command="{Binding NewOrderCommand}"
+                    Command="{Binding CreateNewOrderCmd}"
                     Content="New"
-                    Style="{StaticResource Action_New_Button}" />-->
+                    Style="{StaticResource Action_New_Button}" />
                 <ComboBox
                     Grid.Column="2"
                     Margin="0"
@@ -87,8 +87,8 @@
                 </ComboBox>
                 <Border
                     Grid.Column="3"
-                    Width="35"
-                    Height="35"
+                    Width="30"
+                    Height="30"
                     Margin="5,0,0,0"
                     Background="{StaticResource Surface}"
                     CornerRadius="5">
@@ -97,7 +97,7 @@
                         VerticalAlignment="Center"
                         d:Text="99"
                         FontWeight="SemiBold"
-                        Foreground="{StaticResource OnSurface}"
+                        Foreground="{StaticResource BlackLight}"
                         Text="{Binding FilteredItems.Count}" />
                 </Border>
             </Grid>
@@ -115,7 +115,7 @@
             SendMessageCommand="{Binding SendMessageCmd}"
             OrderAssignmentCounts="{Binding AssignmentCounts}"
             RelayCommand="{Binding RelayCmd}"
-            Visibility="{Binding SelectedItem, Converter={StaticResource NotNullToVisibility}}"
+            Visibility="{Binding SelectedItem, Converter={StaticResource ObjectIsNotNull}}"
             SaveMessageCommand="{Binding SaveMessageCmd}"
             DeleteMessageCommand="{Binding DeleteMessageCmd}"/>
 

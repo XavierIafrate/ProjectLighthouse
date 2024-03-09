@@ -13,7 +13,6 @@
     mc:Ignorable="d">
     <Grid Margin="20">
         <StackPanel>
-
             <TextBlock
                 x:Name="OrderRefText"
                 Style="{StaticResource title}"
