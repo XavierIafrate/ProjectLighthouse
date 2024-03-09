@@ -5,26 +5,26 @@ using System.Windows.Data;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
 {
-    public class ObjectIsNotNull : IValueConverter
+    public class DateTimeIsRecent : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool notNull = value is not null;
+            if (value is not DateTime date) return null;
 
-            if(targetType == typeof(string))
-            {
-                return notNull ? "yes" : "no";
-            }
-            else if (targetType == typeof(bool))
-            {
-                return notNull;
-            }
-            else if (targetType == typeof(Visibility))
-            {
-                return notNull ? Visibility.Visible : Visibility.Collapsed;
-            }
+            bool isRecent = date.AddHours(4) > DateTime.Now;
 
-            throw new NotImplementedException();
+            if (targetType == typeof(bool))
+            {
+                return isRecent;
+            }
+            else if(targetType == typeof(Visibility))
+            {
+                return isRecent ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
