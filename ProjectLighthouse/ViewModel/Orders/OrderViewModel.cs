@@ -27,12 +27,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using ViewModel.Helpers;
 using DateTimePoint = LiveChartsCore.Defaults.DateTimePoint;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
-    public class OrderViewModel : BaseViewModel, IDisposable
+    public class OrderViewModel : BaseViewModel
     {
         #region Variables
 
@@ -109,25 +108,9 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public List<ISeries> Series { get; set; }
 
-        public Axis[] CycleTimeYAxes { get; set; } =
-        {
-            new Axis
-            {
-                Labeler = value => $"{Math.Floor(value/60):0}m {value%60}s",
-                MinLimit = 0,
-                MinStep= 30,
-            }
-        };
+    
 
-        public Axis[] CycleTimeXAxes { get; set; } =
-        {
-            new Axis
-            {
-                LabelsRotation = 0,
-            }
-        };
-
-        public ISeries[] CycleTimeSeries { get; set; }
+        
 
         private string? runBeforeText;
         public string? RunBeforeText
@@ -210,14 +193,13 @@ namespace ProjectLighthouse.ViewModel.Orders
             set
             {
                 searchTerm = value;
-                Search();
+                //Search();
                 OnPropertyChanged();
             }
         }
         #endregion
 
 
-        public RectangularSection[] Sections { get; set; }
 
 
         #region Visibility variables
@@ -271,359 +253,14 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public OrderViewModel()
         {
-            InitialiseVariables();
-            Refresh();
+            //InitialiseVariables();
+            //Refresh();
         }
 
-        private void LoadProductionChart(List<Lot> stockLots, DateTime startingDate)
-        {
-            if (stockLots.Count == 0)
-            {
-                Series = null;
-                OnPropertyChanged(nameof(Series));
-                return;
-            }
 
-            var producedValues = new List<DateTimePoint>();
-            var scrappedValues = new List<DateTimePoint>();
-            var plannedValues = new List<DateTimePoint>();
-
-            int totalProduced = 0;
-            int totalScrapped = 0;
-            int totalPlanned = 0;
-
-            TimeSpan span = stockLots.Max(x => x.DateProduced) - startingDate;
-
-            int daysOfSpan = (int)Math.Ceiling(span.TotalDays);
-
-            if (daysOfSpan > 90 || daysOfSpan < 1)
-            {
-                Series = null;
-                OnPropertyChanged(nameof(Series));
-                return;
-            }
-
-            string[] labels = new string[daysOfSpan];
-
-            int totalPerDay = (int)(FilteredOrderItems.Sum(x => x.TargetQuantity) / ((double)SelectedOrder.TimeToComplete / 86400));
-
-            for (int i = 0; i < daysOfSpan; i++)
-            {
-                DateTime day = startingDate.AddDays(i).Date;
-                labels[i] = day.ToString("dd/MM");
-
-                totalProduced += stockLots.Where(x => x.IsAccepted && x.DateProduced.Date == day).Sum(x => x.Quantity);
-                totalScrapped += stockLots.Where(x => x.IsReject && x.DateProduced.Date == day).Sum(x => x.Quantity);
-                totalPlanned += totalPerDay;
-
-                producedValues.Add(new(day, totalProduced));
-                scrappedValues.Add(new(day, totalScrapped));
-                plannedValues.Add(new(day, totalPlanned));
-            }
-
-            if (totalProduced + totalScrapped == 0)
-            {
-                Series = null;
-                OnPropertyChanged(nameof(Series));
-                return;
-            }
-
-
-            if ((Brush)Application.Current.Resources["Blue"] is not SolidColorBrush blue
-                || (Brush)Application.Current.Resources["Red"] is not SolidColorBrush red
-                || (Brush)Application.Current.Resources["Purple"] is not SolidColorBrush purple) return;
-
-            var produced = new ColumnSeries<DateTimePoint>
-            {
-                Values = producedValues,
-                Stroke = null,
-                Padding = 2,
-                Name = "Total Produced",
-                Fill = new SolidColorPaint(new SKColor(blue.Color.R, blue.Color.G, blue.Color.B))
-            };
-
-            var scrapped = new ColumnSeries<DateTimePoint>
-            {
-                Values = scrappedValues,
-                Stroke = null,
-                Padding = 2,
-                Name = "Total Scrapped",
-                Fill = new SolidColorPaint(new SKColor(red.Color.R, red.Color.G, red.Color.B))
-            };
-
-            var planned = new ColumnSeries<DateTimePoint>
-            {
-                Values = plannedValues,
-                Stroke = null,
-                Padding = 2,
-                Name = "Total Planned",
-                Fill = new SolidColorPaint(new SKColor(purple.Color.R, purple.Color.G, purple.Color.B))
-            };
-
-
-            Series = new List<ISeries> { scrapped, produced, planned };
-            OnPropertyChanged(nameof(Series));
-        }
-
-        //public void ShowWorkload()
-        //{
-        //    _workloadWindow = new() { Owner = App.MainViewModel.MainWindow };
-
-        //    _workloadWindow.SetWorkload(Orders);
-
-        //    _workloadWindow.Show();
-        //}
-
-        private void LoadBriefing()
-        {
-            if (SelectedOrder is null || SelectedProductGroup is null)
-            {
-                RunBeforeText = null;
-                OnPropertyChanged(nameof(RunBeforeText));
-                CycleTimeSeries = null;
-                OnPropertyChanged(nameof(CycleTimeSeries));
-                return;
-            }
-
-            int MaterialId = SelectedOrder.MaterialId;
-            int GroupId = SelectedProductGroup.Id;
-
-            if (SelectedProductGroup is not null)
-            {
-                SelectedProduct = Products.Find(x => x.Id == SelectedProductGroup.ProductId);
-            }
-            else
-            {
-                SelectedProduct = null;
-                CycleTimeSeries = null;
-                RunBeforeText = null;
-
-                OnPropertyChanged(nameof(RunBeforeText));
-                OnPropertyChanged(nameof(SelectedProduct));
-                OnPropertyChanged(nameof(CycleTimeSeries));
-                OnPropertyChanged(nameof(SelectedProductGroup));
-                return;
-            }
-
-            OnPropertyChanged(nameof(SelectedProductGroup));
-            OnPropertyChanged(nameof(SelectedProduct));
-
-            List<LatheManufactureOrder> otherOrders = Orders
-                .Where(x =>
-                    x.GroupId == GroupId &&
-                    x.Name != SelectedOrder.Name &&
-                    x.State == OrderState.Complete &&
-                    x.StartDate < SelectedOrder.CreatedAt &&
-                   x.StartDate.Date > DateTime.MinValue)
-                .OrderBy(x => x.StartDate)
-                .ToList();
-
-            if (otherOrders.Count == 0)
-            {
-                RunBeforeText = null;
-                OnPropertyChanged(nameof(RunBeforeText));
-            }
-            else
-            {
-                LatheManufactureOrder mostRecent = otherOrders.Last();
-                int runBeforeCount = otherOrders.Count;
-                RunInMaterialBefore = otherOrders.Any(x => x.MaterialId == MaterialId);
-
-                DateTime lastMadeDate = mostRecent.StartDate;
-
-
-                if (lastMadeDate.AddMonths(11) > DateTime.Now)
-                {
-                    LastMadeText = $"Last made in {lastMadeDate:MMMM}";
-                }
-                else
-                {
-                    LastMadeText = $"Last made in {lastMadeDate:MMM yy}";
-                }
-
-                if (runBeforeCount == 1)
-                {
-                    RunBeforeText = $"This archetype has been set once before";
-                }
-                else if (runBeforeCount == 2)
-                {
-                    RunBeforeText = $"This archetype has been set twice before";
-                }
-                else
-                {
-                    RunBeforeText = $"This archetype has been set {otherOrders.Count:0} times";
-                }
-
-                OnPropertyChanged(nameof(RunBeforeText));
-            }
-
-            CycleTimeSeries = null;
-            OnPropertyChanged(nameof(CycleTimeSeries));
-
-            TimeModel model = SelectedOrder.TimeModelPlanned;
-
-            if (model is null) return;
-
-            List<RectangularSection> sections = new();
-            ISeries[] series = Array.Empty<ISeries>();
-
-            ObservableCollection<ObservablePoint> modelledPoints = new();
-            ObservableCollection<ObservablePoint> newReadings = new();
-            ObservableCollection<ObservablePoint> historicalPoints = new();
-
-            if (FilteredOrderItems.Count == 0) return;
-            double maxX = FilteredOrderItems.Max(x => x.MajorLength) + 10;
-            LineSeries<ObservablePoint> newSeries = TimeModel.GetSeries(model, maxX, "Time model");
-            series = series.Append(newSeries).ToArray();
-
-            FilteredOrderItems.ForEach(x =>
-            {
-                if (x.CycleTime > 0)
-                {
-                    newReadings.Add(new(x.MajorLength, x.CycleTime));
-                }
-
-                if (x.PreviousCycleTime is not null)
-                {
-                    historicalPoints.Add(new(x.MajorLength, x.PreviousCycleTime));
-
-                    if (x.CycleTime > 0 && x.CycleTime != x.PreviousCycleTime)
-                    {
-                        sections.Add(new RectangularSection
-                        {
-                            Yi = x.PreviousCycleTime,
-                            Yj = x.CycleTime,
-                            Xi = x.MajorLength,
-                            Xj = x.MajorLength,
-                            Stroke = new SolidColorPaint
-                            {
-                                Color = x.CycleTime > x.PreviousCycleTime ? SKColors.DarkRed.WithAlpha(50) : SKColors.DarkGreen.WithAlpha(50),
-                                StrokeThickness = 3
-                            }
-                        });
-                    }
-                }
-                else if (x.ModelledCycleTime is not null)
-                {
-                    modelledPoints.Add(new(x.MajorLength, x.ModelledCycleTime));
-                }
-            });
-
-
-            if (newReadings.Count > 0)
-            {
-                series = series.Append(new ScatterSeries<ObservablePoint>
-                {
-                    Values = newReadings,
-                    Name = "New Readings",
-                    GeometrySize = 8,
-                    Fill = new SolidColorPaint(SKColors.DarkRed)
-                }).ToArray();
-            }
-
-            if (modelledPoints.Count > 0)
-            {
-                series = series.Append(new ScatterSeries<ObservablePoint>
-                {
-                    Values = modelledPoints,
-                    Name = "Modelled",
-                    GeometrySize = 8,
-                    Fill = new SolidColorPaint(SKColors.MediumPurple)
-                }).ToArray();
-            }
-
-            if (historicalPoints.Count > 0)
-            {
-                series = series.Append(new ScatterSeries<ObservablePoint>
-                {
-                    Values = historicalPoints,
-                    GeometrySize = 8,
-                    Name = "Historical",
-                    Fill = new SolidColorPaint(SKColors.Black)
-                }).ToArray();
-            }
-
-            Sections = sections.ToArray();
-            OnPropertyChanged(nameof(Sections));
-
-            CycleTimeSeries = series;
-            OnPropertyChanged(nameof(CycleTimeSeries));
-        }
-
-        private void InitialiseVariables()
-        {
-            FilteredDrawings = new();
-            FilteredNotes = new();
-            FilteredOrderItems = new();
-            FilteredOrders = new();
-
-            Notes = new();
-            Orders = new();
-            MachineStatistics = new();
-            OrderItems = new();
-            DisplayStats = new();
-            Drawings = new();
-            OrderDrawings = new();
-            Lathes = new();
-            Lots = new();
-            BarStock = new();
-            MaterialInfo = new();
-            SelectedOrderBar = new();
-            Products = new();
-            ProductGroups = new();
-            ProgramCandidates = new();
-            MachineOperatingBlocks = new();
-
-            ToolingIconBrush = (Brush)Application.Current.Resources["Red"];
-            ProgramIconBrush = (Brush)Application.Current.Resources["Red"];
-            BarVerifiedIconBrush = (Brush)Application.Current.Resources["Red"];
-            BarAllocatedIconBrush = (Brush)Application.Current.Resources["Red"];
-
-            PrintOrderCommand = new(this);
-            //EditCommand = new(this);
-            NewOrderCommand = new(this);
-            //GetProgramPlannerCmd = new(this);
-        }
 
         #region Data Refreshing
 
-        public void Refresh()
-        {
-            // Store user selection
-            int? userSelection = null;
-            if (SelectedOrder != null)
-            {
-                userSelection = SelectedOrder.Id;
-            }
-
-            LoadData();
-            CheckForClosedOrders();
-            CheckForReopenedOrders();
-
-            if (!string.IsNullOrEmpty(SearchTerm))
-            {
-                Search();
-            }
-            else
-            {
-                FilterOrders();
-            }
-
-            if (userSelection is not null)
-            {
-                SelectedOrder = FilteredOrders.Find(x => x.Id == userSelection);
-
-                if (SelectedOrder is null && FilteredOrders.Count > 0)
-                {
-                    SelectedOrder = FilteredOrders[0];
-                }
-            }
-            else if (FilteredOrders.Count > 0)
-            {
-                SelectedOrder = FilteredOrders[0];
-            }
-
-        }
 
         private void CheckForReopenedOrders()
         {
@@ -678,35 +315,6 @@ namespace ProjectLighthouse.ViewModel.Orders
         #endregion
 
         #region Loading
-        private void LoadData()
-        {
-            Orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
-
-            OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
-
-            Notes = DatabaseHelper.Read<Note>().ToList();
-
-            Drawings = DatabaseHelper.Read<TechnicalDrawing>().ToList();
-
-            OrderDrawings = DatabaseHelper.Read<OrderDrawing>().ToList();
-
-            Lathes = DatabaseHelper.Read<Lathe>().ToList();
-
-            Lots = DatabaseHelper.Read<Lot>().ToList();
-
-            Products = DatabaseHelper.Read<Product>().ToList();
-            ProductGroups = DatabaseHelper.Read<ProductGroup>().ToList();
-
-            Programs = DatabaseHelper.Read<NcProgram>().Where(x => !x.Inactive).ToList();
-            BreakdownCodes = DatabaseHelper.Read<BreakdownCode>();
-            MachineBreakdowns = DatabaseHelper.Read<MachineBreakdown>();
-
-            BarStock = DatabaseHelper.Read<BarStock>().ToList();
-            MaterialInfo = DatabaseHelper.Read<MaterialInfo>().ToList();
-            BarStock.ForEach(x => x.MaterialData = MaterialInfo.Find(y => y.Id == x.MaterialId));
-
-            MachineStatistics = MachineStatsHelper.GetStats();
-        }
 
         private void FilterOrders()
         {
@@ -767,83 +375,6 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         #endregion Loading
 
-        public void Search()
-        {
-            if (string.IsNullOrEmpty(SearchTerm))
-            {
-                Refresh();
-                return;
-            }
-
-            List<LatheManufactureOrder> Results = new();
-            List<string> FoundOrders = new();
-
-            string searchToken = SearchTerm.ToUpperInvariant();
-
-            foreach (LatheManufactureOrder order in Orders)
-            {
-                if (order.Name.Contains(searchToken))
-                {
-                    Results.Add(order);
-                    FoundOrders.Add(order.Name);
-                    continue;
-                }
-
-                if (order.BarID.Contains(searchToken))
-                {
-                    Results.Add(order);
-                    FoundOrders.Add(order.Name);
-                    continue;
-                }
-
-                if (order.AssignedTo?.ToUpperInvariant() == searchToken && order.State < OrderState.Complete)
-                {
-                    Results.Add(order);
-                    FoundOrders.Add(order.Name);
-                    continue;
-                }
-
-                if (order.POReference != null)
-                {
-                    if (order.POReference.Contains(searchToken) && order.POReference != "N/A")
-                    {
-                        Results.Add(order);
-                        FoundOrders.Add(order.Name);
-                        continue;
-                    }
-                }
-            }
-
-            List<string> FoundOrdersByItem = new();
-            foreach (LatheManufactureOrderItem item in OrderItems)
-            {
-                if (FoundOrders.Contains(item.AssignedMO))
-                {
-                    continue;
-                }
-
-                if (item.ProductName.Contains(searchToken))
-                {
-                    FoundOrdersByItem.Add(item.AssignedMO);
-                    continue;
-                }
-            }
-
-            List<string> FoundOrdersByNotes = Notes.Where(x => x.Message.ToUpperInvariant().Contains(searchToken)).Select(x => x.DocumentReference).Distinct().ToList();
-
-            Results.AddRange(Orders.Where(x => FoundOrdersByItem.Contains(x.Name)));
-            Results.AddRange(Orders.Where(x => FoundOrdersByNotes.Contains(x.Name)));
-
-            Results = Results.Distinct().OrderByDescending(x => x.ModifiedAt).ToList();
-
-            FilteredOrders = Results;
-
-            if (FilteredOrders.Count > 0)
-            {
-                SelectedOrder = FilteredOrders.First();
-            }
-        }
-
         private void LoadOrderCard()
         {
             if (SelectedOrder == null)
@@ -851,11 +382,10 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
-            LoadOrderObjects();
-            SetUiElements();
+            //LoadOrderObjects();
+            //SetUiElements();
             List<Lot> orderLots = Lots.Where(x => x.Order == SelectedOrder.Name).ToList();
-            Task.Run(() => LoadProductionChart(orderLots, SelectedOrder.StartDate.Date));
-            Task.Run(() => LoadBriefing());
+
             Task.Run(() => GetProgramCandidates());
             Task.Run(() => GetOrderBreakdowns());
         }
@@ -905,115 +435,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             return candidates;
         }
 
-        private void SetUiElements()
-        {
-            if (SelectedOrder == null)
-            {
-                return;
-            }
-
-            // Quick indicator icons
-            ProgramIconBrush = (Brush)Application.Current.Resources[SelectedOrder.HasProgram ? "Green" : SelectedOrder.BaseProgramExists ? "Orange" : "Red"];
-            OnPropertyChanged(nameof(ProgramIconBrush));
-
-            ToolingIconBrush = (Brush)Application.Current.Resources[SelectedOrder.AllToolingReady ? "Green" : (SelectedOrder.ToolingOrdered || SelectedOrder.ToolingReady)
-                    && (SelectedOrder.BarToolingOrdered || SelectedOrder.BarToolingReady)
-                    && (SelectedOrder.GaugingOrdered || SelectedOrder.GaugingReady) ? "Orange" : "Red"];
-            OnPropertyChanged(nameof(ToolingIconBrush));
-
-            BarVerifiedIconBrush = (Brush)Application.Current.Resources[SelectedOrder.BarIsVerified ? "Green" : "Red"];
-            OnPropertyChanged(nameof(BarVerifiedIconBrush));
-
-            BarAllocatedIconBrush = (Brush)Application.Current.Resources[SelectedOrder.BarIsAllocated ? "Green" : "Red"];
-            OnPropertyChanged(nameof(BarAllocatedIconBrush));
-
-
-            ModifiedVis = string.IsNullOrEmpty(SelectedOrder.ModifiedBy)
-               ? Visibility.Collapsed
-               : Visibility.Visible;
-
-            SetLiveMachineInfo();
-
-            ArchiveVis = SelectedOrder.IsClosed
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-        }
-
-        private void SetLiveMachineInfo()
-        {
-            if (SelectedOrder is null)
-            {
-                DisplayStats = null;
-                return;
-            }
-
-            if (SelectedOrder.State != OrderState.Running)
-            {
-                DisplayStats = null;
-                return;
-            }
-
-            if (MachineStatistics is null)
-            {
-                DisplayStats = null;
-                return;
-            }
-
-
-            DisplayStats = MachineStatistics.Find(x => x.MachineID == SelectedOrder.AllocatedMachine);
-
-            if (DisplayStats is null)
-            {
-                return;
-            }
-
-            if (DisplayStats.DataTime.AddMinutes(30) < DateTime.Now)
-            {
-                DisplayStats = null;
-            }
-        }
-
-        private void LoadOrderObjects()
-        {
-            // Order Items
-            FilteredOrderItems.Clear();
-            FilteredOrderItems = OrderItems
-                .Where(i => i.AssignedMO == SelectedOrder.Name)
-                .OrderByDescending(n => n.RequiredQuantity)
-                .ThenBy(n => n.ProductName)
-                .ToList();
-
-
-            // Order Notes
-            FilteredNotes = Notes
-                .Where(n =>
-                    n.DocumentReference == SelectedOrder.Name)
-                .OrderBy(x => x.Id) // Time is not synchronised
-                .ToList();
-
-            // Order Drawings
-            FilteredDrawings.Clear();
-            int[] drawings = OrderDrawings
-                .Where(x => x.OrderId == SelectedOrder.Name)
-                .Select(x => x.DrawingId)
-                .ToArray();
-
-            FilteredDrawings = Drawings
-                .Where(d => drawings.Contains(d.Id))
-                .ToList();
-
-            FilteredDrawings.ForEach(x => x.PlatingStatement = SelectedOrder.PartsWillBePlated);
-
-            SelectedOrderBar = BarStock.Find(x => x.Id == SelectedOrder.BarID);
-            SelectedProductGroup = ProductGroups.Find(x => x.Id == SelectedOrder.GroupId);
-
-
-            OnPropertyChanged(nameof(FilteredOrderItems));
-            OnPropertyChanged(nameof(FilteredNotes));
-            OnPropertyChanged(nameof(FilteredDrawings));
-            OnPropertyChanged(nameof(SelectedOrderBar));
-        }
-
         public void PrintSelectedOrder()
         {
             ReportPdf reportService = new();
@@ -1033,77 +454,6 @@ namespace ProjectLighthouse.ViewModel.Orders
         private static string GetTempPdfPath()
         {
             return System.IO.Path.GetTempFileName() + ".pdf";
-        }
-
-        public void CreateProgramPlanner()
-        {
-            List<LatheManufactureOrder> ordersNeedingProgramming = Orders
-                .Where(x =>
-                     x.StartDate != DateTime.MinValue &&
-                     x.State < OrderState.Complete)
-                .OrderBy(x => x.StartDate)
-                .ToList();
-
-            // Adds unscheduled items to the bottom
-            ordersNeedingProgramming
-                .AddRange(
-                    Orders.Where(x =>
-                         x.StartDate == DateTime.MinValue &&
-                         x.State < OrderState.Complete));
-
-            ExcelHelper.CreateProgrammingPlanner(ordersNeedingProgramming);
-        }
-
-        public void EditLMO()
-        {
-            if (SelectedOrder == null)
-            {
-                return;
-            }
-
-            bool editable = true;
-
-            // TODO optimise for R&D
-            if ((SelectedOrder.ModifiedAt ?? DateTime.MinValue).AddDays(14) < DateTime.Now && SelectedOrder.State >= OrderState.Complete)
-            {
-                editable = false;
-            }
-
-            if (!App.CurrentUser.HasPermission(PermissionType.UpdateOrder))
-            {
-                editable = false;
-            }
-
-            EditLMOWindow editWindow = new(SelectedOrder.Name, editable)
-            {
-                Owner = Application.Current.MainWindow
-            };
-            editWindow.ShowDialog();
-
-            Refresh();
-        }
-
-        public void CreateNewOrder()
-        {
-            OrderConstructorWindow window = new()
-            {
-                Owner = Application.Current.MainWindow
-            };
-
-            window.ShowDialog();
-
-            if (!window.SaveExit)
-            {
-                return;
-            }
-
-            Refresh();
-        }
-
-        public void Dispose()
-        {
-            //_workloadWindow?.Close();
-            //_workloadWindow = null;
         }
     }
 }
