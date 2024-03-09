@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     MinHeight="50"
     d:Background="White"
-    d:DesignWidth="700"
     Background="#01FFFFFF"
     mc:Ignorable="d">
     <Grid>
@@ -32,11 +31,7 @@
                     Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
 
                 <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="EditButton"
-                        Margin="0,0,5,0"
-                        Click="EditButton_Click"
-                        Style="{StaticResource Action_Edit_Button_Small}" />
+  
                     <Border
                         x:Name="specialFlag"
                         Grid.Column="2"

@@ -18,16 +18,6 @@ namespace ProjectLighthouse.View.UserControls
         public static readonly DependencyProperty LatheManufactureOrderItemProperty =
             DependencyProperty.Register("LatheManufactureOrderItem", typeof(LatheManufactureOrderItem), typeof(DisplayLMOItems), new PropertyMetadata(null, SetValues));
 
-        public ICommand EditCommand
-        {
-            get { return (ICommand)GetValue(EditCommandProperty); }
-            set { SetValue(EditCommandProperty, value); }
-        }
-
-        public static readonly DependencyProperty EditCommandProperty =
-            DependencyProperty.Register("EditCommand", typeof(ICommand), typeof(DisplayLMOItems), new PropertyMetadata(null));
-
-
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is DisplayLMOItems control)
@@ -52,9 +42,9 @@ namespace ProjectLighthouse.View.UserControls
                 control.custReqTitle.Foreground = (control.LatheManufactureOrderItem.QuantityDelivered >= control.LatheManufactureOrderItem.RequiredQuantity) ? // Customer requirement fulfilled
                     (Brush)Application.Current.Resources["Green"] : (Brush)Application.Current.Resources["Red"];
 
-                control.EditButton.Visibility = control.LatheManufactureOrderItem.ShowEdit
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
+                //control.EditButton.Visibility = control.LatheManufactureOrderItem.ShowEdit
+                //    ? Visibility.Visible
+                //    : Visibility.Collapsed;
 
                 control.cycleTimeIndicator.Visibility = control.LatheManufactureOrderItem.QuantityMade > 0 || control.LatheManufactureOrderItem.CycleTime > 0
                     ? Visibility.Visible
@@ -140,9 +130,5 @@ namespace ProjectLighthouse.View.UserControls
             InitializeComponent();
         }
 
-        private void EditButton_Click(object sender, RoutedEventArgs e)
-        {
-            EditCommand.Execute(LatheManufactureOrderItem.Id);
-        }
     }
 }
