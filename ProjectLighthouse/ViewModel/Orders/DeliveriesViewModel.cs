@@ -236,7 +236,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
                 MessageBox.Show(message, "Mismatch detected", MessageBoxButton.OK, MessageBoxImage.Hand);
             }
-
         }
 
         private void LoadDeliveryNotes()
