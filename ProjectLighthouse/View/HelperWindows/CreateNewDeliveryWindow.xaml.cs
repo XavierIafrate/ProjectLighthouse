@@ -139,41 +139,82 @@ namespace ProjectLighthouse.View
             SQLiteConnection conn = DatabaseHelper.GetConnection();
 
             List<LatheManufactureOrderItem> orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            List<GeneralManufactureOrder> generalOrders = DatabaseHelper.Read<GeneralManufactureOrder>().ToList();
 
-            List<(DeliveryItem, Lot, LatheManufactureOrderItem)> transactionData = new();
+            List<object> insertTransactions = new();
+            List<object> updateTransactions = new();
 
             foreach (DeliveryItem item in itemsOnNewNote)
             {
                 item.AllocatedDeliveryNote = newDeliveryNote.Name;
+                Lot? lot = lots.Find(l => l.ID == item.LotID);
+                if (lot is null)
+                {
+                    MessageBox.Show($"Could not find lot with ID '{item.LotID}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    conn.Rollback();
+                    conn.Close();
+                    return;
+                }
 
-                LatheManufactureOrderItem orderItem = orderItems.Find(i => i.ProductName == item.Product
+                lot.IsDelivered = true;
+
+                updateTransactions.Add(lot);
+
+
+                LatheManufactureOrderItem? orderItem = orderItems.Find(i => i.ProductName == item.Product
                                                                         && i.AssignedMO == item.ItemManufactureOrderNumber);
+                if (orderItem != null)
+                {
+                    orderItem.QuantityDelivered += item.QuantityThisDelivery;
+                    updateTransactions.Add(orderItem);
+                }
+                else
+                {
+                    GeneralManufactureOrder? order = generalOrders.Find(x => x.Name == lot.Order);
+                    if (order is null)
+                    {
+                        MessageBox.Show($"Could not find parent for lot with ID '{item.LotID}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        conn.Rollback();
+                        conn.Close();
+                        return;
+                    }
 
-                orderItem.QuantityDelivered += item.QuantityThisDelivery;
-                DatabaseHelper.Update<LatheManufactureOrderItem>(orderItem);
+                    order.DeliveredQuantity += lot.Quantity;
+                    updateTransactions.Add(order);
+                }
 
-                Lot lot = lots.Find(l => l.ID == item.LotID);
-                lot!.IsDelivered = true;
-                DatabaseHelper.Update<Lot>(lot);
-
-                DatabaseHelper.Insert(item);
-
-                transactionData.Add(new(item, lot, orderItem));
+                insertTransactions.Add(item);
             }
+
+            insertTransactions.Add(newDeliveryNote);
             conn.BeginTransaction();
-            conn.Insert(newDeliveryNote);
-            for(int i = 0; i < transactionData.Count; i++)
+
+
+            foreach(object  o in updateTransactions)
             {
-                if (conn.Insert(transactionData[i].Item1) != 1)
+                if (conn.Update(o) != 1)
                 {
                     conn.Rollback();
                     conn.Close();
+                    MessageBox.Show($"Failed to update database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
-                conn.Update(transactionData[i].Item2);
-                conn.Update(transactionData[i].Item3);
             }
+
+            foreach (object o in insertTransactions)
+            {
+                if (conn.Insert(o) != 1)
+                {
+                    conn.Rollback();
+                    conn.Close();
+                    MessageBox.Show($"Failed to update database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
             conn.Commit();
             conn.Close();
+
             SaveExit = true;
             Close();
         }
