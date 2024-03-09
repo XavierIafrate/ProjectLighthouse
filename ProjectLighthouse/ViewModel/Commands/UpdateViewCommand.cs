@@ -28,6 +28,15 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
+            if (App.MainViewModel.SelectedViewModel != null)
+            {
+                if (!App.MainViewModel.SelectedViewModel.CanClose())
+                {
+                    viewModel.MainWindow.SelectButton(App.ActiveViewModel);
+                    return;
+                }
+            }
+
             string targetView = parameter.ToString();
 
             App.ActiveViewModel = targetView;
@@ -138,7 +147,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Lathe Config")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new LatheViewModel();
+                viewModel.SelectedViewModel = new MachineViewModel();
                 viewModel.NavText = "Lathe Configuration";
             }
             else if (targetView == "Analytics")
