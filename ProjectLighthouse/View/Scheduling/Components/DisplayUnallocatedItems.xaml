@@ -41,13 +41,18 @@
 
             <ItemsControl.Resources>
                 <DataTemplate x:Key="LatheManufactureOrder">
-                    <local:DisplayUnallocatedOrder Order="{Binding Path=.}" SelectItemCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DisplayUnallocatedItems}, Mode=FindAncestor}, Path=SelectItemCommand}"
-                                                   />
+                    <local:DisplayUnallocatedOrder Order="{Binding Path=.}" 
+                                                   SelectItemCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DisplayUnallocatedItems}, Mode=FindAncestor}, Path=SelectItemCommand}"/>
                 </DataTemplate>
 
                 <DataTemplate x:Key="MachineService">
                     <local:DisplayUnallocatedService Service="{Binding Path=.}" 
                                                      SelectItemCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DisplayUnallocatedItems}, Mode=FindAncestor}, Path=SelectItemCommand}"/>
+                </DataTemplate>
+
+                <DataTemplate x:Key="GeneralManufactureOrder">
+                    <local:DisplayUnallocatedGeneralOrder Order="{Binding Path=.}" 
+                                                          SelectItemCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DisplayUnallocatedItems}, Mode=FindAncestor}, Path=SelectItemCommand}"/>
                 </DataTemplate>
 
             </ItemsControl.Resources>

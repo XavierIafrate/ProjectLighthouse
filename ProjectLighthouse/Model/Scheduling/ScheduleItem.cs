@@ -6,11 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
-    public abstract class ScheduleItem : BaseObject, ISchedulableObject
+    public abstract class ScheduleItem : BaseObject, ISchedulableObject, IObjectWithValidation
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -41,7 +42,7 @@ namespace ProjectLighthouse.Model.Scheduling
             }
         }
 
-        private string poReference;
+        private string poReference = string.Empty;
         [UpdateWatch]
         public string POReference
         {
@@ -49,6 +50,7 @@ namespace ProjectLighthouse.Model.Scheduling
             set
             {
                 poReference = value;
+                ValidateProperty();
                 OnPropertyChanged();
             }
         }
@@ -77,7 +79,7 @@ namespace ProjectLighthouse.Model.Scheduling
             set { timeToComplete = value; OnPropertyChanged(); }
         }
 
-        private DateTime startDate;
+        private DateTime startDate = DateTime.MinValue;
         public DateTime StartDate
         {
             get { return startDate; }
@@ -318,8 +320,6 @@ namespace ProjectLighthouse.Model.Scheduling
             }
 
 
-
-
             PropertyInfo[] properties;
             if (this is LatheManufactureOrder)
             {
@@ -379,6 +379,26 @@ namespace ProjectLighthouse.Model.Scheduling
             }
 
             return mod;
+        }
+
+        public virtual void ValidateAll()
+        {
+            ValidateProperty(nameof(POReference));
+        }
+
+        public virtual void ValidateProperty([CallerMemberName] string propertyName = "")
+        {
+            if (propertyName == nameof(POReference))
+            {
+                ClearErrors(propertyName);
+
+                if (POReference != POReference.Trim())
+                {
+                    AddError(propertyName, "PO Reference must not have leading or trailing whitespace");
+                }
+
+                return;
+            }
         }
     }
 }

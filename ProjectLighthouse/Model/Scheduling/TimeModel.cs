@@ -5,6 +5,7 @@ using ProjectLighthouse.ViewModel.Requests;
 using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
@@ -76,7 +77,7 @@ namespace ProjectLighthouse.Model.Scheduling
             }
             catch
             {
-                throw new Exception("Failed to parse code");
+                throw new InvalidDataException("Failed to parse code");
             }
         }
 

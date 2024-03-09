@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -176,12 +177,11 @@ namespace ProjectLighthouse.Model.Administration
 
             }
 
-            //if (mod)
-            //{
-            //    string path = App.ROOT_PATH + @"lib\logs\machine_" + Id + ".log";
-
-            //    File.AppendAllText(path, sb.ToString());
-            //}
+            if (mod)
+            {
+                string path = App.ROOT_PATH + @"lib\logs\machine_" + Id + ".log";
+                File.AppendAllText(path, sb.ToString());
+            }
 
             return mod;
         }

@@ -27,6 +27,7 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
 
 
@@ -209,7 +210,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    
+
                     <TextBlock Style="{StaticResource InputLabel}" Text="Required Machine Features" />
                     <ItemsControl x:Name="MachineRequirementsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}"/>
                 </StackPanel>
@@ -221,9 +222,18 @@
                     <TextBlock Text="Unable to display maintenance" />
                 </Grid>
 
+                <StackPanel
+                    x:Name="generalOrderGrid"
+                    Grid.Row="4"
+                    d:Visibility="Visible"
+                    Visibility="Collapsed">
+                    <TextBlock Text="PRODUCT_NAME" x:Name="ProductNameTextBlock"/>
+
+                </StackPanel>
+
                 <Grid
                     x:Name="RescheduleGrid"
-                    Grid.Row="4"
+                    Grid.Row="5"
                     d:Visibility="Visible"
                     Visibility="Collapsed">
                     <Grid.RowDefinitions>
@@ -236,6 +246,7 @@
                         Grid.Row="1"
                         Margin="10" />
                 </Grid>
+
             </Grid>
 
         </Grid>

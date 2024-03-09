@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
+using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using ProjectLighthouse.ViewModel.Core;
@@ -252,6 +253,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>(throwErrs: true).Where(x => x.State != OrderState.Cancelled).ToList();
             List<LatheManufactureOrderItem> orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>(throwErrs: true);
             List<GeneralManufactureOrder> generalOrders = DatabaseHelper.Read<GeneralManufactureOrder>(throwErrs: true);
+            List<NonTurnedItem> generalOrderItems = DatabaseHelper.Read<NonTurnedItem>(throwErrs: true);
             List<MachineBreakdown> orderBreakdowns = DatabaseHelper.Read<MachineBreakdown>(throwErrs: true);
             List<BreakdownCode> codes = DatabaseHelper.Read<BreakdownCode>(throwErrs: true);
             List<MachineService> machineServices = DatabaseHelper.Read<MachineService>(throwErrs: true);
@@ -269,6 +271,9 @@ namespace ProjectLighthouse.ViewModel.Orders
                 allItems.Add(x);
                 }
             );
+
+            generalOrders.ForEach(x => x.Item = generalOrderItems.Find(i => i.Id == x.NonTurnedItemId));
+
             machineServices.ForEach(x => allItems.Add(x));
             allItems.AddRange(generalOrders);
 
