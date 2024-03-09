@@ -16,7 +16,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static bool ExecuteCommand(string query)
         {
-            using SQLiteConnection conn = new(DatabasePath);
+            using SQLiteConnection conn = GetConnection();
             int result = conn.Execute(query);
 
             return true;
@@ -24,18 +24,19 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static List<MachineStatistics> QueryMachineHistory(DateTime date)
         {
-            using SQLiteConnection conn = new(DatabasePath);
+            using SQLiteConnection conn = GetConnection();
             return conn.Query<MachineStatistics>(
                 query: $"SELECT * FROM {nameof(MachineStatistics)} WHERE {nameof(MachineStatistics.DataTime)} > ? ORDER BY {nameof(MachineStatistics.DataTime)}",
                 args: date.Ticks)
                 .ToList();
         }
 
-        public static bool Insert<T>(T item, bool throwErrs = false)
+        public static bool Insert<T>(T item, bool throwErrs = false, SQLiteConnection? conn = null)
         {
             bool result = false;
+            conn ??= GetConnection();
 
-            using (SQLiteConnection conn = new(DatabasePath))
+            using (conn)
             {
                 conn.CreateTable<T>();
                 try
@@ -59,9 +60,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return result;
         }
 
-        public static int InsertAndReturnId<T>(T item) where T : IAutoIncrementPrimaryKey
+        public static int InsertAndReturnId<T>(T item, SQLiteConnection? conn = null) where T : IAutoIncrementPrimaryKey
         {
-            using (SQLiteConnection conn = new(DatabasePath))
+            conn ??= GetConnection();
+
+            using (conn)
             {
                 conn.CreateTable<T>();
                 try
@@ -77,11 +80,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return item.Id;
         }
 
-        public static bool Update<T>(T item, bool throwErrs = false)
+        public static bool Update<T>(T item, bool throwErrs = false, SQLiteConnection? conn = null)
         {
             bool result = false;
 
-            using (SQLiteConnection conn = new(DatabasePath))
+            conn ??= GetConnection();
+
+            using (conn)
             {
                 try
                 {
@@ -104,11 +109,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return result;
         }
 
-        public static bool Delete<T>(T item)
+        public static bool Delete<T>(T item, SQLiteConnection? conn = null)
         {
             bool result = false;
 
-            using (SQLiteConnection conn = new(DatabasePath))
+            conn ??= GetConnection();
+
+            using (conn)
             {
                 conn.CreateTable<T>();
                 int rows = conn.Delete(item);
@@ -120,12 +127,14 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return result;
         }
 
-        public static List<T> Read<T>(bool throwErrs = false) where T : new()
+        public static List<T> Read<T>(bool throwErrs = false, SQLiteConnection? conn = null) where T : new()
         {
             List<T> items;
             try
             {
-                using (SQLiteConnection conn = new(DatabasePath))
+                conn ??= GetConnection();
+
+                using (conn)
                 {
                     conn.CreateTable<T>();
                     items = conn.Table<T>().ToList();
@@ -139,6 +148,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 return null;
             }
+        }
+
+        public static SQLiteConnection GetConnection()
+        {
+            return new SQLiteConnection(DatabasePath);
         }
     }
 }
