@@ -58,7 +58,7 @@
             Text="None"
             Visibility="{Binding DisplayData, ElementName=parentControl, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
 
-        <Grid Grid.Row="1" Visibility="{Binding ElementName=parentControl, Path=AddNoteCommand, Converter={StaticResource NotNullToVisibility}}">
+        <Grid Grid.Row="1" Visibility="{Binding ElementName=parentControl, Path=AddNoteCommand, Converter={StaticResource ObjectIsNotNull}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
