@@ -68,7 +68,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             set
             {
                 selectedPart = value;
-                CostPart();
                 OnPropertyChanged();
             }
         }
@@ -321,9 +320,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
-        private void CostPart()
-        {
-        }
 
         void Search()
         {
