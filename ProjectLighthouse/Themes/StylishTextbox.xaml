@@ -291,12 +291,15 @@
                                 x:Name="PART_ContentHost"
                                 Margin="12,3"
                                 VerticalAlignment="Center"
+                                MinWidth="20"
+                                HorizontalAlignment="Stretch"
                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                 TextElement.FontSize="{TemplateBinding FontSize}"
                                 TextElement.Foreground="{TemplateBinding Foreground}" />
                             <TextBlock
                                 x:Name="textBlock"
                                 Margin="16,5"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="Center"
                                 FontSize="{TemplateBinding FontSize}"
                                 FontStyle="Normal"
@@ -310,6 +313,9 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="Text" Value="">
                                 <Setter TargetName="textBlock" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="textBlock" Property="Visibility" Value="Hidden" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

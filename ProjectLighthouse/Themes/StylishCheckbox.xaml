@@ -87,7 +87,6 @@
                                 <Condition Property="IsChecked" Value="False" />
 
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource DisabledElement}" />
                             <Setter TargetName="box" Property="BorderBrush" Value="Gray" />
 
                         </MultiTrigger>
@@ -100,8 +99,8 @@
                             <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource DisabledElement}" />
                             <Setter TargetName="box" Property="Background" Value="{StaticResource Surface}" />
                             <Setter TargetName="box" Property="BorderBrush" Value="{StaticResource Green}" />
-                            <Setter TargetName="checkmark" Property="Fill" Value="{StaticResource GreenFaded}" />
-                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource GreenFaded}" />
+                            <Setter TargetName="checkmark" Property="Fill" Value="{StaticResource Green}" />
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource Green}" />
                         </MultiTrigger>
 
                         <Trigger Property="IsMouseOver" Value="True">

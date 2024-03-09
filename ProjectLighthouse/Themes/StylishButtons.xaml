@@ -2108,15 +2108,15 @@
         x:Key="SendButton"
         BasedOn="{StaticResource Button_Default}"
         TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
-        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource BlackFaded}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border
                             Width="30"
-                            Height="26"
+                            Height="30"
                             Background="{TemplateBinding Background}"
                             CornerRadius="5" />
                         <Path
@@ -2131,7 +2131,11 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Blue}" />
+                <Setter Property="Background" Value="{StaticResource Blue}" />
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource BlueDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
