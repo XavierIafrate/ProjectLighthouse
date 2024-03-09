@@ -5,6 +5,7 @@ using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Core;
@@ -12,6 +13,7 @@ using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 
@@ -48,10 +50,29 @@ namespace ProjectLighthouse.ViewModel.Orders
             get { return selectedItem; }
             set
             {
+                if (selectedItem is LatheManufactureOrder order)
+                {
+                    order.PropertyChanged -= BindBar;
+                }
+
                 selectedItem = value;
+
+                if (selectedItem is LatheManufactureOrder)
+                {
+                    selectedItem.PropertyChanged += BindBar;
+                }
+
                 OnPropertyChanged();
                 SetSelectedItem();
             }
+        }
+
+        private void BindBar(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(LatheManufactureOrder.BarID)) return;
+            if (SelectedItem is not LatheManufactureOrder order) return;
+
+            order.Bar = barStock.Find(b => b.Id == order.BarID);
         }
 
         private void SetSelectedItem()
@@ -103,6 +124,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         public SendMessageCommand SendMessageCmd { get; set; }
         public DeleteNoteCommand DeleteMessageCmd { get; set; }
         public SaveNoteCommand SaveMessageCmd { get; set; }
+        public CreateNewOrderCommand CreateNewOrderCmd { get; set; }
 
 
         public NewOrderViewModel()
@@ -123,6 +145,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             SendMessageCmd = new(this);
             DeleteMessageCmd = new(this);
             SaveMessageCmd = new(this);
+            CreateNewOrderCmd = new(this);
         }
 
         private void LoadData()
@@ -152,6 +175,50 @@ namespace ProjectLighthouse.ViewModel.Orders
             this.productGroups = DatabaseHelper.Read<ProductGroup>();
 
             this.nonTurnedItems = DatabaseHelper.Read<NonTurnedItem>();
+        }
+
+        public void CreateNewOrder()
+        {
+            string targetName;
+            if (MessageBox.Show("Would you like to raise a Lathe order?", "Choose option", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes) == MessageBoxResult.Yes)
+            {
+                OrderConstructorWindow window = new()
+                {
+                    Owner = Application.Current.MainWindow
+                };
+
+                window.ShowDialog();
+
+                if (!window.SaveExit)
+                {
+                    return;
+                }
+                targetName = window.NewOrder.Name;
+            }
+            else
+            {
+                GeneralOrderConstructorWindow window = new() { Owner = Application.Current.MainWindow };
+
+                window.ShowDialog();
+
+                if (!window.SaveExit)
+                {
+                    return;
+                }
+
+                targetName = window.NewOrder.Name;
+            }
+
+
+            LoadData();
+            Filter();
+
+            SelectedItem = FilteredItems.Find(x => x.Name == targetName);
+
+            if (SelectedItem is null && FilteredItems.Count > 0)
+            {
+                SelectedItem = FilteredItems[0];
+            }
         }
 
         private void SetAssignmentData()
@@ -295,6 +362,8 @@ namespace ProjectLighthouse.ViewModel.Orders
                     {
                         latheOrder.Product = products.Find(x => x.Id == latheOrder.ProductGroup.ProductId);
                     }
+
+                    latheOrder.Briefing=GetBriefing(latheOrder);
                 }
                 else if (item is GeneralManufactureOrder generalOrder)
                 {
@@ -307,6 +376,34 @@ namespace ProjectLighthouse.ViewModel.Orders
             {
                 SelectedItem = FilteredItems[0];
             }
+        }
+
+        private Briefing GetBriefing(LatheManufactureOrder latheOrder)
+        {
+            List<LatheManufactureOrder> ordersOfArchetype = new();
+            for(int i = 0; i < items.Count; i++)
+            {
+                ScheduleItem item = items[i];
+                if (item is not LatheManufactureOrder order) continue;
+                if(order.GroupId == latheOrder.GroupId && order.StartDate > DateTime.MinValue && order.IsComplete && order.Name != latheOrder.Name && order.StartDate < latheOrder.CreatedAt)
+                {
+                    ordersOfArchetype.Add(order);
+                }
+            }
+
+            Briefing result = new()
+            {
+                OrderName = latheOrder.Name,
+                NumberOfTimesRun = ordersOfArchetype.Count,
+                RunInMaterialBefore = ordersOfArchetype.Any(x => x.MaterialId == latheOrder.MaterialId)
+            };
+            result.ArchetypeRunBefore = result.NumberOfTimesRun > 0;
+            if (result.ArchetypeRunBefore)
+            {
+                result.LastRun = ordersOfArchetype.Max(x => x.StartDate);
+            }
+
+            return result;
         }
 
         void EditItem()
@@ -347,7 +444,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
-            bool updated = SelectedItem.IsUpdated(copy);
+            bool updated = copy.IsUpdated(SelectedItem);
 
             if (!updated)
             {
@@ -529,6 +626,15 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
 
             return true;
+        }
+
+        public struct Briefing
+        {
+            public string OrderName { get; set; }
+            public bool ArchetypeRunBefore { get; set; }
+            public int NumberOfTimesRun { get; set; }
+            public bool RunInMaterialBefore { get; set; }
+            public DateTime LastRun { get; set; }
         }
     }
 }
