@@ -5,10 +5,7 @@ using System;
 using System.Reflection;
 using System.Linq;
 using ProjectLighthouse.Model.Core;
-
-
-
-
+using System.Runtime.CompilerServices;
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -17,7 +14,19 @@ namespace ProjectLighthouse.Model.Orders
 {
     public class GeneralManufactureOrder : ScheduleItem
     {
-        public int NonTurnedItemId { get; set; }
+        private int nonTurnedItemId;
+        public int NonTurnedItemId
+
+        {
+            get { return nonTurnedItemId; }
+            set
+            {
+                nonTurnedItemId = value;
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
 
         private int requiredQuantity;
         [UpdateWatch]
@@ -27,6 +36,7 @@ namespace ProjectLighthouse.Model.Orders
             set
             {
                 requiredQuantity = value;
+                ValidateProperty();
                 OnPropertyChanged();
             }
         }
@@ -65,6 +75,7 @@ namespace ProjectLighthouse.Model.Orders
             set
             {
                 requiredDate = value;
+                ValidateProperty();
                 OnPropertyChanged();
             }
         }
@@ -297,7 +308,54 @@ namespace ProjectLighthouse.Model.Orders
                 cursor = cursor.AddDays(1);
             }
 
-            return (int)Math.Round((cursor - StartDate).TotalSeconds);
+            return (int)Math.Round((cursor - start).TotalSeconds);
+        }
+
+        public override void ValidateAll()
+        {
+            base.ValidateAll();
+            ValidateProperty(nameof(RequiredQuantity));
+            ValidateProperty(nameof(RequiredDate));
+            ValidateProperty(nameof(NonTurnedItemId));
+        }
+
+        public override void ValidateProperty([CallerMemberName] string propertyName = "")
+        {
+            base.ValidateProperty(propertyName);
+
+            if (propertyName == nameof(NonTurnedItemId))
+            {
+                ClearErrors(propertyName);
+
+                if (NonTurnedItemId == 0)
+                {
+                    AddError(propertyName, "Item must be set");
+                }
+
+                return;
+            }
+            else if (propertyName == nameof(RequiredQuantity))
+            {
+                ClearErrors(propertyName);
+
+                if (RequiredQuantity <= 0)
+                {
+                    AddError(propertyName, "Required Quantity must be greater than zero");
+                }
+
+                return;
+            }
+            else if (propertyName == nameof(RequiredDate))
+            {
+                ClearErrors(propertyName);
+
+                if (RequiredDate == DateTime.MinValue)
+                {
+                    AddError(propertyName, "Required Date must be set");
+                }
+
+                return;
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -8,14 +7,13 @@ using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.Runtime.CompilerServices;
+using static ProjectLighthouse.ViewModel.Orders.NewOrderViewModel;
 
 namespace ProjectLighthouse.Model.Orders
 {
-    public partial class LatheManufactureOrder : ScheduleItem, ICloneable
+    public partial class LatheManufactureOrder : ScheduleItem, ICloneable, IObjectWithValidation
     {
         public override OrderState State
         {
@@ -90,7 +88,7 @@ namespace ProjectLighthouse.Model.Orders
             }
             set
             {
-                barToolingOrdered = value; 
+                barToolingOrdered = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
             }
@@ -223,9 +221,9 @@ namespace ProjectLighthouse.Model.Orders
         [UpdateWatch]
         public bool HasProgram
         {
-            get 
-            { 
-                return hasProgram; 
+            get
+            {
+                return hasProgram;
             }
             set
             {
@@ -236,9 +234,6 @@ namespace ProjectLighthouse.Model.Orders
         }
 
         #endregion
-
-
-
 
         public DateTime CompletedAt { get; set; }
 
@@ -263,10 +258,15 @@ namespace ProjectLighthouse.Model.Orders
         public int TimeToSet
         {
             get { return timeToSet; }
-            set { timeToSet = value; OnPropertyChanged(); }
+            set 
+            { 
+                timeToSet = value; 
+                ValidateProperty();
+                OnPropertyChanged(); 
+            }
         }
 
-         // MaintenanceTime :(
+        // MaintenanceTime :(
 
 
         public DateTime GetSettingStartDateTime()
@@ -281,21 +281,31 @@ namespace ProjectLighthouse.Model.Orders
 
 
         #region Bar Configuration
+        private string barID;
         [UpdateWatch]
-        public string BarID { get; set; }
+        public string BarID
+        {
+            get { return barID; }
+            set
+            {
+                barID = value;
+                ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
 
         private double numberOfBars;
         [UpdateWatch]
         public double NumberOfBars
         {
-            get 
-            { 
+            get
+            {
                 return numberOfBars;
             }
             set
             {
-                numberOfBars = value; 
-                OnPropertyChanged(); 
+                numberOfBars = value;
+                OnPropertyChanged();
             }
         }
 
@@ -310,6 +320,7 @@ namespace ProjectLighthouse.Model.Orders
             set
             {
                 spareBars = value;
+                ValidateProperty();
                 OnPropertyChanged();
             }
         }
@@ -326,11 +337,12 @@ namespace ProjectLighthouse.Model.Orders
 
         private bool isResearch;
         [UpdateWatch]
-        public bool IsResearch {
+        public bool IsResearch
+        {
 
-            get 
-            { 
-                return isResearch; 
+            get
+            {
+                return isResearch;
             }
             set
             {
@@ -345,10 +357,10 @@ namespace ProjectLighthouse.Model.Orders
         public string RequiredFeatures
         {
             get { return requiredFeatures; }
-            set 
-            { 
-                requiredFeatures = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                requiredFeatures = value;
+                OnPropertyChanged();
             }
         }
 
@@ -487,6 +499,19 @@ namespace ProjectLighthouse.Model.Orders
         [CsvHelper.Configuration.Attributes.Ignore]
         public List<MachineBreakdown> Breakdowns { get; set; } = new();
 
+        private Briefing briefing;
+        [Ignore]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public Briefing Briefing
+        {
+            get { return briefing; }
+            set
+            {
+                briefing = value;
+                OnPropertyChanged();
+            }
+        }
+
         public override object Clone()
         {
             string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
@@ -570,6 +595,51 @@ namespace ProjectLighthouse.Model.Orders
             else
             {
                 return StartDate.AddSeconds(TimeToComplete);
+            }
+        }
+
+        public override void ValidateAll()
+        {
+            base.ValidateAll();
+            ValidateProperty(nameof(BarID));
+        }
+
+        public override void ValidateProperty([CallerMemberName] string propertyName = "")
+        {
+            base.ValidateProperty(propertyName);
+
+            if (propertyName == nameof(BarID))
+            {
+                ClearErrors(propertyName);
+
+                if (string.IsNullOrWhiteSpace(BarID))
+                {
+                    AddError(propertyName, "Bar ID must not be empty");
+                }
+
+                return;
+            }
+            else if (propertyName == nameof(TimeToSet))
+            {
+                ClearErrors(propertyName);
+
+                if (TimeToSet < 0)
+                {
+                    AddError(propertyName, "Time to set must be greater than zero");
+                }
+
+                return;
+            }
+            else if (propertyName == nameof(SpareBars))
+            {
+                ClearErrors(propertyName);
+
+                if (SpareBars < 0)
+                {
+                    AddError(propertyName, "Number of spare bars must be greater than zero");
+                }
+
+                return;
             }
         }
     }

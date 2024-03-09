@@ -46,8 +46,28 @@ namespace ProjectLighthouse.Model.Orders
         public int QuantityMade { get; set; }
         public int QuantityReject { get; set; }
         public int QuantityDelivered { get; set; }
-        public int CycleTime { get; set; }
-        public int? PreviousCycleTime { get; set; }
+
+        private int cycleTime;
+        public int CycleTime
+        {
+            get { return cycleTime; }
+            set
+            {
+                cycleTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int? previousCycleTime;
+        public int? PreviousCycleTime 
+        {
+            get { return previousCycleTime; }
+            set
+            {
+                previousCycleTime = value;
+                OnPropertyChanged();
+            }
+        }
 
         private int? modelledCycleTime;
         public int? ModelledCycleTime
@@ -86,7 +106,14 @@ namespace ProjectLighthouse.Model.Orders
 
         public int DrawingId { get; set; }
 
-        public DateTime DateRequired { get; set; }
+        private DateTime dateRequired;
+
+        public DateTime DateRequired
+        {
+            get { return dateRequired; }
+            set { dateRequired = value; OnPropertyChanged(); }
+        }
+
         public DateTime DateAdded { get; set; }
         public string AddedBy { get; set; }
         public bool IsSpecialPart { get; set; }
@@ -94,31 +121,14 @@ namespace ProjectLighthouse.Model.Orders
         public DateTime UpdatedAt { get; set; }
         public bool NeedsCleaning { get; set; }
 
-        public bool ShowEdit;
-        public int SellPrice;
-
-        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
-        public Action<LatheManufactureOrderItem> RequestToEdit { get; set; }
-
 
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public int RecommendedQuantity { get; set; }
 
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public int QuantityInStock { get; set; }
-        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
-        public int YearStock { get; set; }
 
-        public void NotifyRequestToEdit()
-        {
-            RequestToEdit?.Invoke(this);
-        }
 
-        public event Action EditMade;
-        public void NotifyEditMade()
-        {
-            EditMade?.Invoke();
-        }
 
         public LatheManufactureOrderItem()
         {
@@ -139,11 +149,9 @@ namespace ProjectLighthouse.Model.Orders
 
             RequiredQuantity = 0;
             TargetQuantity = Math.Max(fromProduct.GetRecommendedQuantity(), 1);
-            SellPrice = fromProduct.SellPrice;
 
             QuantityInStock = fromProduct.QuantityInStock;
             RecommendedQuantity = fromProduct.GetRecommendedQuantity();
-            YearStock = fromProduct.QuantitySold;
         }
 
         public LatheManufactureOrderItem(TurnedProduct fromProduct)
