@@ -23,7 +23,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         {
             List<string> errs = new();
 
-            string[] relevantPurchases = items.Select(x => x.PurchaseOrderReference.ToUpper()).Distinct().ToArray();
+            string[] relevantPurchases = items.Select(x => x.PurchaseOrderReference.ToUpperInvariant()).Distinct().ToArray();
 
             List<PurchaseLine> lines = GetPurchaseLines(relevantPurchases);
             //List<PurchaseHeader> headers = GetPurchaseHeaders(relevantPurchases);
@@ -38,6 +38,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     List<DeliveryItem> targets = itemsOnPO.Where(x => x.ExportProductName == item).ToList();
                     int qtyThisDel = targets.Sum(x => x.QuantityThisDelivery);
                     errs.AddRange(VerifyData(item, qtyThisDel, order, lines));
+                }
+
+                if(itemsOnPO.Count == 0)
+                {
+                    errs.Add($"No lines found for purchase order '{order}'");
                 }
             }
 
