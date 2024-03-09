@@ -105,8 +105,8 @@
                             CornerRadius="5" />
                         <ToggleButton
                             Name="ToggleButton"
-                            Margin="2"
                             Height="26"
+                            Margin="2"
                             HorizontalAlignment="Stretch"
                             ClickMode="Press"
                             Focusable="False"

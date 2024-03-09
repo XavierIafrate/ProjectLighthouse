@@ -88,26 +88,23 @@ namespace ProjectLighthouse.Model.Analytics
                 return;
             }
 
-            if (SystemMessages == null)
-            {
-                SystemMessages = "";
-            }
+            SystemMessages ??= "";
 
             if (!string.IsNullOrEmpty(SystemMessages))
             {
-                if (SystemMessages.ToUpper().Contains("WORK COUNTER FULL") || SystemMessages.ToUpper().Contains("END-OF-SCHEDULE"))
+                if (SystemMessages.Contains("WORK COUNTER FULL", StringComparison.InvariantCultureIgnoreCase) || SystemMessages.Contains("END-OF-SCHEDULE", StringComparison.CurrentCultureIgnoreCase))
                 {
                     Status = "Idle";
                     return;
                 }
 
-                if (SystemMessages.ToUpper().Contains("SETTING"))
+                if (SystemMessages.Contains("SETTING", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Status = "Setting";
                     return;
                 }
 
-                if (SystemMessages.ToUpper().Contains("ALARM"))
+                if (SystemMessages.Contains("ALARM", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Status = "Breakdown";
                     return;

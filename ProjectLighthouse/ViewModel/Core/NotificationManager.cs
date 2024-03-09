@@ -289,11 +289,13 @@ namespace ProjectLighthouse.ViewModel.Core
             }
             else if (action.StartsWith("viewManufactureOrder:"))
             {
-                EditLMOWindow window = new(action.Replace("viewManufactureOrder:", ""), App.CurrentUser.HasPermission(PermissionType.UpdateOrder))
-                { Owner = App.MainViewModel.MainWindow };
+                // TODO
 
-                window.ShowDialog();
-                window.Activate();
+                //EditLMOWindow window = new(action.Replace("viewManufactureOrder:", ""), App.CurrentUser.HasPermission(PermissionType.UpdateOrder))
+                //{ Owner = App.MainViewModel.MainWindow };
+
+                //window.ShowDialog();
+                //window.Activate();
             }
             else if (action == "showNotifications")
             {

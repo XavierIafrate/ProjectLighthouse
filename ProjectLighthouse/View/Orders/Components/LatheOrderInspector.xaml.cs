@@ -172,29 +172,29 @@ namespace ProjectLighthouse.View.Orders.Components
             //}
         }
 
-        private void CalculateTimeAndBar()
-        {
-            Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Items, Breakdowns);
+        //private void CalculateTimeAndBar()
+        //{
+        //    //Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Items, Breakdowns);
 
-            double? partOff = null;
-            if (!string.IsNullOrEmpty(Order.AllocatedMachine))
-            {
-                Lathe? runningOnLathe = Lathes.Find(l => l.Id == Order.AllocatedMachine);
-                if (runningOnLathe is not null)
-                {
-                    partOff = runningOnLathe.PartOff;
-                }
-            }
+        //    //double? partOff = null;
+        //    //if (!string.IsNullOrEmpty(Order.AllocatedMachine))
+        //    //{
+        //    //    Lathe? runningOnLathe = Lathes.Find(l => l.Id == Order.AllocatedMachine);
+        //    //    if (runningOnLathe is not null)
+        //    //    {
+        //    //        partOff = runningOnLathe.PartOff;
+        //    //    }
+        //    //}
 
-            if (partOff is not null)
-            {
-                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars, (double)partOff);
-            }
-            else
-            {
-                Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
-            }
-        }
+        //    //if (partOff is not null)
+        //    //{
+        //    //    Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars, (double)partOff);
+        //    //}
+        //    //else
+        //    //{
+        //    //    Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
+        //    //}
+        //}
 
 
     }

@@ -93,12 +93,12 @@ namespace ProjectLighthouse.Model.Analytics
             List<string> errors = GetListOfErrors();
             foreach (string error in errors)
             {
-                if (error.ToUpper().Contains("SETTING"))
+                if (error.Contains("SETTING", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Status = "Setting";
                     return;
                 }
-                if (error.ToUpper().Contains("ALARM"))
+                if (error.Contains("ALARM", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Status = "Breakdown";
                     return;
@@ -106,7 +106,7 @@ namespace ProjectLighthouse.Model.Analytics
             }
 
             // Running, Setting, Breakdown, Offline
-            if (ControllerMode.Contains("MANUAL") || SystemMessages.ToUpper().Contains("SETTING") || SystemMessages.ToUpper().Contains("PAUSE SIGNAL ON"))
+            if (ControllerMode.Contains("MANUAL") || SystemMessages.Contains("SETTING", StringComparison.CurrentCultureIgnoreCase) || SystemMessages.Contains("PAUSE SIGNAL ON", StringComparison.InvariantCultureIgnoreCase))
             {
                 Status = "Setting";
                 return;

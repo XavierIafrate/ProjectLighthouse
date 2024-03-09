@@ -168,25 +168,33 @@ namespace ProjectLighthouse.ViewModel.Helpers
             items = items.OrderByDescending(n => n.RequiredQuantity).ThenBy(n => n.ProductName).ToList();
             orders = orders.OrderBy(n => n.StartDate).Take(Math.Min(4, orders.Count)).ToList();
 
-            Dictionary<string, XRect> columns = new();
-
-            columns.Add("METADATA",
-                new(DOCUMENT_GUTTER, 0, 130, SCHEDULE_ROW_HEIGHT));
-
-            columns.Add("CHECKBOX_RUNNING",
-                new(DOCUMENT_GUTTER + 130, 0, SCHEDULE_ROW_HEIGHT, SCHEDULE_ROW_HEIGHT));
-
-            columns.Add("CHECKBOX_COMPLETE",
-                new(DOCUMENT_GUTTER + 150, 0, SCHEDULE_ROW_HEIGHT, SCHEDULE_ROW_HEIGHT));
-
-            columns.Add("PRODUCT",
-                new(DOCUMENT_GUTTER + 170, 0, 140, SCHEDULE_ROW_HEIGHT));
-
-            columns.Add("TARGET",
-                new(DOCUMENT_GUTTER + 310, 0, 80, SCHEDULE_ROW_HEIGHT));
-
-            columns.Add("REQUIREMENT",
-                new(DOCUMENT_GUTTER + 390, 0, 145, SCHEDULE_ROW_HEIGHT));
+            Dictionary<string, XRect> columns = new()
+            {
+                {
+                    "METADATA",
+                    new(DOCUMENT_GUTTER, 0, 130, SCHEDULE_ROW_HEIGHT)
+                },
+                {
+                    "CHECKBOX_RUNNING",
+                    new(DOCUMENT_GUTTER + 130, 0, SCHEDULE_ROW_HEIGHT, SCHEDULE_ROW_HEIGHT)
+                },
+                {
+                    "CHECKBOX_COMPLETE",
+                    new(DOCUMENT_GUTTER + 150, 0, SCHEDULE_ROW_HEIGHT, SCHEDULE_ROW_HEIGHT)
+                },
+                {
+                    "PRODUCT",
+                    new(DOCUMENT_GUTTER + 170, 0, 140, SCHEDULE_ROW_HEIGHT)
+                },
+                {
+                    "TARGET",
+                    new(DOCUMENT_GUTTER + 310, 0, 80, SCHEDULE_ROW_HEIGHT)
+                },
+                {
+                    "REQUIREMENT",
+                    new(DOCUMENT_GUTTER + 390, 0, 145, SCHEDULE_ROW_HEIGHT)
+                }
+            };
 
             doc = AddSchedulePageFrame(doc, columns, lathe);
 
@@ -454,11 +462,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 //gfx.DrawString(string.Format("{0:#,##0} pcs", deliveryItem.QuantityToFollow), font, XBrushes.Black, ToFollowCol, XStringFormats.Center);
 
                 //PO Ref Barcode
-                barcode.Text = deliveryItem.PurchaseOrderReference.ToUpper();
+                barcode.Text = deliveryItem.PurchaseOrderReference.ToUpperInvariant();
                 gfx.DrawBarCode(barcode, XBrushes.Black, new XPoint(PurchaseRefCol.X, y + 20));
 
                 // Product # Barcode
-                barcode.Text = deliveryItem.ExportProductName.ToUpper();
+                barcode.Text = deliveryItem.ExportProductName.ToUpperInvariant();
                 gfx.DrawBarCode(barcode, XBrushes.Black, new XPoint(ThisDelCol.X, y + 20));
 
                 i += 1;
@@ -530,15 +538,16 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             double cursor = DOCUMENT_GUTTER + HEADER_HEIGHT + BAR_ROW_HEIGHT * 3;
 
-            Dictionary<string, double> ColumnDefinitions = new();
-
-            ColumnDefinitions.Add("CHECKBOX", BAR_ROW_HEIGHT);
-            ColumnDefinitions.Add("CHECKBOX_PADDING", 10);
-            ColumnDefinitions.Add("BAR", 150);
-            ColumnDefinitions.Add("ORDER", 70);
-            ColumnDefinitions.Add("QTY_REQ", 50);
-            ColumnDefinitions.Add("QTY_IN_KASTO", 70);
-            ColumnDefinitions.Add("MASS", 70);
+            Dictionary<string, double> ColumnDefinitions = new()
+            {
+                { "CHECKBOX", BAR_ROW_HEIGHT },
+                { "CHECKBOX_PADDING", 10 },
+                { "BAR", 150 },
+                { "ORDER", 70 },
+                { "QTY_REQ", 50 },
+                { "QTY_IN_KASTO", 70 },
+                { "MASS", 70 }
+            };
 
             Dictionary<string, XRect> columns = GetCenteredColumns(ColumnDefinitions, BAR_ROW_HEIGHT, 595);
 
@@ -567,9 +576,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static PdfDocument GetNewBarRequisitionFrame(PdfDocument doc, Dictionary<string, XRect> cols)
         {
-            PdfPage page = new();
-
-            page.Orientation = PdfSharp.PageOrientation.Portrait;
+            PdfPage page = new()
+            {
+                Orientation = PdfSharp.PageOrientation.Portrait
+            };
 
             doc.AddPage(page);
 
@@ -748,12 +758,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             double cursor = DOCUMENT_GUTTER + HEADER_HEIGHT;
 
-            Dictionary<string, double> ColumnDefinitions = new();
-
-            ColumnDefinitions.Add("DAY", 70);
-            ColumnDefinitions.Add("OVERALL", 120);
-            ColumnDefinitions.Add("BREAKDOWNS", 120);
-            ColumnDefinitions.Add("ORDERS", 150);
+            Dictionary<string, double> ColumnDefinitions = new()
+            {
+                { "DAY", 70 },
+                { "OVERALL", 120 },
+                { "BREAKDOWNS", 120 },
+                { "ORDERS", 150 }
+            };
 
             Dictionary<string, XRect> columns = GetCenteredColumns(ColumnDefinitions, BAR_ROW_HEIGHT, 595);
 
@@ -776,7 +787,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             string timespan = $"{Statistics.First().StateEntered.Date:d} - {Statistics.Last().StateEntered.Date:d}";
             doc = GetPerformanceReportTemplate(cols, timespan, doc, Lathe.Id);
 
-            PdfPage page = doc.Pages[^1];
+            //PdfPage page = doc.Pages[^1];
 
 
 
@@ -785,8 +796,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         private static PdfDocument GetPerformanceReportTemplate(Dictionary<string, XRect> cols, string TimeStamps, PdfDocument doc, string LatheID)
         {
-            PdfPage page = new();
-            page.Orientation = PdfSharp.PageOrientation.Portrait;
+            PdfPage page = new()
+            {
+                Orientation = PdfSharp.PageOrientation.Portrait
+            };
 
             _ = doc.AddPage(page);
             page = doc.Pages[^1];

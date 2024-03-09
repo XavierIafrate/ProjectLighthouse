@@ -286,7 +286,7 @@ namespace ProjectLighthouse.Model.Programs
                 ClearErrors(propertyName);
 
                 List<string> tags = TagsList.Distinct().ToList();
-                tags.ForEach(x => x = x.ToLower());
+                tags.ForEach(x => x = x.ToLowerInvariant());
 
                 if (tags.Count != TagsList.Count)
                 {

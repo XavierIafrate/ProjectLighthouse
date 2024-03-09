@@ -178,7 +178,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
             else
             {
-                string userQuery = SearchText.ToUpper().Replace(" ", "");
+                string userQuery = SearchText.ToUpperInvariant().Replace(" ", "");
                 List<string> matchedDeliveryIds = new();
 
                 matchedDeliveryIds.AddRange(DeliveryNotes.Where(x => x.Name.Contains(userQuery)).Select(x => x.Name));
