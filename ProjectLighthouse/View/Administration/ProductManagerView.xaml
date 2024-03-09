@@ -166,7 +166,7 @@
                             Command="{Binding ViewWebPageCmd}"
                             Content="View Web Page"
                             Style="{StaticResource Action_Button}"
-                            Visibility="{Binding SelectedProduct.WebUrl, Converter={StaticResource NotNullToVisibility}}" />
+                            Visibility="{Binding SelectedProduct.WebUrl, Converter={StaticResource ObjectIsNotNull}}" />
                         <Button
                             Margin="0,10,0,0"
                             Command="{Binding AddProductGroupCmd}"
@@ -224,7 +224,7 @@
                 Grid.Row="2"
                 Margin="0,10,0,0"
                 ScrollChanged="ScrollViewer_ScrollChanged"
-                Visibility="{Binding SelectedProduct, Converter={StaticResource NotNullToVisibility}}">
+                Visibility="{Binding SelectedProduct, Converter={StaticResource ObjectIsNotNull}}">
                 <StackPanel Margin="20,0">
 
 
@@ -331,7 +331,7 @@
                                                     VerticalAlignment="Center"
                                                     Background="{StaticResource TealFaded}"
                                                     CornerRadius="3"
-                                                    Visibility="{Binding ItemCost, Converter={StaticResource NotNullToVisibility}}">
+                                                    Visibility="{Binding ItemCost, Converter={StaticResource ObjectIsNotNull}}">
                                                     <TextBlock
                                                         Margin="8,0,8,1"
                                                         VerticalAlignment="Center"

@@ -136,7 +136,7 @@
             Grid.Column="1"
             Grid.ColumnSpan="2"
             Margin="20,5,20,40"
-            Visibility="{Binding SelectedGroup, Converter={StaticResource NotNullToVisibility}}">
+            Visibility="{Binding SelectedGroup, Converter={StaticResource ObjectIsNotNullNotNullToVisibility}}">
             <StackPanel>
                 <TextBlock
                     d:Text="Drawing for P0130.000"
@@ -188,7 +188,7 @@
         <Grid
             Grid.Row="1"
             Grid.Column="1"
-            Visibility="{Binding SelectedGroup, Converter={StaticResource NotNullToVisibility}}">
+            Visibility="{Binding SelectedGroup, Converter={StaticResource ObjectIsNotNull}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
@@ -220,7 +220,7 @@
             Grid.Row="1"
             Grid.RowSpan="2"
             Grid.Column="2"
-            Visibility="{Binding SelectedDrawing, Converter={StaticResource NotNullToVisibility}}">
+            Visibility="{Binding SelectedDrawing, Converter={StaticResource ObjectIsNotNull}}">
             <StackPanel>
                 <Grid
                     MaxWidth="700"

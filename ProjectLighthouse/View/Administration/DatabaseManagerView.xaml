@@ -11,14 +11,14 @@
     mc:Ignorable="d">
     <Grid Margin="5">
         <TabControl>
-            <TabItem Header="Users" IsEnabled="{Binding ManageUsersViewModel, Converter={StaticResource NotNullToBoolean}}" x:Name="usersTab">
+            <TabItem Header="Users" IsEnabled="{Binding ManageUsersViewModel, Converter={StaticResource ObjectIsNotNull}}" x:Name="usersTab">
                 <ContentControl Content="{Binding ManageUsersViewModel}" />
             </TabItem>
             <TabItem Header="Machines" x:Name="lathesTab">
-                <ContentControl Content="{Binding LatheViewModel}" IsEnabled="{Binding LatheViewModel, Converter={StaticResource NotNullToBoolean}}" />
+                <ContentControl Content="{Binding LatheViewModel}" IsEnabled="{Binding LatheViewModel, Converter={StaticResource ObjectIsNotNull}}" />
             </TabItem>
             <TabItem Header="Materials" x:Name="materialsTab">
-                <ContentControl Content="{Binding MaterialsViewModel}" IsEnabled="{Binding MaterialsViewModel, Converter={StaticResource NotNullToBoolean}}" />
+                <ContentControl Content="{Binding MaterialsViewModel}" IsEnabled="{Binding MaterialsViewModel, Converter={StaticResource ObjectIsNotNull}}" />
             </TabItem>
             <TabItem Header="Dev" IsEnabled="False" x:Name="devTab" />
             <TabItem Header="Reports" x:Name="reportsTab">

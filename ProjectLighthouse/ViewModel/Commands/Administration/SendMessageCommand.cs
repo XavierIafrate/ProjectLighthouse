@@ -1,4 +1,6 @@
-﻿using ProjectLighthouse.ViewModel.Core;
+﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Core;
+using ProjectLighthouse.ViewModel.Orders;
 using ProjectLighthouse.ViewModel.Programs;
 using ProjectLighthouse.ViewModel.Requests;
 using System;
@@ -23,6 +25,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
+            
             // TODO: Interface
             if (viewModel is RequestViewModel rvm)
             {
@@ -31,6 +34,15 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
             else if (viewModel is ProgramManagerViewModel progvm)
             {
                 progvm.SendMessage();
+            }
+            else if (viewModel is NewOrderViewModel orderViewModel)
+            {
+
+                if(parameter is not Note note)
+                {
+                    throw new ArgumentException("need a note to execute");
+                }
+                orderViewModel.SendMessage(note);
             }
         }
     }

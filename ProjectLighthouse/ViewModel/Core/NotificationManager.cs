@@ -20,7 +20,7 @@ namespace ProjectLighthouse.ViewModel.Core
     {
         public Timer DataRefreshTimer { get; set; }
         private List<Notification> myNotifications;
-        public List<User> users = new();
+        public List<User> Users { get; set; } = new();
         public List<Notification> MyNotifications
         {
             get { return myNotifications; }
@@ -52,14 +52,14 @@ namespace ProjectLighthouse.ViewModel.Core
             if (App.CurrentUser is null) return;
             if (App.CurrentUser.UserName is null) return;
 
-            users = DatabaseHelper.Read<User>()
+            Users = DatabaseHelper.Read<User>()
                 .Where(x => !x.IsBlocked && x.ReceivesNotifications && x.UserName != App.CurrentUser.UserName)
                 .ToList();
 
             List<Permission> permissionsList = DatabaseHelper.Read<Permission>();
-            for (int i = 0; i < users.Count; i++)
+            for (int i = 0; i < Users.Count; i++)
             {
-                users[i].UserPermissions = permissionsList.Where(x => x.UserId == users[i].Id).ToList();
+                Users[i].UserPermissions = permissionsList.Where(x => x.UserId == Users[i].Id).ToList();
             }
 
             MyNotifications = DatabaseHelper.Read<Notification>()
@@ -185,7 +185,7 @@ namespace ProjectLighthouse.ViewModel.Core
             }
         }
 
-        private void RaiseToast(Notification notification)
+        private static void RaiseToast(Notification notification)
         {
             if (!string.IsNullOrEmpty(notification.ToastInlineImageUrl))
             {
@@ -224,7 +224,7 @@ namespace ProjectLighthouse.ViewModel.Core
             CheckForNotifications(false);
         }
 
-        public int? ParseToastArgs(string rawArgs)
+        public static int? ParseToastArgs(string rawArgs)
         {
             string[] separated = rawArgs.Split(';');
             Dictionary<string, string> args = new();
@@ -251,7 +251,7 @@ namespace ProjectLighthouse.ViewModel.Core
             }
         }
 
-        private void ExecuteToastArgs(KeyValuePair<string, string> arg)
+        private static void ExecuteToastArgs(KeyValuePair<string, string> arg)
         {
             if (arg.Key == "action")
             {
@@ -259,7 +259,7 @@ namespace ProjectLighthouse.ViewModel.Core
             }
         }
 
-        public void ExecuteToastAction(string action)
+        public static void ExecuteToastAction(string action)
         {
             if (action == null)
             {
@@ -365,7 +365,7 @@ namespace ProjectLighthouse.ViewModel.Core
             }
         }
 
-        private void MarkRead(Notification not)
+        private static void MarkRead(Notification not)
         {
             not.Seen = true;
             not.SeenTimeStamp = DateTime.Now;
@@ -379,7 +379,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
         public void NotifyRequestApproved(Request request)
         {
-            User userToNotify = users.Find(x => x.GetFullName() == request.RaisedBy);
+            User userToNotify = Users.Find(x => x.GetFullName() == request.RaisedBy);
 
             if (userToNotify == null) return;
 
@@ -395,7 +395,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
         public void NotifyRequestRaised(Request request)
         {
-            List<User> usersToNotify = users.Where(x => x.HasPermission(PermissionType.ApproveRequest) && x.GetFullName() != request.RaisedBy).ToList();
+            List<User> usersToNotify = Users.Where(x => x.HasPermission(PermissionType.ApproveRequest) && x.GetFullName() != request.RaisedBy).ToList();
             foreach (User user in usersToNotify)
             {
                 Notification newNotification = new(
@@ -410,7 +410,7 @@ namespace ProjectLighthouse.ViewModel.Core
 
         }
 
-        public void NotifyOrderAssignment(LatheManufactureOrder order, string targetUsername, bool unassigned)
+        public static void NotifyOrderAssignment(LatheManufactureOrder order, string targetUsername, bool unassigned)
         {
             string title = unassigned ? $"Unassigned: {order.Name}" : $"Assigned: {order.Name}";
             string body = unassigned ? $"{App.CurrentUser.FirstName} has reassigned this order." : $"{App.CurrentUser.FirstName} has assigned this order to you.";

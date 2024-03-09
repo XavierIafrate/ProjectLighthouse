@@ -162,7 +162,7 @@
 
         <!--#endregion-->
 
-        <ScrollViewer Grid.Column="1" Visibility="{Binding SelectedBarStock, Converter={StaticResource NotNullToVisibility}}" VerticalScrollBarVisibility="Hidden">
+        <ScrollViewer Grid.Column="1" Visibility="{Binding SelectedBarStock, Converter={StaticResource ObjectIsNotNull}}" VerticalScrollBarVisibility="Hidden">
             <Grid MaxWidth="700" Margin="25,25,25,60">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -179,26 +179,24 @@
                     </Border.Effect>
                 </Border>
                 <StackPanel Margin="20">
+                    <Grid>
+                        
                     <TextBlock
                         d:Text="PRB000-0000-000"
                         Style="{StaticResource title}"
                         Text="{Binding SelectedBarStock.BarStock.Id}" />
                     <Grid HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <Border
-                            Background="{StaticResource Purple}"
-                            CornerRadius="5"
-                            Opacity="0.15" />
-                        <Border
-                            BorderBrush="{StaticResource Purple}"
-                            BorderThickness="2"
+                            <Border
+                            Background="{StaticResource PurpleFaded}"
                             CornerRadius="5" />
-                        <TextBlock
+                            <TextBlock
                             Margin="15,9"
-                            d:Text="99 IN STOCK"
-                            FontSize="25"
+                            d:Text="99 In Stock"
+                            FontSize="20"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource Purple}"
-                            Text="{Binding SelectedBarStock.BarStock.InStock, StringFormat='{}{0:#,##0} IN STOCK'}" />
+                            Text="{Binding SelectedBarStock.BarStock.InStock, StringFormat='{}{0:#,##0} In Stock'}" />
+                    </Grid>
                     </Grid>
                     <TextBlock Style="{StaticResource subtitle}">
                         <Run d:Text="Stainless Steel," Text="{Binding SelectedBarStock.BarStock.MaterialData, TargetNullValue='MATERIAL INFO NOT FOUND', Mode=OneWay}" />
@@ -333,7 +331,7 @@
                         BorderBrush="{StaticResource Purple}"
                         BorderThickness="3,0,0,0"
                         CornerRadius="5"
-                        Visibility="{Binding SuggestedOrderText, Converter={StaticResource NotNullToVisibility}}">
+                        Visibility="{Binding SuggestedOrderText, Converter={StaticResource ObjectIsNotNull}}">
                         <TextBlock
                             Margin="5"
                             HorizontalAlignment="Center"

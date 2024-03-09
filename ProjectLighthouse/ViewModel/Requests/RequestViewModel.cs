@@ -12,6 +12,7 @@ using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Requests;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -340,30 +341,6 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            // TODO review if this can be removed
-            for (int i = 0; i < requests.Count; i++)
-            {
-                if (requests[i].OrderId != null)
-                {
-                    requests[i].order = Orders.Find(x => x.Id == requests[i].OrderId);
-                }
-
-                List<RequestItem> requestItems = RequestItems.Where(x => x.RequestId == requests[i].Id).ToList();
-                requests[i].TotalQuantity = requestItems.Sum(x => x.QuantityRequired);
-
-                if (!string.IsNullOrEmpty(requests[i].Description)) continue;
-
-                TurnedProduct? item = Items.Find(x => x.Id == requestItems.First().ItemId);
-                if (item is null)
-                {
-                    requests[i].Description = "Unknown Item";
-                }
-                else
-                {
-                    requests[i].Description = item.ProductName;
-                }
-            }
-
             Requests = requests;
 
             SelectedFilter = "Last 14 Days";
@@ -562,7 +539,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
             else if (updatedList.Count == 1 || SelectedRequestArchetype is null)
             {
-                NewRequest.Description = updatedList.First().Item.ProductName;
+                NewRequest.Description = updatedList.First().Item!.ProductName;
             }
             else if (SelectedRequestArchetype is not null)
             {
@@ -581,6 +558,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         private void RemoveFromActive(RequestItem item)
         {
+            if (SelectedRequest is null) return;
             List<RequestItem> updatedList = SelectedRequestItems;
 
             if (SelectedRequestItems.Count == 1)
@@ -601,7 +579,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             if (updatedList.Count == 1 || SelectedRequestArchetype is null)
             {
-                SelectedRequest.Description = updatedList.First().Item.ProductName;
+                SelectedRequest.Description = updatedList.First().Item!.ProductName;
             }
             else if (SelectedRequestArchetype is not null)
             {
@@ -920,7 +898,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            int materialId = SelectedRequestItems.First().Item.MaterialId ?? -1;
+            int materialId = SelectedRequestItems.First().Item!.MaterialId ?? -1;
 
             if (materialId == -1)
             {
@@ -971,7 +949,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-
+           
             try
             {
                 OrderConstructorWindow creationWindow = new((int)SelectedRequest.ArchetypeId!, materialId, RecommendedManifest)
@@ -984,6 +962,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 {
                     return;
                 }
+
                 SelectedRequest.OrderId = creationWindow.NewOrder.Id;
                 SelectedRequest.order = creationWindow.NewOrder;
                 Orders.Add(creationWindow.NewOrder);
@@ -994,21 +973,21 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
+            SQLiteConnection con = DatabaseHelper.GetConnection();
+            con.BeginTransaction();
+
             SelectedRequest.Mark(accepted: true);
 
-
-            try
+            if (con.Update(SelectedRequest) != 1)
             {
-                DatabaseHelper.Update(SelectedRequest, throwErrs: true);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred while updating the request:{Environment.NewLine}{ex.Message}",
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                con.Rollback();
+                con.Close();
+                MessageBox.Show("Failed to update request", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            con.Commit();
+            con.Close();
 
             int id = SelectedRequest.Id;
 

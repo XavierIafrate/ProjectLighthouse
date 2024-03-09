@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:orderComponents="clr-namespace:ProjectLighthouse.View.Orders.Components"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:Background="{StaticResource Background}"
     d:DesignWidth="1445"
@@ -208,7 +208,7 @@
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged"
             VerticalScrollBarVisibility="Visible"
-            Visibility="{Binding SelectedRequest, Converter={StaticResource NotNullToVisibility}}">
+            Visibility="{Binding SelectedRequest, Converter={StaticResource ObjectIsNotNull}}">
             <Grid MaxWidth="700" Margin="25,25,25,60">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -290,7 +290,7 @@
                             Grid.Row="1"
                             Margin="0,5"
                             Orientation="Horizontal"
-                            Visibility="{Binding SelectedRequest.ModifiedAt, Converter={StaticResource NotNullToVisibility}}">
+                            Visibility="{Binding SelectedRequest.ModifiedAt, Converter={StaticResource ObjectIsNotNull}}">
                             <Path
                                 Width="12"
                                 Height="12"
@@ -321,7 +321,7 @@
                             Grid.Row="3"
                             Margin="0,5"
                             Orientation="Horizontal"
-                            Visibility="{Binding SelectedRequest.DecisionAt, Converter={StaticResource NotNullToVisibility}}">
+                            Visibility="{Binding SelectedRequest.DecisionAt, Converter={StaticResource ObjectIsNotNull}}">
                             <Path
                                 Width="12"
                                 Height="12"
@@ -483,10 +483,10 @@
                                 Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                         </StackPanel>
 
-                        <StackPanel Margin="0,10" Visibility="{Binding SelectedRequest.OrderId, Converter={StaticResource NotNullToVisibility}}">
+                        <StackPanel Margin="0,10" Visibility="{Binding SelectedRequest.OrderId, Converter={StaticResource ObjectIsNotNull}}">
                             <TextBlock Style="{StaticResource section}" Text="Order Progress" />
                             <StackPanel Margin="15,10">
-                                <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding SelectedRequestOrder}" />
+                                <orderComponents:DisplayScheduleItem Order="{Binding SelectedRequestOrder}" />
                                 <ItemsControl d:ItemsSource="{d:SampleData ItemCount=2}" ItemsSource="{Binding SelectedRequestOrder.OrderItems}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>

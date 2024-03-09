@@ -135,7 +135,7 @@
         <ScrollViewer
             Grid.RowSpan="3"
             Grid.Column="1"
-            Visibility="{Binding SelectedMachine, Converter={StaticResource NotNullToVisibility}}">
+            Visibility="{Binding SelectedMachine, Converter={StaticResource ObjectIsNotNull}}">
             <StackPanel Margin="25,10">
                 <Grid MaxWidth="700" Margin="0,15,0,50">
                     <Border Background="White" CornerRadius="10">

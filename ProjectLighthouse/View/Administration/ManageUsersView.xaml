@@ -12,10 +12,6 @@
     Background="White"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <converters:boolToYesNo x:Key="boolConverter" />
-    </UserControl.Resources>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="280" />
@@ -285,7 +281,7 @@
                                 FontSize="16"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Red}"
-                                Text="{Binding SelectedUser.IsBlocked, Converter='{StaticResource boolConverter}'}" />
+                                Text="{Binding SelectedUser.IsBlocked}" />
                         </Grid>
 
                     </Border>

@@ -146,7 +146,7 @@
             Grid.RowSpan="3"
             Grid.Column="1"
             d:Visibility="Collapsed"
-            Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}">
+            Visibility="{Binding SelectedProgram, Converter={StaticResource ObjectIsNotNull}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="500" />
                 <ColumnDefinition Width="5" />
@@ -235,7 +235,7 @@
             BorderBrush="{Binding ForegroundBrush}"
             IsChecked="{Binding DiffMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Foreground="{Binding ForegroundBrush}"
-            Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}"
+            Visibility="{Binding SelectedProgram, Converter={StaticResource ObjectIsNotNull}}"
             Style="{StaticResource DiffModeToggleButton}" />
         <Grid
             x:Name="CommitMenu"

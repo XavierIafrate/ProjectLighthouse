@@ -21,6 +21,8 @@ namespace ProjectLighthouse
     {
         public static User CurrentUser { get; set; }
         public static Login Login { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>")]
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
         public static bool DevMode { get; set; }
@@ -68,7 +70,7 @@ namespace ProjectLighthouse
 
                 if (Constants is null)
                 {
-                    throw new Exception("Deserialisation of config.json to Constants returned null");
+                    throw new FileLoadException("Deserialisation of config.json to Constants returned null");
                 }
             }
             catch (Exception ex)
@@ -125,7 +127,7 @@ namespace ProjectLighthouse
                 Application.Current.Dispatcher.Invoke(delegate
                 {
                     Debug.WriteLine($"Activated request for {toastArgs.Argument}");
-                    NotificationsManager.ParseToastArgs(toastArgs.Argument);
+                    NotificationManager.ParseToastArgs(toastArgs.Argument);
                 });
             };
 

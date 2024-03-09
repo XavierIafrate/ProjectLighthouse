@@ -52,8 +52,8 @@
 
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisibleOrCollapsed" />
             <converters:boolToCollapsedOrVisible x:Key="boolToCollapsedOrVisible" />
-            <converters:ObjectIsNotNull x:Key="NotNullToBoolean" />
-            <converters:ObjectIsNotNullToVisibility x:Key="NotNullToVisibility" />
+            <converters:ObjectIsNotNull x:Key="ObjectIsNotNull" />
+
             <converters:ObjectIsNullToVisibility x:Key="NullToVisibility" />
             <converters:ListIsEmptyToCollapsedOrVisible x:Key="EmptyListToCollapsedOrVisible" />
             <converters:ListIsEmptyToVisibleOrCollapsed x:Key="EmptyListToVisibleOrCollapsed" />
