@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.View.Orders;
+using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Core;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows;
-using ViewModel.Commands.Administration;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
