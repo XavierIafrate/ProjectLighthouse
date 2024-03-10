@@ -15,7 +15,7 @@
     <Grid>
         <Grid.Resources>
             <converters:intToStringCycleTime x:Key="CycleTimeConverter" />
-            <converters:intGreaterThanZeroToVisibility x:Key="IntGreaterThanZero" />
+            <converters:NumberGreaterThanZero x:Key="IntGreaterThanZero" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition

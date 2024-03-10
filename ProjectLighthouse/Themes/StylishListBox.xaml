@@ -15,14 +15,14 @@
                         Background="{StaticResource Background}"
                         BorderBrush="{StaticResource Surface}"
                         BorderThickness="1"
-                        CornerRadius="2">
+                        CornerRadius="5">
                         <ScrollViewer Margin="0" Focusable="false">
                             <StackPanel Margin="2" IsItemsHost="True" />
                         </ScrollViewer>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="Border" Property="Background" Value="LightGray" />
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Surface}" />
                             <Setter TargetName="Border" Property="BorderBrush" Value="Gray" />
                         </Trigger>
                         <Trigger Property="IsGrouping" Value="true">
@@ -43,7 +43,7 @@
                     <Border
                         x:Name="Border"
                         Padding="2"
-                        CornerRadius="2"
+                        CornerRadius="5"
                         SnapsToDevicePixels="true">
                         <Border.Background>
                             <SolidColorBrush Color="Transparent" />

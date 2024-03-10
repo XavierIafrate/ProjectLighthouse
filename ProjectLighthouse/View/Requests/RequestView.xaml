@@ -490,7 +490,7 @@
                                 <ItemsControl d:ItemsSource="{d:SampleData ItemCount=2}" ItemsSource="{Binding SelectedRequestOrder.OrderItems}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" />
+                                            <uc:DisplayLMOItems Item="{Binding}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -505,7 +505,7 @@
                             <ListView d:ItemsSource="{d:SampleData ItemCount=4}" ItemsSource="{Binding RecommendedManifest}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <uc:DisplayLMOItems Margin="10,2" LatheManufactureOrderItem="{Binding}" />
+                                        <uc:DisplayLMOItems Margin="10,2" Item="{Binding}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>

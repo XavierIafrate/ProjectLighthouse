@@ -260,46 +260,46 @@ namespace ProjectLighthouse.Model.Administration
             throw new Exception($"Validation for {propertyName} has not been configured.");
         }
 
-        public List<string> GetChanges(Lathe otherLathe)
-        {
-            PropertyInfo[] properties = typeof(Lathe).GetProperties();
-            bool mod = false;
-            List<string> changes = new();
+        //public List<string> GetChanges(Lathe otherLathe)
+        //{
+        //    PropertyInfo[] properties = typeof(Lathe).GetProperties();
+        //    bool mod = false;
+        //    List<string> changes = new();
 
-            foreach (PropertyInfo property in properties)
-            {
-                bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
+        //    foreach (PropertyInfo property in properties)
+        //    {
+        //        bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
 
-                if (!watchPropForChanges)
-                {
-                    continue;
-                }
+        //        if (!watchPropForChanges)
+        //        {
+        //            continue;
+        //        }
 
-                if (!Equals(property.GetValue(this), property.GetValue(otherLathe)))
-                {
-                    changes.Add($"{property.Name} changed from '{property.GetValue(this) ?? "null"}' to '{property.GetValue(otherLathe) ?? "null"}'");
+        //        if (!Equals(property.GetValue(this), property.GetValue(otherLathe)))
+        //        {
+        //            changes.Add($"{property.Name} changed from '{property.GetValue(this) ?? "null"}' to '{property.GetValue(otherLathe) ?? "null"}'");
 
-                    mod = true;
-                }
+        //            mod = true;
+        //        }
 
-            }
+        //    }
 
-            if (mod)
-            {
-                //string path = App.ROOT_PATH + @"lib\logs\" + Id + ".log";
+        //    if (mod)
+        //    {
+        //        //string path = App.ROOT_PATH + @"lib\logs\" + Id + ".log";
 
-                //File.AppendAllText(path, sb.ToString());
-            }
+        //        //File.AppendAllText(path, sb.ToString());
+        //    }
 
-            return changes;
-        }
+        //    return changes;
+        //}
 
-        public bool IsUpdated(Lathe otherLathe)
-        {
-            List<string> changes = GetChanges(otherLathe);
+        //public bool IsUpdated(Lathe otherLathe)
+        //{
+        //    List<string> changes = GetChanges(otherLathe);
 
-            return changes.Count > 0;
-        }
+        //    return changes.Count > 0;
+        //}
 
         public override bool CanRun(ScheduleItem item)
         {
