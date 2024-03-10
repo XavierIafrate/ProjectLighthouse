@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+using System;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -8,15 +9,31 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not int cycleTime) throw new InvalidCastException();
+            int cycleTime;
+
+            if (value is null)
+            {
+                cycleTime = 0;
+            }
+            else if (value is int intgr)
+            {
+                cycleTime = intgr;
+            }
+            else
+            {
+                throw new InvalidCastException();
+            }
+            
 
             if (cycleTime == 0)
             {
                 return "Unknown";
             }
 
-            TimeSpan t = TimeSpan.FromSeconds(cycleTime);
-            return ($"{t.Minutes}m {t.Seconds}s");
+            int min = (cycleTime - (cycleTime % 60)) / 60;
+            int sec = cycleTime % 60;
+
+            return ($"{min}:{sec:00}");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

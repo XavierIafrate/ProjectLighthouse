@@ -53,7 +53,7 @@
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisibleOrCollapsed" />
             <converters:boolToCollapsedOrVisible x:Key="boolToCollapsedOrVisible" />
             <converters:ObjectIsNotNull x:Key="ObjectIsNotNull" />
-
+            <converters:intToStringCycleTime x:Key="CycleTimeStringConverter" />
             <converters:ObjectIsNullToVisibility x:Key="NullToVisibility" />
             <converters:ListIsEmptyToCollapsedOrVisible x:Key="EmptyListToCollapsedOrVisible" />
             <converters:ListIsEmptyToVisibleOrCollapsed x:Key="EmptyListToVisibleOrCollapsed" />
