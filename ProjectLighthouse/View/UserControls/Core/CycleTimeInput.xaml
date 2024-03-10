@@ -6,12 +6,12 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="parentControl"
+    d:Background="White"
     d:DesignWidth="300"
     Background="#11ffffff"
-    d:Background="White"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <local:IntegerConverter x:Key="intConverter"/>
+        <local:IntegerConverter x:Key="intConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -38,10 +38,10 @@
         <TextBox
             Grid.Column="2"
             Width="50"
-            Tag="0"
             HorizontalContentAlignment="Center"
             MaxLength="3"
             Style="{StaticResource DefaultTextBox}"
+            Tag="0"
             Text="{Binding ElementName=parentControl, Path=SecondsPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource intConverter}, ConverterParameter='hide-zero'}" />
         <TextBlock
             Grid.Column="3"
@@ -61,8 +61,8 @@
             MinWidth="50"
             HorizontalContentAlignment="Center"
             MaxLength="4"
-            Tag="0"
             Style="{StaticResource DefaultTextBox}"
+            Tag="0"
             Text="{Binding ElementName=parentControl, Path=CycleTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource intConverter}, ConverterParameter='hide-zero'}"
             Visibility="{Binding ElementName=AbsoluteModeCheckBox, Path=IsChecked, Converter={StaticResource boolToVisibleOrCollapsed}}" />
 

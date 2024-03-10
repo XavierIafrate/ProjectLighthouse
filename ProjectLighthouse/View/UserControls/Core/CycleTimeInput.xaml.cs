@@ -15,7 +15,7 @@ namespace ProjectLighthouse.View.UserControls.Core
         }
 
         public static readonly DependencyProperty CycleTimeProperty =
-            DependencyProperty.Register("CycleTime", typeof(int), typeof(CycleTimeInput), new PropertyMetadata(0, SetValues));
+            DependencyProperty.Register("CycleTime", typeof(int), typeof(CycleTimeInput), new PropertyMetadata(-1, SetValues));
 
         private bool loaded;
 

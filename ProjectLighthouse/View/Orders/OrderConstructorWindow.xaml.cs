@@ -598,7 +598,7 @@ namespace ProjectLighthouse.View.Orders
                 NewOrder.RequiredFeaturesList.AddRange(SelectedProduct.RequiresFeaturesList);
             }
 
-            NewOrder.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new());
+            NewOrder.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new(), new());
             NewOrder.TimeModelPlanned = timeModel;
 
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>()
@@ -671,7 +671,7 @@ namespace ProjectLighthouse.View.Orders
             insights.NumberOfBarsRequired = NewOrderItems.CalculateNumberOfBars(bar, 0);
             insights.TotalBarCost = (bar.ExpectedCost ?? 0) * insights.NumberOfBarsRequired;
 
-            int totalTime = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new());
+            int totalTime = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new(), new());
 
             insights.TimeIsEstimate = true; // TODO fix
             insights.TimeToComplete = totalTime;

@@ -387,9 +387,14 @@ namespace ProjectLighthouse.Model.Orders
         }
 
 
-
+        private string timeCodePlanned;
         [UpdateWatch]
-        public string TimeCodePlanned { get; set; }
+        public string TimeCodePlanned
+        {
+            get { return timeCodePlanned; }
+            set { timeCodePlanned = value; OnPropertyChanged(); }
+        }
+
         public bool TimeCodeIsEstimate { get; set; }
 
         [UpdateWatch]

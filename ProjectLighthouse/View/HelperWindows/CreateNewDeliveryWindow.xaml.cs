@@ -180,6 +180,8 @@ namespace ProjectLighthouse.View
                     }
 
                     order.DeliveredQuantity += lot.Quantity;
+                    order.ModifiedAt = DateTime.Now;
+                    order.ModifiedBy = App.CurrentUser.UserName;
                     updateTransactions.Add(order);
                 }
 

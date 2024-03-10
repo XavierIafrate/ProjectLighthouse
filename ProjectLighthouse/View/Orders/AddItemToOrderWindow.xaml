@@ -6,6 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Add Items"
+    WindowStartupLocation="CenterOwner"
+    x:Name="parentControl"
     Width="500"
     Height="450"
     MaxHeight="900"
@@ -20,7 +22,7 @@
         <ScrollViewer>
             <ListView
                 x:Name="ItemsListView"
-                ItemsSource="{Binding PossibleItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                ItemsSource="{Binding ElementName=parentControl, Path=PossibleItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 SelectionChanged="ListView_SelectionChanged"
                 SelectionMode="Multiple">
                 <ListView.ItemTemplate>

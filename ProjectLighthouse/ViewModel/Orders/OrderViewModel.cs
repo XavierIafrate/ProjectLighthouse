@@ -1,8 +1,5 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
+﻿using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Analytics;
 using ProjectLighthouse.Model.Core;
@@ -12,22 +9,16 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.Model.Reporting;
-using ProjectLighthouse.Model.Scheduling;
-using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Core;
-using ProjectLighthouse.ViewModel.Helpers;
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using DateTimePoint = LiveChartsCore.Defaults.DateTimePoint;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -108,9 +99,9 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public List<ISeries> Series { get; set; }
 
-    
 
-        
+
+
 
         private string? runBeforeText;
         public string? RunBeforeText

@@ -14,6 +14,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <valueConverters:BooleanInverter x:Key="invertBool" />
+        <valueConverters:NullableIntConverter x:Key="convertNullableInt" />
         <Style
             x:Key="ExpandButton"
             BasedOn="{x:Null}"
@@ -116,7 +117,11 @@
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     Visibility="{Binding ElementName=parentControl, Path=IsMouseOver, Converter={StaticResource boolToCollapsedOrVisible}}">
-                    <userControls:LMOQuantityDisplay Width="180" Item="{Binding ElementName=parentControl, Path=Item}" />
+                    <userControls:LMOQuantityDisplay
+                        Width="180"
+                        MadeQuantity="{Binding ElementName=parentControl, Path=Item.QuantityMade}"
+                        RequiredQuantity="{Binding ElementName=parentControl, Path=Item.RequiredQuantity}"
+                        TargetQuantity="{Binding ElementName=parentControl, Path=Item.TargetQuantity}" />
                 </StackPanel>
 
                 <ToggleButton
@@ -152,6 +157,7 @@
                     <StackPanel Margin="10,0">
                         <TextBlock Style="{StaticResource InputLabel}" Text="Major Length" />
                         <TextBox
+                            MaxLength="6"
                             Style="{StaticResource DefaultTextBox}"
                             Tag="major length"
                             Text="{Binding ElementName=parentControl, Path=Item.MajorLength}" />
@@ -159,6 +165,7 @@
                     <StackPanel Grid.Column="1" Margin="10,0">
                         <TextBlock Style="{StaticResource InputLabel}" Text="Part Off Length" />
                         <TextBox
+                            MaxLength="6"
                             Style="{StaticResource DefaultTextBox}"
                             Tag="extra material"
                             Text="{Binding ElementName=parentControl, Path=Item.PartOffLength}" />
@@ -172,7 +179,10 @@
 
                     </StackPanel>
                 </Grid>
-                <Grid Margin="15,5" Visibility="{Binding ElementName=parentControl, Path=SchedulingPermissions, Converter={StaticResource boolToVisibleOrCollapsed}}" IsEnabled="{Binding ElementName=parentControl, Path=EditMode}">
+                <Grid
+                    Margin="15,5"
+                    IsEnabled="{Binding ElementName=parentControl, Path=EditMode}"
+                    Visibility="{Binding ElementName=parentControl, Path=SchedulingPermissions, Converter={StaticResource boolToVisibleOrCollapsed}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
@@ -185,12 +195,13 @@
                     <StackPanel>
                         <TextBlock Style="{StaticResource InputLabel}" Text="Required Quantity" />
                         <TextBox
+                            MaxLength="6"
                             Style="{StaticResource DefaultTextBox}"
                             Tag="required quantity"
-                            Text="{Binding ElementName=parentControl, Path=Item.RequiredQuantity}" />
+                            Text="{Binding ElementName=parentControl, Path=Item.RequiredQuantity, UpdateSourceTrigger=PropertyChanged}" />
 
                     </StackPanel>
-     
+
                     <StackPanel Grid.Column="1">
                         <TextBlock Style="{StaticResource InputLabel}" Text="Date Required" />
                         <DatePicker SelectedDate="{Binding ElementName=parentControl, Path=Item.DateRequired}" />
@@ -199,24 +210,43 @@
                     <StackPanel Grid.Row="1">
                         <TextBlock Style="{StaticResource InputLabel}" Text="Target Quantity" />
                         <TextBox
-                       Style="{StaticResource DefaultTextBox}"
-                       Tag="target quantity"
-                       Text="{Binding ElementName=parentControl, Path=Item.TargetQuantity}" />
+                            MaxLength="6"
+                            Style="{StaticResource DefaultTextBox}"
+                            Tag="target quantity"
+                            Text="{Binding ElementName=parentControl, Path=Item.TargetQuantity, UpdateSourceTrigger=PropertyChanged}" />
 
                     </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="2">
                         <TextBlock Style="{StaticResource InputLabel}" Text="Previous Cycle Time" />
-                        <coreControls:CycleTimeInput HorizontalAlignment="Stretch" CycleTime="{Binding ElementName=parentControl, Path=Item.PreviousCycleTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <coreControls:CycleTimeInput HorizontalAlignment="Stretch" CycleTime="{Binding ElementName=parentControl, Path=Item.PreviousCycleTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource convertNullableInt}}" />
                     </StackPanel>
                     <Button
-                        Grid.Column="2" VerticalAlignment="Bottom"
-                        Margin="5" HorizontalAlignment="Left"
                         x:Name="RemoveRequirementButton"
+                        Grid.Column="2"
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
                         Click="RemoveRequirementButton_Click"
                         Content="Clear Requirement"
                         Style="{StaticResource Action_Remove_Button}" />
 
                 </Grid>
+
+                <TextBlock
+                    Margin="15,0"
+                    Style="{StaticResource section}"
+                    Text="Lots" />
+                <local:LotsEditor
+                    Margin="20,0"
+                    EditMode="{Binding ElementName=parentControl, Path=EditMode}"
+                    IsEnabled="{Binding EditMode, ElementName=parentControl}"
+                    ItemName="{Binding ElementName=parentControl, Path=Item.ProductName}"
+                    Lots="{Binding ElementName=parentControl, Path=Order.Lots}"
+                    Order="{Binding ElementName=parentControl, Path=Order}" />
+
             </StackPanel>
         </Grid>
     </Border>

@@ -21,12 +21,10 @@
         <StackPanel>
             <local:DisplayOrderScheduleInformation Margin="10" Item="{Binding ElementName=parentControl, Path=Order}" />
 
-
-
             <TextBlock Style="{StaticResource section}" Text="Requirement" />
             <local:DisplayGeneralOrderRequirement Margin="10" Order="{Binding Order, ElementName=parentControl}" />
 
-            <TabControl x:Name="OrderTabControl">
+            <TabControl x:Name="OrderTabControl" Margin="0,10,0,20">
                 <TabItem>
                     <TabItem.Header>
                         <emoji:TextBlock
@@ -201,106 +199,14 @@
                         </StackPanel>
                         <TextBlock Style="{StaticResource section}" Text="Production Log" />
                         <Grid IsEnabled="{Binding Order.HasStarted, ElementName=parentControl}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                            <local:LotsEditor 
+                                 IsEnabled="{Binding EditMode, ElementName=parentControl}"
+                                ItemName="{Binding ElementName=parentControl, Path=Order.Item.Name}"
+                                CycleTime="{Binding ElementName=parentControl, Path=Order.Item.CycleTime}"
+                                Lots="{Binding ElementName=parentControl, Path=Order.Lots}"
+                                EditMode="{Binding ElementName=parentControl, Path=EditMode}"
+                                Order="{Binding ElementName=parentControl, Path=Order}"/>
 
-                            <Grid IsEnabled="{Binding Path=EditMode, ElementName=parentControl}" Visibility="{Binding Path=EditMode, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="2*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Style="{StaticResource InputLabel}"
-                                    Text="Quantity" />
-                                <TextBox
-                                    Grid.Row="1"
-                                    Margin="0"
-                                    d:Text="0000"
-                                    Style="{StaticResource DefaultTextBox}"
-                                    Text="{Binding ElementName=parentControl, Path=NewLot.Quantity}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Style="{StaticResource InputLabel}"
-                                    Text="Batch" />
-                                <TextBox
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    d:Text="0000"
-                                    Style="{StaticResource DefaultTextBox}"
-                                    Text="{Binding ElementName=parentControl, Path=NewLot.MaterialBatch}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Style="{StaticResource InputLabel}"
-                                    Text="Production Date" />
-                                <DatePicker
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Width="Auto"
-                                    SelectedDate="{Binding ElementName=parentControl, Path=NewLot.DateProduced}" />
-
-
-
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Style="{StaticResource InputLabel}"
-                                    Text="Remarks" />
-                                <TextBox
-                                    Grid.Row="4"
-                                    Grid.ColumnSpan="3"
-                                    Height="Auto"
-                                    Padding="0,5"
-                                    d:Text="REMARKS"
-                                    MaxLength="512"
-                                    Style="{StaticResource DefaultTextBox}"
-                                    Tag="remarks"
-                                    Text="{Binding ElementName=parentControl, Path=NewLot.Remarks}" />
-                                <StackPanel
-                                    Grid.Row="5"
-                                    Grid.ColumnSpan="3"
-                                    HorizontalAlignment="Right"
-                                    Orientation="Horizontal">
-
-                                    <CheckBox
-                                        Content="Accepted"
-                                        IsChecked="{Binding ElementName=parentControl, Path=NewLot.IsAccepted}"
-                                        IsEnabled="{Binding ElementName=parentControl, Path=NewLot.IsDelivered, Converter={StaticResource invertBool}}" />
-                                    <CheckBox
-                                        Content="Rejected"
-                                        IsChecked="{Binding ElementName=parentControl, Path=NewLot.IsReject}"
-                                        IsEnabled="{Binding ElementName=parentControl, Path=NewLot.IsDelivered, Converter={StaticResource invertBool}}" />
-                                    <Button
-                                        x:Name="AddLotButton"
-                                        HorizontalAlignment="Left"
-                                        Click="AddLotButton_Click"
-                                        Content="Add Lot"
-                                        Style="{StaticResource Action_New_Button_Small}" />
-                                </StackPanel>
-
-                            </Grid>
-                            <ListBox
-                                Grid.Row="1"
-                                MaxHeight="350"
-                                Margin="5"
-                                d:ItemsSource="{d:SampleData ItemCount=5}"
-                                ItemsSource="{Binding ElementName=parentControl, Path=Order.Lots}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <local:DisplayLot Lot="{Binding}" />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
                         </Grid>
 
                     </StackPanel>

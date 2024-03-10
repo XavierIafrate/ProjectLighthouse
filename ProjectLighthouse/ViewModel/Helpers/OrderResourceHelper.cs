@@ -9,24 +9,46 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class OrderResourceHelper
     {
-        public static int CalculateOrderRuntime(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<MachineBreakdown> breakdowns)
+        public static int CalculateOrderRuntime(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<MachineBreakdown> breakdowns, List<Lot> lots)
         {
             int totalTime = 0;
 
             foreach (LatheManufactureOrderItem item in items)
             {
-                if (item.CycleTime > 0)
+                int itemCycleTime = item.CycleTime > 0 ? item.CycleTime : item.PlannedCycleTime();
+                List<Lot> lotsForItem = lots.Where(x => x.ProductName == item.ProductName).ToList();
+
+                int timeOnItem = 0;
+                int goodQuantityAvailable = item.TargetQuantity;
+
+                foreach (Lot lot in lotsForItem)
                 {
-                    totalTime += item.CycleTime * (item.TargetQuantity + item.QuantityReject); // factor in scrap time
+                    if (lot.CycleTime > 0)
+                    {
+                        itemCycleTime = lot.CycleTime;
+                    }
+
+                    int factoredQuantityThisLot;
+
+                    if (lot.IsReject)
+                    {
+                        factoredQuantityThisLot = lot.Quantity;
+                    }
+                    else
+                    {
+                        factoredQuantityThisLot = Math.Min(goodQuantityAvailable, lot.Quantity);
+                        goodQuantityAvailable -= factoredQuantityThisLot;
+                    }
+           
+                    timeOnItem += factoredQuantityThisLot * itemCycleTime;
                 }
-                else
-                {
-                    totalTime += item.PlannedCycleTime() * item.TargetQuantity;
-                }
+
+                timeOnItem += goodQuantityAvailable * itemCycleTime;
+                totalTime += timeOnItem;
             }
 
-            totalTime += (int)order.NumberOfBars * 30;
 
+            totalTime += (int)order.NumberOfBars * 30;
             totalTime += breakdowns.Sum(x => x.TimeElapsed);
 
             return totalTime;
@@ -137,7 +159,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             double meanY = items.Average(point => (double)point.Item2);
 
             double sumXSquared = items.Sum(point => Math.Pow(point.Item1, 2));
-            double sumXY = items.Sum(point => point.Item1 * (double)point.Item2);
+            double sumXY = items.Sum(point => point.Item1 * point.Item2);
 
 
             double a1 = (sumXY / numPoints - meanX * meanY) / (sumXSquared / numPoints - meanX * meanX);
@@ -160,8 +182,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             foreach ((double, int) item in items)
             {
                 double bestFitVal = a1 * item.Item1 + b1;
-                rss += Math.Pow((double)item.Item2 - bestFitVal, 2);
-                tss += Math.Pow((double)item.Item2 - meanY, 2);
+                rss += Math.Pow(item.Item2 - bestFitVal, 2);
+                tss += Math.Pow(item.Item2 - meanY, 2);
             }
 
             r2 = 1 - (rss / tss);

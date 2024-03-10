@@ -5,64 +5,78 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:valueConverters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    x:Name="parentControl"
     d:Background="White"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <valueConverters:NumberGreaterThanZero x:Key="greaterThanZeroConverter" />
+        <Style
+            x:Key="ProgressBarStyle"
+            BasedOn="{x:Null}"
+            TargetType="{x:Type ProgressBar}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource Purple}" />
+            <Setter Property="Height" Value="12" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ProgressBar}">
+                        <Grid>
+                            <Border
+                                x:Name="PART_Track"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="6" />
+                            <Border
+                                x:Name="PART_Indicator"
+                                Margin="0"
+                                HorizontalAlignment="Left"
+                                Background="{TemplateBinding Foreground}"
+                                BorderThickness="0"
+                                ClipToBounds="True"
+                                CornerRadius="6" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="10,0" VerticalAlignment="Center">
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="markerRow" />
-            <RowDefinition x:Name="progressBarRow" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid x:Name="sliderGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.5" />
-                <ColumnDefinition x:Name="lCol" Width="*" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition x:Name="rCol" Width="*" />
-                <ColumnDefinition Width="2.5" />
-            </Grid.ColumnDefinitions>
-            <Path
-                x:Name="targetMarker"
-                Grid.Column="2"
-                Width="10"
-                Height="12"
-                Data="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z"
-                Fill="{StaticResource Red}"
-                Stretch="Uniform" />
-        </Grid>
+        <Border Background="{StaticResource PurpleFaded}" CornerRadius="6" />
         <ProgressBar
-            x:Name="progressBar"
-            Grid.Row="1"
-            Height="8"
-            Margin="5,0"
-            BorderBrush="{StaticResource DisabledElement}"
-            BorderThickness="1"
-            Foreground="{StaticResource Purple}"
-            Maximum="{Binding TargetQuantity}"
+            d:Value="20"
+            Foreground="{StaticResource RedLight}"
+            Maximum="{Binding ElementName=parentControl, Path=TargetQuantity}"
             Minimum="0"
-            Value="{Binding QuantityDelivered}" />
+            Style="{StaticResource ProgressBarStyle}"
+            Visibility="{Binding ElementName=parentControl, Path=MadeQuantity, Converter={StaticResource greaterThanZeroConverter}}"
+            Value="{Binding ElementName=parentControl, Path=RequiredQuantity}" />
+        <ProgressBar
+            d:Value="10"
+            Maximum="{Binding ElementName=parentControl, Path=TargetQuantity}"
+            Minimum="0"
+            Style="{StaticResource ProgressBarStyle}"
+            Visibility="{Binding ElementName=parentControl, Path=MadeQuantity, Converter={StaticResource greaterThanZeroConverter}}"
+            Value="{Binding ElementName=parentControl, Path=MadeQuantity}" />
         <StackPanel
-            Grid.Row="2"
+            Grid.Row="1"
             Margin="5,0"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
             <TextBlock
-                x:Name="made"
-                d:Text="99,999 / "
-                FontWeight="SemiBold"
-                Foreground="{StaticResource Orange}" />
-            <TextBlock
                 x:Name="delivered"
                 d:Text="99,999 / "
                 FontWeight="SemiBold"
-                Text="{Binding QuantityDelivered, StringFormat='{}{0:#,##0} / '}" />
+                Text="{Binding ElementName=parentControl, Path=MadeQuantity, StringFormat='{}{0:#,##0} / '}" />
             <TextBlock
                 d:Text="99,999 pcs"
                 FontWeight="SemiBold"
                 Opacity="0.6"
-                Text="{Binding TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" />
+                Text="{Binding ElementName=parentControl, Path=TargetQuantity, StringFormat='{}{0:#,##0} pcs'}" />
         </StackPanel>
     </Grid>
 </UserControl>

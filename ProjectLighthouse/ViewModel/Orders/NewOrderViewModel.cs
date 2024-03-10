@@ -21,6 +21,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 {
     public class NewOrderViewModel : BaseViewModel
     {
+        #region Observables
         private bool editMode;
         public bool EditMode
         {
@@ -50,44 +51,22 @@ namespace ProjectLighthouse.ViewModel.Orders
             get { return selectedItem; }
             set
             {
-                if (selectedItem is LatheManufactureOrder order)
+                if (selectedItem is not null)
                 {
-                    order.PropertyChanged -= BindBar;
+                    selectedItem.PropertyChanged -= ItemUpdated;
                 }
 
                 selectedItem = value;
 
-                if (selectedItem is LatheManufactureOrder)
+                if (selectedItem is not null)
                 {
-                    selectedItem.PropertyChanged += BindBar;
+                    selectedItem.PropertyChanged += ItemUpdated;
                 }
 
                 OnPropertyChanged();
                 SetSelectedItem();
             }
         }
-
-        private void BindBar(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != nameof(LatheManufactureOrder.BarID)) return;
-            if (SelectedItem is not LatheManufactureOrder order) return;
-
-            order.Bar = barStock.Find(b => b.Id == order.BarID);
-        }
-
-        private void SetSelectedItem()
-        {
-            if (SelectedItem == null)
-            {
-                EditMode = false;
-                return;
-            }
-
-            EditMode = editCopies.ContainsKey(SelectedItem.Name);
-        }
-
-        private List<ScheduleItem> items;
-
 
         private Dictionary<User, int> assignmentCounts;
         public Dictionary<User, int> AssignmentCounts
@@ -102,7 +81,10 @@ namespace ProjectLighthouse.ViewModel.Orders
             get { return filteredItems; }
             set { filteredItems = value; OnPropertyChanged(); }
         }
+        #endregion
 
+        #region Core Data
+        private List<ScheduleItem> items;
         private List<Machine> machines;
         private List<LatheManufactureOrderItem> orderItems;
         private List<BarStock> barStock;
@@ -117,6 +99,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         private List<MachineBreakdown> machineBreakdowns;
         private List<Product> products;
         private List<ProductGroup> productGroups;
+        #endregion
 
         Dictionary<string, ScheduleItem> editCopies = new();
 
@@ -135,7 +118,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             SelectedItem = FilteredItems.First();
 
             SetAssignmentData();
-
             LoadCommands();
         }
 
@@ -339,15 +321,25 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
             }
 
+            EnrichData(results);
 
+            FilteredItems = results;
+            if (SelectedItem == null && FilteredItems.Count > 0)
+            {
+                SelectedItem = FilteredItems[0];
+            }
+        }
+
+        private void EnrichData(List<ScheduleItem> results)
+        {
             foreach (ScheduleItem item in results)
             {
-                item.Lots ??= lots.Where(x => x.Order == item.Name).ToList();
+                item.Lots ??= lots.Where(x => x.Order == item.Name).OrderBy(x => x.DateProduced).ToList();
                 item.Notes ??= notes.Where(x => x.DocumentReference == item.Name).ToList();
 
                 if (item is LatheManufactureOrder latheOrder)
                 {
-                    latheOrder.OrderItems ??= orderItems.Where(x => x.AssignedMO == latheOrder.Name).ToList();
+                    latheOrder.OrderItems ??= orderItems.Where(x => x.AssignedMO == latheOrder.Name).OrderByDescending(x => x.RequiredQuantity).ThenBy(x => x.ProductName).ToList();
 
                     latheOrder.Bar ??= barStock.Find(x => x.Id == latheOrder.BarID);
 
@@ -363,29 +355,23 @@ namespace ProjectLighthouse.ViewModel.Orders
                         latheOrder.Product = products.Find(x => x.Id == latheOrder.ProductGroup.ProductId);
                     }
 
-                    latheOrder.Briefing=GetBriefing(latheOrder);
+                    latheOrder.Briefing = GetBriefing(latheOrder);
                 }
                 else if (item is GeneralManufactureOrder generalOrder)
                 {
                     generalOrder.Item = nonTurnedItems.Find(x => x.Id == generalOrder.NonTurnedItemId);
                 }
             }
-
-            FilteredItems = results;
-            if(SelectedItem == null && FilteredItems.Count > 0)
-            {
-                SelectedItem = FilteredItems[0];
-            }
         }
 
         private Briefing GetBriefing(LatheManufactureOrder latheOrder)
         {
             List<LatheManufactureOrder> ordersOfArchetype = new();
-            for(int i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 ScheduleItem item = items[i];
                 if (item is not LatheManufactureOrder order) continue;
-                if(order.GroupId == latheOrder.GroupId && order.StartDate > DateTime.MinValue && order.IsComplete && order.Name != latheOrder.Name && order.StartDate < latheOrder.CreatedAt)
+                if (order.GroupId == latheOrder.GroupId && order.StartDate > DateTime.MinValue && order.IsComplete && order.Name != latheOrder.Name && order.StartDate < latheOrder.CreatedAt)
                 {
                     ordersOfArchetype.Add(order);
                 }
@@ -406,21 +392,16 @@ namespace ProjectLighthouse.ViewModel.Orders
             return result;
         }
 
-        void EditItem()
-        {
-            if (SelectedItem == null) return;
-
-            ScheduleItem copy = (ScheduleItem)SelectedItem.Clone();
-
-            editCopies.TryAdd(SelectedItem.Name, copy);
-
-            SelectedItem.Editing = true;
-        }
 
         internal void EnterEditMode()
         {
+            if (SelectedItem == null) return;
             EditMode = true;
-            EditItem();
+
+            ScheduleItem copy = (ScheduleItem)SelectedItem.Clone();
+            editCopies.TryAdd(SelectedItem.Name, copy);
+
+            SelectedItem.Editing = true;
         }
 
         internal void ExitEditMode(bool save)
@@ -431,7 +412,6 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
-            SelectedItem.Editing = false;
 
             ScheduleItem copy;
             try
@@ -444,55 +424,235 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
-            bool updated = copy.IsUpdated(SelectedItem);
-
-            if (!updated)
+            if (SelectedItem is LatheManufactureOrder latheOrder && copy is LatheManufactureOrder latheOrderCopy)
             {
-                updated = LotsChanged(newCopy: SelectedItem.Lots, originalCopy: copy.Lots);
-            }
+                bool updated = DetectLatheOrderChanges(latheOrder, latheOrderCopy);
 
-            if (updated && save)
-            {
-                if (!SaveChanges(SelectedItem))
+                if (updated && save)
                 {
-                    MessageBox.Show("Lighthouse encountered an error while saving order data, the operation has been aborted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    bool saved = SaveLatheOrder(latheOrder, latheOrderCopy);
 
-                ScheduleItem masterVersion = items.Find(x => x.Name == copy.Name);
-                masterVersion = SelectedItem;
-
-                SetAssignmentData();
-
-            }
-            else if (updated)
-            {
-                for (int i = items.Count - 1; i >= 0; i--)
-                {
-                    if (items[i].Name == copy.Name)
+                    if (!saved)
                     {
-                        items[i] = copy;
-                        break;
+                        MessageBox.Show("failed to update database");
+                        return;
                     }
+                    latheOrder.Editing = false;
+
+                    for (int i = items.Count - 1; i >= 0; i--)
+                    {
+                        if (items[i].Name == latheOrder.Name)
+                        {
+                            items[i] = (LatheManufactureOrder)latheOrder.Clone();
+                            break;
+                        }
+                    }
+
+                    Filter();
+                    SelectedItem = FilteredItems.Find(x => x.Name == copy.Name);
+                    SetAssignmentData();
                 }
+                else if (updated)
+                {
+                    RestoreCopy(copy);
+                    SetAssignmentData();
+                }
+                else
+                {
+                    SelectedItem.Editing = false;
+                }
+            }
+            else if (SelectedItem is GeneralManufactureOrder generalOrder && copy is GeneralManufactureOrder generalOrderCopy)
+            {
+                bool updated = DetectGeneralOrderChanges(generalOrder, generalOrderCopy);
 
-                Filter();
+                if (updated && save)
+                {
+                    bool saved = SaveGeneralOrder(generalOrder);
 
-                SelectedItem = FilteredItems.Find(x => x.Name == copy.Name);
+                    if (!saved)
+                    {
+                        MessageBox.Show("failed to update database");
+                        return;
+                    }
+                    generalOrder.Editing = false;
+
+                    for (int i = items.Count - 1; i >= 0; i--)
+                    {
+                        if (items[i].Name == generalOrder.Name)
+                        {
+                            items[i] = (GeneralManufactureOrder)generalOrder.Clone();
+                            break;
+                        }
+                    }
+                    Filter();
+                    SelectedItem = FilteredItems.Find(x => x.Name == copy.Name);
+                    SetAssignmentData();
+                }
+                else if (updated)
+                {
+                    RestoreCopy(copy);
+                    SetAssignmentData();
+                }
+                else
+                {
+                    SelectedItem.Editing = false;
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
 
             editCopies.Remove(copy.Name);
             EditMode = false;
         }
 
-        private static bool SaveChanges(ScheduleItem selectedItem)
+        private void RestoreCopy(ScheduleItem copy)
+        {
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                if (items[i].Name == copy.Name)
+                {
+                    items[i] = copy;
+                    break;
+                }
+            }
+
+            Filter();
+            SelectedItem = FilteredItems.Find(x => x.Name == copy.Name);
+        }
+
+        private static bool SaveLatheOrder(LatheManufactureOrder latheOrder, LatheManufactureOrder oldCopy)
         {
             using SQLiteConnection conn = DatabaseHelper.GetConnection();
             conn.BeginTransaction();
 
-            for (int i = 0; i < selectedItem.Lots.Count; i++)
+            if (!UpdateLots(latheOrder.Lots, oldCopy.Lots, conn))
             {
-                Lot lot = selectedItem.Lots[i];
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
 
+            if (!UpdateItems(latheOrder.OrderItems, oldCopy.OrderItems, conn))
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
+
+            // Breakdowns
+
+            // Update master cycle time...
+
+            // Drawings
+
+            latheOrder.ModifiedAt = DateTime.Now;
+            latheOrder.ModifiedBy = App.CurrentUser.UserName;
+
+            if (conn.Update(latheOrder) != 1)
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
+
+            conn.Commit();
+            conn.Close();
+            return true;
+        }
+
+        private static bool UpdateItems(List<LatheManufactureOrderItem> to, List<LatheManufactureOrderItem> from, SQLiteConnection conn)
+        {
+            List<LatheManufactureOrderItem> added = to.Where(x => x.Id == 0).ToList();
+            List<LatheManufactureOrderItem> removed = from.Where(x => !to.Any(i => i.Id == x.Id)).ToList();
+
+            List<LatheManufactureOrderItem> updated = new();
+            for (int i = 0; i < to.Count; i++)
+            {
+                LatheManufactureOrderItem i1 = to[i];
+                if (i1.Id == 0) continue;
+                LatheManufactureOrderItem? i2 = from.Find(x => x.Id == i1.Id) 
+                    ?? throw new KeyNotFoundException($"could not find Lathe Order Item with ID '{i1.Id}' in copy");
+                if (i2.IsUpdated(i1))
+                {
+                    updated.Add(i1);
+                }
+            }
+
+
+            foreach (LatheManufactureOrderItem item in updated)
+            {
+                if (conn.Update(item) != 1)
+                {
+                    return false;
+                }
+
+                if (item.CycleTime > 0)
+                {
+                    if (conn.Execute($"UPDATE {nameof(TurnedProduct)} SET CycleTime = {item.CycleTime} WHERE ProductName = '{item.ProductName}'") != 1)
+                    {
+                        return false;
+                    }
+
+                }
+            }
+            
+
+            if (conn.InsertAll(added) != added.Count)
+            {
+                return false;
+            }
+
+            foreach (LatheManufactureOrderItem item in removed)
+            {
+                if (conn.Delete(item) != 1)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool UpdateLots(List<Lot> to, List<Lot> from, SQLiteConnection conn)
+        {
+            List<Lot> added = to.Where(x => x.ID == 0).ToList();
+            List<Lot> updated = new();
+            for (int i = 0; i < to.Count; i++)
+            {
+                Lot l1 = to[i];
+                if (l1.ID == 0) continue;
+                Lot? l2 = from.Find(x => x.ID == l1.ID) 
+                    ?? throw new KeyNotFoundException($"could not find lot with ID '{l1.ID}' in copy");
+                if (l2.IsUpdated(l1))
+                {
+                    updated.Add(l1);
+                }
+            }
+
+            if (conn.UpdateAll(updated) != updated.Count)
+            {
+                return false;
+            }
+
+            if (conn.InsertAll(added) != added.Count)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool SaveGeneralOrder(GeneralManufactureOrder generalOrder)
+        {
+            using SQLiteConnection conn = DatabaseHelper.GetConnection();
+            conn.BeginTransaction();
+
+            for (int i = 0; i < generalOrder.Lots.Count; i++)
+            {
+                Lot lot = generalOrder.Lots[i];
                 if (lot.ID == 0)
                 {
                     if (conn.Insert(lot) != 1)
@@ -513,11 +673,9 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
             }
 
-
-
-            selectedItem.ModifiedAt = DateTime.Now;
-            selectedItem.ModifiedBy = App.CurrentUser.UserName;
-            int rows = conn.Update(selectedItem);
+            generalOrder.ModifiedAt = DateTime.Now;
+            generalOrder.ModifiedBy = App.CurrentUser.UserName;
+            int rows = conn.Update(generalOrder);
 
             if (rows != 1)
             {
@@ -530,6 +688,102 @@ namespace ProjectLighthouse.ViewModel.Orders
             conn.Close();
             return true;
         }
+
+
+        #region Lathe Order Change Detection
+        private static bool DetectLatheOrderChanges(LatheManufactureOrder latheOrder, LatheManufactureOrder latheOrderCopy)
+        {
+            bool updated = latheOrderCopy.IsUpdated(latheOrder);
+            if (updated) return updated;
+
+            updated = LotsChanged(newCopy: latheOrder.Lots, originalCopy: latheOrderCopy.Lots);
+            if (updated) return updated;
+
+            updated = OrderItemsChanged(latheOrderCopy.OrderItems, latheOrder.OrderItems);
+            if (updated) return updated;
+
+            updated = DrawingReferencesChanged(latheOrderCopy.DrawingsReferences, latheOrder.DrawingsReferences);
+            if (updated) return updated;
+
+            updated = BreakdownsChanged(latheOrderCopy.Breakdowns, latheOrder.Breakdowns);
+            if (updated) return updated;
+
+            return updated;
+        }
+
+
+        private static bool BreakdownsChanged(List<MachineBreakdown> breakdowns1, List<MachineBreakdown> breakdowns2)
+        {
+            if (breakdowns1.Count != breakdowns2.Count) return true;
+            if (breakdowns1.Count == 0 && breakdowns2.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < breakdowns1.Count; i++)
+            {
+                MachineBreakdown item = breakdowns1[i];
+                MachineBreakdown? itemInOtherList = breakdowns2.Find(x => x.Id == item.Id);
+                if (itemInOtherList == null) return true;
+                //if (item.IsUpdated(itemInOtherList)) return true;
+            }
+
+            return false;
+        }
+
+        private static bool DrawingReferencesChanged(List<OrderDrawing> drawingsReferences1, List<OrderDrawing> drawingsReferences2)
+        {
+            if (drawingsReferences1.Count != drawingsReferences2.Count) return true;
+            if (drawingsReferences1.Count == 0 && drawingsReferences2.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < drawingsReferences1.Count; i++)
+            {
+                OrderDrawing orderDrawing = drawingsReferences1[i];
+                OrderDrawing? orderDrawingInOtherList = drawingsReferences1.Find(x => x.Id == orderDrawing.Id);
+                if (orderDrawingInOtherList == null) return true;
+                // Drawing refs do not get updated so just need to check they if exist in list or not
+            }
+
+            return false;
+        }
+
+        private static bool OrderItemsChanged(List<LatheManufactureOrderItem> orderItems1, List<LatheManufactureOrderItem> orderItems2)
+        {
+            if (orderItems1.Count != orderItems2.Count) return true;
+            if (orderItems1.Count == 0 && orderItems2.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < orderItems1.Count; i++)
+            {
+                LatheManufactureOrderItem item = orderItems1[i];
+                LatheManufactureOrderItem? itemInOtherList = orderItems2.Find(x => x.Id == item.Id);
+                if (itemInOtherList == null) return true;
+                if (item.IsUpdated(itemInOtherList)) return true;
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        private static bool DetectGeneralOrderChanges(GeneralManufactureOrder generalOrder, GeneralManufactureOrder generalOrderCopy)
+        {
+            bool updated = generalOrderCopy.IsUpdated(generalOrder);
+
+            if (!updated)
+            {
+                updated = LotsChanged(newCopy: generalOrder.Lots, originalCopy: generalOrderCopy.Lots);
+            }
+
+            return updated;
+        }
+
+
 
         private static bool LotsChanged(List<Lot> newCopy, List<Lot> originalCopy)
         {
@@ -559,6 +813,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         internal void SendMessage(Note note)
         {
+            if (SelectedItem is null) return;
             note.DocumentReference = SelectedItem.Name;
             note.Message = note.Message.Trim();
             note.OriginalMessage = note.Message;
@@ -600,6 +855,12 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             if (SelectedItem is null) return;
 
+            note.Message = note.Message.Trim();
+            if(note.Message == note.OriginalMessage)
+            {
+                return;
+            }
+
             note.IsEdited = true;
             note.DateEdited = DateTime.Now.ToString("s");
 
@@ -626,6 +887,32 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
 
             return true;
+        }
+
+        private void ItemUpdated(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ScheduleItem.AssignedTo))
+            {
+                SetAssignmentData();
+            }
+            else if (e.PropertyName == nameof(LatheManufactureOrder.BarID))
+            {
+                if (SelectedItem is not LatheManufactureOrder order) return;
+                order.Bar = barStock.Find(b => b.Id == order.BarID);
+            }
+            
+
+        }
+
+        private void SetSelectedItem()
+        {
+            if (SelectedItem == null)
+            {
+                EditMode = false;
+                return;
+            }
+
+            EditMode = editCopies.ContainsKey(SelectedItem.Name);
         }
 
         public struct Briefing

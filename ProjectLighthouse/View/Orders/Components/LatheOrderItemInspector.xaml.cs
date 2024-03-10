@@ -16,7 +16,14 @@ namespace ProjectLighthouse.View.Orders.Components
         public static readonly DependencyProperty ItemProperty =
             DependencyProperty.Register("Item", typeof(LatheManufactureOrderItem), typeof(LatheOrderItemInspector), new PropertyMetadata(null));
 
+        public LatheManufactureOrder Order
+        {
+            get { return (LatheManufactureOrder)GetValue(OrderProperty); }
+            set { SetValue(OrderProperty, value); }
+        }
 
+        public static readonly DependencyProperty OrderProperty =
+            DependencyProperty.Register("Order", typeof(LatheManufactureOrder), typeof(LatheOrderItemInspector), new PropertyMetadata(null));
 
         public bool EditMode
         {

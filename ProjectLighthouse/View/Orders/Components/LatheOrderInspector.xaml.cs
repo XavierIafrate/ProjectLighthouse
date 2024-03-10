@@ -1,8 +1,6 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Drawings;
-using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -29,14 +27,120 @@ namespace ProjectLighthouse.View.Orders.Components
         private static void SetOrder(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not LatheOrderInspector control) return;
-            if (control.Order is null) return;
-            if (control.Order.State < OrderState.Running)
+            if (e.OldValue is LatheManufactureOrder oldOrder)
             {
-                control.OrderTabControl.SelectedIndex = 0;
+                oldOrder.PropertyChanged -= control.OrderPropertyChanged;
+                foreach (LatheManufactureOrderItem item in oldOrder.OrderItems)
+                {
+                    item.PropertyChanged -= control.OrderItemChanged;
+                }
+                foreach (Lot lot in oldOrder.Lots)
+                {
+                    lot.PropertyChanged -= control.OrderLotChanged;
+                }
             }
-            else
+
+            if (control.Order is null) return;
+            control.OrderTabControl.SelectedIndex = control.Order.State < OrderState.Running ? 0 : 3;
+            if (e.NewValue is LatheManufactureOrder newOrder)
             {
-                control.OrderTabControl.SelectedIndex = 3;
+                newOrder.PropertyChanged += control.OrderPropertyChanged;
+                foreach (LatheManufactureOrderItem item in newOrder.OrderItems)
+                {
+                    item.PropertyChanged += control.OrderItemChanged;
+                }
+                foreach (Lot lot in newOrder.Lots)
+                {
+                    lot.PropertyChanged += control.OrderLotChanged;
+                }
+            }
+
+        }
+
+        private void OrderPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string[] watchForTimeOrBarRecalc = new string[]
+            {
+                nameof(LatheManufactureOrder.TimeCodePlanned),
+                nameof(LatheManufactureOrder.SpareBars),
+                nameof(LatheManufactureOrder.Lots),
+                nameof(LatheManufactureOrder.OrderItems),
+            };
+
+            if (watchForTimeOrBarRecalc.Contains(e.PropertyName))
+            {
+                CalculateTimeAndBar();
+            }
+
+            if (e.PropertyName == nameof(LatheManufactureOrder.Lots))
+            {
+                foreach (Lot lot in Order.Lots)
+                {
+                    lot.PropertyChanged -= OrderLotChanged;
+                    lot.PropertyChanged += OrderLotChanged;
+                }
+
+                foreach (LatheManufactureOrderItem item in Order.OrderItems)
+                {
+                    List<Lot> itemsLots = Order.Lots.Where(x => x.ProductName == item.ProductName).ToList();
+                    item.QuantityDelivered = itemsLots.Where(x => x.IsDelivered).Sum(x => x.Quantity);
+                    item.QuantityMade = itemsLots.Where(x => !x.IsReject).Sum(x => x.Quantity);
+                    item.QuantityReject = itemsLots.Where(x => x.IsReject).Sum(x => x.Quantity);
+
+                    item.PropertyChanged -= OrderItemChanged;
+                    item.PropertyChanged += OrderItemChanged;
+                }
+            }
+            if (e.PropertyName == nameof(LatheManufactureOrder.OrderItems))
+            {
+                foreach (LatheManufactureOrderItem item in Order.OrderItems)
+                {
+                    item.PropertyChanged -= OrderItemChanged;
+                    item.PropertyChanged += OrderItemChanged;
+                }
+            }
+        }
+
+        private void OrderItemChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string[] watchForTimeOrBarRecalc = new string[]
+            {
+                nameof(LatheManufactureOrderItem.CycleTime),
+                nameof(LatheManufactureOrderItem.PreviousCycleTime),
+                nameof(LatheManufactureOrderItem.ModelledCycleTime),
+                nameof(LatheManufactureOrderItem.MajorLength),
+                nameof(LatheManufactureOrderItem.PartOffLength),
+                nameof(LatheManufactureOrderItem.RequiredQuantity),
+                nameof(LatheManufactureOrderItem.TargetQuantity),
+            };
+
+            if (watchForTimeOrBarRecalc.Contains(e.PropertyName))
+            {
+                CalculateTimeAndBar();
+            }
+        }
+
+        private void OrderLotChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string[] watchForTimeOrBarRecalc = new string[]
+            {
+                nameof(Lot.CycleTime),
+                nameof(Lot.Quantity),
+                nameof(Lot.IsAccepted),
+                nameof(Lot.IsReject),
+            };
+
+            if (watchForTimeOrBarRecalc.Contains(e.PropertyName))
+            {
+                CalculateTimeAndBar();
+
+                foreach (LatheManufactureOrderItem item in Order.OrderItems)
+                {
+                    List<Lot> itemsLots = Order.Lots.Where(x => x.ProductName == item.ProductName).ToList();
+                    item.QuantityDelivered = itemsLots.Where(x => x.IsDelivered).Sum(x => x.Quantity);
+                    item.QuantityMade = itemsLots.Where(x => !x.IsReject).Sum(x => x.Quantity);
+                    item.QuantityReject = itemsLots.Where(x => x.IsReject).Sum(x => x.Quantity);
+                }
             }
         }
 
@@ -154,7 +258,8 @@ namespace ProjectLighthouse.View.Orders.Components
 
         private void AddItemButton_Click(object sender, RoutedEventArgs e)
         {
-            AddItemToOrderWindow window = new(Order.Id);
+            AddItemToOrderWindow window = new(Order) { Owner = App.MainViewModel.MainWindow };
+
             if (window.PossibleItems.Count == 0)
             {
                 MessageBox.Show("No further items are available to run on this order.", "Unavailable", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -163,38 +268,28 @@ namespace ProjectLighthouse.View.Orders.Components
 
             window.ShowDialog();
 
-            //if (window.ItemsWereAdded)
-            //{
-            //    SaveExit = true;
-            //    CalculateTimeAndBar();
-            //    SaveOrder();
-            //    LoadData(Order.Name);
-            //}
+            CalculateTimeAndBar();
         }
 
-        //private void CalculateTimeAndBar()
-        //{
-        //    //Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Items, Breakdowns);
+        private void CalculateTimeAndBar()
+        {
+            double? partOff = null;
+            if (Order.AssignedLathe is not null)
+            {
+                partOff = Order.AssignedLathe.PartOff;
+            }
+            
+            if (partOff is not null)
+            {
+                Order.NumberOfBars = Order.OrderItems.CalculateNumberOfBars(Order.Bar, Order.SpareBars, (double)partOff);
+            }
+            else
+            {
+                Order.NumberOfBars = Order.OrderItems.CalculateNumberOfBars(Order.Bar, Order.SpareBars);
+            }
 
-        //    //double? partOff = null;
-        //    //if (!string.IsNullOrEmpty(Order.AllocatedMachine))
-        //    //{
-        //    //    Lathe? runningOnLathe = Lathes.Find(l => l.Id == Order.AllocatedMachine);
-        //    //    if (runningOnLathe is not null)
-        //    //    {
-        //    //        partOff = runningOnLathe.PartOff;
-        //    //    }
-        //    //}
-
-        //    //if (partOff is not null)
-        //    //{
-        //    //    Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars, (double)partOff);
-        //    //}
-        //    //else
-        //    //{
-        //    //    Order.NumberOfBars = Items.CalculateNumberOfBars((BarStock)BarStockComboBox.SelectedValue, Order.SpareBars);
-        //    //}
-        //}
+            Order.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(Order, Order.OrderItems, Order.Breakdowns, Order.Lots);
+        }
 
 
     }

@@ -85,17 +85,6 @@ namespace ProjectLighthouse.View.Orders.Components
             get { return productionData; }
             set { productionData = value; OnPropertyChanged(); }
         }
-
-        private Lot newLot;
-
-        public Lot NewLot
-        {
-            get { return newLot; }
-            set { newLot = value; OnPropertyChanged(); }
-        }
-
-
-
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not GeneralOrderInspector control) return;
@@ -103,15 +92,7 @@ namespace ProjectLighthouse.View.Orders.Components
             control.CalculateProductionData();
             if (control.Order is null) return;
 
-            if (control.Order.State < OrderState.Running)
-            {
-                control.OrderTabControl.SelectedIndex = 0;
-            }
-            else
-            {
-                control.OrderTabControl.SelectedIndex = 2;
-            }
-            control.SetNewLot();
+            control.OrderTabControl.SelectedIndex = control.Order.State < OrderState.Running ? 0 : 2;
 
             control.Order.PropertyChanged += control.Order_PropertyChanged;
             if (e.OldValue is GeneralManufactureOrder prevOrder)
@@ -128,33 +109,6 @@ namespace ProjectLighthouse.View.Orders.Components
             }
         }
 
-        private void SetNewLot()
-        {
-            if (Order is null)
-            {
-                NewLot = new();
-                return;
-            }
-
-            NewLot = new()
-            {
-                AddedBy = App.CurrentUser.UserName,
-                Order = Order.Name,
-                FromMachine = Order.AllocatedMachine,
-                CycleTime = Order.Item.CycleTime,
-                AllowDelivery = true,
-                ProductName = Order.Item.Name,
-                DateProduced = DateTime.Now.Hour >= 12
-                    ? DateTime.Today.AddHours(-12)
-                    : DateTime.Today.AddHours(12),
-        };
-
-            if (Order.Lots.Count > 0)
-            {
-                NewLot.MaterialBatch = Order.Lots.Last().MaterialBatch;
-            }
-        }
-
         private void CalculateProductionData()
         {
             if (Order is null)
@@ -164,7 +118,7 @@ namespace ProjectLighthouse.View.Orders.Components
             }
 
 
-            DateTime start = Order.StartDate == DateTime.MinValue ? DateTime.Today.AddDays(1) : Order.StartDate;
+            DateTime start = Order.StartDate == DateTime.MinValue ? DateTime.Today.AddDays(1) : Order.StartDate.Date;
 
 
             List<DateTimePoint> theoreticalDataPoints = new();
@@ -201,7 +155,7 @@ namespace ProjectLighthouse.View.Orders.Components
             StepLineSeries<DateTimePoint> theoreticalProduction = new()
             {
                 Values = theoreticalDataPoints,
-                Name = "Theoretical Production Rate",
+                Name = "Perfect Production Run",
                 Fill = null,
                 GeometrySize = 0,
                 GeometryStroke = new SolidColorPaint(SKColors.DarkGray) { StrokeThickness = 3 },
@@ -247,6 +201,51 @@ namespace ProjectLighthouse.View.Orders.Components
                 series.Add(actualProduction);
             }
 
+            if (Order.Lots.Where(x => x.IsAccepted).Any() && Order.FinishedQuantity < Order.RequiredQuantity)
+            {
+                List<DateTimePoint> optimisticSeries = new();
+
+                int startQty = Order.Lots.Where(x => x.IsAccepted).Sum(x => x.Quantity);
+                DateTime startDate = Order.Lots.Where(x => x.IsAccepted).Max(x => x.DateProduced);
+
+                optimisticSeries.Add(new(startDate, startQty));
+
+                while (startQty < Order.RequiredQuantity)
+                {
+                    startDate = startDate.AddDays(1);
+                    OpeningHours.Day cursorOpeningHours = App.Constants.OpeningHours.Data[startDate.DayOfWeek];
+
+                    if (!cursorOpeningHours.OpensOnDay)
+                    {
+                        continue;
+                    }
+
+                    TimeSpan availableTime = cursorOpeningHours.GetOpeningHoursTimeSpan();
+
+                    int totalOnDay = (int)Math.Floor(availableTime.TotalSeconds / Order.Item.CycleTime);
+                    startQty += totalOnDay;
+
+                    startQty = Math.Min(startQty, Order.RequiredQuantity);
+
+                    optimisticSeries.Add(new(startDate, startQty));
+
+                    StepLineSeries<DateTimePoint> optimisticFuture = new()
+                    {
+                        Values = optimisticSeries,
+                        Name = "Optimistic Future",
+                        Fill = null,
+                        GeometrySize = 0,
+                        GeometryStroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 },
+                        Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 },
+                        TooltipLabelFormatter = (chartPoint) =>
+                        $"Optimistic" +
+                        $": {new DateTime((long)chartPoint.SecondaryValue):dd/MM/yy}: {chartPoint.PrimaryValue:0}",
+                    };
+
+                    series.Add(optimisticFuture);
+                }
+            }
+
 
             ProductionData = series.ToArray();
 
@@ -256,25 +255,6 @@ namespace ProjectLighthouse.View.Orders.Components
         public GeneralOrderInspector()
         {
             InitializeComponent();
-
-            NewLot = new();
-        }
-
-        private void AddLotButton_Click(object sender, RoutedEventArgs e)
-        {
-            NewLot.Date = DateTime.Now;
-            
-
-            NewLot.ValidateAll();
-            if (NewLot.HasErrors)
-            {
-                return;
-            }
-
-            Order.Lots = Order.Lots.Append(NewLot).ToList();
-            SetNewLot();
-            CalculateProductionData();
-            Order.TimeToComplete = Order.CalculateTimeToComplete();
         }
     }
 }

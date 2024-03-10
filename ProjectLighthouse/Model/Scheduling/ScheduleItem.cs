@@ -318,8 +318,13 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 throw new InvalidOperationException($"Items being compared must have the same name");
             }
+            
 
+            return GetListOfChanges(otherItem).Count > 0;
+        }
 
+        public virtual List<string> GetListOfChanges(ScheduleItem otherItem)
+        {
             PropertyInfo[] properties;
             if (this is LatheManufactureOrder)
             {
@@ -344,6 +349,8 @@ namespace ProjectLighthouse.Model.Scheduling
                 throw new NotImplementedException();
             }
 
+            List<string> results = new();
+
             bool mod = false;
 
             StringBuilder sb = new();
@@ -360,25 +367,17 @@ namespace ProjectLighthouse.Model.Scheduling
                 {
                     if (!mod)
                     {
-                        sb.AppendLine($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
+                        results.Add($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
                     }
                     sb.AppendLine($"\t{property.Name} modified");
                     sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
                     sb.AppendLine($"\t\tto  : '{property.GetValue(otherItem) ?? "null"}'");
-
+                    results.Add(sb.ToString());
                     mod = true;
                 }
-
             }
 
-            if (mod)
-            {
-                string path = App.ROOT_PATH + @"lib\logs\" + Name + ".log";
-
-                File.AppendAllText(path, sb.ToString());
-            }
-
-            return mod;
+            return results;
         }
 
         public virtual void ValidateAll()
