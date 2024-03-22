@@ -136,7 +136,7 @@
             Grid.Column="1"
             Grid.ColumnSpan="2"
             Margin="20,5,20,40"
-            Visibility="{Binding SelectedGroup, Converter={StaticResource ObjectIsNotNullNotNullToVisibility}}">
+            Visibility="{Binding SelectedGroup, Converter={StaticResource ObjectIsNotNull}}">
             <StackPanel>
                 <TextBlock
                     d:Text="Drawing for P0130.000"

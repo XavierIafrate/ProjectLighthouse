@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
 {
@@ -32,7 +33,11 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             {
                 return gtZero ? Visibility.Visible : Visibility.Collapsed;
             }
-                
+            else if (targetType == typeof(Brush))
+            {
+                return gtZero ? (Brush)Application.Current.Resources["Teal"] : (Brush)Application.Current.Resources["Red"];
+            }
+
             throw new NotImplementedException();
         }
 

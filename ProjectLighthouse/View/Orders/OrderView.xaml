@@ -31,14 +31,14 @@
                 <TextBox
                     x:Name="SearchBox"
                     Style="{StaticResource SearchBox}"
-                    TextChanged="SearchBox_TextChanged"
-                    Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="SearchBox_TextChanged" />
 
                 <Button
                     x:Name="ClearButton"
                     Grid.Column="1"
-                    IsEnabled="False"
                     Click="ClearButton_Click"
+                    IsEnabled="False"
                     Style="{StaticResource ClearButton}" />
             </Grid>
 
@@ -110,14 +110,14 @@
             Visibility="{Binding SelectedItem, Converter={StaticResource NullToVisibility}}" />
         <orderComponents:ScheduleItemInspector
             Grid.Column="1"
+            DeleteMessageCommand="{Binding DeleteMessageCmd}"
             EditMode="{Binding EditMode}"
             Item="{Binding SelectedItem}"
-            SendMessageCommand="{Binding SendMessageCmd}"
             OrderAssignmentCounts="{Binding AssignmentCounts}"
             RelayCommand="{Binding RelayCmd}"
-            Visibility="{Binding SelectedItem, Converter={StaticResource ObjectIsNotNull}}"
             SaveMessageCommand="{Binding SaveMessageCmd}"
-            DeleteMessageCommand="{Binding DeleteMessageCmd}"/>
+            SendMessageCommand="{Binding SendMessageCmd}"
+            Visibility="{Binding SelectedItem, Converter={StaticResource ObjectIsNotNull}}" />
 
 
         <!--    -->

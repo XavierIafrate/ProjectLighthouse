@@ -4,7 +4,6 @@ using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -86,7 +85,13 @@ namespace ProjectLighthouse.Model.Scheduling
             set { startDate = value; OnPropertyChanged(); }
         }
 
-        public string AllocatedMachine { get; set; }
+        private string allocatedMachine;
+
+        public string AllocatedMachine
+        {
+            get { return allocatedMachine; }
+            set { allocatedMachine = value; OnPropertyChanged(); }
+        }
 
         private string? assignedTo;
         [UpdateWatch]
@@ -318,7 +323,7 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 throw new InvalidOperationException($"Items being compared must have the same name");
             }
-            
+
 
             return GetListOfChanges(otherItem).Count > 0;
         }
@@ -398,6 +403,58 @@ namespace ProjectLighthouse.Model.Scheduling
 
                 return;
             }
+        }
+
+        internal void TakeChanges(ScheduleItem freshCopy)
+        {
+            PropertyInfo[] properties;
+            if (this is LatheManufactureOrder)
+            {
+                if (freshCopy is not LatheManufactureOrder)
+                {
+                    throw new InvalidOperationException($"Lathe order must be compared to Lathe order");
+
+                }
+                properties = typeof(LatheManufactureOrder).GetProperties();
+            }
+            else if (this is GeneralManufactureOrder)
+            {
+                if (freshCopy is not GeneralManufactureOrder)
+                {
+                    throw new InvalidOperationException($"General order must be compared to General order");
+
+                }
+                properties = typeof(GeneralManufactureOrder).GetProperties();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            foreach (PropertyInfo property in properties)
+            {
+                bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
+                if (!watchPropForChanges)
+                {
+                    continue;
+                }
+
+                if (!Equals(property.GetValue(this), property.GetValue(freshCopy)))
+                {
+                    if (property.GetSetMethod() != null)
+                    {
+                        property.SetValue(this, property.GetValue(freshCopy));
+                    }
+                }
+            }
+        }
+
+        private bool lockedForEditing;
+        [Ignore]
+        public bool LockedForEditing
+        {
+            get { return lockedForEditing; }
+            set { lockedForEditing = value; OnPropertyChanged(); }
         }
     }
 }

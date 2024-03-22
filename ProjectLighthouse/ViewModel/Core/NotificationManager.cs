@@ -7,6 +7,7 @@ using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.ViewModel.Drawings;
 using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.Orders;
 using ProjectLighthouse.ViewModel.Requests;
 using System;
 using System.Collections.Generic;
@@ -289,6 +290,17 @@ namespace ProjectLighthouse.ViewModel.Core
             }
             else if (action.StartsWith("viewManufactureOrder:"))
             {
+                App.MainViewModel.UpdateViewCommand.Execute("Orders");
+                if (App.MainViewModel.SelectedViewModel is NewOrderViewModel orderViewModel)
+                {
+                    string targetOrder = action.Replace("viewManufactureOrder:", "");
+                    orderViewModel.SelectedItem = orderViewModel.FilteredItems.Find(x => x.Name == targetOrder);
+                    if (orderViewModel.SelectedItem == null)
+                    {
+                        orderViewModel.SearchString = targetOrder;
+                    }
+                }
+
                 // TODO
 
                 //EditLMOWindow window = new(action.Replace("viewManufactureOrder:", ""), App.CurrentUser.HasPermission(PermissionType.UpdateOrder))

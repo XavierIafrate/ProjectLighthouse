@@ -21,7 +21,7 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <Grid x:Name="MainGrid">
+    <Grid x:Name="MainGrid" SizeChanged="MainGrid_SizeChanged">
         <!--#region Layout setup and resources-->
         <Grid.Resources>
             <converters:boolToCollapsedOrVisible x:Key="hideIfTrue" />
@@ -30,9 +30,9 @@
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
-                Width="*"
+                Width="3350"
                 MinWidth="80"
-                MaxWidth="350" />
+                MaxWidth="350"/>
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="5*" MinWidth="800" />
         </Grid.ColumnDefinitions>
@@ -66,8 +66,7 @@
         <Grid
             x:Name="MenuGrid"
             Grid.Row="1"
-            Grid.RowSpan="2"
-            SizeChanged="Grid_SizeChanged">
+            Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
@@ -236,6 +235,7 @@
             </ScrollViewer>
 
             <ScrollViewer
+                HorizontalScrollBarVisibility="Hidden"
                 x:Name="main_menu_full"
                 Grid.Row="1"
                 Grid.Column="1">
@@ -421,6 +421,7 @@
                     <TextBlock
                         x:Name="LoggedInUserName"
                         FontSize="20"
+                        TextTrimming="CharacterEllipsis"
                         Foreground="{StaticResource OnBlue}"
                         Text="Randy Marsh" />
                     <TextBlock
@@ -446,6 +447,8 @@
             Margin="0"
             HorizontalAlignment="Stretch"
             Background="{StaticResource Surface}"
+            DragStarted="GridSplitter_DragStarted"
+            DragDelta="GridSplitter_DragDelta"
             DragCompleted="GridSplitter_DragCompleted" />
 
         <!--#region Window adorners-->

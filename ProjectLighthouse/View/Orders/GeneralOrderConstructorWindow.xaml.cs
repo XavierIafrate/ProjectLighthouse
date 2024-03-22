@@ -43,6 +43,12 @@ namespace ProjectLighthouse.View.Orders
             InitializeComponent();
             NewOrder = new();
             Items = DatabaseHelper.Read<NonTurnedItem>();
+
+             if (Items.Count == 0)
+            {
+                throw new InvalidOperationException("No non-turned items in the database - a general order cannot be raised.");
+            }
+
             DatePicker.DisplayDateStart = DateTime.Today.AddDays(1);
             DatePicker.SelectedDate = DateTime.Today.AddMonths(1);
 

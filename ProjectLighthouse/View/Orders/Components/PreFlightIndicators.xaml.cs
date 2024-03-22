@@ -1,19 +1,11 @@
 ﻿using ProjectLighthouse.Model.Orders;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.Orders.Components
 {
@@ -57,7 +49,7 @@ namespace ProjectLighthouse.View.Orders.Components
         }
 
 
-        public event PropertyChangedEventHandler PropertyChanged; 
+        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -77,8 +69,8 @@ namespace ProjectLighthouse.View.Orders.Components
 
         private void SetBrushes(object sender, PropertyChangedEventArgs e)
         {
-            string[] watchProps = new string[] 
-            { 
+            string[] watchProps = new string[]
+            {
                 nameof(LatheManufactureOrder.HasProgram),
                 nameof(LatheManufactureOrder.BaseProgramExists),
                 nameof(LatheManufactureOrder.AllToolingReady),
@@ -92,7 +84,7 @@ namespace ProjectLighthouse.View.Orders.Components
                 nameof(LatheManufactureOrder.BarIsAllocated),
                 nameof(LatheManufactureOrder.IsComplete),
                 nameof(LatheManufactureOrder.IsCancelled),
-            
+
             };
 
             if (watchProps.Contains(e.PropertyName))
@@ -173,8 +165,8 @@ namespace ProjectLighthouse.View.Orders.Components
 
             // Bar Verified Brush setting
             BarVerifiedBrush = Order.BarIsVerified ? greenBrush : redBrush;
-            
-            
+
+
             // Bar Prepared Brush setting
             if (Order.NumberOfBarsIssued >= Order.NumberOfBars)
             {

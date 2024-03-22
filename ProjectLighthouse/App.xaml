@@ -58,6 +58,7 @@
             <converters:ListIsEmptyToCollapsedOrVisible x:Key="EmptyListToCollapsedOrVisible" />
             <converters:ListIsEmptyToVisibleOrCollapsed x:Key="EmptyListToVisibleOrCollapsed" />
             <converters:dateToLastModified x:Key="DateToLastModified" />
+            <converters:BooleanInverter x:Key="InvertBoolean" />
             <!--#endregion-->
 
             <!--#region DataTemplates-->

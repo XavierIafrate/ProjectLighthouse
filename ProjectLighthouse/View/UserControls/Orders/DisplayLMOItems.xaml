@@ -13,6 +13,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <valueConverters:NumberGreaterThanZero x:Key="GreaterThanZero" />
+        <valueConverters:CycleTimeChangeColour x:Key="CycleTimeChangeColour" />
     </UserControl.Resources>
     <Grid>
         <Grid VerticalAlignment="Center">
@@ -135,7 +136,8 @@
                     </Border>
                     <Border
                         x:Name="deltaIndicator"
-                        Background="{StaticResource TealFaded}"
+                        Background="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource CycleTimeChangeColour}, ConverterParameter='Faded'}"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource ObjectIsNotNull}}"
                         CornerRadius="5">
                         <StackPanel
                             Margin="5,2"
@@ -146,7 +148,7 @@
                                 Width="10"
                                 Height="10"
                                 Data="M12,7.77L18.39,18H5.61L12,7.77M12,4L2,20H22"
-                                Fill="{StaticResource Teal}"
+                                Fill="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource CycleTimeChangeColour}}"
                                 Stretch="Uniform" />
                             <TextBlock
                                 x:Name="deltaIndicatorText"
@@ -154,8 +156,8 @@
                                 VerticalAlignment="Center"
                                 FontSize="12"
                                 FontWeight="SemiBold"
-                                Foreground="{StaticResource Teal}"
-                                Text="?" />
+                                Foreground="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource CycleTimeChangeColour}}"
+                                Text="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, StringFormat='{}{0:+0;-0;+0}'}" />
 
                         </StackPanel>
                     </Border>

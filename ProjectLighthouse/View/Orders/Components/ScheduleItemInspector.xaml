@@ -183,6 +183,7 @@
                                 </StackPanel>
                                 <Button
                                     Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToCollapsedOrVisible}}"
+                                    IsEnabled="{Binding ElementName=parentControl, Path=Item.LockedForEditing, Converter={StaticResource InvertBoolean}}"
                                     Grid.Column="1"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"

@@ -352,6 +352,7 @@ namespace ProjectLighthouse
                 "errors",
                 "lib",
                 "lib\\gen",
+                "lib\\locks",
                 "lib\\logs",
                 "lib\\checksheets",
                 "lib\\pcom",

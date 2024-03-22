@@ -82,8 +82,29 @@ namespace ProjectLighthouse.Model.Orders
             {
                 cycleTime = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ChangeInCycleTime));
             }
         }
+
+        public int? ChangeInCycleTime
+        {
+            get
+            {
+                if (PreviousCycleTime is null)
+                {
+                    return null;
+                }
+
+                if (CycleTime == 0)
+                {
+                    return null;
+                }
+
+                return CycleTime - PreviousCycleTime;
+            }
+        }
+
+
 
         private int? previousCycleTime;
         [UpdateWatch]
@@ -94,6 +115,7 @@ namespace ProjectLighthouse.Model.Orders
             {
                 previousCycleTime = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ChangeInCycleTime));
             }
         }
 
