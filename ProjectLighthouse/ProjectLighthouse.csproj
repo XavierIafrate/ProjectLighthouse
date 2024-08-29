@@ -13,15 +13,14 @@
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
     <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.7.5</FileVersion>
-    <AssemblyVersion>1.7.5</AssemblyVersion>
+    <FileVersion>1.8.0</FileVersion>
+    <AssemblyVersion>1.8.0</AssemblyVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.7.5</Version>
+    <Version>1.8.0</Version>
     <Product>Lighthouse</Product>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <StartupObject></StartupObject>
     <Description>Wixroyd Ltd custom manufacturing pipeline.</Description>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <PackageIcon>package_icon.png</PackageIcon>
@@ -85,6 +84,7 @@
     <None Remove="Resources\GIF\sylvester.gif" />
     <None Remove="Resources\GIF\zoolander-what-is-this.gif" />
     <None Remove="Resources\GIF\zoolander.gif" />
+    <None Remove="Resources\huddle.png" />
     <None Remove="Resources\LighthouseLogo_Mini.png" />
     <None Remove="Resources\LighthouseLogo_Mono.png" />
     <None Remove="Resources\LighthouseLogo_Mono_Mini.png" />
@@ -163,8 +163,6 @@
     <Resource Include="Resources\GIF\fireworks.gif" />
     <Resource Include="Resources\GIF\frodo-keep-your-secrets.gif" />
     <Resource Include="Resources\GIF\milhouse.gif" />
-    <Resource Include="Resources\GIF\moderate.gif" />
-    <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\GIF\panic.gif" />
     <Resource Include="Resources\GIF\ron_swanson.gif" />
     <Resource Include="Resources\GIF\steve-martin.gif" />
@@ -174,6 +172,9 @@
     <Resource Include="Resources\GIF\travolta.gif" />
     <Resource Include="Resources\GIF\zoolander-what-is-this.gif" />
     <Resource Include="Resources\GIF\zoolander.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\huddle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\LighthouseLogo.png">
@@ -205,8 +206,6 @@
     <Resource Include="Resources\MiB_Logo_Stacked_Colour.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\mwl-dark.png" />
-    <Resource Include="Resources\mwl-light.png" />
     <Resource Include="Resources\remembrance.png" />
     <Resource Include="Resources\RGB_wixroyd_ant_logo_red.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

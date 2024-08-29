@@ -100,6 +100,7 @@ namespace ProjectLighthouse.View.Orders.Components
         public LotsEditor()
         {
             InitializeComponent();
+            this.EditControls.IsEnabled = false;
         }
 
         private void AddLotButton_Click(object sender, RoutedEventArgs e)
@@ -139,6 +140,13 @@ namespace ProjectLighthouse.View.Orders.Components
             //SetNewLot();
             //CalculateProductionData();
             //Order.TimeToComplete = Order.CalculateTimeToComplete();
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is not ListBox listBox) return;
+
+            this.EditControls.IsEnabled = listBox.SelectedValue is not null;
         }
     }
 }

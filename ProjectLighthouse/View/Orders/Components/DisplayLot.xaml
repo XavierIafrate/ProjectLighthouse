@@ -6,6 +6,8 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.Orders.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:valueConverters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    IsMouseCaptureWithinChanged="parentControl_IsMouseDirectlyOverChanged"
+    IsMouseDirectlyOverChanged="parentControl_IsMouseDirectlyOverChanged"
     x:Name="parentControl"
     d:Background="White"
     d:DesignWidth="500"
@@ -59,6 +61,16 @@
             d:Text="999,999 pcs"
             FontWeight="SemiBold"
             Text="{Binding Lot.Quantity, ElementName=parentControl, StringFormat='{}{0:#,##0} pcs'}" />
+        <Button
+            x:Name="PrintLabelButton"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="3"
+            Margin="0"
+            Click="PrintLabelButton_Click"
+            Content="Print Label"
+            Style="{StaticResource Button_Purple_Small}"
+            Visibility="Visible" />
         <TextBlock
             Grid.Row="2"
             Grid.Column="1"

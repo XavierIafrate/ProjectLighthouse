@@ -19,6 +19,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ListBox
@@ -26,7 +27,8 @@
             Margin="5"
             d:ItemsSource="{d:SampleData ItemCount=5}"
             ItemsSource="{Binding ElementName=parentControl, Path=VisibleLots}"
-            SelectedValue="{Binding ElementName=parentControl, Path=SelectedLot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            SelectedValue="{Binding ElementName=parentControl, Path=SelectedLot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SelectionChanged="ListBox_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <local:DisplayLot Lot="{Binding}" />
@@ -42,7 +44,9 @@
             Style="{StaticResource Action_New_Button_Small}"
             Visibility="{Binding Path=EditMode, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}" />
         <Grid
-            Grid.Row="2"
+            Margin="0,10,0,0"
+            Grid.Row="3"
+            x:Name="EditControls"
             IsEnabled="{Binding Path=SelectedLot.IsDelivered, ElementName=parentControl, Converter={StaticResource invertBool}}"
             Visibility="{Binding Path=EditMode, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}">
             <Grid.ColumnDefinitions>

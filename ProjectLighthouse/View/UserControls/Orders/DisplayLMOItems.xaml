@@ -137,8 +137,8 @@
                     <Border
                         x:Name="deltaIndicator"
                         Background="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource CycleTimeChangeColour}, ConverterParameter='Faded'}"
-                        Visibility="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource ObjectIsNotNull}}"
-                        CornerRadius="5">
+                        CornerRadius="5"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource ObjectIsNotNull}}">
                         <StackPanel
                             Margin="5,2"
                             VerticalAlignment="Center"

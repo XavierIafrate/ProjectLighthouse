@@ -1,5 +1,4 @@
 ﻿using ProjectLighthouse.ViewModel.Helpers;
-using RestSharp.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -18,7 +17,7 @@ namespace ProjectLighthouse.Model.Core
             DateTime openingTime = new(date.Ticks);
             openingTime = openingTime.ChangeTime(day.OpeningHour, day.OpeningMinute, 0, 0);
 
-            if(date < openingTime) return true;
+            if (date < openingTime) return true;
 
             // you don't have to go home but you can't stay here
             DateTime closingTime = new(date.Ticks);

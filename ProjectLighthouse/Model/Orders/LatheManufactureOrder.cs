@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Administration;
+﻿using Microsoft.Web.WebView2.Core;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Products;
@@ -464,10 +465,18 @@ namespace ProjectLighthouse.Model.Orders
             set { orderItems = value; OnPropertyChanged(); }
         }
 
-
+        private List<TechnicalDrawing> drawings;
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public List<TechnicalDrawing> Drawings { get; set; }
+        public List<TechnicalDrawing> Drawings 
+        {
+            get { return drawings; }
+            set
+            {
+                drawings = value;
+                OnPropertyChanged();
+            }
+        }
 
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
@@ -500,9 +509,14 @@ namespace ProjectLighthouse.Model.Orders
         }
 
 
+        private List<MachineBreakdown> breakdowns = new();
         [SQLite.Ignore]
         [CsvHelper.Configuration.Attributes.Ignore]
-        public List<MachineBreakdown> Breakdowns { get; set; } = new();
+        public List<MachineBreakdown> Breakdowns
+        {
+            get { return breakdowns; }
+            set { breakdowns = value; OnPropertyChanged(); }
+        }
 
         private Briefing briefing;
         [Ignore]

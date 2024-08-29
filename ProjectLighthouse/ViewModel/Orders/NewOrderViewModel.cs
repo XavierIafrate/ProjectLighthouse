@@ -10,7 +10,6 @@ using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
-using ProjectLighthouse.ViewModel.ValueConverters;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
-    public class NewOrderViewModel : BaseViewModel, IDisposable
+    public class NewOrderViewModel : BaseViewModel, IDisposable, ISafeClose
     {
         #region Observables
         private bool editMode;
@@ -83,10 +82,10 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<ScheduleItem> FilteredItems
         {
             get { return filteredItems; }
-            set 
-            { 
-                filteredItems = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                filteredItems = value;
+                OnPropertyChanged();
             }
         }
         #endregion
@@ -98,6 +97,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         private List<BarStock> barStock;
         private List<MaterialInfo> materials;
         private List<NonTurnedItem> nonTurnedItems;
+        private List<TurnedProduct> turnedItems;
         private List<User> users;
         private List<Lot> lots;
         private List<Note> notes;
@@ -204,6 +204,10 @@ namespace ProjectLighthouse.ViewModel.Orders
                                 {
                                     if (SelectedItem.Name == item.Name)
                                     {
+                                        if (e.Cancel)
+                                        {
+                                            return;
+                                        }
                                         Application.Current.Dispatcher.Invoke(() =>
                                         {
                                             SelectedItem.TakeChanges(freshCopy);
@@ -212,7 +216,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                                         });
                                     }
                                     else
-                                    {   
+                                    {
                                         item.TakeChanges(freshCopy);
                                     }
                                 }
@@ -230,11 +234,15 @@ namespace ProjectLighthouse.ViewModel.Orders
 
                     foreach (ScheduleItem item in items)
                     {
-                        item.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) &! item.Editing;
+                        item.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) & !item.Editing;
                         if (SelectedItem is not null)
                         {
                             if (SelectedItem.Name == item.Name)
                             {
+                                if (e.Cancel)
+                                {
+                                    return;
+                                }
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     SelectedItem.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) & !item.Editing;
@@ -284,6 +292,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             this.productGroups = DatabaseHelper.Read<ProductGroup>();
 
             this.nonTurnedItems = DatabaseHelper.Read<NonTurnedItem>();
+            this.turnedItems = DatabaseHelper.Read<TurnedProduct>();
         }
 
         public void CreateNewOrder()
@@ -410,11 +419,14 @@ namespace ProjectLighthouse.ViewModel.Orders
                         break;
 
                     case "No Program":
-                        //FilteredOrders = Orders.Where(n => !n.HasProgram && n.State < OrderState.Complete && n.StartDate > DateTime.MinValue)
-                        //    .OrderBy(x => x.StartDate)
-                        //    .ToList();
-                        break;
-
+                        if (item is LatheManufactureOrder latheOrder)
+                        {
+                            if (!latheOrder.HasProgram && latheOrder.State < OrderState.Complete && latheOrder.StartDate > DateTime.MinValue)
+                            {
+                                results.Add(item);
+                            }
+                        }
+                            break;
                     case "Ready":
                         if (item.State == OrderState.Ready || item.State == OrderState.Prepared)
                         {
@@ -430,6 +442,13 @@ namespace ProjectLighthouse.ViewModel.Orders
                         break;
 
                     case "Development":
+                        if (item is LatheManufactureOrder latheOrder2)
+                        {
+                            if (!latheOrder2.IsResearch && latheOrder2.State < OrderState.Complete)
+                            {
+                                results.Add(item);
+                            }
+                        }
                         //FilteredOrders = Orders
                         //    .Where(n => n.IsResearch && n.State < OrderState.Complete)
                         //    .OrderByDescending(n => n.CreatedAt)
@@ -441,26 +460,48 @@ namespace ProjectLighthouse.ViewModel.Orders
                         results.Add(item);
                         break;
                 }
+            }
+                
+            results = results.OrderBy(x => x.State == OrderState.Running ? 0 : 1).ThenBy(x => x.State).ToList();
 
-                results = results.TakeLast(100).ToList();
-                results = results.OrderBy(x => x.State == OrderState.Running ? 0 : 1).ThenBy(x => x.State).ToList();
+            if (!string.IsNullOrWhiteSpace(SearchString))
+            {
+                List<ScheduleItem> filteredResults = new();
+                string sanitised = SearchString.Trim().ToUpperInvariant();
+                    
+                List<TurnedProduct> foundByTurnedProduct = turnedItems.Where(x => x.ProductName.Contains(sanitised, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                List<LatheManufactureOrderItem> foundLatheManufactureOrderItems = orderItems.Where(x => foundByTurnedProduct.Any(i => i.ProductName == x.ProductName)).ToList();    
+                    
+                List<NonTurnedItem> foundByNonTurnedProduct = nonTurnedItems.Where(x => x.Name.Contains(sanitised, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-                if (!string.IsNullOrWhiteSpace(SearchString))
+                foreach (ScheduleItem result in results)
                 {
-                    List<ScheduleItem> filteredResults = new();
-                    string sanitised = SearchString.Trim().ToUpperInvariant();
-                    foreach (ScheduleItem result in results)
+                    if (result.Name.Contains(sanitised) || (result.POReference ?? string.Empty).Contains(sanitised, StringComparison.InvariantCultureIgnoreCase) || (result.AssignedTo ?? string.Empty).Equals(sanitised, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        if (result.Name.Contains(sanitised) || (result.POReference ?? string.Empty).Contains(sanitised, StringComparison.InvariantCultureIgnoreCase) || (result.AssignedTo ?? string.Empty).Equals(sanitised, StringComparison.InvariantCultureIgnoreCase))
-                        {
+                        filteredResults.Add(result);
+                        continue;
+                    }    
+
+                    if(result is LatheManufactureOrder latheOrder)
+                    {
+                        if(foundLatheManufactureOrderItems.Any(x => x.AssignedMO == latheOrder.Name)) {
                             filteredResults.Add(result);
                             continue;
                         }
-
                     }
 
-                    results = filteredResults;
+                    if (result is GeneralManufactureOrder generalOrder)
+                    {
+                        if (foundByNonTurnedProduct.Any(x => x.Id == generalOrder.NonTurnedItemId)) {
+                            filteredResults.Add(result);
+                            continue;
+                        }
+                    }
                 }
+
+
+                results = filteredResults;
+                
             }
 
             FilteredItems = results;
@@ -569,7 +610,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         {
             try
             {
-                File.WriteAllBytes(App.ROOT_PATH + "lib\\locks\\" + $"{name}.lock", Array.Empty<byte>());
+                File.WriteAllText(App.ROOT_PATH + "lib\\locks\\" + $"{name}.lock", App.CurrentUser.UserName + "|" + DateTime.Now.ToString("s"));
             }
             catch
             {
@@ -629,9 +670,18 @@ namespace ProjectLighthouse.ViewModel.Orders
 
                     if (!saved)
                     {
-                        MessageBox.Show("failed to update database");
+                        MessageBox.Show("Failed to save changes");
                         return;
                     }
+
+                    drawingReferences = DatabaseHelper.Read<OrderDrawing>();
+                    drawings = DatabaseHelper.Read<TechnicalDrawing>();
+                    machineBreakdowns = DatabaseHelper.Read<MachineBreakdown>();
+
+                    latheOrder.DrawingsReferences = drawingReferences.Where(x => x.OrderId == latheOrder.Name).ToList();
+                    latheOrder.Drawings = drawings.Where(x => latheOrder.DrawingsReferences.Any(r => r.DrawingId == x.Id)).ToList();
+                    latheOrder.Breakdowns = machineBreakdowns.Where(x => x.OrderName == latheOrder.Name).ToList();
+
                     latheOrder.Editing = false;
 
                     for (int i = items.Count - 1; i >= 0; i--)
@@ -741,10 +791,21 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
 
             // Breakdowns
-
-            // Update master cycle time...
+            if (!UpdateBreakdowns(latheOrder.Breakdowns, oldCopy.Breakdowns, conn))
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
 
             // Drawings
+            if (!UpdateDrawings(latheOrder.DrawingsReferences, oldCopy.DrawingsReferences, conn))
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
+
 
             latheOrder.ModifiedAt = DateTime.Now;
             latheOrder.ModifiedBy = App.CurrentUser.UserName;
@@ -758,6 +819,50 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             conn.Commit();
             conn.Close();
+            return true;
+        }
+
+        private static bool UpdateBreakdowns(List<MachineBreakdown> to, List<MachineBreakdown> from, SQLiteConnection conn)
+        {
+            List<MachineBreakdown> added = to.Where(x => x.Id == 0).ToList();
+            List<MachineBreakdown> removed = from.Where(x => !to.Any(i => i.Id == x.Id)).ToList();
+
+            List<MachineBreakdown> updated = new();
+            for (int i = 0; i < to.Count; i++)
+            {
+                MachineBreakdown i1 = to[i];
+                if (i1.Id == 0) continue;
+                MachineBreakdown? i2 = from.Find(x => x.Id == i1.Id)
+                    ?? throw new KeyNotFoundException($"could not find Breakdown with ID '{i1.Id}' in copy");
+                if (i2.IsUpdated(i1))
+                {
+                    updated.Add(i1);
+                }
+            }
+
+
+            foreach (MachineBreakdown item in updated)
+            {
+                if (conn.Update(item) != 1)
+                {
+                    return false;
+                }
+            }
+
+
+            if (conn.InsertAll(added) != added.Count)
+            {
+                return false;
+            }
+
+            foreach (MachineBreakdown item in removed)
+            {
+                if (conn.Delete(item) != 1)
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -838,6 +943,55 @@ namespace ProjectLighthouse.ViewModel.Orders
             if (conn.InsertAll(added) != added.Count)
             {
                 return false;
+            }
+
+            foreach (Lot newLot in added)
+            {
+                LabelPrintingHelper.PrintLot(newLot);
+            }
+
+            return true;
+        }
+
+        private static bool UpdateDrawings(List<OrderDrawing> to, List<OrderDrawing> from, SQLiteConnection conn)
+        {
+            List<OrderDrawing> added = to.Where(x => x.Id == 0).ToList();
+            List<OrderDrawing> removed = from.Where(x => !to.Any(i => i.Id == x.Id)).ToList();
+
+            List<OrderDrawing> updated = new();
+            for (int i = 0; i < to.Count; i++)
+            {
+                OrderDrawing i1 = to[i];
+                if (i1.Id == 0) continue;
+                OrderDrawing? i2 = from.Find(x => x.Id == i1.Id)
+                    ?? throw new KeyNotFoundException($"could not find Drawing Reference with ID '{i1.Id}' in copy");
+                if (i2.IsUpdated(i1))
+                {
+                    updated.Add(i1);
+                }
+            }
+
+
+            foreach (OrderDrawing item in updated)
+            {
+                if (conn.Update(item) != 1)
+                {
+                    return false;
+                }
+            }
+
+
+            if (conn.InsertAll(added) != added.Count)
+            {
+                return false;
+            }
+
+            foreach (OrderDrawing item in removed)
+            {
+                if (conn.Delete(item) != 1)
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -1078,11 +1232,15 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public override bool CanClose()
         {
-            if (FilteredItems.Any(x => x.Editing))
+            if (editCopies.Count > 0)
             {
-                MessageBox.Show("Editing stuff");
+                string ordersOpen = string.Join(Environment.NewLine, editCopies.Keys.ToArray());
+                // Locks will be created
+                MessageBox.Show("Cannot close, the following orders are open for editing:" + Environment.NewLine + ordersOpen, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+
+            updateChecker.CancelAsync();
 
             return true;
         }
@@ -1125,6 +1283,21 @@ namespace ProjectLighthouse.ViewModel.Orders
         public void Dispose()
         {
             updateChecker.CancelAsync();
+        }
+
+        public bool OnCloseRequested()
+        {
+            if(editCopies.Count > 0)
+            {
+                string ordersOpen = string.Join(Environment.NewLine, editCopies.Keys.ToArray());
+                // Locks will be created
+                MessageBox.Show("Cannot close, the following orders are open for editing:" + Environment.NewLine + ordersOpen, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            updateChecker.CancelAsync();
+
+            return true;
         }
     }
 }

@@ -1,10 +1,12 @@
-﻿using ProjectLighthouse.Model.Core;
+﻿using ABI.Windows.ApplicationModel.Activation;
+using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -22,7 +24,21 @@ namespace ProjectLighthouse.Model.Scheduling
         private DateTime? modifiedAt;
         public DateTime? ModifiedAt
         {
-            get { return modifiedAt; }
+            get 
+            { 
+                if (modifiedAt is null)
+                {
+                    return null;
+                }
+                else if (modifiedAt == DateTime.MinValue)
+                {
+                    return null;
+                }
+                else
+                {
+                    return modifiedAt;
+                }
+            }
             set
             {
                 modifiedAt = value;

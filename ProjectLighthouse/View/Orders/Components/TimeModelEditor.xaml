@@ -54,6 +54,7 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="0"
+                FontWeight="SemiBold"
                 HorizontalAlignment="Center"
                 Text="Response" />
             <TextBlock
@@ -81,6 +82,7 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="2"
+                FontWeight="SemiBold"
                 HorizontalAlignment="Center"
                 Text="Time Floor" />
             <TextBlock
@@ -94,6 +96,7 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="3"
+                FontWeight="SemiBold"
                 HorizontalAlignment="Center"
                 Text="Record Count" />
             <TextBlock
@@ -107,6 +110,7 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="4"
+                FontWeight="SemiBold"
                 HorizontalAlignment="Center"
                 Text="Confidence" />
             <TextBlock

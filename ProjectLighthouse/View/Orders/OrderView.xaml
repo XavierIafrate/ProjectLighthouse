@@ -31,7 +31,7 @@
                 <TextBox
                     x:Name="SearchBox"
                     Style="{StaticResource SearchBox}"
-                    Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=750}"
                     TextChanged="SearchBox_TextChanged" />
 
                 <Button

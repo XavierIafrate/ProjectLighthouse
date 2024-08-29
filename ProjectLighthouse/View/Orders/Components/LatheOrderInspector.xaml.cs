@@ -61,6 +61,7 @@ namespace ProjectLighthouse.View.Orders.Components
         {
             string[] watchForTimeOrBarRecalc = new string[]
             {
+                nameof(LatheManufactureOrder.Breakdowns),
                 nameof(LatheManufactureOrder.TimeCodePlanned),
                 nameof(LatheManufactureOrder.SpareBars),
                 nameof(LatheManufactureOrder.Lots),

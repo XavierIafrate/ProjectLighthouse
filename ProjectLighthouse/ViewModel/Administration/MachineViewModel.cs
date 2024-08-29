@@ -162,6 +162,9 @@ namespace ProjectLighthouse.ViewModel.Administration
                 return;
             }
 
+            window.Machine.CreatedAt = DateTime.Now;
+            window.Machine.CreatedBy = App.CurrentUser.UserName;
+
             try
             {
                 DatabaseHelper.Insert<Machine>(window.Machine, throwErrs: true);

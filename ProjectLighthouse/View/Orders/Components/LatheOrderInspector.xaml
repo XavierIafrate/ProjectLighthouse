@@ -15,7 +15,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <valueConverters:DateTimeToRelativeTime x:Key="dateConverter" />
-        <valueConverters:BooleanInverter x:Key="invertBool"/>
+        <valueConverters:BooleanInverter x:Key="invertBool" />
     </UserControl.Resources>
 
     <StackPanel>
@@ -40,7 +40,7 @@
         </Border>
         <local:DisplayOrderScheduleInformation Margin="10,10,10,20" Item="{Binding Order, ElementName=parentControl}" />
 
-        
+
         <TabControl x:Name="OrderTabControl" Margin="0,10,0,0">
             <TabItem x:Name="preflightTab">
                 <TabItem.Header>
@@ -337,7 +337,11 @@
                         FontWeight="SemiBold"
                         Text="⏱️ Time" />
                 </TabItem.Header>
-                <local:TimeModelEditor MinHeight="100" Order="{Binding ElementName=parentControl, Path=Order}" />
+                <StackPanel>
+                    <local:TimeModelEditor MinHeight="100" Order="{Binding ElementName=parentControl, Path=Order}" />
+                    <local:BreakdownEditor Margin="0,20,0,0" Order="{Binding ElementName=parentControl, Path=Order}" CanEdit="{Binding ElementName=parentControl, Path=EditMode}"/>
+                </StackPanel>
+                
             </TabItem>
             <TabItem x:Name="productionTab">
                 <TabItem.Header>
@@ -348,31 +352,31 @@
                 </TabItem.Header>
                 <StackPanel Margin="10">
                     <StackPanel>
-                        <!--IsEnabled="{Binding Order.ReadyToRun, ElementName=parentControl}"-->
+                        <!--  IsEnabled="{Binding Order.ReadyToRun, ElementName=parentControl}"  -->
 
                         <TextBlock Style="{StaticResource section}" Text="Order Status" />
                         <StackPanel IsEnabled="{Binding EditMode, ElementName=parentControl}" Orientation="Horizontal">
 
                             <CheckBox
-              Margin="10,8"
-              HorizontalAlignment="Left"
-              Content="Job is running"
-              IsChecked="{Binding Order.HasStarted, ElementName=parentControl}"
-              IsEnabled="{Binding Order.IsComplete, ElementName=parentControl, Converter={StaticResource invertBool}}"
-              Style="{StaticResource PreflightCheckbox}" />
+                                Margin="10,8"
+                                HorizontalAlignment="Left"
+                                Content="Job is running"
+                                IsChecked="{Binding Order.HasStarted, ElementName=parentControl}"
+                                IsEnabled="{Binding Order.IsComplete, ElementName=parentControl, Converter={StaticResource invertBool}}"
+                                Style="{StaticResource PreflightCheckbox}" />
                             <CheckBox
-              Margin="10,8"
-              HorizontalAlignment="Left"
-              Content="Job is complete"
-              IsChecked="{Binding Order.IsComplete, ElementName=parentControl}"
-              IsEnabled="{Binding Order.HasStarted, ElementName=parentControl}"
-              Style="{StaticResource PreflightCheckbox}" />
+                                Margin="10,8"
+                                HorizontalAlignment="Left"
+                                Content="Job is complete"
+                                IsChecked="{Binding Order.IsComplete, ElementName=parentControl}"
+                                IsEnabled="{Binding Order.HasStarted, ElementName=parentControl}"
+                                Style="{StaticResource PreflightCheckbox}" />
                             <CheckBox
-              Margin="10,8"
-              HorizontalAlignment="Left"
-              Content="Job is cancelled"
-              IsChecked="{Binding Order.IsCancelled, ElementName=parentControl}"
-              Style="{StaticResource PreflightCheckbox}" />
+                                Margin="10,8"
+                                HorizontalAlignment="Left"
+                                Content="Job is cancelled"
+                                IsChecked="{Binding Order.IsCancelled, ElementName=parentControl}"
+                                Style="{StaticResource PreflightCheckbox}" />
                         </StackPanel>
 
                     </StackPanel>
@@ -414,8 +418,16 @@
                     IsEnabled="{Binding Path=HasConfigPermission, ElementName=parentControl}"
                     Orientation="Horizontal"
                     Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToVisibleOrCollapsed}}">
-                    <Button Content="Remove" Style="{StaticResource Action_Remove_Button}" x:Name="RemoveItemButton" Click="RemoveItemButton_Click" />
-                    <Button Content="Add" Style="{StaticResource Action_New_Button}" x:Name="AddItemButton" Click="AddItemButton_Click" />
+                    <Button
+                        x:Name="RemoveItemButton"
+                        Click="RemoveItemButton_Click"
+                        Content="Remove"
+                        Style="{StaticResource Action_Remove_Button}" />
+                    <Button
+                        x:Name="AddItemButton"
+                        Click="AddItemButton_Click"
+                        Content="Add"
+                        Style="{StaticResource Action_New_Button}" />
                 </StackPanel>
             </Grid>
             <Grid>

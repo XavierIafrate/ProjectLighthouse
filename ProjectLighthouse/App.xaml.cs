@@ -132,6 +132,7 @@ namespace ProjectLighthouse
             };
 
             Task.Run(() => StartNotificationsManager());
+            Task.Run(() => ClearUserLocks());
 
             LumenManager.Initialise();
         }
@@ -168,6 +169,7 @@ namespace ProjectLighthouse
         private static MainViewModel LoadMain()
         {
             Window = new();
+
             MainViewModel VM = new()
             {
                 MainWindow = Window
@@ -179,6 +181,27 @@ namespace ProjectLighthouse
             Window.ViewModel = VM;
 
             return VM;
+        }
+
+        private static void ClearUserLocks()
+        {
+            string[] lockFiles = Directory.GetFiles(App.ROOT_PATH + "lib\\locks\\");
+            foreach (string file in lockFiles)
+            {
+                try
+                {
+                    string contents = File.ReadAllText(file);
+                    if (contents.Contains(App.CurrentUser.UserName + "|"))
+                    {
+                        File.Delete(file);
+                    }
+
+                }
+                catch
+                {
+                    continue;
+                }
+            }
         }
 
         private static void StartNotificationsManager()
@@ -260,6 +283,18 @@ namespace ProjectLighthouse
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        public static void BeforeApplicationShutdown(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (App.MainViewModel.SelectedViewModel is ISafeClose safeCloseVm)
+            {
+                if (!safeCloseVm.OnCloseRequested())
+                {
+                    e.Cancel = true;    
+                    return;
                 }
             }
         }

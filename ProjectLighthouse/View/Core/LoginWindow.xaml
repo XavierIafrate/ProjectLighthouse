@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Lighthouse Login"
     Width="1114"
-    Height="650"
+    Height="680"
     AllowsTransparency="True"
     Background="Transparent"
     ResizeMode="NoResize"
@@ -33,11 +33,12 @@
                             Name="Mask"
                             Background="Black"
                             CornerRadius="30" />
+                        <!--  Source="../../Resources/Lighthouse_Splash_Screen.png"  -->
                         <Image
                             VerticalAlignment="Center"
                             RenderOptions.BitmapScalingMode="Fant"
-                            Source="../../Resources/Lighthouse_Splash_Screen.png"
-                            Stretch="UniformToFill">
+                            Source="../../Resources/huddle.png"
+                            Stretch="Fill">
                             <Image.OpacityMask>
                                 <VisualBrush Stretch="Uniform" Visual="{Binding ElementName=Mask}" />
                             </Image.OpacityMask>
@@ -57,18 +58,18 @@
             x:Name="DemoVersionBaner"
             Margin="50"
             HorizontalAlignment="Center"
-            VerticalAlignment="Top"
+            VerticalAlignment="Bottom"
             Background="{StaticResource GreenFaded}"
             CornerRadius="5">
             <StackPanel Margin="15,7" Orientation="Horizontal">
                 <TextBlock
-                    Margin="10,0,10,1"
                     x:Name="dbPath"
+                    Margin="10,0,10,1"
                     FontSize="18"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource Green}"
                     Text="Welcome to the Demo version of Lighthouse!" />
-            
+
             </StackPanel>
         </Border>
 
@@ -88,16 +89,23 @@
                 Text="v.0.0.0" />
         </Border>
 
+        <!--  Margin="100,80"  -->
         <Grid
-            Margin="100,80"
+            Margin="100,70"
             HorizontalAlignment="Right"
-            VerticalAlignment="Bottom">
+            VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
+            <Image
+                Width="180"
+                Margin="0,0,0,20"
+                RenderOptions.BitmapScalingMode="Fant"
+                Source="../../Resources/LighthouseLogo.png" />
             <StackPanel
-                Grid.Row="0"
+                Grid.Row="1"
                 Margin="0,0,0,10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -141,16 +149,13 @@
             </StackPanel>
             <Border
                 x:Name="MessageBadge"
-                Grid.Row="1"
+                Grid.Row="2"
                 HorizontalAlignment="Center"
                 BorderBrush="{StaticResource Red}"
                 BorderThickness="4,0,0,0"
                 CornerRadius="3">
                 <Grid>
-                    <Border
-                        Background="{StaticResource Red}"
-                        CornerRadius="3"
-                        Opacity="0.25" />
+                    <Border Background="{StaticResource RedFaded}" CornerRadius="3" />
                     <TextBlock
                         x:Name="message"
                         Padding="15,2,15,4"

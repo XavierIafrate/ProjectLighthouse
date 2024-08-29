@@ -1,11 +1,15 @@
-﻿using ProjectLighthouse.Model.Core;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using ProjectLighthouse.Model.Core;
 using SQLite;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace ProjectLighthouse.Model.Orders
 {
-    public class MachineBreakdown : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation
+    public class MachineBreakdown : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation, ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -127,6 +131,74 @@ namespace ProjectLighthouse.Model.Orders
             }
 
             throw new NotImplementedException();
+        }
+
+        internal bool ValidateOverlap(List<MachineBreakdown> breakdowns)
+        {
+            List<MachineBreakdown> sortedBreakdowns = breakdowns.OrderBy(x => x.BreakdownStarted).ToList();
+
+            foreach (MachineBreakdown breakdown in sortedBreakdowns)
+            {
+                DateTime start = breakdown.BreakdownStarted;
+                DateTime end = breakdown.BreakdownEnded;
+
+                if (BreakdownStarted >= start && BreakdownEnded <= end)
+                {
+                    // other record fully overlaps
+                    return false;
+                }
+
+                if (BreakdownStarted <= start && BreakdownEnded > end)
+                {
+                    // this record fully overlaps
+                    return false;
+                }
+                
+                if ((BreakdownEnded > start && BreakdownEnded <= end) || (BreakdownStarted >= start && BreakdownStarted < end))
+                {
+                    // partial overlap
+                    return false;
+                }
+
+            }
+
+            return true;
+        }
+
+        public object Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MachineBreakdown>(serialised);
+        }
+
+        internal bool IsUpdated(MachineBreakdown otherBreakdown)
+        {
+            if (otherBreakdown.Id != Id)
+            {
+                throw new InvalidOperationException($"Cannot compare Breakdown {Id} with record {otherBreakdown.Id}");
+            }
+
+            if (BreakdownStarted != otherBreakdown.BreakdownStarted)
+            {
+                return true;
+            }
+
+            if (BreakdownEnded != otherBreakdown.BreakdownEnded)
+            {
+                return true;
+            }
+
+            if (Comment != otherBreakdown.Comment)
+            {
+                return true;
+            }
+
+            if (BreakdownCode != otherBreakdown.BreakdownCode)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

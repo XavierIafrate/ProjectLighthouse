@@ -189,9 +189,6 @@ namespace ProjectLighthouse
             }
         }
 
-
-        
-
         private void GridSplitter_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             User.PostDefaultMenuWidth(App.CurrentUser.UserName, MainGrid.ColumnDefinitions[0].ActualWidth);
@@ -216,6 +213,11 @@ namespace ProjectLighthouse
         private void GridSplitter_DragDelta(object sender, DragDeltaEventArgs e)
         {
             SetMenuStyle();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            App.BeforeApplicationShutdown(sender, e);
         }
     }
 }

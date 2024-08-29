@@ -1,12 +1,9 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
-using RestSharp.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -26,8 +23,8 @@ namespace ProjectLighthouse.View.Scheduling.Components
         public List<ScheduleItem> HighlightedItems
         {
             get { return highlightedItems; }
-            set 
-            { 
+            set
+            {
                 highlightedItems = value;
                 HighlightItems();
             }
@@ -260,7 +257,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
         {
             if (RescheduleCommand is null) return;
             if (e.Data.GetData(typeof(TimelineOrder)) is not TimelineOrder orderControl) return;
-            
+
             MainTimeline.AddDragHighlights();
 
             if (!this.Schedule.Machine.CanRun(orderControl.Item))
@@ -292,7 +289,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
         private void MainGrid_DragOver(object sender, DragEventArgs e)
         {
             if (RescheduleCommand is null) return;
-            
+
             Point position = e.GetPosition(this.MainGrid);
             int todayIndex = (DateTime.Today - (DateTime)MinDate!).Days;
             int colIndex = (int)Math.Floor(position.X / ColumnWidth);

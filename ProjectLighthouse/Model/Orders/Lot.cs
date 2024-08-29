@@ -188,7 +188,7 @@ namespace ProjectLighthouse.Model.Orders
             }
             set
             {
-                remarks = value.Trim();
+                remarks = value;
                 ValidateProperty();
                 OnPropertyChanged();
             }

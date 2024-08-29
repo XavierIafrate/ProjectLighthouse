@@ -52,8 +52,11 @@
             TextWrapping="Wrap" />
         <TextBlock 
             FontSize="14"
-            Opacity="0.6"
-            Text="{Binding ElementName=parentControl, Path=Order.NumberOfBars, StringFormat='{}{0} bars will be required.'}"/>
+            Opacity="0.6">
+            <Run Text="{Binding ElementName=parentControl, Path=Order.NumberOfBars, StringFormat='{}{0} bars will be required, and'}"/>
+            <Run Text="{Binding ElementName=parentControl, Path=Order.NumberOfBarsIssued, StringFormat='{}{0} have been issued.'}"/>
+
+        </TextBlock>
         <userControls:DisplayBarStock Bar="{Binding Order.Bar, ElementName=parentControl}" />
         <Grid x:Name="BarSelection">
             <Grid.ColumnDefinitions>
