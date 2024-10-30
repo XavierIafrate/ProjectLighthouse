@@ -14,10 +14,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class OperaHelper
     {
-        public static readonly string dbFile = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cname.dbf";
-        public static readonly string purchaseLinesTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_doline.dbf";
-        public static readonly string purchaseHeaderTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_dohead.dbf";
-        public static readonly string invoiceTransactionsTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_itran.dbf";
+        public static readonly string stockTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_cname.dbf";
+        public static readonly string purchaseLinesTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_doline.dbf";
+        public static readonly string purchaseHeaderTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_dohead.dbf";
+        public static readonly string invoiceTransactionsTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_itran.dbf";
+        public static readonly string bomTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_cstruc.dbf";
+        public static readonly string factorsTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_cfact.dbf";
 
         public static List<string> VerifyDeliveryNote(List<DeliveryItem> items)
         {
@@ -40,7 +42,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                     errs.AddRange(VerifyData(item, qtyThisDel, order, lines));
                 }
 
-                if(itemsOnPO.Count == 0)
+                if (itemsOnPO.Count == 0)
                 {
                     errs.Add($"No lines found for purchase order '{order}'");
                 }
@@ -80,7 +82,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             using DbfTable dbfTable = new(purchaseLinesTable, Encoding.UTF8);
             DbfHeader tableHeader = dbfTable.Header;
-            Console.WriteLine($"{tableHeader.RecordCount:#,##0} records in Automotion Purchase Order Lines table.");
+            Console.WriteLine($"{tableHeader.RecordCount:#,##0} records in Purchase Order Lines table.");
 
             int iRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_DCREF"));
             int iAccount = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_ACCOUNT"));
@@ -109,7 +111,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 string accountRef = dbfRecord.Values[iAccount].ToString();
                 string poRef = dbfRecord.Values[iRef].ToString() ?? "";
-                if (accountRef != "AUTO01" || !refs.Contains(poRef.ToUpperInvariant()))
+                if (!refs.Contains(poRef.ToUpperInvariant()))
                 {
                     continue;
                 }
@@ -124,7 +126,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 PurchaseLine record = new()
                 {
-
                     PurchaseReference = poRef,
                     Product = partNum,
                     Account = accountRef,
@@ -138,12 +139,224 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return results;
         }
 
+        // Main Sync Entry
+        public static void UpdateRecords(List<TurnedProduct> products, List<BarStock> barstock, List<NonTurnedItem> nonTurnedItems)
+        {
+            List<BomComponent> boms = GetComponentStructure();
+            List<StockFactor> factors = GetFactors();
+
+            List<OperaStockData> operaData = GetLiveData(factors);
+
+
+            Console.WriteLine($"\nUpdating Records");
+
+
+            for (int i = 0; i < products.Count; i++)
+            {
+                TurnedProduct product = products[i];
+                OperaStockData? liveData = operaData.Find(x => x.AutomotionRef == product.ProductName);
+                liveData ??= operaData.Find(x => x.WixroydRef == product.ProductName);
+                liveData ??= operaData.Find(x => x.TeknipartRef == product.ProductName);
+                liveData ??= operaData.Find(x => x.GTIN == product.ProductName);
+
+                if (liveData == null)
+                {
+                    Console.WriteLine($"No stock record found for turned item '{product.ProductName}'");
+                    product.IsSyncing = false;
+
+                    if (product.IsSyncing == false) continue;
+
+                    try
+                    {
+                        DatabaseHelper.ExecuteCommand($"UPDATE {nameof(TurnedProduct)} SET IsSyncing = {false}, ExportProductName=NULL, QuantityOnPO=0, QuantityOnSO=0, QuantityInStock=0 WHERE ProductName='{product.ProductName}'");
+                    }
+                    catch (Exception err)
+                    {
+                        Console.WriteLine($"Failed to set IsSyncing to false for turned item: {err.Message}");
+                    }
+
+                    continue;
+                }
+
+                if (!RecordNeedsUpdating(product, liveData))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    DatabaseHelper.ExecuteCommand($"UPDATE {nameof(TurnedProduct)} SET ExportProductName = '{liveData.GTIN}', IsSyncing={true} WHERE ProductName='{product.ProductName}'");
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine($"Failed to set IsSyncing to true and update GTIN for turned item: {err.Message}");
+                }
+
+                try
+                {
+                    DatabaseHelper.ExecuteCommand($"UPDATE {nameof(TurnedProduct)} SET QuantityInStock={liveData.QtyInStock}, QuantityOnPO={liveData.QtyPurchaseOrder}, QuantityOnSO={liveData.QtySalesOrder}, SellPrice={liveData.SellPrice}  WHERE ProductName='{product.ProductName}'");
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine($"Failed to update turned item: {err.Message}");
+                }
+            }
+
+            for (int i = 0; i < barstock.Count; i++)
+            {
+                BarStock bar = barstock[i];
+                OperaStockData? liveData = operaData.Find(x => x.AutomotionRef == bar.Id);
+                liveData ??= operaData.Find(x => x.WixroydRef == bar.Id);
+                liveData ??= operaData.Find(x => x.TeknipartRef == bar.Id);
+                liveData ??= operaData.Find(x => x.GTIN == bar.Id);
+
+                if (liveData == null)
+                {
+                    Console.WriteLine($"No stock record found for bar '{bar.Id}'");
+                    bar.IsSyncing = false;
+
+                    try
+                    {
+                        DatabaseHelper.ExecuteCommand($"UPDATE {nameof(BarStock)} SET IsSyncing = {false}, ErpId=NULL, OnOrder=0, InStock=0 WHERE Id='{bar.Id}'");
+                    }
+                    catch (Exception err)
+                    {
+                        Console.WriteLine($"Failed to set IsSyncing to false for bar: {err.Message}");
+                    }
+
+                    continue;
+                }
+
+                try
+                {
+                    DatabaseHelper.ExecuteCommand($"UPDATE {nameof(BarStock)} SET ErpId = '{liveData.GTIN}', IsSyncing={true}, InStock={liveData.QtyInStock}, OnOrder={liveData.QtyPurchaseOrder}, Cost={liveData.CostPrice}  WHERE Id='{bar.Id}'");
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine($"Failed to set IsSyncing to true and update GTIN for bar: {err.Message}");
+                }
+            }
+
+            for (int i = 0; i < nonTurnedItems.Count; i++)
+            {
+                NonTurnedItem item = nonTurnedItems[i];
+                OperaStockData? liveData = operaData.Find(x => x.AutomotionRef == item.Name);
+                liveData ??= operaData.Find(x => x.WixroydRef == item.Name);
+                liveData ??= operaData.Find(x => x.TeknipartRef == item.Name);
+                liveData ??= operaData.Find(x => x.GTIN == item.Name);
+
+                if (liveData == null)
+                {
+                    Console.WriteLine($"No stock record found for non-turned item '{item.Name}'");
+                    item.IsSyncing = false;
+
+                    try
+                    {
+                        DatabaseHelper.ExecuteCommand($"UPDATE {nameof(NonTurnedItem)} SET IsSyncing = {false}, ExportProductName=NULL WHERE Name='{item.Name}'");
+                    }
+                    catch (Exception err)
+                    {
+                        Console.WriteLine($"Failed to set IsSyncing to false for non-turned item: {err.Message}");
+                    }
+
+                    continue;
+                }
+
+                try
+                {
+                    DatabaseHelper.ExecuteCommand($"UPDATE {nameof(NonTurnedItem)} SET ExportProductName='{liveData.GTIN}', IsSyncing={true} WHERE Name='{item.Name}'");
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine($"Failed to set IsSyncing to true and update GTIN for non-turned item: {err.Message}");
+                }
+            }
+
+
+            //string[] uniqueStockReferences = liveData.Select(x => x.StockReference).Distinct().ToArray();
+
+            //List<OperaStockData> cleanedLiveData = new();
+            //foreach (string stockReference in uniqueStockReferences)
+            //{
+            //    List<OperaStockData> targets = liveData.Where(x => x.StockReference == stockReference).ToList();
+
+            //    OperaStockData record = new()
+            //    {
+
+            //        StockReference = stockReference,
+            //        QtyInStock = targets.Where(x => !x.searchRef).Sum(x => x.QtyInStock),
+            //        QtyPurchaseOrder = targets.Sum(x => x.QtyPurchaseOrder),
+            //        QtySalesOrder = targets.Sum(x => x.QtySalesOrder),
+            //        SellPrice = targets.Max(x => x.SellPrice),
+            //        CostPrice = targets.Max(x => x.CostPrice)
+            //    };
+
+            //    cleanedLiveData.Add(record);
+            //}
+
+            //total_records = liveData.Count;
+            //i = 0;
+            //Console.WriteLine();
+
+
+            //foreach (OperaFields record in cleanedLiveData)
+            //{
+            //    i++;
+            //    double percent_progress = (double)i / (double)total_records;
+            //    percent_progress *= 100;
+            //    Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
+
+            //    TurnedProduct productRecord = products.Find(x => x.ProductName == record.StockReference || x.ExportProductName == record.StockReference);
+
+            //    if (productRecord is not null)
+            //    {
+            //        UpdateProduct(productRecord, record);
+            //        continue;
+            //    }
+
+            //    BarStock bar = barstock.Find(x => x.Id == record.StockReference);
+            //    if (bar is not null)
+            //    {
+            //        UpdateBarStock(bar, record);
+            //        continue;
+            //    }
+            //}
+
+            WriteTimeStamp();
+        }
+
+        private static List<StockFactor> GetFactors()
+        {
+            List<StockFactor> factors = new();
+
+            using DbfTable dbfTable = new(factorsTable, Encoding.UTF8);
+            DbfRecord dbfRecord = new(dbfTable);
+
+            int iCode = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CF_CODE"));
+            int iSellDps = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CF_SELLDPS"));
+
+            while (dbfTable.Read(dbfRecord))
+            {
+                if (dbfRecord.IsDeleted)
+                {
+                    continue;
+                }
+
+                string code = dbfRecord.GetStringValue(iCode);
+                int dps = dbfRecord.GetValue<int>(iSellDps);
+
+                factors.Add(new() { Code = code, Dps = dps });
+
+            }
+
+            return factors;
+        }
+
         private static List<BomComponent> GetComponentStructure()
         {
             List<BomComponent> boms = new();
 
-            string path = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\AUTO\a_cstruc.dbf";
-            using DbfTable dbfTable = new(path, Encoding.UTF8);
+            using DbfTable dbfTable = new(bomTable, Encoding.UTF8);
 
             DbfRecord dbfRecord = new(dbfTable);
 
@@ -153,13 +366,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 {
                     continue;
                 }
-                object qty = dbfRecord.Values[2]?.GetValue();
-                int quantity = 0;
 
-                if (qty is not null)
-                {
-                    quantity = Convert.ToInt32(qty.ToString());
-                }
+                int quantity = dbfRecord.GetValue<int>(2);
 
                 quantity /= 100;
 
@@ -169,92 +377,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return boms;
         }
 
-        private static void UpdateProduct(TurnedProduct product, OperaFields record)
-        {
-            if (!RecordNeedsUpdating(product, record))
-            {
-                return;
-            }
 
-            product.QuantityInStock = record.QtyInStock;
-            product.QuantityOnPO = record.QtyPurchaseOrder;
-            product.QuantityOnSO = record.QtySalesOrder;
-            product.SellPrice = record.SellPrice;
-
-            DatabaseHelper.Update<TurnedProduct>(product);
-        }
-
-        private static void UpdateBarStock(BarStock bar, OperaFields record)
-        {
-            bar.InStock = Convert.ToDouble(record.QtyInStock);
-            bar.OnOrder = Convert.ToDouble(record.QtyPurchaseOrder);
-            bar.Cost = record.CostPrice;
-
-            DatabaseHelper.Update<BarStock>(bar);
-        }
-
-        public static void UpdateRecords(List<TurnedProduct> products, List<BarStock> barstock, string[] lighthouseProducts)
-        {
-            int total_records;
-            int i;
-
-            List<OperaFields> liveData;
-
-            List<BomComponent> boms = GetComponentStructure();
-
-            liveData = GetLiveData(lighthouseProducts, barstock.Select(x => x.Id).ToArray(), boms);
-
-            string[] uniqueStockReferences = liveData.Select(x => x.StockReference).Distinct().ToArray();
-
-            List<OperaFields> cleanedLiveData = new();
-            foreach (string stockReference in uniqueStockReferences)
-            {
-                List<OperaFields> targets = liveData.Where(x => x.StockReference == stockReference).ToList();
-
-                OperaFields record = new()
-                {
-
-                    StockReference = stockReference,
-                    QtyInStock = targets.Where(x => !x.searchRef).Sum(x => x.QtyInStock),
-                    QtyPurchaseOrder = targets.Sum(x => x.QtyPurchaseOrder),
-                    QtySalesOrder = targets.Sum(x => x.QtySalesOrder),
-                    SellPrice = targets.Max(x => x.SellPrice),
-                    CostPrice = targets.Max(x => x.CostPrice)
-                };
-
-                cleanedLiveData.Add(record);
-            }
-
-            total_records = liveData.Count;
-            i = 0;
-            Console.WriteLine();
-
-
-            foreach (OperaFields record in cleanedLiveData)
-            {
-                i++;
-                double percent_progress = (double)i / (double)total_records;
-                percent_progress *= 100;
-                Console.Write($"\rUpdating Lighthouse... [  {percent_progress:#.00}%  ]");
-
-                TurnedProduct productRecord = products.Find(x => x.ProductName == record.StockReference || x.ExportProductName == record.StockReference);
-
-                if (productRecord is not null)
-                {
-                    UpdateProduct(productRecord, record);
-                    continue;
-                }
-
-                BarStock bar = barstock.Find(x => x.Id == record.StockReference);
-                if (bar is not null)
-                {
-                    UpdateBarStock(bar, record);
-                    continue;
-                }
-            }
-
-            WriteTimeStamp();
-        }
 
         private static void WriteTimeStamp()
         {
@@ -270,23 +393,20 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        private static List<OperaFields> GetLiveData(string[] lighthouseProducts, string[] barstock, List<BomComponent> boms)
+        private static List<OperaStockData> GetLiveData(List<StockFactor> factors)
         {
-            boms = boms.Where(x => lighthouseProducts.Contains(x.ComponentName)).ToList();
+            List<OperaStockData> results = new();
 
-            string[] itemsForUpdate = lighthouseProducts.Concat(barstock).ToArray();
-
-            List<OperaFields> results = new();
-            List<OperaFields> bar_records = new();
-
-            using DbfTable dbfTable = new(dbFile, Encoding.UTF8);
+            using DbfTable dbfTable = new(stockTable, Encoding.UTF8);
 
             DbfHeader header = dbfTable.Header;
-            Console.WriteLine($"{header.RecordCount:#,##0} records in Automotion CNAME table.");
+            Console.WriteLine($"{header.RecordCount:#,##0} records in Opera Stock table.");
 
-            int iStockRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_REF"));
+            int iGtin = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_REF"));
+            int iAutomotionRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "OACN_AREF"));
+            int iWixroydRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "OACN_WREF"));
+            int iTeknipartRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "OACN_TREF"));
             int iFactor = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_FACT"));
-            int iSearchRef = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_CAT"));
             int iSalesOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_SALEORD"));
             int iStockQuantity = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_INSTOCK"));
             int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CN_ONORDER"));
@@ -303,76 +423,55 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 double percent_progress = (double)i / (double)total_records;
                 percent_progress *= 100;
-
-                Console.Write($"\rReading Opera... [  {percent_progress:#0.00}%  ]");
-
+                Console.Write($"\rReading database... [  {percent_progress:#0.00}%  ]");
                 i++;
 
                 if (dbfRecord.IsDeleted)
                     continue;
 
-                string name = dbfRecord.GetStringValue(iStockRef);
-                string searchref = dbfRecord.GetStringValue(iSearchRef);
+                string aStockRef = dbfRecord.GetStringValue(iAutomotionRef);
+                string wStockRef = dbfRecord.GetStringValue(iWixroydRef);
+                string tStockRef = dbfRecord.GetStringValue(iTeknipartRef);
+                string gtin = dbfRecord.GetStringValue(iGtin);
+                string factor = dbfRecord.GetStringValue(iFactor);
 
-                bool dormant = true;
-                try
-                {
-                    if (dbfRecord.GetValue(iDormant) is not null)
-                    {
-                        dormant = dbfRecord.GetValue<bool>(iDormant);
-                    }
-                }
-                catch
-                {
+                StockFactor? stockFactor = factors.Find(x => x.Code == factor);
 
-                }
-
-                if (dormant)
+                if (stockFactor == null)
                 {
+                    // weird
                     continue;
                 }
 
-
-                string factor = dbfRecord.GetStringValue(iFactor);
-                bool searchRefUsed = false;
-
-                if (!itemsForUpdate.Contains(name))
+                bool dormant = true;
+                if (dbfRecord.GetValue(iDormant) is not null)
                 {
-                    if (itemsForUpdate.Contains(searchref))
-                    {
-                        name = searchref;
-                        searchRefUsed = true;
-
-                    }
-                    else if (boms.Any(x => x.AssemblyName == name))
-                    {
-                        // proceed normally
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    dormant = dbfRecord.GetValue<bool>(iDormant);
                 }
 
-                _ = int.TryParse(dbfRecord.Values[iSalesOrder].ToString(), out int SalesOrder);
-                _ = int.TryParse(dbfRecord.Values[iStockQuantity].ToString(), out int Stock);
-                _ = int.TryParse(dbfRecord.Values[iPurchaseOrder].ToString(), out int OnOrder);
-                _ = int.TryParse(dbfRecord.Values[iSell].ToString(), out int Sell);
-                _ = int.TryParse(dbfRecord.Values[iCost].ToString(), out int Cost);
+                int qtySalesOrder = (dbfRecord.GetValue(iSalesOrder) is not null) ?  dbfRecord.GetValue<int>(iSalesOrder) : 0;
+                int qtyInStock = (dbfRecord.GetValue(iStockQuantity) is not null) ? dbfRecord.GetValue<int>(iStockQuantity) : 0;
+                int qtyPurchaseOrder = (dbfRecord.GetValue(iPurchaseOrder) is not null) ? dbfRecord.GetValue<int>(iPurchaseOrder) : 0;
+                int sellPrice = (dbfRecord.GetValue(iSell) is not null) ? dbfRecord.GetValue<int>(iSell) : 0;
+                int costPrice = (dbfRecord.GetValue(iCost) is not null) ? dbfRecord.GetValue<int>(iCost) : 0;
 
-                SalesOrder /= 100;
-                Stock /= 100;
-                OnOrder /= 100;
+                qtySalesOrder /= 100;
+                qtyInStock /= 100;
+                qtyPurchaseOrder /= 100;
+                double dSellPrice = Convert.ToDouble(sellPrice) / Math.Pow(10, Convert.ToDouble(stockFactor.Dps));
 
-                OperaFields record = new()
+                OperaStockData record = new()
                 {
-                    StockReference = name,
-                    QtyInStock = Stock,
-                    QtyPurchaseOrder = OnOrder,
-                    QtySalesOrder = SalesOrder,
-                    SellPrice = factor == "4DEC" ? Sell / 100 : Sell,
-                    CostPrice = Cost,
-                    searchRef = searchRefUsed
+                    AutomotionRef = aStockRef,
+                    WixroydRef = wStockRef,
+                    TeknipartRef = tStockRef,
+                    GTIN = gtin,
+                    QtyInStock = qtyInStock,
+                    QtyPurchaseOrder = qtyPurchaseOrder,
+                    QtySalesOrder = qtySalesOrder,
+                    SellPrice = sellPrice,
+                    CostPrice = costPrice,
+                    IsDormant = dormant,
                 };
 
                 results.Add(record);
@@ -380,48 +479,59 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
 
 
-            // Consolidate Bom Records
-            List<OperaFields> assemblies = results.Where(x => !itemsForUpdate.Contains(x.StockReference)).ToList();
+            //// Consolidate Bom Records
+            //List<OperaFields> assemblies = results.Where(x => !itemsForUpdate.Contains(x.StockReference)).ToList();
 
-            // remove assemblies
-            results = results.Where(x => itemsForUpdate.Contains(x.StockReference)).ToList();
+            //// remove assemblies
+            //results = results.Where(x => itemsForUpdate.Contains(x.StockReference)).ToList();
 
-            for (int j = 0; j < assemblies.Count; j++)
-            {
-                OperaFields assembly = assemblies[j];
-                List<BomComponent> affectedComponents = boms.Where(x => x.AssemblyName == assembly.StockReference).ToList();
+            //for (int j = 0; j < assemblies.Count; j++)
+            //{
+            //    OperaFields assembly = assemblies[j];
+            //    List<BomComponent> affectedComponents = boms.Where(x => x.AssemblyName == assembly.StockReference).ToList();
 
-                for (int k = 0; k < affectedComponents.Count; k++)
-                {
-                    OperaFields? lighthouseComponent = results.Find(x => x.StockReference == affectedComponents[k].ComponentName);
-                    if (lighthouseComponent is null) continue;
+            //    for (int k = 0; k < affectedComponents.Count; k++)
+            //    {
+            //        OperaFields? lighthouseComponent = results.Find(x => x.StockReference == affectedComponents[k].ComponentName);
+            //        if (lighthouseComponent is null) continue;
 
-                    Console.WriteLine($"\t{assembly.StockReference} >> '{lighthouseComponent.StockReference}' +{assembly.QtySalesOrder}");
-                    lighthouseComponent.QtySalesOrder += assembly.QtySalesOrder;
-                }
-            }
+            //        Console.WriteLine($"\t{assembly.StockReference} >> '{lighthouseComponent.StockReference}' +{assembly.QtySalesOrder}");
+            //        lighthouseComponent.QtySalesOrder += assembly.QtySalesOrder;
+            //    }
+            //}
 
             return results;
         }
 
-        private static bool RecordNeedsUpdating(TurnedProduct product, OperaFields operaRecord)
+        private static bool RecordNeedsUpdating(TurnedProduct product, OperaStockData operaRecord)
         {
             return
+                product.ExportProductName != operaRecord.GTIN ||
+                product.IsSyncing != true ||
                 product.QuantityInStock != operaRecord.QtyInStock ||
                 product.QuantityOnPO != operaRecord.QtyPurchaseOrder ||
                 product.QuantityOnSO != operaRecord.QtySalesOrder ||
                 product.SellPrice != operaRecord.SellPrice;
         }
 
-        protected class OperaFields
+        protected class OperaStockData
         {
             public int CostPrice { get; set; }
             public int QtyInStock { get; set; }
             public int QtyPurchaseOrder { get; set; }
             public int QtySalesOrder { get; set; }
             public int SellPrice { get; set; }
-            public string StockReference { get; set; }
-            public bool searchRef;
+            public string AutomotionRef { get; set; }
+            public string WixroydRef { get; set; }
+            public string TeknipartRef { get; set; }
+            public string GTIN { get; set; }
+            public bool IsDormant { get; set; }
+        }
+
+        protected class StockFactor
+        {
+            public string Code { get; set; }
+            public int Dps { get; set; }
         }
 
         protected class BomComponent
@@ -559,6 +669,115 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 return Activator.CreateInstance(type);
             }
             return null;
+        }
+
+        public static void UpdatePurchaseRecords(List<BarStock> barStock)
+        {
+            string[] barIds = barStock.Select(x => x.ErpId).ToArray();
+            List<BarStockPurchase> existingRecords = DatabaseHelper.Read<BarStockPurchase>();
+            List<BarStockPurchase> purchaseLines = GetBarPurchaseLines(barIds);
+
+            foreach (BarStockPurchase newData in purchaseLines)
+            {
+                newData.BarId = barStock.Find(x => x.ErpId == newData.BarId)?.Id;
+
+                BarStockPurchase? existingData = existingRecords.Find(x => x.OperaId == newData.OperaId);
+
+                if (existingData is null)
+                {
+                    DatabaseHelper.Insert(newData);
+                    continue;
+                }
+
+                if (existingData.IsUpdated(newData))
+                {
+                    newData.Id = existingData.Id;
+                    DatabaseHelper.Update(newData);
+                }
+            }
+        }
+
+        private static List<BarStockPurchase> GetBarPurchaseLines(string[] refs)
+        {
+            List<BarStockPurchase> results = new();
+
+            using DbfTable dbfTable = new(purchaseLinesTable, Encoding.UTF8);
+            DbfHeader tableHeader = dbfTable.Header;
+            Console.WriteLine($"{tableHeader.RecordCount:#,##0} records in Purchase Order Lines table.");
+
+            int iPurchaseOrder = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_DCREF"));
+            int iOperaId = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "ID"));
+            int iAccount = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_ACCOUNT"));
+            int iPartNumber = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_CNREF"));
+            int iRequired = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_REQQTY"));
+            int iRequiredDate = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_REQDAT"));
+            int iReceived = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_RECQTY"));
+            int iIsQuoted = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_QUOTED"));
+            int iQuotedDate = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_QUODAT"));
+            int iValue = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_VALUE"));
+
+            DbfRecord dbfRecord = new(dbfTable);
+
+            int total_records = (int)tableHeader.RecordCount;
+            int i = 0;
+
+            while (dbfTable.Read(dbfRecord))
+            {
+                double percent_progress = (double)i / (double)total_records;
+                percent_progress *= 100;
+
+                Console.Write($"\rReading Opera... [  {percent_progress:#.00}%  ]");
+
+                i++;
+
+                if (dbfRecord.IsDeleted)
+                {
+                    continue;
+                }
+                string partNum = dbfRecord.GetStringValue(iPartNumber);
+
+                if (!refs.Contains(partNum.ToUpperInvariant()))
+                {
+                    continue;
+                }
+
+                string accountRef = dbfRecord.GetStringValue(iAccount);
+                string poRef = dbfRecord.GetStringValue(iPurchaseOrder);
+                int required = dbfRecord.GetValue<int>(iRequired);
+                int received = dbfRecord.GetValue<int>(iReceived);
+                Int64 id = dbfRecord.GetValue<Int64>(iOperaId);
+                double lineValue = Convert.ToDouble(dbfRecord.GetValue<Int64>(iValue));
+                DateTime requiredDate = dbfRecord.GetValue<DateTime>(iRequiredDate);
+                DateTime? quotedDate = null;
+                if (dbfRecord.GetValue(iQuotedDate) is not null)
+                {
+                    quotedDate = dbfRecord.GetValue<DateTime>(iQuotedDate);
+                }
+                bool isQuoted = dbfRecord.GetValue<bool>(iIsQuoted);
+
+                required /= 100;
+                received /= 100;
+                lineValue /= 100;
+
+                BarStockPurchase purchase = new()
+                {
+                    OperaId = id,
+                    BarId = partNum,
+                    LineValue = lineValue,
+                    QuantityRequired = required,
+                    QuantityReceived = received,
+                    PurchaseOrder = poRef,
+                    SupplierAccount = accountRef,
+
+                    DateRequired = requiredDate,
+                    QuotedDate = quotedDate,
+                    IsQuoted = isQuoted,
+                };
+
+                results.Add(purchase);
+            }
+
+            return results;
         }
     }
 }
