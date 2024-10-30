@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Linq;
 using ProjectLighthouse.Model.Core;
 using System.Runtime.CompilerServices;
+using ProjectLighthouse.ViewModel.Helpers;
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -265,6 +266,18 @@ namespace ProjectLighthouse.Model.Orders
 
             return false;
         }
+
+
+        public void MarkAsClosed()
+        {
+            DatabaseHelper.ExecuteCommand($"UPDATE {nameof(GeneralManufactureOrder)} SET IsClosed = {true} WHERE Id={Id}");
+        }
+
+        public void MarkAsNotClosed()
+        {
+            DatabaseHelper.ExecuteCommand($"UPDATE {nameof(GeneralManufactureOrder)} SET IsClosed = {false} WHERE Id={Id}");
+        }
+
 
         public override object Clone()
         {
