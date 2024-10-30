@@ -28,16 +28,31 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
-        private string exportProductName;
+        private string? exportProductName;
 
+        [Unique]
         [Import("Delivery Name")]
-        public string ExportProductName
+        public string? ExportProductName
         {
             get { return exportProductName; }
             set
             {
                 exportProductName = value;
                 ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
+        private bool isSyncing;
+        [Import("Is Syncing")]
+        public bool IsSyncing
+        {
+            get { return isSyncing; }
+            set
+            {
+                if (isSyncing == value) return;
+
+                isSyncing = value;
                 OnPropertyChanged();
             }
         }
