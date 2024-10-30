@@ -2069,6 +2069,46 @@
         </Style.Triggers>
     </Style>
 
+    <Style
+        x:Key="ClipboardButton_Icon"
+        BasedOn="{StaticResource Button_Default}"
+        TargetType="Button">
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border
+                            Width="15"
+                            Height="15"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="2" />
+                        <Path
+                            Width="10"
+                            Height="10"
+                            Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Height" Value="15" />
+        <Setter Property="Width" Value="15" />
+        <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Purple}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="ExitButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource OnRed}" />
