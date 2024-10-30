@@ -300,14 +300,6 @@ namespace ProjectLighthouse.ViewModel.Core
                         orderViewModel.SearchString = targetOrder;
                     }
                 }
-
-                // TODO
-
-                //EditLMOWindow window = new(action.Replace("viewManufactureOrder:", ""), App.CurrentUser.HasPermission(PermissionType.UpdateOrder))
-                //{ Owner = App.MainViewModel.MainWindow };
-
-                //window.ShowDialog();
-                //window.Activate();
             }
             else if (action == "showNotifications")
             {
