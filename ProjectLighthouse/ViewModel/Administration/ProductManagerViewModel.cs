@@ -359,9 +359,20 @@ namespace ProjectLighthouse.ViewModel.Administration
                 }
                 catch (Exception ex)
                 {
-                    if (ex.Message == "Not enough data" && product.CycleTime > 0)
+                    if (product.CycleTime > 0)
                     {
                         model = new() { Floor = product.CycleTime };
+                    }
+                    else if (!string.IsNullOrWhiteSpace(SelectedProductGroup.DefaultTimeCode))
+                    {
+                        try
+                        {
+                            model = new TimeModel(SelectedProductGroup.DefaultTimeCode);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
                     }
                     else
                     {
@@ -381,7 +392,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             {
                 if (ShowHidden)
                 {
-                FilteredProducts = new(Products);
+                    FilteredProducts = new(Products);
                 }
                 else
                 {
