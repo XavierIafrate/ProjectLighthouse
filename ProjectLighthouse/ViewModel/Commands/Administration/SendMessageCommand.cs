@@ -25,8 +25,6 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
-            
-            // TODO: Interface
             if (viewModel is RequestViewModel rvm)
             {
                 rvm.SendMessage();
