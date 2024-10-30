@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.Model.Core;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -57,6 +58,12 @@ namespace ProjectLighthouse.Model.Material
         public override string ToString()
         {
             return $"{MaterialText}, Grade {GradeText}";
+        }
+
+        public double GetRate()
+        {
+            double cost = Convert.ToDouble(Cost);
+            return cost/100;
         }
     }
 }
