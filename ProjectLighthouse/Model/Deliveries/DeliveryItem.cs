@@ -3,20 +3,51 @@ using System;
 
 namespace ProjectLighthouse.Model.Deliveries
 {
-    public class DeliveryItem : ICloneable
+    public class DeliveryItem : BaseObject, ICloneable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public string AllocatedDeliveryNote { get; set; }
         public string ItemManufactureOrderNumber { get; set; }
-        public string PurchaseOrderReference { get; set; }
+
+        private string purchaseOrderReference;
+        public string PurchaseOrderReference
+        {
+            get { return purchaseOrderReference; }
+            set { purchaseOrderReference = value; OnPropertyChanged(); }
+        }
+
         public string Product { get; set; }
-        public string ExportProductName { get; set; }
+
+
+        private string? exportProductName;
+        public string? ExportProductName
+        {
+            get { return exportProductName; }
+            set { exportProductName = value; OnPropertyChanged(); }
+        }
+
         public int QuantityThisDelivery { get; set; }
         public int QuantityToFollow { get; set; }
         public int LotID { get; set; }
         [Ignore]
         public string FromMachine { get; set; }
+
+        private string editedBy;
+        public string EditedBy
+        {
+            get { return editedBy; }
+            set { editedBy = value; OnPropertyChanged(); }
+        }
+
+        private DateTime editedAt;
+        public DateTime EditedAt
+        {
+            get { return editedAt; }
+            set { editedAt = value; OnPropertyChanged(); }
+        }
+
+
 
         public object Clone()
         {
