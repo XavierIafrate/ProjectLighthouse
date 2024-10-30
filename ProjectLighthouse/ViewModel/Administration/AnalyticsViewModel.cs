@@ -141,7 +141,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             List<KeyValuePair<string, int>> result = productionRecords
                 .ToList()
                 .OrderByDescending(x => x.Value)
-                .Take(7)
+                .Take(8)
                 .ToList();
 
             int sumAccountedFor = result.Sum(x => x.Value);
@@ -199,7 +199,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>()
                                                     .Where(x =>
                                                         x.State < OrderState.Cancelled
-                                                        && x.StartDate.Date.AddMonths(18) > DateTime.Now
+                                                        && x.StartDate.Date.AddMonths(36) > DateTime.Now
                                                         && !string.IsNullOrEmpty(x.AllocatedMachine))
                                                     .OrderBy(x => x.StartDate)
                                                     .ToList();
@@ -211,7 +211,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             List<DateTimePoint> developmentOrders = new();
 
 
-            for (int i = 0; i < 365; i++)
+            for (int i = 0; i < 365*3; i++)
             {
                 DateTime date = DateTime.Today.AddDays(i * -1);
 
