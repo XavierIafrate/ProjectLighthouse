@@ -17,7 +17,7 @@ namespace ProjectLighthouse.View.Administration
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            searchBox.Clear();
+            searchBox.Text = "";
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
