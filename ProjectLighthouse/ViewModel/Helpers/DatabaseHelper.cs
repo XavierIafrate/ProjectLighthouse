@@ -17,8 +17,14 @@ namespace ProjectLighthouse.ViewModel.Helpers
         public static bool ExecuteCommand(string query)
         {
             using SQLiteConnection conn = GetConnection();
-            int result = conn.Execute(query);
-
+            try
+            {
+                int result = conn.Execute(query);
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
             return true;
         }
 
