@@ -19,14 +19,35 @@ namespace ProjectLighthouse.View.UserControls
         {
             if (d is not DisplayDeliveryNoteItem control)
                 return;
-
-            // TODO: Edit Delivery Notes
-            //control.EditButton.Visibility = Visibility.Collapsed; //App.CurrentUser.Role == UserRole.Administrator ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public DisplayDeliveryNoteItem()
         {
             InitializeComponent();
+        }
+
+        private void CopyExportCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Clipboard.SetText(Item.ExportProductName);
+            }
+            catch
+            {
+                MessageBox.Show("Failed to set clipboard", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CopyProductNameButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Clipboard.SetText(Item.Product);
+            }
+            catch
+            {
+                MessageBox.Show("Failed to set clipboard", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
