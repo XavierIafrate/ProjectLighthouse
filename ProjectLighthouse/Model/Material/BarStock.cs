@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Material
 {
-    public class BarStock : BaseObject, IObjectWithValidation
+    public class BarStock : BaseObject, IObjectWithValidation, ICloneable
     {
         private string id;
 
@@ -19,6 +19,35 @@ namespace ProjectLighthouse.Model.Material
             {
                 id = value.ToUpperInvariant();
                 ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
+        private string? erpId;
+
+        [Unique]
+        [Import("ERP ID")]
+        public string? ErpId
+        {
+            get { return erpId; }
+            set
+            {
+                erpId = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private bool isSyncing;
+        [Import("Is Syncing")]
+        public bool IsSyncing
+        {
+            get { return isSyncing; }
+            set
+            {
+                if (isSyncing == value) return;
+
+                isSyncing = value;
                 OnPropertyChanged();
             }
         }
@@ -257,6 +286,25 @@ namespace ProjectLighthouse.Model.Material
 
 
             throw new Exception($"Validation for {propertyName} has not been configured.");
+        }
+
+        public object Clone()
+        {
+            return new BarStock() 
+            {
+                Id = this.Id,
+                MaterialId = this.MaterialId,   
+                Length = this.Length,
+                Size = this.Size,
+                Cost = this.Cost,
+                OnOrder = this.OnOrder,
+                SuggestedStock = this.SuggestedStock,
+                IsHexagon = this.IsHexagon,
+                IsDormant = this.IsDormant,
+                RequiresFeatures = this.RequiresFeatures,
+                ErpId = this.ErpId,
+                IsSyncing = this.IsSyncing,
+            };
         }
     }
 }
