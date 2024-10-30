@@ -42,8 +42,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
             using (StreamWriter writer = new(filename, false, Encoding.UTF8))
             using (CsvWriter csv = new(writer, CultureInfo.InvariantCulture))
             {
-                TypeConverterOptions options = new() { Formats = new[] { dateFormat } };
-                csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
+                TypeConverterOptions dateOptions = new() { Formats = new[] { dateFormat } };
+                TypeConverterOptions doubleOptions = new() { Formats = new[] { "0.00000" } };
+                csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(dateOptions);
+                csv.Context.TypeConverterOptionsCache.AddOptions <double>(doubleOptions);
                 csv.WriteRecords(stuff);
             }
             MessageBox.Show($"Saved to {filename}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
