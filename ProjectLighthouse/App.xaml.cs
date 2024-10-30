@@ -83,6 +83,24 @@ namespace ProjectLighthouse
 
             try
             {
+                string fitsJson = File.ReadAllText($"{App.ROOT_PATH}fits.txt");
+                App.StandardFits = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StandardFit>>(fitsJson);
+
+                if (Constants is null)
+                {
+                    throw new FileLoadException("Deserialisation of fits.txt to Standard Fits returned null");
+                }
+            }
+            catch (Exception ex)
+            {
+                SetupFailedWindow window = new("Cannot load fits file.", $"{ex.Message}");
+                window.ShowDialog();
+                Application.Current.Shutdown();
+                return;
+            }
+
+            try
+            {
                 _ = DatabaseHelper.Read<User>(throwErrs: true).ToList();
             }
             catch (SQLite.SQLiteException ex)
