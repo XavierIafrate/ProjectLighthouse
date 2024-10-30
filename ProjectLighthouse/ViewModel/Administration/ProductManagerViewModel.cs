@@ -36,6 +36,15 @@ namespace ProjectLighthouse.ViewModel.Administration
         public List<ProductGroup> FilteredProductGroups { get; set; }
         public List<TurnedProduct> FilteredTurnedProducts { get; set; }
 
+        private bool showHidden;
+
+        public bool ShowHidden
+        {
+            get { return showHidden; }
+            set { showHidden = value; FilterProducts(); OnPropertyChanged(); }
+        }
+
+
         private Product selectedProduct;
         public Product SelectedProduct
         {
@@ -169,6 +178,51 @@ namespace ProjectLighthouse.ViewModel.Administration
             latheFeatures = features;
         }
 
+
+        private void FilterProducts()
+        {
+            int? selectedProductId = null;
+
+            if (SelectedProduct is not null)
+            {
+                selectedProductId = SelectedProduct.Id;
+            }
+
+            if (ShowHidden)
+            {
+                FilteredProducts = new(Products);
+            }
+            else
+            {
+                FilteredProducts = Products.Where(x => !x.IsHidden).ToList();
+            }
+
+            if (selectedProductId is not null)
+            {
+                if(FilteredProducts.Any(x => x.Id == selectedProductId))
+                {
+                    SelectedProduct = FilteredProducts.Find(x => x.Id == selectedProductId);
+                }
+                else if (FilteredProducts.Count > 0)
+                {
+                    SelectedProduct = FilteredProducts.First();
+                }
+                else
+                {
+                    SelectedProduct = null;
+                }
+            }
+            else if (FilteredProducts.Count > 0)
+            {
+                SelectedProduct = FilteredProducts.First();
+            }
+            else
+            {
+                SelectedProduct = null;
+            }
+
+            OnPropertyChanged(nameof(FilteredProducts));
+        }
         private void LoadProduct()
         {
             if (SelectedProduct is null)
@@ -325,7 +379,16 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             if (string.IsNullOrWhiteSpace(SearchText))
             {
+                if (ShowHidden)
+                {
                 FilteredProducts = new(Products);
+                }
+                else
+                {
+                    FilteredProducts = new(Products.Where(x => !x.IsHidden).ToList());
+                }
+
+                OnPropertyChanged(nameof(FilteredProducts));
 
                 if (FilteredProducts.Count > 0)
                 {
