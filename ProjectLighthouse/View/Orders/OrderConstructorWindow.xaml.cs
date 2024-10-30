@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Drawings;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
@@ -548,10 +549,20 @@ namespace ProjectLighthouse.View.Orders
                 NewOrder.IsResearch = true;
             }
 
-            NewOrder.MajorDiameter = group.MajorDiameter;
-
             BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId)
                 ?? throw new InvalidDataException("No bar records available that meet the size or material requirements for the product.");
+
+            List<string> requirements = new();
+            requirements = group.RequiresFeaturesList;
+            requirements.AddRange(SelectedProduct!.RequiresFeaturesList);
+            requirements.AddRange(orderBar.RequiresFeaturesList);
+            MaterialInfo? material = Materials.Find(m => m.Id == MaterialId);
+            if (material != null)
+            {
+                requirements.AddRange(material.RequiresFeaturesList);
+            }
+            NewOrder.RequiredFeaturesList = requirements;
+            NewOrder.MajorDiameter = group.MajorDiameter;
 
             NewOrder.BarsInStockAtCreation = orderBar.InStock;
             NewOrder.MaterialId = MaterialId;
