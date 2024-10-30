@@ -7,12 +7,12 @@
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Add Bespoke Product"
     Width="500"
-    WindowStartupLocation="CenterOwner"
     SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <StackPanel Margin="20">
         <TextBlock Style="{StaticResource title}" Text="Add Bespoke Product" />
-        <Grid Margin="10">
+        <Grid Margin="0,10">
             <Border
                 Background="{StaticResource Orange}"
                 CornerRadius="3"
@@ -24,36 +24,35 @@
                 <TextBlock
                     Margin="16,10"
                     Foreground="{StaticResource Orange}"
-                    Text="This function is for non-standard items only- please do not add items listed in the catalogue!"
+                    Text="This function only for items produced on the lathes."
                     TextWrapping="Wrap" />
             </Border>
         </Grid>
 
         <TextBlock
-            Margin="10"
-            Foreground="{StaticResource Blue}"
+            Margin="0,10"
             Text="Provide a product name and either a drawing or a note explaining the specification. After submitting a request someone with authorisation will fill in the product data."
             TextWrapping="Wrap" />
-        <TextBlock Text="Product Name" Style="{StaticResource InputLabel}"/>
+        <TextBlock Style="{StaticResource InputLabel}" Text="Product Name" />
         <TextBox
             MaxLength="16"
-            Text="{Binding NewProduct.ProductName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
             Style="{StaticResource DefaultTextBox}"
-            Tag="product name" />
-        
-        <TextBlock Text="Technical Specification" Style="{StaticResource InputLabel}"/>
-        <TextBlock Text="PDF, jpg, or png accepted." Foreground="{StaticResource DisabledElement}"/>
+            Tag="product name"
+            Text="{Binding NewProduct.ProductName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+
+        <TextBlock Style="{StaticResource InputLabel}" Text="Technical Specification" />
+        <TextBlock Foreground="{StaticResource DisabledElement}" Text="PDF, jpg, or png accepted." />
         <uc:FilePicker x:Name="specDocument" AllowedFileTypes="PDF Files(*.pdf) | *.pdf|JPG(*.jpg) | *.jpg|PNG Files(*.png) | *.png" />
 
         <TextBox
+            x:Name="specDetails"
             Style="{StaticResource DefaultTextBox}"
-            Tag="or give written details here"
-            x:Name="specDetails" />
+            Tag="or give written details here" />
         <Button
             x:Name="SubmitButton"
             HorizontalAlignment="Right"
             Click="SubmitButton_Click"
-            Content="Add Product"
+            Content="Add Item"
             Style="{StaticResource Action_New_Button}" />
     </StackPanel>
 </Window>
