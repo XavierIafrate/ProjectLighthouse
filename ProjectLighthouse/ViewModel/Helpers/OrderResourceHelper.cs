@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace ProjectLighthouse.ViewModel.Helpers
@@ -135,7 +136,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             if (items.Count == 0)
             {
-                throw new Exception("Not enough data");
+                throw new DataException("Not enough data");
             }
 
             if (items.All(x => x.Item2 == items.First().Item2))
@@ -150,7 +151,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             if (numPoints == 0)
             {
-                throw new Exception("Not enough data");
+                throw new DataException("Not enough data");
             }
 
             int min = items.Min(x => x.Item2);
