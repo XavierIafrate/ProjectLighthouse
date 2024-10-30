@@ -138,11 +138,11 @@ namespace ProjectLighthouse.Model.Administration
             }
         }
 
-        //public object Clone()
-        //{
-        //    string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        //    return Newtonsoft.Json.JsonConvert.DeserializeObject<Lathe>(serialised);
-        //}
+        public object Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Lathe>(serialised);
+        }
 
         public override string ToString()
         {
