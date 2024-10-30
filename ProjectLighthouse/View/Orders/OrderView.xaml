@@ -31,7 +31,7 @@
                 <TextBox
                     x:Name="SearchBox"
                     Style="{StaticResource SearchBox}"
-                    Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=750}"
+                    Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"
                     TextChanged="SearchBox_TextChanged" />
 
                 <Button
@@ -73,6 +73,7 @@
                     Content="New"
                     Style="{StaticResource Action_New_Button}" />
                 <ComboBox
+                    x:Name="FilterComboBox"
                     Grid.Column="2"
                     Margin="0"
                     Text="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">

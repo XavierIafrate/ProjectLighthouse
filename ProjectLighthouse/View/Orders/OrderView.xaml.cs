@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.Orders
@@ -12,7 +13,10 @@ namespace ProjectLighthouse.View.Orders
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (sender is not TextBox textBox) return;
+
             ClearButton.IsEnabled = !string.IsNullOrEmpty(SearchBox.Text);
+            FilterComboBox.IsEnabled = string.IsNullOrEmpty(SearchBox.Text);
         }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
