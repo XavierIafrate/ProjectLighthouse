@@ -6,7 +6,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
 {
     internal class DeliveryItemsContent
     {
-        const string Address = "Automotion Components Ltd.\nAlexia House\nGlenmore Business Park\nChichester\nPO19 7BJ";
+        const string Address = "Wixroyd Group Ltd.\nAlexia House\nGlenmore Business Park\nChichester\nPO19 7BJ";
 
         public void Add(Section section, DeliveryItem[] items)
         {
@@ -103,7 +103,11 @@ namespace ProjectLighthouse.Model.Reporting.Internal
                 row.VerticalAlignment = VerticalAlignment.Center;
 
                 row.Cells[0].AddParagraph((i + 1).ToString("0"));
-                row.Cells[1].AddParagraph(items[i].ExportProductName ?? items[i].Product);
+
+                Paragraph p = row.Cells[1].AddParagraph();
+                p.AddFormattedText(items[i].Product, CustomStyles.PartNumber);
+                p.AddFormattedText(items[i].ExportProductName, CustomStyles.GTIN);
+
                 row.Cells[2].AddParagraph($"{items[i].PurchaseOrderReference}");
                 row.Cells[3].AddParagraph($"{items[i].QuantityThisDelivery:#,##0}");
             }

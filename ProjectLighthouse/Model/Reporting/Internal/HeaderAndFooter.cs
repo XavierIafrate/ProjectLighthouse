@@ -23,7 +23,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             logo.LockAspectRatio = true;
 
             header.AddTab();
-            header.AddText("Wixroyd Ltd.");
+            header.AddText("Wixroyd Group Ltd.");
         }
 
         private void AddFooter(Section section)

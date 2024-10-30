@@ -11,6 +11,9 @@ namespace ProjectLighthouse.Model.Reporting.Internal
         public const string ColumnHeader = "ColumnHeader";
         public const string NoRecords = "NoRecords";
 
+        public const string PartNumber = "PartNumber";
+        public const string GTIN = "GTIN";
+
         public const string LotQuarantined = "LotQuarantined";
         public const string LotAccepted = "LotAccepted";
         public const string LotRejected = "LotRejected";
@@ -106,6 +109,30 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             address.ParagraphFormat.Font.Name = "Consolas";
             address.ParagraphFormat.Font.Size = 12;
             address.ParagraphFormat.Font.Color = Colors.Black;
+            address.ParagraphFormat.Font.Bold = false;
+            address.ParagraphFormat.SpaceBefore = 10;
+            //address.ParagraphFormat.LeftIndent = Size.TableCellPadding;
+            //address.ParagraphFormat.RightIndent = Size.TableCellPadding;
+            //address.ParagraphFormat.Borders.Distance = Size.TableCellPadding;
+
+            Style partNumber = doc.Styles.AddStyle(PartNumber, StyleNames.Normal);
+            address.BaseStyle = StyleNames.Normal;
+            //heading2.ParagraphFormat.Shading.Color = Color.FromRgb(0, 0, 0);
+            address.ParagraphFormat.Font.Name = "Consolas";
+            address.ParagraphFormat.Font.Size = 12;
+            address.ParagraphFormat.Font.Color = Colors.Black;
+            address.ParagraphFormat.Font.Bold = true;
+            address.ParagraphFormat.SpaceBefore = 10;
+            //address.ParagraphFormat.LeftIndent = Size.TableCellPadding;
+            //address.ParagraphFormat.RightIndent = Size.TableCellPadding;
+            //address.ParagraphFormat.Borders.Distance = Size.TableCellPadding;
+
+            Style gtin = doc.Styles.AddStyle(GTIN, StyleNames.Normal);
+            address.BaseStyle = StyleNames.Normal;
+            //heading2.ParagraphFormat.Shading.Color = Color.FromRgb(0, 0, 0);
+            address.ParagraphFormat.Font.Name = "Consolas";
+            address.ParagraphFormat.Font.Size = 12;
+            address.ParagraphFormat.Font.Color = Colors.Gray;
             address.ParagraphFormat.Font.Bold = false;
             address.ParagraphFormat.SpaceBefore = 10;
             //address.ParagraphFormat.LeftIndent = Size.TableCellPadding;
