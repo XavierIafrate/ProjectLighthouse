@@ -55,6 +55,7 @@
             <converters:ObjectIsNotNull x:Key="ObjectIsNotNull" />
             <converters:intToStringCycleTime x:Key="CycleTimeStringConverter" />
             <converters:ObjectIsNullToVisibility x:Key="NullToVisibility" />
+            <converters:ObjectIsNotNullToVisibility x:Key="NotNullToVisibility" />
             <converters:ListIsEmptyToCollapsedOrVisible x:Key="EmptyListToCollapsedOrVisible" />
             <converters:ListIsEmptyToVisibleOrCollapsed x:Key="EmptyListToVisibleOrCollapsed" />
             <converters:dateToLastModified x:Key="DateToLastModified" />
