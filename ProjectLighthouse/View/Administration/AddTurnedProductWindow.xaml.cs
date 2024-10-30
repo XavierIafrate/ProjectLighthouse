@@ -43,6 +43,7 @@ namespace ProjectLighthouse.View.Administration
                 }
 
                 Product = (TurnedProduct)product.Clone();
+                Product.ItemCost = product.ItemCost;
                 originalProduct = product;
                 ProductNameTextBox.IsEnabled = false;
                 Title = "Edit Turned Product";
