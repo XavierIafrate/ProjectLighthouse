@@ -127,7 +127,6 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             SelectedFilter = "All Active";
             SelectedItem = FilteredItems.First();
-
             SetAssignmentData();
             LoadCommands();
 
@@ -136,7 +135,6 @@ namespace ProjectLighthouse.ViewModel.Orders
             updateChecker.RunWorkerCompleted += OnWorkerCompleted;
 
             updateChecker.RunWorkerAsync();
-
         }
 
         private void OnWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -170,71 +168,45 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
                 else
                 {
-                    ApplicationVariable? lupdate = DatabaseHelper.Read<ApplicationVariable>().Find(x => x.Id == "LAST_ORDER_UPDATE");
+                    TryGetUpdates(e, ref lastConfirmedUpdate);
 
-                    DateTime lastupdate = lupdate == null ? DateTime.MinValue : (DateTime)lupdate.Data;
+                    System.Threading.Thread.Sleep(2000);
+                }
+            }
+        }
+
+        private void TryGetUpdates(DoWorkEventArgs e, ref DateTime lastConfirmedUpdate)
+        {
+            ApplicationVariable? lupdate = DatabaseHelper.Read<ApplicationVariable>().Find(x => x.Id == "LAST_ORDER_UPDATE");
+
+            DateTime lastupdate = lupdate == null ? DateTime.MinValue : (DateTime)lupdate.Data;
 
 
-                    if (lastupdate > lastConfirmedUpdate)
+            if (lastupdate > lastConfirmedUpdate)
+            {
+                lastConfirmedUpdate = lastupdate;
+                List<ScheduleItem> freshCopies = new();
+                freshCopies.AddRange(DatabaseHelper.Read<LatheManufactureOrder>());
+                freshCopies.AddRange(DatabaseHelper.Read<GeneralManufactureOrder>());
+
+                foreach (ScheduleItem item in items)
+                {
+                    ScheduleItem freshCopy = freshCopies.Find(x => x.Name == item.Name);
+                    if (freshCopy == null) continue;
+
+                    if (editCopies.TryGetValue(item.Name, out ScheduleItem value))
                     {
-                        lastConfirmedUpdate = lastupdate;
-                        List<ScheduleItem> freshCopies = new();
-                        freshCopies.AddRange(DatabaseHelper.Read<LatheManufactureOrder>());
-                        freshCopies.AddRange(DatabaseHelper.Read<GeneralManufactureOrder>());
-
-                        foreach (ScheduleItem item in items)
-                        {
-                            ScheduleItem freshCopy = freshCopies.Find(x => x.Name == item.Name);
-                            if (freshCopy == null) continue;
-
-                            if (editCopies.TryGetValue(item.Name, out ScheduleItem value))
-                            {
-                                value.StartDate = freshCopy.StartDate;
-                                value.AllocatedMachine = freshCopy.AllocatedMachine;
-                            }
-
-                            item.StartDate = freshCopy.StartDate;
-                            item.AllocatedMachine = freshCopy.AllocatedMachine;
-
-                            if (item.ModifiedAt != freshCopy.ModifiedAt)
-                            {
-                                Debug.WriteLine(item.Name + " modified");
-
-                                if (SelectedItem is not null)
-                                {
-                                    if (SelectedItem.Name == item.Name)
-                                    {
-                                        if (e.Cancel)
-                                        {
-                                            return;
-                                        }
-                                        Application.Current.Dispatcher.Invoke(() =>
-                                        {
-                                            SelectedItem.TakeChanges(freshCopy);
-                                            LoadData();
-                                            EnrichOrder(SelectedItem);
-                                        });
-                                    }
-                                    else
-                                    {
-                                        item.TakeChanges(freshCopy);
-                                    }
-                                }
-                                else
-                                {
-                                    item.TakeChanges(freshCopy);
-                                }
-
-                            }
-                        }
+                        value.StartDate = freshCopy.StartDate;
+                        value.AllocatedMachine = freshCopy.AllocatedMachine;
                     }
 
+                    item.StartDate = freshCopy.StartDate;
+                    item.AllocatedMachine = freshCopy.AllocatedMachine;
 
-                    List<string> locks = Directory.GetFiles(App.ROOT_PATH + "lib\\locks").ToList();
-
-                    foreach (ScheduleItem item in items)
+                    if (item.ModifiedAt != freshCopy.ModifiedAt)
                     {
-                        item.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) & !item.Editing;
+                        Debug.WriteLine(item.Name + " modified");
+
                         if (SelectedItem is not null)
                         {
                             if (SelectedItem.Name == item.Name)
@@ -245,13 +217,48 @@ namespace ProjectLighthouse.ViewModel.Orders
                                 }
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    SelectedItem.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) & !item.Editing;
+                                    SelectedItem.TakeChanges(freshCopy);
+                                    LoadData();
+                                    EnrichOrder(SelectedItem);
                                 });
                             }
+                            else
+                            {
+                                item.TakeChanges(freshCopy);
+                            }
                         }
-                    }
+                        else
+                        {
+                            item.TakeChanges(freshCopy);
+                        }
 
-                    System.Threading.Thread.Sleep(2000);
+                    }
+                }
+            }
+
+            UpdateLocks(e);
+        }
+
+        private void UpdateLocks(DoWorkEventArgs e)
+        {
+            List<string> locks = Directory.GetFiles(App.ROOT_PATH + "lib\\locks").ToList();
+
+            foreach (ScheduleItem item in items)
+            {
+                item.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) & !item.Editing;
+                if (SelectedItem is not null)
+                {
+                    if (SelectedItem.Name == item.Name)
+                    {
+                        if (e.Cancel)
+                        {
+                            return;
+                        }
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            SelectedItem.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) & !item.Editing;
+                        });
+                    }
                 }
             }
         }
@@ -267,6 +274,7 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         private void LoadData()
         {
+            DateTime start = DateTime.Now;
             machines = DatabaseHelper.Read<Machine>();
             machines.AddRange(DatabaseHelper.Read<Lathe>());
 
@@ -277,22 +285,38 @@ namespace ProjectLighthouse.ViewModel.Orders
 
             this.items = items;
 
+            Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
+            start = DateTime.Now;
+
             this.orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
             this.materials = DatabaseHelper.Read<MaterialInfo>();
             this.barStock = DatabaseHelper.Read<BarStock>();
             this.barStock.ForEach(x => x.MaterialData = materials.Find(m => m.Id == x.MaterialId));
+
+            Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
+            start = DateTime.Now;
+
+
             this.users = DatabaseHelper.Read<User>();
             this.lots = DatabaseHelper.Read<Lot>();
             this.notes = DatabaseHelper.Read<Note>();
             this.drawingReferences = DatabaseHelper.Read<OrderDrawing>();
             this.drawings = DatabaseHelper.Read<TechnicalDrawing>();
             this.breakdownCodes = DatabaseHelper.Read<BreakdownCode>();
+
+            Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
+            start = DateTime.Now;
+
+
             this.machineBreakdowns = DatabaseHelper.Read<MachineBreakdown>();
             this.products = DatabaseHelper.Read<Product>();
             this.productGroups = DatabaseHelper.Read<ProductGroup>();
 
             this.nonTurnedItems = DatabaseHelper.Read<NonTurnedItem>();
             this.turnedItems = DatabaseHelper.Read<TurnedProduct>();
+
+            Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
+            start = DateTime.Now;
         }
 
         public void CreateNewOrder()
@@ -385,6 +409,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         void Filter()
         {
             List<ScheduleItem> results = new();
+            int maxResults = 200;
 
             string? currentSelection = null;
 
@@ -393,9 +418,21 @@ namespace ProjectLighthouse.ViewModel.Orders
                 currentSelection = SelectedItem.Name;
             }
 
+            string filterToUse = SelectedFilter;
+
+            if(!string.IsNullOrWhiteSpace(SearchString))
+            {
+                filterToUse = "All";
+            }
+
             foreach (ScheduleItem item in items)
             {
-                switch (SelectedFilter)
+                //if (results.Count >= maxResults)
+                //{
+                //    break;
+                //}
+
+                switch (filterToUse)
                 {
                     case "All Active":
                         if (item.State < OrderState.Complete || (item.ModifiedAt ?? DateTime.MinValue).AddDays(1) > DateTime.Now || !item.IsClosed)
@@ -426,7 +463,14 @@ namespace ProjectLighthouse.ViewModel.Orders
                                 results.Add(item);
                             }
                         }
-                            break;
+                        else if (item is GeneralManufactureOrder generalOrder)
+                        {
+                            if(!generalOrder.ProgramReady && generalOrder.State < OrderState.Complete && generalOrder.StartDate > DateTime.MinValue)
+                            {
+                                results.Add(item);
+                            }
+                        }
+                        break;
                     case "Ready":
                         if (item.State == OrderState.Ready || item.State == OrderState.Prepared)
                         {
@@ -444,16 +488,11 @@ namespace ProjectLighthouse.ViewModel.Orders
                     case "Development":
                         if (item is LatheManufactureOrder latheOrder2)
                         {
-                            if (!latheOrder2.IsResearch && latheOrder2.State < OrderState.Complete)
+                            if (latheOrder2.IsResearch && latheOrder2.State < OrderState.Complete)
                             {
                                 results.Add(item);
                             }
                         }
-                        //FilteredOrders = Orders
-                        //    .Where(n => n.IsResearch && n.State < OrderState.Complete)
-                        //    .OrderByDescending(n => n.CreatedAt)
-                        //    .Take(200)
-                        //    .ToList();
                         break;
 
                     case "All":
@@ -461,8 +500,15 @@ namespace ProjectLighthouse.ViewModel.Orders
                         break;
                 }
             }
-                
-            results = results.OrderBy(x => x.State == OrderState.Running ? 0 : 1).ThenBy(x => x.State).ToList();
+            
+            if(filterToUse == "All" || filterToUse == "Complete")
+            {
+                results = results.OrderByDescending(x => x.StartDate).ToList();
+            }
+            else
+            {
+                results = results.OrderBy(x => x.State == OrderState.Running ? 0 : 1).ThenBy(x => x.State == OrderState.Running ? x.AllocatedMachine : "").ThenBy(x => x.State).ToList();
+            }
 
             if (!string.IsNullOrWhiteSpace(SearchString))
             {
@@ -500,7 +546,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
 
 
-                results = filteredResults;
+                results = filteredResults.Take(maxResults).ToList();
                 
             }
 
@@ -1025,6 +1071,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 }
             }
 
+            generalOrder.FinishedQuantity = generalOrder.Lots.Where(x => x.IsAccepted).Sum(x => x.Quantity);
             generalOrder.ModifiedAt = DateTime.Now;
             generalOrder.ModifiedBy = App.CurrentUser.UserName;
             int rows = conn.Update(generalOrder);
@@ -1043,8 +1090,19 @@ namespace ProjectLighthouse.ViewModel.Orders
 
 
         #region Lathe Order Change Detection
-        private static bool DetectLatheOrderChanges(LatheManufactureOrder latheOrder, LatheManufactureOrder latheOrderCopy)
+        private bool DetectLatheOrderChanges(LatheManufactureOrder latheOrder, LatheManufactureOrder latheOrderCopy)
         {
+            List<string> requiredFeatures = latheOrderCopy.ProductGroup.RequiresFeaturesList;
+            requiredFeatures.AddRange(latheOrderCopy.Product.RequiresFeaturesList);
+            requiredFeatures.AddRange(latheOrderCopy.Bar.RequiresFeaturesList);
+            MaterialInfo? material = materials.Find(m => m.Id == latheOrderCopy.MaterialId);
+            if (material != null)
+            {
+                requiredFeatures.AddRange(material.RequiresFeaturesList);
+            }
+
+            latheOrder.RequiredFeaturesList = requiredFeatures;
+
             bool updated = latheOrderCopy.IsUpdated(latheOrder);
             if (updated) return updated;
 
@@ -1170,9 +1228,25 @@ namespace ProjectLighthouse.ViewModel.Orders
             note.Message = note.Message.Trim();
             note.OriginalMessage = note.Message;
 
+            List<User> usersToNotify = users.Where(x => x.Role >= UserRole.Production && x.ReceivesNotifications && x.UserName != App.CurrentUser.UserName).ToList();
+            Notification notification = new()
+            {
+                Origin = App.CurrentUser.UserName,
+                Header = $"Comment - {SelectedItem.Name}",
+                Body = $"{App.CurrentUser.FirstName}: {note.Message[..Math.Min(note.Message.Length, 130)]}",
+                ToastAction = $"viewManufactureOrder:{SelectedItem.Name}",
+                TimeStamp = DateTime.Now,
+            };
+
+
             try
             {
                 DatabaseHelper.Insert<Note>(note, throwErrs: true);
+                foreach (User user in usersToNotify)
+                {
+                    notification.TargetUser = user.UserName;
+                    DatabaseHelper.Insert(notification);
+                }
             }
             catch (Exception ex)
             {
