@@ -339,9 +339,12 @@
                 </TabItem.Header>
                 <StackPanel>
                     <local:TimeModelEditor MinHeight="100" Order="{Binding ElementName=parentControl, Path=Order}" />
-                    <local:BreakdownEditor Margin="0,20,0,0" Order="{Binding ElementName=parentControl, Path=Order}" CanEdit="{Binding ElementName=parentControl, Path=EditMode}"/>
+                    <local:BreakdownEditor
+                        Margin="0,20,0,0"
+                        CanEdit="{Binding ElementName=parentControl, Path=EditMode}"
+                        Order="{Binding ElementName=parentControl, Path=Order}" />
                 </StackPanel>
-                
+
             </TabItem>
             <TabItem x:Name="productionTab">
                 <TabItem.Header>
