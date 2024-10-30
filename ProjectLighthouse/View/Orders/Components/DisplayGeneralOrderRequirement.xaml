@@ -18,6 +18,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
                 Margin="15,8,0,0"
@@ -35,10 +36,37 @@
             <Border
                 Grid.RowSpan="2"
                 Grid.Column="1"
+                Grid.ColumnSpan="2"
+                Background="{StaticResource BlueFaded}"
+                CornerRadius="5" />
+
+            <TextBlock
+                Grid.Column="1"
+                Margin="0,8,15,0"
+                HorizontalAlignment="Right"
+                d:Text="COMPLETED_QTY"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Foreground="{StaticResource Blue}"
+                Text="{Binding ElementName=parentControl, Path=Order.FinishedQuantity, StringFormat='{}{0:#,##0} pcs'}" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="15,0,15,8"
+                HorizontalAlignment="Right"
+                d:Text="REQUIRED_DATE"
+                FontSize="14"
+                FontWeight="SemiBold"
+                Foreground="{StaticResource Blue}"
+                Text="Finished" />
+
+            <Border
+                Grid.RowSpan="2"
+                Grid.Column="2"
                 Background="{StaticResource RedFaded}"
                 CornerRadius="5" />
             <TextBlock
-                Grid.Column="1"
+                Grid.Column="2"
                 Margin="0,8,15,0"
                 HorizontalAlignment="Right"
                 d:Text="REQUIRED_QTY"
@@ -48,7 +76,7 @@
                 Text="{Binding ElementName=parentControl, Path=Order.RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" />
             <TextBlock
                 Grid.Row="1"
-                Grid.Column="1"
+                Grid.Column="2"
                 Margin="15,0,15,8"
                 HorizontalAlignment="Right"
                 d:Text="REQUIRED_DATE"
