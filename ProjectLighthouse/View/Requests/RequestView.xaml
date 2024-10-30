@@ -50,12 +50,12 @@
 
             <Button
                 Grid.Row="1"
-                Command="{Binding NewRequestCmd}"
-                IsEnabled="{Binding NewRequest, Converter={StaticResource NullToBool}}"
-                Style="{StaticResource Action_New_Button}"
                 Margin="5,0"
                 HorizontalAlignment="Stretch"
-                Content="New Request" />
+                Command="{Binding NewRequestCmd}"
+                Content="New Request"
+                IsEnabled="{Binding NewRequest, Converter={StaticResource NullToBool}}"
+                Style="{StaticResource Action_New_Button}" />
 
             <ListView
                 x:Name="requests_ListView"
@@ -382,8 +382,8 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
                                     Command="{Binding AddSpecialCmd}"
-                                    Style="{StaticResource Action_New_Button_Small}"
-                                    Content="Add Bespoke Item" />
+                                    Content="Add Bespoke Item"
+                                    Style="{StaticResource Action_New_Button_Small}" />
                             </StackPanel>
                         </StackPanel>
 
@@ -472,14 +472,14 @@
                             <Button
                                 HorizontalAlignment="Right"
                                 Command="{Binding UpdateRequestCmd}"
-                                Style="{StaticResource Action_Update_Button}"
                                 Content="Save Changes"
+                                Style="{StaticResource Action_Update_Button}"
                                 Visibility="{Binding ChangesMade, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                             <Button
                                 HorizontalAlignment="Right"
                                 Command="{Binding SubmitRequestCmd}"
-                                Style="{StaticResource Action_Button}"
                                 Content="Submit"
+                                Style="{StaticResource Action_Button}"
                                 Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                         </StackPanel>
 
@@ -516,8 +516,8 @@
                                     Margin="0,0,5,0"
                                     HorizontalAlignment="Left"
                                     Command="{Binding ViewMakeOrBuyCommand}"
-                                    Style="{StaticResource Action_Button}"
-                                    Content="Order Builder" />
+                                    Content="Order Builder"
+                                    Style="{StaticResource Action_Button}" />
                                 <Border HorizontalAlignment="Right">
                                     <StackPanel Orientation="Horizontal">
                                         <Path
