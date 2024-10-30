@@ -242,15 +242,6 @@ namespace ProjectLighthouse.View.Drawings
                 ClearDragFormats();
                 return;
             }
-            else if (removedIdx >= targetIdx)
-            {
-                removedIdx--;
-                if (targetIdx == removedIdx)
-                {
-                    ClearDragFormats();
-                    return;
-                }
-            }
 
 
             if (removedIdx < targetIdx)
@@ -263,7 +254,7 @@ namespace ProjectLighthouse.View.Drawings
                 if (ReferencedTolerances.Count + 1 > removedIdx)
                 {
                     ReferencedTolerances.Insert(targetIdx, droppedData);
-                    ReferencedTolerances.RemoveAt(removedIdx);
+                    ReferencedTolerances.RemoveAt(removedIdx + 1);
                 }
             }
 

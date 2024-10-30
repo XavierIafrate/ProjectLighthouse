@@ -104,6 +104,11 @@
                     Click="PasteButton_Click"
                     Style="{StaticResource Action_Button}"
                     Content="Paste" />
+                <Button
+                    x:Name="RemoveToleranceButton"
+                    Click="RemoveButton_Click"
+                    Style="{StaticResource Action_Remove_Button}"
+                    Content="Remove"/>
             </StackPanel>
         </Grid>
         <TextBlock
