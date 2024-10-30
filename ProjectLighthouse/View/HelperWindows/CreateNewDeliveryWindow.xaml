@@ -29,7 +29,7 @@
             Style="{StaticResource section}"
             Text="Undelivered Stock Lots" />
         <ScrollViewer Grid.Row="2">
-            <ListView x:Name="undeliveredList" HorizontalContentAlignment="Stretch">
+            <ListView x:Name="undeliveredList" HorizontalContentAlignment="Stretch" SelectionMode="Extended">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="10,5" Grid.IsSharedSizeScope="True">

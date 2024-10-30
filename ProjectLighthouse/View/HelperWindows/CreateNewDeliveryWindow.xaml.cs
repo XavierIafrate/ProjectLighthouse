@@ -64,17 +64,14 @@ namespace ProjectLighthouse.View
                 TurnedProduct deliveringTurnedItem = turnedProducts.Find(x => lot.ProductName == x.ProductName);
                 if(deliveringTurnedItem != null )
                 {
-                    newDeliveryItem.ExportProductName = string.IsNullOrEmpty(deliveringTurnedItem.ExportProductName) 
-                        ? lot.ProductName 
-                        : deliveringTurnedItem.ExportProductName;
-                    
+                    newDeliveryItem.ExportProductName = deliveringTurnedItem.ExportProductName;
                 }
                 else
                 {
                     NonTurnedItem deliveringNonTurnedItem = nonTurnedItems.Find(x => x.Name == lot.ProductName);
                     if (deliveringNonTurnedItem != null)
                     {
-                        newDeliveryItem.ExportProductName = lot.ProductName;
+                        newDeliveryItem.ExportProductName = deliveringNonTurnedItem.ExportProductName;
                     }
                 }
 
@@ -101,18 +98,27 @@ namespace ProjectLighthouse.View
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (undeliveredList.SelectedValue is not DeliveryItem move_item)
+            for (int i = 0; i < undeliveredList.SelectedItems.Count; i++)
             {
-                return;
+                if (undeliveredList.SelectedItems[i] is not DeliveryItem move_item)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(move_item.PurchaseOrderReference))
+                {
+                    MessageBox.Show($"The associated order '{move_item.ItemManufactureOrderNumber}' requires a Purchase Order reference to proceed.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(move_item.ExportProductName))
+                {
+                    MessageBox.Show($"The item record '{move_item.Product}' is not found in Opera (GTIN code is empty).", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    continue;
+                }
+
+                itemsOnNewNote.Add(move_item);
+                filteredUndeliveredItems.Remove(move_item);
             }
 
-            if (string.IsNullOrWhiteSpace(move_item.PurchaseOrderReference))
-            {
-                MessageBox.Show("The associated order requires a Purchase Order reference to proceed.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            itemsOnNewNote.Add(move_item);
-            filteredUndeliveredItems.Remove(move_item);
             RefreshLists();
         }
 
