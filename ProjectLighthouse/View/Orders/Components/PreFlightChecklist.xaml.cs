@@ -49,6 +49,12 @@ namespace ProjectLighthouse.View.Orders.Components
             set { barStock = value; OnPropertyChanged(); }
         }
 
+        private List<string> requirementTrace = new();
+        public List<string> RequirementTrace
+        {
+            get { return requirementTrace; }
+            set { requirementTrace = value; OnPropertyChanged(); }
+        }
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -59,12 +65,54 @@ namespace ProjectLighthouse.View.Orders.Components
                 return;
             }
 
-            control.BarStock = control.baseBarStock.Where(x => x.MaterialId == control.Order.MaterialId && x.Size >= control.Order.MajorDiameter && x.IsHexagon == control.Order.ProductGroup.UsesHexagonBar).ToList();
+            control.BarStock = control.baseBarStock.Where(x => x.MaterialId == control.Order.MaterialId && x.Size >= control.Order.MajorDiameter && x.IsHexagon == (control.Order.ProductGroup??new()).UsesHexagonBar).ToList();
             control.barComboBox.SelectedValue = control.BarStock.Find(x => x.Id == control.Order.BarID);
             control.BarSelection.IsEnabled = control.Order.NumberOfBarsIssued == 0;
 
+            control.GetRequirementTrace();
+
             control.SetEnabled();
         }
+
+        private void GetRequirementTrace()
+        {
+            List<string> result = new();
+
+            if (Order.Product.RequiresFeaturesList.Count > 0)
+            {
+                foreach(string feature in Order.Product.RequiresFeaturesList)
+                {
+                    result.Add($"Product '{Order.Product.Name}' requires machine feature '{feature}'");
+                }
+            }
+
+            if (Order.ProductGroup.RequiresFeaturesList.Count > 0)
+            {
+                foreach (string feature in Order.ProductGroup.RequiresFeaturesList)
+                {
+                    result.Add($"Product Group '{Order.ProductGroup.Name}' requires machine feature '{feature}'");
+                }
+            }
+
+            if (Order.Bar.RequiresFeaturesList.Count > 0)
+            {
+                foreach (string feature in Order.Bar.RequiresFeaturesList)
+                {
+                    result.Add($"Bar Stock '{Order.Bar.Id}' requires machine feature '{feature}'");
+                }
+            }
+
+            if (Order.Bar.MaterialData.RequiresFeaturesList.Count > 0)
+            {
+                foreach (string feature in Order.Bar.MaterialData.RequiresFeaturesList)
+                {
+                    result.Add($"Material '{Order.Bar.MaterialData.MaterialCode}' requires machine feature '{feature}'");
+                }
+            }
+
+            RequirementTrace = result;
+        }
+
         private static void SetEditMode(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not PreFlightChecklist control) return;
@@ -107,6 +155,23 @@ namespace ProjectLighthouse.View.Orders.Components
             List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>();
 
             baseBarStock.ForEach(x => x.MaterialData = materials.Find(m => m.Id == x.MaterialId));
+        }
+
+        private void barComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BarWarningText.Visibility = Visibility.Collapsed;
+
+            if (sender is not ComboBox comboBox) return;
+            if (comboBox.SelectedValue is not string barId) return;
+
+            BarStock? bar = BarStock.Find(x => x.Id == barId);
+
+            if (bar == null) return;
+
+            if (bar.Size > (Order.MajorDiameter + 5))
+            {
+                BarWarningText.Visibility = Visibility.Visible;
+            }
         }
     }
 }

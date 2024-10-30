@@ -19,27 +19,31 @@
     <StackPanel Margin="5" IsEnabled="{Binding Order.HasStarted, ElementName=parentControl, Converter={StaticResource invertBool}}">
 
         <TextBlock
+            Margin="0,0,0,5"
             FontSize="20"
             FontWeight="SemiBold"
-            Margin="0,0,0,5"
             Text="Pre-flight checklist" />
         <Border Background="{StaticResource OrangeFaded}" CornerRadius="5">
-            
-        <Grid Margin="8,3" x:Name="EditLockBadge">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Path Style="{StaticResource Icon_Lock}" Fill="{StaticResource Orange}" Margin="10,0" Height="20"/>
-            <TextBlock
-                Margin="5,5,20,5"
-                Grid.Column="1"
-                Foreground="{StaticResource Orange}"
-                TextWrapping="Wrap"
-                Text="{Binding Order.AssignedTo, ElementName=parentControl,StringFormat='{}This order is assigned to {0}. Only {0} or someone with elevated permissions can edit this checklist.'}"
-                       d:Text="This order is assigned to randy. Only randy or someone with elevated permissions can edit this checklist."/>
-        </Grid>
-        
+
+            <Grid x:Name="EditLockBadge" Margin="8,3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Path
+                    Height="20"
+                    Margin="10,0"
+                    Fill="{StaticResource Orange}"
+                    Style="{StaticResource Icon_Lock}" />
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="5,5,20,5"
+                    d:Text="This order is assigned to randy. Only randy or someone with elevated permissions can edit this checklist."
+                    Foreground="{StaticResource Orange}"
+                    Text="{Binding Order.AssignedTo, ElementName=parentControl, StringFormat='{}This order is assigned to {0}. Only {0} or someone with elevated permissions can edit this checklist.'}"
+                    TextWrapping="Wrap" />
+            </Grid>
+
         </Border>
         <TextBlock
             FontSize="16"
@@ -50,14 +54,51 @@
             Opacity="0.6"
             Text="This bar will be used for this order - if it doesn't look right to you, change it using the dropdown."
             TextWrapping="Wrap" />
-        <TextBlock 
-            FontSize="14"
-            Opacity="0.6">
-            <Run Text="{Binding ElementName=parentControl, Path=Order.NumberOfBars, StringFormat='{}{0} bars will be required, and'}"/>
-            <Run Text="{Binding ElementName=parentControl, Path=Order.NumberOfBarsIssued, StringFormat='{}{0} have been issued.'}"/>
-
-        </TextBlock>
         <userControls:DisplayBarStock Bar="{Binding Order.Bar, ElementName=parentControl}" />
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border
+                Margin="5,0"
+                Background="{StaticResource Surface}"
+                CornerRadius="5">
+                <StackPanel Margin="8,3">
+                    <TextBlock
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Text="Required" />
+                    <TextBlock
+                        d:Text="100"
+                        FontFamily="Consolas"
+                        FontSize="20"
+                        Text="{Binding ElementName=parentControl, Path=Order.NumberOfBars, StringFormat='{}{0:#,##0}'}" />
+                </StackPanel>
+            </Border>
+            <Border
+                Grid.Column="1"
+                Margin="5,0"
+                Background="{StaticResource Surface}"
+                CornerRadius="5">
+                <StackPanel Margin="8,3">
+                    <TextBlock
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Text="Issued" />
+                    <TextBlock
+                        d:Text="100"
+                        FontFamily="Consolas"
+                        FontSize="20"
+                        Text="{Binding ElementName=parentControl, Path=Order.NumberOfBarsIssued, StringFormat='{}{0:#,##0}'}" />
+                </StackPanel>
+            </Border>
+
+        </Grid>
         <Grid x:Name="BarSelection">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -68,11 +109,12 @@
                 Width="Auto"
                 Height="Auto"
                 HorizontalAlignment="Stretch"
-                IsEnabled="{Binding ElementName=parentControl, Path=Order.BarIsVerified, Converter={StaticResource invertBool}}"
                 FontWeight="SemiBold"
+                IsEnabled="{Binding ElementName=parentControl, Path=Order.BarIsVerified, Converter={StaticResource invertBool}}"
+                ItemsSource="{Binding BarStock, ElementName=parentControl}"
                 SelectedValue="{Binding Order.BarID, ElementName=parentControl}"
                 SelectedValuePath="Id"
-                ItemsSource="{Binding BarStock, ElementName=parentControl}" />
+                SelectionChanged="barComboBox_SelectionChanged" />
 
             <CheckBox
                 Grid.Column="1"
@@ -82,10 +124,30 @@
                 Style="{StaticResource PreflightCheckbox}" />
         </Grid>
 
+        <StackPanel
+            x:Name="BarWarningText"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <Path
+                Width="20"
+                Height="15"
+                Data="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"
+                Fill="{StaticResource Orange}"
+                Stretch="Uniform" />
+            <TextBlock
+                FontWeight="SemiBold"
+                Foreground="{StaticResource Orange}"
+                Text="This bar size is significantly greater than the items require." />
+        </StackPanel>
 
-        <Separator Background="{StaticResource Surface}" Margin="0,10" Width="300" HorizontalAlignment="Left">
+
+        <Separator
+            Width="300"
+            Margin="0,10"
+            HorizontalAlignment="Left"
+            Background="{StaticResource Surface}">
             <Separator.RenderTransform>
-                <ScaleTransform ScaleY="2"/>
+                <ScaleTransform ScaleY="2" />
             </Separator.RenderTransform>
         </Separator>
         <TextBlock
@@ -143,9 +205,13 @@
                 IsChecked="{Binding ElementName=parentControl, Path=Order.GaugingReady}"
                 Style="{StaticResource PreflightCheckbox}" />
         </Grid>
-        <Separator Background="{StaticResource Surface}" Margin="0,10" Width="300" HorizontalAlignment="Left">
+        <Separator
+            Width="300"
+            Margin="0,10"
+            HorizontalAlignment="Left"
+            Background="{StaticResource Surface}">
             <Separator.RenderTransform>
-                <ScaleTransform ScaleY="2"/>
+                <ScaleTransform ScaleY="2" />
             </Separator.RenderTransform>
         </Separator>
         <TextBlock
@@ -173,5 +239,27 @@
                 IsChecked="{Binding ElementName=parentControl, Path=Order.HasProgram}"
                 Style="{StaticResource PreflightCheckbox}" />
         </Grid>
+        <StackPanel Visibility="{Binding ElementName=parentControl, Path=RequirementTrace, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
+            <Separator
+                Width="300"
+                Margin="0,10"
+                HorizontalAlignment="Left"
+                Background="{StaticResource Surface}">
+                <Separator.RenderTransform>
+                    <ScaleTransform ScaleY="2" />
+                </Separator.RenderTransform>
+            </Separator>
+            <TextBlock
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Machine Requirements" />
+            <TextBlock
+                FontSize="14"
+                Opacity="0.6"
+                Text="This order requires capabilities that may not be available on all machines."
+                TextWrapping="Wrap" />
+
+            <ListBox Margin="5" ItemsSource="{Binding ElementName=parentControl, Path=RequirementTrace}" />
+        </StackPanel>
     </StackPanel>
 </UserControl>
