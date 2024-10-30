@@ -293,6 +293,7 @@ namespace ProjectLighthouse.Model.Products
 
         private Cost itemCost;
         [Ignore]
+        [Newtonsoft.Json.JsonIgnore]
         public Cost ItemCost
         {
             get { return itemCost; }
@@ -371,11 +372,14 @@ namespace ProjectLighthouse.Model.Products
 
         public class Cost : BaseObject
         {
-            public MaterialInfo Material;
-            public BarStock BarStock;
-            public TimeModel TimeModel;
-            public double Length;
-            public double MaterialBudget;
+            public MaterialInfo Material { get; set; }
+            public BarStock BarStock { get; set; }
+            public TimeModel TimeModel { get; set; }
+            public double Length { get; set; }
+            public double BarMass { get; set; }
+            public double MaterialBudget { get; set; }
+            public double AbsorptionRate { get; set; }
+            public int ModelledCycleTime { get; set; }
 
             private double timeCost;
             public double TimeCost
@@ -413,6 +417,8 @@ namespace ProjectLighthouse.Model.Products
                 this.TimeModel = model;
                 this.Length = length;
                 this.MaterialBudget = materialBudget;
+                this.AbsorptionRate = App.Constants.AbsorptionRate;
+                this.ModelledCycleTime = TimeModel.At(Length);
 
                 CalculateCost();
             }
@@ -422,7 +428,9 @@ namespace ProjectLighthouse.Model.Products
                 if (this.Material is null) return;
                 BarStock.MaterialData = this.Material;
                 if (this.Material.Cost is null) return;
-                MaterialCost = BarStock.GetUnitMassOfBar() / BarStock.Length * this.MaterialBudget * ((double)this.Material.Cost / 100);
+
+                this.BarMass = BarStock.GetUnitMassOfBar();
+                MaterialCost = BarMass / BarStock.Length * this.MaterialBudget * ((double)this.Material.Cost / 100);
 
                 TimeCost = App.Constants.AbsorptionRate * TimeModel.At(Length);
 
