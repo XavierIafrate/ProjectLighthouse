@@ -162,7 +162,10 @@
 
         <!--#endregion-->
 
-        <ScrollViewer Grid.Column="1" Visibility="{Binding SelectedBarStock, Converter={StaticResource ObjectIsNotNull}}" VerticalScrollBarVisibility="Hidden">
+        <ScrollViewer
+            Grid.Column="1"
+            VerticalScrollBarVisibility="Hidden"
+            Visibility="{Binding SelectedBarStock, Converter={StaticResource ObjectIsNotNull}}">
             <Grid MaxWidth="700" Margin="25,25,25,60">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -180,33 +183,31 @@
                 </Border>
                 <StackPanel Margin="20">
                     <Grid>
-                        
-                    <TextBlock
-                        d:Text="PRB000-0000-000"
-                        Style="{StaticResource title}"
-                        Text="{Binding SelectedBarStock.BarStock.Id}" />
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <Border
-                            Background="{StaticResource PurpleFaded}"
-                            CornerRadius="5" />
+
+                        <TextBlock
+                            d:Text="PRB000-0000-000"
+                            Style="{StaticResource title}"
+                            Text="{Binding SelectedBarStock.BarStock.Id}" />
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Border Background="{StaticResource PurpleFaded}" CornerRadius="5" />
                             <TextBlock
-                            Margin="15,9"
-                            d:Text="99 In Stock"
-                            FontSize="20"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding SelectedBarStock.BarStock.InStock, StringFormat='{}{0:#,##0} In Stock'}" />
-                    </Grid>
+                                Margin="15,9"
+                                d:Text="99 In Stock"
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Purple}"
+                                Text="{Binding SelectedBarStock.BarStock.InStock, StringFormat='{}{0:#,##0} In Stock'}" />
+                        </Grid>
                     </Grid>
                     <TextBlock Style="{StaticResource subtitle}">
-                        <Run d:Text="Stainless Steel," Text="{Binding SelectedBarStock.BarStock.MaterialData, TargetNullValue='MATERIAL INFO NOT FOUND', Mode=OneWay}" />
+                        <Run d:Text="Stainless Steel, Grade XYZ" Text="{Binding SelectedBarStock.BarStock.MaterialData, TargetNullValue='MATERIAL INFO NOT FOUND', Mode=OneWay}" />
                     </TextBlock>
                     <TextBlock Style="{StaticResource subsubtitle}">
                         <Run d:Text="3,000mm long" Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}{0:#,##0}mm long,'}" />
                         <Run d:Text="size 7mm" Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}size {0}mm'}" />
                     </TextBlock>
                     <TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Last Cost {0}', Converter={StaticResource priceConverter}}" />
-                    <TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.ExpectedCost, StringFormat='{}Expected Cost {0}', Converter={StaticResource priceConverter}}" />
+                    <TextBlock d:Text="EXPECTED_COST_TEXT" Text="{Binding SelectedBarStock.BarStock.ExpectedCost, StringFormat='{}Expected Cost {0}', Converter={StaticResource priceConverter}}" />
                     <TextBlock d:Text="TARGET_STOCK_TEXT" Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}Suggested Stock: {0} pcs'}" />
 
                     <StackPanel
@@ -221,6 +222,7 @@
                             Stretch="Uniform" />
                         <TextBlock
                             Margin="3,0,0,0"
+                            FontWeight="SemiBold"
                             Foreground="{StaticResource Blue}"
                             Text="Hexagon Bar" />
                     </StackPanel>
