@@ -681,7 +681,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 newData.BarId = barStock.Find(x => x.ErpId == newData.BarId)?.Id;
 
-                BarStockPurchase? existingData = existingRecords.Find(x => x.OperaId == newData.OperaId);
+                BarStockPurchase? existingData = existingRecords.Find(x => x.OperaId == newData.OperaId && x.Id > 518); // 518 records before change of database for Opera
 
                 if (existingData is null)
                 {
