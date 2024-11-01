@@ -28,7 +28,6 @@ namespace ProjectLighthouse.Model.Deliveries
         }
 
         public int QuantityThisDelivery { get; set; }
-        public int QuantityToFollow { get; set; }
         public int LotID { get; set; }
         [Ignore]
         public string FromMachine { get; set; }
@@ -53,17 +52,18 @@ namespace ProjectLighthouse.Model.Deliveries
         {
             return new DeliveryItem()
             {
-                Id = Id,
-                AllocatedDeliveryNote = AllocatedDeliveryNote,
-                ItemManufactureOrderNumber = ItemManufactureOrderNumber,
-                PurchaseOrderReference = PurchaseOrderReference,
-                Product = Product,
-                QuantityThisDelivery = QuantityThisDelivery,
-                QuantityToFollow = QuantityToFollow,
-                LotID = LotID,
-                FromMachine = FromMachine,
+                Id = this.Id,
+                AllocatedDeliveryNote = this.AllocatedDeliveryNote,
+                ItemManufactureOrderNumber = this.ItemManufactureOrderNumber,
+                PurchaseOrderReference = this.PurchaseOrderReference,
+                Product = this.Product,
+                QuantityThisDelivery = this.QuantityThisDelivery,
+                LotID = this.LotID,
+                FromMachine = this.FromMachine,
+                ExportProductName = this.ExportProductName,
+                EditedBy= this.EditedBy,
+                EditedAt = this.EditedAt,
             };
-
         }
     }
 }
