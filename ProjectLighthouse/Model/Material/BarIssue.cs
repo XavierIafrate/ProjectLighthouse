@@ -14,5 +14,6 @@ namespace ProjectLighthouse.Model.Material
         public string MaterialBatch { get; set; }
         public int Quantity { get; set; }
         public string MaterialInfo { get; set; }
+        public string TrayId { get; set; }
     }
 }
