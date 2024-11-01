@@ -346,6 +346,54 @@
                 </StackPanel>
 
             </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <emoji:TextBlock
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Text="🏷️ Bar Issues" />
+                </TabItem.Header>
+                <StackPanel>
+                    <TextBlock
+                        Margin="20"
+                        HorizontalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Opacity="0.6"
+                        Text="No bars have been issued yet."
+                        Visibility="{Binding ElementName=parentControl, Path=Order.BarIssues, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+                    <ItemsControl ItemsSource="{Binding ElementName=parentControl, Path=Order.BarIssues}" Visibility="{Binding ElementName=parentControl, Path=Order.BarIssues, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="3">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontFamily="Consolas" Text="{Binding Date}" />
+                                        <TextBlock FontFamily="Consolas" Text=" | " />
+                                        <TextBlock FontFamily="Consolas" Text="{Binding IssuedBy}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                                        <TextBlock Text="{Binding BarId}" FontFamily="Consolas" FontWeight="SemiBold"/>
+                                        <TextBlock Text=" - " FontFamily="Consolas" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding MaterialBatch, StringFormat='{}Batch ref: {0}'}" FontFamily="Consolas" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                    <TextBlock
+                                        Grid.RowSpan="2"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Consolas"
+                                        FontSize="18"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Quantity, StringFormat='{}{0:+#;-#;0}'}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </TabItem>
             <TabItem x:Name="productionTab">
                 <TabItem.Header>
                     <emoji:TextBlock

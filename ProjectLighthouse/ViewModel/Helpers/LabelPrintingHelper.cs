@@ -97,7 +97,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             public int Copies { get; set; } = 1;
             public string User { get; set; }
             public DateTime Date { get; set; }
-            public int TemplateId { get => 2; }
+            public int TemplateId { get => 5; }
+            public string TrayId { get; set; }
 
 
             public bool DataIsComplete()
@@ -125,6 +126,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 MaterialInfo = issue.MaterialInfo;
                 User = App.CurrentUser.UserName.ToUpperInvariant();
                 Date = DateTime.Now;
+                TrayId = issue.TrayId;
             }
         }
 

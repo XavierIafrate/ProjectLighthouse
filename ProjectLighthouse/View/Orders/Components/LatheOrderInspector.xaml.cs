@@ -41,7 +41,7 @@ namespace ProjectLighthouse.View.Orders.Components
             }
 
             if (control.Order is null) return;
-            control.OrderTabControl.SelectedIndex = control.Order.State < OrderState.Running ? 0 : 3;
+            control.OrderTabControl.SelectedIndex = control.Order.State < OrderState.Running ? 0 : 4;
             if (e.NewValue is LatheManufactureOrder newOrder)
             {
                 newOrder.PropertyChanged += control.OrderPropertyChanged;
