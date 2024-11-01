@@ -22,6 +22,8 @@ namespace ProjectLighthouse.ViewModel.Orders
         public List<BarStock> BarStock { get; set; }
         public List<MaterialInfo> MaterialData { get; set; }
 
+        private List<Lathe> lathes;
+
         public List<BarStockRequirementOverview> BarOverviews { get; set; }
         public List<BarIssue> BarIssues { get; set; }
         private List<BarStockRequirementOverview> filteredBarOverviews;
@@ -199,6 +201,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             Orders.Clear();
             Orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(x => x.State < OrderState.Complete).ToList();
 
+            lathes = DatabaseHelper.Read<Lathe>();
+
             for (int i = 0; i < BarStock.Count; i++)
             {
                 List<LatheManufactureOrder> ordersUsingBar = Orders.Where(x => x.BarID == BarStock[i].Id && x.BarIsVerified).OrderByDescending(x => x.RequiresBar()).ThenBy(x => x.StartDate).ToList();
@@ -270,19 +274,32 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void AddNewBar()
         {
-            NewBarWindow window = new()
+            List<string> machineFeatures = GetMachineFeatures();
+
+            NewBarWindow window = new(machineFeatures, null)
             {
                 Owner = App.MainViewModel.MainWindow,
             };
 
             window.ShowDialog();
 
-            if (window.BarAdded)
+            if (window.SaveExit)
             {
                 SearchString = "";
                 LoadData();
                 SearchString = window.NewBar.Id;
             }
+        }
+
+        private List<string> GetMachineFeatures()
+        {
+            List<string> result = new();
+            foreach(Lathe lathe in lathes)
+            {
+                result.AddRange(lathe.FeatureList);
+            }
+
+            return result.Distinct().ToList();
         }
     }
 }
