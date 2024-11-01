@@ -6,11 +6,11 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    x:Name="parentWindow"
     Title="New Product"
     Width="800"
-    SizeToContent="Height"
     ResizeMode="NoResize"
-    x:Name="parentWindow"
+    SizeToContent="Height"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Grid Margin="20">
@@ -91,9 +91,13 @@
                     Content="Change Image"
                     Style="{StaticResource Action_Button}" />
             </StackPanel>
-            
+
             <TextBlock Style="{StaticResource InputLabel}" Text="Hidden" />
-            <CheckBox Content="Hide this product" Margin="0,5" HorizontalAlignment="Left" IsChecked="{Binding Product.IsHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox
+                Margin="0,5"
+                HorizontalAlignment="Left"
+                Content="Hide this product"
+                IsChecked="{Binding Product.IsHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <Grid Grid.Row="1" Grid.Column="1">
