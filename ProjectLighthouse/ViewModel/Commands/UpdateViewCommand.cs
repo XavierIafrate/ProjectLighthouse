@@ -69,7 +69,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (targetView == "Orders")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new NewOrderViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -164,7 +164,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (targetView == "DB Management")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DatabaseManagerViewModel();
                 viewModel.NavText = "Database Manager";
             }
