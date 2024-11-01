@@ -1,7 +1,10 @@
 ﻿using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace ProjectLighthouse
 {
@@ -9,6 +12,11 @@ namespace ProjectLighthouse
     {
         public static bool Setup()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(
+                        XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+
 #if DEBUG
             App.ROOT_PATH = ApplicationRootPaths.DEBUG_ROOT;
             DatabaseHelper.DatabasePath = $"{ApplicationRootPaths.DEBUG_ROOT}{ApplicationRootPaths.DEBUG_DB_NAME}";
