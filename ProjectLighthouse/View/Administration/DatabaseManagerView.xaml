@@ -11,67 +11,85 @@
     mc:Ignorable="d">
     <Grid Margin="5">
         <TabControl>
-            <TabItem Header="Users" IsEnabled="{Binding ManageUsersViewModel, Converter={StaticResource ObjectIsNotNull}}" x:Name="usersTab">
+            <TabItem
+                x:Name="usersTab"
+                Header="Users"
+                IsEnabled="{Binding ManageUsersViewModel, Converter={StaticResource ObjectIsNotNull}}">
                 <ContentControl Content="{Binding ManageUsersViewModel}" />
             </TabItem>
-            <TabItem Header="Machines" x:Name="lathesTab">
+            <TabItem x:Name="lathesTab" Header="Machines">
                 <ContentControl Content="{Binding LatheViewModel}" IsEnabled="{Binding LatheViewModel, Converter={StaticResource ObjectIsNotNull}}" />
             </TabItem>
-            <TabItem Header="Materials" x:Name="materialsTab">
+            <TabItem x:Name="materialsTab" Header="Materials">
                 <ContentControl Content="{Binding MaterialsViewModel}" IsEnabled="{Binding MaterialsViewModel, Converter={StaticResource ObjectIsNotNull}}" />
             </TabItem>
-            <TabItem Header="Dev" IsEnabled="False" x:Name="devTab" />
-            <TabItem Header="Reports" x:Name="reportsTab">
-                <Grid>
-                    <StackPanel>
+            <TabItem x:Name="reportsTab" Header="Reports">
+                <StackPanel Margin="20,10">
+                    <TextBlock Style="{StaticResource section}" Text="Data Extract" />
+                    <TextBlock Style="{StaticResource InputLabel}" Text="Select Data Type" />
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox
+                            x:Name="DataTypeComboBox"
+                            Width="300"
+                            HorizontalAlignment="Left">
+                            <ComboBoxItem Content="Attachment" />
+                            <ComboBoxItem Content="Bar Issue" />
+                            <ComboBoxItem Content="Bar Stock" />
+                            <ComboBoxItem Content="Bar Stock Purchase" />
+                            <ComboBoxItem Content="Breakdown Code" />
+                            <ComboBoxItem Content="Calibrated Equipment" />
+                            <ComboBoxItem Content="Calibration Certificate" />
+                            <ComboBoxItem Content="Delivery Item" />
+                            <ComboBoxItem Content="Delivery Note" />
+                            <ComboBoxItem Content="General Manufacture Order" />
+                            <ComboBoxItem Content="Lathe" />
+                            <ComboBoxItem Content="Lathe Manufacture Order" IsSelected="True" />
+                            <ComboBoxItem Content="Lathe Manufacture Order Item" />
+                            <ComboBoxItem Content="Login" />
+                            <ComboBoxItem Content="Lot" />
+                            <ComboBoxItem Content="Machine" />
+                            <ComboBoxItem Content="Machine Breakdown" />
+                            <ComboBoxItem Content="Machine Service" />
+                            <ComboBoxItem Content="Maintenance Event" />
+                            <ComboBoxItem Content="Material Info" />
+                            <ComboBoxItem Content="NC Program" />
+                            <ComboBoxItem Content="NC Program Commit" />
+                            <ComboBoxItem Content="Non Turned Item" />
+                            <ComboBoxItem Content="Note" />
+                            <ComboBoxItem Content="Order Drawing" />
+                            <ComboBoxItem Content="Permission" />
+                            <ComboBoxItem Content="Product" />
+                            <ComboBoxItem Content="Product Group" />
+                            <ComboBoxItem Content="Request" />
+                            <ComboBoxItem Content="Request Item" />
+                            <ComboBoxItem Content="Standard" />
+                            <ComboBoxItem Content="Technical Drawing" />
+                            <ComboBoxItem Content="Tolerance Definition" />
+                            <ComboBoxItem Content="Turned Product" />
+                            <ComboBoxItem Content="User" />
+                        </ComboBox>
                         <Button
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
                             Command="{Binding GetRecordsAsCsvCmd}"
-                            CommandParameter="Orders"
-                            Style="{StaticResource Action_Button}"
-                            Content="Get CSV of orders" />
-                        <Button
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Command="{Binding GetRecordsAsCsvCmd}"
-                            CommandParameter="ItemCosting"
-                            Style="{StaticResource Action_Button}"
-                            Content="Get Item Costing" />
-
- 
-                        <Button
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Command="{Binding GetRecordsAsCsvCmd}"
-                            CommandParameter="BarStockEstimate"
-                            Style="{StaticResource Action_Button}"
-                            Content="Estimate Bar Stock Inventory" />
-                        <Button
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Command="{Binding GetRecordsAsCsvCmd}"
-                            CommandParameter="Delivered"
-                            Style="{StaticResource Action_Button}"
-                            Content="Get Delivered Items" />
-                        <Button
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Command="{Binding GetRecordsAsCsvCmd}"
-                            CommandParameter="TotalManufactured"
-                            IsEnabled="False"
-                            Style="{StaticResource Action_Button}"
-                            Content="Total Manufactured" />
-                        <Button
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Command="{Binding GetRecordsAsCsvCmd}"
-                            CommandParameter="ImportTriggers"
-                            IsEnabled="False"
-                            Style="{StaticResource Action_Button}"
-                            Content="Import Triggers" />
+                            CommandParameter="{Binding ElementName=DataTypeComboBox, Path=SelectedValue.Content}"
+                            Content="Download"
+                            Style="{StaticResource Action_Download_Button}" />
                     </StackPanel>
-                </Grid>
+                    <Separator
+                        Width="300"
+                        Height="5"
+                        Margin="0,10"
+                        HorizontalAlignment="Left" />
+                    <TextBlock Style="{StaticResource section}" Text="Cost prices of in house items" />
+                    <Button
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        Command="{Binding GetRecordsAsCsvCmd}"
+                        CommandParameter="ItemCosting"
+                        Content="Get Item Costing"
+                        Style="{StaticResource Action_Download_Button}" />
+
+
+                </StackPanel>
             </TabItem>
         </TabControl>
     </Grid>
