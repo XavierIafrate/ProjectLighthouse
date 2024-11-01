@@ -199,7 +199,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             if (selectedProductId is not null)
             {
-                if(FilteredProducts.Any(x => x.Id == selectedProductId))
+                if (FilteredProducts.Any(x => x.Id == selectedProductId))
                 {
                     SelectedProduct = FilteredProducts.Find(x => x.Id == selectedProductId);
                 }
@@ -233,9 +233,30 @@ namespace ProjectLighthouse.ViewModel.Administration
                 return;
             }
 
-            FilteredProductGroups = ProductGroups
-                .Where(x => (x.ProductId ?? -1) == SelectedProduct.Id)
-                .ToList();
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                FilteredProductGroups = ProductGroups
+                    .Where(x => (x.ProductId ?? -1) == SelectedProduct.Id)
+                    .ToList();
+            }
+            else
+            {
+                List<int> productGroupIdsBySku = TurnedProducts
+                    .Where(x =>
+                           x.ProductName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
+                        || (x.ExportProductName ?? string.Empty).Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
+                        )
+                    .Select(x => x.GroupId ?? -1)
+                    .ToList();
+
+
+                FilteredProductGroups = ProductGroups
+                    .Where(x => (x.ProductId ?? -1) == SelectedProduct.Id && (x.Name.Contains(searchText, StringComparison.InvariantCultureIgnoreCase) || productGroupIdsBySku.Any(g => g == x.Id)))
+                    .ToList();
+            }
+
+
+
             OnPropertyChanged(nameof(FilteredProductGroups));
 
             if (FilteredProductGroups.Count > 0)
@@ -253,13 +274,26 @@ namespace ProjectLighthouse.ViewModel.Administration
                 return;
             }
 
-            FilteredTurnedProducts = TurnedProducts
-                .Where(x => (x.GroupId ?? -1) == SelectedProductGroup.Id)
-                .OrderBy(x => x.Retired)
-                .ThenBy(x => x.MaterialId)
-                .ThenBy(x => x.IsSpecialPart)
-                .ThenBy(x => x.ProductName)
-                .ToList();
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                FilteredTurnedProducts = TurnedProducts
+                    .Where(x => (x.GroupId ?? -1) == SelectedProductGroup.Id)
+                    .OrderBy(x => x.Retired)
+                    .ThenBy(x => x.MaterialId)
+                    .ThenBy(x => x.IsSpecialPart)
+                    .ThenBy(x => x.ProductName)
+                    .ToList();
+            }
+            else
+            {
+                FilteredTurnedProducts = TurnedProducts
+                    .Where(x => (x.GroupId ?? -1) == SelectedProductGroup.Id && (x.ProductName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase) || (x.ExportProductName??string.Empty).Contains(searchText, StringComparison.InvariantCultureIgnoreCase)))
+                    .OrderBy(x => x.Retired)
+                    .ThenBy(x => x.MaterialId)
+                    .ThenBy(x => x.IsSpecialPart)
+                    .ThenBy(x => x.ProductName)
+                    .ToList();
+            }
 
             for (int i = 0; i < FilteredTurnedProducts.Count; i++)
             {
@@ -333,6 +367,11 @@ namespace ProjectLighthouse.ViewModel.Administration
             OnPropertyChanged(nameof(TimeModels));
 
             Task.Run(() => CostFilteredTurnedProducts());
+
+            if(FilteredTurnedProducts.Count > 0)
+            {
+                SelectedPart = FilteredTurnedProducts.First();
+            }
         }
 
         void CostFilteredTurnedProducts()
@@ -412,8 +451,19 @@ namespace ProjectLighthouse.ViewModel.Administration
                 return;
             }
 
-            string token = SearchText.ToUpperInvariant();
-            FilteredProducts = Products.Where(x => x.Name.ToUpperInvariant().Contains(token) || x.Description.ToUpperInvariant().Contains(token)).ToList();
+            string token = searchText.Trim();
+
+            List<ProductGroup> productGroups = ProductGroups.Where(x => x.Name.Contains(token, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            List<TurnedProduct> turnedProducts = TurnedProducts.Where(x => x.ProductName.Contains(token, StringComparison.InvariantCultureIgnoreCase) || (x.ExportProductName ?? string.Empty).Contains(token, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            List<int> productIds = ProductGroups.Where(x => turnedProducts.Any(p => p.GroupId == x.Id)).Select(x => x.ProductId ?? -1).ToList();
+            productIds.AddRange(productGroups.Select(x => x.ProductId ?? -1));
+
+            FilteredProducts = Products
+                .Where(x =>
+                   x.Name.Contains(token, StringComparison.InvariantCultureIgnoreCase)
+                || x.Description.Contains(token, StringComparison.InvariantCultureIgnoreCase)
+                || productIds.Any(i => i == x.Id)
+                ).ToList();
             OnPropertyChanged(nameof(FilteredProducts));
             if (FilteredProducts.Count > 0)
             {
