@@ -2449,4 +2449,88 @@
         </Setter>
     </Style>
 
+    <Style x:Key="IncrementUpButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="15"
+                        Height="15"
+                        Background="#01ffffff"
+                        CornerRadius="5">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                x:Name="path"
+                                Width="8"
+                                Height="8"
+                                Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform">
+                                <Path.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-90" />
+                                        <TranslateTransform X="-1.5" Y="6.1" />
+                                    </TransformGroup>
+                                </Path.RenderTransform>
+                            </Path>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnPurple}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource DisabledElement}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DecrementDownButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="15"
+                        Height="15"
+                        Background="#01ffffff"
+                        CornerRadius="5">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                x:Name="path"
+                                Width="8"
+                                Height="8"
+                                Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform">
+                                <Path.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="90" />
+                                        <TranslateTransform X="6.3" Y="1.5" />
+                                    </TransformGroup>
+                                </Path.RenderTransform>
+                            </Path>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnPurple}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource DisabledElement}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
