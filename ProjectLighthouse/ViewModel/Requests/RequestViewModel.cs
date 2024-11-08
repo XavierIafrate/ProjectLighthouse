@@ -426,6 +426,19 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 string searchTerm = NewRequestSearchText.ToUpperInvariant();
                 List<TurnedProduct> results = Items.Where(x => x.ProductName.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) && !requestedIds.Contains(x.Id)).Take(50).ToList();
+                
+                foreach(TurnedProduct result in results)
+                {
+                    if (result.GroupId is null) continue;
+
+                    ProductGroup? archetype = Archetypes.Find(x => x.Id == result.GroupId);
+                    if (archetype is null) continue;
+                    if (archetype.Status == ProductGroup.GroupStatus.Dormant)
+                    {
+                        result.Retired = true;
+                    }
+                }
+                
                 NewRequestSearchResults = results;
             }
 
