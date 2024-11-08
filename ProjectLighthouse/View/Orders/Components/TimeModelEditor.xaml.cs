@@ -111,7 +111,7 @@ namespace ProjectLighthouse.View.Orders.Components
                             Stroke = new SolidColorPaint
                             {
                                 Color = x.CycleTime > x.PreviousCycleTime ? SKColors.DarkRed.WithAlpha(50) : SKColors.DarkGreen.WithAlpha(50),
-                                StrokeThickness = 3
+                                StrokeThickness = 8
                             }
                         });
                     }

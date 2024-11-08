@@ -6,9 +6,9 @@
     xmlns:local="clr-namespace:ProjectLighthouse.View.Orders.Components"
     xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="parentControl"
     d:Background="White"
     d:DesignHeight="450"
-    x:Name="parentControl"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
@@ -54,8 +54,8 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="0"
-                FontWeight="SemiBold"
                 HorizontalAlignment="Center"
+                FontWeight="SemiBold"
                 Text="Response" />
             <TextBlock
                 Grid.Row="1"
@@ -82,8 +82,8 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="2"
-                FontWeight="SemiBold"
                 HorizontalAlignment="Center"
+                FontWeight="SemiBold"
                 Text="Time Floor" />
             <TextBlock
                 Grid.Row="1"
@@ -96,8 +96,8 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="3"
-                FontWeight="SemiBold"
                 HorizontalAlignment="Center"
+                FontWeight="SemiBold"
                 Text="Record Count" />
             <TextBlock
                 Grid.Row="1"
@@ -110,8 +110,8 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="4"
-                FontWeight="SemiBold"
                 HorizontalAlignment="Center"
+                FontWeight="SemiBold"
                 Text="Confidence" />
             <TextBlock
                 Grid.Row="1"
