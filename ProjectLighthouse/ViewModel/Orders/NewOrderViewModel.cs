@@ -95,6 +95,7 @@ namespace ProjectLighthouse.ViewModel.Orders
         private List<Machine> machines;
         private List<LatheManufactureOrderItem> orderItems;
         private List<BarStock> barStock;
+        private List<BarIssue> barIssues;
         private List<MaterialInfo> materials;
         private List<NonTurnedItem> nonTurnedItems;
         private List<TurnedProduct> turnedItems;
@@ -292,6 +293,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             this.materials = DatabaseHelper.Read<MaterialInfo>();
             this.barStock = DatabaseHelper.Read<BarStock>();
             this.barStock.ForEach(x => x.MaterialData = materials.Find(m => m.Id == x.MaterialId));
+
+            this.barIssues = DatabaseHelper.Read<BarIssue>();
 
             Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
             start = DateTime.Now;
@@ -574,6 +577,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 latheOrder.OrderItems = orderItems.Where(x => x.AssignedMO == latheOrder.Name).OrderByDescending(x => x.RequiredQuantity).ThenBy(x => x.ProductName).ToList();
 
                 latheOrder.Bar = barStock.Find(x => x.Id == latheOrder.BarID);
+                latheOrder.BarIssues = barIssues.Where(x => x.OrderId == latheOrder.Name).ToList();
 
                 latheOrder.DrawingsReferences = drawingReferences.Where(x => x.OrderId == latheOrder.Name).ToList();
                 latheOrder.Drawings = drawings.Where(x => latheOrder.DrawingsReferences.Any(r => r.DrawingId == x.Id)).ToList();
