@@ -217,13 +217,9 @@ namespace ProjectLighthouse.View.Scheduling.Components
                     relativeBreakdown = 0;
                 }
             }
-            else if (this.Item is GeneralManufactureOrder)
+            else if (this.Item is GeneralManufactureOrder genOrder)
             {
-                this.BackgroundBrush = (Brush)Application.Current.Resources["PurpleFaded"];
-                this.ForegroundBrush = (Brush)Application.Current.Resources["Purple"];
-
-                CheckedBackgroundBrush = (Brush)Application.Current.Resources["Purple"];
-                CheckedForegroundBrush = (Brush)Application.Current.Resources["OnPurple"];
+                this.SetBrushes(genOrder.State);
             }
 
             this.ItemButton.Background = this.BackgroundBrush;
