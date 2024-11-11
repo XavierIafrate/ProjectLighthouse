@@ -4,6 +4,8 @@ using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -50,6 +52,8 @@ namespace ProjectLighthouse.View.Administration
                 TitleText.Text = "Edit Turned Product";
                 AddButton.Visibility = Visibility.Collapsed;
                 UpdateButton.Visibility = Visibility.Visible;
+
+                OpenAttachmentButton.IsEnabled = !string.IsNullOrWhiteSpace(product.SpecificationDocument);
             }
             else
             {
@@ -156,6 +160,26 @@ namespace ProjectLighthouse.View.Administration
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OpenAttachmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process fileopener = new();
+            fileopener.StartInfo.FileName = "explorer";
+            fileopener.StartInfo.Arguments = "\"" + Path.Join(App.ROOT_PATH,Product.SpecificationDocument) + "\"";
+
+            try
+            {
+                bool success = fileopener.Start();
+                if (!success) 
+                {
+                    MessageBox.Show("Failed to open document", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Failed to open document", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
