@@ -579,6 +579,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             public string Status { get; set; }
         }
 
+        [AttributeUsage(AttributeTargets.Property)]
         public class OperaColumn : Attribute
         {
             public string ColumnName { get; set; }
