@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using static ProjectLighthouse.ViewModel.Orders.NewOrderViewModel;
+using static ProjectLighthouse.ViewModel.Orders.OrderViewModel;
 
 namespace ProjectLighthouse.Model.Orders
 {

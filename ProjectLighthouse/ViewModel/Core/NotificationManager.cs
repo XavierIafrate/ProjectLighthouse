@@ -291,7 +291,7 @@ namespace ProjectLighthouse.ViewModel.Core
             else if (action.StartsWith("viewManufactureOrder:"))
             {
                 App.MainViewModel.UpdateViewCommand.Execute("Orders");
-                if (App.MainViewModel.SelectedViewModel is NewOrderViewModel orderViewModel)
+                if (App.MainViewModel.SelectedViewModel is OrderViewModel orderViewModel)
                 {
                     string targetOrder = action.Replace("viewManufactureOrder:", "");
                     orderViewModel.SelectedItem = orderViewModel.FilteredItems.Find(x => x.Name == targetOrder);

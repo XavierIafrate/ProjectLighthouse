@@ -230,7 +230,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             control.Schedule.OnHolidaysUpdated += control.TryDraw;
         }
 
-        private void AddToGrid(Grid grid, UIElement control, int column, int row, int colSpan = 1, int rowSpan = 1)
+        private static void AddToGrid(Grid grid, UIElement control, int column, int row, int colSpan = 1, int rowSpan = 1)
         {
             grid.Children.Add(control);
             Grid.SetColumn(control, column);

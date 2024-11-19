@@ -396,7 +396,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 {
                     model = TimeModels[material];
                 }
-                catch (Exception ex)
+                catch
                 {
                     if (product.CycleTime > 0)
                     {

@@ -159,7 +159,7 @@ namespace ProjectLighthouse
             SetMenuStyle();
         }
 
-        bool dragging = false;
+        bool dragging;
         private void SetMenuStyle()
         {
             double threshold = 220;

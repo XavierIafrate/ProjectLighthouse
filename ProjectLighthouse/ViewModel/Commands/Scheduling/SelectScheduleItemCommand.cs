@@ -8,9 +8,9 @@ namespace ProjectLighthouse.ViewModel.Commands.Scheduling
     public class SelectScheduleItemCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private NewScheduleViewModel NewScheduleViewModel;
+        private ScheduleViewModel NewScheduleViewModel;
 
-        public SelectScheduleItemCommand(NewScheduleViewModel viewModel)
+        public SelectScheduleItemCommand(ScheduleViewModel viewModel)
         {
             this.NewScheduleViewModel = viewModel;
         }

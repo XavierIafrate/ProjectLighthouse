@@ -33,7 +33,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Administration
             {
                 progvm.SendMessage();
             }
-            else if (viewModel is NewOrderViewModel orderViewModel)
+            else if (viewModel is OrderViewModel orderViewModel)
             {
 
                 if(parameter is not Note note)

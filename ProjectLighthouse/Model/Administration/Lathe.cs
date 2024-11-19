@@ -138,7 +138,7 @@ namespace ProjectLighthouse.Model.Administration
             }
         }
 
-        public object Clone()
+        public new object Clone()
         {
             string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Lathe>(serialised);

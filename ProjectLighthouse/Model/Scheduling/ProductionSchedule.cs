@@ -410,7 +410,7 @@ namespace ProjectLighthouse.Model.Scheduling
             this.Warnings = warnings;
         }
 
-        private List<Optimisation> GetOppurtunitiesForOrder(LatheManufactureOrder order, List<LatheManufactureOrder> toCompare)
+        private static List<Optimisation> GetOppurtunitiesForOrder(LatheManufactureOrder order, List<LatheManufactureOrder> toCompare)
         {
             List<Optimisation> results = new();
 

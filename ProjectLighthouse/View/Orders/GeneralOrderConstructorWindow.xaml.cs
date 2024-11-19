@@ -6,15 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.Orders
 {
@@ -44,7 +37,7 @@ namespace ProjectLighthouse.View.Orders
             NewOrder = new();
             Items = DatabaseHelper.Read<NonTurnedItem>();
 
-             if (Items.Count == 0)
+            if (Items.Count == 0)
             {
                 throw new InvalidOperationException("No non-turned items in the database - a general order cannot be raised.");
             }

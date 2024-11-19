@@ -8,9 +8,9 @@ namespace ProjectLighthouse.ViewModel.Commands.Orders
     {
         public event EventHandler CanExecuteChanged;
 
-        private NewOrderViewModel viewModel;
+        private OrderViewModel viewModel;
 
-        public CreateNewOrderCommand(NewOrderViewModel vm)
+        public CreateNewOrderCommand(OrderViewModel vm)
         {
             viewModel = vm;
         }

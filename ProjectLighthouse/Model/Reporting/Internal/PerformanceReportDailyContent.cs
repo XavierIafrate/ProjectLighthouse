@@ -22,7 +22,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddItemsTable(section, day);
         }
 
-        private void AddTableTitle(Section section, string title)
+        private static void AddTableTitle(Section section, string title)
         {
             Paragraph p = section.AddParagraph(title, StyleNames.Heading2);
             p.Format.KeepWithNext = true;
@@ -67,7 +67,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddHeader(headerRow.Cells[3], "Parts Produced Summary");
         }
 
-        private void AddHeader(Cell cell, string header)
+        private static void AddHeader(Cell cell, string header)
         {
             Paragraph p = cell.AddParagraph(header);
             p.Style = CustomStyles.ColumnHeader;
@@ -99,7 +99,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
         }
 
-        private void AllocateRows(Table table, int numRows)
+        private static void AllocateRows(Table table, int numRows)
         {
             for (int i = 0; i < numRows; i++)
             {
@@ -110,7 +110,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             UnderlineRow(table.Rows[^1]);
         }
 
-        private void AddParagraphsToColumn(Table table, List<Paragraph> content, int fromRow, int col)
+        private static void AddParagraphsToColumn(Table table, List<Paragraph> content, int fromRow, int col)
         {
             if (content.Count == 0)
             {
@@ -129,7 +129,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
         }
 
-        private List<Paragraph> GetLotsParagraphs(Lot[] lots)
+        private static List<Paragraph> GetLotsParagraphs(Lot[] lots)
         {
             List<Paragraph> paragraphs = new();
             Paragraph paragraph;
@@ -161,7 +161,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             return paragraphs;
         }
 
-        private Tuple<List<Paragraph>, List<Paragraph>> GetOperatingPerformanceSegments(MachineOperatingBlock[] blocks)
+        private static Tuple<List<Paragraph>, List<Paragraph>> GetOperatingPerformanceSegments(MachineOperatingBlock[] blocks)
         {
             List<Paragraph> percentages = new();
             List<Paragraph> verbose = new();
@@ -215,18 +215,18 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             return new(percentages, verbose);
         }
 
-        private void AddLastRowBorder(Table table)
+        private static void AddLastRowBorder(Table table)
         {
             Row lastRow = table.Rows[^1];
             lastRow.Borders.Bottom.Width = 2;
         }
 
-        private void UnderlineRow(Row row)
+        private static void UnderlineRow(Row row)
         {
             row.Borders.Bottom.Width = 1;
         }
 
-        private void AlternateRowShading(Table table)
+        private static void AlternateRowShading(Table table)
         {
             // Start at i = 1 to skip column headers
             for (int i = 1; i < table.Rows.Count; i++)

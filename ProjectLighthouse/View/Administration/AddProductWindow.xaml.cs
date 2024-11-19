@@ -32,7 +32,7 @@ namespace ProjectLighthouse.View.Administration
 
         public Product? originalProduct;
 
-        public bool SaveExit = false;
+        public bool SaveExit;
 
 
         public event PropertyChangedEventHandler PropertyChanged;

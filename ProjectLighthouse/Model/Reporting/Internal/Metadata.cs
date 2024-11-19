@@ -47,7 +47,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             //AddBorders(table);
         }
 
-        private Table AddMetadataTable(Section section)
+        private static Table AddMetadataTable(Section section)
         {
             Table table = section.AddTable();
             table.Shading.Color = Shading;
@@ -68,7 +68,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             return table;
         }
 
-        private void AddOrderInfo(Table table, LatheManufactureOrder order)
+        private static void AddOrderInfo(Table table, LatheManufactureOrder order)
         {
             //AddRow(table, "Start Date", order.StartDate.ToString("d"), "Tooling Ready", order.IsReady ? "Yes" : "No");
             AddRow(table, "Allocated Machine", order.AllocatedMachine ?? "TBC", "Program Ready", order.HasProgram ? "Yes" : "No");
@@ -76,7 +76,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddRow(table, "Estimated # Bars", order.NumberOfBars.ToString("#,##0"), "Bar Allocated", order.BarIsAllocated ? "Yes" : "No");
         }
 
-        private void AddRow(Table table, string parameter1, string value1, string parameter2, string value2)
+        private static void AddRow(Table table, string parameter1, string value1, string parameter2, string value2)
         {
             table.AddRow();
             table.Rows[^1].Cells[0].AddParagraph(parameter1);
@@ -85,7 +85,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             table.Rows[^1].Cells[3].AddParagraph(value2);
         }
 
-        private void AddBorders(Table table)
+        private static void AddBorders(Table table)
         {
             for (int i = 0; i < table.Rows.Count; i++)
             {

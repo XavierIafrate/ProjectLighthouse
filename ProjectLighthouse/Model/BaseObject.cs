@@ -70,11 +70,13 @@ namespace ProjectLighthouse.Model
 
         #endregion
 
+        [AttributeUsage(AttributeTargets.Property)]
         public class UpdateWatch : Attribute
         {
 
         }
 
+        [AttributeUsage(AttributeTargets.Property)]
         public class Import : Attribute
         {
             public string Name { get; set; }

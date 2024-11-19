@@ -188,7 +188,7 @@ namespace ProjectLighthouse.View.Drawings
             }
         }
 
-        public bool SaveExit = false;
+        public bool SaveExit;
 
         public AddNewDrawingWindow(List<TechnicalDrawing> drawings)
         {

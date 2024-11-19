@@ -203,7 +203,7 @@ namespace ProjectLighthouse.Model.Programs
         }
 
 
-        private DateTime? fileLastModified = null;
+        private DateTime? fileLastModified;
         [Ignore]
         public DateTime? FileLastModified
         {
@@ -212,7 +212,7 @@ namespace ProjectLighthouse.Model.Programs
         }
 
 
-        private bool? fileExists = null;
+        private bool? fileExists;
         [Ignore]
         public bool? FileExists
         {

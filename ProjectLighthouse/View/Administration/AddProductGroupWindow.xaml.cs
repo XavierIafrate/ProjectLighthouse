@@ -19,7 +19,7 @@ namespace ProjectLighthouse.View.Administration
         public List<Product> Products { get; set; }
         public Array Statuses { get; set; }
 
-        public bool SaveExit = false;
+        public bool SaveExit;
 
         private List<string> existingFeatures;
         public List<string> ExistingFeatures

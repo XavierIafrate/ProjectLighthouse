@@ -17,7 +17,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddItemsTable(section, items);
         }
 
-        private void AddTableTitle(Section section, string title)
+        private static void AddTableTitle(Section section, string title)
         {
             Paragraph p = section.AddParagraph(title, StyleNames.Heading2);
             p.Format.KeepWithNext = true;
@@ -45,7 +45,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             table.Format.RightIndent = Size.TableCellPadding;
         }
 
-        private void AddColumnsAndHeaders(Table table)
+        private static void AddColumnsAndHeaders(Table table)
         {
             Unit width = Size.GetWidth(table.Section);
             table.AddColumn(width * 0.25);
@@ -62,13 +62,13 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddHeader(headerRow.Cells[3], "Target");
         }
 
-        private void AddHeader(Cell cell, string header)
+        private static void AddHeader(Cell cell, string header)
         {
             Paragraph p = cell.AddParagraph(header);
             p.Style = CustomStyles.ColumnHeader;
         }
 
-        private void AddItemRows(Table table, LatheManufactureOrderItem[] items)
+        private static void AddItemRows(Table table, LatheManufactureOrderItem[] items)
         {
             foreach (LatheManufactureOrderItem item in items)
             {
@@ -91,13 +91,13 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
         }
 
-        private void AddLastRowBorder(Table table)
+        private static void AddLastRowBorder(Table table)
         {
             Row lastRow = table.Rows[^1];
             lastRow.Borders.Bottom.Width = 2;
         }
 
-        private void AlternateRowShading(Table table)
+        private static void AlternateRowShading(Table table)
         {
             // Start at i = 1 to skip column headers
             for (int i = 1; i < table.Rows.Count; i++)

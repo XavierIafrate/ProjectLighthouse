@@ -14,7 +14,7 @@ namespace ProjectLighthouse.Model.Reporting
     public class ReportPdf : IReport
     {
         #region Core Functions
-        private void SetUpPage(Section section)
+        private static void SetUpPage(Section section)
         {
             section.PageSetup.PageFormat = PageFormat.Letter;
 
@@ -27,7 +27,7 @@ namespace ProjectLighthouse.Model.Reporting
             section.PageSetup.FooterDistance = Size.HeaderFooterMargin;
         }
 
-        private void AddHeaderAndFooter(Section section)
+        private static void AddHeaderAndFooter(Section section)
         {
             new HeaderAndFooter().Add(section);
         }
@@ -39,6 +39,7 @@ namespace ProjectLighthouse.Model.Reporting
             fileopener.StartInfo.Arguments = "\"" + path + "\"";
             _ = fileopener.Start();
         }
+
         private void ExportPdf(string path, Document report)
         {
             PdfDocumentRenderer pdfRenderer = new();
@@ -74,7 +75,7 @@ namespace ProjectLighthouse.Model.Reporting
             return section;
         }
 
-        private void AddContents(Section section, PerformanceReportData data)
+        private static void AddContents(Section section, PerformanceReportData data)
         {
             AddReportMetadata(section, data);
             for (int i = 0; i < data.Days.Count; i++)
@@ -83,12 +84,12 @@ namespace ProjectLighthouse.Model.Reporting
             }
         }
 
-        private void AddReportMetadata(Section section, PerformanceReportData data)
+        private static void AddReportMetadata(Section section, PerformanceReportData data)
         {
             new Metadata().Add(section, data);
         }
 
-        private void AddDaysPerformance(Section section, DailyPerformance day)
+        private static void AddDaysPerformance(Section section, DailyPerformance day)
         {
             new PerformanceReportDailyContent().Add(section, day);
         }
@@ -118,7 +119,7 @@ namespace ProjectLighthouse.Model.Reporting
             return section;
         }
 
-        private void AddContents(Section section, OrderPrintoutData data)
+        private static void AddContents(Section section, OrderPrintoutData data)
         {
             AddOrderMetadata(section, data.Order);
             AddOrderItems(section, data.Items);
@@ -128,16 +129,16 @@ namespace ProjectLighthouse.Model.Reporting
             }
         }
 
-        private void AddOrderMetadata(Section section, LatheManufactureOrder order)
+        private static void AddOrderMetadata(Section section, LatheManufactureOrder order)
         {
             new Metadata().Add(section, order);
         }
 
-        private void AddOrderItems(Section section, LatheManufactureOrderItem[] items)
+        private static void AddOrderItems(Section section, LatheManufactureOrderItem[] items)
         {
             new OrderItemsContent().Add(section, items);
         }
-        private void AddOrderNotes(Section section, Note[] notes)
+        private static void AddOrderNotes(Section section, Note[] notes)
         {
             new NotesContent().Add(section, notes);
         }
@@ -158,7 +159,7 @@ namespace ProjectLighthouse.Model.Reporting
             return doc;
         }
 
-        private Section CreateMainSection(DeliveryData data)
+        private static Section CreateMainSection(DeliveryData data)
         {
             Section section = new();
             SetUpPage(section);
@@ -168,18 +169,18 @@ namespace ProjectLighthouse.Model.Reporting
         }
 
 
-        private void AddContents(Section section, DeliveryData data)
+        private static void AddContents(Section section, DeliveryData data)
         {
             AddOrderMetadata(section, data.Header);
             AddDeliveryItems(section, data.Lines);
         }
 
-        private void AddOrderMetadata(Section section, DeliveryNote delivery)
+        private static void AddOrderMetadata(Section section, DeliveryNote delivery)
         {
             new Metadata().Add(section, delivery);
         }
 
-        private void AddDeliveryItems(Section section, DeliveryItem[] items)
+        private static void AddDeliveryItems(Section section, DeliveryItem[] items)
         {
             //Aggregate
             string[] unique = items.Select(x => x.Product).Distinct().ToArray();
@@ -201,7 +202,7 @@ namespace ProjectLighthouse.Model.Reporting
             ExportPdf(path, CreateLoginReport(data));
         }
 
-        private Document CreateLoginReport(LoginReportData data)
+        private static Document CreateLoginReport(LoginReportData data)
         {
             Document doc = new();
             CustomStyles.Define(doc);
@@ -209,7 +210,7 @@ namespace ProjectLighthouse.Model.Reporting
             return doc;
         }
 
-        private Section CreateMainSection(LoginReportData data)
+        private static Section CreateMainSection(LoginReportData data)
         {
             Section section = new();
             SetUpPage(section);
@@ -218,18 +219,18 @@ namespace ProjectLighthouse.Model.Reporting
             return section;
         }
 
-        private void AddContents(Section section, LoginReportData data)
+        private static void AddContents(Section section, LoginReportData data)
         {
             AddReportMetadata(section, data);
             AddLogins(section, data.UserLogins);
         }
 
-        private void AddReportMetadata(Section section, LoginReportData data)
+        private static void AddReportMetadata(Section section, LoginReportData data)
         {
             new Metadata().Add(section, data);
         }
 
-        private void AddLogins(Section section, List<UserLoginRecords> items)
+        private static void AddLogins(Section section, List<UserLoginRecords> items)
         {
             for (int i = 0; i < items.Count; i++)
             {

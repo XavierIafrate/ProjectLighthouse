@@ -44,7 +44,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             if (targetView == "Schedule")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new NewScheduleViewModel();
+                viewModel.SelectedViewModel = new ScheduleViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
                     "Polish" => "Harmonogram",
@@ -70,7 +70,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Orders")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new NewOrderViewModel();
+                viewModel.SelectedViewModel = new OrderViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
                     "Polish" => "Zamówienia Produkcje",
