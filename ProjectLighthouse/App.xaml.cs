@@ -248,15 +248,16 @@ namespace ProjectLighthouse
         private static void EnsureAppData()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string specificFolder = Path.Combine(folder, "Lighthouse");
+            string specificFolder = Path.Combine(folder, "Lighthouse\\");
             AppDataDirectory = $@"{specificFolder}\";
-            if (!Directory.Exists(specificFolder))
-            {
-                Directory.CreateDirectory(specificFolder);
-            }
 
-            string copyFrom = $@"{ROOT_PATH}lib\";
-            string copyTo = $@"{specificFolder}\lib\";
+            string copyFrom = $@"{ROOT_PATH}lib\renders\";
+            string copyTo = $@"{specificFolder}\lib\renders\";
+
+            if (!Directory.Exists(copyTo))
+            {
+                Directory.CreateDirectory(copyTo);
+            }
 
             CopyFilesRecursively(copyFrom, copyTo);
         }
@@ -294,6 +295,8 @@ namespace ProjectLighthouse
             //Copy all the files & Replaces any files with the same name
             foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
+                Debug.WriteLine(newPath);
+
                 try
                 {
                     File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
