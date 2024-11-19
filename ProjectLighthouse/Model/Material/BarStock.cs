@@ -156,7 +156,7 @@ namespace ProjectLighthouse.Model.Material
                 if (MaterialData is null) return null;
                 if (MaterialData.Cost is null) return null;
 
-                return MaterialData.Cost * GetUnitMassOfBar();
+                return MaterialData.GetRate() * GetUnitMassOfBar();
             }
         }
 
