@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -51,7 +50,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetDelete(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            
+
         }
 
         public ICommand SaveCommand
