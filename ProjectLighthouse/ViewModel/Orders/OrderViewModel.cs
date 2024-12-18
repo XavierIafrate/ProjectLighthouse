@@ -1,450 +1,1381 @@
-﻿using LiveChartsCore;
-using LiveChartsCore.SkiaSharpView;
-using ProjectLighthouse.Model.Administration;
-using ProjectLighthouse.Model.Analytics;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
-using ProjectLighthouse.Model.Programs;
-using ProjectLighthouse.Model.Reporting;
+using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.View.Orders;
+using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Orders;
-using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Core;
+using ProjectLighthouse.ViewModel.Helpers;
+using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
-    public class OrderViewModel : BaseViewModel
+    public class OrderViewModel : BaseViewModel, IDisposable, ISafeClose
     {
-        #region Variables
-
-        #region Main Dataset
-        public List<LatheManufactureOrder> Orders { get; set; }
-        public List<LatheManufactureOrderItem> OrderItems { get; set; }
-        public List<Note> Notes { get; set; }
-        public List<TechnicalDrawing> Drawings { get; set; }
-        public List<OrderDrawing> OrderDrawings { get; set; }
-        public List<Lathe> Lathes { get; set; }
-        public List<MachineStatistics> MachineStatistics { get; set; }
-        public List<Lot> Lots { get; set; }
-        public List<BarStock> BarStock { get; set; }
-        public List<MaterialInfo> MaterialInfo { get; set; }
-
-        public List<Product> Products { get; set; }
-        public List<ProductGroup> ProductGroups { get; set; }
-        public List<NcProgram> Programs;
-        public List<BreakdownCode> BreakdownCodes;
-        public List<MachineBreakdown> MachineBreakdowns;
-        #endregion
-
-        #region Observable
-        private List<LatheManufactureOrder> filteredOrders;
-
-        public List<LatheManufactureOrder> FilteredOrders
+        #region Observables
+        private bool editMode;
+        public bool EditMode
         {
-            get { return filteredOrders; }
-            set
-            {
-                filteredOrders = value;
-                OnPropertyChanged();
-            }
+            get { return editMode; }
+            set { editMode = value; OnPropertyChanged(); }
         }
 
-        public List<LatheManufactureOrderItem> FilteredOrderItems { get; set; }
-        public List<Note> FilteredNotes { get; set; }
-        public List<TechnicalDrawing> FilteredDrawings { get; set; }
-        public BarStock SelectedOrderBar { get; set; }
-        public ProductGroup SelectedProductGroup { get; set; }
-        public Product SelectedProduct { get; set; }
-        public List<NcProgram> ProgramCandidates { get; set; }
-        public List<MachineBreakdown> SelectedOrderBreakdowns { get; set; }
-
-        public List<MachineOperatingBlock> MachineOperatingBlocks { get; set; }
-
-        public int TotalTimeSeconds { get; set; }
-        public int RunTimeSeconds { get; set; }
-        public double Availability { get; set; }
-        public double UnknownPct { get; set; }
-        #endregion
-
-        #region Charting
-        public Axis[] XAxes { get; set; } =
-        {
-            new Axis
-            {
-                Labeler = value => new DateTime((long) Math.Max(0, value)).ToString("dd/MM"),
-                LabelsRotation = 0,
-                UnitWidth = TimeSpan.FromDays(1).Ticks,
-                MinStep = TimeSpan.FromDays(1).Ticks,
-                ForceStepToMin=true
-
-            }
-        };
-
-        public Axis[] YAxes { get; set; } =
-        {
-            new Axis
-            {
-                MinLimit = 0
-            }
-        };
-
-        public List<ISeries> Series { get; set; }
-
-
-
-
-
-        private string? runBeforeText;
-        public string? RunBeforeText
-        {
-            get { return runBeforeText; }
-            set
-            {
-                runBeforeText = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-        private bool runInMaterialBefore;
-        public bool RunInMaterialBefore
-        {
-            get { return runInMaterialBefore; }
-            set
-            {
-                runInMaterialBefore = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string lastMadeText;
-        public string LastMadeText
-        {
-            get { return lastMadeText; }
-            set
-            {
-                lastMadeText = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-
-        #endregion
-
-        #region User Demands
-        private LatheManufactureOrder selectedOrder;
-        public LatheManufactureOrder SelectedOrder
-        {
-            get { return selectedOrder; }
-            set
-            {
-                selectedOrder = value;
-                LoadOrderCard();
-                OnPropertyChanged();
-            }
-        }
-
-        private MachineStatistics displayStats;
-        public MachineStatistics DisplayStats
-        {
-            get { return displayStats; }
-            set
-            {
-                displayStats = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string selectedFilter = "All Active";
+        private string selectedFilter;
         public string SelectedFilter
         {
             get { return selectedFilter; }
+            set { selectedFilter = value; Filter(); OnPropertyChanged(); }
+        }
+
+        private string searchString;
+
+        public string SearchString
+        {
+            get { return searchString; }
+            set { searchString = value; Filter(); OnPropertyChanged(); }
+        }
+
+
+        private ScheduleItem? selectedItem;
+        public ScheduleItem? SelectedItem
+        {
+            get { return selectedItem; }
             set
             {
-                selectedFilter = value;
-                FilterOrders();
-                OnPropertyChanged(nameof(FilteredOrders));
+                if (selectedItem is not null)
+                {
+                    selectedItem.PropertyChanged -= ItemUpdated;
+                }
+
+                selectedItem = value;
+
+                if (selectedItem is not null)
+                {
+                    selectedItem.PropertyChanged += ItemUpdated;
+                    EnrichOrder(selectedItem);
+                }
+
+                OnPropertyChanged();
+                SetSelectedItem();
             }
         }
 
-        private string searchTerm;
-        public string SearchTerm
+        private Dictionary<User, int> assignmentCounts;
+        public Dictionary<User, int> AssignmentCounts
         {
-            get { return searchTerm; }
+            get { return assignmentCounts; }
+            set { assignmentCounts = value; OnPropertyChanged(); }
+        }
+
+        private List<ScheduleItem> filteredItems;
+        public List<ScheduleItem> FilteredItems
+        {
+            get { return filteredItems; }
             set
             {
-                searchTerm = value;
-                //Search();
+                filteredItems = value;
                 OnPropertyChanged();
             }
         }
         #endregion
 
-
-
-
-        #region Visibility variables
-
-
-        public bool NoNotes { get; set; }
-
-
-        private Visibility modifiedVis;
-        public Visibility ModifiedVis
-        {
-            get { return modifiedVis; }
-            set
-            {
-                modifiedVis = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility archiveVis;
-        public Visibility ArchiveVis
-        {
-            get { return archiveVis; }
-            set
-            {
-                archiveVis = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-        #endregion Visibility variables
-
-        #region Commands
-        public PrintOrderCommand PrintOrderCommand { get; set; }
-        //public EditManufactureOrderCommand EditCommand { get; set; }
-        public CreateNewOrderCommand NewOrderCommand { get; set; }
-        //public GetProgramPlannerCommand GetProgramPlannerCmd { get; set; }
+        #region Core Data
+        private List<ScheduleItem> items;
+        private List<Machine> machines;
+        private List<LatheManufactureOrderItem> orderItems;
+        private List<BarStock> barStock;
+        private List<BarIssue> barIssues;
+        private List<MaterialInfo> materials;
+        private List<NonTurnedItem> nonTurnedItems;
+        private List<TurnedProduct> turnedItems;
+        private List<User> users;
+        private List<Lot> lots;
+        private List<Note> notes;
+        private List<OrderDrawing> drawingReferences;
+        private List<TechnicalDrawing> drawings;
+        private List<BreakdownCode> breakdownCodes;
+        private List<MachineBreakdown> machineBreakdowns;
+        private List<Product> products;
+        private List<ProductGroup> productGroups;
         #endregion
 
-        #region Icon Brushes
-        public Brush ToolingIconBrush { get; set; }
-        public Brush ProgramIconBrush { get; set; }
-        public Brush BarVerifiedIconBrush { get; set; }
-        public Brush BarAllocatedIconBrush { get; set; }
-        #endregion
+        Dictionary<string, ScheduleItem> editCopies = new();
 
-        //private WorkloadWindow _workloadWindow;
+        public OrderViewModelRelayCommand RelayCmd { get; set; }
+        public SendMessageCommand SendMessageCmd { get; set; }
+        public DeleteNoteCommand DeleteMessageCmd { get; set; }
+        public SaveNoteCommand SaveMessageCmd { get; set; }
+        public CreateNewOrderCommand CreateNewOrderCmd { get; set; }
 
-        #endregion Variables
+
+        private BackgroundWorker updateChecker;
+
 
         public OrderViewModel()
         {
-            //InitialiseVariables();
-            //Refresh();
+            LoadData();
+
+            SelectedFilter = "All Active";
+            SelectedItem = FilteredItems.First();
+            SetAssignmentData();
+            LoadCommands();
+
+            updateChecker = new() { WorkerSupportsCancellation = true };
+            updateChecker.DoWork += CheckForUpdates;
+            updateChecker.RunWorkerCompleted += OnWorkerCompleted;
+
+            updateChecker.RunWorkerAsync();
         }
 
-
-
-        #region Data Refreshing
-
-
-        private void CheckForReopenedOrders()
+        private void OnWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            List<LatheManufactureOrder> notClosed = Orders.Where(x => x.IsClosed && x.State < OrderState.Complete).ToList();
-            for (int i = 0; i < notClosed.Count; i++)
+            if (e.Cancelled == true)
             {
-                notClosed[i].MarkAsNotClosed();
-                Orders.Find(x => x.Id == notClosed[i].Id)!.IsClosed = false;
+                Debug.WriteLine("Cancelled!");
             }
-        }
-
-        private void CheckForClosedOrders()
-        {
-            List<LatheManufactureOrder> doneButNotClosed = Orders.Where(x => x.State > OrderState.Running && !x.IsClosed).ToList();
-            for (int i = 0; i < doneButNotClosed.Count; i++)
+            else if (e.Error != null)
             {
-                LatheManufactureOrder order = doneButNotClosed[i];
-                List<LatheManufactureOrderItem> items = OrderItems.Where(x => x.AssignedMO == order.Name).ToList();
-                List<Lot> lots = Lots.Where(x => x.Order == order.Name).ToList();
-
-                if (!OrderCanBeClosed(order, items, lots))
-                {
-                    continue;
-                }
-
-                order.MarkAsClosed();
-                Orders.Find(x => x.Id == doneButNotClosed[i].Id)!.IsClosed = true;
-            }
-        }
-
-        static bool OrderCanBeClosed(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<Lot> lots)
-        {
-            if ((order.ModifiedAt ?? DateTime.MinValue).AddDays(1) > DateTime.Now)
-            {
-                return false;
-            }
-
-            if (order.State > OrderState.Running)
-            {
-                List<LatheManufactureOrderItem> itemsWithBadCycleTimes = items.Where(i => i.CycleTime == 0 && i.QuantityMade > 0).ToList();
-                List<Lot> unresolvedLots = lots.Where(l => l.Quantity != 0 && !l.IsDelivered && !l.IsReject && l.AllowDelivery).ToList();
-
-                return itemsWithBadCycleTimes.Count == 0 // ensure cycle time is updated
-                    && unresolvedLots.Count == 0; // ensure lots are fully processed
+                Debug.WriteLine("Error: " + e.Error.Message);
             }
             else
             {
+                Debug.WriteLine("Done!");
+            }
+        }
+
+        private void CheckForUpdates(object sender, DoWorkEventArgs e)
+        {
+            if (sender is not BackgroundWorker worker) return;
+
+            DateTime lastConfirmedUpdate = DateTime.MinValue;
+
+            while (true)
+            {
+                if (worker.CancellationPending == true)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+                else
+                {
+                    TryGetUpdates(e, ref lastConfirmedUpdate);
+
+                    System.Threading.Thread.Sleep(2000);
+                }
+            }
+        }
+
+        private void TryGetUpdates(DoWorkEventArgs e, ref DateTime lastConfirmedUpdate)
+        {
+            ApplicationVariable? lupdate = DatabaseHelper.Read<ApplicationVariable>().Find(x => x.Id == "LAST_ORDER_UPDATE");
+
+            DateTime lastupdate = lupdate == null ? DateTime.MinValue : (DateTime)lupdate.Data;
+
+
+            if (lastupdate > lastConfirmedUpdate)
+            {
+                lastConfirmedUpdate = lastupdate;
+                List<ScheduleItem> freshCopies = new();
+                freshCopies.AddRange(DatabaseHelper.Read<LatheManufactureOrder>());
+                freshCopies.AddRange(DatabaseHelper.Read<GeneralManufactureOrder>());
+
+                foreach (ScheduleItem item in items)
+                {
+                    ScheduleItem freshCopy = freshCopies.Find(x => x.Name == item.Name);
+                    if (freshCopy == null) continue;
+
+                    if (editCopies.TryGetValue(item.Name, out ScheduleItem value))
+                    {
+                        value.StartDate = freshCopy.StartDate;
+                        value.AllocatedMachine = freshCopy.AllocatedMachine;
+                    }
+
+                    item.StartDate = freshCopy.StartDate;
+                    item.AllocatedMachine = freshCopy.AllocatedMachine;
+
+                    if (item.ModifiedAt != freshCopy.ModifiedAt)
+                    {
+                        Debug.WriteLine(item.Name + " modified");
+
+                        if (SelectedItem is not null)
+                        {
+                            if (SelectedItem.Name == item.Name)
+                            {
+                                if (e.Cancel)
+                                {
+                                    return;
+                                }
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    SelectedItem.TakeChanges(freshCopy);
+                                    LoadData();
+                                    EnrichOrder(SelectedItem);
+                                });
+                            }
+                            else
+                            {
+                                item.TakeChanges(freshCopy);
+                            }
+                        }
+                        else
+                        {
+                            item.TakeChanges(freshCopy);
+                        }
+
+                    }
+                }
+            }
+
+            UpdateLocks(e);
+        }
+
+        private void UpdateLocks(DoWorkEventArgs e)
+        {
+            List<string> locks = Directory.GetFiles(App.ROOT_PATH + "lib\\locks").ToList();
+
+            foreach (ScheduleItem item in items)
+            {
+                item.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) & !item.Editing;
+                if (SelectedItem is not null)
+                {
+                    if (SelectedItem.Name == item.Name)
+                    {
+                        if (e.Cancel)
+                        {
+                            return;
+                        }
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            SelectedItem.LockedForEditing = locks.Any(l => l.EndsWith($"{item.Name}.lock")) & !item.Editing;
+                        });
+                    }
+                }
+            }
+        }
+
+        private void LoadCommands()
+        {
+            RelayCmd = new(this);
+            SendMessageCmd = new(this);
+            DeleteMessageCmd = new(this);
+            SaveMessageCmd = new(this);
+            CreateNewOrderCmd = new(this);
+        }
+
+        private void LoadData()
+        {
+            DateTime start = DateTime.Now;
+            machines = DatabaseHelper.Read<Machine>();
+            machines.AddRange(DatabaseHelper.Read<Lathe>());
+
+            List<ScheduleItem> items = new();
+
+            items.AddRange(DatabaseHelper.Read<LatheManufactureOrder>());
+            items.AddRange(DatabaseHelper.Read<GeneralManufactureOrder>());
+
+            this.items = items;
+
+            Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
+            start = DateTime.Now;
+
+            this.orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
+            this.materials = DatabaseHelper.Read<MaterialInfo>();
+            this.barStock = DatabaseHelper.Read<BarStock>();
+            this.barStock.ForEach(x => x.MaterialData = materials.Find(m => m.Id == x.MaterialId));
+
+            this.barIssues = DatabaseHelper.Read<BarIssue>();
+
+            Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
+            start = DateTime.Now;
+
+
+            this.users = DatabaseHelper.Read<User>();
+            this.lots = DatabaseHelper.Read<Lot>();
+            this.notes = DatabaseHelper.Read<Note>();
+            this.drawingReferences = DatabaseHelper.Read<OrderDrawing>();
+            this.drawings = DatabaseHelper.Read<TechnicalDrawing>();
+            this.breakdownCodes = DatabaseHelper.Read<BreakdownCode>();
+
+            Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
+            start = DateTime.Now;
+
+
+            this.machineBreakdowns = DatabaseHelper.Read<MachineBreakdown>();
+            this.products = DatabaseHelper.Read<Product>();
+            this.productGroups = DatabaseHelper.Read<ProductGroup>();
+
+            this.nonTurnedItems = DatabaseHelper.Read<NonTurnedItem>();
+            this.turnedItems = DatabaseHelper.Read<TurnedProduct>();
+
+            Debug.WriteLine($"Point loaded in {(DateTime.Now - start).TotalSeconds:0.0000}s.");
+            start = DateTime.Now;
+        }
+
+        public void CreateNewOrder()
+        {
+            string targetName;
+            if (MessageBox.Show("Would you like to raise a Lathe order?", "Choose option", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes) == MessageBoxResult.Yes)
+            {
+                OrderConstructorWindow window = new()
+                {
+                    Owner = Application.Current.MainWindow
+                };
+
+                window.ShowDialog();
+
+                if (!window.SaveExit)
+                {
+                    return;
+                }
+                targetName = window.NewOrder.Name;
+            }
+            else
+            {
+                GeneralOrderConstructorWindow window;
+                try
+                {
+                    window = new() { Owner = Application.Current.MainWindow };
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                window.ShowDialog();
+
+                if (!window.SaveExit)
+                {
+                    return;
+                }
+
+                targetName = window.NewOrder.Name;
+            }
+
+
+            LoadData();
+            Filter();
+
+            SelectedItem = FilteredItems.Find(x => x.Name == targetName);
+
+            if (SelectedItem is null && FilteredItems.Count > 0)
+            {
+                SelectedItem = FilteredItems[0];
+            }
+        }
+
+        private void SetAssignmentData()
+        {
+            Dictionary<User, int> counts = new();
+            List<ScheduleItem> notComplete = items.Where(x => x.State < OrderState.Complete).ToList();
+            string[] uniqueUsers = notComplete.Where(x => !string.IsNullOrEmpty(x.AssignedTo)).Select(x => x.AssignedTo).Distinct().ToArray();
+            foreach (string uniqueUser in uniqueUsers)
+            {
+                User? user = users.Find(x => x.UserName == uniqueUser);
+                user ??= new()
+                {
+                    FirstName = "Unknown",
+                    LastName = "User",
+                    UserName = uniqueUser,
+                };
+
+                counts.Add(user, notComplete.Where(x => x.AssignedTo == uniqueUser).Count());
+            }
+
+
+            User? unassigned = new()
+            {
+                FirstName = "Unassigned",
+                UserName = "unassigned",
+                Emoji = "👻",
+            };
+
+            int unassignedCount = notComplete.Where(x => string.IsNullOrWhiteSpace(x.AssignedTo)).Count();
+            if (unassignedCount > 0)
+            {
+                counts.Add(unassigned, unassignedCount);
+            }
+
+            AssignmentCounts = counts;
+        }
+
+        void Filter()
+        {
+            List<ScheduleItem> results = new();
+            int maxResults = 200;
+
+            string? currentSelection = null;
+
+            if (SelectedItem is not null)
+            {
+                currentSelection = SelectedItem.Name;
+            }
+
+            string filterToUse = SelectedFilter;
+
+            if(!string.IsNullOrWhiteSpace(SearchString))
+            {
+                filterToUse = "All";
+            }
+
+            foreach (ScheduleItem item in items)
+            {
+                //if (results.Count >= maxResults)
+                //{
+                //    break;
+                //}
+
+                switch (filterToUse)
+                {
+                    case "All Active":
+                        if (item.State < OrderState.Complete || (item.ModifiedAt ?? DateTime.MinValue).AddDays(1) > DateTime.Now || !item.IsClosed)
+                        {
+                            results.Add(item);
+                        }
+                        break;
+
+                    case "Assigned To Me":
+                        if (item.AssignedTo == App.CurrentUser.UserName)
+                        {
+                            results.Add(item);
+                        }
+                        break;
+
+                    case "Not Ready":
+                        if (item.State == OrderState.Problem)
+                        {
+                            results.Add(item);
+                        }
+                        break;
+
+                    case "No Program":
+                        if (item is LatheManufactureOrder latheOrder)
+                        {
+                            if (!latheOrder.HasProgram && latheOrder.State < OrderState.Complete && latheOrder.StartDate > DateTime.MinValue)
+                            {
+                                results.Add(item);
+                            }
+                        }
+                        else if (item is GeneralManufactureOrder generalOrder)
+                        {
+                            if(!generalOrder.ProgramReady && generalOrder.State < OrderState.Complete && generalOrder.StartDate > DateTime.MinValue)
+                            {
+                                results.Add(item);
+                            }
+                        }
+                        break;
+                    case "Ready":
+                        if (item.State == OrderState.Ready || item.State == OrderState.Prepared)
+                        {
+                            results.Add(item);
+                        }
+                        break;
+
+                    case "Complete":
+                        if (item.State > OrderState.Running)
+                        {
+                            results.Add(item);
+                        }
+                        break;
+
+                    case "Development":
+                        if (item is LatheManufactureOrder latheOrder2)
+                        {
+                            if (latheOrder2.IsResearch && latheOrder2.State < OrderState.Complete)
+                            {
+                                results.Add(item);
+                            }
+                        }
+                        break;
+
+                    case "All":
+                        results.Add(item);
+                        break;
+                }
+            }
+            
+            if(filterToUse == "All" || filterToUse == "Complete")
+            {
+                results = results.OrderByDescending(x => x.StartDate).ToList();
+            }
+            else
+            {
+                results = results.OrderBy(x => x.State == OrderState.Running ? 0 : 1).ThenBy(x => x.State == OrderState.Running ? x.AllocatedMachine : "").ThenBy(x => x.State).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(SearchString))
+            {
+                List<ScheduleItem> filteredResults = new();
+                string sanitised = SearchString.Trim().ToUpperInvariant();
+                    
+                List<TurnedProduct> foundByTurnedProduct = turnedItems.Where(x => x.ProductName.Contains(sanitised, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                List<LatheManufactureOrderItem> foundLatheManufactureOrderItems = orderItems.Where(x => foundByTurnedProduct.Any(i => i.ProductName == x.ProductName)).ToList();    
+                    
+                List<NonTurnedItem> foundByNonTurnedProduct = nonTurnedItems.Where(x => x.Name.Contains(sanitised, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+                foreach (ScheduleItem result in results)
+                {
+                    if (result.Name.Contains(sanitised) || (result.POReference ?? string.Empty).Contains(sanitised, StringComparison.InvariantCultureIgnoreCase) || (result.AssignedTo ?? string.Empty).Equals(sanitised, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        filteredResults.Add(result);
+                        continue;
+                    }    
+
+                    if(result is LatheManufactureOrder latheOrder)
+                    {
+                        if(foundLatheManufactureOrderItems.Any(x => x.AssignedMO == latheOrder.Name)) {
+                            filteredResults.Add(result);
+                            continue;
+                        }
+                    }
+
+                    if (result is GeneralManufactureOrder generalOrder)
+                    {
+                        if (foundByNonTurnedProduct.Any(x => x.Id == generalOrder.NonTurnedItemId)) {
+                            filteredResults.Add(result);
+                            continue;
+                        }
+                    }
+                }
+
+
+                results = filteredResults.Take(maxResults).ToList();
+                
+            }
+
+            FilteredItems = results;
+            if (currentSelection is not null)
+            {
+                SelectedItem = FilteredItems.Find(i => i.Name == currentSelection);
+
+            }
+
+            if (FilteredItems.Count > 0 && SelectedItem == null)
+            {
+                SelectedItem = FilteredItems[0];
+                Debug.WriteLine("Setting to first SelectedItem: " + SelectedItem == null ? "null" : SelectedItem.Name);
+            }
+        }
+
+        private void EnrichOrder(ScheduleItem item)
+        {
+            item.Lots ??= lots.Where(x => x.Order == item.Name).OrderBy(x => x.DateProduced).ToList();
+            item.Notes ??= notes.Where(x => x.DocumentReference == item.Name).ToList();
+
+            if (item is LatheManufactureOrder latheOrder)
+            {
+                latheOrder.OrderItems = orderItems.Where(x => x.AssignedMO == latheOrder.Name).OrderByDescending(x => x.RequiredQuantity).ThenBy(x => x.ProductName).ToList();
+
+                latheOrder.Bar = barStock.Find(x => x.Id == latheOrder.BarID);
+                latheOrder.BarIssues = barIssues.Where(x => x.OrderId == latheOrder.Name).ToList();
+
+                latheOrder.DrawingsReferences = drawingReferences.Where(x => x.OrderId == latheOrder.Name).ToList();
+                latheOrder.Drawings = drawings.Where(x => latheOrder.DrawingsReferences.Any(r => r.DrawingId == x.Id)).ToList();
+
+                latheOrder.Breakdowns = machineBreakdowns.Where(x => x.OrderName == latheOrder.Name).ToList();
+                latheOrder.Breakdowns.ForEach(b => b.BreakdownMeta = breakdownCodes.Find(c => c.Id == b.BreakdownCode));
+
+                latheOrder.ProductGroup = productGroups.Find(x => x.Id == latheOrder.GroupId);
+                if (latheOrder.ProductGroup != null && latheOrder.Product == null)
+                {
+                    latheOrder.Product = products.Find(x => x.Id == latheOrder.ProductGroup.ProductId);
+                }
+
+                latheOrder.Briefing = GetBriefing(latheOrder);
+            }
+            else if (item is GeneralManufactureOrder generalOrder)
+            {
+                generalOrder.Item = nonTurnedItems.Find(x => x.Id == generalOrder.NonTurnedItemId);
+            }
+        }
+
+        private Briefing GetBriefing(LatheManufactureOrder latheOrder)
+        {
+            List<LatheManufactureOrder> ordersOfArchetype = new();
+            for (int i = 0; i < items.Count; i++)
+            {
+                ScheduleItem item = items[i];
+                if (item is not LatheManufactureOrder order) continue;
+                if (order.GroupId == latheOrder.GroupId && order.StartDate > DateTime.MinValue && order.IsComplete && order.Name != latheOrder.Name && order.StartDate < latheOrder.CreatedAt)
+                {
+                    ordersOfArchetype.Add(order);
+                }
+            }
+
+            Briefing result = new()
+            {
+                OrderName = latheOrder.Name,
+                NumberOfTimesRun = ordersOfArchetype.Count,
+                RunInMaterialBefore = ordersOfArchetype.Any(x => x.MaterialId == latheOrder.MaterialId)
+            };
+            result.ArchetypeRunBefore = result.NumberOfTimesRun > 0;
+            if (result.ArchetypeRunBefore)
+            {
+                result.LastRun = ordersOfArchetype.Max(x => x.StartDate);
+            }
+
+            return result;
+        }
+
+
+        internal void EnterEditMode()
+        {
+            if (SelectedItem == null) return;
+
+            if (File.Exists(App.ROOT_PATH + "lib\\locks\\" + $"{SelectedItem.Name}.lock"))
+            {
+                MessageBox.Show("Item is locked for editing");
+                return;
+            }
+
+            try
+            {
+                LockOrder(SelectedItem.Name);
+            }
+            catch
+            {
+                MessageBox.Show("Failed to lock order for editing");
+                return;
+            }
+
+            EditMode = true;
+            ScheduleItem copy = (ScheduleItem)SelectedItem.Clone();
+            editCopies.TryAdd(SelectedItem.Name, copy);
+
+
+            SelectedItem.Editing = true;
+        }
+
+        private static void LockOrder(string name)
+        {
+            try
+            {
+                File.WriteAllText(App.ROOT_PATH + "lib\\locks\\" + $"{name}.lock", App.CurrentUser.UserName + "|" + DateTime.Now.ToString("s"));
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        private static void UnlockOrder(string name)
+        {
+            try
+            {
+                File.Delete(App.ROOT_PATH + "lib\\locks\\" + $"{name}.lock");
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        internal void ExitEditMode(bool save)
+        {
+            if (SelectedItem == null)
+            {
+                MessageBox.Show("Nothing selected to save", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                UnlockOrder(SelectedItem.Name);
+            }
+            catch
+            {
+                MessageBox.Show("Failed to unlock order for editing");
+                return;
+            }
+
+
+            ScheduleItem copy;
+            try
+            {
+                copy = editCopies[SelectedItem.Name];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (SelectedItem is LatheManufactureOrder latheOrder && copy is LatheManufactureOrder latheOrderCopy)
+            {
+                bool updated = DetectLatheOrderChanges(latheOrder, latheOrderCopy);
+
+                if (updated && save)
+                {
+                    bool saved = SaveLatheOrder(latheOrder, latheOrderCopy);
+
+                    if (!saved)
+                    {
+                        MessageBox.Show("Failed to save changes");
+                        return;
+                    }
+
+                    drawingReferences = DatabaseHelper.Read<OrderDrawing>();
+                    drawings = DatabaseHelper.Read<TechnicalDrawing>();
+                    machineBreakdowns = DatabaseHelper.Read<MachineBreakdown>();
+
+                    latheOrder.DrawingsReferences = drawingReferences.Where(x => x.OrderId == latheOrder.Name).ToList();
+                    latheOrder.Drawings = drawings.Where(x => latheOrder.DrawingsReferences.Any(r => r.DrawingId == x.Id)).ToList();
+                    latheOrder.Breakdowns = machineBreakdowns.Where(x => x.OrderName == latheOrder.Name).ToList();
+
+                    latheOrder.Editing = false;
+
+                    for (int i = items.Count - 1; i >= 0; i--)
+                    {
+                        if (items[i].Name == latheOrder.Name)
+                        {
+                            items[i] = (LatheManufactureOrder)latheOrder.Clone();
+                            break;
+                        }
+                    }
+
+                    Filter();
+                    SelectedItem = FilteredItems.Find(x => x.Name == copy.Name);
+                    SetAssignmentData();
+                }
+                else if (updated)
+                {
+                    RestoreCopy(copy);
+                    SetAssignmentData();
+                }
+                else
+                {
+                    SelectedItem.Editing = false;
+                }
+            }
+            else if (SelectedItem is GeneralManufactureOrder generalOrder && copy is GeneralManufactureOrder generalOrderCopy)
+            {
+                bool updated = DetectGeneralOrderChanges(generalOrder, generalOrderCopy);
+
+                if (updated && save)
+                {
+                    bool saved = SaveGeneralOrder(generalOrder);
+
+                    if (!saved)
+                    {
+                        MessageBox.Show("failed to update database");
+                        return;
+                    }
+                    generalOrder.Editing = false;
+
+                    for (int i = items.Count - 1; i >= 0; i--)
+                    {
+                        if (items[i].Name == generalOrder.Name)
+                        {
+                            items[i] = (GeneralManufactureOrder)generalOrder.Clone();
+                            break;
+                        }
+                    }
+                    Filter();
+                    SelectedItem = FilteredItems.Find(x => x.Name == copy.Name);
+                    SetAssignmentData();
+                }
+                else if (updated)
+                {
+                    RestoreCopy(copy);
+                    SetAssignmentData();
+                }
+                else
+                {
+                    SelectedItem.Editing = false;
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            editCopies.Remove(copy.Name);
+            EditMode = false;
+        }
+
+        private void RestoreCopy(ScheduleItem copy)
+        {
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                if (items[i].Name == copy.Name)
+                {
+                    items[i] = copy;
+                    break;
+                }
+            }
+
+            Filter();
+            SelectedItem = FilteredItems.Find(x => x.Name == copy.Name);
+        }
+
+        private static bool SaveLatheOrder(LatheManufactureOrder latheOrder, LatheManufactureOrder oldCopy)
+        {
+            using SQLiteConnection conn = DatabaseHelper.GetConnection();
+            conn.BeginTransaction();
+
+            ApplicationVariable lupdate = new() { Id = "LAST_ORDER_UPDATE", Data = DateTime.Now };
+            conn.InsertOrReplace(lupdate);
+
+            if (!UpdateLots(latheOrder.Lots, oldCopy.Lots, conn))
+            {
+                conn.Rollback();
+                conn.Close();
                 return false;
             }
+
+            if (!UpdateItems(latheOrder.OrderItems, oldCopy.OrderItems, conn))
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
+
+            // Breakdowns
+            if (!UpdateBreakdowns(latheOrder.Breakdowns, oldCopy.Breakdowns, conn))
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
+
+            // Drawings
+            if (!UpdateDrawings(latheOrder.DrawingsReferences, oldCopy.DrawingsReferences, conn))
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
+
+
+            latheOrder.ModifiedAt = DateTime.Now;
+            latheOrder.ModifiedBy = App.CurrentUser.UserName;
+
+            if (conn.Update(latheOrder) != 1)
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
+
+            conn.Commit();
+            conn.Close();
+            return true;
+        }
+
+        private static bool UpdateBreakdowns(List<MachineBreakdown> to, List<MachineBreakdown> from, SQLiteConnection conn)
+        {
+            List<MachineBreakdown> added = to.Where(x => x.Id == 0).ToList();
+            List<MachineBreakdown> removed = from.Where(x => !to.Any(i => i.Id == x.Id)).ToList();
+
+            List<MachineBreakdown> updated = new();
+            for (int i = 0; i < to.Count; i++)
+            {
+                MachineBreakdown i1 = to[i];
+                if (i1.Id == 0) continue;
+                MachineBreakdown? i2 = from.Find(x => x.Id == i1.Id)
+                    ?? throw new KeyNotFoundException($"could not find Breakdown with ID '{i1.Id}' in copy");
+                if (i2.IsUpdated(i1))
+                {
+                    updated.Add(i1);
+                }
+            }
+
+
+            foreach (MachineBreakdown item in updated)
+            {
+                if (conn.Update(item) != 1)
+                {
+                    return false;
+                }
+            }
+
+
+            if (conn.InsertAll(added) != added.Count)
+            {
+                return false;
+            }
+
+            foreach (MachineBreakdown item in removed)
+            {
+                if (conn.Delete(item) != 1)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool UpdateItems(List<LatheManufactureOrderItem> to, List<LatheManufactureOrderItem> from, SQLiteConnection conn)
+        {
+            List<LatheManufactureOrderItem> added = to.Where(x => x.Id == 0).ToList();
+            List<LatheManufactureOrderItem> removed = from.Where(x => !to.Any(i => i.Id == x.Id)).ToList();
+
+            List<LatheManufactureOrderItem> updated = new();
+            for (int i = 0; i < to.Count; i++)
+            {
+                LatheManufactureOrderItem i1 = to[i];
+                if (i1.Id == 0) continue;
+                LatheManufactureOrderItem? i2 = from.Find(x => x.Id == i1.Id)
+                    ?? throw new KeyNotFoundException($"could not find Lathe Order Item with ID '{i1.Id}' in copy");
+                if (i2.IsUpdated(i1))
+                {
+                    updated.Add(i1);
+                }
+            }
+
+
+            foreach (LatheManufactureOrderItem item in updated)
+            {
+                if (conn.Update(item) != 1)
+                {
+                    return false;
+                }
+
+                if (item.CycleTime > 0)
+                {
+                    if (conn.Execute($"UPDATE {nameof(TurnedProduct)} SET CycleTime = {item.CycleTime} WHERE ProductName = '{item.ProductName}'") != 1)
+                    {
+                        return false;
+                    }
+
+                }
+            }
+
+
+            if (conn.InsertAll(added) != added.Count)
+            {
+                return false;
+            }
+
+            foreach (LatheManufactureOrderItem item in removed)
+            {
+                if (conn.Delete(item) != 1)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool UpdateLots(List<Lot> to, List<Lot> from, SQLiteConnection conn)
+        {
+            List<Lot> added = to.Where(x => x.ID == 0).ToList();
+            List<Lot> updated = new();
+            for (int i = 0; i < to.Count; i++)
+            {
+                Lot l1 = to[i];
+                if (l1.ID == 0) continue;
+                Lot? l2 = from.Find(x => x.ID == l1.ID)
+                    ?? throw new KeyNotFoundException($"could not find lot with ID '{l1.ID}' in copy");
+                if (l2.IsUpdated(l1))
+                {
+                    updated.Add(l1);
+                }
+            }
+
+            if (conn.UpdateAll(updated) != updated.Count)
+            {
+                return false;
+            }
+
+            if (conn.InsertAll(added) != added.Count)
+            {
+                return false;
+            }
+
+            foreach (Lot newLot in added)
+            {
+                LabelPrintingHelper.PrintLot(newLot);
+            }
+
+            return true;
+        }
+
+        private static bool UpdateDrawings(List<OrderDrawing> to, List<OrderDrawing> from, SQLiteConnection conn)
+        {
+            List<OrderDrawing> added = to.Where(x => x.Id == 0).ToList();
+            List<OrderDrawing> removed = from.Where(x => !to.Any(i => i.Id == x.Id)).ToList();
+
+            List<OrderDrawing> updated = new();
+            for (int i = 0; i < to.Count; i++)
+            {
+                OrderDrawing i1 = to[i];
+                if (i1.Id == 0) continue;
+                OrderDrawing? i2 = from.Find(x => x.Id == i1.Id)
+                    ?? throw new KeyNotFoundException($"could not find Drawing Reference with ID '{i1.Id}' in copy");
+                if (i2.IsUpdated(i1))
+                {
+                    updated.Add(i1);
+                }
+            }
+
+
+            foreach (OrderDrawing item in updated)
+            {
+                if (conn.Update(item) != 1)
+                {
+                    return false;
+                }
+            }
+
+
+            if (conn.InsertAll(added) != added.Count)
+            {
+                return false;
+            }
+
+            foreach (OrderDrawing item in removed)
+            {
+                if (conn.Delete(item) != 1)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool SaveGeneralOrder(GeneralManufactureOrder generalOrder)
+        {
+            using SQLiteConnection conn = DatabaseHelper.GetConnection();
+            conn.BeginTransaction();
+
+            for (int i = 0; i < generalOrder.Lots.Count; i++)
+            {
+                Lot lot = generalOrder.Lots[i];
+                if (lot.ID == 0)
+                {
+                    if (conn.Insert(lot) != 1)
+                    {
+                        conn.Rollback();
+                        conn.Close();
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (conn.Update(lot) != 1)
+                    {
+                        conn.Rollback();
+                        conn.Close();
+                        return false;
+                    }
+                }
+            }
+
+            generalOrder.FinishedQuantity = generalOrder.Lots.Where(x => x.IsAccepted).Sum(x => x.Quantity);
+            generalOrder.ModifiedAt = DateTime.Now;
+            generalOrder.ModifiedBy = App.CurrentUser.UserName;
+            int rows = conn.Update(generalOrder);
+
+            if (rows != 1)
+            {
+                conn.Rollback();
+                conn.Close();
+                return false;
+            }
+
+            conn.Commit();
+            conn.Close();
+            return true;
+        }
+
+
+        #region Lathe Order Change Detection
+        private bool DetectLatheOrderChanges(LatheManufactureOrder latheOrder, LatheManufactureOrder latheOrderCopy)
+        {
+            List<string> requiredFeatures = latheOrderCopy.ProductGroup.RequiresFeaturesList;
+            requiredFeatures.AddRange(latheOrderCopy.Product.RequiresFeaturesList);
+            requiredFeatures.AddRange(latheOrderCopy.Bar.RequiresFeaturesList);
+            MaterialInfo? material = materials.Find(m => m.Id == latheOrderCopy.MaterialId);
+            if (material != null)
+            {
+                requiredFeatures.AddRange(material.RequiresFeaturesList);
+            }
+
+            latheOrder.RequiredFeaturesList = requiredFeatures;
+
+            bool updated = latheOrderCopy.IsUpdated(latheOrder);
+            if (updated) return updated;
+
+            updated = LotsChanged(newCopy: latheOrder.Lots, originalCopy: latheOrderCopy.Lots);
+            if (updated) return updated;
+
+            updated = OrderItemsChanged(latheOrderCopy.OrderItems, latheOrder.OrderItems);
+            if (updated) return updated;
+
+            updated = DrawingReferencesChanged(latheOrderCopy.DrawingsReferences, latheOrder.DrawingsReferences);
+            if (updated) return updated;
+
+            updated = BreakdownsChanged(latheOrderCopy.Breakdowns, latheOrder.Breakdowns);
+            if (updated) return updated;
+
+            return updated;
+        }
+
+
+        private static bool BreakdownsChanged(List<MachineBreakdown> breakdowns1, List<MachineBreakdown> breakdowns2)
+        {
+            if (breakdowns1.Count != breakdowns2.Count) return true;
+            if (breakdowns1.Count == 0 && breakdowns2.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < breakdowns1.Count; i++)
+            {
+                MachineBreakdown item = breakdowns1[i];
+                MachineBreakdown? itemInOtherList = breakdowns2.Find(x => x.Id == item.Id);
+                if (itemInOtherList == null) return true;
+                //if (item.IsUpdated(itemInOtherList)) return true;
+            }
+
+            return false;
+        }
+
+        private static bool DrawingReferencesChanged(List<OrderDrawing> drawingsReferences1, List<OrderDrawing> drawingsReferences2)
+        {
+            if (drawingsReferences1.Count != drawingsReferences2.Count) return true;
+            if (drawingsReferences1.Count == 0 && drawingsReferences2.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < drawingsReferences1.Count; i++)
+            {
+                OrderDrawing orderDrawing = drawingsReferences1[i];
+                OrderDrawing? orderDrawingInOtherList = drawingsReferences2.Find(x => x.Id == orderDrawing.Id);
+                if (orderDrawingInOtherList == null) return true;
+                // Drawing refs do not get updated so just need to check they if exist in list or not
+            }
+
+            return false;
+        }
+
+        private static bool OrderItemsChanged(List<LatheManufactureOrderItem> orderItems1, List<LatheManufactureOrderItem> orderItems2)
+        {
+            if (orderItems1.Count != orderItems2.Count) return true;
+            if (orderItems1.Count == 0 && orderItems2.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < orderItems1.Count; i++)
+            {
+                LatheManufactureOrderItem item = orderItems1[i];
+                LatheManufactureOrderItem? itemInOtherList = orderItems2.Find(x => x.Id == item.Id);
+                if (itemInOtherList == null) return true;
+                if (item.IsUpdated(itemInOtherList)) return true;
+            }
+
+            return false;
         }
 
         #endregion
 
-        #region Loading
-
-        private void FilterOrders()
+        private static bool DetectGeneralOrderChanges(GeneralManufactureOrder generalOrder, GeneralManufactureOrder generalOrderCopy)
         {
-            switch (SelectedFilter)
+            bool updated = generalOrderCopy.IsUpdated(generalOrder);
+
+            if (!updated)
             {
-                case "All Active":
-                    FilteredOrders = Orders.Where(n => n.State < OrderState.Complete
-                            //|| n.ModifiedAt.AddDays(1) > DateTime.Now // TODO fix
-                            || !n.IsClosed)
-                        .OrderBy(x => x.State != OrderState.Running)
-                        .ThenBy(x => x.State == OrderState.Running ? x.AllocatedMachine : "")
-                        .ToList();
-                    break;
-
-                case "Assigned To Me":
-                    FilteredOrders = Orders
-                        .Where(x => !x.IsClosed && x.AssignedTo == App.CurrentUser.UserName)
-                        .Take(200)
-                        .ToList();
-                    break;
-
-                case "Not Ready":
-                    FilteredOrders = Orders.Where(n => n.State == OrderState.Problem).ToList();
-                    break;
-
-                case "No Program":
-                    FilteredOrders = Orders.Where(n => !n.HasProgram && n.State < OrderState.Complete && n.StartDate > DateTime.MinValue)
-                        .OrderBy(x => x.StartDate)
-                        .ToList();
-                    break;
-
-                case "Ready":
-                    FilteredOrders = Orders.Where(n => n.State == OrderState.Ready || n.State == OrderState.Prepared).ToList();
-                    break;
-
-                case "Complete":
-                    FilteredOrders = Orders.Where(n => n.State > OrderState.Running && n.IsClosed).OrderByDescending(n => n.ModifiedAt).Take(200).ToList();
-                    break;
-
-                case "Development":
-                    FilteredOrders = Orders
-                        .Where(n => n.IsResearch && n.State < OrderState.Complete)
-                        .OrderByDescending(n => n.CreatedAt)
-                        .Take(200)
-                        .ToList();
-                    break;
-
-                case "All":
-                    FilteredOrders = Orders.OrderByDescending(n => n.CreatedAt).Take(200).ToList();
-                    break;
+                updated = LotsChanged(newCopy: generalOrder.Lots, originalCopy: generalOrderCopy.Lots);
             }
 
-            if (FilteredOrders.Count > 0)
-            {
-                SelectedOrder = FilteredOrders.First();
-            }
+            return updated;
         }
 
-        #endregion Loading
 
-        private void LoadOrderCard()
+
+        private static bool LotsChanged(List<Lot> newCopy, List<Lot> originalCopy)
         {
-            if (SelectedOrder == null)
+            if (newCopy.Count != originalCopy.Count) return true;
+            List<Lot> addedLots = newCopy.Where(x => !originalCopy.Any(l => l.ID == x.ID)).ToList();
+
+            if (addedLots.Count > 0)
             {
-                return;
-            }
-
-            //LoadOrderObjects();
-            //SetUiElements();
-            List<Lot> orderLots = Lots.Where(x => x.Order == SelectedOrder.Name).ToList();
-
-            Task.Run(() => GetProgramCandidates());
-            Task.Run(() => GetOrderBreakdowns());
-        }
-
-        private void GetOrderBreakdowns()
-        {
-            if (SelectedOrder is null)
-            {
-                SelectedOrderBreakdowns = new();
-                OnPropertyChanged(nameof(SelectedOrderBreakdowns));
-                return;
+                return true;
             }
 
-            SelectedOrderBreakdowns = MachineBreakdowns
-                .Where(x => x.OrderName == SelectedOrder.Name)
-                .OrderBy(x => x.BreakdownStarted)
-                .ToList();
-            SelectedOrderBreakdowns
-                .ForEach(x => x.BreakdownMeta = BreakdownCodes.Find(b => b.Id == x.BreakdownCode));
-            OnPropertyChanged(nameof(SelectedOrderBreakdowns));
-        }
-
-        void GetProgramCandidates()
-        {
-            if (SelectedProductGroup is null)
+            for (int i = 0; i < originalCopy.Count; i++)
             {
-                ProgramCandidates = new();
-                return;
+                Lot lot = originalCopy[i];
+
+                Lot? newLotCopy = newCopy.Find(x => x.ID == lot.ID)
+                    ?? throw new KeyNotFoundException("Could not find lot (logic error)");
+
+                if (lot.IsUpdated(newLotCopy))
+                {
+                    return true;
+                }
             }
 
-            ProgramCandidates = GetPrograms(SelectedProductGroup, SelectedOrder.MaterialId);
-            OnPropertyChanged(nameof(ProgramCandidates));
+            return false;
         }
 
-        private List<NcProgram> GetPrograms(ProductGroup productGroup, int materialId)
+        internal void SendMessage(Note note)
         {
-            List<NcProgram> candidates = Programs
-                .Where(x => x.ProductStringIds.Contains($"{productGroup.ProductId:0}"))
-                .Where(x => x.GroupStringIds.Count == 0 || x.GroupStringIds.Contains($"{productGroup.Id:0}"))
-                .Where(x => x.MaterialsList.Count == 0 || x.MaterialsList.Contains($"{materialId:0}"))
-                .OrderByDescending(x => x.GroupStringIds.Count)
-                .ThenByDescending(x => x.MaterialsList.Count)
-                .ThenBy(x => x.Name.Length)
-                .ThenBy(x => x.Name)
-                .ToList();
+            if (SelectedItem is null) return;
+            note.DocumentReference = SelectedItem.Name;
+            note.Message = note.Message.Trim();
+            note.OriginalMessage = note.Message;
 
-            return candidates;
-        }
-
-        public void PrintSelectedOrder()
-        {
-            ReportPdf reportService = new();
-            OrderPrintoutData reportData = new()
+            List<User> usersToNotify = users.Where(x => x.Role >= UserRole.Production && x.ReceivesNotifications && x.UserName != App.CurrentUser.UserName).ToList();
+            Notification notification = new()
             {
-                Order = SelectedOrder,
-                Items = FilteredOrderItems.ToArray(),
-                Notes = FilteredNotes.ToArray()
+                Origin = App.CurrentUser.UserName,
+                Header = $"Comment - {SelectedItem.Name}",
+                Body = $"{App.CurrentUser.FirstName}: {note.Message[..Math.Min(note.Message.Length, 130)]}",
+                ToastAction = $"viewManufactureOrder:{SelectedItem.Name}",
+                TimeStamp = DateTime.Now,
             };
 
-            string path = GetTempPdfPath();
 
-            reportService.Export(path, reportData);
-            reportService.OpenPdf(path);
+            try
+            {
+                DatabaseHelper.Insert<Note>(note, throwErrs: true);
+                foreach (User user in usersToNotify)
+                {
+                    notification.TargetUser = user.UserName;
+                    DatabaseHelper.Insert(notification);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to add to database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            notes = DatabaseHelper.Read<Note>();
+            SelectedItem.Notes = SelectedItem.Notes.Append(note).ToList();
         }
 
-        private static string GetTempPdfPath()
+        public override void DeleteNote(Note note)
         {
-            return System.IO.Path.GetTempFileName() + ".pdf";
+            if (SelectedItem is null) return;
+
+            note.IsDeleted = true;
+
+            try
+            {
+                DatabaseHelper.Update(note, throwErrs: true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to add to database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            notes = DatabaseHelper.Read<Note>();
+            SelectedItem.Notes = notes.Where(x => x.DocumentReference == SelectedItem.Name).ToList();
+        }
+
+        public override void UpdateNote(Note note)
+        {
+            if (SelectedItem is null) return;
+
+            note.Message = note.Message.Trim();
+            if (note.Message == note.OriginalMessage)
+            {
+                return;
+            }
+
+            note.IsEdited = true;
+            note.DateEdited = DateTime.Now.ToString("s");
+
+            try
+            {
+                DatabaseHelper.Update(note, throwErrs: true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to add to database:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            notes = DatabaseHelper.Read<Note>();
+            SelectedItem.Notes = notes.Where(x => x.DocumentReference == SelectedItem.Name).ToList();
+        }
+
+        public override bool CanClose()
+        {
+            if (editCopies.Count > 0)
+            {
+                string ordersOpen = string.Join(Environment.NewLine, editCopies.Keys.ToArray());
+                // Locks will be created
+                MessageBox.Show("Cannot close, the following orders are open for editing:" + Environment.NewLine + ordersOpen, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            updateChecker.CancelAsync();
+
+            return true;
+        }
+
+        private void ItemUpdated(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ScheduleItem.AssignedTo))
+            {
+                SetAssignmentData();
+            }
+            else if (e.PropertyName == nameof(LatheManufactureOrder.BarID))
+            {
+                if (SelectedItem is not LatheManufactureOrder order) return;
+                order.Bar = barStock.Find(b => b.Id == order.BarID);
+            }
+
+
+        }
+
+        private void SetSelectedItem()
+        {
+            if (SelectedItem == null)
+            {
+                EditMode = false;
+                return;
+            }
+
+            EditMode = editCopies.ContainsKey(SelectedItem.Name);
+        }
+
+        public struct Briefing
+        {
+            public string OrderName { get; set; }
+            public bool ArchetypeRunBefore { get; set; }
+            public int NumberOfTimesRun { get; set; }
+            public bool RunInMaterialBefore { get; set; }
+            public DateTime LastRun { get; set; }
+        }
+
+        public void Dispose()
+        {
+            updateChecker.CancelAsync();
+        }
+
+        public bool OnCloseRequested()
+        {
+            if(editCopies.Count > 0)
+            {
+                string ordersOpen = string.Join(Environment.NewLine, editCopies.Keys.ToArray());
+                // Locks will be created
+                MessageBox.Show("Cannot close, the following orders are open for editing:" + Environment.NewLine + ordersOpen, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            updateChecker.CancelAsync();
+
+            return true;
         }
     }
 }
