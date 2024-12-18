@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using System;
@@ -143,10 +142,10 @@ namespace ProjectLighthouse.View.UserControls
                     OriginalMessage.Visibility = Visibility.Visible;
                 }
             }
-            
+
             if (Note.IsDeleted)
             {
-                if(App.CurrentUser.Role != UserRole.Administrator)
+                if (App.CurrentUser.Role != UserRole.Administrator)
                 {
                     MessageTextBlock.Text = "deleted message";
                 }
