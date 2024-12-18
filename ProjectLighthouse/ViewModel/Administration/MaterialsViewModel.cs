@@ -1,9 +1,7 @@
-﻿using DocumentFormat.OpenXml.Vml.Office;
-using LiveChartsCore;
+﻿using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using MigraDoc.DocumentObjectModel;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -68,7 +66,7 @@ namespace ProjectLighthouse.ViewModel.Administration
         public MaterialsViewModel()
         {
             XAxes = new[] { new Axis() { Labeler = value => value == -1 ? "n/a" : new DateTime((long)value).ToString("MM/yyyy") } };
-            OnPropertyChanged(nameof(XAxes));   
+            OnPropertyChanged(nameof(XAxes));
             GetData();
         }
 
@@ -134,7 +132,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 double barMass = bar.GetUnitMassOfBar();
                 double barValue = purchase.LineValue / purchase.QuantityRequired;
 
-                double rate = barValue/ barMass;
+                double rate = barValue / barMass;
 
                 chronChartData.Add(new(purchase.DateRequired, rate));
             }

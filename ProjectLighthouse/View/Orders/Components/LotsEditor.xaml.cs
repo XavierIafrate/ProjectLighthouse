@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;

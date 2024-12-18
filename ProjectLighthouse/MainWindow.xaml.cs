@@ -4,11 +4,9 @@ using ProjectLighthouse.ViewModel.Core;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.IO;
-using DocumentFormat.OpenXml.Vml.Office;
 using System;
 
 
@@ -149,7 +147,7 @@ namespace ProjectLighthouse
         {
             if (MainGrid.ActualWidth > 1350)
             {
-                
+
                 MainGrid.ColumnDefinitions[0].Width = new(Math.Min(MainGrid.ActualWidth * 0.2, App.CurrentUser.DefaultMenuWidth ?? 350), GridUnitType.Pixel);
             }
             else

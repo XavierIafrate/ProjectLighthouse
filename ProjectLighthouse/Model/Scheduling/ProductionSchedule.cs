@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace ProjectLighthouse.Model.Scheduling
 {
@@ -295,7 +295,7 @@ namespace ProjectLighthouse.Model.Scheduling
         internal bool RemoveHoliday(DateTime selection)
         {
             List<DateTime> holidays = Holidays.ToList();
-            if (!holidays.Remove(selection.ChangeTime(0,0,0,0)))
+            if (!holidays.Remove(selection.ChangeTime(0, 0, 0, 0)))
             {
                 MessageBox.Show("Could not find date in list of holidays");
                 return false;
@@ -313,7 +313,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
             Holidays = holidays;
             OnHolidaysChanged?.Invoke(this, EventArgs.Empty);
-            foreach(MachineSchedule machineSchedule in MachineSchedules) 
+            foreach (MachineSchedule machineSchedule in MachineSchedules)
             {
                 machineSchedule.SetHolidays(Holidays);
             }

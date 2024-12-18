@@ -1,11 +1,9 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using ProjectLighthouse.Model.Core;
+﻿using ProjectLighthouse.Model.Core;
 using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows;
 
 namespace ProjectLighthouse.Model.Orders
 {
@@ -153,7 +151,7 @@ namespace ProjectLighthouse.Model.Orders
                     // this record fully overlaps
                     return false;
                 }
-                
+
                 if ((BreakdownEnded > start && BreakdownEnded <= end) || (BreakdownStarted >= start && BreakdownStarted < end))
                 {
                     // partial overlap

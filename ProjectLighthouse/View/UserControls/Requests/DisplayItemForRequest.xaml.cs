@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
-using ProjectLighthouse.Model.Products;
+﻿using ProjectLighthouse.Model.Products;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -279,7 +278,7 @@ namespace ProjectLighthouse.View.Orders.Components
             {
                 partOff = Order.AssignedLathe.PartOff;
             }
-            
+
             if (partOff is not null)
             {
                 Order.NumberOfBars = Order.OrderItems.CalculateNumberOfBars(Order.Bar, Order.SpareBars, (double)partOff);

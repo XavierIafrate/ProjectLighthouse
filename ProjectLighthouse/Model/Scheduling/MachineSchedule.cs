@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Orders;
 using System;
 using System.Collections.Generic;
@@ -97,7 +96,7 @@ namespace ProjectLighthouse.Model.Scheduling
                     {
                         continue;
                     }
-                    
+
                     nonCancelledItemsOnMachine.Add(item);
                 }
 
@@ -273,7 +272,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
                     optimisations.Add(o);
                 }
-                
+
                 if (order.Bar.Size == previousOrder.Bar.Size && order.Bar.IsHexagon == previousOrder.Bar.IsHexagon)
                 {
                     Optimisation o = new()
@@ -335,7 +334,7 @@ namespace ProjectLighthouse.Model.Scheduling
                         advisories.Add(advisory);
                     }
                 }
-                
+
 
                 return advisories;
             }
@@ -420,7 +419,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
                     if (nextStart < requirementMadeAt)
                     {
-                        Warning warning = new() { Item = order, Type =Warning.WarningType.BlockingOverlap };
+                        Warning warning = new() { Item = order, Type = Warning.WarningType.BlockingOverlap };
 
                         warnings.Add(warning);
                     }

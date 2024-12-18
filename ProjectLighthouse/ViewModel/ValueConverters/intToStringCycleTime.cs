@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -23,7 +22,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             {
                 throw new InvalidCastException();
             }
-            
+
 
             if (cycleTime == 0)
             {

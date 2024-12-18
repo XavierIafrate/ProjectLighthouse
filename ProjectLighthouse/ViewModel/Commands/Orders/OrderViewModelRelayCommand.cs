@@ -1,6 +1,5 @@
 ﻿using ProjectLighthouse.ViewModel.Orders;
 using System;
-using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.ViewModel.Commands.Orders
@@ -58,7 +57,7 @@ namespace ProjectLighthouse.ViewModel.Commands.Orders
 
             if (argument == "cancel")
             {
-                this.viewModel.ExitEditMode(save:false);
+                this.viewModel.ExitEditMode(save: false);
                 return;
             }
 

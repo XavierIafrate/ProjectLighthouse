@@ -21,21 +21,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             {
                 int result = conn.Execute(query);
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 throw err;
             }
             return true;
         }
 
-        public static List<MachineStatistics> QueryMachineHistory(DateTime date)
-        {
-            using SQLiteConnection conn = GetConnection();
-            return conn.Query<MachineStatistics>(
-                query: $"SELECT * FROM {nameof(MachineStatistics)} WHERE {nameof(MachineStatistics.DataTime)} > ? ORDER BY {nameof(MachineStatistics.DataTime)}",
-                args: date.Ticks)
-                .ToList();
-        }
 
         public static bool Insert<T>(T item, bool throwErrs = false, SQLiteConnection? conn = null)
         {

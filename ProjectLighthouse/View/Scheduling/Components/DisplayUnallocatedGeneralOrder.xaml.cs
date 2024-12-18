@@ -1,22 +1,13 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using ProjectLighthouse.ViewModel.ValueConverters;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjectLighthouse.View.Scheduling.Components
 {
@@ -54,9 +45,9 @@ namespace ProjectLighthouse.View.Scheduling.Components
             control.OrderText.Text = control.Order.Name;
             control.EstimatedRuntimeTextBlock.Text = $"{new intToTimespanString().Convert(control.Order.TimeToComplete, typeof(string), null, new CultureInfo("en-GB")) ?? "N/A"}";
 
-           
-            
-                control.RequirementDueText.Text = $"{control.Order.RequiredDate:dd/MM/yy}";
+
+
+            control.RequirementDueText.Text = $"{control.Order.RequiredDate:dd/MM/yy}";
         }
 
         public DisplayUnallocatedGeneralOrder()

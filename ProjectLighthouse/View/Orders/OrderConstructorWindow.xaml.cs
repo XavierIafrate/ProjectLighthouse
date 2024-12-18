@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using ProjectLighthouse.Model.Drawings;
+﻿using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
@@ -601,13 +600,6 @@ namespace ProjectLighthouse.View.Orders
                 NewOrder.TimeCodeIsEstimate = true;
             }
 
-            NewOrder.RequiredFeaturesList = orderBar.RequiresFeaturesList;
-            NewOrder.RequiredFeaturesList.AddRange(orderBar.MaterialData.RequiresFeaturesList);
-            NewOrder.RequiredFeaturesList.AddRange(SelectedGroup.RequiresFeaturesList);
-            if (SelectedProduct is not null)
-            {
-                NewOrder.RequiredFeaturesList.AddRange(SelectedProduct.RequiresFeaturesList);
-            }
 
             NewOrder.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new(), new());
             NewOrder.TimeModelPlanned = timeModel;
