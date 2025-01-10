@@ -339,10 +339,10 @@
                 </TabItem.Header>
                 <StackPanel>
                     <local:TimeModelEditor MinHeight="100" Order="{Binding ElementName=parentControl, Path=Order}" />
-                    <local:BreakdownEditor
+                    <!--<local:BreakdownEditor
                         Margin="0,20,0,0"
                         CanEdit="{Binding ElementName=parentControl, Path=EditMode}"
-                        Order="{Binding ElementName=parentControl, Path=Order}" />
+                        Order="{Binding ElementName=parentControl, Path=Order}" />-->
                 </StackPanel>
 
             </TabItem>
@@ -375,10 +375,19 @@
                                         <TextBlock FontFamily="Consolas" Text=" | " />
                                         <TextBlock FontFamily="Consolas" Text="{Binding IssuedBy}" />
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                        <TextBlock Text="{Binding BarId}" FontFamily="Consolas" FontWeight="SemiBold"/>
-                                        <TextBlock Text=" - " FontFamily="Consolas" FontWeight="SemiBold"/>
-                                        <TextBlock Text="{Binding MaterialBatch, StringFormat='{}Batch ref: {0}'}" FontFamily="Consolas" FontWeight="SemiBold"/>
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                        <TextBlock
+                                            FontFamily="Consolas"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding BarId}" />
+                                        <TextBlock
+                                            FontFamily="Consolas"
+                                            FontWeight="SemiBold"
+                                            Text=" - " />
+                                        <TextBlock
+                                            FontFamily="Consolas"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding MaterialBatch, StringFormat='{}Batch ref: {0}'}" />
                                     </StackPanel>
                                     <TextBlock
                                         Grid.RowSpan="2"
