@@ -89,6 +89,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             int iPartNumber = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_CNREF"));
             int iRequired = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_REQQTY"));
             int iReceived = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_RECQTY"));
+            int iFunDec = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "DO_FUNDEC"));
 
             DbfRecord dbfRecord = new(dbfTable);
 
@@ -120,9 +121,12 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
                 _ = int.TryParse(dbfRecord.Values[iRequired].ToString(), out int required);
                 _ = int.TryParse(dbfRecord.Values[iReceived].ToString(), out int received);
+                _ = int.TryParse(dbfRecord.Values[iFunDec].ToString(), out int decPlaces);
 
-                required /= 100;
-                received /= 100;
+                int divisor = decPlaces == 4 ? 1 : 100;
+
+                required /= divisor;
+                received /= divisor;
 
                 PurchaseLine record = new()
                 {
