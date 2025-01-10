@@ -16,65 +16,163 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBlock
             Margin="10,5,0,10"
             Style="{StaticResource section}"
             Text="Machine Breakdowns" />
 
-        <Border
-            Visibility="Collapsed"
-            x:Name="AddNewBreakdownControls"
-            Grid.Row="1"
-            Margin="10,0"
-            Padding="10,5"
-            BorderBrush="{StaticResource Surface}"
-            BorderThickness="2"
-            CornerRadius="5">
 
-            <StackPanel MaxWidth="400">
-                <TextBlock
-                    Margin="0,2,0,0"
-                    Style="{StaticResource InputLabel}"
-                    Text="Breakdown Code" />
-
-                <ComboBox Margin="0" x:Name="BreakdownCodes_ComboBox">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Id}" FontFamily="Consolas" FontWeight="SemiBold" Margin="0,1,0,0" VerticalAlignment="Center" FontSize="15"/>
-                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="5,0" FontStyle="Italic"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBlock
-                    Margin="0,2,0,0"
-                    Style="{StaticResource InputLabel}"
-                    Text="Started" />
-                <userControls:DateTimePicker Margin="0,0,5,5" DateTime="{Binding ElementName=parentControl, Path=NewBreakdown.BreakdownStarted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
-                <TextBlock
-                    Margin="0,2,0,0"
-                    Style="{StaticResource InputLabel}"
-                    Text="Ended" />
-                <userControls:DateTimePicker Margin="0,0,5,5" DateTime="{Binding ElementName=parentControl, Path=NewBreakdown.BreakdownEnded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
-                <Button
-                    x:Name="AddBreakdownButton"
-                    HorizontalAlignment="Right"
-                    Click="AddBreakdownButton_Click"
-                    Content="Add"
-                    Style="{StaticResource Action_New_Button_Small}" />
-            </StackPanel>
-        </Border>
         <ListView
             Grid.Row="2"
+            MinHeight="50"
             Margin="10,5"
             ItemsSource="{Binding ElementName=parentControl, Path=Order.Breakdowns}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <userControls:DisplayMachineBreakdown Breakdown="{Binding}" Margin="10,0" />
+                    <userControls:DisplayMachineBreakdown Margin="10,0" Breakdown="{Binding}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Grid
+            x:Name="BreakdownViewGrid"
+            Grid.Row="3"
+            Margin="10"
+            Loaded="BreakdownViewGrid_Loaded"
+            SizeChanged="BreakdownViewGrid_SizeChanged">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Grid.Column="0"
+                Background="{StaticResource BlueFaded}"
+                CornerRadius="4,0,0,4"
+                Opacity="0.8" />
+            <Border
+                x:Name="setting_border"
+                BorderThickness="0"
+                CornerRadius="4,0,0,4"
+                Opacity="0.5"
+                SnapsToDevicePixels="True">
+                <Border.Background>
+                    <VisualBrush
+                        TileMode="Tile"
+                        Viewbox="0,0,5,5"
+                        ViewboxUnits="Absolute"
+                        Viewport="0,0,5,5"
+                        ViewportUnits="Absolute">
+                        <VisualBrush.Visual>
+                            <Grid>
+                                <Path
+                                    x:Name="HatchingPath"
+                                    Data="M 0 5 L 5 0 M -2 2 L 2 -2 M 3 7 L 7 3"
+                                    RenderOptions.EdgeMode="Unspecified"
+                                    Stroke="{StaticResource Blue}"
+                                    StrokeEndLineCap="Square"
+                                    StrokeThickness="1.5" />
+                            </Grid>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.Background>
+            </Border>
+            <Border
+                x:Name="orderBorder"
+                Grid.Column="1"
+                Background="{StaticResource BlueFaded}"
+                CornerRadius="0,4,4,0" />
+            <Grid x:Name="breakdownOverlayGrid" Grid.Column="1" />
+            <Grid x:Name="newBreakdownOverlayGrid" Grid.Column="1" Grid.ColumnSpan="2" />
+        </Grid>
+        <Grid
+            x:Name="AddNewBreakdownControls"
+            Grid.Row="4"
+            Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource section}" Text="Add Breakdown Record" />
+            <TextBlock
+                Grid.Row="3"
+                Margin="0,2,0,0"
+                Style="{StaticResource InputLabel}"
+                Text="Breakdown Code" />
+            <ComboBox
+                x:Name="BreakdownCodes_ComboBox"
+                Grid.Row="4"
+                Margin="0"
+                SelectedValue="{Binding ElementName=parentControl, Path=NewBreakdown.BreakdownCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedValuePath="Id">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                FontFamily="Consolas"
+                                FontWeight="SemiBold"
+                                Text="{Binding Id}" />
+                            <TextBlock
+                                FontSize="12"
+                                Text=" - " />
+                            <TextBlock
+                                MaxWidth="200"
+                                FontSize="12"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock
+                Grid.Row="1"
+                Margin="0,2,0,0"
+                Style="{StaticResource InputLabel}"
+                Text="Started" />
+            <userControls:DateTimePicker
+                Grid.Row="2"
+                x:Name="breakdownStartedDateTimePicker"
+                Margin="0,0,5,5"
+                DateTime="{Binding  ElementName=parentControl, Path=NewBreakdown.BreakdownStarted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="0,2,0,0"
+                Style="{StaticResource InputLabel}"
+                Text="Ended" />
+            <userControls:DateTimePicker
+                Grid.Row="2"
+                Grid.Column="1"
+                x:Name="breakdownEndedDateTimePicker"
+                Margin="0,0,5,5"
+                DateTime="{Binding  ElementName=parentControl, Path=NewBreakdown.BreakdownEnded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+            <Button
+                x:Name="AddBreakdownButton"
+                Grid.Row="4"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Content="Add Breakdown"
+                Style="{StaticResource Action_New_Button}" />
+        </Grid>
+        <TextBlock
+            x:Name="testTextBlock"
+            Grid.Row="5"
+            FontFamily="Consolas"
+            FontSize="16"
+            Text="TEST" />
     </Grid>
 </UserControl>
