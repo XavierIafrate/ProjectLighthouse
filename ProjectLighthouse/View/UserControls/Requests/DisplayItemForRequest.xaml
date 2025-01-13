@@ -16,16 +16,20 @@
                     FontWeight="SemiBold"
                     Text="ITEM_NAME" />
                 <StackPanel Orientation="Horizontal">
-                <TextBlock
-                    x:Name="StockText"
-                    FontSize="13"
-                    Foreground="{StaticResource Blue}"
-                    Text="QTY_IN_STOCK" />
-                    <Border CornerRadius="3" Background="{StaticResource BlueFaded}" Margin="5,0,0,0" x:Name="ActionBackground">
+                    <TextBlock
+                        x:Name="StockText"
+                        FontSize="13"
+                        Foreground="{StaticResource Blue}"
+                        Text="QTY_IN_STOCK" />
+                    <Border
+                        x:Name="ActionBackground"
+                        Margin="5,0,0,0"
+                        Background="{StaticResource BlueFaded}"
+                        CornerRadius="3">
                         <TextBlock
                             x:Name="ActionText"
-                            FontSize="13"
                             Margin="5,0"
+                            FontSize="13"
                             Foreground="{StaticResource Blue}"
                             Text="ACTION_TEXT" />
                     </Border>
@@ -37,8 +41,8 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Click="Button_Click"
-                Style="{StaticResource Action_New_Button_Small}"
-                Content="Add" />
+                Content="Add"
+                Style="{StaticResource Action_New_Button_Small}" />
         </Grid>
     </Border>
 </UserControl>
