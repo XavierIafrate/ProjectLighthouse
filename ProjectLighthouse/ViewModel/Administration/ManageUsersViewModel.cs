@@ -174,6 +174,8 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void EnableEdit()
         {
+            if (SelectedUser is null) return;
+
             ReadControlsVis = Visibility.Collapsed;
             EditControlsVis = Visibility.Visible;
         }

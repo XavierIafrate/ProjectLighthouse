@@ -18,7 +18,7 @@ namespace ProjectLighthouse.ViewModel.Commands.UserManagement
 
         public bool CanExecute(object parameter)
         {
-            return App.CurrentUser.Role == UserRole.Administrator && viewModel.SelectedUser.Role != UserRole.Administrator;
+            return App.CurrentUser.Role == UserRole.Administrator;
         }
 
         public void Execute(object parameter)
