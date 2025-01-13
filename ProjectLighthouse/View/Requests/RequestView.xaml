@@ -352,10 +352,10 @@
                                 <TextBlock Style="{StaticResource section}" Text="Select Items" />
                                 <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Border
-                                        Visibility="{Binding SyncHasNotRunRecently, Converter={StaticResource boolToCollapsedOrVisible}}"
                                         Padding="5,2"
                                         Background="{StaticResource GreenFaded}"
-                                        CornerRadius="5">
+                                        CornerRadius="5"
+                                        Visibility="{Binding SyncHasNotRunRecently, Converter={StaticResource boolToCollapsedOrVisible}}">
                                         <StackPanel Orientation="Horizontal">
                                             <Path
                                                 Width="12"
@@ -372,10 +372,10 @@
                                         </StackPanel>
                                     </Border>
                                     <Border
-                                        Visibility="{Binding SyncHasNotRunRecently, Converter={StaticResource boolToVisibleOrCollapsed}}"
                                         Padding="5,2"
                                         Background="{StaticResource RedFaded}"
-                                        CornerRadius="5">
+                                        CornerRadius="5"
+                                        Visibility="{Binding SyncHasNotRunRecently, Converter={StaticResource boolToVisibleOrCollapsed}}">
                                         <StackPanel Orientation="Horizontal">
                                             <Path
                                                 Width="12"
