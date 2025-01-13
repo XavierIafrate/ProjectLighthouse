@@ -348,7 +348,51 @@
                     <StackPanel Margin="10">
 
                         <StackPanel Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}">
-                            <TextBlock Style="{StaticResource section}" Text="Select Items" />
+                            <Grid>
+                                <TextBlock Style="{StaticResource section}" Text="Select Items" />
+                                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <Border
+                                        Visibility="{Binding SyncHasNotRunRecently, Converter={StaticResource boolToCollapsedOrVisible}}"
+                                        Padding="5,2"
+                                        Background="{StaticResource GreenFaded}"
+                                        CornerRadius="5">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="12"
+                                                Height="12"
+                                                Fill="{StaticResource Green}"
+                                                Style="{StaticResource Icon_Check}" />
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                d:Text="Last sync with Opera at 01/01/70"
+                                                FontSize="12"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Green}"
+                                                Text="{Binding Path=LastSyncRun, StringFormat='{}Last sync with Opera at {0:dd/MM/yy HH:mm}'}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border
+                                        Visibility="{Binding SyncHasNotRunRecently, Converter={StaticResource boolToVisibleOrCollapsed}}"
+                                        Padding="5,2"
+                                        Background="{StaticResource RedFaded}"
+                                        CornerRadius="5">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="12"
+                                                Height="12"
+                                                Fill="{StaticResource Red}"
+                                                Style="{StaticResource Icon_Cross}" />
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                d:Text="Last sync with Opera at 01/01/70"
+                                                FontSize="12"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Red}"
+                                                Text="{Binding Path=LastSyncRun, StringFormat='{}Last sync with Opera at {0:dd/MM/yy HH:mm}', TargetNullValue='Could not check last sync time'}" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
                             <TextBox
                                 Style="{StaticResource DefaultTextBox}"
                                 Tag="search items"

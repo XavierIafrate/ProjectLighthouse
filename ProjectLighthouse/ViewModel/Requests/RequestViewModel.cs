@@ -12,6 +12,7 @@ using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Requests;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.ValueConverters;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -168,6 +169,36 @@ namespace ProjectLighthouse.ViewModel.Requests
             set { selectedRequestOrder = value; OnPropertyChanged(); }
         }
 
+        private DateTime? lastSyncRun;
+
+        public DateTime? LastSyncRun
+        {
+            get { return lastSyncRun; }
+            set 
+            { 
+                lastSyncRun = value; 
+                OnPropertyChanged(); 
+                if(value is not null)
+                {
+                    SyncHasNotRunRecently = (DateTime.Now - (DateTime)value).TotalDays > 3;
+                }
+                else
+                {
+                    SyncHasNotRunRecently = true;
+                }
+            }
+        }
+
+        private bool syncHasNotRunRecently = true;
+
+        public bool SyncHasNotRunRecently
+        {
+            get { return syncHasNotRunRecently; }
+            set { syncHasNotRunRecently = value; OnPropertyChanged(); }
+        }
+
+
+
 
 
         #region Visibilities
@@ -319,6 +350,21 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             Orders = DatabaseHelper.Read<LatheManufactureOrder>();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
+
+            ApplicationVariable? lastSyncTime = DatabaseHelper.Read<ApplicationVariable>().Find(x => x.Id == "SYNC_LAST_RUN");
+
+            if(lastSyncTime is not null)
+            {
+                try
+                {
+                    DateTime lastSyncTimeVal = (DateTime)lastSyncTime.Data;
+                    LastSyncRun = lastSyncTimeVal;
+                }
+                catch
+                {
+                    // do nothing
+                }
+            }
 
 
             for (int i = 0; i < Orders.Count; i++)
