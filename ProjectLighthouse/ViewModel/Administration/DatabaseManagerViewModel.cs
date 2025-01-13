@@ -1,5 +1,4 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using DocumentFormat.OpenXml.Wordprocessing;
 using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Deliveries;
@@ -14,8 +13,11 @@ using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
@@ -199,9 +201,85 @@ namespace ProjectLighthouse.ViewModel.Administration
                     CSVHelper.WriteListToCSV(DatabaseHelper.Read<User>(), type.Replace(' ', '_'));
                     break;
 
+                case "SpeedTest":
+                    RunSpeedTest();
+                    break;
+
                 default:
                     return;
             }
+        }
+
+        private static void RunSpeedTest()
+        {
+            TimeSpan networkReadTime;
+            TimeSpan sisterNetworkReadTime;
+            TimeSpan localReadTime;
+            TimeSpan newServerReadTime;
+            TimeSpan gbchOperaT01ReadTime;
+            TimeSpan groupdbReadTime;
+            TimeSpan goodsyncReadTime;
+
+            try
+            {
+                //File.Copy(DatabaseHelper.DatabasePath, @"C:\Temp\test.db3", overwrite:true);
+                //File.Copy(DatabaseHelper.DatabasePath, @"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\test.db3", overwrite:true);
+                //File.Copy(DatabaseHelper.DatabasePath, @"\\GBCH-LIGHT-01\Lighthouse\test.db3", overwrite:true);
+                //File.Copy(DatabaseHelper.DatabasePath, @"\\GBCH-OPERA-T01\TEST\test.db3", overwrite:true);
+                ////File.Copy(DatabaseHelper.DatabasePath, @"\\goodsync01\WMS\Backups\test.db3", overwrite:true);
+                //File.Copy(DatabaseHelper.DatabasePath, @"\\GBCH-LIGHT-01\Lighthouse\test.db3", overwrite:true);
+                //File.Copy(DatabaseHelper.DatabasePath, @"\\groupdb01\WMS\xav_test\test.db3", overwrite:true);
+
+                var conn = new SQLiteConnection(DatabaseHelper.DatabasePath);
+                networkReadTime = RunSpeedTest(conn);
+
+                conn = new SQLiteConnection(@"C:\Temp\test.db3");
+                localReadTime = RunSpeedTest(conn);
+
+                conn = new SQLiteConnection(@"\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\test.db3");
+                sisterNetworkReadTime = RunSpeedTest(conn);
+
+                //conn = new SQLiteConnection(@"\\groupdb01\WMS\xav_test\test.db3");
+                //groupdbReadTime = RunSpeedTest(conn);
+
+                //conn = new SQLiteConnection(@"\\GBCH-LIGHT-01\Lighthouse\test.db3");
+                //newServerReadTime = RunSpeedTest(conn);
+
+                //conn = new SQLiteConnection(@"\\GBCH-OPERA-T01\TEST\test.db3");
+                //gbchOperaT01ReadTime = RunSpeedTest(conn);
+
+                //conn = new SQLiteConnection(@"\\goodsync01\WMS\Backups\test.db3");
+                //goodsyncReadTime = RunSpeedTest(conn);
+            }
+            catch (Exception e)
+            {
+                NotificationManager.NotifyHandledException(e);
+                return;
+            }
+
+            MessageBox.Show($"Network [{DatabaseHelper.DatabasePath}] : {networkReadTime.TotalSeconds:0.000}s{Environment.NewLine}" +
+                $@"Adjacent File [\\groupfile01\Sales\Production\Administration\Manufacture Records\Lighthouse\test.db3] : {sisterNetworkReadTime.TotalSeconds:0.000}s{Environment.NewLine}" +
+                $@"Local [C:\Temp\test.db3] : {localReadTime.TotalSeconds:0.000}s{Environment.NewLine}");
+            //+
+            //$@"Opera Test Server [\\GBCH-OPERA-T01\TEST\test.db3] : {gbchOperaT01ReadTime.TotalSeconds:0.000}s{Environment.NewLine}" +
+            //$@"GroupDB [\\groupdb01\WMS\xav_test\test.db3] : {groupdbReadTime.TotalSeconds:0.000}s{Environment.NewLine}" +
+            ////$@"GoodSync [\\goodsync01\WMS\Backups\test.db3] : {goodsyncReadTime.TotalSeconds:0.000}s{Environment.NewLine}" +
+            //$@"Network [\\GBCH-LIGHT-01\Lighthouse\test.db3] : {newServerReadTime.TotalSeconds:0.000}s", "Results");
+        }
+
+        private static TimeSpan RunSpeedTest(SQLiteConnection conn)
+        {
+            List<Note> result;
+            DateTime startTime = DateTime.Now;
+            using (conn)
+            {
+                conn.CreateTable<Note>();
+                result = conn.Table<Note>().ToList();
+            }
+
+            DateTime endTime = DateTime.Now;
+
+            return (endTime - startTime);
         }
 
 
