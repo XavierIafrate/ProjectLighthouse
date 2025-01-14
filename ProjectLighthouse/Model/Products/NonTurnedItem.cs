@@ -1,11 +1,12 @@
 ﻿using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Products
 {
-    public class NonTurnedItem : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation
+    public class NonTurnedItem : BaseObject, IAutoIncrementPrimaryKey, IObjectWithValidation, ICloneable
     {
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
@@ -117,6 +118,12 @@ namespace ProjectLighthouse.Model.Products
 
 
             throw new System.NotImplementedException();
+        }
+
+        public object Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<NonTurnedItem>(serialised);
         }
     }
 }
