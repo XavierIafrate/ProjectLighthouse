@@ -30,7 +30,6 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-
                 <Grid
                     x:Name="metaGrid"
                     Grid.Row="1"
@@ -187,9 +186,6 @@
                             Text="DEADLINE" />
                     </Grid>
 
-
-
-
                     <TextBlock Style="{StaticResource InputLabel}" Text="Material" />
                     <userControls:DisplayBarStock x:Name="BarStockDisplay" />
                     <TextBlock Style="{StaticResource InputLabel}" Text="Items" />
@@ -201,25 +197,22 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <TextBlock Style="{StaticResource InputLabel}" Text="Breakdowns" />
-                    <ItemsControl x:Name="OrderBreakdownsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <userControls:DisplayMachineBreakdown Breakdown="{Binding}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-
                     <TextBlock Style="{StaticResource InputLabel}" Text="Required Machine Features" />
-                    <ItemsControl x:Name="MachineRequirementsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}"/>
+                    <ItemsControl x:Name="MachineRequirementsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}" />
                 </StackPanel>
                 <Grid
                     x:Name="maintenanceGrid"
                     Grid.Row="3"
                     d:Visibility="Visible"
                     Visibility="Collapsed">
-                    <TextBlock Text="Unable to display maintenance" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <!--<userControls:NumberScroller />
+                        <userControls:NumberScroller StringFormat="{}{0:00}" />
+                        <userControls:NumberScroller />-->
+                    </StackPanel>
                 </Grid>
 
                 <StackPanel
@@ -227,7 +220,9 @@
                     Grid.Row="4"
                     d:Visibility="Visible"
                     Visibility="Collapsed">
-                    <TextBlock Text="PRODUCT_NAME" x:Name="ProductNameTextBlock"/>
+                    <TextBlock x:Name="ProductNameTextBlock" Text="PRODUCT_NAME" />
+                    <TextBlock x:Name="RequiredQuantityTextBlock" Text="PRODUCT_NAME" />
+                    <TextBlock x:Name="FinishedQuantityTextBlock" Text="PRODUCT_NAME" />
 
                 </StackPanel>
 
