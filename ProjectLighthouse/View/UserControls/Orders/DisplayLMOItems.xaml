@@ -36,7 +36,12 @@
                         FontSize="16"
                         FontWeight="SemiBold"
                         Text="{Binding ElementName=parentControl, Path=Item.ProductName}" />
-                    <Button Style="{StaticResource ClipboardButton_Icon}" ToolTip="Copy Export Code" Visibility="{Binding ElementName=parentControl, Path=Item.Gtin, Converter={StaticResource NotNullToVisibility}}" x:Name="ClipboardButton" Click="ClipboardButton_Click"/>
+                    <Button
+                        x:Name="ClipboardButton"
+                        Click="ClipboardButton_Click"
+                        Style="{StaticResource ClipboardButton_Icon}"
+                        ToolTip="Copy Export Code"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.Gtin, Converter={StaticResource NotNullToVisibility}}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
