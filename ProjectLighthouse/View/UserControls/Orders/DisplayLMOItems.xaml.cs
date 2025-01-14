@@ -116,5 +116,9 @@ namespace ProjectLighthouse.View.UserControls
             InitializeComponent();
         }
 
+        private void ClipboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(Item.Gtin);
+        }
     }
 }

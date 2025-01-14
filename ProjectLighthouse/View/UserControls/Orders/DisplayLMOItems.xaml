@@ -28,13 +28,16 @@
             </Grid.RowDefinitions>
 
             <StackPanel Margin="5,2,10,2" VerticalAlignment="Center">
-                <TextBlock
-                    Padding="0,2"
-                    VerticalAlignment="Center"
-                    d:Text="PRODUCT_NAME"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="{Binding ElementName=parentControl, Path=Item.ProductName}" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Padding="0,2"
+                        VerticalAlignment="Center"
+                        d:Text="PRODUCT_NAME"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="{Binding ElementName=parentControl, Path=Item.ProductName}" />
+                    <Button Style="{StaticResource ClipboardButton_Icon}" ToolTip="Copy Export Code" Visibility="{Binding ElementName=parentControl, Path=Item.Gtin, Converter={StaticResource NotNullToVisibility}}" x:Name="ClipboardButton" Click="ClipboardButton_Click"/>
+                </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
 
