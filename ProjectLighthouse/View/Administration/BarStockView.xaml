@@ -199,7 +199,7 @@
                         <Run d:Text="Stainless Steel, Grade AISI 303" Text="{Binding SelectedBarStock.BarStock.MaterialData, TargetNullValue='MATERIAL INFO NOT FOUND', Mode=OneWay}" />
                     </TextBlock>
 
-                    <Grid>
+                    <Grid Margin="10,20,10,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -273,7 +273,7 @@
                     </Grid>
 
 
-                    <Grid>
+                    <Grid Margin="10,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -304,14 +304,32 @@
                             FontSize="25"
                             Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}{0:#,##0}'}" />
 
+
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource InputLabel}"
+                            Text="Dormant Status" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            FontFamily="Consolas"
+                            FontSize="25"
+                            Text="Active "
+                            Visibility="{Binding SelectedBarStock.IsDormant, Converter={StaticResource boolToCollapsedOrVisible}}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            FontFamily="Consolas"
+                            FontSize="25"
+                            Foreground="{StaticResource Red}"
+                            Text="Dormant"
+                            Visibility="{Binding SelectedBarStock.IsDormant, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                     </Grid>
-                    <!--<TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Last Cost {0}', Converter={StaticResource priceConverter}}" />
-                    <TextBlock d:Text="EXPECTED_COST_TEXT" Text="{Binding SelectedBarStock.BarStock.ExpectedCost, StringFormat='{}Expected Cost {0}', Converter={StaticResource priceConverter}}" />
-                    <TextBlock d:Text="TARGET_STOCK_TEXT" Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}Suggested Stock: {0} pcs'}" />-->
 
-
-
-                    <Grid Margin="0,20" HorizontalAlignment="Center">
+                    <Grid
+                        Margin="0,20"
+                        HorizontalAlignment="Center"
+                        Visibility="{Binding SelectedBarStock.IsDormant, Converter={StaticResource boolToCollapsedOrVisible}}">
                         <Grid.Resources>
                             <Style x:Key="FormulaNumber" TargetType="{x:Type TextBlock}">
                                 <Setter Property="Foreground" Value="{StaticResource Purple}" />
@@ -412,19 +430,23 @@
 
                     </Grid>
 
-                    <Border
-                        Background="{StaticResource PurpleFaded}"
-                        CornerRadius="5"
-                        Visibility="{Binding SuggestedOrderText, Converter={StaticResource ObjectIsNotNull}}">
-                        <TextBlock
-                            Margin="5"
-                            HorizontalAlignment="Center"
-                            d:Text="SUGGESTED_ORDER_TEXT"
-                            FontSize="18"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding SuggestedOrderText}" />
-                    </Border>
+                    <Grid Visibility="{Binding SelectedBarStock.IsDormant, Converter={StaticResource boolToCollapsedOrVisible}}">
+                        <Border
+                            Background="{StaticResource PurpleFaded}"
+                            CornerRadius="5"
+                            Visibility="{Binding SuggestedOrderText, Converter={StaticResource ObjectIsNotNull}}">
+                            <TextBlock
+                                Margin="5"
+                                HorizontalAlignment="Center"
+                                d:Text="SUGGESTED_ORDER_TEXT"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Purple}"
+                                Text="{Binding SuggestedOrderText}" />
+                        </Border>
+                    </Grid>
+
+
 
                     <Grid Height="20" />
                     <Grid Visibility="{Binding DependentOrdersVis}">
@@ -443,7 +465,7 @@
                     </Grid>
                     <ListView
                         x:Name="OrderListView"
-                        Margin="5,5,5,50"
+                        Margin="5,5,5,20"
                         HorizontalContentAlignment="Stretch"
                         d:ItemsSource="{d:SampleData ItemCount=5}"
                         ItemsSource="{Binding SelectedBarStock.Orders}"
