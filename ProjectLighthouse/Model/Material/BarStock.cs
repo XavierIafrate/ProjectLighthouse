@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.ViewModel.Helpers;
+﻿using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -290,21 +291,8 @@ namespace ProjectLighthouse.Model.Material
 
         public object Clone()
         {
-            return new BarStock() 
-            {
-                Id = this.Id,
-                MaterialId = this.MaterialId,   
-                Length = this.Length,
-                Size = this.Size,
-                Cost = this.Cost,
-                OnOrder = this.OnOrder,
-                SuggestedStock = this.SuggestedStock,
-                IsHexagon = this.IsHexagon,
-                IsDormant = this.IsDormant,
-                RequiresFeatures = this.RequiresFeatures,
-                ErpId = this.ErpId,
-                IsSyncing = this.IsSyncing,
-            };
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<BarStock>(serialised);
         }
     }
 }
