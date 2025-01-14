@@ -21,16 +21,28 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <ListView
-            d:ItemsSource="{d:SampleData ItemCount=5}"
-            ItemsSource="{Binding Materials}"
-            SelectedValue="{Binding SelectedMaterial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <userControls:DisplayMaterialInfo MaterialInfo="{Binding}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ListView
+                d:ItemsSource="{d:SampleData ItemCount=5}"
+                ItemsSource="{Binding Materials}"
+                SelectedValue="{Binding SelectedMaterial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <userControls:DisplayMaterialInfo MaterialInfo="{Binding}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button
+                Grid.Row="1"
+                HorizontalAlignment="Left"
+                Command="{Binding AddOrEditMaterialCmd}"
+                Content="New Material"
+                Style="{StaticResource Action_New_Button}" />
+        </Grid>
         <ScrollViewer Grid.Column="1">
             <Grid>
                 <TextBlock
@@ -40,11 +52,19 @@
                     Opacity="0.5"
                     Text="No Material Selected"
                     Visibility="{Binding SelectedMaterial, Converter={StaticResource NullToVisibility}}" />
-                <StackPanel Margin="30,0" Visibility="{Binding SelectedMaterial, Converter={StaticResource NotNullToVisibility}}">
-                    <TextBlock
-                        FontFamily="Consolas"
-                        FontSize="30"
-                        Text="{Binding SelectedMaterial.MaterialCode}" />
+                <StackPanel Margin="30,0" Visibility="{Binding SelectedMaterial, Converter={StaticResource NotNullToVisibility}}" MaxWidth="700">
+                    <Grid HorizontalAlignment="Stretch">
+                        <TextBlock
+                            FontFamily="Consolas"
+                            FontSize="30"
+                            Text="{Binding SelectedMaterial.MaterialCode}" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Command="{Binding AddOrEditMaterialCmd}"
+                            CommandParameter="{Binding SelectedMaterial}"
+                            Content="Edit Material"
+                            Style="{StaticResource Action_Edit_Button}" />
+                    </Grid>
                     <TextBlock FontSize="25" Text="{Binding SelectedMaterial.MaterialText}" />
                     <TextBlock FontSize="25" Text="{Binding SelectedMaterial.GradeText, StringFormat='{}Grade {0}'}" />
 

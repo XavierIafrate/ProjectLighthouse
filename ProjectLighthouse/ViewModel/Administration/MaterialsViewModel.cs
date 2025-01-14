@@ -2,7 +2,10 @@
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Material;
+using ProjectLighthouse.View.Administration;
+using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
 using SkiaSharp;
@@ -63,11 +66,20 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         private List<BarStockPurchase> barStockPurchases;
 
+        public AddOrEditMaterialCommand AddOrEditMaterialCmd { get; set; }
+        private List<string> latheFeatures;
+
         public MaterialsViewModel()
         {
             XAxes = new[] { new Axis() { Labeler = value => value == -1 ? "n/a" : new DateTime((long)value).ToString("MM/yyyy") } };
             OnPropertyChanged(nameof(XAxes));
             GetData();
+            AddOrEditMaterialCmd = new(this);
+
+            List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
+            latheFeatures = new();
+            lathes.ForEach(l => latheFeatures.AddRange(l.FeatureList));
+            latheFeatures = latheFeatures.Distinct().OrderBy(x => x).ToList();
         }
 
         private void GetData()
@@ -188,6 +200,20 @@ namespace ProjectLighthouse.ViewModel.Administration
             OnPropertyChanged(nameof(Rates));
             OnPropertyChanged(nameof(Series));
             OnPropertyChanged(nameof(PriceToMassSeries));
+        }
+
+        public void AddOrEditMaterial(MaterialInfo? material)
+        {
+            AddMaterialInfoWindow window = new(latheFeatures, material)
+            {
+                Owner = App.MainViewModel.MainWindow
+            };
+            window.ShowDialog();
+
+            if(window.SaveExit)
+            {
+                // stuff
+            }
         }
     }
 }
