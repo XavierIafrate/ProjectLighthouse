@@ -291,6 +291,25 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
+        public void EditBar(BarStock bar)
+        {
+            List<string> machineFeatures = GetMachineFeatures();
+
+            NewBarWindow window = new(machineFeatures, bar)
+            {
+                Owner = App.MainViewModel.MainWindow,
+            };
+
+            window.ShowDialog();
+
+            if (window.SaveExit)
+            {
+                SearchString = "";
+                LoadData();
+                SearchString = window.NewBar.Id;
+            }
+        }
+
         private List<string> GetMachineFeatures()
         {
             List<string> result = new();
