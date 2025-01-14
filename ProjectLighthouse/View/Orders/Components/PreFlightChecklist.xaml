@@ -114,7 +114,16 @@
                 ItemsSource="{Binding BarStock, ElementName=parentControl}"
                 SelectedValue="{Binding Order.BarID, ElementName=parentControl}"
                 SelectedValuePath="Id"
-                SelectionChanged="barComboBox_SelectionChanged" />
+                SelectionChanged="barComboBox_SelectionChanged" >
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Id}"/>
+                            <TextBlock Foreground="{StaticResource Red}" Text=" *Dormant*" HorizontalAlignment="Right" Visibility="{Binding Path=IsDormant, Converter={StaticResource boolToVisibleOrCollapsed}}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
             <CheckBox
                 Grid.Column="1"

@@ -1,8 +1,6 @@
-﻿using MigraDoc.DocumentObjectModel;
-using ProjectLighthouse.Model.Material;
+﻿using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -65,7 +63,7 @@ namespace ProjectLighthouse.View.Orders.Components
                 return;
             }
 
-            control.BarStock = control.baseBarStock.Where(x => x.MaterialId == control.Order.MaterialId && x.Size >= control.Order.MajorDiameter && x.IsHexagon == (control.Order.ProductGroup??new()).UsesHexagonBar).ToList();
+            control.BarStock = control.baseBarStock.Where(x => x.MaterialId == control.Order.MaterialId && x.Size >= control.Order.MajorDiameter && x.IsHexagon == (control.Order.ProductGroup ?? new()).UsesHexagonBar).ToList();
             control.barComboBox.SelectedValue = control.BarStock.Find(x => x.Id == control.Order.BarID);
             control.BarSelection.IsEnabled = control.Order.NumberOfBarsIssued == 0;
 
@@ -80,7 +78,7 @@ namespace ProjectLighthouse.View.Orders.Components
 
             if (Order.Product.RequiresFeaturesList.Count > 0)
             {
-                foreach(string feature in Order.Product.RequiresFeaturesList)
+                foreach (string feature in Order.Product.RequiresFeaturesList)
                 {
                     result.Add($"Product '{Order.Product.Name}' requires machine feature '{feature}'");
                 }
@@ -130,7 +128,7 @@ namespace ProjectLighthouse.View.Orders.Components
                 }
                 else
                 {
-                    bool canEdit = (App.CurrentUser.HasPermission(Model.Core.PermissionType.EditOrder) 
+                    bool canEdit = (App.CurrentUser.HasPermission(Model.Core.PermissionType.EditOrder)
                         || Order.AssignedTo == App.CurrentUser.UserName) && Order.State < OrderState.Running;
 
                     EditLockBadge.Visibility = !canEdit
@@ -151,7 +149,7 @@ namespace ProjectLighthouse.View.Orders.Components
         {
             InitializeComponent();
 
-            baseBarStock = DatabaseHelper.Read<BarStock>().Where(x => !x.IsDormant).OrderBy(x => x.Id).ToList();
+            baseBarStock = DatabaseHelper.Read<BarStock>().OrderBy(x => x.Id).ToList();
             List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>();
 
             baseBarStock.ForEach(x => x.MaterialData = materials.Find(m => m.Id == x.MaterialId));
