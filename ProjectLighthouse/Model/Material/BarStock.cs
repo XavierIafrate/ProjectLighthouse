@@ -147,7 +147,19 @@ namespace ProjectLighthouse.Model.Material
 
         [Ignore]
         public MaterialInfo MaterialData { get; set; }
-        public int MaterialId { get; set; }
+
+
+        private int materialId;
+        public int MaterialId
+        {
+            get { return materialId; }
+            set 
+            { 
+                materialId = value; 
+                OnPropertyChanged(); 
+            }
+        }
+
 
 
         public double? ExpectedCost
