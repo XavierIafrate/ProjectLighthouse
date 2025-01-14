@@ -94,8 +94,7 @@
                     Grid.Column="2"
                     Margin="0"
                     Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBoxItem Content="Active" IsSelected="True" />
-                    <ComboBoxItem Content="Last 14 Days" />
+                    <ComboBoxItem Content="Last 14 Days" IsSelected="True" />
                     <ComboBoxItem Content="My Requests" />
                     <ComboBoxItem Content="Pending" />
                     <ComboBoxItem Content="Accepted" />
