@@ -575,6 +575,14 @@ namespace ProjectLighthouse.ViewModel.Orders
             if (item is LatheManufactureOrder latheOrder)
             {
                 latheOrder.OrderItems = orderItems.Where(x => x.AssignedMO == latheOrder.Name).OrderByDescending(x => x.RequiredQuantity).ThenBy(x => x.ProductName).ToList();
+                latheOrder.OrderItems.ForEach(x =>
+                {
+                    TurnedProduct? p = turnedItems.Find(i => i.ProductName == x.ProductName);
+                    if (p != null)
+                    {
+                        x.Gtin = p.ExportProductName;
+                    }
+                });
 
                 latheOrder.Bar = barStock.Find(x => x.Id == latheOrder.BarID);
                 latheOrder.BarIssues = barIssues.Where(x => x.OrderId == latheOrder.Name).ToList();

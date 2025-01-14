@@ -501,7 +501,6 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Rectangle Fill="#01ffffff" Visibility="{Binding ElementName=parentControl, Path=EditMode, Converter={StaticResource boolToCollapsedOrVisible}}" />
             </Grid>
 
             <Border

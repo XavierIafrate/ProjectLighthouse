@@ -746,6 +746,15 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             SelectedRequestOrder = Orders.Find(x => x.Id == SelectedRequest.OrderId);
 
+            SelectedRequestOrder?.OrderItems.ForEach(x =>
+                {
+                    TurnedProduct? p = Items.Find(i => i.ProductName == x.ProductName);
+                    if (p != null)
+                    {
+                        x.Gtin = p.ExportProductName;
+                    }
+                });
+
             if (SelectedRequest == NewRequest)
             {
                 RemoveFromRequestCmd = new(this);
@@ -932,7 +941,6 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void ShowMakeOrBuy()
         {
-            // TODO tidy
             if (SelectedRequestItems.Any(x => x.Item is null))
             {
                 MessageBox.Show("Could not find product", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -1110,10 +1118,6 @@ namespace ProjectLighthouse.ViewModel.Requests
                     case "All":
                         FilteredRequests = Requests;
                         break;
-                    case "Active":
-                        FilteredRequests = Requests.Where(x => x.Status == Request.RequestStatus.Pending) // TODO improve
-                                    .ToList();
-                        break;
                     case "Last 14 Days":
                         FilteredRequests = Requests.Where(n => n.RaisedAt.AddDays(14) > DateTime.Now).ToList();
                         break;
@@ -1136,7 +1140,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            string searchToken = SearchString.ToUpperInvariant();
+            string searchToken = SearchString.Trim().ToUpperInvariant();
             List<int> requestIds = new();
 
             requestIds.AddRange(RequestItems.Where(x => x.Item is not null).Where(x => x.Item!.ProductName.Contains(searchToken)).Select(x => x.RequestId).ToList());

@@ -192,6 +192,9 @@ namespace ProjectLighthouse.Model.Orders
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public int QuantityInStock { get; set; }
 
+        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
+        public string? Gtin { get; set; }
+
         public LatheManufactureOrderItem()
         {
 
