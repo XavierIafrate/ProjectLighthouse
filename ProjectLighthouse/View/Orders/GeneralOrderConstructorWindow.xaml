@@ -36,7 +36,7 @@
                 Tag="product description"
                 Text="{Binding ElementName=parentControl, Path=NewItem.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Style="{StaticResource InputLabel}" Text="Cycle Time" />
-            <usercontrols:CycleTimeInput x:Name="CycleTimeControl" CycleTime="{Binding  ElementName=parentControl, Path=NewItem.CycleTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <usercontrols:CycleTimeInput x:Name="CycleTimeControl" CycleTime="{Binding ElementName=parentControl, Path=NewItem.CycleTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Button
                 x:Name="CreateProductButton"
@@ -44,12 +44,15 @@
                 Click="CreateProductButton_Click"
                 Content="Add Product"
                 Style="{StaticResource Action_New_Button}" />
-            <StackPanel Orientation="Horizontal" x:Name="UpdateProductControls" HorizontalAlignment="Right">
+            <StackPanel
+                x:Name="UpdateProductControls"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
                 <Button
                     x:Name="CancelProductChangesButton"
+                    Click="CancelProductChangesButton_Click"
                     Content="Cancel"
-                    Style="{StaticResource Action_Cancel_Button}"
-                    Click="CancelProductChangesButton_Click"/>
+                    Style="{StaticResource Action_Cancel_Button}" />
                 <Button
                     x:Name="SaveProductButton"
                     HorizontalAlignment="Right"
@@ -64,7 +67,12 @@
 
             <Grid>
                 <TextBlock Style="{StaticResource InputLabel}" Text="Select Item" />
-                <Button Content="Edit" HorizontalAlignment="Right" Style="{StaticResource Action_Edit_Button_Small}" x:Name="EditProductButton" Click="EditProductButton_Click"/>
+                <Button
+                    x:Name="EditProductButton"
+                    HorizontalAlignment="Right"
+                    Click="EditProductButton_Click"
+                    Content="Edit"
+                    Style="{StaticResource Action_Edit_Button_Small}" />
             </Grid>
             <ComboBox
                 DisplayMemberPath="Name"
