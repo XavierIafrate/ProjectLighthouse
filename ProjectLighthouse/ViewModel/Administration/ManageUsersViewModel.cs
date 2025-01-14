@@ -176,6 +176,12 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             if (SelectedUser is null) return;
 
+            if(SelectedUser.UserName == "sysadmin")
+            {
+                MessageBox.Show("This account cannot be edited", "Action prevented", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             ReadControlsVis = Visibility.Collapsed;
             EditControlsVis = Visibility.Visible;
         }
