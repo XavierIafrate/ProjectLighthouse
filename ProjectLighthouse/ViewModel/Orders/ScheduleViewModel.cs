@@ -224,7 +224,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
-        
+
         private void LoadData()
         {
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>(throwErrs: true);
@@ -232,7 +232,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             machines.AddRange(lathes);
 
             this.Machines = machines;
-            
+
             ScheduleItems = GetScheduleItems();
 
             try
@@ -254,22 +254,19 @@ namespace ProjectLighthouse.ViewModel.Orders
             List<LatheManufactureOrderItem> orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>(throwErrs: true);
             List<GeneralManufactureOrder> generalOrders = DatabaseHelper.Read<GeneralManufactureOrder>(throwErrs: true);
             List<NonTurnedItem> generalOrderItems = DatabaseHelper.Read<NonTurnedItem>(throwErrs: true);
-            List<MachineBreakdown> orderBreakdowns = DatabaseHelper.Read<MachineBreakdown>(throwErrs: true);
-            List<BreakdownCode> codes = DatabaseHelper.Read<BreakdownCode>(throwErrs: true);
             List<MachineService> machineServices = DatabaseHelper.Read<MachineService>(throwErrs: true);
-            List<BarStock> bars = DatabaseHelper.Read<BarStock>(throwErrs:true);
-            List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>(throwErrs:true);
+            List<BarStock> bars = DatabaseHelper.Read<BarStock>(throwErrs: true);
+            List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>(throwErrs: true);
 
             bars.ForEach(b => b.MaterialData = materials.Find(m => m.Id == b.MaterialId));
-            orderBreakdowns.ForEach(b => b.BreakdownMeta = codes.Find(c => c.Id == b.BreakdownCode));
 
             List<ScheduleItem> allItems = new();
-            orders.ForEach(x => {
+            orders.ForEach(x =>
+            {
                 x.OrderItems = orderItems.Where(i => i.AssignedMO == x.Name).ToList();
-                x.Breakdowns = orderBreakdowns.Where(b => b.OrderName == x.Name).OrderBy(b => b.BreakdownStarted).ToList();
                 x.Bar = bars.Find(b => b.Id == x.BarID);
                 allItems.Add(x);
-                }
+            }
             );
 
             generalOrders.ForEach(x => x.Item = generalOrderItems.Find(i => i.Id == x.NonTurnedItemId));
@@ -293,7 +290,7 @@ namespace ProjectLighthouse.ViewModel.Orders
                 {
                     AddNewItem(info.item);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     NotificationManager.NotifyHandledException(ex);
                     return;
