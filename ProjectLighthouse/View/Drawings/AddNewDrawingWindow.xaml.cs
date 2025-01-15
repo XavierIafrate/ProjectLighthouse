@@ -394,7 +394,6 @@ namespace ProjectLighthouse.View.Drawings
 
             if (!CustomerIssueMode)
             {
-                // TODO move to notifications manager
                 List<User> ToNotify = App.NotificationsManager.Users.Where(x => x.HasPermission(PermissionType.ApproveDrawings) && x.UserName != App.CurrentUser.UserName).ToList();
 
                 for (int i = 0; i < ToNotify.Count; i++)

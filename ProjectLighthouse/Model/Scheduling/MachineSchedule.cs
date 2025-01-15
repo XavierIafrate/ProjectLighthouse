@@ -127,7 +127,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
                     if (item is LatheManufactureOrder order)
                     {
-                        if (order.State < OrderState.Complete && previousOrder != null) // TODO check this previousOrder null check
+                        if (order.State < OrderState.Complete && previousOrder != null)
                         {
                             optimisations.AddRange(GetOrderOptimisations(order, previousOrder));
 

@@ -121,7 +121,6 @@ namespace ProjectLighthouse.Model.Quality
 
         private static double GetBasicTolerance(string f)
         {
-            // TODO error handling
             return BasicTolerances[f];
         }
 

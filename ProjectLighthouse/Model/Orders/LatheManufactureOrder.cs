@@ -34,7 +34,7 @@ namespace ProjectLighthouse.Model.Orders
                 {
                     result = OrderState.Running;
                 }
-                else if (BarIsAllocated && HasProgram && AllToolingReady && BarIsVerified) // TODO check logic here
+                else if (BarIsAllocated && HasProgram && AllToolingReady && BarIsVerified)
                 {
                     result = OrderState.Prepared;
                 }

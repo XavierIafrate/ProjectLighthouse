@@ -815,7 +815,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             foreach (RequestItem requestItem in SelectedRequestItems!)
             {
                 requestItem.Item = Items.Find(x => x.Id == requestItem.ItemId);
-                requestItem.Item?.ValidateForOrder(); // TODO check
+                requestItem.Item?.ValidateForOrder();
                 requestItem.RequirementChanged += EvaluateCanSaveChanges;
             }
 

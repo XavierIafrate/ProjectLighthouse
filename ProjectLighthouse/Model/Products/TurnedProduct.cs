@@ -84,7 +84,6 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
-        // TODO review
         private double majorDiameter;
         [Import("Major Diameter")]
         public double MajorDiameter

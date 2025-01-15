@@ -129,7 +129,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
         }
 
 
-        // TODO calculate flat start
         private static TimeModel GetCycleResponse(List<(double, int)> items)
         {
             items = items.Where(x => x.Item2 > 0).OrderBy(x => x.Item1).ToList();
@@ -168,7 +167,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             // no decrease
             if (a1 < 0 || double.IsNaN(a1))
             {
-                // TODO Handle capped gradient properly
                 return new TimeModel() { Intercept = meanY, Gradient = 0, Floor = min, RecordCount = 0, CoefficientOfDetermination = 0 };
             }
 

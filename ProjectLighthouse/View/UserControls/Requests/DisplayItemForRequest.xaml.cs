@@ -14,7 +14,6 @@ namespace ProjectLighthouse.View.UserControls
             set { SetValue(AddCommandProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for AddCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AddCommandProperty =
             DependencyProperty.Register("AddCommand", typeof(ICommand), typeof(DisplayItemForRequest), new PropertyMetadata(null, SetValues));
 
@@ -25,7 +24,6 @@ namespace ProjectLighthouse.View.UserControls
             set { SetValue(ItemProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Item.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemProperty =
             DependencyProperty.Register("Item", typeof(TurnedProduct), typeof(DisplayItemForRequest), new PropertyMetadata(null, SetValues));
 
@@ -50,14 +48,13 @@ namespace ProjectLighthouse.View.UserControls
             if (control.Item.AppendableOrder != null)
             {
                 int numberNeeded = -control.Item.FreeStock();
-                // TODO sort this out
+
                 if (numberNeeded > 0)
                 {
                     control.ActionText.Text = $"Increase quantity on {control.Item.AppendableOrder.Name}: +{numberNeeded:#,##0} pcs";
                 }
                 else
                 {
-                    // TODO What is this for?
                     control.ActionText.Text = $"{control.Item.LighthouseGuaranteedQuantity:#,##0}pcs on {control.Item.AppendableOrder.Name} [{numberNeeded} needed]";
                 }
 

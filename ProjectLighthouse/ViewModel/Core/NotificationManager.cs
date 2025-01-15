@@ -149,9 +149,6 @@ namespace ProjectLighthouse.ViewModel.Core
 
         public void CheckForNotifications(bool multiToast)
         {
-            // TODO check this works with deduplication
-
-
             if (App.CurrentUser == null) return;
             List<Notification> nots = DatabaseHelper.Read<Notification>().Where(x => x.TargetUser == App.CurrentUser.UserName && x.TimeStamp.AddDays(7) > DateTime.Now).ToList();
 

@@ -103,7 +103,6 @@ namespace ProjectLighthouse.View.Orders
                 TrayId = TrayNumberTextBox.Text.Trim().ToUpperInvariant(),
             };
 
-            //TODO direct sql
             LatheManufactureOrder freshCopyOfOrder = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == Order.Name);
 
             if(freshCopyOfOrder == null)

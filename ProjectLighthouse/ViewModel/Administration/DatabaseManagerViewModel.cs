@@ -378,7 +378,6 @@ namespace ProjectLighthouse.ViewModel.Administration
                 }
                 catch
                 {
-                    // TODO try get default from group
                     timeModel = TimeModel.Default(sku.MajorDiameter);
                 }
             }

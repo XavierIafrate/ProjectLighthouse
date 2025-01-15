@@ -637,7 +637,6 @@ namespace ProjectLighthouse.View.Orders
 
         }
 
-        // TODO refactor
         private static string GetNewOrderId()
         {
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>();
