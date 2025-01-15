@@ -115,6 +115,16 @@
                 Tag="cycle time"
                 Text="{Binding Product.CycleTime}" />
 
+            <TextBlock
+                x:Name="TargetStockLabel"
+                Style="{StaticResource InputLabel}"
+                Text="Target Stock" />
+            <TextBox
+                x:Name="TargetStockTextBox"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="target stock"
+                Text="{Binding Product.QuantitySold}" />
+
             <CheckBox
                 Margin="0,5"
                 Content="Plated Part"
