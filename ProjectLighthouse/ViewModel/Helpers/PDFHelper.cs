@@ -915,13 +915,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return result;
         }
 
-        public static void SavePDF(PdfDocument document, string path, bool open_after)
+        public static void SavePDF(PdfDocument document, string path, bool openAfter)
         {
             try
             {
                 document.Save(path);
                 MessageBox.Show($"Saved to {path}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                if (open_after)
+                if (openAfter)
                     OpenWithDefaultProgram(path);
             }
             catch (Exception e) // No connection to server with adapters installed
@@ -932,9 +932,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
         public static string GetLogoFile()
         {
-            return (Environment.UserName == "xavier")
-                ? @"C:\Users\xavie\Desktop\Lighthouse_Mono_L_Embedded.png"
-                : $"{App.ROOT_PATH}Lighthouse_Mono_L_Embedded.png";
+            return $"{App.ROOT_PATH}Lighthouse_Mono_L_Embedded.png";
         }
 
         public static void OpenWithDefaultProgram(string path)
