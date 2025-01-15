@@ -1,0 +1,56 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Administration.ImportStockTargetsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Import Stock Targets"
+    Width="800"
+    Height="450"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button
+                x:Name="PickFileButton"
+                Click="PickFileButton_Click"
+                Content="Pick File"
+                Style="{StaticResource Action_Pick_File_Button}" />
+            <Button
+                x:Name="ReloadFileButton"
+                Click="ReloadFileButton_Click"
+                Content="Reload File"
+                Style="{StaticResource Action_Update_Button}" />
+            <TextBlock
+                x:Name="FileNameText"
+                Margin="5,0"
+                VerticalAlignment="Center"
+                Text="No file selected"
+                FontFamily="Consolas   " />
+        </StackPanel>
+        <DataGrid x:Name="DataGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserResizeColumns="False" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Part Number" Binding="{Binding Path=Key}" Width="*"/>
+                <DataGridTextColumn Header="New Target Stock" Binding="{Binding Path=Value}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="2">
+            <CheckBox
+                Checked="CheckBox_Checked"
+                Content="Set all others to zero"
+                Unchecked="CheckBox_Unchecked" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Content="Cancel" Style="{StaticResource Action_Cancel_Button}" x:Name="CancelButton" Click="CancelButton_Click" />
+                <Button Content="Run" Style="{StaticResource Action_Button}" x:Name="RunButton" Click="RunButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

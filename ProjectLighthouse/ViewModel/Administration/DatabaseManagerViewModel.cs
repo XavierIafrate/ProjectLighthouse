@@ -10,6 +10,7 @@ using ProjectLighthouse.Model.Programs;
 using ProjectLighthouse.Model.Quality;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
@@ -28,12 +29,14 @@ namespace ProjectLighthouse.ViewModel.Administration
         public MaterialsViewModel MaterialsViewModel { get; set; }
 
         public List<LatheManufactureOrder> Orders { get; set; }
-
         public GetRecordsAsCsvCommand GetRecordsAsCsvCmd { get; set; }
+        public ImportTargetStockCommand ImportTargetStockCmd { get; set; }
 
         public DatabaseManagerViewModel()
         {
             GetRecordsAsCsvCmd = new(this);
+            ImportTargetStockCmd = new(this);
+
             Orders = DatabaseHelper.Read<LatheManufactureOrder>();
 
             if (App.CurrentUser.HasPermission(Model.Core.PermissionType.EditUsers))
@@ -388,6 +391,13 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
 
             return timeModel;
+        }
+
+        internal void RunImportTriggerLevels()
+        {
+            ImportStockTargetsWindow window = new();
+            window.Owner = App.MainViewModel.MainWindow;
+            window.ShowDialog();
         }
 
         public class ItemCost
