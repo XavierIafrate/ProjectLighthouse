@@ -50,6 +50,8 @@ namespace ProjectLighthouse.View.Administration
                 Material = (MaterialInfo)material.Clone();
                 Material.ValidateAll();
 
+                this.MaterialCodeTextBox.IsEnabled = false;
+
                 ExistingFeatures = baseExistingFeaturesList.Where(x => !Material.RequiresFeaturesList.Contains(x)).ToList();
 
                 CreateButton.Visibility = Visibility.Collapsed;
@@ -60,6 +62,7 @@ namespace ProjectLighthouse.View.Administration
                 Material = new();
                 ExistingFeatures = baseExistingFeaturesList.ToList();
                 UpdateButton.Visibility = Visibility.Collapsed;
+                MaterialCodeTextBox.IsEnabled = true;
             }
 
             DataContext = this;
