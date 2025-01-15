@@ -676,18 +676,14 @@ namespace ProjectLighthouse.View.Orders
 
             int totalTime = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new(), new());
 
-            insights.TimeIsEstimate = true; // TODO fix
+            insights.TimeIsEstimate = true; 
             insights.TimeToComplete = totalTime;
 
             TimeSpan orderTime = TimeSpan.FromSeconds(insights.TimeToComplete);
 
             insights.CostOfMachineTime = orderTime.TotalSeconds * App.Constants.AbsorptionRate;
 
-            // TODO fix
-            //insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
-
-            insights.CostOfOrder = insights.CostOfMachineTime + (insights.TotalBarCost / 100);
-            insights.NetProfit = insights.ValueProduced - insights.CostOfOrder;
+            insights.CostOfOrder = insights.CostOfMachineTime + insights.TotalBarCost;
 
             insights.TimeCode = TimeModels[MaterialId] ?? SelectedGroup.DefaultTimeCode;
 
@@ -705,8 +701,6 @@ namespace ProjectLighthouse.View.Orders
             public double TotalBarCost { get; set; }
             public double CostOfOrder { get; set; }
             public double CostOfMachineTime { get; set; }
-            public double NetProfit { get; set; }
-            public double ValueProduced { get; set; }
             public string TimeCode { get; set; }
         }
     }
