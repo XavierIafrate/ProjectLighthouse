@@ -163,19 +163,39 @@ namespace ProjectLighthouse.Model.Material
                 return;
             }
             else if (propertyName == nameof(Density))
-            //TODO
             {
                 ClearErrors(propertyName);
 
+                if(Density < 0)
+                {
+                    AddError(propertyName, "Density must be greater than or equal to zero");
+                }
+
+                if(Density > 22_600)
+                {
+                    AddError(propertyName, "Density must be less than or equal to 22,600. The densest material on Earth is Osmium at 22,600kg/m3.");
+                }
 
                 return;
             }
             else if (propertyName == nameof(Cost))
-            //TODO
             {
                 ClearErrors(propertyName);
 
+                if(Cost is null)
+                {
+                    return;
+                }
 
+                if(Cost < 0)
+                {
+                    AddError(propertyName, "Cost must be greater than or equal to zero");
+                }
+
+                if(Cost >= 1_000_000)
+                {
+                    AddError(propertyName, "Cost must be less than 1,000,000");
+                }
 
                 return;
             }
