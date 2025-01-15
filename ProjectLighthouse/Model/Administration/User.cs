@@ -66,7 +66,7 @@ namespace ProjectLighthouse.Model.Administration
 
         public bool PermissionInherited(PermissionType action)
         {
-            return !ExplicitGrantsPermission(action) && RoleGrantsPermission(action);
+            return RoleGrantsPermission(action);
         }
 
         public override string ToString() => GetFullName();
