@@ -160,8 +160,6 @@ namespace ProjectLighthouse.Model.Material
             }
         }
 
-
-
         public double? ExpectedCost
         {
             get
@@ -172,8 +170,6 @@ namespace ProjectLighthouse.Model.Material
                 return MaterialData.GetRate() * GetUnitMassOfBar();
             }
         }
-
-
 
         public double MajorDiameter
         {
