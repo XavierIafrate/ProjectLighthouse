@@ -30,7 +30,7 @@ namespace ProjectLighthouse.View
             MessageBadge.Visibility = Visibility.Hidden;
             Users = DatabaseHelper.Read<User>().ToList();
 
-            if (Environment.UserName == "xavier" || Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
                 User user = Users.Find(u => u.UserName == "xav");
                 if (user == null)
