@@ -135,6 +135,7 @@ namespace ProjectLighthouse.Model.Products
             ValidateProperty(nameof(PartOffLength));
             ValidateProperty(nameof(GroupId));
             ValidateProperty(nameof(MaterialId));
+            ValidateProperty(nameof(QuantitySold));
         }
 
         public void ValidateForOrder()
@@ -260,6 +261,22 @@ namespace ProjectLighthouse.Model.Products
                 if (MaterialId == 0)
                 {
                     AddError(nameof(MaterialId), "The product must have a material associated with it");
+                }
+                return;
+            }
+            else if (propertyName == nameof(QuantitySold))
+            {
+                ClearErrors(propertyName);
+                if (QuantitySold < 0)
+                {
+                    AddError(nameof(QuantitySold), "Target stock must be greater than or equal to zero");
+                    return;
+                }
+
+                if (QuantitySold < 0)
+                {
+                    AddError(nameof(QuantitySold), "Target stock must be greater than or equal to zero");
+                    return;
                 }
                 return;
             }
