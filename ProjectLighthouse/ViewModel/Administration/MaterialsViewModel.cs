@@ -212,7 +212,14 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             if(window.SaveExit)
             {
-                // stuff
+                GetData();
+                int materialCode = window.Material.Id;
+                SelectedMaterial = Materials.Find(x => x.Id == materialCode);
+
+                if(SelectedMaterial == null && Materials.Count > 0)
+                {
+                    SelectedMaterial = Materials.First();
+                }
             }
         }
     }
