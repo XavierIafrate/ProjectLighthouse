@@ -1,5 +1,6 @@
 ﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.ViewModel.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,6 +25,11 @@ namespace ProjectLighthouse.Model.Core
 
 
         public Constants()
+        {
+            
+        }
+
+        internal void SetLatheValues()
         {
             // Automated inputs
             List<Lathe> lathes = DatabaseHelper.Read<Lathe>();
