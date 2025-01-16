@@ -208,11 +208,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal">
-                        <!--<userControls:NumberScroller />
-                        <userControls:NumberScroller StringFormat="{}{0:00}" />
-                        <userControls:NumberScroller />-->
-                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" />
                 </Grid>
 
                 <StackPanel

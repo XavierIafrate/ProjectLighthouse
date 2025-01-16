@@ -90,6 +90,9 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
             this.ItemNameTextBlock.Text = generalOrder.Name;
             this.ProductNameTextBlock.Text = generalOrder.Item.Name;
+
+            this.FinishedQuantityTextBlock.Text = generalOrder.FinishedQuantity.ToString("#,##0");
+            this.RequiredQuantityTextBlock.Text = generalOrder.RequiredQuantity.ToString("#,##0");
         }
 
         private void ShowService(MachineService service)
@@ -120,7 +123,6 @@ namespace ProjectLighthouse.View.Scheduling.Components
             this.BarStockDisplay.Bar = order.Bar;
 
             this.OrderItemsItemsControl.ItemsSource = order.OrderItems;
-            this.OrderBreakdownsItemsControl.ItemsSource = order.Breakdowns;
             this.MachineRequirementsItemsControl.ItemsSource = order.RequiredFeaturesList;
 
             this.EstimatedRuntimeTextBlock.Text = $"{new intToTimespanString().Convert(order.TimeToComplete, typeof(string), null, new CultureInfo("en-GB")) ?? "N/A"}";
