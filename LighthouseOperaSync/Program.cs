@@ -16,7 +16,7 @@ namespace LighthouseOperaSync
 #if DEBUG
             DatabaseHelper.DatabasePath = "\\\\groupfile01\\Sales\\Production\\Administration\\Manufacture Records\\Lighthouse_TEST\\lightroom_TEST.db3";
 #else
-            DatabaseHelper.DatabasePath = "\\\\groupfile01\\Sales\\Production\\Administration\\Manufacture Records\\Lighthouse\\lightroom_v2.db3";
+            DatabaseHelper.DatabasePath = @"\\GBCH-LIGHT-01\Lighthouse\lightroom_v2.db3";
 #endif
      
             if (!File.Exists(OperaHelper.stockTable))
@@ -42,7 +42,7 @@ namespace LighthouseOperaSync
 
         private static void BackupDb()
         {
-            string destFileName = string.Format("\\\\groupfile01\\Sales\\Production\\Administration\\Manufacture Records\\Lighthouse\\bup\\bup_{0:yyyyMMddHHmmss}.db3", (object)DateTime.Now);
+            string destFileName = string.Format(@"\\GBCH-LIGHT-01\Lighthouse\bup\bup_{0:yyyyMMddHHmmss}.db3", (object)DateTime.Now);
             try
             {
                 File.Copy(DatabaseHelper.DatabasePath, destFileName);
@@ -54,7 +54,7 @@ namespace LighthouseOperaSync
             }
 
 
-            foreach (string file in Directory.GetFiles("\\\\groupfile01\\Sales\\Production\\Administration\\Manufacture Records\\Lighthouse\\bup\\"))
+            foreach (string file in Directory.GetFiles(@"\\GBCH-LIGHT-01\Lighthouse\bup\"))
             {
                 if (Path.GetFileName(file).StartsWith("bup"))
                 {

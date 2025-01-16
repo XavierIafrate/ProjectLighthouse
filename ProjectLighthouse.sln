@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentry", "..\Sentry\Sentry\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloseManufactureOrders", "CloseManufactureOrders\CloseManufactureOrders.csproj", "{D0652B0E-5C84-425A-B65A-15765FDD573D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LighthouseOperaSync", "LighthouseOperaSync\LighthouseOperaSync.csproj", "{0571154C-335A-4CEE-9310-0334B9F1C3B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LighthouseOperaSync", "LighthouseOperaSync\LighthouseOperaSync.csproj", "{0571154C-335A-4CEE-9310-0334B9F1C3B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
