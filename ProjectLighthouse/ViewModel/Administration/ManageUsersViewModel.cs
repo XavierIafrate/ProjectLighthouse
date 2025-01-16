@@ -88,6 +88,10 @@ namespace ProjectLighthouse.ViewModel.Administration
             set
             {
                 selectedUser = value;
+                if(editMode)
+                {
+                    CancelEdit();
+                }
                 LoadUserDetails();
                 OnPropertyChanged();
             }
@@ -121,6 +125,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public EditUserCommand EditCmd { get; set; }
         public SaveUserEditCommand SaveCmd { get; set; }
+        public CancelEditCommand CancelCmd { get; set; }
         public AddUserCommand AddUserCmd { get; set; }
         public DeleteUserCommand DeleteUserCmd { get; set; }
         public ResetUserPasswordCommand ResetPasswordCmd { get; set; }
@@ -145,6 +150,7 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             EditCmd = new(this);
             SaveCmd = new(this);
+            CancelCmd = new(this);
             DeleteUserCmd = new(this);
             ResetPasswordCmd = new(this);
             AddPermissionCmd = new(this);
@@ -184,6 +190,13 @@ namespace ProjectLighthouse.ViewModel.Administration
 
             ReadControlsVis = Visibility.Collapsed;
             EditControlsVis = Visibility.Visible;
+        }
+
+
+        internal void CancelEdit()
+        {
+            ReadControlsVis = Visibility.Visible;
+            EditControlsVis = Visibility.Collapsed;
         }
 
         public void SaveEdit()

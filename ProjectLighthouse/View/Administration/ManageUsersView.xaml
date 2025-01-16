@@ -67,8 +67,8 @@
                 Grid.Row="1"
                 HorizontalAlignment="Right"
                 Command="{Binding AddUserCmd}"
-                Style="{StaticResource Action_New_Button}"
-                Content="New User" />
+                Content="New User"
+                Style="{StaticResource Action_New_Button}" />
         </Grid>
 
         <StackPanel
@@ -155,8 +155,15 @@
                         Style="{StaticResource section}"
                         Text="Receives Notifications" />
                     <CheckBox
-                        Margin="5,0"
                         Grid.Column="3"
+                        Margin="5,0"
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding SelectedUser.ReceivesNotifications, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="False"
+                        Visibility="{Binding ReadControlsVis}" />
+                    <CheckBox
+                        Grid.Column="3"
+                        Margin="5,0"
                         VerticalAlignment="Center"
                         IsChecked="{Binding SelectedUser.ReceivesNotifications, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Visibility="{Binding EditControlsVis}" />
@@ -213,9 +220,9 @@
                 <Button
                     HorizontalAlignment="Right"
                     Command="{Binding ResetPasswordCmd}"
+                    Content="Reset Password"
                     IsEnabled="{Binding editMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource Action_Button}"
-                    Content="Reset Password" />
+                    Style="{StaticResource Action_Button}" />
                 <Grid>
                     <TextBlock
                         Margin="0,20,0,0"
@@ -229,14 +236,14 @@
                             Margin="5,0"
                             VerticalAlignment="Bottom"
                             Command="{Binding RemovePermissionCmd}"
-                            Style="{StaticResource Action_Remove_Button}"
-                            Content="Revoke" />
+                            Content="Revoke"
+                            Style="{StaticResource Action_Remove_Button}" />
                         <Button
                             Margin="5,0"
                             VerticalAlignment="Bottom"
                             Command="{Binding AddPermissionCmd}"
-                            Style="{StaticResource Action_New_Button}"
-                            Content="Add" />
+                            Content="Add"
+                            Style="{StaticResource Action_New_Button}" />
 
                     </StackPanel>
                 </Grid>
@@ -292,19 +299,25 @@
                     Orientation="Horizontal">
                     <Button
                         Command="{Binding EditCmd}"
-                        Style="{StaticResource Action_Edit_Button}"
                         Content="Edit User"
+                        Style="{StaticResource Action_Edit_Button}"
                         Visibility="{Binding ReadControlsVis}" />
                     <Button
                         d:Visibility="Visible"
+                        Command="{Binding CancelCmd}"
+                        Content="Cancel"
+                        Style="{StaticResource Action_Cancel_Button}"
+                        Visibility="{Binding EditControlsVis, FallbackValue='Collapsed'}" />
+                    <Button
+                        d:Visibility="Visible"
                         Command="{Binding SaveCmd}"
-                        Style="{StaticResource Action_Update_Button}"
                         Content="Save Changes"
+                        Style="{StaticResource Action_Update_Button}"
                         Visibility="{Binding EditControlsVis, FallbackValue='Collapsed'}" />
                     <Button
                         Command="{Binding DeleteUserCmd}"
-                        Style="{StaticResource Action_Remove_Button}"
                         Content="Delete User"
+                        Style="{StaticResource Action_Remove_Button}"
                         Visibility="{Binding EditControlsVis}" />
                 </StackPanel>
             </StackPanel>
