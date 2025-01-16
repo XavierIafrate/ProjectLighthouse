@@ -6,6 +6,7 @@ using ProjectLighthouse.Model.Products;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,14 +15,36 @@ namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class OperaHelper
     {
-        public static readonly string stockTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_cname.dbf";
-        public static readonly string purchaseLinesTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_doline.dbf";
-        public static readonly string purchaseHeaderTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_dohead.dbf";
-        public static readonly string invoiceTransactionsTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_itran.dbf";
-        public static readonly string bomTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_cstruc.dbf";
-        public static readonly string factorsTable = @"\\groupdb01\O3 Server VFP Static and Dynamic\Data\G\g_cfact.dbf";
+        public Dictionary<string, string> TablePaths;
 
-        public static List<string> VerifyDeliveryNote(List<DeliveryItem> items)
+        public OperaHelper(string applicationRoot)
+        {
+            string fileRead;
+            try
+            {
+                fileRead = File.ReadAllText(Path.Join(applicationRoot, "opera_tables.json"));
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"An exception occurred when trying to read from opera_tables.json: {ex.Message}");
+            }
+
+            Dictionary<string, string> deserialised = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(fileRead);
+
+            string[] expectedTables = new string[] { "CNAME", "DOLINE", "DOHEAD", "ITRAN", "CSTRUC", "CFACT" };
+
+            foreach (string table in expectedTables)
+            {
+                if(!deserialised.ContainsKey(table))
+                {
+                    throw new Exception($"opera_tables.json does not contain key for {table}");
+                }
+            }
+
+            TablePaths = deserialised;
+        }
+
+        public List<string> VerifyDeliveryNote(List<DeliveryItem> items)
         {
             List<string> errs = new();
 
@@ -76,11 +99,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return errs;
         }
 
-        private static List<PurchaseLine> GetPurchaseLines(string[] refs)
+        private List<PurchaseLine> GetPurchaseLines(string[] refs)
         {
             List<PurchaseLine> results = new();
 
-            using DbfTable dbfTable = new(purchaseLinesTable, Encoding.UTF8);
+            using DbfTable dbfTable = new(TablePaths["DOLINE"], Encoding.UTF8);
             DbfHeader tableHeader = dbfTable.Header;
             Console.WriteLine($"{tableHeader.RecordCount:#,##0} records in Purchase Order Lines table.");
 
@@ -144,7 +167,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
         }
 
         // Main Sync Entry
-        public static void UpdateRecords(List<TurnedProduct> products, List<BarStock> barstock, List<NonTurnedItem> nonTurnedItems)
+        public void UpdateRecords(List<TurnedProduct> products, List<BarStock> barstock, List<NonTurnedItem> nonTurnedItems)
         {
             List<BomComponent> boms = GetComponentStructure();
             List<StockFactor> factors = GetFactors();
@@ -329,11 +352,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             WriteTimeStamp();
         }
 
-        private static List<StockFactor> GetFactors()
+        private List<StockFactor> GetFactors()
         {
             List<StockFactor> factors = new();
 
-            using DbfTable dbfTable = new(factorsTable, Encoding.UTF8);
+            using DbfTable dbfTable = new(TablePaths["CFACT"], Encoding.UTF8);
             DbfRecord dbfRecord = new(dbfTable);
 
             int iCode = dbfTable.Columns.IndexOf(dbfTable.Columns.Single(n => n.ColumnName == "CF_CODE"));
@@ -356,11 +379,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return factors;
         }
 
-        private static List<BomComponent> GetComponentStructure()
+        private List<BomComponent> GetComponentStructure()
         {
             List<BomComponent> boms = new();
 
-            using DbfTable dbfTable = new(bomTable, Encoding.UTF8);
+            using DbfTable dbfTable = new(TablePaths["CSTRUC"], Encoding.UTF8);
 
             DbfRecord dbfRecord = new(dbfTable);
 
@@ -397,11 +420,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        private static List<OperaStockData> GetLiveData(List<StockFactor> factors)
+        private List<OperaStockData> GetLiveData(List<StockFactor> factors)
         {
             List<OperaStockData> results = new();
 
-            using DbfTable dbfTable = new(stockTable, Encoding.UTF8);
+            using DbfTable dbfTable = new(TablePaths["CNAME"], Encoding.UTF8);
 
             DbfHeader header = dbfTable.Header;
             Console.WriteLine($"{header.RecordCount:#,##0} records in Opera Stock table.");
@@ -676,7 +699,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             return null;
         }
 
-        public static void UpdatePurchaseRecords(List<BarStock> barStock)
+        public void UpdatePurchaseRecords(List<BarStock> barStock)
         {
             string[] barIds = barStock.Select(x => x.ErpId).ToArray();
             List<BarStockPurchase> existingRecords = DatabaseHelper.Read<BarStockPurchase>();
@@ -702,11 +725,11 @@ namespace ProjectLighthouse.ViewModel.Helpers
             }
         }
 
-        private static List<BarStockPurchase> GetBarPurchaseLines(string[] refs)
+        private List<BarStockPurchase> GetBarPurchaseLines(string[] refs)
         {
             List<BarStockPurchase> results = new();
 
-            using DbfTable dbfTable = new(purchaseLinesTable, Encoding.UTF8);
+            using DbfTable dbfTable = new(TablePaths["DOLINE"], Encoding.UTF8);
             DbfHeader tableHeader = dbfTable.Header;
             Console.WriteLine($"{tableHeader.RecordCount:#,##0} records in Purchase Order Lines table.");
 
