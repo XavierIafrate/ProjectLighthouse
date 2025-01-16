@@ -15,6 +15,8 @@
         <Grid.Resources>
             <ResourceDictionary>
                 <converters:divideByHundred x:Key="divideByHundred" />
+                <converters:NumberGreaterThanZero x:Key="greaterThanZero" />
+                <converters:NumberEqualToZero x:Key="equalToZero" />
             </ResourceDictionary>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
@@ -52,7 +54,10 @@
                     Opacity="0.5"
                     Text="No Material Selected"
                     Visibility="{Binding SelectedMaterial, Converter={StaticResource NullToVisibility}}" />
-                <StackPanel Margin="30,0" Visibility="{Binding SelectedMaterial, Converter={StaticResource NotNullToVisibility}}" MaxWidth="700">
+                <StackPanel
+                    MaxWidth="700"
+                    Margin="30,0"
+                    Visibility="{Binding SelectedMaterial, Converter={StaticResource NotNullToVisibility}}">
                     <Grid HorizontalAlignment="Stretch">
                         <TextBlock
                             FontFamily="Consolas"
@@ -77,8 +82,16 @@
                     <TextBlock
                         Margin="10"
                         FontSize="18"
+                        Foreground="{StaticResource Red}"
                         FontWeight="SemiBold"
-                        Text="{Binding SelectedMaterial.Density, StringFormat='{}{0:0} kg/m3'}" />
+                        Text="Not defined"
+                        Visibility="{Binding SelectedMaterial.Density, Converter={StaticResource equalToZero}}" />
+                    <TextBlock
+                        Margin="10"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="{Binding SelectedMaterial.Density, StringFormat='{}{0:0} kg/m3'}"
+                        Visibility="{Binding SelectedMaterial.Density, Converter={StaticResource greaterThanZero}}" />
                     <TextBlock Style="{StaticResource InputLabel}" Text="Estimated Rate" />
                     <TextBlock
                         FontStyle="Italic"
@@ -89,14 +102,28 @@
                         Margin="10"
                         FontSize="18"
                         FontWeight="SemiBold"
-                        Text="{Binding SelectedMaterial.Cost, StringFormat='{}£{0:0.00}/kg', Converter={StaticResource divideByHundred}, TargetNullValue='unknown'}" />
+                        Text="Not defined"
+                        Foreground="{StaticResource Red}"
+                        Visibility="{Binding SelectedMaterial.Cost, Converter={StaticResource equalToZero}}" />
+                    <TextBlock
+                        Margin="10"
+                        d:Text="RATE_TEXT"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="{Binding SelectedMaterial.Cost, StringFormat='{}£{0:0.00}/kg', Converter={StaticResource divideByHundred}, TargetNullValue='unknown'}"
+                        Visibility="{Binding SelectedMaterial.Cost, Converter={StaticResource greaterThanZero}}" />
                     <TextBlock Style="{StaticResource InputLabel}" Text="Machining Requirements" />
                     <TextBlock
                         FontStyle="Italic"
                         Foreground="{StaticResource Purple}"
                         Text="Any manufacture orders running this material will only be compatible with machines that have these named features."
                         TextWrapping="Wrap" />
-                    <ListView ItemsSource="{Binding SelectedMaterial.RequiresFeaturesList}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource GhostText}"
+                        Text="None defined"
+                        Visibility="{Binding SelectedMaterial.RequiresFeaturesList, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+                    <ListView ItemsSource="{Binding SelectedMaterial.RequiresFeaturesList}" Visibility="{Binding SelectedMaterial.RequiresFeaturesList, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock
@@ -108,7 +135,15 @@
                     </ListView>
 
                     <TextBlock Style="{StaticResource InputLabel}" Text="Bar Stock" />
-                    <ItemsControl Background="White" ItemsSource="{Binding FilteredBarStock}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource GhostText}"
+                        Text="None defined"
+                        Visibility="{Binding FilteredBarStock, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+                    <ItemsControl
+                        Background="White"
+                        ItemsSource="{Binding FilteredBarStock}"
+                        Visibility="{Binding FilteredBarStock, Converter={StaticResource EmptyListToCollapsedOrVisible}}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <userControls:DisplayBarStock Bar="{Binding}" />

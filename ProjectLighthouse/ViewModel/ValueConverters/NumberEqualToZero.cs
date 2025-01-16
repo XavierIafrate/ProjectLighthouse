@@ -6,23 +6,23 @@ using System.Windows.Media;
 
 namespace ProjectLighthouse.ViewModel.ValueConverters
 {
-    public class NumberGreaterThanZero : IValueConverter
+    public class NumberEqualToZero : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool gtZero;
+            bool eqZero;
 
             if (value is int intgr)
             {
-                gtZero = intgr > 0;
+                eqZero = intgr == 0;
             }
             else if (value is double dbl)
             {
-                gtZero = dbl > 0.0;
+                eqZero = dbl == 0.0;
             }
             else if (value is null)
             {
-                gtZero = false;
+                eqZero = true;
             }
             else
             {
@@ -31,15 +31,15 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
 
             if (targetType == typeof(bool))
             {
-                return gtZero;
+                return eqZero;
             }
             else if (targetType == typeof(Visibility))
             {
-                return gtZero ? Visibility.Visible : Visibility.Collapsed;
+                return eqZero ? Visibility.Visible : Visibility.Collapsed;
             }
             else if (targetType == typeof(Brush))
             {
-                return gtZero ? (Brush)Application.Current.Resources["Teal"] : (Brush)Application.Current.Resources["Red"];
+                return eqZero ? (Brush)Application.Current.Resources["Teal"] : (Brush)Application.Current.Resources["Red"];
             }
 
             throw new NotImplementedException();
