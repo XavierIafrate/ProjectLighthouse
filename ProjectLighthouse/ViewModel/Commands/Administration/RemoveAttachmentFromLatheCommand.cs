@@ -1,14 +1,15 @@
-﻿using ProjectLighthouse.ViewModel.Administration;
+﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Administration;
 using System;
 using System.Windows.Input;
 
-namespace ViewModel.Commands.Administration
+namespace ProjectLighthouse.ViewModel.Commands.Administration
 {
     public class RemoveAttachmentFromLatheCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private LatheViewModel viewModel;
-        public RemoveAttachmentFromLatheCommand(LatheViewModel vm)
+        private MachineViewModel viewModel;
+        public RemoveAttachmentFromLatheCommand(MachineViewModel vm)
         {
             viewModel = vm;
         }
@@ -20,7 +21,10 @@ namespace ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
-            viewModel.RemoveAttachment();
+            if (parameter is Attachment attachment)
+            {
+                viewModel.RemoveAttachment(attachment);
+            }
         }
     }
 }

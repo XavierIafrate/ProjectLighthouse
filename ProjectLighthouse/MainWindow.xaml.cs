@@ -4,10 +4,12 @@ using ProjectLighthouse.ViewModel.Core;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.IO;
+using System;
+
+
 
 #if DEBUG
 using ProjectLighthouse.ViewModel.Helpers;
@@ -136,50 +138,84 @@ namespace ProjectLighthouse
             e.Handled = true;
         }
 
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (sender is not Grid) return;
-
-            double threshold = 220;
-            if (e.PreviousSize.Width == 0)
-            {
-                SetMenuType(full: e.NewSize.Width > threshold);
-            }
-            else if (e.PreviousSize.Width > threshold && e.NewSize.Width <= threshold) // from full to mini
-            {
-                SetMenuType(full: false);
-            }
-            else if (e.PreviousSize.Width < threshold && e.NewSize.Width >= threshold)
-            {
-                SetMenuType(full: true);
-            }
-
+            AdjustMenuWidth();
         }
 
-        void SetMenuType(bool full)
+        private void AdjustMenuWidth()
         {
-            if (!full)
+            if (MainGrid.ActualWidth > 1350)
             {
-                MenuGrid.ColumnDefinitions[0].Width = new(1, GridUnitType.Star);
-                MenuGrid.ColumnDefinitions[1].Width = new(0, GridUnitType.Star);
-                MenuGrid.MaxWidth = 220;
+
+                MainGrid.ColumnDefinitions[0].Width = new(Math.Min(MainGrid.ActualWidth * 0.2, App.CurrentUser.DefaultMenuWidth ?? 350), GridUnitType.Pixel);
             }
             else
             {
+                MainGrid.ColumnDefinitions[0].Width = new(80, GridUnitType.Pixel);
+            }
+            SetMenuStyle();
+        }
+
+        bool dragging;
+        private void SetMenuStyle()
+        {
+            double threshold = 220;
+            if (dragging)
+            {
+                threshold = 100;
+            }
+
+            if (MainGrid.ColumnDefinitions[0].Width.Value > threshold)
+            {
                 MenuGrid.ColumnDefinitions[0].Width = new(0, GridUnitType.Star);
                 MenuGrid.ColumnDefinitions[1].Width = new(1, GridUnitType.Star);
-                MenuGrid.MaxWidth = 350;
+                if (!dragging)
+                {
+                    MainGrid.ColumnDefinitions[0].Width = new(MainGrid.ActualWidth * 0.2, GridUnitType.Pixel);
+                    MainGrid.ColumnDefinitions[0].MaxWidth = Math.Min(350, App.CurrentUser.DefaultMenuWidth ?? 350);
+                }
+            }
+            else
+            {
+                MenuGrid.ColumnDefinitions[0].Width = new(1, GridUnitType.Star);
+                MenuGrid.ColumnDefinitions[1].Width = new(0, GridUnitType.Star);
+                if (!dragging)
+                {
+                    MainGrid.ColumnDefinitions[0].Width = new(80, GridUnitType.Pixel);
+                }
             }
         }
 
         private void GridSplitter_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            User.PostDefaultMenuWidth(App.CurrentUser.UserName, MenuGrid.ActualWidth);
+            User.PostDefaultMenuWidth(App.CurrentUser.UserName, MainGrid.ColumnDefinitions[0].ActualWidth);
+            App.CurrentUser.DefaultMenuWidth = MainGrid.ColumnDefinitions[0].ActualWidth;
+            dragging = false;
+            Debug.WriteLine("Drag Completed");
+            AdjustMenuWidth();
         }
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
             App.ShowHelp(null);
+        }
+
+        private void GridSplitter_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            dragging = true;
+            MainGrid.ColumnDefinitions[0].MaxWidth = 350;
+            Debug.WriteLine("Drag Started");
+        }
+
+        private void GridSplitter_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            SetMenuStyle();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            App.BeforeApplicationShutdown(sender, e);
         }
     }
 }

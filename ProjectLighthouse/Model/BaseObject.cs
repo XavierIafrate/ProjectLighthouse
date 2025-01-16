@@ -31,7 +31,6 @@ namespace ProjectLighthouse.Model
 
         public IEnumerable GetErrors(string propertyName)
         {
-            // TODO verify this isn't causing problems
             if (propertyName is null) return null;
 
             if (!Errors.TryGetValue(propertyName, out List<string> value))
@@ -70,11 +69,13 @@ namespace ProjectLighthouse.Model
 
         #endregion
 
+        [AttributeUsage(AttributeTargets.Property)]
         public class UpdateWatch : Attribute
         {
 
         }
 
+        [AttributeUsage(AttributeTargets.Property)]
         public class Import : Attribute
         {
             public string Name { get; set; }

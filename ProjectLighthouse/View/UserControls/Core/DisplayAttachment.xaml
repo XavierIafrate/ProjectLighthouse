@@ -48,8 +48,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Click="OpenButton_Click"
-            Style="{StaticResource Action_Open_Button}"
-            Content="Open" />
-        <!--<Image x:Name="imgPreview"/>-->
+            Content="Open"
+            Style="{StaticResource Action_Open_Button}" />
     </Grid>
 </UserControl>

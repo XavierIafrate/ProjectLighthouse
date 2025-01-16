@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ProjectLighthouse.Model.Core;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.ViewModel.Core
@@ -10,6 +11,21 @@ namespace ProjectLighthouse.ViewModel.Core
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public virtual void DeleteNote(Note note)
+        {
+
+        }
+
+        public virtual void UpdateNote(Note note)
+        {
+
+        }
+
+        public virtual bool CanClose()
+        {
+            return true;
         }
     }
 }

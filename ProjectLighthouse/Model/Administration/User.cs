@@ -15,6 +15,8 @@ namespace ProjectLighthouse.Model.Administration
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
+
+        [CsvHelper.Configuration.Attributes.Ignore]
         public string Password { get; set; }
         public UserRole Role { get; set; }
 
@@ -26,9 +28,13 @@ namespace ProjectLighthouse.Model.Administration
         public bool ReceivesNotifications { get; set; }
         public string Locale { get; set; }
         public double? DefaultMenuWidth { get; set; }
+        public string? Emoji { get; set; }
+
+
+        private static string[] emojis = new string[] { "👾", "👹", "💩", "🤖", "👽", "😎", "🥳", "😇", "🦕", "🦎", "🐶", "🐭", "🐷", "🐸", "🐢", "🦞", "🦥", "🦔", "🌝", "🌞", "🤹", "💎" };
 
         [Ignore]
-        public List<Permission> UserPermissions { get; set; } = new();
+        public List<Permission> UserPermissions { get; set; } = new(); 
 
         public string GetFullName()
         {
@@ -60,7 +66,7 @@ namespace ProjectLighthouse.Model.Administration
 
         public bool PermissionInherited(PermissionType action)
         {
-            return !ExplicitGrantsPermission(action) && RoleGrantsPermission(action);
+            return RoleGrantsPermission(action);
         }
 
         public override string ToString() => GetFullName();

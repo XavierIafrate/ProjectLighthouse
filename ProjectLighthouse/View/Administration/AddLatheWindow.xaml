@@ -440,7 +440,6 @@
                     Width="250"
                     Margin="0"
                     HorizontalAlignment="Left"
-                    PreviewKeyDown="AllowNumbersAndPeriodOnly"
                     Style="{StaticResource DefaultTextBox}"
                     Tag="IP address"
                     Text="{Binding Lathe.IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />

@@ -17,7 +17,7 @@ namespace ProjectLighthouse.Model.Core
             DateTime openingTime = new(date.Ticks);
             openingTime = openingTime.ChangeTime(day.OpeningHour, day.OpeningMinute, 0, 0);
 
-            if(date < openingTime) return true;
+            if (date < openingTime) return true;
 
             // you don't have to go home but you can't stay here
             DateTime closingTime = new(date.Ticks);
@@ -37,6 +37,17 @@ namespace ProjectLighthouse.Model.Core
 
             public int ClosingHour = 23;
             public int ClosingMinute = 59;
+
+            public TimeSpan GetOpeningHoursTimeSpan()
+            {
+                DateTime open = DateTime.MinValue;
+                open = open.ChangeTime(this.OpeningHour, this.OpeningMinute, 0, 0);
+
+                DateTime close = DateTime.MinValue;
+                close = close.ChangeTime(this.ClosingHour, this.ClosingMinute, 0, 0);
+
+                return close - open;
+            }
         }
     }
 }

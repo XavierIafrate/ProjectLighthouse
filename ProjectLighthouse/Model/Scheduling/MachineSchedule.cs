@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.Model.Orders;
 using System;
 using System.Collections.Generic;
@@ -15,13 +14,13 @@ namespace ProjectLighthouse.Model.Scheduling
             public event EventHandler OnHolidaysUpdated;
 
 
-            private Lathe lathe;
-            public Lathe Lathe
+            private Machine machine;
+            public Machine Machine
             {
-                get { return lathe; }
+                get { return machine; }
                 set
                 {
-                    lathe = value;
+                    machine = value;
                     OnPropertyChanged();
                 }
             }
@@ -72,17 +71,17 @@ namespace ProjectLighthouse.Model.Scheduling
                 }
             }
 
-            public List<DateTime> Holidays = new();
+            public List<DateTime> Holidays { get; set; } = new();
 
-            public MachineSchedule(Lathe lathe)
+            public MachineSchedule(Machine machine)
             {
-                this.Lathe = lathe;
+                this.Machine = machine;
             }
 
             public void SetScheduleItems(List<ScheduleItem> items)
             {
                 List<ScheduleItem> itemsToAdd = items
-                        .Where(x => x.AllocatedMachine == Lathe.Id && x.StartDate > DateTime.MinValue)
+                        .Where(x => x.AllocatedMachine == Machine.Id && x.StartDate > DateTime.MinValue)
                         .OrderBy(x => x.StartDate)
                         .ToList();
 
@@ -93,30 +92,11 @@ namespace ProjectLighthouse.Model.Scheduling
                 {
                     ScheduleItem item = itemsToAdd[i];
 
-                    if (item is LatheManufactureOrder order)
+                    if (item.State == OrderState.Cancelled)
                     {
-                        if (order.State == OrderState.Cancelled) continue;
-
-                        //if (i < itemsToAdd.Count - 1 && order.State == OrderState.Complete)
-                        //{
-                        //    ScheduleItem nextItem = itemsToAdd[i + 1];
-                        //    DateTime nextItemStarts;
-                        //    if (nextItem is LatheManufactureOrder nextOrder)
-                        //    {
-                        //        nextItemStarts = nextOrder.GetSettingStartDateTime();
-                        //    }
-                        //    else
-                        //    {
-                        //        nextItemStarts = nextItem.StartDate;
-                        //    }
-
-                        //    if (order.EndsAt() > nextItemStarts)
-                        //    {
-                        //        order.ScheduledEnd = nextItemStarts;
-                        //    }
-                        //}
+                        continue;
                     }
-                    
+
                     nonCancelledItemsOnMachine.Add(item);
                 }
 
@@ -147,7 +127,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
                     if (item is LatheManufactureOrder order)
                     {
-                        if (order.State < OrderState.Complete && previousOrder != null) // TODO check this previousOrder null check
+                        if (order.State < OrderState.Complete && previousOrder != null)
                         {
                             optimisations.AddRange(GetOrderOptimisations(order, previousOrder));
 
@@ -176,7 +156,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 this.ActiveWarnings = warnings;
             }
 
-            private List<Optimisation> BuildOptimisedSequences(List<Optimisation> optimisations)
+            private static List<Optimisation> BuildOptimisedSequences(List<Optimisation> optimisations)
             {
                 if (optimisations.Count == 0) return optimisations;
 
@@ -195,7 +175,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 return denoisedSequences;
             }
 
-            private List<Optimisation> DenoiseType(List<Optimisation> foundOptimisationsOfType)
+            private static List<Optimisation> DenoiseType(List<Optimisation> foundOptimisationsOfType)
             {
                 List<Optimisation> results = new();
 
@@ -237,7 +217,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 return false;
             }
 
-            private Optimisation MergeSequence(Optimisation main, Optimisation optimisation)
+            private static Optimisation MergeSequence(Optimisation main, Optimisation optimisation)
             {
                 foreach (ScheduleItem item in optimisation.AffectedItems)
                 {
@@ -292,7 +272,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
                     optimisations.Add(o);
                 }
-                
+
                 if (order.Bar.Size == previousOrder.Bar.Size && order.Bar.IsHexagon == previousOrder.Bar.IsHexagon)
                 {
                     Optimisation o = new()
@@ -317,14 +297,16 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 List<Advisory> advisories = new();
 
-                if (order.Bar.MajorDiameter < Lathe.SoftMinDiameter)
+                Lathe lathe = Machine as Lathe;
+
+                if (order.Bar.MajorDiameter < lathe.SoftMinDiameter)
                 {
                     Advisory advisory = new() { Item = order, Type = Advisory.AdvisoryType.BelowSoftMinDiameter };
 
                     advisories.Add(advisory);
                 }
 
-                if (order.Bar.MajorDiameter > Lathe.SoftMaxDiameter && order.Bar.MajorDiameter <= Lathe.MaxDiameter)
+                if (order.Bar.MajorDiameter > lathe.SoftMaxDiameter && order.Bar.MajorDiameter <= lathe.MaxDiameter)
                 {
                     Advisory advisory = new() { Item = order, Type = Advisory.AdvisoryType.AboveSoftMaxDiameter };
 
@@ -352,7 +334,7 @@ namespace ProjectLighthouse.Model.Scheduling
                         advisories.Add(advisory);
                     }
                 }
-                
+
 
                 return advisories;
             }
@@ -361,6 +343,8 @@ namespace ProjectLighthouse.Model.Scheduling
             {
                 List<Warning> warnings = new();
                 DateTime deadline = order.GetStartDeadline();
+
+                Lathe lathe = Machine as Lathe;
 
                 if (order.StartDate > deadline)
                 {
@@ -410,7 +394,7 @@ namespace ProjectLighthouse.Model.Scheduling
                     warnings.Add(newWarning);
                 }
 
-                if (!Lathe.CanRun(order))
+                if (!lathe.CanRun(order))
                 {
                     Warning newWarning = new() { Item = order, Type = Warning.WarningType.NotCompatibleWithMachine };
 
@@ -435,7 +419,7 @@ namespace ProjectLighthouse.Model.Scheduling
 
                     if (nextStart < requirementMadeAt)
                     {
-                        Warning warning = new() { Item = order, Type =Warning.WarningType.BlockingOverlap };
+                        Warning warning = new() { Item = order, Type = Warning.WarningType.BlockingOverlap };
 
                         warnings.Add(warning);
                     }
@@ -451,7 +435,7 @@ namespace ProjectLighthouse.Model.Scheduling
                 foreach (ScheduleItem item in ScheduleItems)
                 {
                     DateTime absoluteStart = item.StartDate.Date;
-                    DateTime absoluteEnd = item.StartDate.Date;
+                    DateTime absoluteEnd = item.EndsAt().Date;
                     if (item is LatheManufactureOrder order)
                     {
                         absoluteStart = order.GetSettingStartDateTime().Date;

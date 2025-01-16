@@ -3,30 +3,53 @@ using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Scheduling;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace ProjectLighthouse.ViewModel.Helpers
 {
     public class OrderResourceHelper
     {
-        public static int CalculateOrderRuntime(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<MachineBreakdown> breakdowns)
+        public static int CalculateOrderRuntime(LatheManufactureOrder order, List<LatheManufactureOrderItem> items, List<MachineBreakdown> breakdowns, List<Lot> lots)
         {
             int totalTime = 0;
 
             foreach (LatheManufactureOrderItem item in items)
             {
-                if (item.CycleTime > 0)
+                int itemCycleTime = item.CycleTime > 0 ? item.CycleTime : item.PlannedCycleTime();
+                List<Lot> lotsForItem = lots.Where(x => x.ProductName == item.ProductName).ToList();
+
+                int timeOnItem = 0;
+                int goodQuantityAvailable = item.TargetQuantity;
+
+                foreach (Lot lot in lotsForItem)
                 {
-                    totalTime += item.CycleTime * (item.TargetQuantity + item.QuantityReject); // factor in scrap time
+                    if (lot.CycleTime > 0)
+                    {
+                        itemCycleTime = lot.CycleTime;
+                    }
+
+                    int factoredQuantityThisLot;
+
+                    if (lot.IsReject)
+                    {
+                        factoredQuantityThisLot = lot.Quantity;
+                    }
+                    else
+                    {
+                        factoredQuantityThisLot = Math.Min(goodQuantityAvailable, lot.Quantity);
+                        goodQuantityAvailable -= factoredQuantityThisLot;
+                    }
+           
+                    timeOnItem += factoredQuantityThisLot * itemCycleTime;
                 }
-                else
-                {
-                    totalTime += item.PlannedCycleTime() * item.TargetQuantity;
-                }
+
+                timeOnItem += goodQuantityAvailable * itemCycleTime;
+                totalTime += timeOnItem;
             }
 
-            totalTime += (int)order.NumberOfBars * 30;
 
+            totalTime += (int)order.NumberOfBars * 30;
             totalTime += breakdowns.Sum(x => x.TimeElapsed);
 
             return totalTime;
@@ -106,14 +129,13 @@ namespace ProjectLighthouse.ViewModel.Helpers
         }
 
 
-        // TODO calculate flat start
         private static TimeModel GetCycleResponse(List<(double, int)> items)
         {
             items = items.Where(x => x.Item2 > 0).OrderBy(x => x.Item1).ToList();
 
             if (items.Count == 0)
             {
-                throw new Exception("Not enough data");
+                throw new DataException("Not enough data");
             }
 
             if (items.All(x => x.Item2 == items.First().Item2))
@@ -128,7 +150,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             if (numPoints == 0)
             {
-                throw new Exception("Not enough data");
+                throw new DataException("Not enough data");
             }
 
             int min = items.Min(x => x.Item2);
@@ -137,7 +159,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             double meanY = items.Average(point => (double)point.Item2);
 
             double sumXSquared = items.Sum(point => Math.Pow(point.Item1, 2));
-            double sumXY = items.Sum(point => point.Item1 * (double)point.Item2);
+            double sumXY = items.Sum(point => point.Item1 * point.Item2);
 
 
             double a1 = (sumXY / numPoints - meanX * meanY) / (sumXSquared / numPoints - meanX * meanX);
@@ -145,7 +167,6 @@ namespace ProjectLighthouse.ViewModel.Helpers
             // no decrease
             if (a1 < 0 || double.IsNaN(a1))
             {
-                // TODO Handle capped gradient properly
                 return new TimeModel() { Intercept = meanY, Gradient = 0, Floor = min, RecordCount = 0, CoefficientOfDetermination = 0 };
             }
 
@@ -160,8 +181,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             foreach ((double, int) item in items)
             {
                 double bestFitVal = a1 * item.Item1 + b1;
-                rss += Math.Pow((double)item.Item2 - bestFitVal, 2);
-                tss += Math.Pow((double)item.Item2 - meanY, 2);
+                rss += Math.Pow(item.Item2 - bestFitVal, 2);
+                tss += Math.Pow(item.Item2 - meanY, 2);
             }
 
             r2 = 1 - (rss / tss);

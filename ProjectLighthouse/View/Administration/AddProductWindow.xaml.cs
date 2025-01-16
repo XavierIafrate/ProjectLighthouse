@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
@@ -21,8 +20,8 @@ namespace ProjectLighthouse.View.Administration
         public List<string> ExistingFeatures
         {
             get { return existingFeatures; }
-            set 
-            { 
+            set
+            {
                 existingFeatures = value;
                 OnPropertyChanged();
             }
@@ -32,7 +31,7 @@ namespace ProjectLighthouse.View.Administration
 
         public Product? originalProduct;
 
-        public bool SaveExit = false;
+        public bool SaveExit;
 
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,14 +1,27 @@
-﻿<UserControl x:Class="ProjectLighthouse.View.UserControls.DisplayMaterialInfo"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
-             mc:Ignorable="d" 
-             d:Background="White" d:DesignWidth="500">
-    <StackPanel>
-        <TextBlock Text="{Binding MaterialCode}" d:Text="M_CODE"/>
-        <TextBlock Text="{Binding MaterialText}" d:Text="MATERIAL_TEXT"/>
-        <TextBlock Text="{Binding GradeText}" d:Text="GRADE_TEXT"/>
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.UserControls.DisplayMaterialInfo"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="White"
+    d:DesignWidth="500"
+    mc:Ignorable="d">
+    <StackPanel Margin="8,3">
+        <TextBlock
+            d:Text="M_CODE"
+            FontFamily="Consolas"
+            FontSize="16"
+            FontWeight="SemiBold"
+            Text="{Binding MaterialCode}" />
+        <StackPanel Opacity="0.7" Orientation="Horizontal">
+            <TextBlock
+                d:Text="MATERIAL_TEXT"
+                FontWeight="SemiBold"
+                Text="{Binding MaterialText}" />
+            <TextBlock Text=" | " />
+            <TextBlock d:Text="GRADE_TEXT" Text="{Binding GradeText}" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

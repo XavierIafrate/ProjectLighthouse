@@ -12,7 +12,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddFooter(section);
         }
 
-        private void AddHeader(Section section)
+        private static void AddHeader(Section section)
         {
             Paragraph header = section.Headers.Primary.AddParagraph();
             header.Format.AddTabStop(Size.GetWidth(section), TabAlignment.Right);
@@ -23,10 +23,10 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             logo.LockAspectRatio = true;
 
             header.AddTab();
-            header.AddText("Wixroyd Ltd.");
+            header.AddText("Wixroyd Group Ltd.");
         }
 
-        private void AddFooter(Section section)
+        private static void AddFooter(Section section)
         {
             Paragraph footer = section.Footers.Primary.AddParagraph();
             footer.Format.AddTabStop(Size.GetWidth(section), TabAlignment.Right);

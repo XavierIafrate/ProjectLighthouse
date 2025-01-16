@@ -203,7 +203,7 @@ namespace ProjectLighthouse.Model.Programs
         }
 
 
-        private DateTime? fileLastModified = null;
+        private DateTime? fileLastModified;
         [Ignore]
         public DateTime? FileLastModified
         {
@@ -212,7 +212,7 @@ namespace ProjectLighthouse.Model.Programs
         }
 
 
-        private bool? fileExists = null;
+        private bool? fileExists;
         [Ignore]
         public bool? FileExists
         {
@@ -286,7 +286,7 @@ namespace ProjectLighthouse.Model.Programs
                 ClearErrors(propertyName);
 
                 List<string> tags = TagsList.Distinct().ToList();
-                tags.ForEach(x => x = x.ToLower());
+                tags.ForEach(x => x = x.ToLowerInvariant());
 
                 if (tags.Count != TagsList.Count)
                 {

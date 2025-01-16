@@ -62,47 +62,47 @@ namespace ProjectLighthouse.ViewModel.Administration
         }
 
 
-        private void GetBreakdownAnalytics()
+        private static void GetBreakdownAnalytics()
         {
             return;
-            List<MachineBreakdown> breakdowns = DatabaseHelper.Read<MachineBreakdown>().Where(x => x.BreakdownStarted > DateTime.Today.AddDays(-90)).ToList();
-            List<BreakdownCode> codes = DatabaseHelper.Read<BreakdownCode>();
-            breakdowns.ForEach(b => b.BreakdownMeta = codes.Find(c => c.Id == b.BreakdownCode));
+            //List<MachineBreakdown> breakdowns = DatabaseHelper.Read<MachineBreakdown>().Where(x => x.BreakdownStarted > DateTime.Today.AddDays(-90)).ToList();
+            //List<BreakdownCode> codes = DatabaseHelper.Read<BreakdownCode>();
+            //breakdowns.ForEach(b => b.BreakdownMeta = codes.Find(c => c.Id == b.BreakdownCode));
 
-            //List<double> hours = new();
-            List<string> codeLabels = new();
+            ////List<double> hours = new();
+            //List<string> codeLabels = new();
 
-            List<ISeries> newSeries = new();
-            foreach (BreakdownCode code in codes)
-            {
-                double timeAttributed = TimeSpan.FromSeconds(breakdowns.Where(x => x.BreakdownCode == code.Id).Sum(x => x.TimeElapsed)).Days;
-                if (timeAttributed == 0) continue;
+            //List<ISeries> newSeries = new();
+            //foreach (BreakdownCode code in codes)
+            //{
+            //    double timeAttributed = TimeSpan.FromSeconds(breakdowns.Where(x => x.BreakdownCode == code.Id).Sum(x => x.TimeElapsed)).Days;
+            //    if (timeAttributed == 0) continue;
 
-                List<double> newValue = new() { timeAttributed };
-                codeLabels.Add(code.Id);
-                newSeries.Add(new ColumnSeries<double>
-                {
-                    Values = newValue,
-                    Name = code.Id,
-                    TooltipLabelFormatter = (chartPoint) =>
-                    $"[{code.Id}] {code.Name}: {chartPoint.PrimaryValue:#,##0} days",
-                });
-            }
+            //    List<double> newValue = new() { timeAttributed };
+            //    codeLabels.Add(code.Id);
+            //    newSeries.Add(new ColumnSeries<double>
+            //    {
+            //        Values = newValue,
+            //        Name = code.Id,
+            //        TooltipLabelFormatter = (chartPoint) =>
+            //        $"[{code.Id}] {code.Name}: {chartPoint.PrimaryValue:#,##0} days",
+            //    });
+            //}
 
             
 
 
-            BreakdownTime = newSeries.ToArray();
+            //BreakdownTime = newSeries.ToArray();
 
-            BreakdownTimeXAxes = new Axis[1];
-            BreakdownTimeXAxes[0] = new()
-            {
-                Labels = codeLabels,
-            };
+            //BreakdownTimeXAxes = new Axis[1];
+            //BreakdownTimeXAxes[0] = new()
+            //{
+            //    Labels = codeLabels,
+            //};
 
 
-            OnPropertyChanged(nameof(BreakdownTime));
-            OnPropertyChanged(nameof(BreakdownTimeXAxes));
+            //OnPropertyChanged(nameof(BreakdownTime));
+            //OnPropertyChanged(nameof(BreakdownTimeXAxes));
         }
 
         private void GetProductAnalytics()
@@ -141,7 +141,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             List<KeyValuePair<string, int>> result = productionRecords
                 .ToList()
                 .OrderByDescending(x => x.Value)
-                .Take(7)
+                .Take(8)
                 .ToList();
 
             int sumAccountedFor = result.Sum(x => x.Value);
@@ -199,7 +199,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>()
                                                     .Where(x =>
                                                         x.State < OrderState.Cancelled
-                                                        && x.StartDate.Date.AddMonths(18) > DateTime.Now
+                                                        && x.StartDate.Date.AddMonths(36) > DateTime.Now
                                                         && !string.IsNullOrEmpty(x.AllocatedMachine))
                                                     .OrderBy(x => x.StartDate)
                                                     .ToList();
@@ -211,7 +211,7 @@ namespace ProjectLighthouse.ViewModel.Administration
             List<DateTimePoint> developmentOrders = new();
 
 
-            for (int i = 0; i < 365; i++)
+            for (int i = 0; i < 365*3; i++)
             {
                 DateTime date = DateTime.Today.AddDays(i * -1);
 

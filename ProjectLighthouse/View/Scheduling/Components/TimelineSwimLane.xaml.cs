@@ -1,12 +1,9 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
-using RestSharp.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -26,8 +23,8 @@ namespace ProjectLighthouse.View.Scheduling.Components
         public List<ScheduleItem> HighlightedItems
         {
             get { return highlightedItems; }
-            set 
-            { 
+            set
+            {
                 highlightedItems = value;
                 HighlightItems();
             }
@@ -233,7 +230,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             control.Schedule.OnHolidaysUpdated += control.TryDraw;
         }
 
-        private void AddToGrid(Grid grid, UIElement control, int column, int row, int colSpan = 1, int rowSpan = 1)
+        private static void AddToGrid(Grid grid, UIElement control, int column, int row, int colSpan = 1, int rowSpan = 1)
         {
             grid.Children.Add(control);
             Grid.SetColumn(control, column);
@@ -260,10 +257,10 @@ namespace ProjectLighthouse.View.Scheduling.Components
         {
             if (RescheduleCommand is null) return;
             if (e.Data.GetData(typeof(TimelineOrder)) is not TimelineOrder orderControl) return;
-            
+
             MainTimeline.AddDragHighlights();
 
-            if (!this.Schedule.Lathe.CanRun(orderControl.Item))
+            if (!this.Schedule.Machine.CanRun(orderControl.Item))
             {
                 return;
             }
@@ -292,7 +289,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
         private void MainGrid_DragOver(object sender, DragEventArgs e)
         {
             if (RescheduleCommand is null) return;
-            
+
             Point position = e.GetPosition(this.MainGrid);
             int todayIndex = (DateTime.Today - (DateTime)MinDate!).Days;
             int colIndex = (int)Math.Floor(position.X / ColumnWidth);
@@ -306,7 +303,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             this.dropPreview.Visibility = Visibility.Collapsed;
             MainTimeline.RemoveDragHighlights();
 
-            if (!this.Schedule.Lathe.CanRun(orderControl.Item))
+            if (!this.Schedule.Machine.CanRun(orderControl.Item))
             {
                 return;
             }
@@ -327,10 +324,10 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
             if (targetDate.Date < DateTime.Today) return;
 
-            if (targetDate != orderControl.Item.StartDate || Schedule.Lathe.Id != orderControl.Item.AllocatedMachine)
+            if (targetDate != orderControl.Item.StartDate || Schedule.Machine.Id != orderControl.Item.AllocatedMachine)
             {
                 ScheduleItem item = orderControl.Item;
-                RescheduleInformation rescheduleParams = new(item, this.Schedule.Lathe.Id, targetDate);
+                RescheduleInformation rescheduleParams = new(item, this.Schedule.Machine.Id, targetDate);
 
                 RescheduleCommand?.Execute(rescheduleParams);
             }

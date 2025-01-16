@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Input;
 
-namespace ViewModel.Commands.Administration
+namespace ProjectLighthouse.ViewModel.Commands.Administration
 {
     public class GetRecordsAsCsvCommand : ICommand
     {

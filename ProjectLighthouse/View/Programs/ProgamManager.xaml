@@ -318,7 +318,7 @@
                 Grid.RowSpan="3"
                 Grid.Column="2"
                 ScrollChanged="ScrollViewer_ScrollChanged"
-                Visibility="{Binding SelectedProgram, Converter={StaticResource NotNullToVisibility}}">
+                Visibility="{Binding SelectedProgram, Converter={StaticResource ObjectIsNotNull}}">
 
                 <Grid MaxWidth="700" Margin="25,25,25,50">
                     <Grid.RowDefinitions>
@@ -493,7 +493,7 @@
                                 Opacity="0.5"
                                 Text="This program is not assigned to any archetypes" />
                         </Border>
-                        <ListView ItemsSource="{Binding UsedFor}" Visibility="{Binding UsedFor, Converter={StaticResource NotNullToVisibility}}">
+                        <ListView ItemsSource="{Binding UsedFor}" Visibility="{Binding UsedFor, Converter={StaticResource ObjectIsNotNull}}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="5">

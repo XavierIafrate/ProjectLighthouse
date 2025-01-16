@@ -3,14 +3,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:View.Administration"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
+    x:Name="parentWindow"
     Title="New Product"
     Width="800"
-    SizeToContent="Height"
     ResizeMode="NoResize"
-    x:Name="parentWindow"
+    SizeToContent="Height"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Grid Margin="20">
@@ -54,6 +54,7 @@
                 Tag="image url"
                 Text="{Binding Product.WebImageUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
+
             <TextBlock Style="{StaticResource InputLabel}" Text="Image" />
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
@@ -90,6 +91,13 @@
                     Content="Change Image"
                     Style="{StaticResource Action_Button}" />
             </StackPanel>
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Hidden" />
+            <CheckBox
+                Margin="0,5"
+                HorizontalAlignment="Left"
+                Content="Hide this product"
+                IsChecked="{Binding Product.IsHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <Grid Grid.Row="1" Grid.Column="1">

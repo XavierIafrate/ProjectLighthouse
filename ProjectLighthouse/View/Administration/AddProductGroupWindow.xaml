@@ -231,18 +231,19 @@
 
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Grid.Row="2"><Button
-    x:Name="CreateButton"
-    HorizontalAlignment="Right"
-    Click="CreateButton_Click"
-    Content="Create"
-    Style="{StaticResource Action_New_Button}" />
+        <StackPanel Grid.Row="2" Grid.Column="1">
             <Button
-    x:Name="UpdateButton"
-    HorizontalAlignment="Right"
-    Click="CreateButton_Click"
-    Content="Update"
-    Style="{StaticResource Action_Update_Button}" />
+                x:Name="CreateButton"
+                HorizontalAlignment="Right"
+                Click="CreateButton_Click"
+                Content="Create"
+                Style="{StaticResource Action_New_Button}" />
+            <Button
+                x:Name="UpdateButton"
+                HorizontalAlignment="Right"
+                Click="CreateButton_Click"
+                Content="Update"
+                Style="{StaticResource Action_Update_Button}" />
         </StackPanel>
     </Grid>
 

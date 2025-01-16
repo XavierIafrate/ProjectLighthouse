@@ -32,8 +32,10 @@ namespace ProjectLighthouse.ViewModel.Helpers
         }
         public static bool PrintIssue(BarIssue issue, int copies = 1)
         {
-            BarIssueLabel label = new(issue);
-            label.Copies = copies;
+            BarIssueLabel label = new(issue)
+            {
+                Copies = copies
+            };
             return Print(label);
 
         }
@@ -71,7 +73,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public LotLabel()
             {
-                User = App.CurrentUser.UserName.ToUpper();
+                User = App.CurrentUser.UserName.ToUpperInvariant();
                 Date = DateTime.Now;
             }
 
@@ -80,7 +82,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 Product = lot.ProductName;
                 Batch = lot.MaterialBatch;
                 Quantity = lot.Quantity;
-                User = App.CurrentUser.UserName.ToUpper();
+                User = App.CurrentUser.UserName.ToUpperInvariant();
                 Date = DateTime.Now;
             }
         }
@@ -95,7 +97,8 @@ namespace ProjectLighthouse.ViewModel.Helpers
             public int Copies { get; set; } = 1;
             public string User { get; set; }
             public DateTime Date { get; set; }
-            public int TemplateId { get => 2; }
+            public int TemplateId { get => 5; }
+            public string TrayId { get; set; }
 
 
             public bool DataIsComplete()
@@ -110,7 +113,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public BarIssueLabel()
             {
-                User = App.CurrentUser.UserName.ToUpper();
+                User = App.CurrentUser.UserName.ToUpperInvariant();
                 Date = DateTime.Now;
             }
 
@@ -121,8 +124,9 @@ namespace ProjectLighthouse.ViewModel.Helpers
                 Quantity = issue.Quantity;
                 OrderReference = issue.OrderId;
                 MaterialInfo = issue.MaterialInfo;
-                User = App.CurrentUser.UserName.ToUpper();
+                User = App.CurrentUser.UserName.ToUpperInvariant();
                 Date = DateTime.Now;
+                TrayId = issue.TrayId;
             }
         }
 
@@ -139,7 +143,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
 
             public InventoryLabel()
             {
-                User = App.CurrentUser.UserName.ToUpper();
+                User = App.CurrentUser.UserName.ToUpperInvariant();
                 Date = DateTime.Now;
             }
 

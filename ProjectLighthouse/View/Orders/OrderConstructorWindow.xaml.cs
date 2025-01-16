@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -528,7 +529,7 @@ namespace ProjectLighthouse.View.Orders
 
             if (failedValidation > 0)
             {
-                throw new Exception($"{failedValidation:0} item(s) have failed validation, cannot proceed.");
+                throw new InvalidDataException($"{failedValidation:0} item(s) have failed validation, cannot proceed.");
             }
 
             NewOrder.Name = GetNewOrderId();
@@ -538,7 +539,7 @@ namespace ProjectLighthouse.View.Orders
 
             if (SelectedGroup is null)
             {
-                throw new Exception("Selected group is null, cannot proceed.");
+                throw new InvalidDataException("Selected group is null, cannot proceed.");
             }
 
             ProductGroup group = SelectedGroup;
@@ -547,10 +548,20 @@ namespace ProjectLighthouse.View.Orders
                 NewOrder.IsResearch = true;
             }
 
-            NewOrder.MajorDiameter = group.MajorDiameter;
-
             BarStock? orderBar = group.GetRequiredBarStock(BarStock, MaterialId)
-                ?? throw new Exception("No bar records available that meet the size or material requirements for the product.");
+                ?? throw new InvalidDataException("No bar records available that meet the size or material requirements for the product.");
+
+            List<string> requirements = new();
+            requirements = group.RequiresFeaturesList;
+            requirements.AddRange(SelectedProduct!.RequiresFeaturesList);
+            requirements.AddRange(orderBar.RequiresFeaturesList);
+            MaterialInfo? material = Materials.Find(m => m.Id == MaterialId);
+            if (material != null)
+            {
+                requirements.AddRange(material.RequiresFeaturesList);
+            }
+            NewOrder.RequiredFeaturesList = requirements;
+            NewOrder.MajorDiameter = group.MajorDiameter;
 
             NewOrder.BarsInStockAtCreation = orderBar.InStock;
             NewOrder.MaterialId = MaterialId;
@@ -589,15 +600,8 @@ namespace ProjectLighthouse.View.Orders
                 NewOrder.TimeCodeIsEstimate = true;
             }
 
-            NewOrder.RequiredFeaturesList = orderBar.RequiresFeaturesList;
-            NewOrder.RequiredFeaturesList.AddRange(orderBar.MaterialData.RequiresFeaturesList);
-            NewOrder.RequiredFeaturesList.AddRange(SelectedGroup.RequiresFeaturesList);
-            if (SelectedProduct is not null)
-            {
-                NewOrder.RequiredFeaturesList.AddRange(SelectedProduct.RequiresFeaturesList);
-            }
 
-            NewOrder.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new());
+            NewOrder.TimeToComplete = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new(), new());
             NewOrder.TimeModelPlanned = timeModel;
 
             List<TechnicalDrawing> allDrawings = DatabaseHelper.Read<TechnicalDrawing>()
@@ -633,7 +637,6 @@ namespace ProjectLighthouse.View.Orders
 
         }
 
-        // TODO refactor
         private static string GetNewOrderId()
         {
             List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>();
@@ -670,19 +673,16 @@ namespace ProjectLighthouse.View.Orders
             insights.NumberOfBarsRequired = NewOrderItems.CalculateNumberOfBars(bar, 0);
             insights.TotalBarCost = (bar.ExpectedCost ?? 0) * insights.NumberOfBarsRequired;
 
-            int totalTime = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new());
+            int totalTime = OrderResourceHelper.CalculateOrderRuntime(NewOrder, NewOrderItems.ToList(), new(), new());
 
-            insights.TimeIsEstimate = true; // TODO fix
+            insights.TimeIsEstimate = true; 
             insights.TimeToComplete = totalTime;
 
             TimeSpan orderTime = TimeSpan.FromSeconds(insights.TimeToComplete);
 
             insights.CostOfMachineTime = orderTime.TotalSeconds * App.Constants.AbsorptionRate;
 
-            insights.ValueProduced = (int)NewOrderItems.Sum(x => x.SellPrice * x.TargetQuantity * 0.7) / 100;
-
-            insights.CostOfOrder = insights.CostOfMachineTime + (insights.TotalBarCost / 100);
-            insights.NetProfit = insights.ValueProduced - insights.CostOfOrder;
+            insights.CostOfOrder = insights.CostOfMachineTime + insights.TotalBarCost;
 
             insights.TimeCode = TimeModels[MaterialId] ?? SelectedGroup.DefaultTimeCode;
 
@@ -700,8 +700,6 @@ namespace ProjectLighthouse.View.Orders
             public double TotalBarCost { get; set; }
             public double CostOfOrder { get; set; }
             public double CostOfMachineTime { get; set; }
-            public double NetProfit { get; set; }
-            public double ValueProduced { get; set; }
             public string TimeCode { get; set; }
         }
     }

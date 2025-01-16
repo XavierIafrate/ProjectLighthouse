@@ -3,6 +3,7 @@ using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.View.Administration;
 using ProjectLighthouse.View.Orders;
+using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Orders;
 using ProjectLighthouse.ViewModel.Commands.Printing;
 using ProjectLighthouse.ViewModel.Core;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows;
-using ViewModel.Commands.Administration;
 
 namespace ProjectLighthouse.ViewModel.Orders
 {
@@ -21,6 +21,8 @@ namespace ProjectLighthouse.ViewModel.Orders
         #region Variables
         public List<BarStock> BarStock { get; set; }
         public List<MaterialInfo> MaterialData { get; set; }
+
+        private List<Lathe> lathes;
 
         public List<BarStockRequirementOverview> BarOverviews { get; set; }
         public List<BarIssue> BarIssues { get; set; }
@@ -199,6 +201,8 @@ namespace ProjectLighthouse.ViewModel.Orders
             Orders.Clear();
             Orders = DatabaseHelper.Read<LatheManufactureOrder>().Where(x => x.State < OrderState.Complete).ToList();
 
+            lathes = DatabaseHelper.Read<Lathe>();
+
             for (int i = 0; i < BarStock.Count; i++)
             {
                 List<LatheManufactureOrder> ordersUsingBar = Orders.Where(x => x.BarID == BarStock[i].Id && x.BarIsVerified).OrderByDescending(x => x.RequiresBar()).ThenBy(x => x.StartDate).ToList();
@@ -270,19 +274,51 @@ namespace ProjectLighthouse.ViewModel.Orders
 
         public void AddNewBar()
         {
-            NewBarWindow window = new()
+            List<string> machineFeatures = GetMachineFeatures();
+
+            NewBarWindow window = new(machineFeatures, null)
             {
                 Owner = App.MainViewModel.MainWindow,
             };
 
             window.ShowDialog();
 
-            if (window.BarAdded)
+            if (window.SaveExit)
             {
                 SearchString = "";
                 LoadData();
                 SearchString = window.NewBar.Id;
             }
+        }
+
+        public void EditBar(BarStock bar)
+        {
+            List<string> machineFeatures = GetMachineFeatures();
+
+            NewBarWindow window = new(machineFeatures, bar)
+            {
+                Owner = App.MainViewModel.MainWindow,
+            };
+
+            window.ShowDialog();
+
+            if (window.SaveExit)
+            {
+                SearchString = "";
+                LoadData();
+                SearchString = window.NewBar.Id;
+            }
+        }
+
+        private List<string> GetMachineFeatures()
+        {
+            List<string> result = new();
+            foreach(Lathe lathe in lathes)
+            {
+                result.AddRange(lathe.FeatureList);
+            }
+
+            return result.Distinct().ToList();
         }
     }
 }

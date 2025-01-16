@@ -19,14 +19,42 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <TextBlock
-            Grid.Column="1"
-            FontSize="16"
-            FontWeight="SemiBold"
-            Text="{Binding Path=Item.Product, FallbackValue='PRODUCT_NAME', Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <TextBlock
+                Grid.Column="1"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="{Binding Path=Item.Product, FallbackValue='PRODUCT_NAME', Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            <Button
+                x:Name="CopyProductNameButton"
+                Margin="5,0,0,0"
+                Click="CopyProductNameButton_Click"
+                Style="{StaticResource ClipboardButton_Icon}" />
+        </StackPanel>
         <StackPanel
             Grid.Row="1"
+            Grid.Column="1"
+            Orientation="Horizontal">
+            <TextBlock
+                FontSize="12"
+                FontStyle="Italic"
+                Text="Exporting as: " />
+            <TextBlock
+                Grid.Row="2"
+                FontWeight="SemiBold"
+                Grid.Column="1"
+                FontSize="12"
+                Text="{Binding Path=Item.ExportProductName, FallbackValue='EXPORT_PRODUCT_NAME', Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            <Button
+                x:Name="CopyExportCodeButton"
+                Margin="5,0,0,0"
+                Click="CopyExportCodeButton_Click"
+                Style="{StaticResource ClipboardButton_Icon}" />
+        </StackPanel>
+        <StackPanel
+            Grid.Row="2"
             Grid.Column="1"
             Orientation="Horizontal">
             <TextBlock
@@ -44,7 +72,7 @@
         </StackPanel>
 
         <TextBlock
-            Grid.RowSpan="2"
+            Grid.RowSpan="4"
             Grid.Column="3"
             Padding="0,0,0,0"
             VerticalAlignment="Center"

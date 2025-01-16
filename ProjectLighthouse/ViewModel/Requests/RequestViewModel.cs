@@ -12,6 +12,8 @@ using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Commands.Requests;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using ProjectLighthouse.ViewModel.ValueConverters;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -167,6 +169,36 @@ namespace ProjectLighthouse.ViewModel.Requests
             set { selectedRequestOrder = value; OnPropertyChanged(); }
         }
 
+        private DateTime? lastSyncRun;
+
+        public DateTime? LastSyncRun
+        {
+            get { return lastSyncRun; }
+            set 
+            { 
+                lastSyncRun = value; 
+                OnPropertyChanged(); 
+                if(value is not null)
+                {
+                    SyncHasNotRunRecently = (DateTime.Now - (DateTime)value).TotalDays > 3;
+                }
+                else
+                {
+                    SyncHasNotRunRecently = true;
+                }
+            }
+        }
+
+        private bool syncHasNotRunRecently = true;
+
+        public bool SyncHasNotRunRecently
+        {
+            get { return syncHasNotRunRecently; }
+            set { syncHasNotRunRecently = value; OnPropertyChanged(); }
+        }
+
+
+
 
 
         #region Visibilities
@@ -319,6 +351,21 @@ namespace ProjectLighthouse.ViewModel.Requests
             Orders = DatabaseHelper.Read<LatheManufactureOrder>();
             OrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>();
 
+            ApplicationVariable? lastSyncTime = DatabaseHelper.Read<ApplicationVariable>().Find(x => x.Id == "SYNC_LAST_RUN");
+
+            if(lastSyncTime is not null)
+            {
+                try
+                {
+                    DateTime lastSyncTimeVal = (DateTime)lastSyncTime.Data;
+                    LastSyncRun = lastSyncTimeVal;
+                }
+                catch
+                {
+                    // do nothing
+                }
+            }
+
 
             for (int i = 0; i < Orders.Count; i++)
             {
@@ -338,30 +385,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 MessageBox.Show(ex.Message);
                 return;
-            }
-
-            // TODO review if this can be removed
-            for (int i = 0; i < requests.Count; i++)
-            {
-                if (requests[i].OrderId != null)
-                {
-                    requests[i].order = Orders.Find(x => x.Id == requests[i].OrderId);
-                }
-
-                List<RequestItem> requestItems = RequestItems.Where(x => x.RequestId == requests[i].Id).ToList();
-                requests[i].TotalQuantity = requestItems.Sum(x => x.QuantityRequired);
-
-                if (!string.IsNullOrEmpty(requests[i].Description)) continue;
-
-                TurnedProduct? item = Items.Find(x => x.Id == requestItems.First().ItemId);
-                if (item is null)
-                {
-                    requests[i].Description = "Unknown Item";
-                }
-                else
-                {
-                    requests[i].Description = item.ProductName;
-                }
             }
 
             Requests = requests;
@@ -447,8 +470,21 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
             else
             {
-                string searchTerm = NewRequestSearchText.ToUpper();
-                List<TurnedProduct> results = Items.Where(x => x.ProductName.ToUpper().Contains(searchTerm) && !requestedIds.Contains(x.Id)).Take(50).ToList();
+                string searchTerm = NewRequestSearchText.ToUpperInvariant();
+                List<TurnedProduct> results = Items.Where(x => x.ProductName.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) && !requestedIds.Contains(x.Id)).Take(50).ToList();
+                
+                foreach(TurnedProduct result in results)
+                {
+                    if (result.GroupId is null) continue;
+
+                    ProductGroup? archetype = Archetypes.Find(x => x.Id == result.GroupId);
+                    if (archetype is null) continue;
+                    if (archetype.Status == ProductGroup.GroupStatus.Dormant)
+                    {
+                        result.Retired = true;
+                    }
+                }
+                
                 NewRequestSearchResults = results;
             }
 
@@ -562,7 +598,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
             else if (updatedList.Count == 1 || SelectedRequestArchetype is null)
             {
-                NewRequest.Description = updatedList.First().Item.ProductName;
+                NewRequest.Description = updatedList.First().Item!.ProductName;
             }
             else if (SelectedRequestArchetype is not null)
             {
@@ -581,6 +617,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         private void RemoveFromActive(RequestItem item)
         {
+            if (SelectedRequest is null) return;
             List<RequestItem> updatedList = SelectedRequestItems;
 
             if (SelectedRequestItems.Count == 1)
@@ -601,7 +638,7 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             if (updatedList.Count == 1 || SelectedRequestArchetype is null)
             {
-                SelectedRequest.Description = updatedList.First().Item.ProductName;
+                SelectedRequest.Description = updatedList.First().Item!.ProductName;
             }
             else if (SelectedRequestArchetype is not null)
             {
@@ -709,6 +746,15 @@ namespace ProjectLighthouse.ViewModel.Requests
 
             SelectedRequestOrder = Orders.Find(x => x.Id == SelectedRequest.OrderId);
 
+            SelectedRequestOrder?.OrderItems.ForEach(x =>
+                {
+                    TurnedProduct? p = Items.Find(i => i.ProductName == x.ProductName);
+                    if (p != null)
+                    {
+                        x.Gtin = p.ExportProductName;
+                    }
+                });
+
             if (SelectedRequest == NewRequest)
             {
                 RemoveFromRequestCmd = new(this);
@@ -769,7 +815,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             foreach (RequestItem requestItem in SelectedRequestItems!)
             {
                 requestItem.Item = Items.Find(x => x.Id == requestItem.ItemId);
-                requestItem.Item?.ValidateForOrder(); // TODO check
+                requestItem.Item?.ValidateForOrder();
                 requestItem.RequirementChanged += EvaluateCanSaveChanges;
             }
 
@@ -788,7 +834,6 @@ namespace ProjectLighthouse.ViewModel.Requests
             {
                 LoadRecommendedOrder();
             }
-
         }
 
         private void EvaluateCanSaveChanges()
@@ -896,7 +941,6 @@ namespace ProjectLighthouse.ViewModel.Requests
 
         public void ShowMakeOrBuy()
         {
-            // TODO tidy
             if (SelectedRequestItems.Any(x => x.Item is null))
             {
                 MessageBox.Show("Could not find product", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -921,7 +965,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            int materialId = SelectedRequestItems.First().Item.MaterialId ?? -1;
+            int materialId = SelectedRequestItems.First().Item!.MaterialId ?? -1;
 
             if (materialId == -1)
             {
@@ -972,7 +1016,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-
+           
             try
             {
                 OrderConstructorWindow creationWindow = new((int)SelectedRequest.ArchetypeId!, materialId, RecommendedManifest)
@@ -985,6 +1029,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 {
                     return;
                 }
+
                 SelectedRequest.OrderId = creationWindow.NewOrder.Id;
                 SelectedRequest.order = creationWindow.NewOrder;
                 Orders.Add(creationWindow.NewOrder);
@@ -995,21 +1040,21 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
+            SQLiteConnection con = DatabaseHelper.GetConnection();
+            con.BeginTransaction();
+
             SelectedRequest.Mark(accepted: true);
 
-
-            try
+            if (con.Update(SelectedRequest) != 1)
             {
-                DatabaseHelper.Update(SelectedRequest, throwErrs: true);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred while updating the request:{Environment.NewLine}{ex.Message}",
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                con.Rollback();
+                con.Close();
+                MessageBox.Show("Failed to update request", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            con.Commit();
+            con.Close();
 
             int id = SelectedRequest.Id;
 
@@ -1073,10 +1118,6 @@ namespace ProjectLighthouse.ViewModel.Requests
                     case "All":
                         FilteredRequests = Requests;
                         break;
-                    case "Active":
-                        FilteredRequests = Requests.Where(x => x.Status == Request.RequestStatus.Pending) // TODO improve
-                                    .ToList();
-                        break;
                     case "Last 14 Days":
                         FilteredRequests = Requests.Where(n => n.RaisedAt.AddDays(14) > DateTime.Now).ToList();
                         break;
@@ -1099,7 +1140,7 @@ namespace ProjectLighthouse.ViewModel.Requests
                 return;
             }
 
-            string searchToken = SearchString.ToUpperInvariant();
+            string searchToken = SearchString.Trim().ToUpperInvariant();
             List<int> requestIds = new();
 
             requestIds.AddRange(RequestItems.Where(x => x.Item is not null).Where(x => x.Item!.ProductName.Contains(searchToken)).Select(x => x.RequestId).ToList());
@@ -1148,9 +1189,9 @@ namespace ProjectLighthouse.ViewModel.Requests
             }
 
             List<string> otherUsers = FilteredNotes.Select(x => x.SentBy).ToList();
-            otherUsers.AddRange(App.NotificationsManager.users.Where(x => x.HasPermission(PermissionType.ApproveRequest)).Select(x => x.UserName));
+            otherUsers.AddRange(App.NotificationsManager.Users.Where(x => x.HasPermission(PermissionType.ApproveRequest)).Select(x => x.UserName));
 
-            User? userWhoRaisedRequest = App.NotificationsManager.users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
+            User? userWhoRaisedRequest = App.NotificationsManager.Users.Find(x => x.GetFullName() == SelectedRequest.RaisedBy);
             if (userWhoRaisedRequest is not null)
             {
                 otherUsers.Add(userWhoRaisedRequest.UserName);

@@ -49,8 +49,6 @@ namespace ProjectLighthouse.Model.Drawings
         public Amendment AmendmentType { get; set; }
         public string IssueDetails { get; set; }
         public bool WatermarkOnly { get; set; }
-
-        public bool PlatingStatement;
         public string? CheckSheetReferences { get; set; }
 
         [Ignore]

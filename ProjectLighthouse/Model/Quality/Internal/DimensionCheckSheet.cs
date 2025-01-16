@@ -24,7 +24,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
             CheckSheetStyles.Define(document);
         }
 
-        private void SetupSection(Section section)
+        private static void SetupSection(Section section)
         {
             section.PageSetup.PageFormat = PageFormat.A4;
             section.PageSetup.Orientation = Orientation.Landscape;
@@ -65,7 +65,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
             ExportPdf(path);
         }
 
-        private Section AddToleranceDescriptions(Section section, List<ToleranceDefinition> dimensions)
+        private static Section AddToleranceDescriptions(Section section, List<ToleranceDefinition> dimensions)
         {
             section.AddPageBreak();
             for (int i = 0; i < dimensions.Count; i++)
@@ -78,7 +78,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
             return section;
         }
 
-        private Section AddHeader(Section section)
+        private static Section AddHeader(Section section)
         {
             Image logo = section.AddImage(new LogoImage().GetMigraDocFileName());
             logo.Width = "6 cm";
@@ -112,7 +112,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
             return new();
         }
 
-        private Table AddRows(Table t, List<ToleranceDefinition> dims)
+        private static Table AddRows(Table t, List<ToleranceDefinition> dims)
         {
             Row row;
 
@@ -154,7 +154,7 @@ namespace ProjectLighthouse.Model.Quality.Internal
             return t;
         }
 
-        private Table BuildTableFrame(Table t, Section c, TechnicalDrawing d, string? o)
+        private static Table BuildTableFrame(Table t, Section c, TechnicalDrawing d, string? o)
         {
             t.Rows.LeftIndent = 0;
 

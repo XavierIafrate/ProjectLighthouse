@@ -12,16 +12,15 @@
     <ApplicationIcon>lighthouseicon.ico</ApplicationIcon>
     <Company>Wixroyd Ltd</Company>
     <Authors>Xavier Iafrate</Authors>
-    <Copyright>Wixroyd Ltd 2021</Copyright>
-    <FileVersion>1.7.5</FileVersion>
-    <AssemblyVersion>1.7.5</AssemblyVersion>
+    <Copyright>Wixroyd Ltd 2025</Copyright>
+    <FileVersion>1.9.0</FileVersion>
+    <AssemblyVersion>1.9.0</AssemblyVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.7.5</Version>
+    <Version>1.9.0</Version>
     <Product>Lighthouse</Product>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <StartupObject>ProjectLighthouse.App</StartupObject>
     <Description>Wixroyd Ltd custom manufacturing pipeline.</Description>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <PackageIcon>package_icon.png</PackageIcon>
@@ -30,10 +29,11 @@
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <Nullable>warnings</Nullable>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <BaseOutputPath></BaseOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138</NoWarn>
+    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138;CA1051</NoWarn>
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
   </PropertyGroup>
@@ -45,7 +45,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138</NoWarn>
+    <NoWarn>1701;1702;NU1701;CS8632;NETSDK1;NETSDK1138;CA1051</NoWarn>
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
   </PropertyGroup>
@@ -59,13 +59,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
-    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701;NETSDK1138</NoWarn>
+    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701;NETSDK1138;CA1051</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
-    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701;NETSDK1138</NoWarn>
+    <NoWarn>1701;1702;CS8632;NETSDK1;NU1701;NETSDK1138;CA1051</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -85,6 +85,7 @@
     <None Remove="Resources\GIF\sylvester.gif" />
     <None Remove="Resources\GIF\zoolander-what-is-this.gif" />
     <None Remove="Resources\GIF\zoolander.gif" />
+    <None Remove="Resources\huddle.png" />
     <None Remove="Resources\LighthouseLogo_Mini.png" />
     <None Remove="Resources\LighthouseLogo_Mono.png" />
     <None Remove="Resources\LighthouseLogo_Mono_Mini.png" />
@@ -115,16 +116,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ClickSendV3API" Version="5.0.72">
-      <NoWarn>NU1701</NoWarn>
-    </PackageReference>
     <PackageReference Include="CsvHelper" Version="27.2.1">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="DbfDataReader" Version="0.8.0" />
-    <PackageReference Include="HtmlRenderer.PdfSharp" Version="1.5.1-beta1" />
+    <PackageReference Include="Emoji.Wpf" Version="0.3.4" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.700" />
-    <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1343.22" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
@@ -134,10 +131,9 @@
     <PackageReference Include="PDFsharp-MigraDoc" Version="1.50.5147">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="SpreadsheetLight" Version="3.5.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="System.Data.Odbc" Version="6.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     
     <PackageReference Include="XamlAnimatedGif" Version="2.0.3" />
   </ItemGroup>
@@ -162,8 +158,6 @@
     <Resource Include="Resources\GIF\fireworks.gif" />
     <Resource Include="Resources\GIF\frodo-keep-your-secrets.gif" />
     <Resource Include="Resources\GIF\milhouse.gif" />
-    <Resource Include="Resources\GIF\moderate.gif" />
-    <Resource Include="Resources\GIF\no.gif" />
     <Resource Include="Resources\GIF\panic.gif" />
     <Resource Include="Resources\GIF\ron_swanson.gif" />
     <Resource Include="Resources\GIF\steve-martin.gif" />
@@ -173,6 +167,9 @@
     <Resource Include="Resources\GIF\travolta.gif" />
     <Resource Include="Resources\GIF\zoolander-what-is-this.gif" />
     <Resource Include="Resources\GIF\zoolander.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\huddle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\LighthouseLogo.png">
@@ -204,8 +201,6 @@
     <Resource Include="Resources\MiB_Logo_Stacked_Colour.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\mwl-dark.png" />
-    <Resource Include="Resources\mwl-light.png" />
     <Resource Include="Resources\remembrance.png" />
     <Resource Include="Resources\RGB_wixroyd_ant_logo_red.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -260,6 +255,9 @@
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="View\Orders\Components\xaml.txt">
+      <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
 

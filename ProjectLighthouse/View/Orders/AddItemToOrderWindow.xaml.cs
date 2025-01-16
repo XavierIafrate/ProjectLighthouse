@@ -16,13 +16,7 @@ namespace ProjectLighthouse.View.Orders
     public partial class AddItemToOrderWindow : Window, INotifyPropertyChanged
     {
         private List<TurnedProduct> PossibleProducts;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private List<LatheManufactureOrderItem> possibleItems;
-        string parentOrderName;
-        public bool ItemsWereAdded { get; set; }
-
         public List<LatheManufactureOrderItem> PossibleItems
         {
             get { return possibleItems; }
@@ -33,29 +27,25 @@ namespace ProjectLighthouse.View.Orders
             }
         }
 
-        public AddItemToOrderWindow(int OrderId)
+        private LatheManufactureOrder order;
+
+        public AddItemToOrderWindow(LatheManufactureOrder order)
         {
             InitializeComponent();
-            LoadData(OrderId);
-            DataContext = this;
-
+            this.order = order;
+            LoadData();
         }
 
-        void LoadData(int orderId)
+        void LoadData()
         {
-            LatheManufactureOrder order = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Id == orderId)
-                ?? throw new Exception($"Order with ID '{orderId}' not found.");
-            parentOrderName = order.Name;
-
             TimeModel timeModel = order.TimeModelPlanned;
 
-            List<LatheManufactureOrderItem> currentOrderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().Where(x => x.AssignedMO == order.Name).ToList();
 
             PossibleProducts = DatabaseHelper.Read<TurnedProduct>()
                 .Where(x =>
                     x.MaterialId == order.MaterialId &&
                     x.GroupId == order.GroupId &&
-                    !currentOrderItems.Any(y => y.ProductName == x.ProductName)
+                    !order.OrderItems.Any(y => y.ProductName == x.ProductName)
                 ).ToList();
 
             List<LatheManufactureOrderItem> items = new();
@@ -80,6 +70,7 @@ namespace ProjectLighthouse.View.Orders
             PossibleItems = new(items);
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -106,12 +97,16 @@ namespace ProjectLighthouse.View.Orders
 
             for (int i = 0; i < newItems.Count; i++)
             {
-                LatheManufactureOrderItem newItem = (LatheManufactureOrderItem)newItems[i];
-                newItem!.AssignedMO = parentOrderName;
-                DatabaseHelper.Insert(newItem);
+                if (newItems[i] is not LatheManufactureOrderItem newItem) throw new InvalidCastException();
+                newItem.AssignedMO = order.Name;
+                order.OrderItems.Add(newItem);  
+            }
+            
+            if(newItems.Count > 0)
+            {
+                order.OrderItems = order.OrderItems.OrderByDescending(x => x.RequiredQuantity).ThenBy(x => x.ProductName).ToList();
             }
 
-            ItemsWereAdded = true;
             Close();
         }
     }

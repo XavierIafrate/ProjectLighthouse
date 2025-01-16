@@ -1,0 +1,57 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Core.NotFoundGifs.Zoolander"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Core.NotFoundGifs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="parentControl"
+    d:Background="White"
+    mc:Ignorable="d">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Border
+            Width="auto"
+            Margin="20"
+            VerticalAlignment="Top"
+            CornerRadius="18">
+            <Border.Effect>
+                <DropShadowEffect
+                    BlurRadius="20"
+                    Direction="220"
+                    Opacity="0.2"
+                    ShadowDepth="20"
+                    Color="Black" />
+            </Border.Effect>
+            <Border Name="ReceiverColor" CornerRadius="15">
+                <Grid>
+                    <Border
+                        Name="Mask"
+                        Background="{StaticResource Blue}"
+                        CornerRadius="20" />
+                    <StackPanel x:Name="image">
+                        <Image
+                            Name="Receiver"
+                            MaxWidth="400"
+                            MaxHeight="300"
+                            d:Height="200"
+                            d:Width="400"
+                            gif:AnimationBehavior.AnimateInDesignMode="True"
+                            gif:AnimationBehavior.RepeatBehavior="3"
+                            gif:AnimationBehavior.SourceUri="pack://application:,,,/Resources/GIF/sylvester.gif"
+                            RenderOptions.BitmapScalingMode="HighQuality" />
+                        <StackPanel.OpacityMask>
+                            <VisualBrush Visual="{Binding ElementName=Mask}" />
+                        </StackPanel.OpacityMask>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Border>
+        <TextBlock
+            HorizontalAlignment="Center"
+            FontSize="30"
+            Opacity="0.6"
+            d:Text="No results"
+            Text="{Binding SearchString, ElementName=parentControl, StringFormat='{}No results for {0}', TargetNullValue='No results'}" />
+    </StackPanel>
+</UserControl>

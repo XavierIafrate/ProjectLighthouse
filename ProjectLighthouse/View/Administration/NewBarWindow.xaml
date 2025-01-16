@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="parentControl"
     Title="New Bar Record"
     Width="550"
     ResizeMode="NoResize"
@@ -15,7 +16,7 @@
         <TextBlock
             d:Text="New Bar Record"
             Style="{StaticResource title}"
-            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Title}" />
+            Text="{Binding ElementName=parentControl, Path=Title}" />
         <StackPanel Margin="20">
 
 
@@ -24,81 +25,299 @@
                 Style="{StaticResource InputLabel}"
                 Text="Bar ID" />
             <TextBox
+                x:Name="barIdTextBox"
                 Width="300"
                 HorizontalAlignment="Left"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="bar id"
                 Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputLabel}"
+                    Text="Length (mm)" />
+                <TextBox
+                    Grid.Row="1"
+                    Width="200"
+                    HorizontalAlignment="Left"
+                    MaxLength="4"
+                    PreviewKeyDown="ValidateInt"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="length"
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.Length, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-            <TextBlock
-                VerticalAlignment="Center"
-                Style="{StaticResource InputLabel}"
-                Text="Length (mm)" />
-            <TextBox
-                Width="200"
-                HorizontalAlignment="Left"
-                MaxLength="4"
-                PreviewKeyDown="ValidateInt"
-                Style="{StaticResource DefaultTextBox}"
-                Tag="length"
-                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.Length, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                <TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputLabel}"
+                    Text="Size (mm)" />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="150"
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="size"
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.Size, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+            </Grid>
 
-            <TextBlock
-                VerticalAlignment="Center"
-                Style="{StaticResource InputLabel}"
-                Text="Size (mm)" />
-            <TextBox
-                Width="150"
-                HorizontalAlignment="Left"
-                Style="{StaticResource DefaultTextBox}"
-                Tag="size"
-                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.Size, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputLabel}"
+                    Text="Suggested Stock" />
+                <TextBox
+                    Grid.Row="1"
+                    Width="150"
+                    HorizontalAlignment="Left"
+                    MaxLength="2"
+                    PreviewKeyDown="ValidateInt"
+                    Style="{StaticResource DefaultTextBox}"
+                    Tag="suggested stock"
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.SuggestedStock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                <TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputLabel}"
+                    Text="Config" />
+                <CheckBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="250"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    Content="Bar Is Hexagon"
+                    IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.IsHexagon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <CheckBox
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Width="250"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    Content="Bar Is Dormant"
+                    IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.IsDormant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <TextBlock
-                VerticalAlignment="Center"
-                Style="{StaticResource InputLabel}"
-                Text="Suggested Stock" />
-            <TextBox
-                Width="150"
-                HorizontalAlignment="Left"
-                MaxLength="2"
-                PreviewKeyDown="ValidateInt"
-                Style="{StaticResource DefaultTextBox}"
-                Tag="suggested stock"
-                Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.SuggestedStock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+            </Grid>
+
 
             <TextBlock
                 VerticalAlignment="Center"
                 Style="{StaticResource InputLabel}"
                 Text="Material" />
             <ComboBox
+                x:Name="materialComboBox"
                 Width="250"
                 Margin="5"
                 HorizontalAlignment="Left"
-                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Materials}"
+                ItemsSource="{Binding ElementName=parentControl, Path=Materials}"
                 SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.MaterialId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                 SelectedValuePath="Id" />
 
-            <TextBlock
-                VerticalAlignment="Center"
-                Style="{StaticResource InputLabel}"
-                Text="Profile" />
-            <CheckBox
-                Width="250"
-                Margin="5"
-                HorizontalAlignment="Left"
-                Content="Bar Is Hexagon"
-                IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.IsHexagon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
 
         </StackPanel>
-        <Button
-            x:Name="AddBarButton"
-            Margin="5,20,5,5"
-            HorizontalAlignment="Right"
-            Click="AddBarButton_Click"
-            IsEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.NoErrors, Mode=OneWay}"
-            Style="{StaticResource Action_New_Button}"
-            Content="Add Bar" />
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.Resources>
+                <ControlTemplate x:Key="SmallCrossButton" TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <Path
+                            x:Name="path"
+                            Width="10"
+                            Height="10"
+                            Margin="0"
+                            Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="path" Property="Opacity" Value="0.6" />
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="path" Property="Opacity" Value="1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+                <ControlTemplate x:Key="SmallAddButton" TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <Path
+                            x:Name="path"
+                            Width="10"
+                            Height="10"
+                            Margin="0"
+                            Data="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Opacity="0.8"
+                            Stretch="Uniform" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="path" Property="Opacity" Value="0.6" />
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="path" Property="Opacity" Value="1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource SectionLabel}" Text="Machine Requirements" />
+            <TextBlock
+                Grid.Row="1"
+                Style="{StaticResource InputLabel}"
+                Text="Existing Machine Features" />
+
+            <ItemsControl
+                Grid.Row="2"
+                MaxHeight="250"
+                d:ItemsSource="{d:SampleData ItemCount=4}"
+                ItemsSource="{Binding ElementName=parentControl, Path=ExistingFeatures}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="3"
+                            Background="{StaticResource BlueFaded}"
+                            CornerRadius="5">
+                            <Grid Margin="5,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    MaxWidth="150"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Blue}"
+                                    Text="{Binding}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <Button
+                                    Grid.Column="1"
+                                    Width="20"
+                                    Height="20"
+                                    Padding="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="AddFeatureButton_Click"
+                                    Foreground="{StaticResource Blue}"
+                                    Style="{x:Null}"
+                                    Tag="{Binding}"
+                                    Template="{StaticResource SmallAddButton}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MaxWidth="235" HorizontalAlignment="Left" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Style="{StaticResource InputLabel}"
+                Text="Required by this bar" />
+            <ItemsControl
+                Grid.Row="2"
+                Grid.Column="1"
+                MaxHeight="250"
+                d:ItemsSource="{d:SampleData ItemCount=10}"
+                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=NewBar.RequiresFeaturesList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="3"
+                            Background="{StaticResource PurpleFaded}"
+                            CornerRadius="5">
+                            <Grid Margin="5,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    MaxWidth="150"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Purple}"
+                                    Text="{Binding}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <Button
+                                    Grid.Column="1"
+                                    Width="20"
+                                    Height="20"
+                                    Padding="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="RemoveFeatureButton_Click"
+                                    Foreground="{StaticResource Purple}"
+                                    Style="{x:Null}"
+                                    Tag="{Binding}"
+                                    Template="{StaticResource SmallCrossButton}" />
+                            </Grid>
+
+                        </Border>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MaxWidth="235" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button
+                x:Name="AddBarButton"
+                Margin="5,20,5,5"
+                Click="AddBarButton_Click"
+                Content="Add Bar"
+                IsEnabled="{Binding ElementName=parentControl, Path=NewBar.NoErrors, Mode=OneWay}"
+                Style="{StaticResource Action_New_Button}" />
+            <Button
+                x:Name="UpdateButton"
+                Margin="5,20,5,5"
+                Click="UpdateButton_Click"
+                Content="Update Bar"
+                IsEnabled="{Binding ElementName=parentControl, Path=NewBar.NoErrors, Mode=OneWay}"
+                Style="{StaticResource Action_Update_Button}" />
+
+        </StackPanel>
     </StackPanel>
 </Window>

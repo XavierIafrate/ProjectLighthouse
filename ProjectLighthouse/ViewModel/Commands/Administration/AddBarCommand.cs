@@ -1,9 +1,9 @@
-﻿using ProjectLighthouse;
+﻿using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.ViewModel.Orders;
 using System;
 using System.Windows.Input;
 
-namespace ViewModel.Commands.Administration
+namespace ProjectLighthouse.ViewModel.Commands.Administration
 {
     public class AddBarCommand : ICommand
     {
@@ -22,7 +22,14 @@ namespace ViewModel.Commands.Administration
 
         public void Execute(object parameter)
         {
-            viewModel.AddNewBar();
+            if(parameter is BarStock barToEdit)
+            {
+                viewModel.EditBar(barToEdit);
+            }
+            else
+            {
+                viewModel.AddNewBar();
+            }
         }
     }
 }

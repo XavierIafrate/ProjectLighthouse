@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.ViewModel.Helpers;
+﻿using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.ViewModel.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Material
 {
-    public class BarStock : BaseObject, IObjectWithValidation
+    public class BarStock : BaseObject, IObjectWithValidation, ICloneable
     {
         private string id;
 
@@ -19,6 +20,35 @@ namespace ProjectLighthouse.Model.Material
             {
                 id = value.ToUpperInvariant();
                 ValidateProperty();
+                OnPropertyChanged();
+            }
+        }
+
+        private string? erpId;
+
+        [Unique]
+        [Import("ERP ID")]
+        public string? ErpId
+        {
+            get { return erpId; }
+            set
+            {
+                erpId = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private bool isSyncing;
+        [Import("Is Syncing")]
+        public bool IsSyncing
+        {
+            get { return isSyncing; }
+            set
+            {
+                if (isSyncing == value) return;
+
+                isSyncing = value;
                 OnPropertyChanged();
             }
         }
@@ -117,8 +147,18 @@ namespace ProjectLighthouse.Model.Material
 
         [Ignore]
         public MaterialInfo MaterialData { get; set; }
-        public int MaterialId { get; set; }
 
+
+        private int materialId;
+        public int MaterialId
+        {
+            get { return materialId; }
+            set 
+            { 
+                materialId = value; 
+                OnPropertyChanged(); 
+            }
+        }
 
         public double? ExpectedCost
         {
@@ -127,11 +167,9 @@ namespace ProjectLighthouse.Model.Material
                 if (MaterialData is null) return null;
                 if (MaterialData.Cost is null) return null;
 
-                return MaterialData.Cost * GetUnitMassOfBar();
+                return MaterialData.GetRate() * GetUnitMassOfBar();
             }
         }
-
-
 
         public double MajorDiameter
         {
@@ -257,6 +295,12 @@ namespace ProjectLighthouse.Model.Material
 
 
             throw new Exception($"Validation for {propertyName} has not been configured.");
+        }
+
+        public object Clone()
+        {
+            string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<BarStock>(serialised);
         }
     }
 }

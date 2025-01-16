@@ -13,14 +13,14 @@ namespace ProjectLighthouse.View.Scheduling.Components
 {
     public partial class TimelineOrder : UserControl
     {
-        public Brush BackgroundBrush = (Brush)Application.Current.Resources["OrangeFaded"];
-        public Brush ForegroundBrush = (Brush)Application.Current.Resources["Orange"];
+        public Brush BackgroundBrush { get; set; } = (Brush)Application.Current.Resources["OrangeFaded"];
+        public Brush ForegroundBrush { get; set; } = (Brush)Application.Current.Resources["Orange"];
 
-        public Brush CheckedBackgroundBrush = (Brush)Application.Current.Resources["Orange"];
-        public Brush CheckedForegroundBrush = (Brush)Application.Current.Resources["OnOrange"];
+        public Brush CheckedBackgroundBrush { get; set; } = (Brush)Application.Current.Resources["Orange"];
+        public Brush CheckedForegroundBrush { get; set; } = (Brush)Application.Current.Resources["OnOrange"];
 
 
-        public bool IsHighlighted;
+        public bool IsHighlighted { get; set; }
         public void SetIsHighlighted(bool isHighlighted)
         {
             this.IsHighlighted = isHighlighted;
@@ -208,11 +208,18 @@ namespace ProjectLighthouse.View.Scheduling.Components
                     {
                         this.BackgroundBrush = (Brush)Application.Current.Resources["PurpleFaded"];
                         this.ForegroundBrush = (Brush)Application.Current.Resources["Purple"];
+
+                        CheckedBackgroundBrush = (Brush)Application.Current.Resources["Purple"];
+                        CheckedForegroundBrush = (Brush)Application.Current.Resources["OnPurple"];
                     }
                     this.setting_border.Visibility = Visibility.Collapsed;
                     absoluteSetting = 0;
                     relativeBreakdown = 0;
                 }
+            }
+            else if (this.Item is GeneralManufactureOrder genOrder)
+            {
+                this.SetBrushes(genOrder.State);
             }
 
             this.ItemButton.Background = this.BackgroundBrush;
@@ -355,14 +362,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
         private void OrderGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (OrderGrid.ActualWidth - OrderGrid.ColumnDefinitions[0].ActualWidth < 100)
-            {
-                MetadataStackPanel.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                MetadataStackPanel.Visibility = Visibility.Visible;
-            }
+            MetadataStackPanel.Visibility = OrderGrid.ActualWidth - OrderGrid.ColumnDefinitions[0].ActualWidth < 100 ? Visibility.Collapsed : Visibility.Visible;
         }
 
 

@@ -3,19 +3,16 @@ using System.Windows.Controls;
 
 namespace ProjectLighthouse.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for WarningBadge.xaml
-    /// </summary>
     public partial class WarningBadge : UserControl
     {
         public string WarningText
         {
-            get { return (string)GetValue(_warningTextProperty); }
-            set { SetValue(_warningTextProperty, value); }
+            get { return (string)GetValue(warningTextProperty); }
+            set { SetValue(warningTextProperty, value); }
         }
 
-        public static readonly DependencyProperty _warningTextProperty =
-            DependencyProperty.Register("_warningText", typeof(string), typeof(WarningBadge), new PropertyMetadata(null, SetValues));
+        public static readonly DependencyProperty warningTextProperty =
+            DependencyProperty.Register("warningText", typeof(string), typeof(WarningBadge), new PropertyMetadata(null, SetValues));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

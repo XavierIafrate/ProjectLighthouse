@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.Administration"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
     Title="Add Turned Product"
     Width="700"
     ResizeMode="NoResize"
@@ -104,17 +105,40 @@
                 </ListView.ItemTemplate>-->
             </ComboBox>
 
-            <TextBlock Style="{StaticResource InputLabel}" Text="Cycle time (s)" x:Name="CycleTimeLabel" />
+            <TextBlock
+                x:Name="CycleTimeLabel"
+                Style="{StaticResource InputLabel}"
+                Text="Cycle time (s)" />
             <TextBox
                 x:Name="CycleTimeTextBox"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="cycle time"
                 Text="{Binding Product.CycleTime}" />
 
+            <TextBlock
+                x:Name="TargetStockLabel"
+                Style="{StaticResource InputLabel}"
+                Text="Target Stock" />
+            <TextBox
+                x:Name="TargetStockTextBox"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="target stock"
+                Text="{Binding Product.QuantitySold}" />
+
             <CheckBox
                 Margin="0,5"
                 Content="Plated Part"
                 IsChecked="{Binding Product.PlatedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Specification" />
+            <TextBox IsEnabled="False" Text="{Binding Product.SpecificationDetails}" />
+
+            <Button
+                x:Name="OpenAttachmentButton"
+                HorizontalAlignment="Left"
+                Click="OpenAttachmentButton_Click"
+                Content="Open Atachment"
+                Style="{StaticResource Action_Open_Button}" />
 
             <!--<TextBlock Text="{Binding Product.GroupId, TargetNullValue='No group assigned', StringFormat='{}Group ID: {0}', Mode=OneWay}" />-->
         </StackPanel>
@@ -133,13 +157,13 @@
                     x:Name="AddButton"
                     HorizontalAlignment="Right"
                     Click="ConfirmButton_Click"
-                    Style="{StaticResource Action_New_Button}"
-                    Content="Add" />
+                    Content="Add"
+                    Style="{StaticResource Action_New_Button}" />
                 <Button
                     x:Name="UpdateButton"
                     Click="ConfirmButton_Click"
-                    Style="{StaticResource Action_Update_Button}"
-                    Content="Update" />
+                    Content="Update"
+                    Style="{StaticResource Action_Update_Button}" />
 
             </StackPanel>
         </Grid>

@@ -10,7 +10,7 @@
     d:Background="White"
     d:DesignWidth="200"
     mc:Ignorable="d">
-    <Grid Margin="3,0">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
@@ -21,16 +21,15 @@
 
         <StackPanel VerticalAlignment="Center">
             <TextBlock
-                x:Name="MOTextBlock"
                 FontSize="20"
                 FontWeight="SemiBold"
                 Foreground="{StaticResource OnBackground}"
                 Text="{Binding Name, FallbackValue='M00001'}" />
             <TextBlock
-                x:Name="PORTextBlock"
-                Margin="0,0,0,2"
-                FontSize="12"
-                Foreground="{StaticResource Blue}"
+                FontSize="13"
+                Margin="0,0,0,3"
+                FontWeight="SemiBold"
+                Opacity="0.6"
                 Text="{Binding DeliveryDate, Converter={StaticResource dateFormatter}}" />
         </StackPanel>
     </Grid>

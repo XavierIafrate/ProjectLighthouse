@@ -5,39 +5,52 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="parentControl"
     d:DesignWidth="500"
     mc:Ignorable="d">
     <Border
         Margin="5"
         Background="{StaticResource Surface}"
         CornerRadius="5">
-        <Grid Margin="10,5">
+        <Grid Margin="15,5">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <Path
+                Grid.RowSpan="2"
+                Width="18"
+                Height="18"
+                Margin="0,2,15,0"
+                Stretch="UniformToFill"
+                Style="{StaticResource Icon_BarStock}" />
 
             <TextBlock
                 x:Name="BarIdTextBlock"
+                Grid.Column="1"
                 d:Text="BAR_ID"
                 FontFamily="Consolas"
-                FontSize="16"
+                FontSize="18"
                 FontWeight="SemiBold"
-                Text="{Binding Id}" />
+                Text="{Binding Bar.Id, ElementName=parentControl}" />
             <TextBlock
                 x:Name="MaterialInfoTextBlock"
                 Grid.Row="1"
+                Grid.Column="1"
                 d:Text="MATERIAL_TEXT GRADE_TEXT"
                 FontWeight="SemiBold"
-                Text="{Binding MaterialData}" />
+                Opacity="0.7"
+                Text="{Binding Bar.MaterialData, ElementName=parentControl}"
+                Visibility="{Binding Bar.MaterialData, ElementName=parentControl, Converter={StaticResource NotNullToVisibility}}" />
 
             <StackPanel
                 Grid.RowSpan="2"
-                Grid.Column="1"
+                Grid.Column="2"
                 Margin="10,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -49,7 +62,7 @@
                     Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"
                     Fill="Black"
                     Stretch="Uniform"
-                    Visibility="{Binding IsHexagon, Converter={StaticResource boolToVisibleOrCollapsed}}" />
+                    Visibility="{Binding Bar.IsHexagon, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                 <Path
                     x:Name="RoundProfileSymbol"
                     Width="15"
@@ -57,13 +70,13 @@
                     Data="M4.15,21.46L5.47,19.58C3.35,17.74 2,15.03 2,12A10,10 0 0,1 12,2C13.78,2 15.44,2.46 16.89,3.27L18.21,1.39L19.85,2.54L18.53,4.42C20.65,6.26 22,8.97 22,12A10,10 0 0,1 12,22C10.22,22 8.56,21.54 7.11,20.73L5.79,22.61L4.15,21.46M12,4A8,8 0 0,0 4,12C4,14.35 5,16.46 6.63,17.93L15.73,4.92C14.62,4.33 13.35,4 12,4M12,20A8,8 0 0,0 20,12C20,9.65 19,7.54 17.37,6.07L8.27,19.08C9.38,19.67 10.65,20 12,20Z"
                     Fill="Black"
                     Stretch="Uniform"
-                    Visibility="{Binding IsHexagon, Converter={StaticResource boolToCollapsedOrVisible}}" />
+                    Visibility="{Binding Bar.IsHexagon, ElementName=parentControl, Converter={StaticResource boolToCollapsedOrVisible}}" />
                 <TextBlock
                     x:Name="BarSizeTextBlock"
                     Margin="5,0,0,0"
                     d:Text="BAR_SIZE_TEXT"
                     FontWeight="SemiBold"
-                    Text="{Binding Size, StringFormat='{}{0:0.0}mm'}" />
+                    Text="{Binding Bar.Size, ElementName=parentControl, StringFormat='{}{0:0.0}mm'}" />
             </StackPanel>
         </Grid>
     </Border>

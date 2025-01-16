@@ -7,9 +7,9 @@ namespace ProjectLighthouse.ViewModel.Commands.Scheduling
     public class ResetDatesCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private NewScheduleViewModel viewModel;
+        private ScheduleViewModel viewModel;
 
-        public ResetDatesCommand(NewScheduleViewModel vm)
+        public ResetDatesCommand(ScheduleViewModel vm)
         {
             this.viewModel = vm;
         }

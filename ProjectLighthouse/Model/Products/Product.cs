@@ -38,6 +38,14 @@ namespace ProjectLighthouse.Model.Products
             }
         }
 
+        private bool isHidden;
+        public bool IsHidden
+        {
+            get { return isHidden; }
+            set { isHidden = value; OnPropertyChanged(); }
+        }
+
+
         private string webUrl = "";
         public string WebUrl
         {

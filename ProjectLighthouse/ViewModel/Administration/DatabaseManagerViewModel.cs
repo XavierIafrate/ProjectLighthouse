@@ -1,33 +1,42 @@
 ﻿using CsvHelper.Configuration.Attributes;
+using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Core;
 using ProjectLighthouse.Model.Deliveries;
+using ProjectLighthouse.Model.Drawings;
 using ProjectLighthouse.Model.Material;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Programs;
+using ProjectLighthouse.Model.Quality;
+using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.Model.Scheduling;
+using ProjectLighthouse.View.Administration;
+using ProjectLighthouse.ViewModel.Commands.Administration;
 using ProjectLighthouse.ViewModel.Core;
 using ProjectLighthouse.ViewModel.Helpers;
+using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using ViewModel.Commands.Administration;
+using System.Windows;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
     public class DatabaseManagerViewModel : BaseViewModel
     {
         public ManageUsersViewModel ManageUsersViewModel { get; set; }
-        public LatheViewModel LatheViewModel { get; set; }
+        public MachineViewModel LatheViewModel { get; set; }
         public MaterialsViewModel MaterialsViewModel { get; set; }
 
         public List<LatheManufactureOrder> Orders { get; set; }
-
         public GetRecordsAsCsvCommand GetRecordsAsCsvCmd { get; set; }
+        public ImportTargetStockCommand ImportTargetStockCmd { get; set; }
 
         public DatabaseManagerViewModel()
         {
             GetRecordsAsCsvCmd = new(this);
+            ImportTargetStockCmd = new(this);
+
             Orders = DatabaseHelper.Read<LatheManufactureOrder>();
 
             if (App.CurrentUser.HasPermission(Model.Core.PermissionType.EditUsers))
@@ -51,84 +60,156 @@ namespace ProjectLighthouse.ViewModel.Administration
         {
             switch (type)
             {
-                case "Orders":
-                    CSVHelper.WriteListToCSV(Orders, "orders");
-                    break;
                 case "ItemCosting":
                     GenerateItemCostingSheet();
                     break;
-                case "BarStockEstimate":
-                    GetBarInventory();
+
+                case "Attachment":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Attachment>(), type.Replace(' ', '_'));
                     break;
 
-                case "Delivered":
-                    GetDeliveredItems();
+                case "Bar Issue":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<BarIssue>(), type.Replace(' ', '_'));
                     break;
-                case "TotalManufactured":
-                    UpdateTotalManufactured();
+
+                case "Bar Stock":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<BarStock>(), type.Replace(' ', '_'));
                     break;
-                case "ImportTriggers":
-                    ImportTriggers();
+
+                case "Bar Stock Purchase":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<BarStockPurchase>(), type.Replace(' ', '_'));
                     break;
+
+                case "Breakdown Code":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<BreakdownCode>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Calibrated Equipment":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<CalibratedEquipment>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Calibration Certificate":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<CalibrationCertificate>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Delivery Item":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<DeliveryItem>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Delivery Note":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<DeliveryNote>(), type.Replace(' ', '_'));
+                    break;
+
+                case "General Manufacture Order":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<GeneralManufactureOrder>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Lathe":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Lathe>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Lathe Manufacture Order":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<LatheManufactureOrder>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Lathe Manufacture Order Item":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<LatheManufactureOrderItem>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Login":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Login>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Lot":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Lot>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Machine":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Machine>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Machine Breakdown":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<MachineBreakdown>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Machine Service":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<MachineService>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Maintenance Event":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<MaintenanceEvent>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Material Info":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<MaterialInfo>(), type.Replace(' ', '_'));
+                    break;
+
+                case "NC Program":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<NcProgram>(), type.Replace(' ', '_'));
+                    break;
+
+                case "NC Program Commit":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<NcProgramCommit>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Non Turned Item":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<NonTurnedItem>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Note":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Note>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Order Drawing":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<OrderDrawing>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Permission":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Permission>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Product":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Product>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Product Group":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<ProductGroup>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Request":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Request>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Request Item":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<RequestItem>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Standard":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<Standard>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Technical Drawing":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<TechnicalDrawing>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Tolerance Definition":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<ToleranceDefinition>(), type.Replace(' ', '_'));
+                    break;
+
+                case "Turned Product":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<TurnedProduct>(), type.Replace(' ', '_'));
+                    break;
+
+                case "User":
+                    CSVHelper.WriteListToCSV(DatabaseHelper.Read<User>(), type.Replace(' ', '_'));
+                    break;
+
                 default:
-                    throw new NotImplementedException();
-            };
-        }
-
-        private static void ImportTriggers()
-        {
-            string[] data = File.ReadAllLines(@"C:\Users\x.iafrate\Desktop\newTriggers.txt");
-            List<TurnedProduct> turnedProducts = DatabaseHelper.Read<TurnedProduct>().ToList();
-            Dictionary<string, int> newTriggers = new();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                string entry = data[i];
-                string[] split = entry.Split(',');
-                if (split.Length != 2)
-                {
-                    Debug.WriteLine($"Length not 2: '{entry}'");
-                    continue;
-                }
-
-                if (!int.TryParse(split[1], out int trigger))
-                {
-                    Debug.WriteLine($"Could not parse int: '{split[1]}'");
-                    continue;
-                }
-
-                newTriggers.Add(split[0], trigger);
-            }
-
-            foreach (KeyValuePair<string, int> trigger in newTriggers)
-            {
-                TurnedProduct? p = turnedProducts.Find(x => x.ProductName == trigger.Key);
-                p ??= turnedProducts.Find(x => x.ExportProductName == trigger.Key);
-
-                if (p is null)
-                {
-                    Debug.WriteLine($"Could not find product: '{trigger.Key}'");
-                    continue;
-                }
-
-                if (p.QuantitySold == trigger.Value)
-                {
-                    continue;
-                }
-
-                p.QuantitySold = trigger.Value;
-
-                try
-                {
-                    DatabaseHelper.Update(p, throwErrs: true);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
+                    return;
             }
         }
 
+       
         private void UpdateTotalManufactured()
         {
             List<TurnedProduct> turnedProducts = DatabaseHelper.Read<TurnedProduct>().Where(x => !x.Retired).ToList();
@@ -147,93 +228,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
-        class DeliveryLine
-        {
-            public DateTime Date { get; set; }
-            public string ProductName { get; set; }
-            public string DeliveryNote { get; set; }
-            public int Quantity { get; set; }
-        }
-
-        private static void GetDeliveredItems()
-        {
-            List<DeliveryLine> result = new();
-
-            List<DeliveryNote> deliveryNotes = DatabaseHelper.Read<DeliveryNote>().Where(x => x.DeliveryDate.AddYears(2) > DateTime.Now).ToList();
-            List<DeliveryItem> deliveryLines = DatabaseHelper.Read<DeliveryItem>();
-
-            foreach (DeliveryNote deliveryNote in deliveryNotes)
-            {
-                List<DeliveryItem> items = deliveryLines.Where(x => x.AllocatedDeliveryNote == deliveryNote.Name).ToList();
-
-                foreach (DeliveryItem item in items)
-                {
-                    result.Add(new()
-                    {
-                        Date = deliveryNote.DeliveryDate,
-                        DeliveryNote = deliveryNote.Name,
-                        ProductName = string.IsNullOrEmpty(item.ExportProductName)
-                            ? item.Product
-                            : item.ExportProductName,
-                        Quantity = item.QuantityThisDelivery
-                    }
-                    );
-                }
-            }
-
-            CSVHelper.WriteListToCSV(result, "delivered", "dd/MM/yyyy");
-        }
-
-
-        public class BarStockInventory
-        {
-            [CsvHelper.Configuration.Attributes.Name("Bar ID")]
-            public string Id { get; set; }
-            [CsvHelper.Configuration.Attributes.Name("In Stock")]
-            public int InStock { get; set; }
-            [CsvHelper.Configuration.Attributes.Name("Estimated On Rack")]
-            public int OnRack { get; set; }
-        }
-
-        private static void GetBarInventory()
-        {
-            List<LatheManufactureOrder> activeOrders = DatabaseHelper.Read<LatheManufactureOrder>()
-                .Where(x => x.State < OrderState.Complete && x.NumberOfBarsIssued > 0)
-                .ToList();
-
-            List<BarStock> barStock = DatabaseHelper.Read<BarStock>().OrderBy(x => x.Id).ToList();
-            List<BarStockInventory> result = new();
-
-            foreach (BarStock bar in barStock)
-            {
-                BarStockInventory x = new() { Id = bar.Id, InStock = (int)bar.InStock };
-
-                List<LatheManufactureOrder> ordersUsingBar = activeOrders.Where(x => x.BarID == bar.Id).ToList();
-
-
-                int barsOnRack = 0;
-                foreach (LatheManufactureOrder order in ordersUsingBar)
-                {
-                    if (order.State < OrderState.Running)
-                    {
-                        barsOnRack += order.NumberOfBarsIssued;
-                        continue;
-                    }
-
-                    double progress = (DateTime.Now - order.StartDate) / (TimeSpan.FromSeconds(order.TimeToComplete) * (order.NumberOfBarsIssued / order.NumberOfBars));
-
-                    int barsConsumed = (int)Math.Floor(Math.Min(progress, 1) * order.NumberOfBarsIssued);
-                    barsOnRack += order.NumberOfBarsIssued - barsConsumed;
-                }
-
-                x.OnRack = barsOnRack;
-                result.Add(x);
-            }
-
-            CSVHelper.WriteListToCSV(result, "BarInventory");
-        }
-
-
         private static void GenerateItemCostingSheet()
         {
             List<TurnedProduct> products = DatabaseHelper.Read<TurnedProduct>()
@@ -248,19 +242,24 @@ namespace ProjectLighthouse.ViewModel.Administration
             List<MaterialInfo> materials = DatabaseHelper.Read<MaterialInfo>();
             List<ProductGroup> groups = DatabaseHelper.Read<ProductGroup>();
 
+            Dictionary<string, TimeModel> cachedModels = new();
+
             List<ItemCost> itemCosts = new();
-            foreach (TurnedProduct product in products)
+            foreach (TurnedProduct sku in products)
             {
-                ProductGroup? memberOf = groups.Find(x => x.Id == product.GroupId);
-                MaterialInfo? material = materials.Find(x => x.Id == product.MaterialId);
+                ProductGroup? memberOf = groups.Find(x => x.Id == sku.GroupId);
+                MaterialInfo? material = materials.Find(x => x.Id == sku.MaterialId);
+
 
                 if (memberOf is null || material is null)
                 {
                     continue;
                 }
 
+
                 List<BarStock> candidates = barStock.Where(x =>
                         x.Size >= (memberOf.MinBarSize ?? memberOf.MajorDiameter)
+                        && x.IsHexagon == memberOf.UsesHexagonBar
                         && x.MaterialId == material.Id)
                     .OrderBy(x => x.Size)
                     .ToList();
@@ -270,30 +269,58 @@ namespace ProjectLighthouse.ViewModel.Administration
                     continue;
                 }
 
+                TimeModel timeModel = GetTimeModel(sku, products, memberOf, material, cachedModels);
+
+
                 BarStock bar = candidates.First();
 
-                ItemCost newItem = new(product, bar, material, App.Constants.AbsorptionRate, TimeModel.Default(product.MajorDiameter), 2);
+                ItemCost newItem = new(sku, bar, material, App.Constants.AbsorptionRate, timeModel, 2);
 
                 itemCosts.Add(newItem);
             }
 
             CSVHelper.WriteListToCSV(itemCosts, "ItemMaterialDetails");
+        }
 
-            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            //string htmlString = "<h1>Costing Analysis</h1>";
-
-            //foreach (ItemCost item in itemCosts)
-            //{
-            //    htmlString += $"<h4>{item.Product}</h4>";
-            //    htmlString += $"<p>Time Cost {item.TimeCost}</p>";
-            //    htmlString += $"<p>Material Cost {item.MaterialCost}</p>";
-            //    htmlString += $"<p><b>Total Cost {item.TotalCost}</b></p>";
-            //}
+        private static TimeModel GetTimeModel(TurnedProduct sku, List<TurnedProduct> products, ProductGroup group, MaterialInfo material, Dictionary<string, TimeModel> cachedModels)
+        {
+            if (cachedModels.ContainsKey($"{sku.GroupId}>{material.Id}"))
+            {
+                return cachedModels[$"{sku.GroupId}>{material.Id}"];
+            }
 
 
-            //PdfDocument pdfDocument = PdfGenerator.GeneratePdf(htmlString, PdfSharp.PageSize.A4);
-            //pdfDocument.Save(@"C:\Users\x.iafrate\Dev\test.pdf");
+            TimeModel timeModel;
+            List<TurnedProduct> timeResponseGroup = products.Where(x => x.GroupId == group.Id && x.MaterialId == material.Id && !x.IsSpecialPart && !x.Retired && x.CycleTime > 0).ToList();
+            if (timeResponseGroup.Count == 0)
+            {
+                timeModel = TimeModel.Default(sku.MajorDiameter);
+            }
+            else
+            {
+                try
+                {
+                    timeModel = OrderResourceHelper.GetCycleResponse(timeResponseGroup);
+                }
+                catch
+                {
+                    timeModel = TimeModel.Default(sku.MajorDiameter);
+                }
+            }
+
+            if (sku.GroupId is int groupId)
+            {
+                cachedModels.Add($"{sku.GroupId}>{material.Id}", timeModel);
+            }
+
+            return timeModel;
+        }
+
+        internal void RunImportTriggerLevels()
+        {
+            ImportStockTargetsWindow window = new();
+            window.Owner = App.MainViewModel.MainWindow;
+            window.ShowDialog();
         }
 
         public class ItemCost
@@ -305,14 +332,14 @@ namespace ProjectLighthouse.ViewModel.Administration
                 TimeCost = CycleTime * absorptionRate;
 
                 Material = materialInfo.MaterialCode;
-                CostPerKilo = materialInfo.Cost ?? 0 / 100;
+                CostPerKilo = (double)(materialInfo.Cost ?? 0) / 100;
                 BarId = bar.Id;
                 bar.MaterialData = materialInfo;
-                BarLength = bar.Length;
-                BarCost = bar.ExpectedCost;
+                BarMass = bar.GetUnitMassOfBar();
+                BarCost = (bar.ExpectedCost ?? 0) / 100;
                 MaterialBudget = product.MajorLength + product.PartOffLength + partOff;
 
-                MaterialCost = bar.ExpectedCost ?? 0 * (MaterialBudget / (bar.Length - App.Constants.BarRemainder));
+                MaterialCost = 1.1 * BarCost * (MaterialBudget / (bar.Length - App.Constants.BarRemainder));
 
                 TotalCost = TimeCost + MaterialCost;
 
@@ -325,37 +352,40 @@ namespace ProjectLighthouse.ViewModel.Administration
             [Name("SKU")]
             public string Product { get; set; }
 
-            [Name("Cycle Time (seconds)")]
+            [Name("Cycle Time [s]")]
             public int CycleTime { get; set; }
 
             [Name("Material")]
             public string Material { get; set; }
 
-            [Name("Unit Cost")]
-            public double CostPerKilo { get; set; }
-
             [Name("Barstock ID")]
             public string BarId { get; set; }
 
-            [Name("Bar Length (mm)")]
-            public int BarLength { get; set; }
+            [Name("Material Cost [GBP/kg]")]
+            public double CostPerKilo { get; set; }
 
-            [Name("Bar Cost")]
-            public double? BarCost { get; set; }
+            [Name("Bar Mass [kg]")]
+            public double BarMass { get; set; }
 
-            [Name("Item Length Consumption")]
+            [Name("Expected Bar Cost [GBP]")]
+            public double BarCost { get; set; }
+
+            [Name("SKU Bar Consumption [mm]")]
             public double MaterialBudget { get; set; }
 
-            [Name("Material Cost")]
+            [Name("SKU Material Cost [GBP]")]
             public double MaterialCost { get; set; } = 0;
 
-            [Name("Time Cost")]
+            [Name("SKU Time Cost [GBP]")]
             public double TimeCost { get; set; }
 
-            [Name("Total Cost")]
+            [Name("SKU Total Cost [GBP]")]
             public double TotalCost { get; set; }
 
+            [Name("Time Model Code")]
             public string TimeModel { get; set; }
+
+            [Name("SKU Produced")]
             public bool HasBeenProduced { get; set; }
 
             public object Clone()

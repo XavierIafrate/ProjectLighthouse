@@ -19,13 +19,11 @@ namespace ProjectLighthouse.View.UserControls
         {
             if (d is not DisplayBarStock control) return;
             if (control.Bar is null) return;
-            control.DataContext = control.Bar;
         }
 
         public DisplayBarStock()
         {
             InitializeComponent();
-            DataContext = this.Bar;
         }
     }
 }

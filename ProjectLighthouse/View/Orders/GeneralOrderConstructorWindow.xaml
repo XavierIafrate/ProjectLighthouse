@@ -1,0 +1,105 @@
+﻿<Window
+    x:Class="ProjectLighthouse.View.Orders.GeneralOrderConstructorWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Orders"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:usercontrols="clr-namespace:ProjectLighthouse.View.UserControls.Core"
+    x:Name="parentControl"
+    Title="New Order"
+    Width="700"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="10">
+            <TextBlock
+                x:Name="ProductEditHeader"
+                Style="{StaticResource title}"
+                Text="New Product" />
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Product Name" />
+            <TextBox
+                x:Name="ProductNameInput"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="product name"
+                Text="{Binding ElementName=parentControl, Path=NewItem.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Product Description" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="product description"
+                Text="{Binding ElementName=parentControl, Path=NewItem.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Cycle Time" />
+            <usercontrols:CycleTimeInput x:Name="CycleTimeControl" CycleTime="{Binding ElementName=parentControl, Path=NewItem.CycleTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Button
+                x:Name="CreateProductButton"
+                HorizontalAlignment="Right"
+                Click="CreateProductButton_Click"
+                Content="Add Product"
+                Style="{StaticResource Action_New_Button}" />
+            <StackPanel
+                x:Name="UpdateProductControls"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="CancelProductChangesButton"
+                    Click="CancelProductChangesButton_Click"
+                    Content="Cancel"
+                    Style="{StaticResource Action_Cancel_Button}" />
+                <Button
+                    x:Name="SaveProductButton"
+                    HorizontalAlignment="Right"
+                    Click="SaveProductButton_Click"
+                    Content="Save Product"
+                    Style="{StaticResource Action_Update_Button}" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="10">
+            <TextBlock Style="{StaticResource title}" Text="New Order" />
+
+            <Grid>
+                <TextBlock Style="{StaticResource InputLabel}" Text="Select Item" />
+                <Button
+                    x:Name="EditProductButton"
+                    HorizontalAlignment="Right"
+                    Click="EditProductButton_Click"
+                    Content="Edit"
+                    Style="{StaticResource Action_Edit_Button_Small}" />
+            </Grid>
+            <ComboBox
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding ElementName=parentControl, Path=Items}"
+                SelectedValue="{Binding ElementName=parentControl, Path=NewOrder.NonTurnedItemId}"
+                SelectedValuePath="Id" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Enter Quantity" />
+            <TextBox
+                Style="{StaticResource DefaultTextBox}"
+                Tag="required quantity"
+                Text="{Binding ElementName=parentControl, Path=NewOrder.RequiredQuantity}" />
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Date Required" />
+            <DatePicker x:Name="DatePicker" SelectedDate="{Binding ElementName=parentControl, Path=NewOrder.RequiredDate}" />
+
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    x:Name="CancelButton"
+                    Click="CancelButton_Click"
+                    Content="Cancel"
+                    Style="{StaticResource Action_Cancel_Button}" />
+                <Button
+                    x:Name="CreateButton"
+                    Click="CreateButton_Click"
+                    Content="Create Order"
+                    Style="{StaticResource Action_New_Button}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

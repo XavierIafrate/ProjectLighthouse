@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace ViewModel.Core
+namespace ProjectLighthouse.ViewModel.Core
 {
     public class ObservableObject : INotifyPropertyChanged
     {

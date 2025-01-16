@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:orderComponents="clr-namespace:ProjectLighthouse.View.Orders.Components"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:Background="{StaticResource Background}"
     d:DesignWidth="1445"
@@ -50,12 +50,12 @@
 
             <Button
                 Grid.Row="1"
-                Command="{Binding NewRequestCmd}"
-                IsEnabled="{Binding NewRequest, Converter={StaticResource NullToBool}}"
-                Style="{StaticResource Action_New_Button}"
                 Margin="5,0"
                 HorizontalAlignment="Stretch"
-                Content="New Request" />
+                Command="{Binding NewRequestCmd}"
+                Content="New Request"
+                IsEnabled="{Binding NewRequest, Converter={StaticResource NullToBool}}"
+                Style="{StaticResource Action_New_Button}" />
 
             <ListView
                 x:Name="requests_ListView"
@@ -94,8 +94,7 @@
                     Grid.Column="2"
                     Margin="0"
                     Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBoxItem Content="Active" IsSelected="True" />
-                    <ComboBoxItem Content="Last 14 Days" />
+                    <ComboBoxItem Content="Last 14 Days" IsSelected="True" />
                     <ComboBoxItem Content="My Requests" />
                     <ComboBoxItem Content="Pending" />
                     <ComboBoxItem Content="Accepted" />
@@ -208,7 +207,7 @@
             Grid.Column="2"
             ScrollChanged="ScrollViewer_ScrollChanged"
             VerticalScrollBarVisibility="Visible"
-            Visibility="{Binding SelectedRequest, Converter={StaticResource NotNullToVisibility}}">
+            Visibility="{Binding SelectedRequest, Converter={StaticResource ObjectIsNotNull}}">
             <Grid MaxWidth="700" Margin="25,25,25,60">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -290,7 +289,7 @@
                             Grid.Row="1"
                             Margin="0,5"
                             Orientation="Horizontal"
-                            Visibility="{Binding SelectedRequest.ModifiedAt, Converter={StaticResource NotNullToVisibility}}">
+                            Visibility="{Binding SelectedRequest.ModifiedAt, Converter={StaticResource ObjectIsNotNull}}">
                             <Path
                                 Width="12"
                                 Height="12"
@@ -321,7 +320,7 @@
                             Grid.Row="3"
                             Margin="0,5"
                             Orientation="Horizontal"
-                            Visibility="{Binding SelectedRequest.DecisionAt, Converter={StaticResource NotNullToVisibility}}">
+                            Visibility="{Binding SelectedRequest.DecisionAt, Converter={StaticResource ObjectIsNotNull}}">
                             <Path
                                 Width="12"
                                 Height="12"
@@ -348,7 +347,51 @@
                     <StackPanel Margin="10">
 
                         <StackPanel Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}">
-                            <TextBlock Style="{StaticResource section}" Text="Select Items" />
+                            <Grid>
+                                <TextBlock Style="{StaticResource section}" Text="Select Items" />
+                                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <Border
+                                        Padding="5,2"
+                                        Background="{StaticResource GreenFaded}"
+                                        CornerRadius="5"
+                                        Visibility="{Binding SyncHasNotRunRecently, Converter={StaticResource boolToCollapsedOrVisible}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="12"
+                                                Height="12"
+                                                Fill="{StaticResource Green}"
+                                                Style="{StaticResource Icon_Check}" />
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                d:Text="Last sync with Opera at 01/01/70"
+                                                FontSize="12"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Green}"
+                                                Text="{Binding Path=LastSyncRun, StringFormat='{}Last sync with Opera at {0:dd/MM/yy HH:mm}'}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border
+                                        Padding="5,2"
+                                        Background="{StaticResource RedFaded}"
+                                        CornerRadius="5"
+                                        Visibility="{Binding SyncHasNotRunRecently, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="12"
+                                                Height="12"
+                                                Fill="{StaticResource Red}"
+                                                Style="{StaticResource Icon_Cross}" />
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                d:Text="Last sync with Opera at 01/01/70"
+                                                FontSize="12"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource Red}"
+                                                Text="{Binding Path=LastSyncRun, StringFormat='{}Last sync with Opera at {0:dd/MM/yy HH:mm}', TargetNullValue='Could not check last sync time'}" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
                             <TextBox
                                 Style="{StaticResource DefaultTextBox}"
                                 Tag="search items"
@@ -382,8 +425,8 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
                                     Command="{Binding AddSpecialCmd}"
-                                    Style="{StaticResource Action_New_Button_Small}"
-                                    Content="Add Bespoke Item" />
+                                    Content="Add Bespoke Item"
+                                    Style="{StaticResource Action_New_Button_Small}" />
                             </StackPanel>
                         </StackPanel>
 
@@ -472,25 +515,25 @@
                             <Button
                                 HorizontalAlignment="Right"
                                 Command="{Binding UpdateRequestCmd}"
-                                Style="{StaticResource Action_Update_Button}"
                                 Content="Save Changes"
+                                Style="{StaticResource Action_Update_Button}"
                                 Visibility="{Binding ChangesMade, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                             <Button
                                 HorizontalAlignment="Right"
                                 Command="{Binding SubmitRequestCmd}"
-                                Style="{StaticResource Action_Button}"
                                 Content="Submit"
+                                Style="{StaticResource Action_Button}"
                                 Visibility="{Binding NewRequestMode, Converter={StaticResource boolToVisibleOrCollapsed}}" />
                         </StackPanel>
 
-                        <StackPanel Margin="0,10" Visibility="{Binding SelectedRequest.OrderId, Converter={StaticResource NotNullToVisibility}}">
+                        <StackPanel Margin="0,10" Visibility="{Binding SelectedRequest.OrderId, Converter={StaticResource ObjectIsNotNull}}">
                             <TextBlock Style="{StaticResource section}" Text="Order Progress" />
                             <StackPanel Margin="15,10">
-                                <uc:DisplayLatheManufactureOrder LatheManufactureOrder="{Binding SelectedRequestOrder}" />
+                                <orderComponents:DisplayScheduleItem Order="{Binding SelectedRequestOrder}" />
                                 <ItemsControl d:ItemsSource="{d:SampleData ItemCount=2}" ItemsSource="{Binding SelectedRequestOrder.OrderItems}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <uc:DisplayLMOItems LatheManufactureOrderItem="{Binding}" />
+                                            <uc:DisplayLMOItems Item="{Binding}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -505,7 +548,7 @@
                             <ListView d:ItemsSource="{d:SampleData ItemCount=4}" ItemsSource="{Binding RecommendedManifest}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <uc:DisplayLMOItems Margin="10,2" LatheManufactureOrderItem="{Binding}" />
+                                        <uc:DisplayLMOItems Margin="10,2" Item="{Binding}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -516,8 +559,8 @@
                                     Margin="0,0,5,0"
                                     HorizontalAlignment="Left"
                                     Command="{Binding ViewMakeOrBuyCommand}"
-                                    Style="{StaticResource Action_Button}"
-                                    Content="Order Builder" />
+                                    Content="Order Builder"
+                                    Style="{StaticResource Action_Button}" />
                                 <Border HorizontalAlignment="Right">
                                     <StackPanel Orientation="Horizontal">
                                         <Path

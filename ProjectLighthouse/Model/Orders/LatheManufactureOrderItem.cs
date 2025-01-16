@@ -3,7 +3,10 @@ using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Requests;
 using SQLite;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace ProjectLighthouse.Model.Orders
 {
@@ -16,8 +19,9 @@ namespace ProjectLighthouse.Model.Orders
         [NotNull]
         public string ProductName { get; set; }
         public int ProductId { get; set; }
-        private int requiredQuantity;
 
+        private int requiredQuantity;
+        [UpdateWatch]
         public int RequiredQuantity
         {
             get { return requiredQuantity; }
@@ -32,6 +36,7 @@ namespace ProjectLighthouse.Model.Orders
 
         private int targetQuantity;
         [NotNull]
+        [UpdateWatch]
         public int TargetQuantity
         {
             get { return targetQuantity; }
@@ -43,13 +48,79 @@ namespace ProjectLighthouse.Model.Orders
             }
         }
 
-        public int QuantityMade { get; set; }
-        public int QuantityReject { get; set; }
-        public int QuantityDelivered { get; set; }
-        public int CycleTime { get; set; }
-        public int? PreviousCycleTime { get; set; }
+        private int quantityMade;
+        [UpdateWatch]
+        public int QuantityMade
+        {
+            get { return quantityMade; }
+            set { quantityMade = value; OnPropertyChanged(); }
+        }
+
+        private int quantityReject;
+        [UpdateWatch]
+        public int QuantityReject
+        {
+            get { return quantityReject; }
+            set { quantityReject = value; OnPropertyChanged(); }
+        }
+
+        private int quantityDelivered;
+        [UpdateWatch]
+        public int QuantityDelivered
+        {
+            get { return quantityDelivered; }
+            set { quantityDelivered = value; OnPropertyChanged(); }
+        }
+
+
+        private int cycleTime;
+        [UpdateWatch]
+        public int CycleTime
+        {
+            get { return cycleTime; }
+            set
+            {
+                cycleTime = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ChangeInCycleTime));
+            }
+        }
+
+        public int? ChangeInCycleTime
+        {
+            get
+            {
+                if (PreviousCycleTime is null)
+                {
+                    return null;
+                }
+
+                if (CycleTime == 0)
+                {
+                    return null;
+                }
+
+                return CycleTime - PreviousCycleTime;
+            }
+        }
+
+
+
+        private int? previousCycleTime;
+        [UpdateWatch]
+        public int? PreviousCycleTime
+        {
+            get { return previousCycleTime; }
+            set
+            {
+                previousCycleTime = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ChangeInCycleTime));
+            }
+        }
 
         private int? modelledCycleTime;
+        [UpdateWatch]
         public int? ModelledCycleTime
         {
             get { return modelledCycleTime; }
@@ -58,6 +129,7 @@ namespace ProjectLighthouse.Model.Orders
 
 
         private double majorLength;
+        [UpdateWatch]
         public double MajorLength
         {
             get { return majorLength; }
@@ -71,11 +143,13 @@ namespace ProjectLighthouse.Model.Orders
         }
 
         private double partOffLength;
+        [UpdateWatch]
         public double PartOffLength
         {
             get { return partOffLength; }
             set
             {
+                if (value == partOffLength) return;
                 partOffLength = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -86,39 +160,40 @@ namespace ProjectLighthouse.Model.Orders
 
         public int DrawingId { get; set; }
 
-        public DateTime DateRequired { get; set; }
+        private DateTime dateRequired;
+        [UpdateWatch]
+        public DateTime DateRequired
+        {
+            get { return dateRequired; }
+            set { dateRequired = value; OnPropertyChanged(); }
+        }
+
         public DateTime DateAdded { get; set; }
         public string AddedBy { get; set; }
         public bool IsSpecialPart { get; set; }
-        public string UpdatedBy { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public bool NeedsCleaning { get; set; }
 
-        public bool ShowEdit;
-        public int SellPrice;
+        private string updatedBy;
+        public string UpdatedBy
+        {
+            get { return updatedBy; }
+            set { updatedBy = value; OnPropertyChanged(); }
+        }
 
-        [Ignore, CsvHelper.Configuration.Attributes.Ignore]
-        public Action<LatheManufactureOrderItem> RequestToEdit { get; set; }
-
+        private DateTime updatedAt;
+        public DateTime UpdatedAt
+        {
+            get { return updatedAt; }
+            set { updatedAt = value; OnPropertyChanged(); }
+        }
 
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public int RecommendedQuantity { get; set; }
 
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
         public int QuantityInStock { get; set; }
+
         [Ignore, CsvHelper.Configuration.Attributes.Ignore]
-        public int YearStock { get; set; }
-
-        public void NotifyRequestToEdit()
-        {
-            RequestToEdit?.Invoke(this);
-        }
-
-        public event Action EditMade;
-        public void NotifyEditMade()
-        {
-            EditMade?.Invoke();
-        }
+        public string? Gtin { get; set; }
 
         public LatheManufactureOrderItem()
         {
@@ -139,11 +214,9 @@ namespace ProjectLighthouse.Model.Orders
 
             RequiredQuantity = 0;
             TargetQuantity = Math.Max(fromProduct.GetRecommendedQuantity(), 1);
-            SellPrice = fromProduct.SellPrice;
 
             QuantityInStock = fromProduct.QuantityInStock;
             RecommendedQuantity = fromProduct.GetRecommendedQuantity();
-            YearStock = fromProduct.QuantitySold;
         }
 
         public LatheManufactureOrderItem(TurnedProduct fromProduct)
@@ -259,6 +332,60 @@ namespace ProjectLighthouse.Model.Orders
             }
 
             throw new NotImplementedException();
+        }
+
+        public virtual bool IsUpdated(LatheManufactureOrderItem otherItem)
+        {
+            try
+            {
+                return GetListOfChanges(otherItem).Count != 0;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public virtual List<string> GetListOfChanges(LatheManufactureOrderItem otherItem)
+        {
+            if (otherItem.Id != Id)
+            {
+                throw new InvalidOperationException($"Items being compared must have the same ID");
+            }
+            List<string> results = new();
+
+            PropertyInfo[] properties = typeof(LatheManufactureOrderItem).GetProperties();
+
+            bool mod = false;
+
+
+            foreach (PropertyInfo property in properties)
+            {
+                bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
+                if (!watchPropForChanges)
+                {
+                    continue;
+                }
+
+                if (!Equals(property.GetValue(this), property.GetValue(otherItem)))
+                {
+                    if (!mod)
+                    {
+                        results.Add($"{DateTime.Now:s} | {App.CurrentUser.UserName}");
+                    }
+                    StringBuilder sb = new();
+                    sb.AppendLine($"\t{property.Name} modified");
+                    sb.AppendLine($"\t\tfrom: '{property.GetValue(this) ?? "null"}'");
+                    sb.AppendLine($"\t\tto  : '{property.GetValue(otherItem) ?? "null"}'");
+
+                    results.Add(sb.ToString());
+
+                    mod = true;
+                }
+
+            }
+
+            return results;
         }
     }
 }

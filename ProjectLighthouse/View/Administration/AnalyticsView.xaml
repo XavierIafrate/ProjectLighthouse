@@ -34,56 +34,73 @@
             <Setter Property="Orientation" Value="Horizontal" />
         </Style>
     </UserControl.Resources>
+    <Grid>
+        <ScrollViewer HorizontalAlignment="Stretch" ScrollChanged="ScrollViewer_ScrollChanged">
+            <StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
 
-    <ScrollViewer HorizontalAlignment="Stretch">
-        <StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
-
-            <!--<TextBlock Text="Efficiency" Style="{StaticResource SectionLabel}"/>
+                <!--<TextBlock Text="Efficiency" Style="{StaticResource SectionLabel}"/>
             <userControls:DisplayOOE Height="250" Data="{Binding OOE}"/>-->
 
-            <StackPanel HorizontalAlignment="Center" Style="{StaticResource AnalyticsGroupContainer}">
-                <TextBlock
-                    d:Text="1,000,000"
-                    Style="{StaticResource analyticsValue}"
-                    Text="{Binding TotalPartsMade, StringFormat='{}{0:#,##0}'}" />
-                <TextBlock Style="{StaticResource analyticsKey}" Text=" ALL TIME PARTS MADE" />
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Center" Style="{StaticResource AnalyticsGroupContainer}">
-                <TextBlock
-                    d:Text="1,000,000"
-                    Style="{StaticResource analyticsValue}"
-                    Text="{Binding TotalPartsMadeThisYear, StringFormat='{}{0:#,##0}'}" />
-                <TextBlock Style="{StaticResource analyticsKey}" Text=" THIS YEAR" />
-            </StackPanel>
-            <StackPanel>
-                <ComboBox
-                    Width="100"
-                    HorizontalAlignment="Right"
-                    ItemsSource="{Binding Path=YearsAvailable}"
-                    SelectedValue="{Binding SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel HorizontalAlignment="Center" Style="{StaticResource AnalyticsGroupContainer}">
+                    <TextBlock
+                        d:Text="1,000,000"
+                        Style="{StaticResource analyticsValue}"
+                        Text="{Binding TotalPartsMade, StringFormat='{}{0:#,##0}'}" />
+                    <TextBlock Style="{StaticResource analyticsKey}" Text=" ALL TIME PARTS MADE" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Style="{StaticResource AnalyticsGroupContainer}">
+                    <TextBlock
+                        d:Text="1,000,000"
+                        Style="{StaticResource analyticsValue}"
+                        Text="{Binding TotalPartsMadeThisYear, StringFormat='{}{0:#,##0}'}" />
+                    <TextBlock Style="{StaticResource analyticsKey}" Text=" THIS YEAR" />
+                </StackPanel>
+                <StackPanel>
+                    <ComboBox
+                        Width="100"
+                        HorizontalAlignment="Right"
+                        ItemsSource="{Binding Path=YearsAvailable}"
+                        SelectedValue="{Binding SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <lvc2:CartesianChart
+                        Height="500"
+                        Series="{Binding Path=Series}"
+                        XAxes="{Binding Path=XAxes}" />
+                </StackPanel>
+                <TextBlock Style="{StaticResource SectionLabel}" Text="Average Turnaround Time" />
                 <lvc2:CartesianChart
                     Height="500"
-                    Series="{Binding Path=Series}"
-                    XAxes="{Binding Path=XAxes}" />
+                    Series="{Binding Path=TurnaroundTime}"
+                    XAxes="{Binding Path=XAxes}"
+                    YAxes="{Binding YAxisStartAtZero}" />
+                <TextBlock Style="{StaticResource SectionLabel}" Text="Active Orders" />
+                <lvc2:CartesianChart
+                    Height="500"
+                    LegendPosition="Top"
+                    Series="{Binding Path=ActiveOrders}"
+                    XAxes="{Binding Path=XAxes}"
+                    YAxes="{Binding YAxisStartAtZero}" />
+                <TextBlock Style="{StaticResource SectionLabel}" Text="Products Delivered" />
+                <lvc2:PieChart Height="500" Series="{Binding Path=ProductSeries}" />
+
+
+                <Grid Height="200" />
             </StackPanel>
-            <TextBlock Style="{StaticResource SectionLabel}" Text="Average Turnaround Time" />
-            <lvc2:CartesianChart
-                Height="500"
-                Series="{Binding Path=TurnaroundTime}"
-                XAxes="{Binding Path=XAxes}"
-                YAxes="{Binding YAxisStartAtZero}" />
-            <TextBlock Style="{StaticResource SectionLabel}" Text="Active Orders" />
-            <lvc2:CartesianChart
-                Height="500"
-                LegendPosition="Top"
-                Series="{Binding Path=ActiveOrders}"
-                XAxes="{Binding Path=XAxes}"
-                YAxes="{Binding YAxisStartAtZero}" />
-            <TextBlock Style="{StaticResource SectionLabel}" Text="Products Delivered" />
-            <lvc2:PieChart Height="500" Series="{Binding Path=ProductSeries}" />
-
-
-            <Grid Height="200" />
-        </StackPanel>
-    </ScrollViewer>
+        </ScrollViewer>
+        <!--#region scroll grad-->
+        <Border
+            x:Name="grad"
+            Grid.Column="1"
+            Height="20"
+            VerticalAlignment="Top"
+            CornerRadius="20,0,0,0"
+            IsHitTestVisible="False">
+            <Border.Background>
+                <LinearGradientBrush Opacity="0.08" StartPoint="0,1" EndPoint="0,0">
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="1" Color="Gray" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <!--#endregion-->
+    </Grid>
 </UserControl>

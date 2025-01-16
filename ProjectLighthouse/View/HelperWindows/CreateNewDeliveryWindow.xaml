@@ -29,7 +29,10 @@
             Style="{StaticResource section}"
             Text="Undelivered Stock Lots" />
         <ScrollViewer Grid.Row="2">
-            <ListView x:Name="undeliveredList" HorizontalContentAlignment="Stretch">
+            <ListView
+                x:Name="undeliveredList"
+                HorizontalContentAlignment="Stretch"
+                SelectionMode="Extended">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="10,5" Grid.IsSharedSizeScope="True">
@@ -84,13 +87,13 @@
             Grid.Column="1"
             VerticalAlignment="Center">
             <Button
-                x:Name="addButton"
-                Click="addButton_Click"
-                Style="{StaticResource ListBox_Add_Button}"/>
+                x:Name="AddButton"
+                Click="AddButton_Click"
+                Style="{StaticResource ListBox_Add_Button}" />
             <Button
-                x:Name="remButton"
-                Click="remButton_Click"
-                Style="{StaticResource ListBox_Remove_Button}"/>
+                x:Name="RemoveButton"
+                Click="RemoveButton_Click"
+                Style="{StaticResource ListBox_Remove_Button}" />
         </StackPanel>
 
         <TextBlock

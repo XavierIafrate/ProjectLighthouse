@@ -27,8 +27,8 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
-
 
                 <Grid
                     x:Name="metaGrid"
@@ -186,9 +186,6 @@
                             Text="DEADLINE" />
                     </Grid>
 
-
-
-
                     <TextBlock Style="{StaticResource InputLabel}" Text="Material" />
                     <userControls:DisplayBarStock x:Name="BarStockDisplay" />
                     <TextBlock Style="{StaticResource InputLabel}" Text="Items" />
@@ -200,30 +197,34 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <TextBlock Style="{StaticResource InputLabel}" Text="Breakdowns" />
-                    <ItemsControl x:Name="OrderBreakdownsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <userControls:DisplayMachineBreakdown Breakdown="{Binding}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    
                     <TextBlock Style="{StaticResource InputLabel}" Text="Required Machine Features" />
-                    <ItemsControl x:Name="MachineRequirementsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}"/>
+                    <ItemsControl x:Name="MachineRequirementsItemsControl" d:ItemsSource="{d:SampleData ItemCount=3}" />
                 </StackPanel>
                 <Grid
                     x:Name="maintenanceGrid"
                     Grid.Row="3"
                     d:Visibility="Visible"
                     Visibility="Collapsed">
-                    <TextBlock Text="Unable to display maintenance" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" />
                 </Grid>
+
+                <StackPanel
+                    x:Name="generalOrderGrid"
+                    Grid.Row="4"
+                    d:Visibility="Visible"
+                    Visibility="Collapsed">
+                    <TextBlock x:Name="ProductNameTextBlock" Text="PRODUCT_NAME" />
+                    <TextBlock x:Name="RequiredQuantityTextBlock" Text="PRODUCT_NAME" />
+                    <TextBlock x:Name="FinishedQuantityTextBlock" Text="PRODUCT_NAME" />
+
+                </StackPanel>
 
                 <Grid
                     x:Name="RescheduleGrid"
-                    Grid.Row="4"
+                    Grid.Row="5"
                     d:Visibility="Visible"
                     Visibility="Collapsed">
                     <Grid.RowDefinitions>
@@ -236,6 +237,7 @@
                         Grid.Row="1"
                         Margin="10" />
                 </Grid>
+
             </Grid>
 
         </Grid>

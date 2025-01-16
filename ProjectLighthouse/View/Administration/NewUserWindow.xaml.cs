@@ -82,7 +82,7 @@ namespace ProjectLighthouse.View.Administration
                 : (Brush)Application.Current.Resources["Red"];
         }
 
-        void MarkValid(TextBox textBox, bool valid)
+        static void MarkValid(TextBox textBox, bool valid)
         {
             textBox.BorderBrush = valid
                 ? Brushes.Transparent

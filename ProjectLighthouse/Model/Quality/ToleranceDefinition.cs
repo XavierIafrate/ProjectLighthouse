@@ -26,6 +26,7 @@ namespace ProjectLighthouse.Model.Quality
         public string RelativeStringFormatter => DecimalPlacesToStringFormatter(DecimalPlaces, relative: true);
 
         public string? DerivesFrom { get; set; }
+#pragma warning disable CA1305 // Specify IFormatProvider
 
         public string Nominal
         {
@@ -116,10 +117,10 @@ namespace ProjectLighthouse.Model.Quality
                 };
             }
         }
+#pragma warning restore CA1305 // Specify IFormatProvider
 
         private static double GetBasicTolerance(string f)
         {
-            // TODO error handling
             return BasicTolerances[f];
         }
 

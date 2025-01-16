@@ -8,9 +8,9 @@ namespace ProjectLighthouse.ViewModel.Commands.Scheduling
     public class RescheduleItemCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private NewScheduleViewModel viewModel;
+        private ScheduleViewModel viewModel;
 
-        public RescheduleItemCommand(NewScheduleViewModel vm)
+        public RescheduleItemCommand(ScheduleViewModel vm)
         {
             this.viewModel = vm;
         }

@@ -162,7 +162,10 @@
 
         <!--#endregion-->
 
-        <ScrollViewer Grid.Column="1" Visibility="{Binding SelectedBarStock, Converter={StaticResource NotNullToVisibility}}" VerticalScrollBarVisibility="Hidden">
+        <ScrollViewer
+            Grid.Column="1"
+            VerticalScrollBarVisibility="Hidden"
+            Visibility="{Binding SelectedBarStock, Converter={StaticResource ObjectIsNotNull}}">
             <Grid MaxWidth="700" Margin="25,25,25,60">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -178,56 +181,155 @@
                             Color="Black" />
                     </Border.Effect>
                 </Border>
-                <StackPanel Margin="20">
-                    <TextBlock
-                        d:Text="PRB000-0000-000"
-                        Style="{StaticResource title}"
-                        Text="{Binding SelectedBarStock.BarStock.Id}" />
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <Border
-                            Background="{StaticResource Purple}"
-                            CornerRadius="5"
-                            Opacity="0.15" />
-                        <Border
-                            BorderBrush="{StaticResource Purple}"
-                            BorderThickness="2"
-                            CornerRadius="5" />
+                <StackPanel Margin="30,20">
+                    <Grid>
+
                         <TextBlock
-                            Margin="15,9"
-                            d:Text="99 IN STOCK"
-                            FontSize="25"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding SelectedBarStock.BarStock.InStock, StringFormat='{}{0:#,##0} IN STOCK'}" />
+                            d:Text="PRB000-0000-000"
+                            Style="{StaticResource title}"
+                            Text="{Binding SelectedBarStock.BarStock.Id}" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Command="{Binding AddBarCmd}"
+                            CommandParameter="{Binding SelectedBarStock.BarStock}"
+                            Content="Edit Bar"
+                            Style="{StaticResource Action_Edit_Button}" />
                     </Grid>
                     <TextBlock Style="{StaticResource subtitle}">
-                        <Run d:Text="Stainless Steel," Text="{Binding SelectedBarStock.BarStock.MaterialData, TargetNullValue='MATERIAL INFO NOT FOUND', Mode=OneWay}" />
+                        <Run d:Text="Stainless Steel, Grade AISI 303" Text="{Binding SelectedBarStock.BarStock.MaterialData, TargetNullValue='MATERIAL INFO NOT FOUND', Mode=OneWay}" />
                     </TextBlock>
-                    <TextBlock Style="{StaticResource subsubtitle}">
-                        <Run d:Text="3,000mm long" Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}{0:#,##0}mm long,'}" />
-                        <Run d:Text="size 7mm" Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}size {0}mm'}" />
-                    </TextBlock>
-                    <TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.Cost, StringFormat='{}Last Cost {0}', Converter={StaticResource priceConverter}}" />
-                    <TextBlock d:Text="COST_TEXT" Text="{Binding SelectedBarStock.BarStock.ExpectedCost, StringFormat='{}Expected Cost {0}', Converter={StaticResource priceConverter}}" />
-                    <TextBlock d:Text="TARGET_STOCK_TEXT" Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}Suggested Stock: {0} pcs'}" />
 
-                    <StackPanel
-                        Margin="0,5"
-                        Orientation="Horizontal"
-                        Visibility="{Binding SelectedBarStock.IsHexagon, Converter={StaticResource boolToVisibleOrCollapsed}}">
-                        <Path
-                            Width="20"
-                            Height="20"
-                            Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"
-                            Fill="{StaticResource Blue}"
-                            Stretch="Uniform" />
+                    <Grid Margin="10,20,10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Length (mm)" />
                         <TextBlock
-                            Margin="3,0,0,0"
-                            Foreground="{StaticResource Blue}"
-                            Text="Hexagon Bar" />
-                    </StackPanel>
+                            Grid.Row="1"
+                            d:Text="3000"
+                            FontFamily="Consolas"
+                            FontSize="25"
+                            Text="{Binding SelectedBarStock.BarStock.Length, StringFormat='{}{0:#,##0}'}" />
 
-                    <Grid Margin="0,20" HorizontalAlignment="Center">
+                        <TextBlock
+                            Grid.Column="1"
+                            Style="{StaticResource InputLabel}"
+                            Text="Size (mm)" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            d:Text="12.70"
+                            FontFamily="Consolas"
+                            FontSize="25"
+                            Text="{Binding SelectedBarStock.BarStock.Size, StringFormat='{}{0:0.00}'}" />
+
+
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource InputLabel}"
+                            Text="Profile" />
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            d:Visibility="Collapsed"
+                            Orientation="Horizontal"
+                            Visibility="{Binding SelectedBarStock.IsHexagon, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                            <Path
+                                Width="20"
+                                Height="20"
+                                Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"
+                                Fill="{StaticResource OnBackground}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                FontFamily="Consolas"
+                                FontSize="25"
+                                Text="Hexagonal" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Orientation="Horizontal"
+                            Visibility="{Binding SelectedBarStock.IsHexagon, Converter={StaticResource boolToCollapsedOrVisible}}">
+                            <Border
+                                Width="20"
+                                Height="20"
+                                Background="{StaticResource OnBackground}"
+                                CornerRadius="10" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                FontFamily="Consolas"
+                                FontSize="25"
+                                Text="Round" />
+                        </StackPanel>
+
+                    </Grid>
+
+
+                    <Grid Margin="10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Style="{StaticResource InputLabel}" Text="Expected Cost" />
+                        <TextBlock
+                            Grid.Row="1"
+                            d:Text="£12.34"
+                            FontFamily="Consolas"
+                            FontSize="25"
+                            Text="{Binding SelectedBarStock.BarStock.ExpectedCost, StringFormat='{}{0:c}'}" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            Style="{StaticResource InputLabel}"
+                            Text="Target Stock" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            d:Text="1,000"
+                            FontFamily="Consolas"
+                            FontSize="25"
+                            Text="{Binding SelectedBarStock.BarStock.SuggestedStock, StringFormat='{}{0:#,##0}'}" />
+
+
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource InputLabel}"
+                            Text="Dormant Status" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            FontFamily="Consolas"
+                            FontSize="25"
+                            Text="Active "
+                            Visibility="{Binding SelectedBarStock.IsDormant, Converter={StaticResource boolToCollapsedOrVisible}}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            FontFamily="Consolas"
+                            FontSize="25"
+                            Foreground="{StaticResource Red}"
+                            Text="Dormant"
+                            Visibility="{Binding SelectedBarStock.IsDormant, Converter={StaticResource boolToVisibleOrCollapsed}}" />
+                    </Grid>
+
+                    <Grid
+                        Margin="0,20"
+                        HorizontalAlignment="Center"
+                        Visibility="{Binding SelectedBarStock.IsDormant, Converter={StaticResource boolToCollapsedOrVisible}}">
                         <Grid.Resources>
                             <Style x:Key="FormulaNumber" TargetType="{x:Type TextBlock}">
                                 <Setter Property="Foreground" Value="{StaticResource Purple}" />
@@ -328,21 +430,23 @@
 
                     </Grid>
 
-                    <Border
-                        Background="{StaticResource PurpleFaded}"
-                        BorderBrush="{StaticResource Purple}"
-                        BorderThickness="3,0,0,0"
-                        CornerRadius="5"
-                        Visibility="{Binding SuggestedOrderText, Converter={StaticResource NotNullToVisibility}}">
-                        <TextBlock
-                            Margin="5"
-                            HorizontalAlignment="Center"
-                            d:Text="SUGGESTED_ORDER_TEXT"
-                            FontSize="18"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource Purple}"
-                            Text="{Binding SuggestedOrderText}" />
-                    </Border>
+                    <Grid Visibility="{Binding SelectedBarStock.IsDormant, Converter={StaticResource boolToCollapsedOrVisible}}">
+                        <Border
+                            Background="{StaticResource PurpleFaded}"
+                            CornerRadius="5"
+                            Visibility="{Binding SuggestedOrderText, Converter={StaticResource ObjectIsNotNull}}">
+                            <TextBlock
+                                Margin="5"
+                                HorizontalAlignment="Center"
+                                d:Text="SUGGESTED_ORDER_TEXT"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Purple}"
+                                Text="{Binding SuggestedOrderText}" />
+                        </Border>
+                    </Grid>
+
+
 
                     <Grid Height="20" />
                     <Grid Visibility="{Binding DependentOrdersVis}">
@@ -361,7 +465,7 @@
                     </Grid>
                     <ListView
                         x:Name="OrderListView"
-                        Margin="5,5,5,50"
+                        Margin="5,5,5,20"
                         HorizontalContentAlignment="Stretch"
                         d:ItemsSource="{d:SampleData ItemCount=5}"
                         ItemsSource="{Binding SelectedBarStock.Orders}"

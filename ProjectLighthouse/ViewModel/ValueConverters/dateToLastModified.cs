@@ -27,7 +27,7 @@ namespace ProjectLighthouse.ViewModel.ValueConverters
             }
         }
 
-        private string GetDaySuffix(int day)
+        private static string GetDaySuffix(int day)
         {
             return day switch
             {

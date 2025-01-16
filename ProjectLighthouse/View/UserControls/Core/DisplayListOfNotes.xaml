@@ -5,26 +5,96 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:valueConverters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    x:Name="parentControl"
+    d:Background="White"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <local:NotesTemplateSelector x:Key="notesTemplateSelector" />
+        <valueConverters:dateToLastModified x:Key="dateFormatter" />
+        <valueConverters:BooleanInverter x:Key="invertBool" />
+    </UserControl.Resources>
     <Grid>
-        <ItemsControl x:Name="NotesList">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <local:DisplayNote
-                        DeleteCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=DeleteCommand}"
-                        Note="{Binding}"
-                        SaveEditCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Path=SaveEditCommand}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MinHeight="50" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ItemsControl
+            MinHeight="50"
+            Background="White"
+            ItemTemplateSelector="{StaticResource notesTemplateSelector}"
+            ItemsSource="{Binding DisplayData, ElementName=parentControl}">
+            <ItemsControl.Resources>
+                <DataTemplate x:Key="DateTime">
+                    <TextBlock
+                        Margin="8"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontStyle="Italic"
+                        Foreground="Gray"
+                        Text="{Binding Path=., Converter={StaticResource dateFormatter}}" />
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
+                <DataTemplate x:Key="rightNote">
+                    <local:DisplayMyNote
+                        DeleteCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DisplayListOfNotes}, Mode=FindAncestor}, Path=DeleteCommand}"
+                        Note="{Binding}"
+                        SaveEditCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DisplayListOfNotes}, Mode=FindAncestor}, Path=SaveCommand}" />
+                        <!--SaveEditCommand= />-->
+                </DataTemplate>
+
+                <DataTemplate x:Key="leftNote">
+                    <local:DisplayUserNote Note="{Binding}" />
+                </DataTemplate>
+            </ItemsControl.Resources>
         </ItemsControl>
         <TextBlock
-            x:Name="noneText"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontStyle="Normal"
             Style="{StaticResource GhostText}"
-            Text="None" />
+            Text="None"
+            Visibility="{Binding DisplayData, ElementName=parentControl, Converter={StaticResource EmptyListToVisibleOrCollapsed}}" />
+
+        <Grid Grid.Row="1" Visibility="{Binding ElementName=parentControl, Path=AddNoteCommand, Converter={StaticResource ObjectIsNotNull}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Grid.ColumnSpan="2"
+                Margin="5,0,0,5"
+                Background="{StaticResource Surface}"
+                CornerRadius="5" />
+            <TextBox
+                x:Name="MessageComposer"
+                Height="Auto"
+                Margin="5,0,0,5"
+                AcceptsReturn="{Binding ElementName=enterToSendOption, Path=IsChecked, Converter={StaticResource invertBool}}"
+                Background="{StaticResource Surface}"
+                BorderBrush="{StaticResource Surface}"
+                KeyDown="MessageComposer_KeyDown"
+                Style="{StaticResource MessageComposer}"
+                Text="{Binding ElementName=parentControl, Path=NewNote.Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                TextWrapping="Wrap" />
+            <CheckBox
+                x:Name="enterToSendOption"
+                Grid.Column="1"
+                Margin="5,5,5,10"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Content="Enter to send"
+                IsChecked="{Binding ElementName=parentControl, Path=EnterToSend}" />
+            <Button
+                x:Name="SendButton"
+                Grid.Column="2"
+                VerticalAlignment="Bottom"
+                Click="SendButton_Click"
+                Style="{StaticResource SendButton}" />
+        </Grid>
+
     </Grid>
 </UserControl>

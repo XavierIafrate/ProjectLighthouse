@@ -40,24 +40,21 @@
                         Text="NEW" />
                 </Border>
             </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Opacity="0.6">
                 <TextBlock
                     x:Name="rev"
                     VerticalAlignment="Center"
                     FontSize="14"
-                    Foreground="{StaticResource Purple}"
                     Text="Revision 1A" />
                 <TextBlock
                     VerticalAlignment="Center"
                     FontSize="14"
-                    Foreground="{StaticResource Purple}"
                     Text=" - " />
                 <TextBlock
                     x:Name="issueDate"
                     Grid.Row="1"
                     VerticalAlignment="Center"
                     FontSize="14"
-                    Foreground="{StaticResource Purple}"
                     Text="Issued 01/01/1970" />
             </StackPanel>
 

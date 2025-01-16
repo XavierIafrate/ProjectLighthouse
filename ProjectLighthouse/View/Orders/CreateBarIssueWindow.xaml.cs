@@ -2,7 +2,10 @@
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace ProjectLighthouse.View.Orders
@@ -96,11 +99,21 @@ namespace ProjectLighthouse.View.Orders
                 MaterialBatch = BatchInfoTextBox.Text.Trim().ToUpperInvariant(),
                 OrderId = Order.Name,
                 Quantity = qty,
-                MaterialInfo = $"{Bar.MaterialData.MaterialText.ToUpperInvariant()}, GRADE {Bar.MaterialData.GradeText.ToUpperInvariant()}"
+                MaterialInfo = $"{Bar.MaterialData.MaterialText.ToUpperInvariant()}, GRADE {Bar.MaterialData.GradeText.ToUpperInvariant()}",
+                TrayId = TrayNumberTextBox.Text.Trim().ToUpperInvariant(),
             };
 
-            //TODO direct sql
             LatheManufactureOrder freshCopyOfOrder = DatabaseHelper.Read<LatheManufactureOrder>().Find(x => x.Name == Order.Name);
+
+            if(freshCopyOfOrder == null)
+            {
+                MessageBox.Show($"Could not find order with Name '{Order.Name}'. Please notify an administrator", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                return;
+            }
+
+            List<BarIssue> barIssues = DatabaseHelper.Read<BarIssue>().Where(x => x.OrderId == freshCopyOfOrder.Name).ToList();
+            freshCopyOfOrder.BarIssues = barIssues;
             freshCopyOfOrder.ModifiedAt = DateTime.Now;
             freshCopyOfOrder.ModifiedBy = App.CurrentUser.GetFullName();
             freshCopyOfOrder.NumberOfBarsIssued += qty;
@@ -115,6 +128,10 @@ namespace ProjectLighthouse.View.Orders
                 Confirmed = true;
                 LabelPrintingHelper.PrintIssue(barIssue);
                 Close();
+            }
+            else
+            {
+                MessageBox.Show("An error occurred, please notify an administrator");
             }
         }
     }

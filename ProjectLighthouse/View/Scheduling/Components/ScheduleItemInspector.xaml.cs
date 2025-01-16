@@ -40,7 +40,9 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
         private void SetRescheduleVis()
         {
-            RescheduleGrid.Visibility = RescheduleCommand != null  && Item != null  && App.CurrentUser.Role >= Model.Administration.UserRole.Scheduling
+            RescheduleGrid.Visibility = RescheduleCommand != null  
+                                     && Item != null  
+                                     && App.CurrentUser.Role >= Model.Administration.UserRole.Scheduling
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
         }
@@ -67,10 +69,30 @@ namespace ProjectLighthouse.View.Scheduling.Components
             if (control.Item is MachineService service)
             {
                 control.ShowService(service);
-
                 return;
             }
 
+            if (control.Item is GeneralManufactureOrder generalOrder)
+            {
+                control.ShowGeneralOrder(generalOrder);
+                return;
+            }
+
+        }
+
+        private void ShowGeneralOrder(GeneralManufactureOrder generalOrder)
+        {
+            this.NothingSelectedTextBlock.Visibility = Visibility.Collapsed;
+            this.metaGrid.Visibility = Visibility.Visible;
+            this.orderGrid.Visibility = Visibility.Collapsed;
+            this.maintenanceGrid.Visibility = Visibility.Collapsed;
+            this.generalOrderGrid.Visibility = Visibility.Visible;
+
+            this.ItemNameTextBlock.Text = generalOrder.Name;
+            this.ProductNameTextBlock.Text = generalOrder.Item.Name;
+
+            this.FinishedQuantityTextBlock.Text = generalOrder.FinishedQuantity.ToString("#,##0");
+            this.RequiredQuantityTextBlock.Text = generalOrder.RequiredQuantity.ToString("#,##0");
         }
 
         private void ShowService(MachineService service)
@@ -78,6 +100,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             this.NothingSelectedTextBlock.Visibility = Visibility.Collapsed;
             this.metaGrid.Visibility = Visibility.Visible;
             this.orderGrid.Visibility = Visibility.Collapsed;
+            this.generalOrderGrid.Visibility = Visibility.Collapsed;
             this.maintenanceGrid.Visibility = Visibility.Visible;
 
             this.ItemNameTextBlock.Text = service.Name;
@@ -89,6 +112,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             this.metaGrid.Visibility = Visibility.Visible;
             this.orderGrid.Visibility = Visibility.Visible;
             this.maintenanceGrid.Visibility = Visibility.Collapsed;
+            this.generalOrderGrid.Visibility = Visibility.Collapsed;
 
             this.ItemNameTextBlock.Text = order.Name;
 
@@ -98,24 +122,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
             this.BarStockDisplay.Bar = order.Bar;
 
-            //if (order.Bar.IsHexagon)
-            //{
-            //    this.RoundProfileSymbol.Visibility = Visibility.Collapsed;
-            //    this.HexagonProfileSymbol.Visibility = Visibility.Visible;
-            //    this.BarSizeTextBlock.Text = $"{order.Bar.Size}mm A/F";
-            //}
-            //else
-            //{
-            //    this.RoundProfileSymbol.Visibility = Visibility.Visible;
-            //    this.HexagonProfileSymbol.Visibility = Visibility.Collapsed;
-            //    this.BarSizeTextBlock.Text = $"{order.Bar.Size}mm";
-            //}
-
-            //this.BarIdTextBlock.Text = order.Bar.Id;
-            //this.MaterialInfoTextBlock.Text = order.Bar.MaterialData.ToString();
-
             this.OrderItemsItemsControl.ItemsSource = order.OrderItems;
-            this.OrderBreakdownsItemsControl.ItemsSource = order.Breakdowns;
             this.MachineRequirementsItemsControl.ItemsSource = order.RequiredFeaturesList;
 
             this.EstimatedRuntimeTextBlock.Text = $"{new intToTimespanString().Convert(order.TimeToComplete, typeof(string), null, new CultureInfo("en-GB")) ?? "N/A"}";
@@ -137,6 +144,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             this.metaGrid.Visibility = Visibility.Collapsed;
             this.orderGrid.Visibility = Visibility.Collapsed;
             this.maintenanceGrid.Visibility = Visibility.Collapsed;
+            this.generalOrderGrid.Visibility = Visibility.Collapsed;
         }
 
         public ScheduleItemInspector()

@@ -13,7 +13,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddItems(section, userLogins);
         }
 
-        private void AddItems(Section section, UserLoginRecords user)
+        private static void AddItems(Section section, UserLoginRecords user)
         {
             AddTableTitle(section, user.User.GetFullName());
             AddTableSubtitle(section, user.User.Role.ToString());
@@ -27,25 +27,25 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
         }
 
-        private void AddNoItemsIndicator(Section section)
+        private static void AddNoItemsIndicator(Section section)
         {
             Paragraph p = section.AddParagraph("No logins", CustomStyles.NoRecords);
             p.Format.KeepWithNext = true;
         }
 
-        private void AddTableTitle(Section section, string title)
+        private static void AddTableTitle(Section section, string title)
         {
             Paragraph p = section.AddParagraph(title, CustomStyles.TableTitle);
             p.Format.KeepWithNext = true;
         }
 
-        private void AddTableSubtitle(Section section, string subtitle)
+        private static void AddTableSubtitle(Section section, string subtitle)
         {
             Paragraph p = section.AddParagraph(subtitle, CustomStyles.TableSubtitle);
             p.Format.KeepWithNext = true;
         }
 
-        private void AddItemsTable(Section section, List<Login> logins)
+        private static void AddItemsTable(Section section, List<Login> logins)
         {
             Table table = section.AddTable();
 
@@ -68,7 +68,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             table.KeepTogether = true;
         }
 
-        private void AddColumnsAndHeaders(Table table)
+        private static void AddColumnsAndHeaders(Table table)
         {
             Unit width = Size.GetWidth(table.Section);
             table.AddColumn(width * 0.2);
@@ -91,13 +91,13 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddHeader(headerRow.Cells[6], "Session");
         }
 
-        private void AddHeader(Cell cell, string header)
+        private static void AddHeader(Cell cell, string header)
         {
             Paragraph p = cell.AddParagraph(header);
             p.Style = CustomStyles.ColumnHeader;
         }
 
-        private void AddItemRows(Table table, List<Login> logins)
+        private static void AddItemRows(Table table, List<Login> logins)
         {
             int rowCursor = 1;
 
@@ -142,7 +142,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
         }
 
-        private void AlternateRowShading(Table table)
+        private static void AlternateRowShading(Table table)
         {
             // Start at i = 1 to skip column headers
             for (int i = 1; i < table.Rows.Count; i++)
@@ -154,7 +154,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
         }
 
-        private void AllocateRows(Table table, int numRows)
+        private static void AllocateRows(Table table, int numRows)
         {
             for (int i = 0; i < numRows; i++)
             {
@@ -165,12 +165,12 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             UnderlineRow(table.Rows[^1]);
         }
 
-        private void UnderlineRow(Row row)
+        private static void UnderlineRow(Row row)
         {
             row.Borders.Bottom.Width = 1;
         }
 
-        private void AddLastRowBorder(Table table)
+        private static void AddLastRowBorder(Table table)
         {
             Row lastRow = table.Rows[^1];
             lastRow.Borders.Bottom.Width = 2;

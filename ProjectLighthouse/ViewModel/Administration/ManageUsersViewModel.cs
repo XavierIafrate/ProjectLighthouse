@@ -11,7 +11,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
-using ViewModel.Commands.UserManagement;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
@@ -175,6 +174,14 @@ namespace ProjectLighthouse.ViewModel.Administration
 
         public void EnableEdit()
         {
+            if (SelectedUser is null) return;
+
+            if(SelectedUser.UserName == "sysadmin")
+            {
+                MessageBox.Show("This account cannot be edited", "Action prevented", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             ReadControlsVis = Visibility.Collapsed;
             EditControlsVis = Visibility.Visible;
         }

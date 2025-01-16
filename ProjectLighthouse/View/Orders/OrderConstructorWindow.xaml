@@ -210,7 +210,7 @@
                         Foreground="{StaticResource Blue}"
                         Opacity="0.6"
                         Text="Add items to see Insights" />
-                    <ScrollViewer Grid.Row="1" Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Insights, Mode=OneWay, Converter={StaticResource NotNullToVisibility}}" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=.}">
+                    <ScrollViewer Grid.Row="1" Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Insights, Mode=OneWay, Converter={StaticResource ObjectIsNotNull}}" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=.}">
                         <StackPanel x:Name="InsightsStackPanel" TextElement.Foreground="{StaticResource Blue}">
                             <StackPanel.Resources>
                                 <converters:boolToVisibleOrCollapsed x:Key="visConverter" />
@@ -239,13 +239,13 @@
                             <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.BarId}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="BAR ID" />
 
-                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.BarPrice, Converter={StaticResource priceConverter}}" />
+                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.BarPrice, StringFormat='{}{0:C2}'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="COST PER BAR" />
 
                             <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.NumberOfBarsRequired, StringFormat='{}{0:N1}'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="BARS REQUIRED" />
 
-                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.TotalBarCost, Converter={StaticResource priceConverter}}" />
+                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.TotalBarCost, StringFormat='{}{0:C2}'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="COST OF REQUIRED BAR" />
 
                             <TextBlock Style="{StaticResource ClusterHeading}" Text="MACHINE TIME" />
@@ -264,19 +264,13 @@
                             <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.TimeToComplete, Converter={StaticResource intToDays}, StringFormat='{}{0} days'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="TIME TO MACHINE" />
 
-                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.CostOfMachineTime, StringFormat='{}£{0:N2}'}" />
+                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.CostOfMachineTime, StringFormat='{}{0:C2}'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="COST OF MACHINE TIME" />
 
                             <TextBlock Style="{StaticResource ClusterHeading}" Text="SUMMARY" />
 
-                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.CostOfOrder, StringFormat='{}£{0:N2}'}" />
+                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.CostOfOrder, StringFormat='{}{0:C2}'}" />
                             <TextBlock Style="{StaticResource InsightTag}" Text="COST OF ORDER" />
-
-                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.ValueProduced, StringFormat='{}£{0:N2}'}" />
-                            <TextBlock Style="{StaticResource InsightTag}" Text="SELL VALUE (70%)" />
-
-                            <TextBlock Style="{StaticResource Insight}" Text="{Binding Path=Insights.NetProfit, StringFormat='{}£{0:N2}'}" />
-                            <TextBlock Style="{StaticResource InsightTag}" Text="NET VALUE" />
 
                         </StackPanel>
                     </ScrollViewer>

@@ -81,9 +81,10 @@ namespace ProjectLighthouse.View.UserControls
             {
                 control.ItemNameText.Text = control.RequestItem.ItemId == 0 ? "Unknown Item" : "ID: " + control.RequestItem.ItemId.ToString();
                 control.CopyProductNameButton.Visibility = Visibility.Collapsed;
+                control.EditButton.Visibility = Visibility.Collapsed;
             }
 
-                control.QuantityTextBox.Text = control.RequestItem.QuantityRequired == 0 ? "" : control.RequestItem.QuantityRequired.ToString();
+            control.QuantityTextBox.Text = control.RequestItem.QuantityRequired == 0 ? "" : control.RequestItem.QuantityRequired.ToString();
             control.RequiredDatePicker.SelectedDate = control.RequestItem.DateRequired;
             control.RequiredDatePicker.DisplayDateStart = DateTime.Today.AddDays(1);
             control.RequiredDatePicker.DisplayDateEnd = DateTime.Today.AddYears(1);

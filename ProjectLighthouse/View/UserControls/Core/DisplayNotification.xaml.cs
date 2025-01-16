@@ -1,4 +1,5 @@
 ﻿using ProjectLighthouse.Model.Core;
+using ProjectLighthouse.ViewModel.Core;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -37,7 +38,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            App.NotificationsManager.ExecuteToastAction(Notification.ToastAction);
+            NotificationManager.ExecuteToastAction(Notification.ToastAction);
             App.NotificationsManager.EnsureMarkedRead(Notification);
         }
 

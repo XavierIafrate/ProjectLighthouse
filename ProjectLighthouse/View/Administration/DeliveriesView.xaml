@@ -9,7 +9,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
     d:Background="White"
-    d:DesignHeight="590.975"
     d:DesignWidth="1123.47"
     mc:Ignorable="d">
     <Grid>
@@ -51,7 +50,8 @@
                 d:ItemsSource="{d:SampleData ItemCount=10}"
                 IsEnabled="{Binding DisableControls}"
                 ItemsSource="{Binding FilteredDeliveryNotes}"
-                SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                SelectedValue="{Binding SelectedDeliveryNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectionChanged="ListView_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:DisplayDeliveryNote Margin="10,2" deliveryNote="{Binding}" />
@@ -63,9 +63,9 @@
                     x:Name="newDeliveryButton"
                     HorizontalAlignment="Left"
                     Command="{Binding CreateDeliveryCommand}"
+                    Content="New Delivery"
                     IsEnabled="{Binding DisableControls}"
-                    Style="{StaticResource Action_New_Button}"
-                    Content="New Delivery" />
+                    Style="{StaticResource Action_New_Button}" />
                 <TextBlock
                     Margin="5"
                     HorizontalAlignment="Right"
@@ -141,7 +141,10 @@
                     </Border>
                 </Border>
             </StackPanel>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding ShowingDelivery, Converter={StaticResource boolToShow}}">
+            <ScrollViewer
+                x:Name="scroller"
+                VerticalScrollBarVisibility="Auto"
+                Visibility="{Binding ShowingDelivery, Converter={StaticResource boolToShow}}">
                 <Grid
                     MaxWidth="700"
                     Margin="30"
@@ -198,15 +201,15 @@
                                     <Button
                                         HorizontalAlignment="Right"
                                         Command="{Binding VerifyCommand}"
+                                        Content="Verify"
                                         IsEnabled="{Binding NoteIsNotVerified}"
-                                        Style="{StaticResource Action_Orange_Button}"
-                                        Content="Verify" />
+                                        Style="{StaticResource Action_Orange_Button}" />
                                     <Button
                                         HorizontalAlignment="Right"
                                         Command="{Binding GenerateDeliveryNotePDFCommand}"
+                                        Content="View PDF"
                                         IsEnabled="{Binding PdfEnabled}"
-                                        Style="{StaticResource Action_Pdf_Button}"
-                                        Content="View PDF" />
+                                        Style="{StaticResource Action_Pdf_Button}" />
 
 
                                 </StackPanel>
@@ -226,50 +229,38 @@
                                     IsIndeterminate="True"
                                     Style="{x:Null}" />
                             </StackPanel>
-                            <TextBlock Style="{StaticResource section}" Text="{Binding FilteredDeliveryItems.Count, StringFormat='{}Items ({0})', FallbackValue='Items (5)'}" />
-
-                            <ItemsControl
-                                Margin="10"
-                                HorizontalContentAlignment="Stretch"
-                                d:ItemsSource="{d:SampleData ItemCount=5}"
-                                ItemsSource="{Binding FilteredDeliveryItems, Mode=TwoWay}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <uc:DisplayDeliveryNoteItem
-                                            Margin="0,5"
-                                            Item="{Binding}" />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
 
                             <TextBlock
                                 Style="{StaticResource section}"
-                                Text="Errata"
-                                Visibility="Collapsed" />
-                            <Grid Margin="20,10" Visibility="Collapsed">
-                                <Border
-                                    Background="{StaticResource Green}"
-                                    CornerRadius="3"
-                                    Opacity="0.15" />
-                                <Border
-                                    BorderBrush="{StaticResource Green}"
-                                    BorderThickness="3,0,0,0"
-                                    CornerRadius="3">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Path
-                                            Height="20"
-                                            Margin="20,10,8,10"
-                                            Data="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"
-                                            Fill="{StaticResource Green}"
-                                            Stretch="Uniform" />
-                                        <TextBlock
-                                            Margin="0,10"
-                                            FontWeight="SemiBold"
-                                            Foreground="{StaticResource Green}"
-                                            Text="No discrepancies recorded" />
-                                    </StackPanel>
-                                </Border>
+                                Text="Validation Errors"
+                                Visibility="{Binding SelectedDeliveryNote.Errors, Converter={StaticResource EmptyListToCollapsedOrVisible}}" />
+                            <ListBox ItemsSource="{Binding SelectedDeliveryNote.Errors}" Visibility="{Binding SelectedDeliveryNote.Errors, Converter={StaticResource EmptyListToCollapsedOrVisible}}" />
+
+                            <Grid>
+                                <TextBlock Style="{StaticResource section}" Text="{Binding FilteredDeliveryItems.Count, StringFormat='{}Items ({0})', FallbackValue='Items (5)'}" />
+                                <Grid HorizontalAlignment="Right" IsEnabled="{Binding SelectedDeliveryNote.Verified, Converter={StaticResource InvertBoolean}}">
+                                    <Button
+                                        x:Name="EditItemButton"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding EditDeliveryItemCmd}"
+                                        Content="Edit Item"
+                                        IsEnabled="{Binding SelectedDeliveryItem, Converter={StaticResource ObjectIsNotNull}}"
+                                        Style="{StaticResource Action_Edit_Button_Small}" />
+                                </Grid>
                             </Grid>
+
+                            <ListView
+                                Margin="10"
+                                HorizontalContentAlignment="Stretch"
+                                d:ItemsSource="{d:SampleData ItemCount=5}"
+                                ItemsSource="{Binding FilteredDeliveryItems, Mode=TwoWay}"
+                                SelectedValue="{Binding SelectedDeliveryItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <uc:DisplayDeliveryNoteItem Margin="0,5" Item="{Binding}" />
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
                         </StackPanel>
                     </Grid>
                 </Grid>

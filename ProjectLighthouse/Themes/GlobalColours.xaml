@@ -8,6 +8,19 @@
     <SolidColorBrush x:Key="OnBackground" Color="{StaticResource OnBackground_Colour}" />
     <SolidColorBrush x:Key="OnBackgroundFaded" Color="{StaticResource OnBackgroundFaded_Colour}" />
 
+    <Color x:Key="Black_Colour">#000000</Color>
+    <Color x:Key="BlackFaded_Colour">#bfbfbf</Color>
+    <Color x:Key="BlackLight_Colour">#333</Color>
+    <Color x:Key="BlackDark_Colour">#000000</Color>
+    <!--  For compatibility - I'm not stupid ;)  -->
+    <Color x:Key="OnBlack_Colour">#FFFFFF</Color>
+
+    <SolidColorBrush x:Key="Black" Color="{StaticResource Black_Colour}" />
+    <SolidColorBrush x:Key="BlackFaded" Color="{StaticResource BlackFaded_Colour}" />
+    <SolidColorBrush x:Key="BlackLight" Color="{StaticResource BlackLight_Colour}" />
+    <SolidColorBrush x:Key="BlackDark" Color="{StaticResource BlackDark_Colour}" />
+    <SolidColorBrush x:Key="OnBlack" Color="{StaticResource OnBlack_Colour}" />
+
     <Color x:Key="Surface_Colour">#ECEFF1</Color>
     <Color x:Key="OnSurface_Colour">#000000</Color>
 

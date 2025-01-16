@@ -9,13 +9,14 @@
     xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:usercontrols="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:vc="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     d:Background="White"
     d:DesignWidth="1350"
     mc:Ignorable="d">
     <Grid>
         <Grid.Resources>
             <converters:intToStringCycleTime x:Key="CycleTimeConverter" />
-            <converters:intGreaterThanZeroToVisibility x:Key="IntGreaterThanZero" />
+            <converters:NumberGreaterThanZero x:Key="IntGreaterThanZero" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
@@ -61,10 +62,23 @@
                                 <RowDefinition />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            <TextBlock
-                                FontSize="16"
-                                FontWeight="SemiBold"
-                                Text="{Binding Name}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding Name}" />
+                                <Path
+                                    Margin="5,2,0,0"
+                                    VerticalAlignment="Center"
+                                    Fill="{StaticResource OrangeLight}"
+                                    Style="{StaticResource Icon_Hidden}"
+                                    Visibility="{Binding Path=IsHidden, Mode=OneWay, Converter={StaticResource boolToVisibleOrCollapsed}}">
+                                    <Path.ToolTip>
+                                        <TextBlock Text="Hidden Product" />
+                                    </Path.ToolTip>
+                                </Path>
+
+                            </StackPanel>
                             <TextBlock
                                 Grid.Row="1"
                                 Foreground="{StaticResource Blue}"
@@ -76,12 +90,22 @@
 
             </ListView>
             <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
                 <Button
                     HorizontalAlignment="Left"
                     Command="{Binding AddProductCmd}"
                     CommandParameter="{x:Null}"
                     Content="New Product"
                     Style="{StaticResource Action_New_Button}" />
+
+                <CheckBox
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    Content="Show Hidden"
+                    IsChecked="{Binding ShowHidden}" />
             </Grid>
         </Grid>
 
@@ -135,7 +159,7 @@
                 Opacity="0.6"
                 Text="No results" />
         </StackPanel>
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Visibility="{Binding SelectedProduct, Converter={StaticResource NotNullToVisibility}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -166,7 +190,7 @@
                             Command="{Binding ViewWebPageCmd}"
                             Content="View Web Page"
                             Style="{StaticResource Action_Button}"
-                            Visibility="{Binding SelectedProduct.WebUrl, Converter={StaticResource NotNullToVisibility}}" />
+                            Visibility="{Binding SelectedProduct.WebUrl, Converter={StaticResource ObjectIsNotNull}}" />
                         <Button
                             Margin="0,10,0,0"
                             Command="{Binding AddProductGroupCmd}"
@@ -224,7 +248,7 @@
                 Grid.Row="2"
                 Margin="0,10,0,0"
                 ScrollChanged="ScrollViewer_ScrollChanged"
-                Visibility="{Binding SelectedProduct, Converter={StaticResource NotNullToVisibility}}">
+                Visibility="{Binding SelectedProduct, Converter={StaticResource ObjectIsNotNull}}">
                 <StackPanel Margin="20,0">
 
 
@@ -331,7 +355,7 @@
                                                     VerticalAlignment="Center"
                                                     Background="{StaticResource TealFaded}"
                                                     CornerRadius="3"
-                                                    Visibility="{Binding ItemCost, Converter={StaticResource NotNullToVisibility}}">
+                                                    Visibility="{Binding ItemCost, Converter={StaticResource ObjectIsNotNull}}">
                                                     <TextBlock
                                                         Margin="8,0,8,1"
                                                         VerticalAlignment="Center"
@@ -393,9 +417,387 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <TextBlock Style="{StaticResource section}" Text="Costing" />
-                            <TextBlock Style="{StaticResource annotation}" Text="{Binding SelectedPart, StringFormat='{}For {0}'}" />
-                            <TextBlock Style="{StaticResource annotation}" Text="{Binding SelectedPart.ItemCost.TotalCost, StringFormat='{}£{0:0.00}'}" />
+                            <TextBlock
+                                Margin="10,0"
+                                Style="{StaticResource section}"
+                                Text="Costing Breakdown" />
+                            <TextBlock
+                                Margin="15,10"
+                                HorizontalAlignment="Center"
+                                d:Text="PART_NUMBER"
+                                FontFamily="Consolas"
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Text="{Binding SelectedPart, TargetNullValue='No Item Selected'}" />
+
+                            <Border
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                BorderBrush="{StaticResource Surface}"
+                                BorderThickness="2"
+                                CornerRadius="5">
+                                <StackPanel>
+                                    <TextBlock FontWeight="SemiBold" Text="Cost of Material" />
+                                    <Grid Margin="20,0" HorizontalAlignment="Center">
+                                        <Grid.Resources>
+                                            <vc:divideByHundred x:Key="divideByHundred" />
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Bar ID" />
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            d:Text="BAR_ID"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.BarStock.Id}" />
+
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Bar Material" />
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            Grid.Column="2"
+                                            d:Text="MATERIAL_ID"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.Material}" />
+
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Material Density" />
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            Grid.Column="2"
+                                            d:Text="MAT_DENSITY"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.Material.Density, StringFormat='{}{0:0} kg·m⁻³'}" />
+
+                                        <TextBlock
+                                            Grid.Row="3"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Cost per Kilo" />
+                                        <TextBlock
+                                            Grid.Row="3"
+                                            Grid.Column="2"
+                                            d:Text="COST_PER_KILO"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.Material.Cost, Converter={StaticResource divideByHundred}, StringFormat='{}{0:0.00} £·kg⁻¹'}" />
+
+                                        <TextBlock
+                                            Grid.Row="4"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Bar Mass" />
+                                        <TextBlock
+                                            Grid.Row="4"
+                                            Grid.Column="2"
+                                            d:Text="BAR_MASS"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.BarMass, StringFormat='{}{0:0.00} kg'}" />
+
+                                        <TextBlock
+                                            Grid.Row="5"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Expected Cost of Bar" />
+                                        <TextBlock
+                                            Grid.Row="5"
+                                            Grid.Column="2"
+                                            d:Text="BAR_COST"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.BarStock.ExpectedCost, Converter={StaticResource divideByHundred}, StringFormat='{}£{0:0.00}'}" />
+
+                                        <TextBlock
+                                            Grid.Row="6"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Length of Bar" />
+                                        <TextBlock
+                                            Grid.Row="6"
+                                            Grid.Column="2"
+                                            d:Text="BAR_LENGTH"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.BarStock.Length, StringFormat='{}{0:0} mm'}" />
+
+                                        <TextBlock
+                                            Grid.Row="7"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Item Material Usage" />
+                                        <TextBlock
+                                            Grid.Row="7"
+                                            Grid.Column="2"
+                                            d:Text="ITEM_MAT_USAGE"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.MaterialBudget, StringFormat='{}{0:0.00} mm'}" />
+
+                                        <TextBlock
+                                            Grid.Row="8"
+                                            Margin="0,5,0,0"
+                                            FontWeight="SemiBold"
+                                            Text="Calculation"
+                                            TextDecorations="Underline" />
+
+                                        <StackPanel
+                                            Grid.Row="9"
+                                            Grid.ColumnSpan="3"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal">
+                                            <StackPanel HorizontalAlignment="Right">
+                                                <TextBlock
+                                                    Margin="5,0"
+                                                    HorizontalAlignment="Center"
+                                                    d:Text="MAT_CONSUMED"
+                                                    FontFamily="Consolas"
+                                                    FontSize="18"
+                                                    FontWeight="Bold"
+                                                    Text="{Binding SelectedPart.ItemCost.MaterialBudget}" />
+                                                <Separator
+                                                    Margin="0"
+                                                    BorderBrush="Black"
+                                                    BorderThickness="1"
+                                                    Opacity="1"
+                                                    SnapsToDevicePixels="True" />
+                                                <TextBlock
+                                                    Margin="5,0"
+                                                    HorizontalAlignment="Center"
+                                                    d:Text="BAR_LENGTH"
+                                                    FontFamily="Consolas"
+                                                    FontSize="18"
+                                                    FontWeight="Bold"
+                                                    Text="{Binding SelectedPart.ItemCost.BarStock.Length}" />
+                                            </StackPanel>
+                                            <Border
+                                                Grid.Row="9"
+                                                Grid.Column="1"
+                                                Width="4"
+                                                Height="4"
+                                                Margin="8,0,4,0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Background="Black"
+                                                CornerRadius="2" />
+                                            <TextBlock
+                                                Grid.Row="9"
+                                                Grid.Column="2"
+                                                Margin="5,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                d:Text="BAR_COST"
+                                                FontFamily="Consolas"
+                                                FontSize="18"
+                                                FontWeight="Bold"
+                                                Text="{Binding SelectedPart.ItemCost.BarStock.ExpectedCost, Converter={StaticResource divideByHundred}, StringFormat='{}{0:0.00}'}" />
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Grid.Row="10"
+                                            Grid.ColumnSpan="3"
+                                            Margin="0,5"
+                                            HorizontalAlignment="Center"
+                                            d:Text="=£BAR_COST"
+                                            FontSize="20"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding SelectedPart.ItemCost.MaterialCost, StringFormat='{}Material Cost = £{0:0.000} ea'}" />
+
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border
+                                Margin="0,10,0,0"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                BorderBrush="{StaticResource Surface}"
+                                BorderThickness="2"
+                                CornerRadius="5">
+                                <StackPanel>
+                                    <TextBlock FontWeight="SemiBold" Text="Cost of Time" />
+
+                                    <Grid Margin="20,0" HorizontalAlignment="Center">
+                                        <Grid.Resources>
+                                            <vc:divideByHundred x:Key="divideByHundred" />
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Absorption Rate" />
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            d:Text="ABSORPTION_RATE"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.AbsorptionRate, StringFormat='{}{0:0.00000} £·s⁻¹'}" />
+
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Model Gradient" />
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            Grid.Column="2"
+                                            d:Text="CYCLE_TIME"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.TimeModel.Gradient, StringFormat='{}{0:0.000} s·mm⁻¹'}" />
+
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Model Time Offset" />
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            Grid.Column="2"
+                                            d:Text="CYCLE_TIME"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.TimeModel.Intercept, StringFormat='{}{0:0} s'}" />
+
+                                        <TextBlock
+                                            Grid.Row="3"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Item Length" />
+                                        <TextBlock
+                                            Grid.Row="3"
+                                            Grid.Column="2"
+                                            d:Text="ITEM_LENGTH"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.Length, StringFormat='{}{0:0.0} mm'}" />
+
+                                        <TextBlock
+                                            Grid.Row="4"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Min. Modelled Cycle Time" />
+                                        <TextBlock
+                                            Grid.Row="4"
+                                            Grid.Column="2"
+                                            d:Text="MIN_CYCLE_TIME"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.TimeModel.Floor, StringFormat='{}{0:0} s'}" />
+
+                                        <TextBlock
+                                            Grid.Row="5"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontStyle="Italic"
+                                            Text="Modelled Cycle Time" />
+                                        <TextBlock
+                                            Grid.Row="5"
+                                            Grid.Column="2"
+                                            d:Text="MIN_CYCLE_TIME"
+                                            FontFamily="Consolas"
+                                            Text="{Binding SelectedPart.ItemCost.ModelledCycleTime, StringFormat='{}{0:0} s'}" />
+
+                                        <TextBlock
+                                            Grid.Row="6"
+                                            Margin="0,5,0,0"
+                                            FontWeight="SemiBold"
+                                            Text="Calculation"
+                                            TextDecorations="Underline" />
+                                        <StackPanel
+                                            Grid.Row="7"
+                                            Grid.ColumnSpan="3"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal">
+
+                                            <TextBlock
+                                                Margin="5,0"
+                                                HorizontalAlignment="Right"
+                                                d:Text="MAT_CONSUMED"
+                                                FontFamily="Consolas"
+                                                FontSize="18"
+                                                FontWeight="Bold"
+                                                Text="{Binding SelectedPart.ItemCost.AbsorptionRate, StringFormat='{}{0:0.00000}'}" />
+                                            <Border
+                                                Grid.Row="7"
+                                                Grid.Column="1"
+                                                Width="4"
+                                                Height="4"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Background="Black"
+                                                CornerRadius="2" />
+                                            <TextBlock
+                                                Grid.Row="7"
+                                                Grid.Column="2"
+                                                Margin="5,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                d:Text="BAR_COST"
+                                                FontFamily="Consolas"
+                                                FontSize="18"
+                                                FontWeight="Bold"
+                                                Text="{Binding SelectedPart.ItemCost.ModelledCycleTime, StringFormat='{}{0:0}'}" />
+
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Grid.Row="8"
+                                            Grid.ColumnSpan="3"
+                                            Margin="0,5"
+                                            HorizontalAlignment="Center"
+                                            d:Text="=£BAR_COST"
+                                            FontSize="20"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding SelectedPart.ItemCost.TimeCost, StringFormat='{}Time Cost = £{0:0.000} ea'}" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
 
                     </Grid>

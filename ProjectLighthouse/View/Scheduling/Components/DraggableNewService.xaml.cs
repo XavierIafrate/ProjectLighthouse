@@ -114,7 +114,12 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
             if (allowDrag)
             {
-                MachineService newService = this.machineService.Clone();
+                if (this.machineService.Clone() is not MachineService newService)
+                {
+                    MessageBox.Show("Could not clone service");
+                    return;
+                }
+
                 newService.Id = 0;
 
                 TimelineOrder newServiceControl = new()

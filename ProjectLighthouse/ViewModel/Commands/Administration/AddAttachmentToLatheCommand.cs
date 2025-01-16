@@ -2,13 +2,13 @@
 using System;
 using System.Windows.Input;
 
-namespace ViewModel.Commands.Administration
+namespace ProjectLighthouse.ViewModel.Commands.Administration
 {
     public class AddAttachmentToLatheCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private LatheViewModel viewModel;
-        public AddAttachmentToLatheCommand(LatheViewModel vm)
+        private MachineViewModel viewModel;
+        public AddAttachmentToLatheCommand(MachineViewModel vm)
         {
             viewModel = vm;
         }

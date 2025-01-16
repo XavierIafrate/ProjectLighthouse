@@ -1,0 +1,233 @@
+﻿<UserControl
+    x:Class="ProjectLighthouse.View.Orders.Components.GeneralOrderInspector"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
+    xmlns:liveCharts="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+    xmlns:local="clr-namespace:ProjectLighthouse.View.Orders.Components"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:ProjectLighthouse.View.UserControls"
+    xmlns:valueConverters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    x:Name="parentControl"
+    d:Background="White"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <valueConverters:BooleanInverter x:Key="invertBool" />
+        <valueConverters:intToStringCycleTime x:Key="intToStringCycleTime" />
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel>
+            <local:DisplayOrderScheduleInformation Margin="10" Item="{Binding ElementName=parentControl, Path=Order}" />
+
+            <TextBlock Style="{StaticResource section}" Text="Requirement" />
+            <local:DisplayGeneralOrderRequirement Margin="10" Order="{Binding Order, ElementName=parentControl}" />
+
+            <TabControl x:Name="OrderTabControl" Margin="0,10,0,20">
+                <TabItem>
+                    <TabItem.Header>
+                        <emoji:TextBlock
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Text="🚀 Pre-flight" />
+                    </TabItem.Header>
+                    <StackPanel IsEnabled="{Binding ElementName=parentControl, Path=Order.HasStarted, Converter={StaticResource invertBool}}">
+                        <Grid Margin="10" IsEnabled="{Binding EditMode, ElementName=parentControl}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource InputLabel}"
+                                Text="Material" />
+                            <CheckBox
+                                Grid.Row="1"
+                                Content="Material Ordered"
+                                IsChecked="{Binding Order.MaterialOrdered, ElementName=parentControl}"
+                                IsEnabled="{Binding Order.MaterialReady, ElementName=parentControl, Converter={StaticResource invertBool}}"
+                                Style="{StaticResource PreflightCheckbox}" />
+                            <CheckBox
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Content="Material Ready"
+                                IsChecked="{Binding Order.MaterialReady, ElementName=parentControl}"
+                                Style="{StaticResource PreflightCheckbox}" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource InputLabel}"
+                                Text="Tooling" />
+                            <CheckBox
+                                Grid.Row="3"
+                                Content="Tooling Ordered"
+                                IsChecked="{Binding Order.ToolingOrdered, ElementName=parentControl}"
+                                IsEnabled="{Binding Order.ToolingReady, ElementName=parentControl, Converter={StaticResource invertBool}}"
+                                Style="{StaticResource PreflightCheckbox}" />
+                            <CheckBox
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Content="Tooling Ready"
+                                IsChecked="{Binding Order.ToolingReady, ElementName=parentControl}"
+                                Style="{StaticResource PreflightCheckbox}" />
+
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource InputLabel}"
+                                Text="Gauges" />
+                            <CheckBox
+                                Grid.Row="5"
+                                Content="Gauging Ordered"
+                                IsChecked="{Binding Order.GaugingOrdered, ElementName=parentControl}"
+                                IsEnabled="{Binding Order.GaugingReady, ElementName=parentControl, Converter={StaticResource invertBool}}"
+                                Style="{StaticResource PreflightCheckbox}" />
+                            <CheckBox
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Content="Gauging Ready"
+                                IsChecked="{Binding Order.GaugingReady, ElementName=parentControl}"
+                                Style="{StaticResource PreflightCheckbox}" />
+
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource InputLabel}"
+                                Text="Program" />
+                            <CheckBox
+                                Grid.Row="7"
+                                Grid.Column="1"
+                                Content="Program Ready"
+                                IsChecked="{Binding Order.ProgramReady, ElementName=parentControl}"
+                                Style="{StaticResource PreflightCheckbox}" />
+
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <emoji:TextBlock
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Text="⚙️ Configuration" />
+                    </TabItem.Header>
+                    <Grid Margin="10,5" IsEnabled="{Binding Path=EditMode, ElementName=parentControl}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource InputLabel}" Text="Assigned To" />
+                            <ComboBox
+                                IsEnabled="{Binding Path=EditMode, ElementName=parentControl}"
+                                ItemsSource="{Binding ProductionStaff, ElementName=parentControl}"
+                                SelectedValue="{Binding Order.AssignedTo, ElementName=parentControl}"
+                                SelectedValuePath="UserName" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Style="{StaticResource InputLabel}" Text="Purchase Order" />
+                            <TextBox
+                                Style="{StaticResource DefaultTextBox}"
+                                Tag="purchase order"
+                                Text="{Binding Order.POReference, ElementName=parentControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1">
+                            <TextBlock Style="{StaticResource InputLabel}" Text="Required Quantity" />
+                            <TextBox
+                                Style="{StaticResource DefaultTextBox}"
+                                Tag="required quantity"
+                                Text="{Binding Order.RequiredQuantity, ElementName=parentControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <TextBlock Style="{StaticResource InputLabel}" Text="Required Date" />
+                            <DatePicker SelectedDate="{Binding ElementName=parentControl, Path=Order.RequiredDate}" />
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <emoji:TextBlock
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Text="🌶️ Production" />
+                    </TabItem.Header>
+                    <StackPanel Margin="10,5">
+                        <StackPanel IsEnabled="{Binding Order.ReadyToRun, ElementName=parentControl}">
+
+                            <TextBlock Style="{StaticResource section}" Text="Order Status" />
+                            <StackPanel IsEnabled="{Binding EditMode, ElementName=parentControl}" Orientation="Horizontal">
+
+                                <CheckBox
+                                    Margin="10,8"
+                                    HorizontalAlignment="Left"
+                                    Content="Job is running"
+                                    IsChecked="{Binding Order.HasStarted, ElementName=parentControl}"
+                                    IsEnabled="{Binding Order.IsComplete, ElementName=parentControl, Converter={StaticResource invertBool}}"
+                                    Style="{StaticResource PreflightCheckbox}" />
+                                <CheckBox
+                                    Margin="10,8"
+                                    HorizontalAlignment="Left"
+                                    Content="Job is complete"
+                                    IsChecked="{Binding Order.IsComplete, ElementName=parentControl}"
+                                    IsEnabled="{Binding Order.HasStarted, ElementName=parentControl}"
+                                    Style="{StaticResource PreflightCheckbox}" />
+                                <CheckBox
+                                    Margin="10,8"
+                                    HorizontalAlignment="Left"
+                                    Content="Job is cancelled"
+                                    IsChecked="{Binding Order.IsCancelled, ElementName=parentControl}"
+                                    Style="{StaticResource PreflightCheckbox}" />
+                            </StackPanel>
+
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource section}" Text="Production Log" />
+                        <Grid IsEnabled="{Binding Order.HasStarted, ElementName=parentControl}">
+                            <local:LotsEditor 
+                                 IsEnabled="{Binding EditMode, ElementName=parentControl}"
+                                ItemName="{Binding ElementName=parentControl, Path=Order.Item.Name}"
+                                CycleTime="{Binding ElementName=parentControl, Path=Order.Item.CycleTime}"
+                                Lots="{Binding ElementName=parentControl, Path=Order.Lots}"
+                                EditMode="{Binding ElementName=parentControl, Path=EditMode}"
+                                Order="{Binding ElementName=parentControl, Path=Order}"/>
+
+                        </Grid>
+
+                    </StackPanel>
+
+                </TabItem>
+            </TabControl>
+
+
+            <TextBlock Style="{StaticResource section}" Text="Time" />
+            <TextBlock
+                Grid.Row="1"
+                Margin="15,0,0,8"
+                d:Text="CycleTime"
+                FontStyle="Italic"
+                Text="{Binding ElementName=parentControl, Path=Order.Item.CycleTime, Converter={StaticResource intToStringCycleTime}, StringFormat='{}Unit cycle time: {0}'}" />
+            <liveCharts:CartesianChart
+                Height="300"
+                EasingFunction="{x:Null}"
+                Series="{Binding ProductionData, ElementName=parentControl}"
+                XAxes="{Binding XAxes, ElementName=parentControl}"
+                YAxes="{Binding YAxes, ElementName=parentControl}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

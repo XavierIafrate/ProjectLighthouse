@@ -13,7 +13,6 @@
     mc:Ignorable="d">
     <Grid Margin="20">
         <StackPanel>
-
             <TextBlock
                 x:Name="OrderRefText"
                 Style="{StaticResource title}"
@@ -41,7 +40,7 @@
                     Foreground="{StaticResource Purple}"
                     Text="Order requires 55" />
             </StackPanel>
-            <TextBlock Style="{StaticResource section}" Text="How many bars would you like to issue?" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Quantity of bars this issue" />
             <TextBox
                 x:Name="QtyTextBox"
                 Width="100"
@@ -50,7 +49,7 @@
                 PreviewKeyDown="QtyTextBox_PreviewKeyDown"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="quantity" />
-            <TextBlock Style="{StaticResource section}" Text="Please record the batch reference of the material being issued" />
+            <TextBlock Style="{StaticResource InputLabel}" Text="Enter the material batch reference" />
             <TextBox
                 x:Name="BatchInfoTextBox"
                 Width="350"
@@ -58,6 +57,16 @@
                 MaxLength="16"
                 Style="{StaticResource DefaultTextBox}"
                 Tag="material batch" />
+
+            <TextBlock Style="{StaticResource InputLabel}" Text="Tray number the issue has been sourced from" />
+            <TextBox
+                x:Name="TrayNumberTextBox"
+                Width="120"
+                HorizontalAlignment="Left"
+                MaxLength="4"
+                Style="{StaticResource DefaultTextBox}"
+                Tag="tray number" />
+
             <StackPanel
                 Margin="0,20,0,0"
                 HorizontalAlignment="Right"

@@ -21,6 +21,8 @@ namespace ProjectLighthouse
     {
         public static User CurrentUser { get; set; }
         public static Login Login { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>")]
         public static string ROOT_PATH { get; set; }
         public static string ActiveViewModel { get; set; }
         public static bool DevMode { get; set; }
@@ -68,12 +70,30 @@ namespace ProjectLighthouse
 
                 if (Constants is null)
                 {
-                    throw new Exception("Deserialisation of config.json to Constants returned null");
+                    throw new FileLoadException("Deserialisation of config.json to Constants returned null");
                 }
             }
             catch (Exception ex)
             {
                 SetupFailedWindow window = new("Cannot load config file.", $"{ex.Message}");
+                window.ShowDialog();
+                Application.Current.Shutdown();
+                return;
+            }
+
+            try
+            {
+                string fitsJson = File.ReadAllText($"{App.ROOT_PATH}fits.txt");
+                App.StandardFits = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StandardFit>>(fitsJson);
+
+                if (Constants is null)
+                {
+                    throw new FileLoadException("Deserialisation of fits.txt to Standard Fits returned null");
+                }
+            }
+            catch (Exception ex)
+            {
+                SetupFailedWindow window = new("Cannot load fits file.", $"{ex.Message}");
                 window.ShowDialog();
                 Application.Current.Shutdown();
                 return;
@@ -125,11 +145,12 @@ namespace ProjectLighthouse
                 Application.Current.Dispatcher.Invoke(delegate
                 {
                     Debug.WriteLine($"Activated request for {toastArgs.Argument}");
-                    NotificationsManager.ParseToastArgs(toastArgs.Argument);
+                    NotificationManager.ParseToastArgs(toastArgs.Argument);
                 });
             };
 
             Task.Run(() => StartNotificationsManager());
+            Task.Run(() => ClearUserLocks());
 
             LumenManager.Initialise();
         }
@@ -166,6 +187,7 @@ namespace ProjectLighthouse
         private static MainViewModel LoadMain()
         {
             Window = new();
+
             MainViewModel VM = new()
             {
                 MainWindow = Window
@@ -177,6 +199,27 @@ namespace ProjectLighthouse
             Window.ViewModel = VM;
 
             return VM;
+        }
+
+        private static void ClearUserLocks()
+        {
+            string[] lockFiles = Directory.GetFiles(App.ROOT_PATH + "lib\\locks\\");
+            foreach (string file in lockFiles)
+            {
+                try
+                {
+                    string contents = File.ReadAllText(file);
+                    if (contents.Contains(App.CurrentUser.UserName + "|"))
+                    {
+                        File.Delete(file);
+                    }
+
+                }
+                catch
+                {
+                    continue;
+                }
+            }
         }
 
         private static void StartNotificationsManager()
@@ -205,15 +248,16 @@ namespace ProjectLighthouse
         private static void EnsureAppData()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string specificFolder = Path.Combine(folder, "Lighthouse");
+            string specificFolder = Path.Combine(folder, "Lighthouse\\");
             AppDataDirectory = $@"{specificFolder}\";
-            if (!Directory.Exists(specificFolder))
-            {
-                Directory.CreateDirectory(specificFolder);
-            }
 
-            string copyFrom = $@"{ROOT_PATH}lib\";
-            string copyTo = $@"{specificFolder}\lib\";
+            string copyFrom = $@"{ROOT_PATH}lib\renders\";
+            string copyTo = $@"{specificFolder}\lib\renders\";
+
+            if (!Directory.Exists(copyTo))
+            {
+                Directory.CreateDirectory(copyTo);
+            }
 
             CopyFilesRecursively(copyFrom, copyTo);
         }
@@ -251,6 +295,8 @@ namespace ProjectLighthouse
             //Copy all the files & Replaces any files with the same name
             foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
+                Debug.WriteLine(newPath);
+
                 try
                 {
                     File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
@@ -258,6 +304,18 @@ namespace ProjectLighthouse
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        public static void BeforeApplicationShutdown(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (App.MainViewModel.SelectedViewModel is ISafeClose safeCloseVm)
+            {
+                if (!safeCloseVm.OnCloseRequested())
+                {
+                    e.Cancel = true;    
+                    return;
                 }
             }
         }
@@ -350,6 +408,7 @@ namespace ProjectLighthouse
                 "errors",
                 "lib",
                 "lib\\gen",
+                "lib\\locks",
                 "lib\\logs",
                 "lib\\checksheets",
                 "lib\\pcom",

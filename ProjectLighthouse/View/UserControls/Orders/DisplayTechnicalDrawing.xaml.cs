@@ -33,46 +33,51 @@ namespace ProjectLighthouse.View.UserControls
         public static readonly DependencyProperty OrderReferenceProperty =
             DependencyProperty.Register("OrderReference", typeof(string), typeof(DisplayTechnicalDrawing), new PropertyMetadata(null));
 
+        public bool PlatingStatement
+        {
+            get { return (bool)GetValue(PlatingStatementProperty); }
+            set { SetValue(PlatingStatementProperty, value); }
+        }
 
-
+        public static readonly DependencyProperty PlatingStatementProperty =
+            DependencyProperty.Register("PlatingStatement", typeof(bool), typeof(DisplayTechnicalDrawing), new PropertyMetadata(false));
 
         private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is DisplayTechnicalDrawing control)
+            if (d is not DisplayTechnicalDrawing control) return;
+            
+            if (control.Drawing == null)
             {
-                if (control.Drawing == null)
-                {
-                    control.filename.Text = "<null>";
-                    control.rev.Text = "n/a";
-                    control.openButton.IsEnabled = false;
-                    control.inspectionLogButton.IsEnabled = false;
-                    return;
-                }
+                control.filename.Text = "<null>";
+                control.rev.Text = "n/a";
+                control.openButton.IsEnabled = false;
+                control.inspectionLogButton.IsEnabled = false;
+                return;
+            }
 
-                string filePath = Path.Join(App.ROOT_PATH, control.Drawing.DrawingStore);
+            string filePath = Path.Join(App.ROOT_PATH, control.Drawing.DrawingStore);
 
-                control.filename.Text = control.Drawing.DrawingName;
-                control.rev.Text = control.Drawing.DrawingType == TechnicalDrawing.Type.Production
-                    ? $"Revision {control.Drawing.Revision}{control.Drawing.AmendmentType}"
-                    : $"Development v.{control.Drawing.Revision}{control.Drawing.AmendmentType}";
-                control.issueDate.Text = control.Drawing.ApprovedDate == System.DateTime.MinValue ? "Issued [missing date]" : $"Issued {control.Drawing.ApprovedDate:dd/MM/yyyy}";
-                control.newBadge.Visibility = control.Drawing.ApprovedDate.AddDays(7) > System.DateTime.Now
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
+            control.filename.Text = control.Drawing.DrawingName;
+            control.rev.Text = control.Drawing.DrawingType == TechnicalDrawing.Type.Production
+                ? $"Revision {control.Drawing.Revision}{control.Drawing.AmendmentType}"
+                : $"Development v.{control.Drawing.Revision}{control.Drawing.AmendmentType}";
+            control.issueDate.Text = control.Drawing.ApprovedDate == System.DateTime.MinValue ? "Issued [missing date]" : $"Issued {control.Drawing.ApprovedDate:dd/MM/yyyy}";
+            control.newBadge.Visibility = control.Drawing.ApprovedDate.AddDays(7) > System.DateTime.Now
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
-                control.inspectionLogButton.Visibility = control.Drawing.Specification.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            control.inspectionLogButton.Visibility = control.Drawing.Specification.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
 
-                if (!File.Exists(filePath))
-                {
-                    control.openButton.Tag = "Not Found";
-                    control.openButton.IsEnabled = false;
-                }
-                else
-                {
-                    control.openButton.Tag = "Drawing";
-                    control.openButton.IsEnabled = true;
-                }
+            if (!File.Exists(filePath))
+            {
+                control.openButton.Tag = "Not Found";
+                control.openButton.IsEnabled = false;
+            }
+            else
+            {
+                control.openButton.Tag = "Drawing";
+                control.openButton.IsEnabled = true;
             }
         }
 
@@ -86,7 +91,7 @@ namespace ProjectLighthouse.View.UserControls
                 File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath);
             }
 
-            if (Drawing.PlatingStatement)
+            if (PlatingStatement)
             {
                 File.Copy(Path.Join(App.ROOT_PATH, Drawing.DrawingStore), tmpPath, overwrite: true);
                 TechnicalDrawing.AddPlatingStatement(tmpPath);

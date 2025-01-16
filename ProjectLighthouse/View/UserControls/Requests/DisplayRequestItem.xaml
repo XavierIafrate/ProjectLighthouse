@@ -36,7 +36,11 @@
                         FontSize="16"
                         FontWeight="SemiBold"
                         Text="ITEM" />
-                    <Button Style="{StaticResource ClipboardButton}" x:Name="CopyProductNameButton" Click="CopyProductName_Click" ToolTip="Copy Export Code"/>
+                    <Button
+                        x:Name="CopyProductNameButton"
+                        Click="CopyProductName_Click"
+                        Style="{StaticResource ClipboardButton}"
+                        ToolTip="Copy Export Code" />
                 </StackPanel>
                 <TextBlock
                     x:Name="MissingDataStatement"
@@ -50,8 +54,8 @@
                     Margin="5,0,0,0"
                     HorizontalAlignment="Left"
                     Click="EditButton_Click"
-                    Style="{StaticResource Action_Edit_Button_Small}"
-                    Content="Edit" />
+                    Content="Edit"
+                    Style="{StaticResource Action_Edit_Button_Small}" />
             </Grid>
 
 
@@ -83,8 +87,8 @@
                 VerticalAlignment="Center"
                 d:Visibility="Visible"
                 Click="Button_Click"
-                Style="{StaticResource Action_Remove_Button_Small}"
                 Content="Remove"
+                Style="{StaticResource Action_Remove_Button_Small}"
                 Visibility="Collapsed" />
         </Grid>
 

@@ -5,11 +5,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProjectLighthouse.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:valueConverters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
+    x:Name="parentControl"
     MinHeight="50"
     d:Background="White"
-    d:DesignWidth="700"
     Background="#01FFFFFF"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <valueConverters:NumberGreaterThanZero x:Key="GreaterThanZero" />
+        <valueConverters:CycleTimeChangeColour x:Key="CycleTimeChangeColour" />
+    </UserControl.Resources>
     <Grid>
         <Grid VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
@@ -23,30 +28,33 @@
             </Grid.RowDefinitions>
 
             <StackPanel Margin="5,2,10,2" VerticalAlignment="Center">
-                <TextBlock
-                    x:Name="productText"
-                    Padding="0,2"
-                    VerticalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="{Binding ProductName, FallbackValue='P0XXX.123-456-A2'}" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Padding="0,2"
+                        VerticalAlignment="Center"
+                        d:Text="PRODUCT_NAME"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="{Binding ElementName=parentControl, Path=Item.ProductName}" />
+                    <Button
+                        x:Name="ClipboardButton"
+                        Click="ClipboardButton_Click"
+                        Style="{StaticResource ClipboardButton_Icon}"
+                        ToolTip="Copy Export Code"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.Gtin, Converter={StaticResource NotNullToVisibility}}" />
+                </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="EditButton"
-                        Margin="0,0,5,0"
-                        Click="EditButton_Click"
-                        Style="{StaticResource Action_Edit_Button_Small}" />
+
                     <Border
-                        x:Name="specialFlag"
                         Grid.Column="2"
                         Margin="0,0,5,0"
-                        HorizontalAlignment="Center"
                         VerticalAlignment="Stretch"
                         Background="{StaticResource PurpleFaded}"
                         BorderBrush="{StaticResource Purple}"
                         CornerRadius="5"
-                        ToolTip="Special">
+                        ToolTip="Special"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.IsSpecialPart, Converter={StaticResource boolToVisibleOrCollapsed}}">
                         <Path
                             Width="12"
                             Height="12"
@@ -56,10 +64,10 @@
                             Stretch="Uniform" />
                     </Border>
                     <Border
-                        x:Name="modelledCycleTimeIndicator"
                         Margin="0,0,5,0"
                         Background="{StaticResource PurpleFaded}"
-                        CornerRadius="5">
+                        CornerRadius="5"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.ModelledCycleTime, Converter={StaticResource ObjectIsNotNull}}">
                         <StackPanel
                             Margin="5,2"
                             VerticalAlignment="Center"
@@ -77,15 +85,15 @@
                                 FontSize="12"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Purple}"
-                                Text="?" />
+                                Text="{Binding ElementName=parentControl, Path=Item.ModelledCycleTime, Converter={StaticResource CycleTimeStringConverter}}" />
 
                         </StackPanel>
                     </Border>
                     <Border
-                        x:Name="historicalCycleTimeIndicator"
                         Margin="0,0,5,0"
                         Background="{StaticResource OnBackgroundFaded}"
-                        CornerRadius="5">
+                        CornerRadius="5"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.PreviousCycleTime, Converter={StaticResource ObjectIsNotNull}}">
                         <StackPanel
                             Margin="5,2"
                             VerticalAlignment="Center"
@@ -103,15 +111,15 @@
                                 FontSize="12"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource OnBackground}"
-                                Text="?" />
+                                Text="{Binding ElementName=parentControl, Path=Item.PreviousCycleTime, Converter={StaticResource CycleTimeStringConverter}}" />
 
                         </StackPanel>
                     </Border>
                     <Border
-                        x:Name="cycleTimeIndicator"
                         Margin="0,0,5,0"
                         Background="{StaticResource TealFaded}"
-                        CornerRadius="5">
+                        CornerRadius="5"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.CycleTime, Converter={StaticResource GreaterThanZero}}">
                         <StackPanel
                             Margin="5,2"
                             VerticalAlignment="Center"
@@ -130,14 +138,40 @@
                                 FontSize="12"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource Teal}"
-                                Text="?" />
+                                Text="{Binding ElementName=parentControl, Path=Item.CycleTime, Converter={StaticResource CycleTimeStringConverter}}" />
+
+                        </StackPanel>
+                    </Border>
+                    <Border
+                        x:Name="CycleTimeNotPresentIndicator"
+                        Margin="0,0,5,0"
+                        Background="{StaticResource RedFaded}"
+                        CornerRadius="5">
+                        <StackPanel
+                            Margin="5,2"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Data="M19.03 7.39L20.45 5.97C20 5.46 19.55 5 19.04 4.56L17.62 6C16.07 4.74 14.12 4 12 4C7.03 4 3 8.03 3 13S7.03 22 12 22C17 22 21 17.97 21 13C21 10.88 20.26 8.93 19.03 7.39M13 14H11V7H13V14M15 1H9V3H15V1Z"
+                                Fill="{StaticResource Red}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Margin="3,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource Red}"
+                                Text="??" />
 
                         </StackPanel>
                     </Border>
                     <Border
                         x:Name="deltaIndicator"
-                        Background="{StaticResource TealFaded}"
-                        CornerRadius="5">
+                        Background="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource CycleTimeChangeColour}, ConverterParameter='Faded'}"
+                        CornerRadius="5"
+                        Visibility="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource ObjectIsNotNull}}">
                         <StackPanel
                             Margin="5,2"
                             VerticalAlignment="Center"
@@ -147,7 +181,7 @@
                                 Width="10"
                                 Height="10"
                                 Data="M12,7.77L18.39,18H5.61L12,7.77M12,4L2,20H22"
-                                Fill="{StaticResource Teal}"
+                                Fill="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource CycleTimeChangeColour}}"
                                 Stretch="Uniform" />
                             <TextBlock
                                 x:Name="deltaIndicatorText"
@@ -155,8 +189,8 @@
                                 VerticalAlignment="Center"
                                 FontSize="12"
                                 FontWeight="SemiBold"
-                                Foreground="{StaticResource Teal}"
-                                Text="?" />
+                                Foreground="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, Converter={StaticResource CycleTimeChangeColour}}"
+                                Text="{Binding ElementName=parentControl, Path=Item.ChangeInCycleTime, StringFormat='{}{0:+0;-0;+0}'}" />
 
                         </StackPanel>
                     </Border>
@@ -164,50 +198,48 @@
 
             </StackPanel>
 
-            <local:LMOQuantityDisplay Grid.Column="2" Item="{Binding Path=.}" />
+            <local:LMOQuantityDisplay
+                Grid.Column="2"
+                MadeQuantity="{Binding ElementName=parentControl, Path=Item.QuantityMade}"
+                RequiredQuantity="{Binding ElementName=parentControl, Path=Item.RequiredQuantity}"
+                TargetQuantity="{Binding ElementName=parentControl, Path=Item.TargetQuantity}" />
 
 
             <Border
-                x:Name="requirements"
                 Grid.Column="1"
                 Margin="2"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                Background="{StaticResource RedFaded}"
                 BorderBrush="{StaticResource Red}"
                 BorderThickness="3,0,0,0"
-                CornerRadius="5">
-                <Grid>
-                    <Border
-                        x:Name="requirementsBg"
-                        Background="{StaticResource Red}"
-                        CornerRadius="2,5,5,2"
-                        Opacity="0.15" />
-                    <StackPanel Margin="10,2">
+                CornerRadius="5"
+                Visibility="{Binding ElementName=parentControl, Path=Item.RequiredQuantity, Converter={StaticResource GreaterThanZero}}">
+                <StackPanel Margin="10,2">
+                    <TextBlock
+                        x:Name="custReqTitle"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource Red}"
+                        Text="Customer Requirement" />
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock
-                            x:Name="custReqTitle"
+                            x:Name="qtyrequired"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            d:Text="99,000 pcs"
                             FontSize="12"
-                            FontWeight="SemiBold"
                             Foreground="{StaticResource Red}"
-                            Text="Customer Requirement" />
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock
-                                x:Name="qtyrequired"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                d:Text="99,000 pcs"
-                                FontSize="12"
-                                Foreground="{StaticResource Red}"
-                                Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" />
-                            <TextBlock
-                                x:Name="daterequired"
-                                HorizontalAlignment="Right"
-                                d:Text=" for 1 September"
-                                FontSize="12"
-                                Foreground="{StaticResource Red}"
-                                Text="{Binding DateRequired, StringFormat='{} for {0:d MMMM}'}" />
-                        </StackPanel>
+                            Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" />
+                        <TextBlock
+                            x:Name="daterequired"
+                            HorizontalAlignment="Right"
+                            d:Text=" for 1 September"
+                            FontSize="12"
+                            Foreground="{StaticResource Red}"
+                            Text="{Binding DateRequired, StringFormat='{} for {0:d MMMM}'}" />
                     </StackPanel>
-                </Grid>
+                </StackPanel>
             </Border>
 
             <!--<Grid

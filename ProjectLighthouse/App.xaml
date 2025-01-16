@@ -52,12 +52,14 @@
 
             <converters:boolToVisibleOrCollapsed x:Key="boolToVisibleOrCollapsed" />
             <converters:boolToCollapsedOrVisible x:Key="boolToCollapsedOrVisible" />
-            <converters:ObjectIsNotNull x:Key="NotNullToBoolean" />
-            <converters:ObjectIsNotNullToVisibility x:Key="NotNullToVisibility" />
+            <converters:ObjectIsNotNull x:Key="ObjectIsNotNull" />
+            <converters:intToStringCycleTime x:Key="CycleTimeStringConverter" />
             <converters:ObjectIsNullToVisibility x:Key="NullToVisibility" />
+            <converters:ObjectIsNotNullToVisibility x:Key="NotNullToVisibility" />
             <converters:ListIsEmptyToCollapsedOrVisible x:Key="EmptyListToCollapsedOrVisible" />
             <converters:ListIsEmptyToVisibleOrCollapsed x:Key="EmptyListToVisibleOrCollapsed" />
             <converters:dateToLastModified x:Key="DateToLastModified" />
+            <converters:BooleanInverter x:Key="InvertBoolean" />
             <!--#endregion-->
 
             <!--#region DataTemplates-->
@@ -75,7 +77,7 @@
                 <ordersView:OrderView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type ordersVm:NewScheduleViewModel}">
+            <DataTemplate DataType="{x:Type ordersVm:ScheduleViewModel}">
                 <scheduleView:ScheduleView />
             </DataTemplate>
 
@@ -107,8 +109,8 @@
                 <adminView:ManageUsersView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type adminVm:LatheViewModel}">
-                <adminView:LatheView />
+            <DataTemplate DataType="{x:Type adminVm:MachineViewModel}">
+                <adminView:MachineView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type adminVm:ProductManagerViewModel}">

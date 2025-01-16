@@ -8,9 +8,7 @@
                             <Border
                                 x:Name="box"
                                 Background="{StaticResource Surface}"
-                                BorderBrush="{StaticResource DisabledElement}"
-                                BorderThickness="1"
-                                CornerRadius="9" />
+                                CornerRadius="2" />
                             <Path
                                 x:Name="checkmark"
                                 Margin="3"
@@ -24,6 +22,7 @@
                             Margin="5,0,5,1"
                             VerticalAlignment="Center"
                             TextElement.FontSize="15"
+                            TextElement.FontWeight="SemiBold"
                             TextElement.Foreground="{StaticResource OnBackground}" />
                     </StackPanel>
                     <ControlTemplate.Triggers>
@@ -45,4 +44,71 @@
     </Style>
 
     <Style BasedOn="{StaticResource Default}" TargetType="CheckBox" />
+
+    <Style x:Key="PreflightCheckbox" TargetType="CheckBox">
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <StackPanel Orientation="Horizontal">
+                        <Grid Width="25" Height="25">
+                            <Border
+                                x:Name="box"
+                                Background="{StaticResource Surface}"
+                                BorderBrush="{StaticResource Green}"
+                                BorderThickness="0"
+                                CornerRadius="5" />
+                            <Path
+                                x:Name="checkmark"
+                                Fill="{StaticResource Green}"
+                                Style="{StaticResource Icon_Check}"
+                                Visibility="Hidden" />
+                        </Grid>
+                        <ContentPresenter
+                            x:Name="content"
+                            Margin="5,0,5,1"
+                            VerticalAlignment="Center"
+                            TextElement.FontSize="20"
+                            TextElement.FontWeight="SemiBold"
+                            TextElement.Foreground="{StaticResource OnBackground}" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkmark" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="box" Property="Background" Value="{StaticResource GreenFaded}" />
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource Green}" />
+                        </Trigger>
+
+
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="False" />
+                                <Condition Property="IsChecked" Value="False" />
+
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="box" Property="BorderBrush" Value="Gray" />
+
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="False" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource DisabledElement}" />
+                            <Setter TargetName="box" Property="Background" Value="{StaticResource Surface}" />
+                            <Setter TargetName="box" Property="BorderBrush" Value="{StaticResource Green}" />
+                            <Setter TargetName="checkmark" Property="Fill" Value="{StaticResource Green}" />
+                            <Setter TargetName="content" Property="TextElement.Foreground" Value="{StaticResource Green}" />
+                        </MultiTrigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="box" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

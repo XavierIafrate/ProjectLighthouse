@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using ViewModel.Commands.Administration;
 
 namespace ProjectLighthouse.ViewModel.Administration
 {
@@ -36,6 +35,15 @@ namespace ProjectLighthouse.ViewModel.Administration
         public List<Product> FilteredProducts { get; set; }
         public List<ProductGroup> FilteredProductGroups { get; set; }
         public List<TurnedProduct> FilteredTurnedProducts { get; set; }
+
+        private bool showHidden;
+
+        public bool ShowHidden
+        {
+            get { return showHidden; }
+            set { showHidden = value; FilterProducts(); OnPropertyChanged(); }
+        }
+
 
         private Product selectedProduct;
         public Product SelectedProduct
@@ -69,7 +77,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             set
             {
                 selectedPart = value;
-                CostPart();
                 OnPropertyChanged();
             }
         }
@@ -171,6 +178,51 @@ namespace ProjectLighthouse.ViewModel.Administration
             latheFeatures = features;
         }
 
+
+        private void FilterProducts()
+        {
+            int? selectedProductId = null;
+
+            if (SelectedProduct is not null)
+            {
+                selectedProductId = SelectedProduct.Id;
+            }
+
+            if (ShowHidden)
+            {
+                FilteredProducts = new(Products);
+            }
+            else
+            {
+                FilteredProducts = Products.Where(x => !x.IsHidden).ToList();
+            }
+
+            if (selectedProductId is not null)
+            {
+                if (FilteredProducts.Any(x => x.Id == selectedProductId))
+                {
+                    SelectedProduct = FilteredProducts.Find(x => x.Id == selectedProductId);
+                }
+                else if (FilteredProducts.Count > 0)
+                {
+                    SelectedProduct = FilteredProducts.First();
+                }
+                else
+                {
+                    SelectedProduct = null;
+                }
+            }
+            else if (FilteredProducts.Count > 0)
+            {
+                SelectedProduct = FilteredProducts.First();
+            }
+            else
+            {
+                SelectedProduct = null;
+            }
+
+            OnPropertyChanged(nameof(FilteredProducts));
+        }
         private void LoadProduct()
         {
             if (SelectedProduct is null)
@@ -181,9 +233,30 @@ namespace ProjectLighthouse.ViewModel.Administration
                 return;
             }
 
-            FilteredProductGroups = ProductGroups
-                .Where(x => (x.ProductId ?? -1) == SelectedProduct.Id)
-                .ToList();
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                FilteredProductGroups = ProductGroups
+                    .Where(x => (x.ProductId ?? -1) == SelectedProduct.Id)
+                    .ToList();
+            }
+            else
+            {
+                List<int> productGroupIdsBySku = TurnedProducts
+                    .Where(x =>
+                           x.ProductName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
+                        || (x.ExportProductName ?? string.Empty).Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
+                        )
+                    .Select(x => x.GroupId ?? -1)
+                    .ToList();
+
+
+                FilteredProductGroups = ProductGroups
+                    .Where(x => (x.ProductId ?? -1) == SelectedProduct.Id && (x.Name.Contains(searchText, StringComparison.InvariantCultureIgnoreCase) || productGroupIdsBySku.Any(g => g == x.Id)))
+                    .ToList();
+            }
+
+
+
             OnPropertyChanged(nameof(FilteredProductGroups));
 
             if (FilteredProductGroups.Count > 0)
@@ -201,13 +274,26 @@ namespace ProjectLighthouse.ViewModel.Administration
                 return;
             }
 
-            FilteredTurnedProducts = TurnedProducts
-                .Where(x => (x.GroupId ?? -1) == SelectedProductGroup.Id)
-                .OrderBy(x => x.Retired)
-                .ThenBy(x => x.MaterialId)
-                .ThenBy(x => x.IsSpecialPart)
-                .ThenBy(x => x.ProductName)
-                .ToList();
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                FilteredTurnedProducts = TurnedProducts
+                    .Where(x => (x.GroupId ?? -1) == SelectedProductGroup.Id)
+                    .OrderBy(x => x.Retired)
+                    .ThenBy(x => x.MaterialId)
+                    .ThenBy(x => x.IsSpecialPart)
+                    .ThenBy(x => x.ProductName)
+                    .ToList();
+            }
+            else
+            {
+                FilteredTurnedProducts = TurnedProducts
+                    .Where(x => (x.GroupId ?? -1) == SelectedProductGroup.Id && (x.ProductName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase) || (x.ExportProductName??string.Empty).Contains(searchText, StringComparison.InvariantCultureIgnoreCase)))
+                    .OrderBy(x => x.Retired)
+                    .ThenBy(x => x.MaterialId)
+                    .ThenBy(x => x.IsSpecialPart)
+                    .ThenBy(x => x.ProductName)
+                    .ToList();
+            }
 
             for (int i = 0; i < FilteredTurnedProducts.Count; i++)
             {
@@ -281,6 +367,11 @@ namespace ProjectLighthouse.ViewModel.Administration
             OnPropertyChanged(nameof(TimeModels));
 
             Task.Run(() => CostFilteredTurnedProducts());
+
+            if(FilteredTurnedProducts.Count > 0)
+            {
+                SelectedPart = FilteredTurnedProducts.First();
+            }
         }
 
         void CostFilteredTurnedProducts()
@@ -305,11 +396,22 @@ namespace ProjectLighthouse.ViewModel.Administration
                 {
                     model = TimeModels[material];
                 }
-                catch (Exception ex)
+                catch
                 {
-                    if (ex.Message == "Not enough data" && product.CycleTime > 0)
+                    if (product.CycleTime > 0)
                     {
                         model = new() { Floor = product.CycleTime };
+                    }
+                    else if (!string.IsNullOrWhiteSpace(SelectedProductGroup.DefaultTimeCode))
+                    {
+                        try
+                        {
+                            model = new TimeModel(SelectedProductGroup.DefaultTimeCode);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
                     }
                     else
                     {
@@ -322,15 +424,21 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
-        private void CostPart()
-        {
-        }
 
         void Search()
         {
             if (string.IsNullOrWhiteSpace(SearchText))
             {
-                FilteredProducts = new(Products);
+                if (ShowHidden)
+                {
+                    FilteredProducts = new(Products);
+                }
+                else
+                {
+                    FilteredProducts = new(Products.Where(x => !x.IsHidden).ToList());
+                }
+
+                OnPropertyChanged(nameof(FilteredProducts));
 
                 if (FilteredProducts.Count > 0)
                 {
@@ -343,8 +451,19 @@ namespace ProjectLighthouse.ViewModel.Administration
                 return;
             }
 
-            string token = SearchText.ToUpperInvariant();
-            FilteredProducts = Products.Where(x => x.Name.ToUpperInvariant().Contains(token) || x.Description.ToUpperInvariant().Contains(token)).ToList();
+            string token = searchText.Trim();
+
+            List<ProductGroup> productGroups = ProductGroups.Where(x => x.Name.Contains(token, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            List<TurnedProduct> turnedProducts = TurnedProducts.Where(x => x.ProductName.Contains(token, StringComparison.InvariantCultureIgnoreCase) || (x.ExportProductName ?? string.Empty).Contains(token, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            List<int> productIds = ProductGroups.Where(x => turnedProducts.Any(p => p.GroupId == x.Id)).Select(x => x.ProductId ?? -1).ToList();
+            productIds.AddRange(productGroups.Select(x => x.ProductId ?? -1));
+
+            FilteredProducts = Products
+                .Where(x =>
+                   x.Name.Contains(token, StringComparison.InvariantCultureIgnoreCase)
+                || x.Description.Contains(token, StringComparison.InvariantCultureIgnoreCase)
+                || productIds.Any(i => i == x.Id)
+                ).ToList();
             OnPropertyChanged(nameof(FilteredProducts));
             if (FilteredProducts.Count > 0)
             {

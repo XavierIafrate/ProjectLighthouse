@@ -17,7 +17,7 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddNotesTable(section, notes);
         }
 
-        private void AddTableTitle(Section section, string title)
+        private static void AddTableTitle(Section section, string title)
         {
             Paragraph p = section.AddParagraph(title, StyleNames.Heading2);
             p.Format.KeepWithNext = true;
@@ -60,13 +60,13 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             AddHeader(headerRow.Cells[2], "Note");
         }
 
-        private void AddHeader(Cell cell, string header)
+        private static void AddHeader(Cell cell, string header)
         {
             Paragraph p = cell.AddParagraph(header);
             p.Style = CustomStyles.ColumnHeader;
         }
 
-        private void AddNoteRows(Table table, Note[] notes)
+        private static void AddNoteRows(Table table, Note[] notes)
         {
             foreach (Note note in notes)
             {
@@ -86,13 +86,13 @@ namespace ProjectLighthouse.Model.Reporting.Internal
             }
         }
 
-        private void AddLastRowBorder(Table table)
+        private static void AddLastRowBorder(Table table)
         {
             Row lastRow = table.Rows[^1];
             lastRow.Borders.Bottom.Width = 2;
         }
 
-        private void AlternateRowShading(Table table)
+        private static void AlternateRowShading(Table table)
         {
             // Start at i = 1 to skip column headers
             for (int i = 1; i < table.Rows.Count; i++)

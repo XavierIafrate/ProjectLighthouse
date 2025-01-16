@@ -28,14 +28,23 @@ namespace ProjectLighthouse.ViewModel.Commands
 
         public void Execute(object parameter)
         {
+            if (App.MainViewModel.SelectedViewModel != null)
+            {
+                if (!App.MainViewModel.SelectedViewModel.CanClose())
+                {
+                    viewModel.MainWindow.SelectButton(App.ActiveViewModel);
+                    return;
+                }
+            }
+
             string targetView = parameter.ToString();
 
             App.ActiveViewModel = targetView;
 
             if (targetView == "Schedule")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
-                viewModel.SelectedViewModel = new NewScheduleViewModel();
+                viewModel.BetaWarningVis = Visibility.Collapsed;
+                viewModel.SelectedViewModel = new ScheduleViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
                     "Polish" => "Harmonogram",
@@ -47,7 +56,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (targetView == "Requests")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new RequestViewModel();
                 viewModel.NavText = App.CurrentUser.Locale switch
                 {
@@ -99,7 +108,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (targetView == "Programs")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new ProgramManagerViewModel();
                 viewModel.NavText = "Program Manager";
             }
@@ -138,7 +147,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             else if (targetView == "Lathe Config")
             {
                 viewModel.BetaWarningVis = Visibility.Collapsed;
-                viewModel.SelectedViewModel = new LatheViewModel();
+                viewModel.SelectedViewModel = new MachineViewModel();
                 viewModel.NavText = "Lathe Configuration";
             }
             else if (targetView == "Analytics")
@@ -155,7 +164,7 @@ namespace ProjectLighthouse.ViewModel.Commands
             }
             else if (targetView == "DB Management")
             {
-                viewModel.BetaWarningVis = Visibility.Visible;
+                viewModel.BetaWarningVis = Visibility.Collapsed;
                 viewModel.SelectedViewModel = new DatabaseManagerViewModel();
                 viewModel.NavText = "Database Manager";
             }

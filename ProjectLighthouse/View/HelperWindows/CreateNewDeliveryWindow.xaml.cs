@@ -1,7 +1,9 @@
 ﻿using ProjectLighthouse.Model.Deliveries;
 using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
+using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Helpers;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +18,10 @@ namespace ProjectLighthouse.View
         private List<DeliveryItem> filteredUndeliveredItems;
         private List<DeliveryItem> itemsOnNewNote;
         private List<TurnedProduct> turnedProducts;
+        private List<NonTurnedItem> nonTurnedItems;
         private List<Lot> lots;
 
-        public bool SaveExit = false;
+        public bool SaveExit;
 
         public CreateNewDeliveryWindow()
         {
@@ -27,6 +30,7 @@ namespace ProjectLighthouse.View
             filteredUndeliveredItems = new List<DeliveryItem>();
             itemsOnNewNote = new List<DeliveryItem>();
             turnedProducts = DatabaseHelper.Read<TurnedProduct>();
+            nonTurnedItems = DatabaseHelper.Read<NonTurnedItem>();
             lots = new List<Lot>();
             GetUndelivered();
         }
@@ -34,39 +38,45 @@ namespace ProjectLighthouse.View
         private void GetUndelivered()
         {
             lots = DatabaseHelper.Read<Lot>().Where(n => !n.IsDelivered && n.IsAccepted && n.Quantity > 0 && n.AllowDelivery).ToList();
-            List<LatheManufactureOrder> orders = DatabaseHelper.Read<LatheManufactureOrder>().ToList();
-            //List<LatheManufactureOrderItem> items = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            List<ScheduleItem> orders = new();
+            orders.AddRange(DatabaseHelper.Read<LatheManufactureOrder>().ToList());
+            orders.AddRange(DatabaseHelper.Read<GeneralManufactureOrder>().ToList());
 
             allUndeliveredItems.Clear();
             filteredUndeliveredItems.Clear();
             itemsOnNewNote.Clear();
 
-            string _POref = string.Empty;
             foreach (Lot lot in lots)
             {
-                foreach (LatheManufactureOrder order in orders)
-                {
-                    if (order.Name == lot.Order)
-                    {
-                        _POref = order.POReference;
-                    }
-                }
-
-                TurnedProduct deliveringProduct = turnedProducts.Find(x => lot.ProductName == x.ProductName);
-
-
-
-                // TODO automate some of this
-                allUndeliveredItems.Add(new DeliveryItem()
+                string _POref = orders.Find(x => x.Name == lot.Order)!.POReference;
+                 
+                DeliveryItem newDeliveryItem = new()
                 {
                     ItemManufactureOrderNumber = lot.Order,
                     PurchaseOrderReference = _POref,
                     Product = lot.ProductName,
-                    ExportProductName = string.IsNullOrEmpty(deliveringProduct!.ExportProductName) ? lot.ProductName : deliveringProduct.ExportProductName,
                     QuantityThisDelivery = lot.Quantity,
                     LotID = lot.ID,
                     FromMachine = lot.FromMachine
-                });
+                };
+
+
+                TurnedProduct deliveringTurnedItem = turnedProducts.Find(x => lot.ProductName == x.ProductName);
+                if(deliveringTurnedItem != null )
+                {
+                    newDeliveryItem.ExportProductName = deliveringTurnedItem.ExportProductName;
+                }
+                else
+                {
+                    NonTurnedItem deliveringNonTurnedItem = nonTurnedItems.Find(x => x.Name == lot.ProductName);
+                    if (deliveringNonTurnedItem != null)
+                    {
+                        newDeliveryItem.ExportProductName = deliveringNonTurnedItem.ExportProductName;
+                    }
+                }
+
+
+                allUndeliveredItems.Add(newDeliveryItem);
             }
 
             filteredUndeliveredItems = new List<DeliveryItem>(allUndeliveredItems.OrderBy(n => n.Product));
@@ -74,7 +84,7 @@ namespace ProjectLighthouse.View
             deliveryList.ItemsSource = itemsOnNewNote;
         }
 
-        private void remButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
             if (deliveryList.SelectedValue is not DeliveryItem move_item)
             {
@@ -86,20 +96,29 @@ namespace ProjectLighthouse.View
             RefreshLists();
         }
 
-        private void addButton_Click(object sender, RoutedEventArgs e)
+        private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (undeliveredList.SelectedValue is not DeliveryItem move_item)
+            for (int i = 0; i < undeliveredList.SelectedItems.Count; i++)
             {
-                return;
+                if (undeliveredList.SelectedItems[i] is not DeliveryItem move_item)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(move_item.PurchaseOrderReference))
+                {
+                    MessageBox.Show($"The associated order '{move_item.ItemManufactureOrderNumber}' requires a Purchase Order reference to proceed.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(move_item.ExportProductName))
+                {
+                    MessageBox.Show($"The item record '{move_item.Product}' is not found in Opera (GTIN code is empty).", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    continue;
+                }
+
+                itemsOnNewNote.Add(move_item);
+                filteredUndeliveredItems.Remove(move_item);
             }
 
-            if (string.IsNullOrWhiteSpace(move_item.PurchaseOrderReference))
-            {
-                MessageBox.Show("The associated order requires a Purchase Order reference to proceed.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            itemsOnNewNote.Add(move_item);
-            filteredUndeliveredItems.Remove(move_item);
             RefreshLists();
         }
 
@@ -115,6 +134,7 @@ namespace ProjectLighthouse.View
                 MessageBox.Show("No items on delivery!", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
             DeliveryNote newDeliveryNote = new()
             {
                 Name = GetDeliveryNum(),
@@ -122,26 +142,87 @@ namespace ProjectLighthouse.View
                 DeliveredBy = App.CurrentUser.GetFullName(),
             };
 
-            DatabaseHelper.Insert(newDeliveryNote);
+            SQLiteConnection conn = DatabaseHelper.GetConnection();
 
             List<LatheManufactureOrderItem> orderItems = DatabaseHelper.Read<LatheManufactureOrderItem>().ToList();
+            List<GeneralManufactureOrder> generalOrders = DatabaseHelper.Read<GeneralManufactureOrder>().ToList();
+
+            List<object> insertTransactions = new();
+            List<object> updateTransactions = new();
 
             foreach (DeliveryItem item in itemsOnNewNote)
             {
                 item.AllocatedDeliveryNote = newDeliveryNote.Name;
+                Lot? lot = lots.Find(l => l.ID == item.LotID);
+                if (lot is null)
+                {
+                    MessageBox.Show($"Could not find lot with ID '{item.LotID}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    conn.Rollback();
+                    conn.Close();
+                    return;
+                }
 
-                LatheManufactureOrderItem x = orderItems.Find(i => i.ProductName == item.Product
+                lot.IsDelivered = true;
+
+                updateTransactions.Add(lot);
+
+
+                LatheManufactureOrderItem? orderItem = orderItems.Find(i => i.ProductName == item.Product
                                                                         && i.AssignedMO == item.ItemManufactureOrderNumber);
-                
-                x!.QuantityDelivered += item.QuantityThisDelivery;
-                DatabaseHelper.Update<LatheManufactureOrderItem>(x);
+                if (orderItem != null)
+                {
+                    orderItem.QuantityDelivered += item.QuantityThisDelivery;
+                    updateTransactions.Add(orderItem);
+                }
+                else
+                {
+                    GeneralManufactureOrder? order = generalOrders.Find(x => x.Name == lot.Order);
+                    if (order is null)
+                    {
+                        MessageBox.Show($"Could not find parent for lot with ID '{item.LotID}'", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        conn.Rollback();
+                        conn.Close();
+                        return;
+                    }
 
-                Lot lot = lots.Find(l => l.ID == item.LotID);
-                lot!.IsDelivered = true;
-                DatabaseHelper.Update<Lot>(lot);
+                    order.DeliveredQuantity += lot.Quantity;
+                    order.ModifiedAt = DateTime.Now;
+                    order.ModifiedBy = App.CurrentUser.UserName;
+                    updateTransactions.Add(order);
+                }
 
-                DatabaseHelper.Insert(item);
+                insertTransactions.Add(item);
             }
+
+            insertTransactions.Add(newDeliveryNote);
+            conn.BeginTransaction();
+
+
+            foreach(object  o in updateTransactions)
+            {
+                if (conn.Update(o) != 1)
+                {
+                    conn.Rollback();
+                    conn.Close();
+                    MessageBox.Show($"Failed to update database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            foreach (object o in insertTransactions)
+            {
+                if (conn.Insert(o) != 1)
+                {
+                    conn.Rollback();
+                    conn.Close();
+                    MessageBox.Show($"Failed to update database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            conn.Commit();
+            conn.Close();
+
             SaveExit = true;
             Close();
         }

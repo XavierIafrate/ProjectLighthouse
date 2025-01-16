@@ -48,8 +48,6 @@ namespace ProjectLighthouse.Model.Material
             {
                 Status = StockStatus.OrderNow;
             }
-
-            // TODO flag orders without bar in time
         }
 
         public enum StockStatus

@@ -2069,6 +2069,46 @@
         </Style.Triggers>
     </Style>
 
+    <Style
+        x:Key="ClipboardButton_Icon"
+        BasedOn="{StaticResource Button_Default}"
+        TargetType="Button">
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border
+                            Width="15"
+                            Height="15"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="2" />
+                        <Path
+                            Width="10"
+                            Height="10"
+                            Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Height" Value="15" />
+        <Setter Property="Width" Value="15" />
+        <Setter Property="Background" Value="{StaticResource PurpleFaded}" />
+        <Setter Property="Foreground" Value="{StaticResource Purple}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource Purple}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource OnPurple}" />
+                <Setter Property="Background" Value="{StaticResource PurpleDark}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="ExitButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource OnRed}" />
@@ -2108,15 +2148,15 @@
         x:Key="SendButton"
         BasedOn="{StaticResource Button_Default}"
         TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource OnBackground}" />
-        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource BlackFaded}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border
                             Width="30"
-                            Height="26"
+                            Height="30"
                             Background="{TemplateBinding Background}"
                             CornerRadius="5" />
                         <Path
@@ -2131,7 +2171,11 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Blue}" />
+                <Setter Property="Background" Value="{StaticResource Blue}" />
+                <Setter Property="Foreground" Value="{StaticResource OnBlue}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource BlueDark}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -2388,6 +2432,90 @@
                                 Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnPurple}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource DisabledElement}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="IncrementUpButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="15"
+                        Height="15"
+                        Background="#01ffffff"
+                        CornerRadius="5">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                x:Name="path"
+                                Width="8"
+                                Height="8"
+                                Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform">
+                                <Path.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-90" />
+                                        <TranslateTransform X="-1.5" Y="6.1" />
+                                    </TransformGroup>
+                                </Path.RenderTransform>
+                            </Path>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource OnPurple}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="path" Property="Fill" Value="{StaticResource DisabledElement}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DecrementDownButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="border"
+                        Width="15"
+                        Height="15"
+                        Background="#01ffffff"
+                        CornerRadius="5">
+                        <Grid HorizontalAlignment="Center">
+                            <Path
+                                x:Name="path"
+                                Width="8"
+                                Height="8"
+                                Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform">
+                                <Path.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="90" />
+                                        <TranslateTransform X="6.3" Y="1.5" />
+                                    </TransformGroup>
+                                </Path.RenderTransform>
+                            </Path>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>

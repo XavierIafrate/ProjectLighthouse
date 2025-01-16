@@ -1,6 +1,8 @@
 ﻿using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace ProjectLighthouse.View.Requests
@@ -38,6 +40,14 @@ namespace ProjectLighthouse.View.Requests
                     return;
                 }
                 NewProduct.SpecificationDocument = $@"lib\{System.IO.Path.GetFileName(specDocument.FilePath)}";
+            }
+
+            List<NonTurnedItem> nonTurnedItems = DatabaseHelper.Read<NonTurnedItem>();
+
+            if(nonTurnedItems.Any(x => x.Name == NewProduct.ProductName))
+            {
+                MessageBox.Show("This item cannot be added as it already exists as a non-turned item.", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
+                return;
             }
 
             if (!string.IsNullOrWhiteSpace(specDetails.Text))

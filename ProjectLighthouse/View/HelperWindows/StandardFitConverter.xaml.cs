@@ -8,7 +8,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 
-namespace ProjectLigthouse.View.HelperWindows
+namespace ProjectLighthouse.View.HelperWindows
 {
     public partial class StandardFitConverter : UserControl, INotifyPropertyChanged
     {

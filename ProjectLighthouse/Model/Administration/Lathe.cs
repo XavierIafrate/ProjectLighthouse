@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectLighthouse.Model.Administration
 {
-    public class Lathe : Machine, IObjectWithValidation, ICloneable
+    public class Lathe : Machine, IObjectWithValidation
     {
         [UpdateWatch]
         public string IPAddress { get; set; }
@@ -36,8 +36,8 @@ namespace ProjectLighthouse.Model.Administration
         public double SoftMinDiameter
         {
             get { return softMinDiameter; }
-            set 
-            { 
+            set
+            {
                 softMinDiameter = value;
                 ValidateProperty();
                 OnPropertyChanged();
@@ -138,7 +138,7 @@ namespace ProjectLighthouse.Model.Administration
             }
         }
 
-        public object Clone()
+        public new object Clone()
         {
             string serialised = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Lathe>(serialised);
@@ -260,48 +260,48 @@ namespace ProjectLighthouse.Model.Administration
             throw new Exception($"Validation for {propertyName} has not been configured.");
         }
 
-        public List<string> GetChanges(Lathe otherLathe)
-        {
-            PropertyInfo[] properties = typeof(Lathe).GetProperties();
-            bool mod = false;
-            List<string> changes = new();
+        //public List<string> GetChanges(Lathe otherLathe)
+        //{
+        //    PropertyInfo[] properties = typeof(Lathe).GetProperties();
+        //    bool mod = false;
+        //    List<string> changes = new();
 
-            foreach (PropertyInfo property in properties)
-            {
-                bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
+        //    foreach (PropertyInfo property in properties)
+        //    {
+        //        bool watchPropForChanges = property.GetCustomAttribute<UpdateWatch>() != null;
 
-                if (!watchPropForChanges)
-                {
-                    continue;
-                }
+        //        if (!watchPropForChanges)
+        //        {
+        //            continue;
+        //        }
 
-                if (!Equals(property.GetValue(this), property.GetValue(otherLathe)))
-                {
-                    changes.Add($"{property.Name} changed from '{property.GetValue(this) ?? "null"}' to '{property.GetValue(otherLathe) ?? "null"}'");
+        //        if (!Equals(property.GetValue(this), property.GetValue(otherLathe)))
+        //        {
+        //            changes.Add($"{property.Name} changed from '{property.GetValue(this) ?? "null"}' to '{property.GetValue(otherLathe) ?? "null"}'");
 
-                    mod = true;
-                }
+        //            mod = true;
+        //        }
 
-            }
+        //    }
 
-            if (mod)
-            {
-                string path = App.ROOT_PATH + @"lib\logs\" + Id + ".log";
+        //    if (mod)
+        //    {
+        //        //string path = App.ROOT_PATH + @"lib\logs\" + Id + ".log";
 
-                //File.AppendAllText(path, sb.ToString());
-            }
+        //        //File.AppendAllText(path, sb.ToString());
+        //    }
 
-            return changes;
-        }
+        //    return changes;
+        //}
 
-        public bool IsUpdated(Lathe otherLathe)
-        {
-            List<string> changes = GetChanges(otherLathe);
+        //public bool IsUpdated(Lathe otherLathe)
+        //{
+        //    List<string> changes = GetChanges(otherLathe);
 
-            return changes.Count > 0;
-        }
+        //    return changes.Count > 0;
+        //}
 
-        internal bool CanRun(ScheduleItem item)
+        public override bool CanRun(ScheduleItem item)
         {
             if (item is MachineService)
             {
@@ -319,7 +319,7 @@ namespace ProjectLighthouse.Model.Administration
                     return false;
                 }
 
-                if(order.RequiredFeaturesList.Any(x => !FeatureList.Contains(x)))
+                if (order.RequiredFeaturesList.Any(x => !FeatureList.Contains(x)))
                 {
                     return false;
                 }

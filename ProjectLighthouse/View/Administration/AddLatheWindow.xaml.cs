@@ -1,5 +1,4 @@
-﻿using HarfBuzzSharp;
-using ProjectLighthouse.Model.Administration;
+﻿using ProjectLighthouse.Model.Administration;
 using ProjectLighthouse.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace ProjectLighthouse.View.Administration
 {
     public partial class AddLatheWindow : Window, INotifyPropertyChanged
     {
-        private List<Lathe> ExistingLathes;
+        private List<Machine> ExistingMachines;
         public Lathe Lathe { get; set; }
         public Lathe? originalLathe;
 
@@ -25,8 +24,8 @@ namespace ProjectLighthouse.View.Administration
         public List<string> ExistingFeatures
         {
             get { return existingFeatures; }
-            set 
-            { 
+            set
+            {
                 existingFeatures = value;
                 OnPropertyChanged();
             }
@@ -40,11 +39,11 @@ namespace ProjectLighthouse.View.Administration
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public AddLatheWindow(List<Lathe> existingLathes, Lathe? lathe = null)
+        public AddLatheWindow(List<Machine> existingMachines, Lathe? lathe = null)
         {
             InitializeComponent();
 
-            ExistingLathes = existingLathes;
+            ExistingMachines = existingMachines;
 
             if (lathe is not null)
             {
@@ -62,19 +61,22 @@ namespace ProjectLighthouse.View.Administration
                 Lathe = new();
             }
 
-           List<string> featureList = new();
+            List<string> featureList = new();
 
-            foreach (Lathe l in ExistingLathes)
+            foreach (Machine machine in ExistingMachines)
             {
                 if (lathe is not null)
                 {
-                    if (l.Id == lathe.Id)
+                    if (machine.Id == lathe.Id)
                     {
                         continue;
                     }
                 }
 
-                featureList.AddRange(l.FeatureList);
+                if (machine is Lathe l)
+                {
+                    featureList.AddRange(l.FeatureList);
+                }
             }
 
             featureList = featureList.Distinct().ToList();
