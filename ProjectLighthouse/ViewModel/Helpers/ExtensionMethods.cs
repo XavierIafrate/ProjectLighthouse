@@ -17,7 +17,7 @@ namespace ProjectLighthouse.ViewModel.Helpers
             for (int i = 0; i < items.Count; i++)
             {
                 LatheManufactureOrderItem item = items[i];
-                double partsPerBar = Math.Floor((bar.Length - 300) / (item.MajorLength + item.PartOffLength + partOff));
+                double partsPerBar = Math.Floor((bar.Length - App.Constants.BarRemainder) / (item.MajorLength + item.PartOffLength + partOff));
                 numberOfBars += item.TargetQuantity / partsPerBar;
             }
 
