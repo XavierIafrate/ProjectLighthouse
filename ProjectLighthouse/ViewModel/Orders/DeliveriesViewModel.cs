@@ -212,12 +212,25 @@ namespace ProjectLighthouse.ViewModel.Orders
                 return;
             }
 
+            OperaHelper operaHelper;
+            try
+            {
+                operaHelper = new(App.ROOT_PATH);
+            }
+            catch (Exception ex) 
+            {
+                NotificationManager.NotifyHandledException(ex);
+                return;
+            }
+
+
             if (SelectedDeliveryNote is null) return;
             CheckingOperaVis = Visibility.Visible;
             DisableControls = true;
             NoteIsNotVerified = false; //disable button
 
-            List<string> problems = await Task.Run(() => OperaHelper.VerifyDeliveryNote(FilteredDeliveryItems));
+
+            List<string> problems = await Task.Run(() => operaHelper.VerifyDeliveryNote(FilteredDeliveryItems));
 
             CheckingOperaVis = Visibility.Collapsed;
             DisableControls = false;
