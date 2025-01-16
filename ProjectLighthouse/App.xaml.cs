@@ -67,11 +67,12 @@ namespace ProjectLighthouse
             {
                 string constantsJson = File.ReadAllText(App.ROOT_PATH + "config.json");
                 Constants = Newtonsoft.Json.JsonConvert.DeserializeObject<Constants>(constantsJson);
-
                 if (Constants is null)
                 {
                     throw new FileLoadException("Deserialisation of config.json to Constants returned null");
                 }
+
+                Constants.SetLatheValues();
             }
             catch (Exception ex)
             {
