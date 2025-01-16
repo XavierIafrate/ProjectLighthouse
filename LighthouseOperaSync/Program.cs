@@ -10,21 +10,38 @@ namespace LighthouseOperaSync
 {
     class Program
     {
+        public static string ApplicationRoot;
         static void Main(string[] args)
         {
             Console.WriteLine("Lighthouse-Opera Sync");
 #if DEBUG
-            DatabaseHelper.DatabasePath = "\\\\groupfile01\\Sales\\Production\\Administration\\Manufacture Records\\Lighthouse_TEST\\lightroom_TEST.db3";
+            DatabaseHelper.DatabasePath = @"\\GBCH-LIGHT-01\Lighthouse_Dev\lightroom_Dev.db3";
+            ApplicationRoot = @"\\GBCH-LIGHT-01\Lighthouse_Dev\";
 #else
-            DatabaseHelper.DatabasePath = @"\\GBCH-LIGHT-01\Lighthouse\lightroom_v2.db3";
+            DatabaseHelper.DatabasePath = @"\\GBCH -LIGHT-01\Lighthouse\lightroom_v2.db3";
+            ApplicationRoot = @"\\GBCH-LIGHT-01\Lighthouse\";
 #endif
-     
-            if (!File.Exists(OperaHelper.stockTable))
+
+            OperaHelper operaHelper;
+
+            try
+            {
+                operaHelper = new(ApplicationRoot);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"An exception occurred while loading the Opera Helper\n{ex.Message}");
+                Console.ReadKey();
+                return;
+            }
+
+            if (!File.Exists(operaHelper.TablePaths["CNAME"]))
             {
                 Console.WriteLine("Failed to locate db");
                 Console.ReadLine();
                 return;
             }
+
             Console.WriteLine("Database Found, proceeding.");
             Console.WriteLine("Database Path: " + DatabaseHelper.DatabasePath);
 
@@ -35,9 +52,9 @@ namespace LighthouseOperaSync
             List<BarStock> barStock = DatabaseHelper.Read<BarStock>();
 
             string[] array = turnedProductList.Select(x => x.ProductName).ToArray<string>();
-            OperaHelper.UpdateRecords(turnedProductList, barStock, nonTurnedProductList);
+            operaHelper.UpdateRecords(turnedProductList, barStock, nonTurnedProductList);
 
-            OperaHelper.UpdatePurchaseRecords(barStock);
+            operaHelper.UpdatePurchaseRecords(barStock);
         }
 
         private static void BackupDb()
