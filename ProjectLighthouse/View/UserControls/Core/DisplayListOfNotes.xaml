@@ -42,7 +42,6 @@
                         DeleteCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DisplayListOfNotes}, Mode=FindAncestor}, Path=DeleteCommand}"
                         Note="{Binding}"
                         SaveEditCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DisplayListOfNotes}, Mode=FindAncestor}, Path=SaveCommand}" />
-                        <!--SaveEditCommand= />-->
                 </DataTemplate>
 
                 <DataTemplate x:Key="leftNote">
