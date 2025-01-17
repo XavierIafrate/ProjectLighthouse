@@ -123,6 +123,15 @@ namespace ProjectLighthouse.ViewModel.Administration
             }
         }
 
+        private List<string> availableEmojis;
+
+        public List<string> AvailableEmojis
+        {
+            get { return availableEmojis; }
+            set { availableEmojis = value; OnPropertyChanged(); }
+        }
+
+
         public EditUserCommand EditCmd { get; set; }
         public SaveUserEditCommand SaveCmd { get; set; }
         public CancelEditCommand CancelCmd { get; set; }
@@ -168,6 +177,8 @@ namespace ProjectLighthouse.ViewModel.Administration
         private void LoadData()
         {
             Users = DatabaseHelper.Read<User>().OrderBy(n => n.UserName).ToList();
+            AvailableEmojis = User.Emojis.Where(x => !Users.Any(u => u.Emoji == x)).Append("🙂").ToList();
+
             allPermissionsGiven = DatabaseHelper.Read<Permission>().ToList();
 
             for (int i = 0; i < Users.Count; i++)

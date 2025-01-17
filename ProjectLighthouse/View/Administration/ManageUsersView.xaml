@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:ProjectLighthouse.ViewModel.ValueConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
     xmlns:local="clr-namespace:ProjectLighthouse.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:ProjectLighthouse.View.UserControls"
@@ -167,6 +168,44 @@
                         VerticalAlignment="Center"
                         IsChecked="{Binding SelectedUser.ReceivesNotifications, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Visibility="{Binding EditControlsVis}" />
+                </Grid>
+                <Grid Margin="0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource section}"
+                        Text="Emoji" />
+                    <emoji:TextBlock
+                        Grid.Column="3"
+                        Margin="5,0"
+                        VerticalAlignment="Center"
+                        d:Text="🙂"
+                        FontSize="20"
+                        IsEnabled="False"
+                        Text="{Binding SelectedUser.Emoji, TargetNullValue='🙂 (default)', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding ReadControlsVis}" />
+                    <ComboBox
+                        Grid.Column="3"
+                        Width="100"
+                        Margin="5,0"
+                        VerticalAlignment="Center"
+                        d:SelectedValue="💩"
+                        ItemsSource="{Binding AvailableEmojis}"
+                        SelectedValue="{Binding SelectedUser.Emoji, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding EditControlsVis}">
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <emoji:TextBlock d:Text="💩" Text="{Binding}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </Grid>
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>

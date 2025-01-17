@@ -34,8 +34,8 @@
                     VerticalAlignment="Center"
                     FontStyle="Italic"
                     Opacity="0.5"
-                    Text="edited" 
-                    Visibility="{Binding ElementName=parentControl, Path=Note.IsEdited, Converter={StaticResource boolToVisibleOrCollapsed}}"/>
+                    Text="edited"
+                    Visibility="{Binding ElementName=parentControl, Path=Note.IsEdited, Converter={StaticResource boolToVisibleOrCollapsed}}" />
 
                 <StackPanel
                     x:Name="EditControls"
@@ -96,7 +96,7 @@
                         <TextBlock
                             x:Name="SentByTextBlock"
                             VerticalAlignment="Center"
-                            Text="{Binding Note.UserDetails, ElementName=parentControl}"/>
+                            Text="{Binding Note.UserDetails, ElementName=parentControl}" />
                         <StackPanel
                             x:Name="DevBadge"
                             VerticalAlignment="Center"
@@ -139,9 +139,9 @@
                                     TextWrapping="Wrap" />
                                 <TextBox
                                     x:Name="EditBox"
+                                    Height="Auto"
                                     MaxWidth="500"
                                     Margin="0"
-                                    Height="Auto"
                                     d:IsEnabled="True"
                                     d:Text="EDIT_TEXT"
                                     d:Visibility="Visible"
@@ -173,13 +173,12 @@
             </Border>
             <emoji:TextBlock
                 Grid.Column="2"
+                Margin="5,0,0,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 d:Text="💩"
-                
-                Margin="5,0,0,0"
                 FontSize="22"
-                Text="{Binding Path=Note.UserDetails.Emoji, ElementName=parentControl}"
+                Text="{Binding Path=Note.UserDetails.Emoji, TargetNullValue='🙂', ElementName=parentControl}"
                 Visibility="{Binding Note.SpaceUnder, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}" />
         </Grid>
         <Grid

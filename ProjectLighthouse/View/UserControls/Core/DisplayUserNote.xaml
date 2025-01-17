@@ -26,12 +26,12 @@
             </Grid.ColumnDefinitions>
 
             <emoji:TextBlock
+                Margin="0,0,5,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 d:Text="💩"
                 FontSize="22"
-                Margin="0,0,5,0"
-                Text="{Binding Path=Note.UserDetails.Emoji, ElementName=parentControl}"
+                Text="{Binding Path=Note.UserDetails.Emoji, TargetNullValue='🙂', ElementName=parentControl}"
                 Visibility="{Binding Note.SpaceUnder, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}" />
             <Border
                 x:Name="bg"
@@ -83,8 +83,8 @@
                             x:Name="SentAtTextBlock"
                             Margin="5,0"
                             VerticalAlignment="Center"
-                            Opacity="0.6"
-                            d:Text="00:00"/>
+                            d:Text="00:00"
+                            Opacity="0.6" />
 
                     </StackPanel>
 
@@ -126,18 +126,17 @@
                         Grid.Column="1"
                         MaxWidth="450"
                         Margin="12,0,12,4"
-                        Visibility="{Binding Note.IsEdited, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}"
                         d:Text="ORIGINAL_MESSAGE_TEXT"
                         FontSize="12"
                         Foreground="{StaticResource Red}"
                         Text="{Binding Path=OriginalMessage}"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap"
+                        Visibility="{Binding Note.IsEdited, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}" />
 
                 </StackPanel>
             </Border>
 
             <TextBlock
-                Visibility="{Binding Note.IsEdited, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}"
                 x:Name="EditedTextBox"
                 Grid.Column="2"
                 Margin="5"
@@ -145,7 +144,8 @@
                 VerticalAlignment="Center"
                 FontStyle="Italic"
                 Opacity="0.5"
-                Text="edited" />
+                Text="edited"
+                Visibility="{Binding Note.IsEdited, ElementName=parentControl, Converter={StaticResource boolToVisibleOrCollapsed}}" />
         </Grid>
         <Grid
             x:Name="spacer"
