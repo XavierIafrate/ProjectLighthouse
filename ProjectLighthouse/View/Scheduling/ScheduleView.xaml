@@ -302,6 +302,7 @@
                         <scheduleComponents:ScheduleItemInspector
                             Margin="10,0"
                             VerticalAlignment="Stretch"
+                            DeleteMaintenanceEventCommand="{Binding DeleteMaintenanceEventCmd}"
                             Item="{Binding SelectedItem}"
                             RescheduleCommand="{Binding RescheduleCmd}" />
                     </ScrollViewer>

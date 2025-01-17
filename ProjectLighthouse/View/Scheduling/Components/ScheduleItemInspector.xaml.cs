@@ -1,4 +1,5 @@
-﻿using ProjectLighthouse.Model.Orders;
+﻿using ProjectLighthouse.Model.Administration;
+using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Scheduling;
 using ProjectLighthouse.ViewModel.Commands.Scheduling;
 using ProjectLighthouse.ViewModel.ValueConverters;
@@ -29,6 +30,19 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
         public static readonly DependencyProperty RescheduleCommandProperty =
             DependencyProperty.Register("RescheduleCommand", typeof(RescheduleItemCommand), typeof(ScheduleItemInspector), new PropertyMetadata(null, SetRescheduleCommand));
+
+
+
+        public DeleteMaintenanceEventCommand DeleteMaintenanceEventCommand
+        {
+            get { return (DeleteMaintenanceEventCommand)GetValue(DeleteMaintenanceEventCommandProperty); }
+            set { SetValue(DeleteMaintenanceEventCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty DeleteMaintenanceEventCommandProperty =
+            DependencyProperty.Register("DeleteMaintenanceEventCommand", typeof(DeleteMaintenanceEventCommand), typeof(ScheduleItemInspector), new PropertyMetadata(null));
+
+
 
         private static void SetRescheduleCommand(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -90,9 +104,12 @@ namespace ProjectLighthouse.View.Scheduling.Components
 
             this.ItemNameTextBlock.Text = generalOrder.Name;
             this.ProductNameTextBlock.Text = generalOrder.Item.Name;
+            this.ProductDescTextBlock.Text = generalOrder.Item.Description;
 
-            this.FinishedQuantityTextBlock.Text = generalOrder.FinishedQuantity.ToString("#,##0");
-            this.RequiredQuantityTextBlock.Text = generalOrder.RequiredQuantity.ToString("#,##0");
+            this.FinishedQuantityTextBlock.Text = $"Finished Quantity: {generalOrder.FinishedQuantity:#,##0}";
+            this.RequiredQuantityTextBlock.Text = $"Required Quantity: {generalOrder.RequiredQuantity:#,##0}";
+            this.GeneralOrderEstimatedRuntimeTextBlock.Text = $"{new intToTimespanString().Convert(generalOrder.TimeToComplete, typeof(string), null, new CultureInfo("en-GB")) ?? "N/A"}";
+            this.GeneralOrderStartDateTextBlock.Text = $"{generalOrder.StartDate:dd/MM/yy HH:mm}";
         }
 
         private void ShowService(MachineService service)
@@ -152,6 +169,7 @@ namespace ProjectLighthouse.View.Scheduling.Components
             InitializeComponent();
 
             this.DateTimePicker.DateChanged += RescheduleItem;
+            this.CancelServiceButton.IsEnabled = App.CurrentUser.HasPermission(Model.Core.PermissionType.ConfigureMaintenance);
         }
 
         private void RescheduleItem(object sender, EventArgs e)
@@ -164,6 +182,14 @@ namespace ProjectLighthouse.View.Scheduling.Components
             RescheduleInformation data = new(this.Item, this.Item.AllocatedMachine, desiredDate);
 
             RescheduleCommand?.Execute(data);
+        }
+
+        private void CancelServiceButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Item is not MachineService service) return;
+            if (this.DeleteMaintenanceEventCommand is null) return;
+
+            DeleteMaintenanceEventCommand?.Execute(service);
         }
     }
 }
