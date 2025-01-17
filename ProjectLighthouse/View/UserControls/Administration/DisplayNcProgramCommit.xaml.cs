@@ -33,9 +33,7 @@ namespace ProjectLighthouse.View.UserControls
 
         private static void SetCommand(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not DisplayNcProgramCommit control) return;
-
-            control.ViewCommitButton.Command = e.NewValue as ICommand;
+            
         }
 
         public DisplayNcProgramCommit()

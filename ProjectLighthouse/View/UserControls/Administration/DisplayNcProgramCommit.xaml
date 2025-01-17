@@ -33,15 +33,6 @@
                     Text="{Binding CommittedBy, StringFormat='{}{0} committed'}" />
             </StackPanel>
 
-            <Button
-                x:Name="ViewCommitButton"
-                Grid.Column="2"
-                Margin="5"
-                d:Tag="View Commit aaaaaa"
-                CommandParameter="{Binding}"
-                Style="{StaticResource Action_Compare_File_Button}"
-                Content="{Binding FileName, StringFormat='{}View Commit {0}'}" />
-
             <TextBlock
                 Grid.Row="1"
                 Grid.ColumnSpan="3"
