@@ -142,7 +142,6 @@ namespace ProjectLighthouse.ViewModel.Programs
         public SendMessageCommand SendMessageCmd { get; set; }
         public EditProgramCommand EditProgramCmd { get; set; }
         public OpenProgramCommand OpenProgramCmd { get; set; }
-        public OpenCommitCommand OpenCommitCmd { get; set; }
 
 
         public ProgramManagerViewModel()
@@ -220,7 +219,6 @@ namespace ProjectLighthouse.ViewModel.Programs
             SendMessageCmd = new(this);
             EditProgramCmd = new(this);
             OpenProgramCmd = new(this);
-            OpenCommitCmd = new(this);
 
             Programs = DatabaseHelper.Read<NcProgram>()
                 .OrderBy(x => x.Name.Length)
@@ -483,11 +481,6 @@ namespace ProjectLighthouse.ViewModel.Programs
         public void Dispose()
         {
             cancellationTokenSource?.Cancel();
-        }
-
-        public void OpenCommit(NcProgramCommit commit)
-        {
-            MessageBox.Show(commit.FileName);
         }
     }
 }
