@@ -268,6 +268,19 @@ namespace ProjectLighthouse.Model.Scheduling
             GetWarnings();
         }
 
+
+        internal void RemoveService(MachineService service)
+        {
+            MachineSchedule? sourceSchedule = MachineSchedules.Find(x => x.Machine.Id == service.AllocatedMachine);
+
+            sourceSchedule?.Remove(service);
+            sourceSchedule?.Refresh();
+
+            GetOptimisations();
+            GetAdvisories();
+            GetWarnings();
+        }
+
         internal bool AddHoliday(DateTime selection)
         {
             List<DateTime> holidays = Holidays.Append(selection.ChangeTime(0, 0, 0, 0)).OrderBy(x => x).Distinct().ToList();

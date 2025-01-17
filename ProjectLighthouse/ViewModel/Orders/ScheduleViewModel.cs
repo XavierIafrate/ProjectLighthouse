@@ -164,6 +164,15 @@ namespace ProjectLighthouse.ViewModel.Orders
             }
         }
 
+        private DeleteMaintenanceEventCommand deleteMaintenanceEventCmd;
+
+        public DeleteMaintenanceEventCommand DeleteMaintenanceEventCmd
+        {
+            get { return deleteMaintenanceEventCmd; }
+            set { deleteMaintenanceEventCmd = value; OnPropertyChanged(); }
+        }
+
+
         public ResetDatesCommand ResetDatesCmd { get; set; }
 
 
@@ -172,6 +181,7 @@ namespace ProjectLighthouse.ViewModel.Orders
             SelectItemCmd = new(this);
             RescheduleCmd = new(this);
             ResetDatesCmd = new(this);
+            DeleteMaintenanceEventCmd = new(this);
 
             LoadData();
             ResetDates();
@@ -363,6 +373,40 @@ namespace ProjectLighthouse.ViewModel.Orders
                 throw;
             }
         }
+
         #endregion
+
+        internal void CancelService(MachineService service)
+        {
+            
+            bool success;
+
+            try
+            {
+                success = DatabaseHelper.Delete(service);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to delete service: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (!success)
+            {
+                MessageBox.Show($"Failed to delete service.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                Schedule.RemoveService(service);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            SelectedItem = null;
+        }
     }
 }
