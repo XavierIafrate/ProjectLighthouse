@@ -1,6 +1,7 @@
 ﻿using ProjectLighthouse.Model.Orders;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ProjectLighthouse.View.UserControls
 {
@@ -21,6 +22,25 @@ namespace ProjectLighthouse.View.UserControls
 
             control.CycleTimeNotPresentIndicator.Visibility = control.Item.CycleTime == 0 && control.Item.QuantityMade > 0
                 ? Visibility.Visible : Visibility.Collapsed;
+
+            string colourForeground = "Red";
+            string colourBackground = "RedFaded";
+
+            if(control.Item.RequiredQuantity > 0 && control.Item.QuantityDelivered >= control.Item.RequiredQuantity)
+            {
+                colourBackground = "GreenFaded";
+                colourForeground = "Green";
+            }
+
+            Brush fg = (Brush)Application.Current.Resources[colourForeground];
+            Brush bg = (Brush)Application.Current.Resources[colourBackground];
+
+            control.RequirementBadge.Background = bg;
+            control.RequirementBadge.BorderBrush = fg;
+
+            control.CustomerRequirementTitleTextBlock.Foreground = fg;
+            control.QuantityRequiredTextBlock.Foreground = fg;
+            control.DateRequiredTextBlock.Foreground = fg;
         }
 
         public DisplayLMOItems()

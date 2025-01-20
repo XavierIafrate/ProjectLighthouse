@@ -206,6 +206,7 @@
 
 
             <Border
+                x:Name="RequirementBadge"
                 Grid.Column="1"
                 Margin="2"
                 HorizontalAlignment="Center"
@@ -217,14 +218,14 @@
                 Visibility="{Binding ElementName=parentControl, Path=Item.RequiredQuantity, Converter={StaticResource GreaterThanZero}}">
                 <StackPanel Margin="10,2">
                     <TextBlock
-                        x:Name="custReqTitle"
+                        x:Name="CustomerRequirementTitleTextBlock"
                         FontSize="12"
                         FontWeight="SemiBold"
                         Foreground="{StaticResource Red}"
                         Text="Customer Requirement" />
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
-                            x:Name="qtyrequired"
+                            x:Name="QuantityRequiredTextBlock"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             d:Text="99,000 pcs"
@@ -232,7 +233,7 @@
                             Foreground="{StaticResource Red}"
                             Text="{Binding RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" />
                         <TextBlock
-                            x:Name="daterequired"
+                            x:Name="DateRequiredTextBlock"
                             HorizontalAlignment="Right"
                             d:Text=" for 1 September"
                             FontSize="12"
