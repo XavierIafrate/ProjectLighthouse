@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml.Schema;
 
 namespace ProjectLighthouse.View.Orders.Components
 {
@@ -63,7 +64,20 @@ namespace ProjectLighthouse.View.Orders.Components
                 return;
             }
 
-            control.BarStock = control.baseBarStock.Where(x => x.MaterialId == control.Order.MaterialId && x.Size >= control.Order.MajorDiameter && x.IsHexagon == (control.Order.ProductGroup ?? new()).UsesHexagonBar).ToList();
+            double minDiameter = control.Order.MajorDiameter;
+            if (control.Order.ProductGroup is not null)
+            {
+                minDiameter = control.Order.ProductGroup.MajorDiameter;
+            }
+
+
+
+            control.BarStock = control.baseBarStock
+                .Where(x => 
+                    x.MaterialId == control.Order.MaterialId 
+                    && x.Size >= minDiameter
+                    && x.IsHexagon == (control.Order.ProductGroup ?? new()).UsesHexagonBar)
+                .ToList();
             control.barComboBox.SelectedValue = control.BarStock.Find(x => x.Id == control.Order.BarID);
             control.BarSelection.IsEnabled = control.Order.NumberOfBarsIssued == 0;
 
