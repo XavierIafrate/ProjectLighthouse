@@ -61,11 +61,13 @@
                 Text="Finished" />
 
             <Border
+                x:Name="RequirementBadge"
                 Grid.RowSpan="2"
                 Grid.Column="2"
                 Background="{StaticResource RedFaded}"
                 CornerRadius="5" />
             <TextBlock
+                x:Name="QuantityRequiredTextBlock"
                 Grid.Column="2"
                 Margin="0,8,15,0"
                 HorizontalAlignment="Right"
@@ -75,6 +77,7 @@
                 Foreground="{StaticResource Red}"
                 Text="{Binding ElementName=parentControl, Path=Order.RequiredQuantity, StringFormat='{}{0:#,##0} pcs'}" />
             <TextBlock
+                x:Name="DateRequiredTextBlock"
                 Grid.Row="1"
                 Grid.Column="2"
                 Margin="15,0,15,8"
