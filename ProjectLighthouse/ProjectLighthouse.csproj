@@ -256,9 +256,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Update="View\Orders\Components\xaml.txt">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
