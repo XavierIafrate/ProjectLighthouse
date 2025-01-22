@@ -48,13 +48,6 @@
                 Tag="url"
                 Text="{Binding Product.WebUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-            <TextBlock Style="{StaticResource InputLabel}" Text="Web Image URL (for live displays)" />
-            <TextBox
-                Style="{StaticResource DefaultTextBox}"
-                Tag="image url"
-                Text="{Binding Product.WebImageUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-
-
             <TextBlock Style="{StaticResource InputLabel}" Text="Image" />
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
