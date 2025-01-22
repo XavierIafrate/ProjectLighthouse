@@ -446,7 +446,7 @@ namespace ProjectLighthouse.Model.Products
                 if (this.Material.Cost is null) return;
 
                 this.BarMass = BarStock.GetUnitMassOfBar();
-                MaterialCost = BarMass / BarStock.Length * this.MaterialBudget * ((double)this.Material.Cost / 100);
+                MaterialCost = (BarStock.ExpectedCost ?? 0) * (MaterialBudget / (BarStock.Length - App.Constants.BarRemainder));
 
                 TimeCost = App.Constants.AbsorptionRate * TimeModel.At(Length);
 
