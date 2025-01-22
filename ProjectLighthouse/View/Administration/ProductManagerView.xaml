@@ -596,8 +596,11 @@
                                                     d:Text="BAR_LENGTH"
                                                     FontFamily="Consolas"
                                                     FontSize="18"
-                                                    FontWeight="Bold"
-                                                    Text="{Binding SelectedPart.ItemCost.BarStock.Length}" />
+                                                    FontWeight="Bold">
+                                                    <Run Text="{Binding SelectedPart.ItemCost.BarStock.Length}" />
+                                                    <Run Text="-" />
+                                                    <Run x:Name="RemainderText" Text="300" />
+                                                </TextBlock>
                                             </StackPanel>
                                             <Border
                                                 Grid.Row="9"

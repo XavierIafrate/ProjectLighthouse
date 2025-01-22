@@ -13,6 +13,7 @@ namespace ProjectLighthouse.View.Administration
         public ProductManagerView()
         {
             InitializeComponent();
+            RemainderText.Text = $"{App.Constants.BarRemainder:#,##0}";
         }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
