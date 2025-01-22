@@ -58,51 +58,6 @@ namespace ProjectLighthouse.ViewModel.Administration
             GetAnalytics();
             GetWorkload();
             GetProductAnalytics();
-            GetBreakdownAnalytics();
-        }
-
-
-        private static void GetBreakdownAnalytics()
-        {
-            return;
-            //List<MachineBreakdown> breakdowns = DatabaseHelper.Read<MachineBreakdown>().Where(x => x.BreakdownStarted > DateTime.Today.AddDays(-90)).ToList();
-            //List<BreakdownCode> codes = DatabaseHelper.Read<BreakdownCode>();
-            //breakdowns.ForEach(b => b.BreakdownMeta = codes.Find(c => c.Id == b.BreakdownCode));
-
-            ////List<double> hours = new();
-            //List<string> codeLabels = new();
-
-            //List<ISeries> newSeries = new();
-            //foreach (BreakdownCode code in codes)
-            //{
-            //    double timeAttributed = TimeSpan.FromSeconds(breakdowns.Where(x => x.BreakdownCode == code.Id).Sum(x => x.TimeElapsed)).Days;
-            //    if (timeAttributed == 0) continue;
-
-            //    List<double> newValue = new() { timeAttributed };
-            //    codeLabels.Add(code.Id);
-            //    newSeries.Add(new ColumnSeries<double>
-            //    {
-            //        Values = newValue,
-            //        Name = code.Id,
-            //        TooltipLabelFormatter = (chartPoint) =>
-            //        $"[{code.Id}] {code.Name}: {chartPoint.PrimaryValue:#,##0} days",
-            //    });
-            //}
-
-            
-
-
-            //BreakdownTime = newSeries.ToArray();
-
-            //BreakdownTimeXAxes = new Axis[1];
-            //BreakdownTimeXAxes[0] = new()
-            //{
-            //    Labels = codeLabels,
-            //};
-
-
-            //OnPropertyChanged(nameof(BreakdownTime));
-            //OnPropertyChanged(nameof(BreakdownTimeXAxes));
         }
 
         private void GetProductAnalytics()
