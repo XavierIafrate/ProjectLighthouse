@@ -48,14 +48,26 @@
                     Style="{StaticResource ClearButton}" />
             </Grid>
 
-            <Button
-                Grid.Row="1"
-                Margin="5,0"
-                HorizontalAlignment="Stretch"
-                Command="{Binding NewRequestCmd}"
-                Content="New Request"
-                IsEnabled="{Binding NewRequest, Converter={StaticResource NullToBool}}"
-                Style="{StaticResource Action_New_Button}" />
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Margin="5,0"
+                    HorizontalAlignment="Stretch"
+                    Command="{Binding NewRequestCmd}"
+                    Content="New Request"
+                    IsEnabled="{Binding NewRequest, Converter={StaticResource NullToBool}}"
+                    Style="{StaticResource Action_New_Button}" />
+                <Button
+                    Grid.Column="1"
+                    Margin="5,0"
+                    HorizontalAlignment="Stretch"
+                    Command="{Binding PricingEstimateCmd}"
+                    Content="Pricing Estimate"
+                    Style="{StaticResource Action_Button}" />
+            </Grid>
 
             <ListView
                 x:Name="requests_ListView"

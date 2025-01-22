@@ -5,6 +5,7 @@ using ProjectLighthouse.Model.Orders;
 using ProjectLighthouse.Model.Products;
 using ProjectLighthouse.Model.Requests;
 using ProjectLighthouse.View.Administration;
+using ProjectLighthouse.View.HelperWindows;
 using ProjectLighthouse.View.Orders;
 using ProjectLighthouse.View.Requests;
 using ProjectLighthouse.ViewModel.Commands;
@@ -307,6 +308,7 @@ namespace ProjectLighthouse.ViewModel.Requests
         public AddToRequestCommand AddToRequestCmd { get; set; }
         public RemoveFromRequestCommand RemoveFromRequestCmd { get; set; }
         public NewSpecialPartCommand AddSpecialCmd { get; set; }
+        public PricingEstimateCommand PricingEstimateCmd { get; set; }
 
         #endregion
 
@@ -334,6 +336,7 @@ namespace ProjectLighthouse.ViewModel.Requests
             SubmitRequestCmd = new(this);
             AddToRequestCmd = new(this);
             AddSpecialCmd = new(this);
+            PricingEstimateCmd = new(this); 
 
             Notes = new();
             TargetRuntime = 5;
@@ -1212,6 +1215,16 @@ namespace ProjectLighthouse.ViewModel.Requests
             LoadRequestCard();
 
             NewMessage = "";
+        }
+
+        internal void OpenPriceEstimator()
+        {
+            PricingEstimatorWindow window = new()
+            {
+                Owner = App.MainViewModel.MainWindow
+            };
+
+            window.ShowDialog();
         }
     }
 }
