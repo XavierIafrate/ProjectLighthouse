@@ -260,6 +260,7 @@ namespace ProjectLighthouse.ViewModel.Administration
                 List<BarStock> candidates = barStock.Where(x =>
                         x.Size >= (memberOf.MinBarSize ?? memberOf.MajorDiameter)
                         && x.IsHexagon == memberOf.UsesHexagonBar
+                        && !x.IsDormant
                         && x.MaterialId == material.Id)
                     .OrderBy(x => x.Size)
                     .ToList();
@@ -336,10 +337,10 @@ namespace ProjectLighthouse.ViewModel.Administration
                 BarId = bar.Id;
                 bar.MaterialData = materialInfo;
                 BarMass = bar.GetUnitMassOfBar();
-                BarCost = (bar.ExpectedCost ?? 0) / 100;
+                BarCost = (bar.ExpectedCost ?? 0);
                 MaterialBudget = product.MajorLength + product.PartOffLength + partOff;
 
-                MaterialCost = 1.1 * BarCost * (MaterialBudget / (bar.Length - App.Constants.BarRemainder));
+                MaterialCost =  BarCost * (MaterialBudget / (bar.Length - App.Constants.BarRemainder));
 
                 TotalCost = TimeCost + MaterialCost;
 
